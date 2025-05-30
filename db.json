@@ -1,0 +1,297 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "firstName": "Alice",
+      "lastName": "Smith",
+      "licenseId": 1
+    }
+  ],
+  "licenses": [
+    {
+      "id": "1",
+      "duration": 12,
+      "expiryDate": "2025-01-01"
+    }
+  ],
+  "selfDiscoveryQuestionCategories": [
+    {
+      "id": "1",
+      "title": "Personal Interests, Passions & Experiences",
+      "url": "personal-interests"
+    },
+    {
+      "id": "2",
+      "title": "Knowledge",
+      "url": "knowledge"
+    },
+    {
+      "id": "3",
+      "title": "Skills & Expertise",
+      "url": "skills-expertise"
+    },
+    {
+      "id": "4",
+      "title": "Social & Environmental Impact",
+      "url": "social-impact"
+    }
+  ],
+  "selfDiscoveryQuestions": [
+    {
+      "id": "1",
+      "titleId": "hobbies-interests",
+      "title": "What are your hobbies and interests?",
+      "description": "Consider activities you enjoy in your free time, such as reading (be specific about genres or topics), sports (specific sports or activities), arts (particular forms or styles), or outdoor activities (specific types of outdoor pursuits).",
+      "selfDiscoveryQuestionCategoryId": "1"
+    },
+    {
+      "id": "2",
+      "titleId": "life-experiences",
+      "title": "What significant life experiences have shaped you?",
+      "description": "Think about important events, challenges, travels, or moments that have had a meaningful impact on your life and perspective.",
+      "selfDiscoveryQuestionCategoryId": "1"
+    },
+    {
+      "id": "3",
+      "titleId": "world-concerns",
+      "title": "What issues concern you in the world?",
+      "description": "Think about social, environmental, or economic challenges that you feel passionate about addressing.",
+      "selfDiscoveryQuestionCategoryId": "4"
+    },
+    {
+      "id": "4",
+      "titleId": "sustainability-goals",
+      "title": "What sustainability goals interest you?",
+      "description": "Select the UN Sustainable Development Goals that resonate with you. We suggest selecting up to 3 items to focus your efforts.",
+      "selfDiscoveryQuestionCategoryId": "4"
+    },
+    {
+      "id": "5",
+      "titleId": "social-political-concerns",
+      "title": "What social or political problems are you interested in or concerned about?",
+      "description": "Consider issues related to equality, justice, education, healthcare, or other societal challenges you'd like to address.",
+      "selfDiscoveryQuestionCategoryId": "4"
+    },
+    {
+      "id": "6",
+      "titleId": "technical-skills",
+      "title": "What are your core technical skills and areas of expertise?",
+      "description": "Consider both professional skills and self-taught abilities.",
+      "selfDiscoveryQuestionCategoryId": "3"
+    },
+    {
+      "id": "7",
+      "titleId": "soft-skills",
+      "title": "What soft skills do you excel at?",
+      "description": "Think about communication, leadership, problem-solving, or other interpersonal skills.",
+      "selfDiscoveryQuestionCategoryId": "3"
+    },
+    {
+      "id": "8",
+      "titleId": "enjoyable-skills",
+      "title": "What skills do you enjoy developing the most?",
+      "description": "These are the areas where you find learning and growth most engaging.",
+      "selfDiscoveryQuestionCategoryId": "3"
+    },
+    {
+      "id": "9",
+      "titleId": "areas-of-knowledge",
+      "title": "What areas of knowledge are you most knowledgeable about?",
+      "description": "Consider subjects, fields, or topics you have deep understanding or expertise in, whether from formal education, self-study, or practical experience.",
+      "selfDiscoveryQuestionCategoryId": "2"
+    }
+  ],
+  "ideaTriggers": [
+    {
+      "id": "5",
+      "title": "Web Development",
+      "userId": "1",
+      "selfDiscoveryQuestionId": "6"
+    },
+    {
+      "id": "6",
+      "title": "Leadership",
+      "userId": "1",
+      "selfDiscoveryQuestionId": "7"
+    },
+    {
+      "id": "8",
+      "title": "AI/ML",
+      "userId": "1",
+      "selfDiscoveryQuestionId": "6"
+    },
+    {
+      "id": "9acc",
+      "title": "No poverty",
+      "userId": "1",
+      "selfDiscoveryQuestionId": "4"
+    },
+    {
+      "id": "5a68",
+      "title": "Problem Solving",
+      "userId": "1",
+      "selfDiscoveryQuestionId": "7"
+    },
+    {
+      "id": "210c",
+      "title": "Tech",
+      "userId": "1",
+      "selfDiscoveryQuestionId": "8"
+    },
+    {
+      "id": "4b32",
+      "title": "Listening to music",
+      "userId": "1",
+      "selfDiscoveryQuestionId": "1"
+    },
+    {
+      "id": "4185",
+      "title": "Waste management",
+      "userId": "1",
+      "selfDiscoveryQuestionId": "3"
+    },
+    {
+      "id": "fd43",
+      "title": "Renewable energy",
+      "userId": "1",
+      "selfDiscoveryQuestionId": "3"
+    },
+    {
+      "id": "d72a",
+      "title": "Energy Management",
+      "userId": "1",
+      "selfDiscoveryQuestionId": "3"
+    },
+    {
+      "id": "0b57",
+      "title": "Quality Education",
+      "userId": "1",
+      "selfDiscoveryQuestionId": "4"
+    },
+    {
+      "id": "490b",
+      "title": "Decent work and economic growth",
+      "userId": "1",
+      "selfDiscoveryQuestionId": "4"
+    },
+    {
+      "id": "97c9",
+      "title": "Reduced inequalities",
+      "userId": "1",
+      "selfDiscoveryQuestionId": "4"
+    },
+    {
+      "id": "ab27",
+      "title": "Life below water",
+      "userId": "1",
+      "selfDiscoveryQuestionId": "4"
+    }
+  ],
+  "ideaTriggerBuckets": [
+    {
+      "id": "2",
+      "title": "Health",
+      "userId": "1",
+      "ideaTriggerIds": [
+        "2",
+        "210c",
+        "4b32",
+        "db34"
+      ]
+    },
+    {
+      "id": "1748526586171",
+      "title": "New Container",
+      "ideaTriggerIds": [
+        "4b32",
+        "3240"
+      ],
+      "userId": "1"
+    },
+    {
+      "id": "1748528079749",
+      "title": "New Container",
+      "ideaTriggerIds": [
+        "4b32",
+        "3240"
+      ],
+      "userId": "1"
+    },
+    {
+      "id": "1748532544651",
+      "title": "New Container",
+      "ideaTriggerIds": [
+        "4b32",
+        "9426",
+        "4185",
+        "fd43",
+        "9acc",
+        "5f8f",
+        "f0b3"
+      ],
+      "userId": "1"
+    }
+  ],
+  "problemDiscoveryBuckets": [
+    {
+      "id": "2",
+      "title": "Wearables",
+      "selfDiscoveryBucketId": 2,
+      "userId": "1"
+    },
+    {
+      "id": "6de7",
+      "title": "test",
+      "selfDiscoveryBucketId": 3,
+      "userId": "1"
+    },
+    {
+      "id": "9a81",
+      "title": "Dog hiking - water waste",
+      "selfDiscoveryBucketId": null,
+      "userId": "1"
+    }
+  ],
+  "problemValidationBuckets": [
+    {
+      "id": "1",
+      "title": "Pain Point",
+      "problemDiscoveryBucketId": 1,
+      "userId": "1"
+    },
+    {
+      "id": "2",
+      "title": "Market Fit",
+      "problemDiscoveryBucketId": 2,
+      "userId": "1"
+    }
+  ],
+  "solutionIdeationBuckets": [
+    {
+      "id": "1",
+      "title": "Brainstorm",
+      "problemValidationBucketId": 1,
+      "userId": "1"
+    },
+    {
+      "id": "2",
+      "title": "Prototype",
+      "problemValidationBucketId": 2,
+      "userId": "1"
+    }
+  ],
+  "solutionValidationBuckets": [
+    {
+      "id": "1",
+      "title": "Test Solution",
+      "solutionIdeationBucketId": 1,
+      "userId": "1"
+    },
+    {
+      "id": "2",
+      "title": "Pilot",
+      "solutionIdeationBucketId": 2,
+      "userId": "1"
+    }
+  ]
+}
