@@ -12,7 +12,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
-import { Settings } from "lucide-react"
+import { Settings, HelpCircle } from "lucide-react"
 import { usePathname } from "next/navigation"
 
 function generateBreadcrumbs(pathname: string) {
@@ -74,9 +74,14 @@ export default function RootLayoutClient({
               </BreadcrumbList>
             </Breadcrumb>
           </div>
-          <Button variant="outline" size="icon">
-            <Settings />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="icon">
+              <HelpCircle />
+            </Button>
+            <Button variant="outline" size="icon">
+              <Settings />
+            </Button>
+          </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-8 bg-gray-100">
           <div className="max-w-7xl mx-auto flex flex-1 w-full">

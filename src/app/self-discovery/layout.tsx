@@ -1,11 +1,11 @@
 "use client"
 
 import { Card, CardContent } from "@/components/ui/card"
-import { getNavigationItem } from "@/config/navigation"
+import { getNavigationItem, getSelfDiscoveryCategoryIcon } from "@/config/navigation"
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { useRouter, usePathname } from "next/navigation"
-import { Heart, Book, Brain, Globe, PanelRightClose, PanelLeftClose } from "lucide-react"
+import { PanelLeftClose } from "lucide-react"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
@@ -102,10 +102,10 @@ export default function SelfDiscoveryLayout({
                                     {categories.map((category) => (
                                         <div key={category.id} className="space-y-2">
                                             <h4 className="font-medium text-sm flex items-center gap-2">
-                                                {category.id === "1" && <Heart className="h-4 w-4" />}
-                                                {category.id === "2" && <Book className="h-4 w-4" />}
-                                                {category.id === "3" && <Brain className="h-4 w-4" />}
-                                                {category.id === "4" && <Globe className="h-4 w-4" />}
+                                                {(() => {
+                                                    const Icon = getSelfDiscoveryCategoryIcon(category.id)
+                                                    return Icon && <Icon className="h-4 w-4" />
+                                                })()}
                                                 {category.title}
                                             </h4>
                                             {category.questions.map((question) => (
@@ -156,9 +156,13 @@ export default function SelfDiscoveryLayout({
                                 <Button
                                     key={category.id}
                                     variant={pathname === `/self-discovery/${category.url}` ? "secondary" : "ghost"}
-                                    className="w-full justify-start h-auto py-2 text-left whitespace-normal"
+                                    className="w-full justify-start h-auto py-2 text-left whitespace-normal gap-3"
                                     onClick={() => router.push(`/self-discovery/${category.url}`)}
                                 >
+                                    {(() => {
+                                        const Icon = getSelfDiscoveryCategoryIcon(category.id)
+                                        return Icon && <Icon className="flex items-center justify-center w-6 h-6 rounded-md" />
+                                    })()}
                                     {category.title}
                                 </Button>
                             ))}

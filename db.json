@@ -163,26 +163,14 @@
       "selfDiscoveryQuestionId": "3"
     },
     {
-      "id": "0b57",
-      "title": "Quality Education",
-      "userId": "1",
-      "selfDiscoveryQuestionId": "4"
-    },
-    {
-      "id": "490b",
+      "id": "ab82",
       "title": "Decent work and economic growth",
       "userId": "1",
       "selfDiscoveryQuestionId": "4"
     },
     {
-      "id": "97c9",
-      "title": "Reduced inequalities",
-      "userId": "1",
-      "selfDiscoveryQuestionId": "4"
-    },
-    {
-      "id": "ab27",
-      "title": "Life below water",
+      "id": "1081",
+      "title": "Affordable and clean energy",
       "userId": "1",
       "selfDiscoveryQuestionId": "4"
     }
@@ -191,13 +179,14 @@
     {
       "id": "2",
       "title": "Health",
-      "userId": "1",
       "ideaTriggerIds": [
         "2",
         "210c",
         "4b32",
-        "db34"
-      ]
+        "db34",
+        "6"
+      ],
+      "userId": "1"
     },
     {
       "id": "1748526586171",
@@ -228,6 +217,15 @@
         "9acc",
         "5f8f",
         "f0b3"
+      ],
+      "userId": "1"
+    },
+    {
+      "id": "1748854725476",
+      "title": "test",
+      "ideaTriggerIds": [
+        "4b32",
+        "5"
       ],
       "userId": "1"
     }

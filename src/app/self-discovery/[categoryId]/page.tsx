@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { ChevronRight, Trash2 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
+import { getSelfDiscoveryCategoryIcon } from "@/config/navigation"
 
 interface Category {
     id: string
@@ -234,7 +235,13 @@ export default function CategoryPage({
             <Card className="w-full flex-1">
                 <CardContent className="flex p-6 w-full flex-1 flex-col gap-4">
                     <div className="flex flex-col gap-2">
-                        <h2 className="text-lg font-semibold">{category.title}</h2>
+                        <div className="flex items-center gap-2">
+                            {(() => {
+                                const Icon = getSelfDiscoveryCategoryIcon(category.id)
+                                return Icon && <Icon className="flex items-center justify-center w-5 h-5 rounded-md" />
+                            })()}
+                            <h2 className="text-lg font-semibold">{category.title}</h2>
+                        </div>
                         <p className="text-muted-foreground">
                             Explore questions and exercises related to {category.title.toLowerCase()}.
                         </p>

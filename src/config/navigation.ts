@@ -1,4 +1,4 @@
-import { Search, Compass, CheckCircle, Sparkles, ClipboardCheck, Lightbulb } from "lucide-react"
+import { Search, Compass, CheckCircle, Sparkles, ClipboardCheck, Lightbulb, Heart, Book, Brain, Globe } from "lucide-react"
 
 export const navigationItems = {
   problemDiscovery: [
@@ -37,7 +37,18 @@ export const navigationItems = {
   ]
 }
 
+export const selfDiscoveryCategoryIcons = {
+  "1": Heart,
+  "2": Book,
+  "3": Brain,
+  "4": Globe
+}
+
 export function getNavigationItem(path: string) {
   const allItems = [...navigationItems.problemDiscovery, ...navigationItems.solution]
   return allItems.find(item => item.url === path)
+}
+
+export function getSelfDiscoveryCategoryIcon(categoryId: string) {
+  return selfDiscoveryCategoryIcons[categoryId as keyof typeof selfDiscoveryCategoryIcons]
 } 
