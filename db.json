@@ -18,28 +18,33 @@
     {
       "id": "1",
       "title": "Personal Interests, Passions & Experiences",
-      "url": "personal-interests"
+      "url": "personal-interests",
+      "description": "Explore your personal interests, hobbies, and life experiences that shape your perspective and potential as a founder."
     },
     {
       "id": "2",
       "title": "Knowledge",
-      "url": "knowledge"
+      "url": "knowledge",
+      "description": "Identify your areas of expertise and deep understanding that can be leveraged in your entrepreneurial journey."
     },
     {
       "id": "3",
       "title": "Skills & Expertise",
-      "url": "skills-expertise"
+      "url": "skills-expertise",
+      "description": "Discover your technical and soft skills that can be valuable assets in building and growing your venture."
     },
     {
       "id": "4",
       "title": "Social & Environmental Impact",
-      "url": "social-impact"
+      "url": "social-impact",
+      "description": "Explore your concerns about social and environmental issues, and how you can contribute to positive change through entrepreneurship."
     }
   ],
   "selfDiscoveryQuestions": [
     {
       "id": "1",
       "titleId": "hobbies-interests",
+      "url": "hobbies-interests",
       "title": "What are your hobbies and interests?",
       "description": "Consider activities you enjoy in your free time, such as reading (be specific about genres or topics), sports (specific sports or activities), arts (particular forms or styles), or outdoor activities (specific types of outdoor pursuits).",
       "selfDiscoveryQuestionCategoryId": "1"
@@ -47,6 +52,7 @@
     {
       "id": "2",
       "titleId": "life-experiences",
+      "url": "life-experiences",
       "title": "What significant life experiences have shaped you?",
       "description": "Think about important events, challenges, travels, or moments that have had a meaningful impact on your life and perspective.",
       "selfDiscoveryQuestionCategoryId": "1"
@@ -54,6 +60,7 @@
     {
       "id": "3",
       "titleId": "world-concerns",
+      "url": "world-concerns",
       "title": "What issues concern you in the world?",
       "description": "Think about social, environmental, or economic challenges that you feel passionate about addressing.",
       "selfDiscoveryQuestionCategoryId": "4"
@@ -61,6 +68,7 @@
     {
       "id": "4",
       "titleId": "sustainability-goals",
+      "url": "sustainability-goals",
       "title": "What sustainability goals interest you?",
       "description": "Select the UN Sustainable Development Goals that resonate with you. We suggest selecting up to 3 items to focus your efforts.",
       "selfDiscoveryQuestionCategoryId": "4"
@@ -68,6 +76,7 @@
     {
       "id": "5",
       "titleId": "social-political-concerns",
+      "url": "social-political-concerns",
       "title": "What social or political problems are you interested in or concerned about?",
       "description": "Consider issues related to equality, justice, education, healthcare, or other societal challenges you'd like to address.",
       "selfDiscoveryQuestionCategoryId": "4"
@@ -75,6 +84,7 @@
     {
       "id": "6",
       "titleId": "technical-skills",
+      "url": "technical-skills",
       "title": "What are your core technical skills and areas of expertise?",
       "description": "Consider both professional skills and self-taught abilities.",
       "selfDiscoveryQuestionCategoryId": "3"
@@ -82,6 +92,7 @@
     {
       "id": "7",
       "titleId": "soft-skills",
+      "url": "soft-skills",
       "title": "What soft skills do you excel at?",
       "description": "Think about communication, leadership, problem-solving, or other interpersonal skills.",
       "selfDiscoveryQuestionCategoryId": "3"
@@ -89,6 +100,7 @@
     {
       "id": "8",
       "titleId": "enjoyable-skills",
+      "url": "enjoyable-skills",
       "title": "What skills do you enjoy developing the most?",
       "description": "These are the areas where you find learning and growth most engaging.",
       "selfDiscoveryQuestionCategoryId": "3"
@@ -96,6 +108,7 @@
     {
       "id": "9",
       "titleId": "areas-of-knowledge",
+      "url": "areas-of-knowledge",
       "title": "What areas of knowledge are you most knowledgeable about?",
       "description": "Consider subjects, fields, or topics you have deep understanding or expertise in, whether from formal education, self-study, or practical experience.",
       "selfDiscoveryQuestionCategoryId": "2"
@@ -173,6 +186,12 @@
       "title": "Affordable and clean energy",
       "userId": "1",
       "selfDiscoveryQuestionId": "4"
+    },
+    {
+      "id": "3a22",
+      "title": "test",
+      "userId": "1",
+      "selfDiscoveryQuestionId": "1"
     }
   ],
   "ideaTriggerBuckets": [
@@ -226,6 +245,15 @@
       "ideaTriggerIds": [
         "4b32",
         "5"
+      ],
+      "userId": "1"
+    },
+    {
+      "id": "1748858053145",
+      "title": "test",
+      "ideaTriggerIds": [
+        "4b32",
+        "8"
       ],
       "userId": "1"
     }

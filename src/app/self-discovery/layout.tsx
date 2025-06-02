@@ -8,6 +8,7 @@ import { useRouter, usePathname } from "next/navigation"
 import { PanelLeftClose } from "lucide-react"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 
 interface Category {
     id: string
@@ -20,6 +21,7 @@ interface Question {
     id: string
     title: string
     description: string
+    url: string
     selfDiscoveryQuestionCategoryId: string
 }
 
@@ -152,20 +154,38 @@ export default function SelfDiscoveryLayout({
                             >
                                 Intro
                             </Button>
-                            {categories.map((category) => (
-                                <Button
-                                    key={category.id}
-                                    variant={pathname === `/self-discovery/${category.url}` ? "secondary" : "ghost"}
-                                    className="w-full justify-start h-auto py-2 text-left whitespace-normal gap-3"
-                                    onClick={() => router.push(`/self-discovery/${category.url}`)}
-                                >
-                                    {(() => {
-                                        const Icon = getSelfDiscoveryCategoryIcon(category.id)
-                                        return Icon && <Icon className="flex items-center justify-center w-6 h-6 rounded-md" />
-                                    })()}
-                                    {category.title}
-                                </Button>
-                            ))}
+                            <Accordion type="single" collapsible className="w-full">
+                                {categories.map((category) => (
+                                    <AccordionItem key={category.id} value={category.id}>
+                                        <AccordionTrigger
+                                            className={`${pathname.startsWith(`/self-discovery/${category.url}`) ? "text-primary" : ""}`}
+                                        >
+                                            <div className="flex items-center gap-2">
+                                                {(() => {
+                                                    const Icon = getSelfDiscoveryCategoryIcon(category.id)
+                                                    return Icon && <Icon className="flex items-center justify-center w-5 h-5 rounded-md" />
+                                                })()}
+                                                {category.title}
+                                            </div>
+                                        </AccordionTrigger>
+                                        <AccordionContent>
+                                            <div className="pl-6 space-y-2">
+                                                {category.questions.map((question) => (
+                                                    <div
+                                                        key={question.id}
+                                                        className={`text-sm text-muted-foreground hover:text-foreground cursor-pointer ${
+                                                            pathname === `/self-discovery/${category.url}/${question.url}` ? "text-primary" : ""
+                                                        }`}
+                                                        onClick={() => router.push(`/self-discovery/${category.url}/${question.url}`)}
+                                                    >
+                                                        {question.title}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                ))}
+                            </Accordion>
                         </div>
                     </CardContent>
                 </Card>
