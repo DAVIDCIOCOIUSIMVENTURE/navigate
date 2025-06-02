@@ -29,9 +29,10 @@ export default function DashboardPage() {
         <Card className="lg:flex-[4] flex items-center justify-center">
           <CardContent className="p-4 flex items-center justify-center">
             <div className="relative flex flex-col items-center justify-center w-full" style={{ height: 300 }}>
-              <svg width="100%" height="100%" viewBox="0 0 1000 400" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', margin: '0 auto' }}>
-                <polygon points="100,200 300,0 500,200 300,400" fill="#D6BCFA" fillOpacity="0.9" />
-                <polygon points="500,200 700,0 900,200 700,400" fill="#D6BCFA" fillOpacity="0.9" />
+              <svg width="100%" height="100%" viewBox="0 0 1600 400" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', margin: '0 auto', transform: 'translateX(-80px)' }}>
+                <polygon points="280,200 500,-20 720,200 500,420" fill="#D6BCFA" fillOpacity="0.9" />
+                <polygon points="720,200 940,-20 1160,200 940,420" fill="#D6BCFA" fillOpacity="0.9" />
+                <polygon points="1160,200 1380,-20 1600,200 1380,420" fill="#D6BCFA" fillOpacity="0.9" />
               </svg>
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full grid grid-cols-4 gap-8 items-center" style={{ pointerEvents: 'none' }}>
                 <div></div>
