@@ -176,12 +176,6 @@
       "selfDiscoveryQuestionId": "3"
     },
     {
-      "id": "ab82",
-      "title": "Decent work and economic growth",
-      "userId": "1",
-      "selfDiscoveryQuestionId": "4"
-    },
-    {
       "id": "1081",
       "title": "Affordable and clean energy",
       "userId": "1",
@@ -192,6 +186,18 @@
       "title": "test",
       "userId": "1",
       "selfDiscoveryQuestionId": "1"
+    },
+    {
+      "id": "7d8a",
+      "title": "Gender equality",
+      "userId": "1",
+      "selfDiscoveryQuestionId": "4"
+    },
+    {
+      "id": "d18f",
+      "title": "software engineering",
+      "userId": "1",
+      "selfDiscoveryQuestionId": "9"
     }
   ],
   "ideaTriggerBuckets": [

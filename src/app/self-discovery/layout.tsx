@@ -159,29 +159,32 @@ export default function SelfDiscoveryLayout({
                                     <AccordionItem key={category.id} value={category.id}>
                                         <AccordionTrigger
                                             className={`${pathname.startsWith(`/self-discovery/${category.url}`) ? "text-primary" : ""}`}
+                                            aria-label={`${category.title} category`}
                                         >
                                             <div className="flex items-center gap-2">
                                                 {(() => {
                                                     const Icon = getSelfDiscoveryCategoryIcon(category.id)
-                                                    return Icon && <Icon className="flex items-center justify-center w-5 h-5 rounded-md" />
+                                                    return Icon && <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
                                                 })()}
                                                 {category.title}
                                             </div>
                                         </AccordionTrigger>
                                         <AccordionContent>
-                                            <div className="pl-6 space-y-2">
+                                            <ul className="pl-6 space-y-2 list-disc" role="list">
                                                 {category.questions.map((question) => (
-                                                    <div
+                                                    <li
                                                         key={question.id}
                                                         className={`text-sm text-muted-foreground hover:text-foreground cursor-pointer ${
                                                             pathname === `/self-discovery/${category.url}/${question.url}` ? "text-primary" : ""
                                                         }`}
                                                         onClick={() => router.push(`/self-discovery/${category.url}/${question.url}`)}
+                                                        role="menuitem"
+                                                        aria-current={pathname === `/self-discovery/${category.url}/${question.url}` ? "page" : undefined}
                                                     >
                                                         {question.title}
-                                                    </div>
+                                                    </li>
                                                 ))}
-                                            </div>
+                                            </ul>
                                         </AccordionContent>
                                     </AccordionItem>
                                 ))}

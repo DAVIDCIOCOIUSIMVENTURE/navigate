@@ -279,90 +279,92 @@ export default function QuestionPage({
 
     return (
         <>
-            <Card className="w-full flex-1 h-full">
-                <CardContent className="flex p-6 w-full flex-1 flex-col gap-4 overflow-y-auto">
-                    <div className="flex flex-col gap-2">
-                        <div className="flex items-center gap-2">
-                            {(() => {
-                                const Icon = getSelfDiscoveryCategoryIcon(category.id)
-                                return Icon && <Icon className="flex items-center justify-center w-5 h-5 rounded-md" />
-                            })()}
-                            <h2 className="text-lg font-semibold">{category.title}</h2>
-                        </div>
-                        <p className="text-muted-foreground">
-                            {category.description}
-                        </p>
-                    </div>
-                    <div className="space-y-6">
-                        <div>
-                            <div className="font-medium text-foreground">{question.title}</div>
-                            <p className="text-sm mt-1 text-muted-foreground">{question.description}</p>
-                        </div>
-                        {question.titleId === "sustainability-goals" ? (
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 mt-4">
-                                {SDGS.map((sdg) => {
-                                    const isSelected = ideaTriggers.some(
-                                        trigger => 
-                                            trigger.selfDiscoveryQuestionId === question.id && 
-                                            trigger.title === sdg
-                                    )
-                                    return (
-                                        <Button
-                                            key={sdg}
-                                            variant={isSelected ? "primary-outline" : "outline"}
-                                            className="justify-start"
-                                            onClick={() => handleToggleSDG(sdg)}
-                                            disabled={isSubmitting[question.id]}
-                                        >
-                                            {sdg}
-                                        </Button>
-                                    )
-                                })}
+            <Card className="w-full flex-1 h-full flex flex-col">
+                <CardContent className="flex-1 p-6 overflow-y-auto">
+                    <div className="flex flex-col gap-4">
+                        <div className="flex flex-col gap-2">
+                            <div className="flex items-center gap-2">
+                                {(() => {
+                                    const Icon = getSelfDiscoveryCategoryIcon(category.id)
+                                    return Icon && <Icon className="flex items-center justify-center w-5 h-5 rounded-md" />
+                                })()}
+                                <h2 className="text-lg font-semibold">{category.title}</h2>
                             </div>
-                        ) : (
-                            <div className="flex gap-2 mt-2">
-                                <Input
-                                    placeholder="Type your answer..."
-                                    value={answers[question.id] || ''}
-                                    onChange={(e) => setAnswers(prev => ({ ...prev, [question.id]: e.target.value }))}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter') {
-                                            handleAddAnswer()
-                                        }
-                                    }}
-                                    disabled={isSubmitting[question.id]}
-                                />
-                                <Button
-                                    onClick={handleAddAnswer}
-                                    disabled={isSubmitting[question.id]}
-                                >
-                                    Add
-                                </Button>
+                            <p className="text-muted-foreground">
+                                {category.description}
+                            </p>
+                        </div>
+                        <div className="flex flex-col gap-3">
+                            <div>
+                                <div className="font-medium text-foreground">{question.title}</div>
+                                <p className="text-sm mt-1 text-muted-foreground">{question.description}</p>
                             </div>
-                        )}
-                        <div className="flex flex-wrap gap-2 mt-4">
-                            {ideaTriggers
-                                .filter(trigger => trigger.selfDiscoveryQuestionId === question.id)
-                                .map((trigger) => (
-                                    <div
-                                        key={trigger.id}
-                                        className="flex items-center gap-2 py-1 bg-secondary text-secondary-foreground rounded-md font-medium h-8 rounded-md px-3 text-xs"
+                            {question.titleId === "sustainability-goals" ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                                    {SDGS.map((sdg) => {
+                                        const isSelected = ideaTriggers.some(
+                                            trigger => 
+                                                trigger.selfDiscoveryQuestionId === question.id && 
+                                                trigger.title === sdg
+                                        )
+                                        return (
+                                            <Button
+                                                key={sdg}
+                                                variant={isSelected ? "primary-outline" : "outline"}
+                                                className="justify-start"
+                                                onClick={() => handleToggleSDG(sdg)}
+                                                disabled={isSubmitting[question.id]}
+                                            >
+                                                {sdg}
+                                            </Button>
+                                        )
+                                    })}
+                                </div>
+                            ) : (
+                                <div className="flex gap-2">
+                                    <Input
+                                        placeholder="Type your answer..."
+                                        value={answers[question.id] || ''}
+                                        onChange={(e) => setAnswers(prev => ({ ...prev, [question.id]: e.target.value }))}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                handleAddAnswer()
+                                            }
+                                        }}
+                                        disabled={isSubmitting[question.id]}
+                                    />
+                                    <Button
+                                        onClick={handleAddAnswer}
+                                        disabled={isSubmitting[question.id]}
                                     >
-                                        <span className="text-xs">{trigger.title}</span>
-                                        <Button
-                                            variant="destructive-ghost"
-                                            size="icon"
-                                            onClick={() => setTriggerToDelete(trigger)}
-                                            className="h-4 w-4"
+                                        Add
+                                    </Button>
+                                </div>
+                            )}
+                            <div className="flex flex-wrap gap-2">
+                                {ideaTriggers
+                                    .filter(trigger => trigger.selfDiscoveryQuestionId === question.id)
+                                    .map((trigger) => (
+                                        <div
+                                            key={trigger.id}
+                                            className="flex items-center gap-2 py-1 bg-secondary text-secondary-foreground rounded-md font-medium h-8 rounded-md px-3 text-xs"
                                         >
-                                            <Trash2 className="h-3 w-3" />
-                                        </Button>
-                                    </div>
-                                ))}
+                                            <span className="text-xs">{trigger.title}</span>
+                                            <Button
+                                                variant="destructive-ghost"
+                                                size="icon"
+                                                onClick={() => setTriggerToDelete(trigger)}
+                                                className="h-4 w-4"
+                                            >
+                                                <Trash2 className="h-3 w-3" />
+                                            </Button>
+                                        </div>
+                                    ))}
+                            </div>
                         </div>
                     </div>
                 </CardContent>
-                <CardFooter className="flex justify-between">
+                <CardFooter className="flex justify-between mt-auto">
                     <Button 
                         variant="outline"
                         onClick={handleBack}
