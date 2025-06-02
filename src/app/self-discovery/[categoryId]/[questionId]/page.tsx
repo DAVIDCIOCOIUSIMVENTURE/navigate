@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { ChevronRight, Trash2, ChevronLeft } from "lucide-react"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { getSelfDiscoveryCategoryIcon } from "@/config/navigation"
 
@@ -281,6 +282,8 @@ export default function QuestionPage({
         <>
             <Card className="w-full flex-1 h-full flex flex-col">
                 <CardContent className="flex-1 p-6 overflow-y-auto">
+              
+
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-col gap-2">
                             <div className="flex items-center gap-2">
@@ -300,8 +303,9 @@ export default function QuestionPage({
                                 <p className="text-sm mt-1 text-muted-foreground">{question.description}</p>
                             </div>
                             {question.titleId === "sustainability-goals" ? (
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-                                    {SDGS.map((sdg) => {
+                                <div className="grid grid-cols-6 gap-2">
+                                    {Array.from({ length: 17 }, (_, i) => i + 1).map((num) => {
+                                        const sdg = SDGS[num - 1]
                                         const isSelected = ideaTriggers.some(
                                             trigger => 
                                                 trigger.selfDiscoveryQuestionId === question.id && 
@@ -309,13 +313,20 @@ export default function QuestionPage({
                                         )
                                         return (
                                             <Button
-                                                key={sdg}
+                                                key={num}
                                                 variant={isSelected ? "primary-outline" : "outline"}
-                                                className="justify-start"
+                                                className="relative aspect-square p-0 overflow-hidden h-auto"
                                                 onClick={() => handleToggleSDG(sdg)}
                                                 disabled={isSubmitting[question.id]}
                                             >
-                                                {sdg}
+                                                <Image
+                                                    src={`/sdgs/${num}.jpg`}
+                                                    alt={`Sustainable Development Goal ${num}: ${sdg}`}
+                                                    fill
+                                                    className={`rounded-lg object-cover transition-opacity ${isSelected ? 'opacity-100' : 'opacity-70'}`}
+                                                />
+                                                <div className={`absolute inset-0 flex items-center justify-center transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0'}`}>
+                                                </div>
                                             </Button>
                                         )
                                     })}

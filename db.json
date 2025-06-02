@@ -134,12 +134,6 @@
       "selfDiscoveryQuestionId": "6"
     },
     {
-      "id": "9acc",
-      "title": "No poverty",
-      "userId": "1",
-      "selfDiscoveryQuestionId": "4"
-    },
-    {
       "id": "5a68",
       "title": "Problem Solving",
       "userId": "1",
@@ -176,28 +170,34 @@
       "selfDiscoveryQuestionId": "3"
     },
     {
-      "id": "1081",
-      "title": "Affordable and clean energy",
-      "userId": "1",
-      "selfDiscoveryQuestionId": "4"
-    },
-    {
       "id": "3a22",
       "title": "test",
       "userId": "1",
       "selfDiscoveryQuestionId": "1"
     },
     {
-      "id": "7d8a",
-      "title": "Gender equality",
-      "userId": "1",
-      "selfDiscoveryQuestionId": "4"
-    },
-    {
       "id": "d18f",
       "title": "software engineering",
       "userId": "1",
       "selfDiscoveryQuestionId": "9"
+    },
+    {
+      "id": "72ae",
+      "title": "Good health and well-being",
+      "userId": "1",
+      "selfDiscoveryQuestionId": "4"
+    },
+    {
+      "id": "7535",
+      "title": "Zero hunger",
+      "userId": "1",
+      "selfDiscoveryQuestionId": "4"
+    },
+    {
+      "id": "b132",
+      "title": "Industry, innovation and infrastructure",
+      "userId": "1",
+      "selfDiscoveryQuestionId": "4"
     }
   ],
   "ideaTriggerBuckets": [

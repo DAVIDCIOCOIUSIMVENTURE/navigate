@@ -146,7 +146,7 @@ export default function SelfDiscoveryLayout({
                 {/* Left Navigation */}
                 <Card className="w-64">
                     <CardContent className="p-4">
-                        <div className="space-y-2">
+                        <div className="flex flex-col gap-2">
                             <Button
                                 variant={pathname === "/self-discovery" ? "secondary" : "ghost"}
                                 className="w-full justify-start h-auto py-2 text-left whitespace-normal"
@@ -154,14 +154,18 @@ export default function SelfDiscoveryLayout({
                             >
                                 Intro
                             </Button>
-                            <Accordion type="single" collapsible className="w-full">
+                            <Accordion type="single" collapsible className="w-full flex flex-col gap-2">
                                 {categories.map((category) => (
                                     <AccordionItem key={category.id} value={category.id}>
                                         <AccordionTrigger
-                                            className={`${pathname.startsWith(`/self-discovery/${category.url}`) ? "text-primary" : ""}`}
+                                            className={`w-full h-auto py-2 px-3 text-left whitespace-normal rounded-md hover:no-underline ${
+                                                pathname.startsWith(`/self-discovery/${category.url}`)
+                                                    ? "bg-secondary text-secondary-foreground"
+                                                    : "hover:bg-accent hover:text-accent-foreground"
+                                            }`}
                                             aria-label={`${category.title} category`}
                                         >
-                                            <div className="flex items-center gap-2">
+                                            <div className="flex items-center gap-3">
                                                 {(() => {
                                                     const Icon = getSelfDiscoveryCategoryIcon(category.id)
                                                     return Icon && <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
@@ -170,7 +174,7 @@ export default function SelfDiscoveryLayout({
                                             </div>
                                         </AccordionTrigger>
                                         <AccordionContent>
-                                            <ul className="pl-6 space-y-2 list-disc" role="list">
+                                            <ul className="pl-6 space-y-2 list-disc mt-2" role="list">
                                                 {category.questions.map((question) => (
                                                     <li
                                                         key={question.id}

@@ -3,7 +3,7 @@
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { navigationItems } from "@/config/navigation"
-import { Brain, ChevronRight, Lightbulb, Target, Trophy, Award, Star, Crown } from "lucide-react"
+import { Brain, ChevronRight, Lightbulb, Target, Trophy, Award, Star, Crown, ClipboardCheck, Search, Check } from "lucide-react"
 import { AchievementItem } from "@/components/achievement-item"
 
 export default function DashboardPage() {
@@ -29,6 +29,24 @@ export default function DashboardPage() {
         <Card className="lg:flex-[4] flex items-center justify-center">
           <CardContent className="p-4 flex items-center justify-center">
             <div className="relative flex flex-col items-center justify-center w-full" style={{ height: 300 }}>
+              {/* Diamond Labels - 6 columns */}
+              <div className="absolute top-0 left-0 w-full grid grid-cols-6 gap-0 px-12" style={{ pointerEvents: 'none', zIndex: 10 }}>
+                <div className="flex flex-col items-center text-center"><span className="font-semibold text-sm mb-1">Self<br />Discovery</span></div>
+                <div className="flex flex-col items-center text-center"><span className="font-semibold text-sm mb-1">Idea<br />Triggers</span></div>
+                <div className="flex flex-col items-center text-center"><span className="font-semibold text-sm mb-1">Problem<br />Discovery</span></div>
+                <div className="flex flex-col items-center text-center"><span className="font-semibold text-sm mb-1">Problem<br />Validation</span></div>
+                <div className="flex flex-col items-center text-center"><span className="font-semibold text-sm mb-1">Solution<br />Ideation</span></div>
+                <div className="flex flex-col items-center text-center"><span className="font-semibold text-sm mb-1">Solution<br />Validation</span></div>
+              </div>
+              {/* Diamond Icons - 6 columns */}
+              {/* <div className="absolute left-0 w-full grid grid-cols-6 gap-0 px-12" style={{ top: '120px', pointerEvents: 'none', zIndex: 10 }}>
+                <div className="flex flex-col items-center text-center"><Compass className="h-7 w-7 text-purple-500" /></div>
+                <div className="flex flex-col items-center text-center"><Lightbulb className="h-7 w-7 text-purple-500" /></div>
+                <div className="flex flex-col items-center text-center"><Search className="h-7 w-7 text-purple-500" /></div>
+                <div className="flex flex-col items-center text-center"><Check className="h-7 w-7 text-purple-500" /></div>
+                <div className="flex flex-col items-center text-center"><Star className="h-7 w-7 text-purple-500" /></div>
+                <div className="flex flex-col items-center text-center"><ClipboardCheck className="h-7 w-7 text-purple-500" /></div>
+              </div> */}
               <svg width="100%" height="100%" viewBox="0 0 1600 400" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', margin: '0 auto', transform: 'translateX(-80px)' }}>
                 <polygon points="280,200 500,-20 720,200 500,420" fill="#D6BCFA" fillOpacity="0.9" />
                 <polygon points="720,200 940,-20 1160,200 940,420" fill="#D6BCFA" fillOpacity="0.9" />
