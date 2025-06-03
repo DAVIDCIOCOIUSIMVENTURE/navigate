@@ -282,14 +282,13 @@ export default function QuestionPage({
         <>
             <Card className="w-full flex-1 h-full flex flex-col">
                 <CardContent className="flex-1 p-6 overflow-y-auto">
-              
-
                     <div className="flex flex-col gap-4">
                         <div className="flex flex-col gap-2">
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-3">
                                 {(() => {
                                     const Icon = getSelfDiscoveryCategoryIcon(category.id)
-                                    return Icon && <Icon className="flex items-center justify-center w-5 h-5 rounded-md" />
+                                    return Icon && <Icon 
+                                    className="flex items-center justify-center w-5 h-5 rounded-md shrink-0" />
                                 })()}
                                 <h2 className="text-lg font-semibold">{category.title}</h2>
                             </div>

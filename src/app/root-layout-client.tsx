@@ -14,6 +14,8 @@ import {
 import { Button } from "@/components/ui/button"
 import { Settings, HelpCircle } from "lucide-react"
 import { usePathname } from "next/navigation"
+import { useState } from "react"
+import { GuidanceDialog } from "@/components/guidance-dialog"
 
 function generateBreadcrumbs(pathname: string) {
   // 1. Split the path and remove empty strings
@@ -46,6 +48,7 @@ export default function RootLayoutClient({
 }) {
   const pathname = usePathname()
   const breadcrumbs = generateBreadcrumbs(pathname)
+  const [guidanceOpen, setGuidanceOpen] = useState(false)
 
   return (
     <SidebarProvider>
@@ -75,8 +78,9 @@ export default function RootLayoutClient({
             </Breadcrumb>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon">
+            <Button variant="outline" className="flex flex-row items-center gap-2 justify-center" onClick={() => setGuidanceOpen(true)}>
               <HelpCircle />
+              <span>Guidance</span>
             </Button>
             <Button variant="outline" size="icon">
               <Settings />
@@ -89,6 +93,7 @@ export default function RootLayoutClient({
           </div>
         </div>
       </SidebarInset>
+      <GuidanceDialog open={guidanceOpen} onOpenChange={setGuidanceOpen} />
     </SidebarProvider>
   )
 } 

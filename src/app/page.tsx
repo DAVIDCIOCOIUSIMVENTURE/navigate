@@ -31,26 +31,45 @@ export default function DashboardPage() {
             <div className="relative flex flex-col items-center justify-center w-full" style={{ height: 300 }}>
               {/* Diamond Labels - 6 columns */}
               <div className="absolute top-0 left-0 w-full grid grid-cols-6 gap-0 px-12" style={{ pointerEvents: 'none', zIndex: 10 }}>
-                <div className="flex flex-col items-center text-center"><span className="font-semibold text-sm mb-1">Self<br />Discovery</span></div>
-                <div className="flex flex-col items-center text-center"><span className="font-semibold text-sm mb-1">Idea<br />Triggers</span></div>
-                <div className="flex flex-col items-center text-center"><span className="font-semibold text-sm mb-1">Problem<br />Discovery</span></div>
-                <div className="flex flex-col items-center text-center"><span className="font-semibold text-sm mb-1">Problem<br />Validation</span></div>
-                <div className="flex flex-col items-center text-center"><span className="font-semibold text-sm mb-1">Solution<br />Ideation</span></div>
-                <div className="flex flex-col items-center text-center"><span className="font-semibold text-sm mb-1">Solution<br />Validation</span></div>
+                <div className="flex flex-col items-center text-center text-purple-600"><span className="font-semibold text-sm mb-1">Self<br />Discovery</span></div>
+                <div className="flex flex-col items-center text-center text-purple-600"><span className="font-semibold text-sm mb-1">Idea<br />Triggers</span></div>
+                <div className="flex flex-col items-center text-center text-purple-600"><span className="font-semibold text-sm mb-1">Problem<br />Discovery</span></div>
+                <div className="flex flex-col items-center text-center text-purple-600"><span className="font-semibold text-sm mb-1">Problem<br />Validation</span></div>
+                <div className="flex flex-col items-center text-center text-purple-600"><span className="font-semibold text-sm mb-1">Solution<br />Ideation</span></div>
+                <div className="flex flex-col items-center text-center text-purple-600"><span className="font-semibold text-sm mb-1">Solution<br />Validation</span></div>
               </div>
-              {/* Diamond Icons - 6 columns */}
-              {/* <div className="absolute left-0 w-full grid grid-cols-6 gap-0 px-12" style={{ top: '120px', pointerEvents: 'none', zIndex: 10 }}>
-                <div className="flex flex-col items-center text-center"><Compass className="h-7 w-7 text-purple-500" /></div>
-                <div className="flex flex-col items-center text-center"><Lightbulb className="h-7 w-7 text-purple-500" /></div>
-                <div className="flex flex-col items-center text-center"><Search className="h-7 w-7 text-purple-500" /></div>
-                <div className="flex flex-col items-center text-center"><Check className="h-7 w-7 text-purple-500" /></div>
-                <div className="flex flex-col items-center text-center"><Star className="h-7 w-7 text-purple-500" /></div>
-                <div className="flex flex-col items-center text-center"><ClipboardCheck className="h-7 w-7 text-purple-500" /></div>
-              </div> */}
-              <svg width="100%" height="100%" viewBox="0 0 1600 400" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', margin: '0 auto', transform: 'translateX(-80px)' }}>
-                <polygon points="280,200 500,-20 720,200 500,420" fill="#D6BCFA" fillOpacity="0.9" />
-                <polygon points="720,200 940,-20 1160,200 940,420" fill="#D6BCFA" fillOpacity="0.9" />
-                <polygon points="1160,200 1380,-20 1600,200 1380,420" fill="#D6BCFA" fillOpacity="0.9" />
+
+              <svg
+                width="100%"
+                height="100%"
+                viewBox="0 0 1600 400"
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg" style={{ display: 'block', margin: '0 0', padding: '10px 10px', transform: 'translateX(-60px)' }}>
+                <path d="M280,200 L500,-20 L720,200 L500,420 Z" fill="#D6BCFA" fillOpacity="0.9" stroke="#D6BCFA" strokeWidth="10" strokeLinejoin="round" />
+                <path d="M720,200 L940,-20 L1160,200 L940,420 Z" fill="#D6BCFA" fillOpacity="0.9" stroke="#D6BCFA" strokeWidth="10" strokeLinejoin="round" />
+                <path d="M1160,200 L1380,-20 L1600,200 L1380,420 Z" fill="#D6BCFA" fillOpacity="0.9" stroke="#D6BCFA" strokeWidth="10" strokeLinejoin="round" />
+              </svg>
+              {/* Arrow from left to right (now under the diamonds) */}
+              <svg
+                className="absolute left-0 w-full"
+                style={{ top: 290, zIndex: 20, pointerEvents: 'none' }}
+                height="40"
+                viewBox="0 0 1600 40"
+              >
+                <defs>
+                  <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#D1D5DB" />
+                  </marker>
+                </defs>
+                <line
+                  x1="80" y1="20"
+                  x2="1520" y2="20"
+                  stroke="#D1D5DB"
+                  strokeWidth="4"
+                  markerEnd="url(#arrowhead)"
+                  opacity="0.7"
+                  strokeDasharray="16,12"
+                />
               </svg>
               <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full grid grid-cols-4 gap-8 items-center" style={{ pointerEvents: 'none' }}>
                 <div></div>
@@ -67,8 +86,10 @@ export default function DashboardPage() {
             <Card key={item.url}>
               <CardContent className="p-4">
                 <div className="flex items-center gap-4">
-                  {item.icon && <item.icon className="h-5 w-5 text-muted-foreground" />}
-                  <div className="flex flex-col gap-1">
+                  <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-amber-500">
+                    {item.icon && <item.icon className="h-5 w-5 text-white" />}
+                  </div>
+                  <div className="flex flex-col">
                     <div className="text-lg font-bold">
                       {item.url === "/self-discovery" ? "12" :
                         item.url === "/idea-triggers" ? "4" :

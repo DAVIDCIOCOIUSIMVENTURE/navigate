@@ -1,10 +1,10 @@
 "use client"
 
 import { getNavigationItem } from "@/config/navigation"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Pencil, Plus, Trash2, X, Heart, Globe, Brain, Book } from "lucide-react"
+import { Pencil, Plus, Trash2, X, Heart, Globe, Brain, Book, ChevronRight, Box } from "lucide-react"
 import { useState, useEffect } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
@@ -189,10 +189,10 @@ export default function IdeaTriggersPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-2">
           {navItem && Icon && (
-            <div className="flex items-center justify-center w-10 h-10 rounded-lg">
-              <Icon className="h-5 w-5" />
+            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500">
+              <Icon className="h-5 w-5 text-white" />
             </div>
           )}
           <h1 className="text-lg font-bold">Idea Triggers</h1>
@@ -216,8 +216,11 @@ export default function IdeaTriggersPage() {
                 }
               }}>
                 <DialogTrigger asChild>
-                  <Button>
-                    <Plus className="h-4 w-4 mr-2" />
+                  <Button
+                  className="flex flex-row items-center gap-2"
+                  variant="primary-outline"
+                  size="sm">
+                    <Plus className="h-4 w-4" />
                     New Container
                   </Button>
                 </DialogTrigger>
@@ -332,7 +335,7 @@ export default function IdeaTriggersPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {containers.map((container) => (
-                <Card key={container.id}>
+                <Card key={container.id} className="flex flex-col">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0">
                     <div className="flex items-center gap-2">
                       {container.isEditing ? (
@@ -348,7 +351,10 @@ export default function IdeaTriggersPage() {
                           className="h-8"
                         />
                       ) : (
-                        <CardTitle>{container.title}</CardTitle>
+                        <>
+                          <Box className="h-4 w-4" />
+                          <CardTitle>{container.title}</CardTitle>
+                        </>
                       )}
                     </div>
                     <div className="flex items-center gap-2">
@@ -368,7 +374,7 @@ export default function IdeaTriggersPage() {
                       </Button>
                     </div>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="flex-1">
                     <div className="flex flex-wrap gap-2">
                       {container.ideaTriggerIds.map((triggerId) => {
                         const trigger = ideaTriggers.find(t => t.id === triggerId)
@@ -394,6 +400,14 @@ export default function IdeaTriggersPage() {
                       })}
                     </div>
                   </CardContent>
+                  <CardFooter className="flex justify-end">
+                    <Button 
+                    size="sm"
+                    className="h-auto py-2 bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2 whitespace-normal text-wrap">
+                      Continue to Problem Discovery
+                      <ChevronRight className="ml-1 h-4 w-4" />
+                    </Button>
+                  </CardFooter>
                 </Card>
               ))}
             </div>

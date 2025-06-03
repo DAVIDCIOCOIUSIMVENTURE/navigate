@@ -140,12 +140,6 @@
       "selfDiscoveryQuestionId": "7"
     },
     {
-      "id": "210c",
-      "title": "Tech",
-      "userId": "1",
-      "selfDiscoveryQuestionId": "8"
-    },
-    {
       "id": "4b32",
       "title": "Listening to music",
       "userId": "1",
@@ -194,8 +188,14 @@
       "selfDiscoveryQuestionId": "4"
     },
     {
-      "id": "b132",
-      "title": "Industry, innovation and infrastructure",
+      "id": "a295",
+      "title": "software engineering",
+      "userId": "1",
+      "selfDiscoveryQuestionId": "8"
+    },
+    {
+      "id": "3c19",
+      "title": "Decent work and economic growth",
       "userId": "1",
       "selfDiscoveryQuestionId": "4"
     }

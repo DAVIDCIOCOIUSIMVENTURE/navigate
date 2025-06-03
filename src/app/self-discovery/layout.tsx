@@ -80,11 +80,11 @@ export default function SelfDiscoveryLayout({
         <div className="flex flex-col h-full w-full gap-6 flex-1">
             <div className="flex flex-col gap-1">
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-2">
                         {navItem && Icon && (
-                            <div className="flex items-center justify-center w-10 h-10 rounded-lg">
-                                <Icon className="h-5 w-5" />
-                            </div>
+                           <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500">
+                           <Icon className="h-5 w-5 text-white" />
+                         </div>
                         )}
                         <h1 className="text-lg font-bold">Self Discovery</h1>
                     </div>
