@@ -9,6 +9,7 @@ import { PanelLeftClose } from "lucide-react"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { cn } from "@/lib/utils"
 
 interface Category {
     id: string
@@ -81,7 +82,7 @@ export default function SelfDiscoveryLayout({
 
     return (
         <div className="flex flex-col h-full w-full gap-6 flex-1">
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         {navItem && Icon && (
@@ -89,7 +90,7 @@ export default function SelfDiscoveryLayout({
                            <Icon className="h-5 w-5 text-white" />
                          </div>
                         )}
-                        <h1 className="text-lg font-bold">Self Discovery</h1>
+                        <h1 className="text-xl font-bold">Self Discovery</h1>
                     </div>
                     <Sheet open={isOpen} onOpenChange={setIsOpen}>
                         <SheetTrigger asChild>
@@ -140,14 +141,14 @@ export default function SelfDiscoveryLayout({
                         </SheetContent>
                     </Sheet>
                 </div>
-                <p className="text-muted-foreground text-sm">
+                <p className="text-muted-foreground">
                     Explore your interests, skills, and potential through guided questions and exercises.
                 </p>
             </div>
 
             <div className="flex gap-6 flex-1 w-full">
                 {/* Left Navigation */}
-                <Card className="w-64">
+                <Card className="w-72">
                     <CardContent className="p-4">
                         <div className="flex flex-col gap-2">
                             <Button
@@ -161,7 +162,7 @@ export default function SelfDiscoveryLayout({
                                 {categories.map((category) => (
                                     <AccordionItem key={category.id} value={category.id}>
                                         <AccordionTrigger
-                                            className={`w-full h-auto py-2 px-3 text-left whitespace-normal rounded-md hover:no-underline ${
+                                            className={`w-full h-auto py-2 gap-4 justify-between px-3 text-left whitespace-normal rounded-md hover:no-underline ${
                                                 pathname.startsWith(`/self-discovery/${category.url}`)
                                                     ? "bg-secondary text-secondary-foreground"
                                                     : "hover:bg-accent hover:text-accent-foreground"
@@ -171,13 +172,15 @@ export default function SelfDiscoveryLayout({
                                             <div className="flex items-center gap-3">
                                                 {(() => {
                                                     const Icon = getSelfDiscoveryCategoryIcon(category.id)
-                                                    return Icon && <Icon className="h-4 w-4 shrink-0" aria-hidden="true" />
+                                                    return Icon && <Icon className={cn("h-4 w-4 shrink-0",
+                                                        pathname.startsWith(`/self-discovery/${category.url}`) ? "text-primary" : "text-muted-foreground"
+                                                    )} aria-hidden="true" />
                                                 })()}
                                                 {category.title}
                                             </div>
                                         </AccordionTrigger>
                                         <AccordionContent>
-                                            <ul className="pl-6 space-y-2 list-disc mt-2" role="list">
+                                            <ul className="pl-8 pr-4 space-y-2 list-disc mt-2" role="list">
                                                 {category.questions.map((question) => (
                                                     <li
                                                         key={question.id}

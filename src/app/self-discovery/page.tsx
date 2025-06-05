@@ -34,9 +34,9 @@ export default function SelfDiscoveryPage() {
 
   return (
     <Card className="w-full flex-1">
-      <CardContent className="flex p-6 w-full flex-1 flex-col gap-4">
-        <div className="flex flex-col gap-2">
-          <h2 className="text-lg font-semibold">Welcome to Self Discovery</h2>
+      <CardContent className="flex p-6 w-full flex-1 flex-col gap-6">
+        <div className="flex flex-col gap-3">
+          <h2 className="text-xl font-semibold">Welcome to Self Discovery</h2>
           <p className="text-muted-foreground">
             This guided journey will help you uncover your unique strengths, interests, and potential as a founder.
             Through a series of questions and exercises, you&apos;ll gain valuable insights about yourself and your entrepreneurial path.
@@ -45,7 +45,7 @@ export default function SelfDiscoveryPage() {
         </div>
 
         <div className="space-y-2">
-          <h3 className="font-medium">What to Expect:</h3>
+          <h3 className="text-lg font-medium">What to Expect:</h3>
           <ul className="list-disc list-inside space-y-2 text-muted-foreground">
             <li>Answer the questions within each category</li>
             <li>Optionally use suggestion exercises to discover more insights</li>
