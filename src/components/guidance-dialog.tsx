@@ -24,7 +24,7 @@ const guidanceItems: GuidanceItem[] = [
           <ul className="list-disc pl-4 space-y-1">
             <li>Self Discovery - Explore your personal journey</li>
             <li>Problem Discovery - Identify and analyze challenges</li>
-            <li>Idea Triggers - Capture and organize your ideas</li>
+            <li>Problem Trigger Buckets - Capture and organize your ideas</li>
           </ul>
         </div>
       </div>

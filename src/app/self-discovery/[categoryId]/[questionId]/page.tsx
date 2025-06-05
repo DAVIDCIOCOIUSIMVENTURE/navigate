@@ -205,7 +205,7 @@ export default function QuestionPage() {
                 }
             } else {
                 // If we're on the last question of the last category, go to idea triggers
-                router.push('/idea-triggers')
+                router.push('/problem-trigger-buckets')
             }
         }
     }
@@ -291,14 +291,14 @@ export default function QuestionPage() {
                                 })()}
                                 <h2 className="text-xl font-semibold">{category.title}</h2>
                             </div>
-                            <p className="font-light">
+                            <p className="text-muted-foreground">
                                 {category.description}
                             </p>
                         </div>
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-col gap-1">
                                 <div className="text-lg font-medium text-foreground">{question.title}</div>
-                                <p className="font-light">{question.description}</p>
+                                <p className="text-muted-foreground">{question.description}</p>
                             </div>
                             {question.titleId === "sustainability-goals" ? (
                                 <div className="grid grid-cols-6 gap-2">

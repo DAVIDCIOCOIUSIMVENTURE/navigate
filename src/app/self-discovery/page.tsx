@@ -40,7 +40,7 @@ export default function SelfDiscoveryPage() {
           <p className="text-muted-foreground">
             This guided journey will help you uncover your unique strengths, interests, and potential as a founder.
             Through a series of questions and exercises, you&apos;ll gain valuable insights about yourself and your entrepreneurial path.
-            At the end of this exercise, you&apos;ll have a set of idea triggers that you can use in the Idea Triggers section to identify potential problems and opportunities.
+            At the end of this exercise, you&apos;ll have a set of problem triggers that you can use in the Problem Trigger Buckets section to identify potential problems and opportunities.
           </p>
         </div>
 

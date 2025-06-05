@@ -8,8 +8,9 @@ export const navigationItems = {
       icon: Compass
     },
     {
-      title: "Idea Buckets",
-      url: "/idea-triggers",
+      // title: "Problem Trigger Buckets",
+      title: "Problem Trigger Buckets",
+      url: "/problem-trigger-buckets",
       icon: Lightbulb
     },
     {

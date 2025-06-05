@@ -86,9 +86,9 @@ export default function SelfDiscoveryLayout({
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         {navItem && Icon && (
-                           <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500">
-                           <Icon className="h-5 w-5 text-white" />
-                         </div>
+                            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500">
+                                <Icon className="h-5 w-5 text-white" />
+                            </div>
                         )}
                         <h1 className="text-xl font-bold">Self Discovery</h1>
                     </div>
@@ -104,8 +104,8 @@ export default function SelfDiscoveryLayout({
                                 <SheetTitle>Self Discovery Overview</SheetTitle>
                             </SheetHeader>
                             <ScrollArea className="h-[calc(100vh-8rem)] mt-6">
-                                <div className="space-y-4 pr-4">
-                                    {categories.map((category) => (
+                                <div className="flex flex-col gap-6 pr-4">
+                                    {categories.map((category, idx) => (
                                         <div key={category.id} className="space-y-2">
                                             <h4 className="font-medium text-sm flex items-center gap-2">
                                                 {(() => {
@@ -114,26 +114,29 @@ export default function SelfDiscoveryLayout({
                                                 })()}
                                                 {category.title}
                                             </h4>
-                                            {category.questions.map((question) => (
-                                                <div key={question.id} className="space-y-2">
-                                                    <p className="text-sm text-muted-foreground">{question.title}</p>
-                                                    <div className="grid grid-cols-2 gap-2">
-                                                        {ideaTriggers
-                                                            .filter(trigger => trigger.selfDiscoveryQuestionId === question.id)
-                                                            .map((trigger) => (
-                                                                <div
-                                                                    key={trigger.id}
-                                                                    className="text-xs bg-secondary text-secondary-foreground rounded-md px-3 py-1.5"
-                                                                >
-                                                                    {trigger.title}
-                                                                </div>
-                                                            ))}
-                                                        {ideaTriggers.filter(trigger => trigger.selfDiscoveryQuestionId === question.id).length === 0 && (
-                                                            <p className="text-xs text-muted-foreground col-span-2">No triggers added yet</p>
-                                                        )}
+                                            
+                                            <div className="flex flex-col gap-2">
+                                                {category.questions.map((question) => (
+                                                    <div key={question.id} className="space-y-2">
+                                                        <p className="text-sm text-muted-foreground">{question.title}</p>
+                                                        <div className="grid grid-cols-2 gap-2">
+                                                            {ideaTriggers
+                                                                .filter(trigger => trigger.selfDiscoveryQuestionId === question.id)
+                                                                .map((trigger) => (
+                                                                    <div
+                                                                        key={trigger.id}
+                                                                        className="text-xs bg-secondary text-secondary-foreground rounded-md px-3 py-1.5"
+                                                                    >
+                                                                        {trigger.title}
+                                                                    </div>
+                                                                ))}
+                                                            {ideaTriggers.filter(trigger => trigger.selfDiscoveryQuestionId === question.id).length === 0 && (
+                                                                <p className="text-xs text-muted-foreground col-span-2">No triggers added yet</p>
+                                                            )}
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            ))}
+                                                ))}
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
@@ -162,18 +165,19 @@ export default function SelfDiscoveryLayout({
                                 {categories.map((category) => (
                                     <AccordionItem key={category.id} value={category.id}>
                                         <AccordionTrigger
-                                            className={`w-full h-auto py-2 gap-4 justify-between px-3 text-left whitespace-normal rounded-md hover:no-underline ${
-                                                pathname.startsWith(`/self-discovery/${category.url}`)
-                                                    ? "bg-secondary text-secondary-foreground"
-                                                    : "hover:bg-accent hover:text-accent-foreground"
-                                            }`}
+                                            className={`w-full h-auto py-2 gap-4 justify-between px-3 text-left whitespace-normal rounded-md hover:no-underline ${pathname.startsWith(`/self-discovery/${category.url}`)
+                                                ? "bg-secondary text-secondary-foreground"
+                                                : "hover:bg-accent hover:text-accent-foreground"
+                                                }`}
                                             aria-label={`${category.title} category`}
                                         >
                                             <div className="flex items-center gap-3">
                                                 {(() => {
                                                     const Icon = getSelfDiscoveryCategoryIcon(category.id)
                                                     return Icon && <Icon className={cn("h-4 w-4 shrink-0",
-                                                        pathname.startsWith(`/self-discovery/${category.url}`) ? "text-primary" : "text-muted-foreground"
+                                                        pathname.startsWith(`/self-discovery/${category.url}`) ?
+                                                            "text-primary" :
+                                                            "text-muted-foreground"
                                                     )} aria-hidden="true" />
                                                 })()}
                                                 {category.title}
@@ -184,9 +188,8 @@ export default function SelfDiscoveryLayout({
                                                 {category.questions.map((question) => (
                                                     <li
                                                         key={question.id}
-                                                        className={`text-sm text-muted-foreground hover:text-foreground cursor-pointer ${
-                                                            pathname === `/self-discovery/${category.url}/${question.url}` ? "text-primary" : ""
-                                                        }`}
+                                                        className={`text-sm text-muted-foreground hover:text-foreground cursor-pointer ${pathname === `/self-discovery/${category.url}/${question.url}` ? "text-primary" : ""
+                                                            }`}
                                                         onClick={() => router.push(`/self-discovery/${category.url}/${question.url}`)}
                                                         role="menuitem"
                                                         aria-current={pathname === `/self-discovery/${category.url}/${question.url}` ? "page" : undefined}

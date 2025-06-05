@@ -15,8 +15,8 @@ export default function DashboardPage() {
       {/* Welcome Section */}
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-1">
-          <h1 className="text-lg font-bold">Dashboard</h1>
-          <p className="text-muted-foreground text-sm">Here&apos;s an overview of your innovation journey</p>
+          <h1 className="text-xl font-bold">Dashboard</h1>
+          {/* <p className="text-muted-foreground text-sm">Here&apos;s an overview of your innovation journey</p> */}
         </div>
         <Button className="bg-purple-600 hover:bg-purple-700 text-white">
           Continue Your Journey
@@ -89,12 +89,12 @@ export default function DashboardPage() {
                   <div className="flex flex-col">
                     <div className="text-lg font-bold">
                       {item.url === "/self-discovery" ? "12" :
-                        item.url === "/idea-triggers" ? "4" :
+                        item.url === "/problem-trigger-buckets" ? "4" :
                           item.url === "/problem-discovery" ? "3" : "2"}
                     </div>
                     <p className="text-xs text-muted-foreground">
                       {item.url === "/self-discovery" ? "Triggers added" :
-                        item.url === "/idea-triggers" ? "Containers created" :
+                        item.url === "/problem-trigger-buckets" ? "Buckets created" :
                           item.url === "/problem-discovery" ? "Problems identified" : "Solutions validated"}
                     </p>
                   </div>
