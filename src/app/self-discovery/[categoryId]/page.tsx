@@ -64,8 +64,10 @@ export default function CategoryRedirectPage({
             try {
                 // Fetch categories and questions
                 const [categoriesRes, questionsRes] = await Promise.all([
-                    fetch('http://localhost:3001/selfDiscoveryQuestionCategories'),
-                    fetch('http://localhost:3001/selfDiscoveryQuestions')
+                    // fetch('http://localhost:3001/selfDiscoveryQuestionCategories'),
+                    fetch('/api/selfDiscoveryQuestionCategories'),
+                    // fetch('http://localhost:3001/selfDiscoveryQuestions')
+                    fetch('/api/selfDiscoveryQuestions')
                 ])
 
                 const categoriesData = await categoriesRes.json()

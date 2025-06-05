@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { navigationItems } from "@/config/navigation"
 import { Brain, ChevronRight, Lightbulb, Target, Trophy, Award, Star, Crown, ClipboardCheck, Search, Check } from "lucide-react"
 import { AchievementItem } from "@/components/achievement-item"
+import Image from "next/image"
 
 export default function DashboardPage() {
   const navItems = [...navigationItems.problemDiscovery, ...navigationItems.solution]
@@ -28,18 +29,18 @@ export default function DashboardPage() {
         {/* Double Diamond Diagram */}
         <Card className="lg:flex-[4] flex items-center justify-center">
           <CardContent className="p-4 flex items-center justify-center">
-            <div className="relative flex flex-col items-center justify-center w-full" style={{ height: 300 }}>
+            <div className="relative flex flex-col items-center justify-center w-full hidden" style={{ height: 300 }}>
               {/* Diamond Labels - 6 columns */}
-              <div className="absolute top-0 left-0 w-full grid grid-cols-6 gap-0 px-12" style={{ pointerEvents: 'none', zIndex: 10 }}>
+              {/* <div className="absolute top-0 left-0 w-full grid grid-cols-6 gap-0 px-12" style={{ pointerEvents: 'none', zIndex: 10 }}>
                 <div className="flex flex-col items-center text-center text-purple-600"><span className="font-semibold text-sm mb-1">Self<br />Discovery</span></div>
                 <div className="flex flex-col items-center text-center text-purple-600"><span className="font-semibold text-sm mb-1">Idea<br />Triggers</span></div>
                 <div className="flex flex-col items-center text-center text-purple-600"><span className="font-semibold text-sm mb-1">Problem<br />Discovery</span></div>
                 <div className="flex flex-col items-center text-center text-purple-600"><span className="font-semibold text-sm mb-1">Problem<br />Validation</span></div>
                 <div className="flex flex-col items-center text-center text-purple-600"><span className="font-semibold text-sm mb-1">Solution<br />Ideation</span></div>
                 <div className="flex flex-col items-center text-center text-purple-600"><span className="font-semibold text-sm mb-1">Solution<br />Validation</span></div>
-              </div>
+              </div> */}
 
-              <svg
+              {/* <svg
                 width="100%"
                 height="100%"
                 viewBox="0 0 1600 400"
@@ -48,9 +49,9 @@ export default function DashboardPage() {
                 <path d="M280,200 L500,-20 L720,200 L500,420 Z" fill="#D6BCFA" fillOpacity="0.9" stroke="#D6BCFA" strokeWidth="10" strokeLinejoin="round" />
                 <path d="M720,200 L940,-20 L1160,200 L940,420 Z" fill="#D6BCFA" fillOpacity="0.9" stroke="#D6BCFA" strokeWidth="10" strokeLinejoin="round" />
                 <path d="M1160,200 L1380,-20 L1600,200 L1380,420 Z" fill="#D6BCFA" fillOpacity="0.9" stroke="#D6BCFA" strokeWidth="10" strokeLinejoin="round" />
-              </svg>
+              </svg> */}
               {/* Arrow from left to right (now under the diamonds) */}
-              <svg
+              {/* <svg
                 className="absolute left-0 w-full"
                 style={{ top: 290, zIndex: 20, pointerEvents: 'none' }}
                 height="40"
@@ -70,13 +71,9 @@ export default function DashboardPage() {
                   opacity="0.7"
                   strokeDasharray="16,12"
                 />
-              </svg>
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full grid grid-cols-4 gap-8 items-center" style={{ pointerEvents: 'none' }}>
-                <div></div>
-                <div></div>
-                <div></div>
-              </div>
+              </svg> */}
             </div>
+            <Image src="/triple-diamond.png" alt="Double Diamond" width={1000} height={1000} />
           </CardContent>
         </Card>
 

@@ -13,6 +13,7 @@ import { navigationItems } from "@/config/navigation"
 import { CustomRocket } from "@/components/icons/custom-rocket"
 import { LayoutDashboard } from "lucide-react"
 import Link from "next/link"
+import { JournalDialog } from "./journal-dialog"
 
 export function AppSidebar() {
   return (
@@ -38,6 +39,9 @@ export function AppSidebar() {
                     <span>Dashboard</span>
                   </Link>
                 </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <JournalDialog />
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>

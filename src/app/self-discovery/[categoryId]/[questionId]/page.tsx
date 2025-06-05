@@ -5,7 +5,7 @@ import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { ChevronRight, Trash2, ChevronLeft } from "lucide-react"
-import { useRouter } from "next/navigation"
+import { useRouter, useParams } from "next/navigation"
 import Image from "next/image"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { getSelfDiscoveryCategoryIcon } from "@/config/navigation"
@@ -26,7 +26,7 @@ interface Question {
     url: string
 }
 
-interface IdeaTrigger {
+interface ProblemTrigger {
     id: string
     title: string
     userId: string
@@ -53,39 +53,38 @@ const SDGS = [
     "Partnership for the goals"
 ]
 
-export default function QuestionPage({
-    params,
-}: {
-    params: { categoryId: string; questionId: string }
-}) {
+export default function QuestionPage() {
     const router = useRouter()
+    const params = useParams()
+    const categoryId = params.categoryId as string
+    const questionId = params.questionId as string
     const [category, setCategory] = useState<Category | null>(null)
     const [question, setQuestion] = useState<Question | null>(null)
     const [categories, setCategories] = useState<Category[]>([])
     const [questions, setQuestions] = useState<Question[]>([])
     const [answers, setAnswers] = useState<{ [key: string]: string }>({})
     const [isSubmitting, setIsSubmitting] = useState<{ [key: string]: boolean }>({})
-    const [ideaTriggers, setIdeaTriggers] = useState<IdeaTrigger[]>([])
-    const [triggerToDelete, setTriggerToDelete] = useState<IdeaTrigger | null>(null)
+    const [problemTriggers, setProblemTriggers] = useState<ProblemTrigger[]>([])
+    const [problemTriggerToDelete, setProblemTriggerToDelete] = useState<ProblemTrigger | null>(null)
     const [sdgToAdd, setSdgToAdd] = useState<{ questionId: string; sdg: string } | null>(null)
 
     useEffect(() => {
         async function fetchData() {
             try {
                 // Fetch categories, questions, and idea triggers
-                const [categoriesRes, questionsRes, triggersRes] = await Promise.all([
-                    fetch('http://localhost:3001/selfDiscoveryQuestionCategories'),
-                    fetch('http://localhost:3001/selfDiscoveryQuestions'),
-                    fetch('http://localhost:3001/ideaTriggers')
+                const [categoriesRes, questionsRes, problemTriggersRes] = await Promise.all([
+                    fetch('/api/selfDiscoveryQuestionCategories'),
+                    fetch('/api/selfDiscoveryQuestions'),
+                    fetch('/api/problemTriggers?userId=1')
                 ])
 
                 const categoriesData = await categoriesRes.json()
                 const questionsData = await questionsRes.json()
-                const triggersData = await triggersRes.json()
+                const problemTriggersData = await problemTriggersRes.json()
 
                 // Find the selected category and question
-                const selectedCategory = categoriesData.find((cat: Category) => cat.url === params.categoryId)
-                const selectedQuestion = questionsData.find((q: Question) => q.url === params.questionId)
+                const selectedCategory = categoriesData.find((cat: Category) => cat.url === categoryId)
+                const selectedQuestion = questionsData.find((q: Question) => q.url === questionId)
 
                 if (selectedCategory && selectedQuestion) {
                     setCategory(selectedCategory)
@@ -95,13 +94,13 @@ export default function QuestionPage({
                 // Store all categories and questions for navigation
                 setCategories(categoriesData)
                 setQuestions(questionsData)
-                setIdeaTriggers(triggersData)
+                setProblemTriggers(problemTriggersData)
             } catch (error) {
                 console.error('Error fetching data:', error)
             }
         }
         fetchData()
-    }, [params.categoryId, params.questionId])
+    }, [categoryId, questionId])
 
     const handleAddAnswer = async () => {
         const answer = answers[question?.id || '']
@@ -110,14 +109,14 @@ export default function QuestionPage({
         setIsSubmitting(prev => ({ ...prev, [question.id]: true }))
 
         try {
-            const response = await fetch('http://localhost:3001/ideaTriggers', {
+            const response = await fetch('/api/problemTriggers', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     title: answer,
-                    userId: "1", // TODO: Replace with actual user ID
+                    userId: 1, // TODO: Replace with actual user ID
                     selfDiscoveryQuestionId: question.id
                 })
             })
@@ -127,7 +126,7 @@ export default function QuestionPage({
             }
 
             const newTrigger = await response.json()
-            setIdeaTriggers(prev => [...prev, newTrigger])
+            setProblemTriggers(prev => [...prev, newTrigger])
 
             // Clear the input after successful addition
             setAnswers(prev => ({ ...prev, [question.id]: '' }))
@@ -141,7 +140,7 @@ export default function QuestionPage({
 
     const handleDeleteTrigger = async (triggerId: string) => {
         try {
-            const response = await fetch(`http://localhost:3001/ideaTriggers/${triggerId}`, {
+            const response = await fetch(`/api/problemTriggers/${triggerId}`, {
                 method: 'DELETE'
             })
 
@@ -150,8 +149,8 @@ export default function QuestionPage({
             }
 
             // Remove the trigger from the local state
-            setIdeaTriggers(prev => prev.filter(trigger => trigger.id !== triggerId))
-            setTriggerToDelete(null)
+            setProblemTriggers(prev => prev.filter(trigger => trigger.id !== triggerId))
+            setProblemTriggerToDelete(null)
         } catch (error) {
             console.error('Error deleting idea trigger:', error)
             // TODO: Add error handling UI
@@ -214,7 +213,7 @@ export default function QuestionPage({
     const handleToggleSDG = async (sdg: string) => {
         if (!question) return
 
-        const existingTrigger = ideaTriggers.find(
+        const existingTrigger = problemTriggers.find(
             trigger => 
                 trigger.selfDiscoveryQuestionId === question.id && 
                 trigger.title === sdg
@@ -225,7 +224,7 @@ export default function QuestionPage({
             await handleDeleteTrigger(existingTrigger.id)
         } else {
             // Count existing SDGs for this question
-            const existingSDGs = ideaTriggers.filter(
+            const existingSDGs = problemTriggers.filter(
                 trigger => trigger.selfDiscoveryQuestionId === question.id
             )
 
@@ -245,14 +244,14 @@ export default function QuestionPage({
         setIsSubmitting(prev => ({ ...prev, [question.id]: true }))
 
         try {
-            const response = await fetch('http://localhost:3001/ideaTriggers', {
+            const response = await fetch('/api/problemTriggers', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     title: sdg,
-                    userId: "1", // TODO: Replace with actual user ID
+                    userId: 1, // TODO: Replace with actual user ID
                     selfDiscoveryQuestionId: question.id
                 })
             })
@@ -262,7 +261,7 @@ export default function QuestionPage({
             }
 
             const newTrigger = await response.json()
-            setIdeaTriggers(prev => [...prev, newTrigger])
+            setProblemTriggers(prev => [...prev, newTrigger])
         } catch (error) {
             console.error('Error adding idea trigger:', error)
             // TODO: Add error handling UI
@@ -305,7 +304,7 @@ export default function QuestionPage({
                                 <div className="grid grid-cols-6 gap-2">
                                     {Array.from({ length: 17 }, (_, i) => i + 1).map((num) => {
                                         const sdg = SDGS[num - 1]
-                                        const isSelected = ideaTriggers.some(
+                                        const isSelected = problemTriggers.some(
                                             trigger => 
                                                 trigger.selfDiscoveryQuestionId === question.id && 
                                                 trigger.title === sdg
@@ -352,7 +351,7 @@ export default function QuestionPage({
                                 </div>
                             )}
                             <div className="flex flex-wrap gap-2">
-                                {ideaTriggers
+                                {problemTriggers
                                     .filter(trigger => trigger.selfDiscoveryQuestionId === question.id)
                                     .map((trigger) => (
                                         <div
@@ -363,7 +362,7 @@ export default function QuestionPage({
                                             <Button
                                                 variant="destructive-ghost"
                                                 size="icon"
-                                                onClick={() => setTriggerToDelete(trigger)}
+                                                onClick={() => setProblemTriggerToDelete(trigger)}
                                                 className="h-4 w-4"
                                             >
                                                 <Trash2 className="h-3 w-3" />
@@ -393,7 +392,7 @@ export default function QuestionPage({
                 </CardFooter>
             </Card>
 
-            <Dialog open={!!triggerToDelete} onOpenChange={() => setTriggerToDelete(null)}>
+            <Dialog open={!!problemTriggerToDelete} onOpenChange={() => setProblemTriggerToDelete(null)}>
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Delete Idea Trigger</DialogTitle>
@@ -402,10 +401,10 @@ export default function QuestionPage({
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
-                        <Button variant="outline" onClick={() => setTriggerToDelete(null)}>Cancel</Button>
+                        <Button variant="outline" onClick={() => setProblemTriggerToDelete(null)}>Cancel</Button>
                         <Button 
                             variant="destructive" 
-                            onClick={() => triggerToDelete && handleDeleteTrigger(triggerToDelete.id)}
+                            onClick={() => problemTriggerToDelete && handleDeleteTrigger(problemTriggerToDelete.id)}
                         >
                             Delete
                         </Button>

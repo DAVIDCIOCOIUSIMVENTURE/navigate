@@ -8,7 +8,7 @@ export const navigationItems = {
       icon: Compass
     },
     {
-      title: "Idea Triggers",
+      title: "Idea Buckets",
       url: "/idea-triggers",
       icon: Lightbulb
     },

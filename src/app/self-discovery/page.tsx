@@ -19,7 +19,8 @@ export default function SelfDiscoveryPage() {
   useEffect(() => {
     async function fetchCategories() {
       try {
-        const response = await fetch('http://localhost:3001/selfDiscoveryQuestionCategories')
+        // const response = await fetch('http://localhost:3001/selfDiscoveryQuestionCategories')
+        const response = await fetch('/api/selfDiscoveryQuestionCategories')
         const categories: Category[] = await response.json()
         if (categories.length > 0) {
           setFirstCategoryUrl(categories[0].url)

@@ -50,9 +50,12 @@ export default function SelfDiscoveryLayout({
             try {
                 // Fetch categories, questions, and idea triggers
                 const [categoriesRes, questionsRes, triggersRes] = await Promise.all([
-                    fetch('http://localhost:3001/selfDiscoveryQuestionCategories'),
-                    fetch('http://localhost:3001/selfDiscoveryQuestions'),
-                    fetch('http://localhost:3001/ideaTriggers')
+                    // fetch('http://localhost:3001/selfDiscoveryQuestionCategories'),
+                    fetch('/api/selfDiscoveryQuestionCategories'),
+                    // fetch('http://localhost:3001/selfDiscoveryQuestions'),
+                    fetch('/api/selfDiscoveryQuestions'),
+                    // fetch('http://localhost:3001/ideaTriggers')
+                    fetch('/api/problemTriggers')
                 ])
 
                 const categoriesData = await categoriesRes.json()

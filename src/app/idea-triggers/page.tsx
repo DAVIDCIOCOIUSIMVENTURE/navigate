@@ -4,7 +4,7 @@ import { getNavigationItem } from "@/config/navigation"
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Pencil, Plus, Trash2, X, Heart, Globe, Brain, Book, ChevronRight, Box } from "lucide-react"
+import { Pencil, Plus, Trash2, Heart, Globe, Brain, Book, ChevronRight, Box } from "lucide-react"
 import { useState, useEffect } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
@@ -58,8 +58,10 @@ export default function IdeaTriggersPage() {
       try {
         // Fetch categories and questions
         const [categoriesRes, questionsRes] = await Promise.all([
-          fetch('http://localhost:3001/selfDiscoveryQuestionCategories'),
-          fetch('http://localhost:3001/selfDiscoveryQuestions')
+          // fetch('http://localhost:3001/selfDiscoveryQuestionCategories'),
+          // fetch('http://localhost:3001/selfDiscoveryQuestions')
+          fetch('/api/selfDiscoveryQuestionCategories'),
+          fetch('/api/selfDiscoveryQuestions')
         ])
 
         const categoriesData = await categoriesRes.json()
@@ -69,19 +71,21 @@ export default function IdeaTriggersPage() {
         const categoriesWithQuestions = categoriesData.map((category: Category) => ({
           ...category,
           questions: questionsData.filter((question: Question) =>
-            question.selfDiscoveryQuestionCategoryId === category.id
+            question.selfDiscoveryQuestionCategoryId == category.id
           )
         }))
 
         setCategories(categoriesWithQuestions)
 
         // Fetch idea triggers
-        const triggersRes = await fetch('http://localhost:3001/ideaTriggers')
+        // const triggersRes = await fetch('http://localhost:3001/ideaTriggers')
+        const triggersRes = await fetch('/api/problemTriggers?userId=1')
         const triggersData = await triggersRes.json()
         setIdeaTriggers(triggersData)
 
         // Fetch containers
-        const containersRes = await fetch('http://localhost:3001/ideaTriggerBuckets')
+        // const containersRes = await fetch('http://localhost:3001/ideaTriggerBuckets')
+        const containersRes = await fetch('/api/problemTriggerBuckets?userId=1')
         const containersData = await containersRes.json()
         setContainers(containersData.map((container: ContainerResponse) => ({
           ...container,
@@ -95,7 +99,7 @@ export default function IdeaTriggersPage() {
   }, [])
 
   function toggleEdit(containerId: string) {
-    const container = containers.find(c => c.id === containerId)
+    const container = containers.find(c => c.id == containerId)
     if (container) {
       setEditingContainer(container)
       setNewContainerTitle(container.title)
@@ -117,20 +121,20 @@ export default function IdeaTriggersPage() {
     try {
       if (editingContainer) {
         // Update existing container
-        const response = await fetch(`http://localhost:3001/ideaTriggerBuckets/${editingContainer.id}`, {
+        const response = await fetch(`/api/problemTriggerBuckets`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(containerData)
         })
         if (!response.ok) throw new Error('Failed to update container')
         setContainers(prev => prev.map(container =>
-          container.id === editingContainer.id
+          container.id == editingContainer.id
             ? { ...containerData, isEditing: false }
             : container
         ))
       } else {
         // Create new container
-        const response = await fetch('http://localhost:3001/ideaTriggerBuckets', {
+        const response = await fetch('/api/problemTriggerBuckets', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(containerData)
@@ -153,7 +157,7 @@ export default function IdeaTriggersPage() {
   function updateContainerName(containerId: string, newName: string) {
     if (newName.trim()) {
       setContainers(prev => prev.map(container => {
-        if (container.id === containerId) {
+        if (container.id == containerId) {
           return { ...container, title: newName.trim() }
         }
         return container
@@ -165,13 +169,15 @@ export default function IdeaTriggersPage() {
     if (!containerToDelete) return
 
     try {
-      const response = await fetch(`http://localhost:3001/ideaTriggerBuckets/${containerToDelete.id}`, {
-        method: 'DELETE'
+      const response = await fetch(`/api/problemTriggerBuckets`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: containerToDelete.id })
       })
 
       if (!response.ok) throw new Error('Failed to delete container')
 
-      setContainers(prev => prev.filter(container => container.id !== containerToDelete.id))
+      setContainers(prev => prev.filter(container => container.id != containerToDelete.id))
       setContainerToDelete(null)
     } catch (error) {
       console.error('Error deleting container:', error)
@@ -195,10 +201,10 @@ export default function IdeaTriggersPage() {
               <Icon className="h-5 w-5 text-white" />
             </div>
           )}
-          <h1 className="text-lg font-bold">Idea Triggers</h1>
+          <h1 className="text-lg font-bold">Idea Buckets</h1>
         </div>
         <p className="text-muted-foreground text-sm">
-          Combine different idea triggers to generate new business concepts. You can use the same idea trigger in multiple containers to explore different possibilities. We recommend you select ideas from different categories.
+          Combine different idea triggers to generate new business concepts. You can use the same idea trigger in multiple buckets to explore different possibilities. We recommend you select ideas from different categories.
         </p>
       </div>
 
@@ -206,7 +212,7 @@ export default function IdeaTriggersPage() {
         <CardContent className="pt-6">
           <div className="space-y-6">
             <div className="flex justify-between items-center">
-              <h3 className="font-semibold">Containers</h3>
+              <h3 className="font-semibold">Buckets</h3>
               <Dialog open={isDialogOpen} onOpenChange={(open) => {
                 setIsDialogOpen(open)
                 if (!open) {
@@ -228,7 +234,7 @@ export default function IdeaTriggersPage() {
                   <DialogHeader>
                     <DialogTitle>{editingContainer ? 'Edit Container' : 'Create New Container'}</DialogTitle>
                     <DialogDescription>
-                      {editingContainer ? 'Edit your container and its idea triggers.' : 'Create a new container and select idea triggers to add to it.'}
+                      {editingContainer ? 'Edit your idea buckets and its idea triggers.' : 'Create a new container and select idea triggers to add to it.'}
                     </DialogDescription>
                   </DialogHeader>
                   <div className="flex-1 overflow-y-auto">
@@ -249,12 +255,12 @@ export default function IdeaTriggersPage() {
                             <p className="text-sm text-muted-foreground">No triggers selected</p>
                           ) : (
                             selectedTriggers.map((triggerId) => {
-                              const trigger = ideaTriggers.find(t => t.id === triggerId)
+                              const trigger = ideaTriggers.find(t => t.id == triggerId)
                               if (!trigger) return null
 
                               // Find the category for this trigger
                               const category = categories.find(cat =>
-                                cat.questions.some(q => q.id === trigger.selfDiscoveryQuestionId)
+                                cat.questions.some(q => q.id == trigger.selfDiscoveryQuestionId)
                               )
 
                               return (
@@ -265,10 +271,10 @@ export default function IdeaTriggersPage() {
                                 // text-primary-foreground rounded-md font-medium h-8 rounded-md px-3 text-xs"
 
                                 >
-                                  {category?.id === "1" && <Heart className="h-3 w-3" />}
-                                  {category?.id === "2" && <Book className="h-3 w-3" />}
-                                  {category?.id === "3" && <Brain className="h-3 w-3" />}
-                                  {category?.id === "4" && <Globe className="h-3 w-3" />}
+                                  {category?.id == "1" && <Heart className="h-3 w-3" />}
+                                  {category?.id == "2" && <Book className="h-3 w-3" />}
+                                  {category?.id == "3" && <Brain className="h-3 w-3" />}
+                                  {category?.id == "4" && <Globe className="h-3 w-3" />}
                                   <span>{trigger.title}</span>
                                   <Button
                                     variant="destructive-ghost"
@@ -285,15 +291,15 @@ export default function IdeaTriggersPage() {
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <Label>Idea Triggers</Label>
+                        <Label>Idea Buckets</Label>
                         <div className="space-y-4 p-2 border rounded-md">
                           {categories.map((category) => (
                             <div key={category.id} className="space-y-2">
                               <h4 className="font-medium text-sm flex items-center gap-2">
-                                {category.id === "1" && <Heart className="h-4 w-4" />}
-                                {category.id === "2" && <Book className="h-4 w-4" />}
-                                {category.id === "3" && <Brain className="h-4 w-4" />}
-                                {category.id === "4" && <Globe className="h-4 w-4" />}
+                                {category.id == "1" && <Heart className="h-4 w-4" />}
+                                {category.id == "2" && <Book className="h-4 w-4" />}
+                                {category.id == "3" && <Brain className="h-4 w-4" />}
+                                {category.id == "4" && <Globe className="h-4 w-4" />}
                                 {category.title}
                               </h4>
                               {category.questions.map((question) => (
@@ -301,7 +307,7 @@ export default function IdeaTriggersPage() {
                                   <p className="text-sm text-muted-foreground">{question.title}</p>
                                   <div className="grid grid-cols-2 gap-2">
                                     {ideaTriggers
-                                      .filter(trigger => trigger.selfDiscoveryQuestionId === question.id)
+                                      .filter(trigger => trigger.selfDiscoveryQuestionId == question.id)
                                       .map((trigger) => (
                                         <Button
                                           size="sm"
@@ -313,7 +319,7 @@ export default function IdeaTriggersPage() {
                                           {trigger.title}
                                         </Button>
                                       ))}
-                                    {ideaTriggers.filter(trigger => trigger.selfDiscoveryQuestionId === question.id).length === 0 && (
+                                    {ideaTriggers.filter(trigger => trigger.selfDiscoveryQuestionId == question.id).length === 0 && (
                                       <p className="text-xs text-muted-foreground col-span-2">No triggers added yet</p>
                                     )}
                                   </div>
@@ -377,12 +383,12 @@ export default function IdeaTriggersPage() {
                   <CardContent className="flex-1">
                     <div className="flex flex-wrap gap-2">
                       {container.ideaTriggerIds.map((triggerId) => {
-                        const trigger = ideaTriggers.find(t => t.id === triggerId)
+                        const trigger = ideaTriggers.find(t => t.id == triggerId)
                         if (!trigger) return null
 
                         // Find the category for this trigger
                         const category = categories.find(cat =>
-                          cat.questions.some(q => q.id === trigger.selfDiscoveryQuestionId)
+                          cat.questions.some(q => q.id == trigger.selfDiscoveryQuestionId)
                         )
 
                         return (
@@ -390,10 +396,10 @@ export default function IdeaTriggersPage() {
                             key={trigger.id}
                             className="flex items-center gap-2 py-1 rounded-md font-medium h-8 rounded-md px-3 text-xs bg-secondary text-secondary-foreground"
                           >
-                            {category?.id === "1" && <Heart className="h-3 w-3" />}
-                            {category?.id === "2" && <Book className="h-3 w-3" />}
-                            {category?.id === "3" && <Brain className="h-3 w-3" />}
-                            {category?.id === "4" && <Globe className="h-3 w-3" />}
+                            {category?.id == "1" && <Heart className="h-3 w-3" />}
+                            {category?.id == "2" && <Book className="h-3 w-3" />}
+                            {category?.id == "3" && <Brain className="h-3 w-3" />}
+                            {category?.id == "4" && <Globe className="h-3 w-3" />}
                             {trigger.title}
                           </div>
                         )
