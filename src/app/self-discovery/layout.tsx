@@ -49,7 +49,7 @@ export default function SelfDiscoveryLayout({
     useEffect(() => {
         async function fetchData() {
             try {
-                // Fetch categories, questions, and idea triggers
+                // Fetch categories, questions, and problem triggers
                 const [categoriesRes, questionsRes, triggersRes] = await Promise.all([
                     // fetch('http://localhost:3001/selfDiscoveryQuestionCategories'),
                     fetch('/api/selfDiscoveryQuestionCategories'),
