@@ -140,8 +140,12 @@ export default function QuestionPage() {
 
     const handleDeleteTrigger = async (triggerId: string) => {
         try {
-            const response = await fetch(`/api/problemTriggers/${triggerId}`, {
-                method: 'DELETE'
+            const response = await fetch('/api/problemTriggers', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: triggerId })
             })
 
             if (!response.ok) {

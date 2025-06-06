@@ -12,7 +12,7 @@ export async function GET(request) {
       })
     }
     const buckets = await prisma.problemTriggersBucket.findMany({
-      where: { userId: Number(userId) },
+      where: { userId: String(userId) },
       include: {
         problemTriggers: true
       }
@@ -43,9 +43,9 @@ export async function POST(request) {
     const bucket = await prisma.problemTriggersBucket.create({
       data: {
         title,
-        userId: Number(userId),
+        userId: String(userId),
         problemTriggers: {
-          connect: ideaTriggerIds.map(id => ({ id: Number(id) }))
+          connect: ideaTriggerIds.map(id => ({ id: String(id) }))
         }
       },
       include: { problemTriggers: true }
@@ -73,12 +73,12 @@ export async function PUT(request) {
     const body = await request.json()
     const { id, title, userId, ideaTriggerIds } = body
     const bucket = await prisma.problemTriggersBucket.update({
-      where: { id: Number(id) },
+      where: { id: String(id) },
       data: {
         title,
-        userId: Number(userId),
+        userId: String(userId),
         problemTriggers: {
-          set: ideaTriggerIds.map(id => ({ id: Number(id) }))
+          set: ideaTriggerIds.map(id => ({ id: String(id) }))
         }
       },
       include: { problemTriggers: true }
@@ -104,7 +104,7 @@ export async function PUT(request) {
 export async function DELETE(request) {
   try {
     const { id } = await request.json()
-    await prisma.problemTriggersBucket.delete({ where: { id: Number(id) } })
+    await prisma.problemTriggersBucket.delete({ where: { id: String(id) } })
     return new Response(null, { status: 204 })
   } catch (error) {
     return new Response(JSON.stringify({ error: error.message }), {

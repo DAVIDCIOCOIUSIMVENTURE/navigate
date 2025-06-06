@@ -1,20 +1,39 @@
+"use client"
+
 import { getNavigationItem } from "@/config/navigation"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export default function SolutionIdeationPage() {
   const navItem = getNavigationItem("/solution-ideation")
   const Icon = navItem?.icon
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
-      <div className="flex items-center gap-3 mb-6">
-        {navItem && Icon && (
-          <div className="flex items-center justify-center w-10 h-10 rounded-lg">
-            <Icon className="h-6 w-6" />
-          </div>
-        )}
-        <h2 className="text-xl font-bold">Solution Ideation</h2>
+    <div className="flex flex-col h-full w-full gap-6 flex-1">
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-2">
+          {navItem && Icon && (
+            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500">
+              <Icon className="h-5 w-5 text-white" />
+            </div>
+          )}
+          <h1 className="text-xl font-bold">Solution Ideation</h1>
+        </div>
+        <p className="text-muted-foreground">
+          Generate innovative solutions for your validated problems. Use creative thinking techniques
+          and brainstorming tools to explore different approaches and possibilities.
+        </p>
       </div>
-      <p>Welcome to the Solution Ideation section.</p>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Solution Ideation Tools</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-muted-foreground">
+            Select a tool to begin generating solutions for your validated problems.
+          </p>
+        </CardContent>
+      </Card>
     </div>
   )
 } 

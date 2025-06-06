@@ -1,8 +1,8 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { getNavigationItem } from "@/config/navigation"
-import { ChevronRight, Plus, Trash2 } from "lucide-react"
+import { ChevronRight, Plus, Trash2, Box } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { useEffect, useState } from "react"
@@ -109,44 +109,44 @@ export default function ProblemDiscoveryPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
-      <div className="flex items-center gap-2 text-sm text-gray-500 mb-6">
-        <Link href="/" className="hover:text-gray-700">
-          Home
-        </Link>
-        <ChevronRight className="h-4 w-4" />
-        <span className="text-gray-700">Problem Discovery</span>
+    <div className="flex flex-col h-full w-full gap-6 flex-1">
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-2">
+          {navItem && Icon && (
+            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500">
+              <Icon className="h-5 w-5 text-white" />
+            </div>
+          )}
+          <h1 className="text-xl font-bold">Problem Discovery</h1>
+        </div>
+        <p className="text-muted-foreground">
+          Start your problem discovery journey here. Select a problem discovery bucket or generate a new one.
+          Each bucket represents a unique problem space to explore and develop solutions for.
+        </p>
       </div>
 
-      <div className="flex items-center gap-3 mb-6">
-        {navItem && Icon && (
-          <div className="flex items-center justify-center w-10 h-10 rounded-lg">
-            <Icon className="h-6 w-6" />
-          </div>
-        )}
-        <h2 className="text-xl font-bold">Problem Discovery</h2>
-      </div>
-
-      <p className="text-gray-600 mb-6">
-        Start your problem discovery journey here. Select a problem discovery bucket or generate a new one.
-      </p>
-
-      <div className="space-y-6">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Problem Discovery Buckets</CardTitle>
-            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-              <DialogTrigger asChild>
-                <Button variant="outline" size="sm">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Add
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Create New Problem Discovery Bucket</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4 py-4">
+      <Card>
+        <CardHeader className="flex justify-between flex-row items-center">
+          <CardTitle>Buckets</CardTitle>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button
+                className="flex flex-row items-center gap-2"
+                variant="primary-outline"
+                size="sm">
+                <Plus className="h-4 w-4" />
+                New Bucket
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
+              <DialogHeader>
+                <DialogTitle>Create New Problem Discovery Bucket</DialogTitle>
+                <DialogDescription>
+                  Create a new bucket to start exploring and developing solutions for specific problem spaces.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="flex-1 overflow-y-auto">
+                <div className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="title">Bucket Title</Label>
                     <Input
@@ -174,93 +174,76 @@ export default function ProblemDiscoveryPage() {
                       </SelectContent>
                     </Select>
                   </div>
-                  <div className="flex justify-end gap-2 pt-4">
-                    <Button
-                      variant="outline"
-                      onClick={() => setIsDialogOpen(false)}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      onClick={handleCreateBucket}
-                      disabled={!newBucketTitle.trim()}
-                    >
-                      Create Bucket
-                    </Button>
-                  </div>
                 </div>
-              </DialogContent>
-            </Dialog>
-          </CardHeader>
-          <CardContent>
-            {loading ? (
-              <div className="text-center py-4 text-gray-500">Loading buckets...</div>
-            ) : buckets.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {buckets.map((bucket) => (
-                  <div key={bucket.id} className="relative group">
-                    <div className="p-4 rounded-lg border border-gray-200">
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <h3 className="font-medium text-gray-900">{bucket.title}</h3>
-                          {bucket.selfDiscoveryBucketId && (
-                            <p className="text-sm text-gray-500 mt-1">
-                              Linked to: {selfDiscoveryBuckets.find(b => b.id === String(bucket.selfDiscoveryBucketId))?.title}
-                            </p>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="destructive-outline"
-                            size="sm"
-                            onClick={(e) => {
-                              e.preventDefault()
-                              setBucketToDelete(bucket)
-                            }}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                          <Link href={`/problem-discovery/bucket/${bucket.id}`}>
-                            <Button variant="default" size="sm">
-                              Open
-                            </Button>
-                          </Link>
-                        </div>
-                      </div>
+              </div>
+              <DialogFooter className="mt-4">
+                <Button variant="outline" onClick={() => setIsDialogOpen(false)}>Cancel</Button>
+                <Button onClick={handleCreateBucket} disabled={!newBucketTitle.trim()}>Create</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <div className="text-center py-4 text-muted-foreground">Loading buckets...</div>
+          ) : buckets.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {buckets.map((bucket) => (
+                <Card key={bucket.id} className="flex flex-col">
+                  <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                    <div className="flex items-center gap-2">
+                      <Box className="h-4 w-4" />
+                      <CardTitle>{bucket.title}</CardTitle>
                     </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="text-center py-4 text-gray-500">
-                No problem discovery buckets yet. Create one to get started.
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setBucketToDelete(bucket)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="flex-1">
+                    {bucket.selfDiscoveryBucketId && (
+                      <div className="text-sm text-muted-foreground">
+                        Linked to: {selfDiscoveryBuckets.find(b => b.id === String(bucket.selfDiscoveryBucketId))?.title}
+                      </div>
+                    )}
+                  </CardContent>
+                  <CardFooter className="flex justify-end">
+                    <Link href={`/problem-discovery/bucket/${bucket.id}`}>
+                      <Button
+                        size="sm"
+                        className="h-auto py-2 bg-purple-600 hover:bg-purple-700 text-white flex items-center gap-2 whitespace-normal text-wrap">
+                        Continue to Problem Discovery
+                        <ChevronRight className="ml-1 h-4 w-4" />
+                      </Button>
+                    </Link>
+                  </CardFooter>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-4 text-muted-foreground">
+              No problem discovery buckets yet. Create one to get started.
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
-      <Dialog open={!!bucketToDelete} onOpenChange={(open) => !open && setBucketToDelete(null)}>
+      <Dialog open={!!bucketToDelete} onOpenChange={() => setBucketToDelete(null)}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Delete Bucket</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete &quot;{bucketToDelete?.title}&quot;? This action cannot be undone.
+              Are you sure you want to delete this bucket? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setBucketToDelete(null)}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleDeleteBucket}
-            >
-              Delete
-            </Button>
+            <Button variant="outline" onClick={() => setBucketToDelete(null)}>Cancel</Button>
+            <Button variant="destructive" onClick={handleDeleteBucket}>Delete</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

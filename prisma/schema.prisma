@@ -15,7 +15,7 @@ datasource db {
 }
 
 model User {
-  id        Int    @id @default(autoincrement())
+  id                    String                 @id @default(cuid())
   email     String @unique
   firstName String
   lastName  String
@@ -24,7 +24,7 @@ model User {
 }
 
 model SelfDiscoveryQuestionCategory {
-  id          Int    @id @default(autoincrement())
+ id                    String                 @id @default(cuid())
   title       String
   url         String
   description String
@@ -32,30 +32,30 @@ model SelfDiscoveryQuestionCategory {
 }
 
 model SelfDiscoveryQuestion {
-  id                             Int    @id @default(autoincrement())
+ id                    String                 @id @default(cuid())
   titleId                        String
   url                            String
   title                          String
   description                    String
-  selfDiscoveryQuestionCategoryId Int
+  selfDiscoveryQuestionCategoryId String
   selfDiscoveryQuestionCategory   SelfDiscoveryQuestionCategory @relation(fields: [selfDiscoveryQuestionCategoryId], references: [id])
   problemTriggers ProblemTrigger[]
 }
 
 model ProblemTrigger {
-  id                       Int     @id @default(autoincrement())
+  id                    String                 @id @default(cuid())
   title                    String
-  userId                   Int
+  userId                   String
   user                     User    @relation(fields: [userId], references: [id])
-  selfDiscoveryQuestionId  Int?
+  selfDiscoveryQuestionId  String?
   selfDiscoveryQuestion    SelfDiscoveryQuestion? @relation(fields: [selfDiscoveryQuestionId], references: [id])
   problemTriggersBuckets ProblemTriggersBucket[]
 }
 
 model ProblemTriggersBucket {
-  id            Int             @id @default(autoincrement())
+ id                    String                 @id @default(cuid())
   title         String
-  userId        Int
+  userId        String
   user          User            @relation(fields: [userId], references: [id])
   problemTriggers ProblemTrigger[]
 }

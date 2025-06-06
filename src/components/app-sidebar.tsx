@@ -32,7 +32,7 @@ export function AppSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
-                  <Link href="/">
+                  <Link href="/" className="hover:bg-accent/50 transition-colors">
                     <div className="flex items-center justify-center w-6 h-6 rounded-md">
                       <LayoutDashboard className="h-4 w-4" />
                     </div>
@@ -54,7 +54,7 @@ export function AppSidebar() {
               {navigationItems.problemDiscovery.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <Link href={item.url}>
+                    <Link href={item.url} className="hover:bg-accent/50 transition-colors">
                       <div className="flex items-center justify-center w-6 h-6 rounded-md">
                         <item.icon className="h-4 w-4" />
                       </div>
@@ -74,7 +74,7 @@ export function AppSidebar() {
               {navigationItems.solution.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <Link href={item.url}>
+                    <Link href={item.url} className="hover:bg-accent/50 transition-colors">
                       <div className="flex items-center justify-center w-6 h-6 rounded-md">
                         <item.icon className="h-4 w-4" />
                       </div>

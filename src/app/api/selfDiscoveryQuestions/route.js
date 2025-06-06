@@ -7,15 +7,20 @@ export async function POST(request) {
 
     const question = await prisma.selfDiscoveryQuestion.create({
       data: {
-        titleId,
+        titleId: String(titleId),
         url,
         title,
         description,
-        selfDiscoveryQuestionCategoryId
+        selfDiscoveryQuestionCategoryId: String(selfDiscoveryQuestionCategoryId)
       }
     })
 
-    return new Response(JSON.stringify(question), {
+    return new Response(JSON.stringify({
+      ...question,
+      id: String(question.id),
+      titleId: String(question.titleId),
+      selfDiscoveryQuestionCategoryId: String(question.selfDiscoveryQuestionCategoryId)
+    }), {
       status: 201,
       headers: { 'Content-Type': 'application/json' },
     })
@@ -30,7 +35,12 @@ export async function POST(request) {
 export async function GET() {
   try {
     const questions = await prisma.selfDiscoveryQuestion.findMany()
-    return new Response(JSON.stringify(questions), {
+    return new Response(JSON.stringify(questions.map(q => ({
+      ...q,
+      id: String(q.id),
+      titleId: String(q.titleId),
+      selfDiscoveryQuestionCategoryId: String(q.selfDiscoveryQuestionCategoryId)
+    }))), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },
     })

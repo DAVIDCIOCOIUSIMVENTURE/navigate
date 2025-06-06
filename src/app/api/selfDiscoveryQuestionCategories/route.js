@@ -23,7 +23,10 @@ import { NextResponse } from 'next/server'
 export async function GET() {
   try {
     const categories = await prisma.selfDiscoveryQuestionCategory.findMany()
-    return NextResponse.json(categories, {
+    return NextResponse.json(categories.map(c => ({
+      ...c,
+      id: String(c.id)
+    })), {
       status: 200
     })
   } catch (error) {
