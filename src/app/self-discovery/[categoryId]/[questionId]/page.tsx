@@ -75,7 +75,7 @@ export default function QuestionPage() {
                 const [categoriesRes, questionsRes, problemTriggersRes] = await Promise.all([
                     fetch('/api/selfDiscoveryQuestionCategories'),
                     fetch('/api/selfDiscoveryQuestions'),
-                    fetch('/api/problemTriggers?userId=1')
+                    fetch('/api/problemTriggers?userId=cmg6pzaam00006fbc4ar19d5v')
                 ])
 
                 const categoriesData = await categoriesRes.json()
@@ -116,7 +116,7 @@ export default function QuestionPage() {
                 },
                 body: JSON.stringify({
                     title: answer,
-                    userId: 1, // TODO: Replace with actual user ID
+                    userId: "cmg6pzaam00006fbc4ar19d5v", // TODO: Replace with actual user ID
                     selfDiscoveryQuestionId: question.id
                 })
             })
@@ -255,7 +255,7 @@ export default function QuestionPage() {
                 },
                 body: JSON.stringify({
                     title: sdg,
-                    userId: 1, // TODO: Replace with actual user ID
+                    userId: "cmg6pzaam00006fbc4ar19d5v", // TODO: Replace with actual user ID
                     selfDiscoveryQuestionId: question.id
                 })
             })

@@ -10,7 +10,7 @@ export function JournalDialog() {
   const [loading, setLoading] = useState(false)
   const [title, setTitle] = useState("")
   const debounceRef = useRef<NodeJS.Timeout | null>(null)
-  const userId = "1"
+  const userId = "cmg6pzaam00006fbc4ar19d5v"
   const journalId = "1"
 
   // Load the journal entry from the db when dialog opens

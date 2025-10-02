@@ -69,7 +69,7 @@ export default function ProblemDiscoveryPage() {
     const newBucket = {
       title: newBucketTitle.trim(),
       selfDiscoveryBucketId: selectedSelfDiscoveryBucket ? Number(selectedSelfDiscoveryBucket) : null,
-      userId: "1" // Hardcoded for now, should come from auth context
+      userId: "cmg6pzaam00006fbc4ar19d5v" // Hardcoded for now, should come from auth context
     }
 
     try {

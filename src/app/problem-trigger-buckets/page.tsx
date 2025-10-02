@@ -79,13 +79,13 @@ export default function ProblemTriggerBucketsPage() {
 
         // Fetch idea triggers
         // const triggersRes = await fetch('http://localhost:3001/ideaTriggers')
-        const triggersRes = await fetch('/api/problemTriggers?userId=1')
+        const triggersRes = await fetch('/api/problemTriggers?userId=cmg6pzaam00006fbc4ar19d5v')
         const triggersData = await triggersRes.json()
         setIdeaTriggers(triggersData)
 
         // Fetch containers
         // const containersRes = await fetch('http://localhost:3001/ideaTriggerBuckets')
-        const containersRes = await fetch('/api/problemTriggerBuckets?userId=1')
+        const containersRes = await fetch('/api/problemTriggerBuckets?userId=cmg6pzaam00006fbc4ar19d5v')
         const containersData = await containersRes.json()
         setContainers(containersData.map((container: ContainerResponse) => ({
           ...container,
@@ -115,7 +115,7 @@ export default function ProblemTriggerBucketsPage() {
       id: editingContainer?.id || String(Date.now()),
       title: newContainerTitle.trim(),
       ideaTriggerIds: selectedTriggers,
-      userId: "1" // TODO: Replace with actual user ID
+      userId: "cmg6pzaam00006fbc4ar19d5v" // TODO: Replace with actual user ID
     }
 
     try {
