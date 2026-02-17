@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { cn } from "@/lib/utils"
+import { CURRENT_USER_ID } from "@/lib/config"
 
 interface Category {
     id: string
@@ -56,7 +57,7 @@ export default function SelfDiscoveryLayout({
                     // fetch('http://localhost:3001/selfDiscoveryQuestions'),
                     fetch('/api/selfDiscoveryQuestions'),
                     // fetch('http://localhost:3001/ideaTriggers')
-                    fetch('/api/problemTriggers')
+                    fetch(`/api/problemTriggers?userId=${CURRENT_USER_ID}`)
                 ])
 
                 const categoriesData = await categoriesRes.json()

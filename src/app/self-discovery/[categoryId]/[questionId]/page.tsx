@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { ChevronRight, Trash2, ChevronLeft } from "lucide-react"
 import { useRouter, useParams } from "next/navigation"
+import { CURRENT_USER_ID } from "@/lib/config"
 import Image from "next/image"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { getSelfDiscoveryCategoryIcon } from "@/config/navigation"
@@ -75,7 +76,7 @@ export default function QuestionPage() {
                 const [categoriesRes, questionsRes, problemTriggersRes] = await Promise.all([
                     fetch('/api/selfDiscoveryQuestionCategories'),
                     fetch('/api/selfDiscoveryQuestions'),
-                    fetch('/api/problemTriggers?userId=cmg6pzaam00006fbc4ar19d5v')
+                    fetch(`/api/problemTriggers?userId=${CURRENT_USER_ID}`)
                 ])
 
                 const categoriesData = await categoriesRes.json()
@@ -116,7 +117,7 @@ export default function QuestionPage() {
                 },
                 body: JSON.stringify({
                     title: answer,
-                    userId: "cmg6pzaam00006fbc4ar19d5v", // TODO: Replace with actual user ID
+                    userId: CURRENT_USER_ID,
                     selfDiscoveryQuestionId: question.id
                 })
             })
@@ -255,7 +256,7 @@ export default function QuestionPage() {
                 },
                 body: JSON.stringify({
                     title: sdg,
-                    userId: "cmg6pzaam00006fbc4ar19d5v", // TODO: Replace with actual user ID
+                    userId: CURRENT_USER_ID,
                     selfDiscoveryQuestionId: question.id
                 })
             })

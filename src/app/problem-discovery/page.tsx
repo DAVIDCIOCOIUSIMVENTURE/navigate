@@ -2,6 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { getNavigationItem } from "@/config/navigation"
+import { CURRENT_USER_ID } from "@/lib/config"
 import { ChevronRight, Plus, Trash2, Box } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -69,7 +70,7 @@ export default function ProblemDiscoveryPage() {
     const newBucket = {
       title: newBucketTitle.trim(),
       selfDiscoveryBucketId: selectedSelfDiscoveryBucket ? Number(selectedSelfDiscoveryBucket) : null,
-      userId: "cmg6pzaam00006fbc4ar19d5v" // Hardcoded for now, should come from auth context
+      userId: CURRENT_USER_ID
     }
 
     try {

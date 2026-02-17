@@ -1,6 +1,7 @@
 "use client"
 
 import { getNavigationItem } from "@/config/navigation"
+import { CURRENT_USER_ID } from "@/lib/config"
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -79,13 +80,13 @@ export default function ProblemTriggerBucketsPage() {
 
         // Fetch idea triggers
         // const triggersRes = await fetch('http://localhost:3001/ideaTriggers')
-        const triggersRes = await fetch('/api/problemTriggers?userId=cmg6pzaam00006fbc4ar19d5v')
+        const triggersRes = await fetch(`/api/problemTriggers?userId=${CURRENT_USER_ID}`)
         const triggersData = await triggersRes.json()
         setIdeaTriggers(triggersData)
 
         // Fetch containers
         // const containersRes = await fetch('http://localhost:3001/ideaTriggerBuckets')
-        const containersRes = await fetch('/api/problemTriggerBuckets?userId=cmg6pzaam00006fbc4ar19d5v')
+        const containersRes = await fetch(`/api/problemTriggerBuckets?userId=${CURRENT_USER_ID}`)
         const containersData = await containersRes.json()
         setContainers(containersData.map((container: ContainerResponse) => ({
           ...container,
@@ -115,7 +116,7 @@ export default function ProblemTriggerBucketsPage() {
       id: editingContainer?.id || String(Date.now()),
       title: newContainerTitle.trim(),
       ideaTriggerIds: selectedTriggers,
-      userId: "cmg6pzaam00006fbc4ar19d5v" // TODO: Replace with actual user ID
+      userId: CURRENT_USER_ID
     }
 
     try {

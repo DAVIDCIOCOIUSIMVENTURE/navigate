@@ -1,4 +1,5 @@
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { CURRENT_USER_ID } from "@/lib/config"
 import { Textarea } from "@/components/ui/textarea"
 import { Book } from "lucide-react"
 import { SidebarMenuButton } from "@/components/ui/sidebar"
@@ -10,7 +11,7 @@ export function JournalDialog() {
   const [loading, setLoading] = useState(false)
   const [title, setTitle] = useState("")
   const debounceRef = useRef<NodeJS.Timeout | null>(null)
-  const userId = "cmg6pzaam00006fbc4ar19d5v"
+  const userId = CURRENT_USER_ID
   const journalId = "1"
 
   // Load the journal entry from the db when dialog opens
