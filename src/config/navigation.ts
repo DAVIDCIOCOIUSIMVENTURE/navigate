@@ -1,18 +1,14 @@
-import { Search, Compass, CheckCircle, Sparkles, ClipboardCheck, Lightbulb, Heart, Book, Brain, Globe } from "lucide-react"
+import { Search, Compass, CheckCircle, Sparkles, ClipboardCheck, Heart, Book, Brain, Globe } from "lucide-react"
 
 export const navigationItems = {
-  problemDiscovery: [
+  selfDiscovery: [
     {
       title: "Self Discovery",
       url: "/self-discovery",
       icon: Compass
     },
-    {
-      // title: "Problem Trigger Buckets",
-      title: "Problem Trigger Buckets",
-      url: "/problem-trigger-buckets",
-      icon: Lightbulb
-    },
+  ],
+  problemDiscovery: [
     {
       title: "Problem Discovery",
       url: "/problem-discovery",
@@ -46,7 +42,7 @@ export const selfDiscoveryCategoryIcons = {
 }
 
 export function getNavigationItem(path: string) {
-  const allItems = [...navigationItems.problemDiscovery, ...navigationItems.solution]
+  const allItems = [...navigationItems.selfDiscovery, ...navigationItems.problemDiscovery, ...navigationItems.solution]
   return allItems.find(item => item.url === path)
 }
 
