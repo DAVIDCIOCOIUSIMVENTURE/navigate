@@ -1,11 +1,13 @@
 import { init, Models, RematchDispatch, RematchRootState } from "@rematch/core"
 import { journal } from "./journal-model"
+import { settings } from "./settings-model"
 
 export interface RootModel extends Models<RootModel> {
   journal: typeof journal
+  settings: typeof settings
 }
 
-const models: RootModel = { journal }
+const models: RootModel = { journal, settings }
 
 export function createStore() {
   return init<RootModel>({ models })

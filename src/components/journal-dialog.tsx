@@ -40,7 +40,7 @@ export function JournalDialog() {
   return (
     <Dialog open={open} onOpenChange={(val) => dispatch.journal.setOpen(val)}>
       <DialogTrigger asChild>
-        <SidebarMenuButton className="hover:bg-accent/50 transition-colors">
+        <SidebarMenuButton tooltip="Journal" className="hover:bg-accent/50 transition-colors">
           <div className="flex items-center justify-center w-6 h-6 rounded-md">
             <Book className="h-4 w-4" />
           </div>

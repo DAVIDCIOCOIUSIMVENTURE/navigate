@@ -32,6 +32,8 @@ const SIDEBAR_WIDTH_MOBILE = "18rem"
 const SIDEBAR_WIDTH_ICON = "3rem"
 const SIDEBAR_KEYBOARD_SHORTCUT = "b"
 
+export type SidebarMode = "expanded" | "icon" | "collapsed"
+
 type SidebarContextProps = {
   state: "expanded" | "collapsed"
   open: boolean
@@ -40,6 +42,8 @@ type SidebarContextProps = {
   setOpenMobile: (open: boolean) => void
   isMobile: boolean
   toggleSidebar: () => void
+  sidebarMode: SidebarMode
+  setSidebarMode: (mode: SidebarMode) => void
 }
 
 const SidebarContext = React.createContext<SidebarContextProps | null>(null)
@@ -59,6 +63,8 @@ const SidebarProvider = React.forwardRef<
     defaultOpen?: boolean
     open?: boolean
     onOpenChange?: (open: boolean) => void
+    sidebarMode?: SidebarMode
+    onSidebarModeChange?: (mode: SidebarMode) => void
   }
 >(
   (
@@ -66,6 +72,8 @@ const SidebarProvider = React.forwardRef<
       defaultOpen = true,
       open: openProp,
       onOpenChange: setOpenProp,
+      sidebarMode: sidebarModeProp,
+      onSidebarModeChange,
       className,
       style,
       children,
@@ -76,31 +84,47 @@ const SidebarProvider = React.forwardRef<
     const isMobile = useIsMobile()
     const [openMobile, setOpenMobile] = React.useState(false)
 
-    // This is the internal state of the sidebar.
-    // We use openProp and setOpenProp for control from outside the component.
-    const [_open, _setOpen] = React.useState(defaultOpen)
-    const open = openProp ?? _open
+    // 3-state sidebar mode: "expanded" | "icon" | "collapsed"
+    // Internal state used when uncontrolled (no sidebarModeProp).
+    const [_sidebarMode, _setSidebarMode] = React.useState<SidebarMode>(
+      sidebarModeProp ?? (defaultOpen ? "expanded" : "icon")
+    )
+    const sidebarMode = sidebarModeProp ?? _sidebarMode
+
+    const setSidebarMode = React.useCallback((mode: SidebarMode) => {
+      if (!sidebarModeProp) {
+        _setSidebarMode(mode)
+      }
+      onSidebarModeChange?.(mode)
+      document.cookie = `${SIDEBAR_COOKIE_NAME}=${mode}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+    }, [sidebarModeProp, onSidebarModeChange])
+
+    // Derived values for backward compatibility
+    const open = openProp ?? sidebarMode === "expanded"
+    const state: "expanded" | "collapsed" = sidebarMode === "expanded" ? "expanded" : "collapsed"
+
     const setOpen = React.useCallback(
       (value: boolean | ((value: boolean) => boolean)) => {
         const openState = typeof value === "function" ? value(open) : value
         if (setOpenProp) {
           setOpenProp(openState)
         } else {
-          _setOpen(openState)
+          setSidebarMode(openState ? "expanded" : "icon")
         }
-
-        // This sets the cookie to keep the sidebar state.
-        document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
       },
-      [setOpenProp, open]
+      [setOpenProp, open, setSidebarMode]
     )
 
-    // Helper to toggle the sidebar.
+    // Cycles through expanded → icon → collapsed → expanded on desktop.
     const toggleSidebar = React.useCallback(() => {
-      return isMobile
-        ? setOpenMobile((open) => !open)
-        : setOpen((open) => !open)
-    }, [isMobile, setOpen, setOpenMobile])
+      if (isMobile) {
+        setOpenMobile((o) => !o)
+        return
+      }
+      const next: SidebarMode =
+        sidebarMode === "expanded" ? "icon" : sidebarMode === "icon" ? "collapsed" : "expanded"
+      setSidebarMode(next)
+    }, [isMobile, setOpenMobile, sidebarMode, setSidebarMode])
 
     // Adds a keyboard shortcut to toggle the sidebar.
     React.useEffect(() => {
@@ -118,10 +142,6 @@ const SidebarProvider = React.forwardRef<
       return () => window.removeEventListener("keydown", handleKeyDown)
     }, [toggleSidebar])
 
-    // We add a state so that we can do data-state="expanded" or "collapsed".
-    // This makes it easier to style the sidebar with Tailwind classes.
-    const state = open ? "expanded" : "collapsed"
-
     const contextValue = React.useMemo<SidebarContextProps>(
       () => ({
         state,
@@ -131,8 +151,10 @@ const SidebarProvider = React.forwardRef<
         openMobile,
         setOpenMobile,
         toggleSidebar,
+        sidebarMode,
+        setSidebarMode,
       }),
-      [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar]
+      [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar, sidebarMode, setSidebarMode]
     )
 
     return (
@@ -181,7 +203,11 @@ const Sidebar = React.forwardRef<
     },
     ref
   ) => {
-    const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
+    const { isMobile, state, openMobile, setOpenMobile, sidebarMode } = useSidebar()
+
+    // Derive the collapsible attribute from context mode for dynamic 3-state behavior
+    const collapsibleAttr =
+      sidebarMode === "icon" ? "icon" : sidebarMode === "collapsed" ? "offcanvas" : ""
 
     if (collapsible === "none") {
       return (
@@ -227,7 +253,7 @@ const Sidebar = React.forwardRef<
         ref={ref}
         className="group peer hidden text-sidebar-foreground md:block"
         data-state={state}
-        data-collapsible={state === "collapsed" ? collapsible : ""}
+        data-collapsible={state === "collapsed" ? collapsibleAttr : ""}
         data-variant={variant}
         data-side={side}
       >

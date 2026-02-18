@@ -14,24 +14,26 @@ import {
 import { Button } from "@/components/ui/button"
 import { Settings, HelpCircle } from "lucide-react"
 import { usePathname } from "next/navigation"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { GuidanceDialog } from "@/components/guidance-dialog"
 import { AppStoreProvider } from "@/store/provider"
+import { useSelector, useDispatch } from "react-redux"
+import type { RootState, AppDispatch } from "@/store"
 
 function generateBreadcrumbs(pathname: string) {
   // 1. Split the path and remove empty strings
   const paths = pathname.split('/').filter(Boolean)
-  
+
   // 2. Map each path segment into a breadcrumb object
   const breadcrumbs = paths.map((path, index) => {
     // Create the full URL up to this segment
     const href = `/${paths.slice(0, index + 1).join('/')}`
-    
+
     // Format the label: "self-discovery" -> "Self Discovery"
-    const label = path.split('-').map(word => 
+    const label = path.split('-').map(word =>
       word.charAt(0).toUpperCase() + word.slice(1)
     ).join(' ')
-    
+
     return {
       href,    // e.g., "/self-discovery"
       label,   // e.g., "Self Discovery"
@@ -42,18 +44,24 @@ function generateBreadcrumbs(pathname: string) {
   return breadcrumbs
 }
 
-export default function RootLayoutClient({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const breadcrumbs = generateBreadcrumbs(pathname)
   const [guidanceOpen, setGuidanceOpen] = useState(false)
 
+  const sidebarMode = useSelector((state: RootState) => state.settings.sidebarMode)
+  const dispatch = useDispatch<AppDispatch>()
+
+  // Load persisted settings from localStorage on mount
+  useEffect(() => {
+    dispatch.settings.init()
+  }, [])
+
   return (
-    <AppStoreProvider>
-    <SidebarProvider>
+    <SidebarProvider
+      sidebarMode={sidebarMode}
+      onSidebarModeChange={(mode) => dispatch.settings.setSidebarMode(mode)}
+    >
       <AppSidebar />
       <SidebarInset>
         <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4 justify-between">
@@ -97,6 +105,17 @@ export default function RootLayoutClient({
       </SidebarInset>
       <GuidanceDialog open={guidanceOpen} onOpenChange={setGuidanceOpen} />
     </SidebarProvider>
+  )
+}
+
+export default function RootLayoutClient({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <AppStoreProvider>
+      <LayoutContent>{children}</LayoutContent>
     </AppStoreProvider>
   )
-} 
+}
