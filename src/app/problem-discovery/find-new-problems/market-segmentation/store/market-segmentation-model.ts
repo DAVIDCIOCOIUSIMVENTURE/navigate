@@ -11,6 +11,11 @@ export interface Problem {
   text: string
 }
 
+export interface MarketSegment {
+  segment: string
+  description: string
+}
+
 export interface Job {
   id: number
   job: string
@@ -22,6 +27,7 @@ export interface Job {
 }
 
 interface State {
+  marketSegment: MarketSegment
   jobs: Job[]
   nextJobId: number
   nextSolutionId: number
@@ -30,12 +36,19 @@ interface State {
 
 export const marketSegmentation = createModel<RootModel>()({
   state: {
+    marketSegment: { segment: "", description: "" },
     jobs: [{ id: 1, job: "", functional: "", emotional: "", social: "", solutions: [], problems: [] }],
     nextJobId: 2,
     nextSolutionId: 1,
     nextProblemId: 1,
   } as State,
   reducers: {
+    updateMarketSegment(state, payload: { field: keyof MarketSegment; value: string }) {
+      return {
+        ...state,
+        marketSegment: { ...state.marketSegment, [payload.field]: payload.value },
+      }
+    },
     addJob(state) {
       return {
         ...state,

@@ -1,14 +1,19 @@
 "use client"
 
-import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Search, X, PieChart } from "lucide-react"
+import { useSelector, useDispatch } from "react-redux"
+import type { RootState, AppDispatch } from "../store"
 
 export default function MarketSegmentPage() {
-  const [segment, setSegment] = useState("")
-  const [description, setDescription] = useState("")
+  const marketSegment = useSelector((state: RootState) => state.marketSegmentation.marketSegment)
+  const dispatch = useDispatch<AppDispatch>()
+
+  function update(field: "segment" | "description", value: string) {
+    dispatch.marketSegmentation.updateMarketSegment({ field, value })
+  }
 
   return (
     <Card className="w-full flex-1">
@@ -78,13 +83,13 @@ export default function MarketSegmentPage() {
             <div className="relative">
               <Input
                 placeholder="e.g. Gig economy workers"
-                value={segment}
-                onChange={(e) => setSegment(e.target.value)}
-                className={`bg-white border-white/20 text-foreground placeholder:text-muted-foreground${segment ? " pr-8" : ""}`}
+                value={marketSegment.segment}
+                onChange={(e) => update("segment", e.target.value)}
+                className={`bg-white border-white/20 text-foreground placeholder:text-muted-foreground${marketSegment.segment ? " pr-8" : ""}`}
               />
-              {segment && (
+              {marketSegment.segment && (
                 <button
-                  onClick={() => setSegment("")}
+                  onClick={() => update("segment", "")}
                   className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   aria-label="Clear"
                 >
@@ -97,8 +102,8 @@ export default function MarketSegmentPage() {
             <label className="text-sm font-medium">Describe your market segment</label>
             <Textarea
               placeholder="What characteristics define this group? What situation are they in?"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={marketSegment.description}
+              onChange={(e) => update("description", e.target.value)}
               rows={3}
               className="bg-white border-white/20 text-foreground placeholder:text-muted-foreground"
             />
