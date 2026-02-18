@@ -4,8 +4,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { getNavigationItem } from "@/config/navigation"
 import { CURRENT_USER_ID } from "@/lib/config"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { Plus } from "lucide-react"
 
 type ProblemTrigger = {
@@ -17,9 +17,9 @@ type ProblemTrigger = {
 export default function ProblemDiscoveryPage() {
   const navItem = getNavigationItem("/problem-discovery")
   const Icon = navItem?.icon
+  const router = useRouter()
   const [problems, setProblems] = useState<ProblemTrigger[]>([])
   const [loading, setLoading] = useState(true)
-  const [modalOpen, setModalOpen] = useState(false)
 
   useEffect(() => {
     async function fetchProblems() {
@@ -58,31 +58,11 @@ export default function ProblemDiscoveryPage() {
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <h2 className="text-lg font-semibold">Your Problems</h2>
-            <Button variant="primary-outline" size="sm" className="flex items-center gap-2" onClick={() => setModalOpen(true)}>
+            <Button variant="primary-outline" size="sm" className="flex items-center gap-2" onClick={() => router.push("/problem-discovery/find-new-problems")}>
               <Plus className="h-4 w-4" />
               Find New Problems
             </Button>
           </div>
-
-          <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Find New Problems</DialogTitle>
-                <p className="text-sm text-muted-foreground pt-1">
-                  Use the tools below to uncover new problem spaces. Each tool offers a different lens for identifying
-                  unmet needs and opportunities — choose a starting point that best fits your current thinking.
-                </p>
-              </DialogHeader>
-              <div className="flex flex-col gap-3 pt-2">
-                <h3 className="text-sm font-semibold">Start from...</h3>
-                <div className="flex flex-col gap-2">
-                  <Button variant="primary-outline" className="justify-start">Market Segmentation</Button>
-                  <Button variant="primary-outline" className="justify-start">Demographic</Button>
-                  <Button variant="primary-outline" className="justify-start">Changes in the Environment</Button>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
 
           {loading ? (
             <p className="text-muted-foreground">Loading problems...</p>
