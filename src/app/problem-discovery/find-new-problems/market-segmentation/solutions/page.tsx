@@ -4,24 +4,25 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Search, Plus, Trash2, Briefcase } from "lucide-react"
-import { useMarketSegmentation } from "../market-segmentation-context"
+import { useSelector, useDispatch } from "react-redux"
+import type { RootState, AppDispatch } from "../store"
 
 export default function SolutionsPage() {
-  const { jobs, solutions, setSolutions, nextSolutionId, setNextSolutionId } = useMarketSegmentation()
+  const jobs = useSelector((state: RootState) => state.marketSegmentation.jobs)
+  const dispatch = useDispatch<AppDispatch>()
 
   const namedJobs = jobs.filter((j) => j.job.trim())
 
   function addSolution(jobId: number) {
-    setSolutions((prev) => [...prev, { id: nextSolutionId, jobId, text: "" }])
-    setNextSolutionId((n) => n + 1)
+    dispatch.marketSegmentation.addSolution(jobId)
   }
 
-  function updateSolution(id: number, text: string) {
-    setSolutions((prev) => prev.map((s) => (s.id === id ? { ...s, text } : s)))
+  function updateSolution(jobId: number, id: number, text: string) {
+    dispatch.marketSegmentation.updateSolution({ jobId, id, text })
   }
 
-  function removeSolution(id: number) {
-    setSolutions((prev) => prev.filter((s) => s.id !== id))
+  function removeSolution(jobId: number, id: number) {
+    dispatch.marketSegmentation.removeSolution({ jobId, id })
   }
 
   return (
@@ -51,7 +52,7 @@ export default function SolutionsPage() {
         ) : (
           <ul className="flex flex-col gap-4">
             {namedJobs.map((job) => {
-              const jobSolutions = solutions.filter((s) => s.jobId === job.id)
+              const jobSolutions = job.solutions
               return (
                 <li key={job.id} className="rounded-lg bg-primary p-6 flex flex-col gap-4 text-primary-foreground">
                   <p className="text-base font-semibold flex items-center gap-2">
@@ -66,11 +67,11 @@ export default function SolutionsPage() {
                           <Input
                             placeholder="Existing solution…"
                             value={solution.text}
-                            onChange={(e) => updateSolution(solution.id, e.target.value)}
+                            onChange={(e) => updateSolution(job.id, solution.id, e.target.value)}
                             className="bg-white border-white/20 text-foreground placeholder:text-muted-foreground"
                           />
                           <button
-                            onClick={() => removeSolution(solution.id)}
+                            onClick={() => removeSolution(job.id, solution.id)}
                             className="text-primary-foreground/60 hover:text-primary-foreground transition-colors shrink-0"
                             aria-label="Remove solution"
                           >

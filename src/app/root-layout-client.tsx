@@ -16,6 +16,7 @@ import { Settings, HelpCircle } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { useState } from "react"
 import { GuidanceDialog } from "@/components/guidance-dialog"
+import { AppStoreProvider } from "@/store/provider"
 
 function generateBreadcrumbs(pathname: string) {
   // 1. Split the path and remove empty strings
@@ -51,6 +52,7 @@ export default function RootLayoutClient({
   const [guidanceOpen, setGuidanceOpen] = useState(false)
 
   return (
+    <AppStoreProvider>
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
@@ -95,5 +97,6 @@ export default function RootLayoutClient({
       </SidebarInset>
       <GuidanceDialog open={guidanceOpen} onOpenChange={setGuidanceOpen} />
     </SidebarProvider>
+    </AppStoreProvider>
   )
 } 

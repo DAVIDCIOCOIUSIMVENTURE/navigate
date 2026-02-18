@@ -5,27 +5,26 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Search, Plus, Trash2, Briefcase } from "lucide-react"
-import { useMarketSegmentation, type Job } from "../market-segmentation-context"
+import { useSelector, useDispatch } from "react-redux"
+import type { RootState, AppDispatch } from "../store"
+import type { Job } from "../store/market-segmentation-model"
 
-type JobField = keyof Omit<Job, "id">
+type JobField = keyof Omit<Job, "id" | "solutions" | "problems">
 
 export default function JobsToBeDonePage() {
-  const { jobs, setJobs, nextJobId, setNextJobId } = useMarketSegmentation()
+  const jobs = useSelector((state: RootState) => state.marketSegmentation.jobs)
+  const dispatch = useDispatch<AppDispatch>()
 
   function addJob() {
-    setJobs((prev) => [...prev, { id: nextJobId, job: "", functional: "", emotional: "", social: "" }])
-    setNextJobId((n) => n + 1)
+    dispatch.marketSegmentation.addJob()
   }
 
   function updateJob(id: number, field: JobField, value: string) {
-    setJobs((prev) => prev.map((j) => (j.id === id ? { ...j, [field]: value } : j)))
+    dispatch.marketSegmentation.updateJob({ id, field, value })
   }
 
   function removeJob(id: number) {
-    setJobs((prev) => {
-      if (prev.length === 1) return prev
-      return prev.filter((j) => j.id !== id)
-    })
+    dispatch.marketSegmentation.removeJob(id)
   }
 
   return (

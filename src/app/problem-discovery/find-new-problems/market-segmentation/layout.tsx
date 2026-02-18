@@ -3,7 +3,7 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useRouter, usePathname } from "next/navigation"
-import { MarketSegmentationProvider } from "./market-segmentation-context"
+import { MarketSegmentationStoreProvider } from "./store/provider"
 
 const BASE = "/problem-discovery/find-new-problems/market-segmentation"
 
@@ -43,9 +43,9 @@ export default function MarketSegmentationLayout({ children }: { children: React
         </Card>
 
         <div className="flex-1">
-          <MarketSegmentationProvider>
+          <MarketSegmentationStoreProvider>
             {children}
-          </MarketSegmentationProvider>
+          </MarketSegmentationStoreProvider>
         </div>
     </div>
   )

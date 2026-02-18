@@ -1,58 +1,44 @@
+"use client"
+
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { CURRENT_USER_ID } from "@/lib/config"
 import { Textarea } from "@/components/ui/textarea"
 import { Book } from "lucide-react"
 import { SidebarMenuButton } from "@/components/ui/sidebar"
-import { useState, useEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
+import { useSelector, useDispatch } from "react-redux"
+import type { RootState, AppDispatch } from "@/store"
+
+const JOURNAL_ID = "1"
 
 export function JournalDialog() {
-  const [journalText, setJournalText] = useState("")
-  const [open, setOpen] = useState(false)
-  const [loading, setLoading] = useState(false)
-  const [title, setTitle] = useState("")
+  const title = useSelector((state: RootState) => state.journal.title)
+  const text = useSelector((state: RootState) => state.journal.text)
+  const open = useSelector((state: RootState) => state.journal.open)
+  const dispatch = useDispatch<AppDispatch>()
   const debounceRef = useRef<NodeJS.Timeout | null>(null)
-  const userId = CURRENT_USER_ID
-  const journalId = "1"
 
-  // Load the journal entry from the db when dialog opens
+  // Load entry when dialog opens
   useEffect(() => {
     if (open) {
-      setLoading(true)
-      fetch(`/journalEntry?id=${journalId}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data && data.length > 0) {
-            setJournalText(data[0].text || "")
-            setTitle(data[0].title || "")
-          } else {
-            setJournalText("")
-            setTitle("")
-          }
-        })
-        .finally(() => setLoading(false))
+      dispatch.journal.load(JOURNAL_ID)
     }
   }, [open])
 
-  // Save journal entry with debounce
+  // Auto-save with debounce whenever title or text changes (while open)
   useEffect(() => {
     if (!open) return
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => {
-      setLoading(true)
-      fetch(`/journalEntry/${journalId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: journalId, title, text: journalText, userId })
-      })
-        .finally(() => setLoading(false))
+      dispatch.journal.save({ journalId: JOURNAL_ID, title, text, userId: CURRENT_USER_ID })
     }, 500)
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
     }
-  }, [journalText, title, open])
+  }, [title, text, open])
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={(val) => dispatch.journal.setOpen(val)}>
       <DialogTrigger asChild>
         <SidebarMenuButton className="hover:bg-accent/50 transition-colors">
           <div className="flex items-center justify-center w-6 h-6 rounded-md">
@@ -69,19 +55,18 @@ export function JournalDialog() {
           <input
             className="w-full border rounded px-2 py-1"
             value={title}
-            onChange={e => setTitle(e.target.value)}
+            onChange={e => dispatch.journal.setTitle(e.target.value)}
             placeholder="Title"
             required
           />
           <Textarea
-            value={journalText}
-            onChange={e => setJournalText(e.target.value)}
+            value={text}
+            onChange={e => dispatch.journal.setText(e.target.value)}
             placeholder="Write your thoughts here..."
             className="mt-2"
             rows={5}
             required
           />
-          {/* {loading && <div className="text-xs text-muted-foreground">Saving...</div>} */}
         </form>
       </DialogContent>
     </Dialog>
