@@ -1,29 +1,20 @@
 "use client"
 
-import { useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { Search, Plus, Trash2, Briefcase } from "lucide-react"
-
-interface Job {
-  id: number
-  job: string
-  functional: string
-  emotional: string
-  social: string
-}
+import { useMarketSegmentation, type Job } from "../market-segmentation-context"
 
 type JobField = keyof Omit<Job, "id">
 
 export default function JobsToBeDonePage() {
-const [jobs, setJobs] = useState<Job[]>([{ id: 1, job: "", functional: "", emotional: "", social: "" }])
-  const [nextId, setNextId] = useState(2)
+  const { jobs, setJobs, nextJobId, setNextJobId } = useMarketSegmentation()
 
   function addJob() {
-    setJobs((prev) => [...prev, { id: nextId, job: "", functional: "", emotional: "", social: "" }])
-    setNextId((n) => n + 1)
+    setJobs((prev) => [...prev, { id: nextJobId, job: "", functional: "", emotional: "", social: "" }])
+    setNextJobId((n) => n + 1)
   }
 
   function updateJob(id: number, field: JobField, value: string) {

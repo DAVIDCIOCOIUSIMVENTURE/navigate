@@ -21,6 +21,8 @@ const buttonVariants = cva(
           "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
         "primary-outline":
           "border border-primary text-primary hover:bg-primary/10",
+        "on-primary":
+          "border border-white text-white hover:bg-white/10",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         "secondary-primary":
