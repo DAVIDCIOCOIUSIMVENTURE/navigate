@@ -1,4 +1,4 @@
-import { PieChart, Users, Globe, Target, type LucideIcon } from "lucide-react"
+import { PieChart, Users, Globe, Target, UserSearch, type LucideIcon } from "lucide-react"
 
 export type DiscoveryMethod = {
   id: string
@@ -22,6 +22,19 @@ export const DISCOVERY_METHODS: DiscoveryMethod[] = [
     ],
     href: null,
     icon: Target,
+  },
+  {
+    id: "finding-my-customers",
+    title: "Start From Finding My Customers",
+    description:
+      "Begin by identifying and describing the specific people you want to serve. By anchoring discovery in real customers, you can uncover their jobs to be done, explore existing solutions they use, and reveal the problems those solutions leave unsolved.",
+    examples: [
+      "Freelance designers struggling to get clear, consolidated feedback from clients",
+      "New parents returning to work who can't find flexible childcare that fits their hours",
+      "Independent café owners overwhelmed by staff scheduling without dedicated management tools",
+    ],
+    href: "/problem-discovery/find-new-problems/finding-my-customers",
+    icon: UserSearch,
   },
   {
     id: "market-segmentation",
