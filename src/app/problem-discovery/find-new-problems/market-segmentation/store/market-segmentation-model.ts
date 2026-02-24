@@ -1,14 +1,15 @@
 import { createModel } from "@rematch/core"
 import type { RootModel } from "."
 
-export interface Solution {
+export interface Problem {
   id: number
   text: string
 }
 
-export interface Problem {
+export interface Solution {
   id: number
   text: string
+  problems: Problem[]
 }
 
 export interface MarketSegment {
@@ -23,7 +24,6 @@ export interface Job {
   emotional: string
   social: string
   solutions: Solution[]
-  problems: Problem[]
 }
 
 interface State {
@@ -37,7 +37,7 @@ interface State {
 export const marketSegmentation = createModel<RootModel>()({
   state: {
     marketSegment: { segment: "", description: "" },
-    jobs: [{ id: 1, job: "", functional: "", emotional: "", social: "", solutions: [], problems: [] }],
+    jobs: [{ id: 1, job: "", functional: "", emotional: "", social: "", solutions: [] }],
     nextJobId: 2,
     nextSolutionId: 1,
     nextProblemId: 1,
@@ -54,12 +54,12 @@ export const marketSegmentation = createModel<RootModel>()({
         ...state,
         jobs: [
           ...state.jobs,
-          { id: state.nextJobId, job: "", functional: "", emotional: "", social: "", solutions: [], problems: [] },
+          { id: state.nextJobId, job: "", functional: "", emotional: "", social: "", solutions: [] },
         ],
         nextJobId: state.nextJobId + 1,
       }
     },
-    updateJob(state, payload: { id: number; field: keyof Omit<Job, "id" | "solutions" | "problems">; value: string }) {
+    updateJob(state, payload: { id: number; field: keyof Omit<Job, "id" | "solutions">; value: string }) {
       return {
         ...state,
         jobs: state.jobs.map((j) =>
@@ -75,7 +75,7 @@ export const marketSegmentation = createModel<RootModel>()({
       }
     },
     addSolution(state, jobId: number) {
-      const newSolution: Solution = { id: state.nextSolutionId, text: "" }
+      const newSolution: Solution = { id: state.nextSolutionId, text: "", problems: [] }
       return {
         ...state,
         jobs: state.jobs.map((j) =>
@@ -104,32 +104,53 @@ export const marketSegmentation = createModel<RootModel>()({
         ),
       }
     },
-    addProblem(state, jobId: number) {
+    addProblem(state, payload: { jobId: number; solutionId: number }) {
       const newProblem: Problem = { id: state.nextProblemId, text: "" }
       return {
         ...state,
         jobs: state.jobs.map((j) =>
-          j.id === jobId ? { ...j, problems: [...j.problems, newProblem] } : j
+          j.id === payload.jobId
+            ? {
+                ...j,
+                solutions: j.solutions.map((s) =>
+                  s.id === payload.solutionId ? { ...s, problems: [...s.problems, newProblem] } : s
+                ),
+              }
+            : j
         ),
         nextProblemId: state.nextProblemId + 1,
       }
     },
-    updateProblem(state, payload: { jobId: number; id: number; text: string }) {
+    updateProblem(state, payload: { jobId: number; solutionId: number; id: number; text: string }) {
       return {
         ...state,
         jobs: state.jobs.map((j) =>
           j.id === payload.jobId
-            ? { ...j, problems: j.problems.map((p) => (p.id === payload.id ? { ...p, text: payload.text } : p)) }
+            ? {
+                ...j,
+                solutions: j.solutions.map((s) =>
+                  s.id === payload.solutionId
+                    ? { ...s, problems: s.problems.map((p) => (p.id === payload.id ? { ...p, text: payload.text } : p)) }
+                    : s
+                ),
+              }
             : j
         ),
       }
     },
-    removeProblem(state, payload: { jobId: number; id: number }) {
+    removeProblem(state, payload: { jobId: number; solutionId: number; id: number }) {
       return {
         ...state,
         jobs: state.jobs.map((j) =>
           j.id === payload.jobId
-            ? { ...j, problems: j.problems.filter((p) => p.id !== payload.id) }
+            ? {
+                ...j,
+                solutions: j.solutions.map((s) =>
+                  s.id === payload.solutionId
+                    ? { ...s, problems: s.problems.filter((p) => p.id !== payload.id) }
+                    : s
+                ),
+              }
             : j
         ),
       }
