@@ -8,7 +8,9 @@ export default function SummaryPage() {
     <Card className="w-full flex-1 flex flex-col h-[calc(100svh-9rem)]">
       <CardContent className="p-8 flex flex-col gap-4 overflow-y-auto flex-1">
         <div className="flex items-center gap-1.5">
-          <Search className="h-3 w-3 text-muted-foreground" />
+          <span className="flex items-center justify-center w-5 h-5 rounded bg-yellow-400">
+            <Search className="h-3 w-3 text-white" />
+          </span>
           <span className="text-xs font-semibold text-muted-foreground">Problem Discovery - Finding My Customers</span>
         </div>
         <h2 className="text-xl font-semibold">Summary</h2>

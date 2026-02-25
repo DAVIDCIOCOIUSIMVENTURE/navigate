@@ -1,15 +1,16 @@
 import { createModel } from "@rematch/core"
 import type { RootModel } from "."
 
-export interface Problem {
+export interface ChildItem {
   id: number
   text: string
 }
 
-export interface Solution {
+export interface JobItem {
   id: number
   text: string
-  problems: Problem[]
+  type: "solution" | "problem"
+  children: ChildItem[]
 }
 
 export interface CustomerProfile {
@@ -26,7 +27,7 @@ export interface Job {
   functional: string
   emotional: string
   social: string
-  solutions: Solution[]
+  items: JobItem[]
 }
 
 interface State {
@@ -35,8 +36,8 @@ interface State {
   ageMax: number
   jobs: Job[]
   nextJobId: number
-  nextSolutionId: number
-  nextProblemId: number
+  nextItemId: number
+  nextChildId: number
 }
 
 export const findingMyCustomers = createModel<RootModel>()({
@@ -44,10 +45,10 @@ export const findingMyCustomers = createModel<RootModel>()({
     customerProfile: { name: "", occupation: "", whoTheyAre: "", goals: "", frustrations: "" },
     ageMin: 18,
     ageMax: 65,
-    jobs: [{ id: 1, job: "", functional: "", emotional: "", social: "", solutions: [] }],
+    jobs: [{ id: 1, job: "", functional: "", emotional: "", social: "", items: [] }],
     nextJobId: 2,
-    nextSolutionId: 1,
-    nextProblemId: 1,
+    nextItemId: 1,
+    nextChildId: 1,
   } as State,
   reducers: {
     updateCustomerProfile(state, payload: { field: keyof CustomerProfile; value: string }) {
@@ -64,12 +65,12 @@ export const findingMyCustomers = createModel<RootModel>()({
         ...state,
         jobs: [
           ...state.jobs,
-          { id: state.nextJobId, job: "", functional: "", emotional: "", social: "", solutions: [] },
+          { id: state.nextJobId, job: "", functional: "", emotional: "", social: "", items: [] },
         ],
         nextJobId: state.nextJobId + 1,
       }
     },
-    updateJob(state, payload: { id: number; field: keyof Omit<Job, "id" | "solutions">; value: string }) {
+    updateJob(state, payload: { id: number; field: keyof Omit<Job, "id" | "items">; value: string }) {
       return {
         ...state,
         jobs: state.jobs.map((j) =>
@@ -84,81 +85,91 @@ export const findingMyCustomers = createModel<RootModel>()({
         jobs: state.jobs.filter((j) => j.id !== id),
       }
     },
-    addSolution(state, jobId: number) {
-      const newSolution: Solution = { id: state.nextSolutionId, text: "", problems: [] }
+    addItem(state, payload: { jobId: number; type: "solution" | "problem" }) {
+      const newItem: JobItem = { id: state.nextItemId, text: "", type: payload.type, children: [] }
       return {
         ...state,
         jobs: state.jobs.map((j) =>
-          j.id === jobId ? { ...j, solutions: [...j.solutions, newSolution] } : j
+          j.id === payload.jobId ? { ...j, items: [...j.items, newItem] } : j
         ),
-        nextSolutionId: state.nextSolutionId + 1,
+        nextItemId: state.nextItemId + 1,
       }
     },
-    updateSolution(state, payload: { jobId: number; id: number; text: string }) {
-      return {
-        ...state,
-        jobs: state.jobs.map((j) =>
-          j.id === payload.jobId
-            ? { ...j, solutions: j.solutions.map((s) => (s.id === payload.id ? { ...s, text: payload.text } : s)) }
-            : j
-        ),
-      }
-    },
-    removeSolution(state, payload: { jobId: number; id: number }) {
+    updateItemText(state, payload: { jobId: number; itemId: number; text: string }) {
       return {
         ...state,
         jobs: state.jobs.map((j) =>
           j.id === payload.jobId
-            ? { ...j, solutions: j.solutions.filter((s) => s.id !== payload.id) }
+            ? { ...j, items: j.items.map((item) => item.id === payload.itemId ? { ...item, text: payload.text } : item) }
             : j
         ),
       }
     },
-    addProblem(state, payload: { jobId: number; solutionId: number }) {
-      const newProblem: Problem = { id: state.nextProblemId, text: "" }
+    updateItemType(state, payload: { jobId: number; itemId: number; type: "solution" | "problem" }) {
+      return {
+        ...state,
+        jobs: state.jobs.map((j) =>
+          j.id === payload.jobId
+            ? { ...j, items: j.items.map((item) => item.id === payload.itemId ? { ...item, type: payload.type, children: [] } : item) }
+            : j
+        ),
+      }
+    },
+    removeItem(state, payload: { jobId: number; itemId: number }) {
+      return {
+        ...state,
+        jobs: state.jobs.map((j) =>
+          j.id === payload.jobId
+            ? { ...j, items: j.items.filter((item) => item.id !== payload.itemId) }
+            : j
+        ),
+      }
+    },
+    addChild(state, payload: { jobId: number; itemId: number }) {
+      const newChild: ChildItem = { id: state.nextChildId, text: "" }
       return {
         ...state,
         jobs: state.jobs.map((j) =>
           j.id === payload.jobId
             ? {
                 ...j,
-                solutions: j.solutions.map((s) =>
-                  s.id === payload.solutionId ? { ...s, problems: [...s.problems, newProblem] } : s
+                items: j.items.map((item) =>
+                  item.id === payload.itemId ? { ...item, children: [...item.children, newChild] } : item
                 ),
               }
             : j
         ),
-        nextProblemId: state.nextProblemId + 1,
+        nextChildId: state.nextChildId + 1,
       }
     },
-    updateProblem(state, payload: { jobId: number; solutionId: number; id: number; text: string }) {
+    updateChild(state, payload: { jobId: number; itemId: number; childId: number; text: string }) {
       return {
         ...state,
         jobs: state.jobs.map((j) =>
           j.id === payload.jobId
             ? {
                 ...j,
-                solutions: j.solutions.map((s) =>
-                  s.id === payload.solutionId
-                    ? { ...s, problems: s.problems.map((p) => (p.id === payload.id ? { ...p, text: payload.text } : p)) }
-                    : s
+                items: j.items.map((item) =>
+                  item.id === payload.itemId
+                    ? { ...item, children: item.children.map((c) => c.id === payload.childId ? { ...c, text: payload.text } : c) }
+                    : item
                 ),
               }
             : j
         ),
       }
     },
-    removeProblem(state, payload: { jobId: number; solutionId: number; id: number }) {
+    removeChild(state, payload: { jobId: number; itemId: number; childId: number }) {
       return {
         ...state,
         jobs: state.jobs.map((j) =>
           j.id === payload.jobId
             ? {
                 ...j,
-                solutions: j.solutions.map((s) =>
-                  s.id === payload.solutionId
-                    ? { ...s, problems: s.problems.filter((p) => p.id !== payload.id) }
-                    : s
+                items: j.items.map((item) =>
+                  item.id === payload.itemId
+                    ? { ...item, children: item.children.filter((c) => c.id !== payload.childId) }
+                    : item
                 ),
               }
             : j

@@ -21,8 +21,7 @@ const NAV_ITEMS = [
   { label: "Introduction", path: "introduction" },
   { label: "Your Customers", path: "your-customers" },
   { label: "Jobs to Be Done", path: "jobs-to-be-done" },
-  { label: "Solutions", path: "solutions" },
-  { label: "Problems", path: "problems" },
+  { label: "Problems & Existing Solutions", path: "problems-and-existing-solutions" },
   { label: "Summary", path: "summary" },
 ]
 
@@ -92,7 +91,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                   <Button
                     key={item.path}
                     variant={isActive ? "secondary" : "ghost"}
-                    className="w-full justify-start"
+                    className="w-full justify-start h-auto whitespace-normal text-left"
                     onClick={() => router.push(`${BASE}/${item.path}`)}
                   >
                     {item.label}
