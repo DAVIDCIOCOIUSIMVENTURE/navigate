@@ -140,7 +140,7 @@ export default function YourCustomersPage() {
               <span className="text-sm font-semibold tabular-nums">{ageMin} – {ageMax}</span>
             </div>
             <Slider
-              min={18}
+              min={0}
               max={100}
               step={1}
               value={[ageMin, ageMax]}
@@ -150,7 +150,7 @@ export default function YourCustomersPage() {
               thumbClassName="bg-white border-white/50 hover:bg-white/90"
             />
             <div className="flex justify-between text-xs text-primary-foreground/60">
-              <span>18</span>
+              <span>0</span>
               <span>100</span>
             </div>
           </div>

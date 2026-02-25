@@ -43,8 +43,8 @@ interface State {
 export const findingMyCustomers = createModel<RootModel>()({
   state: {
     customerProfile: { name: "", occupation: "", whoTheyAre: "", goals: "", frustrations: "" },
-    ageMin: 18,
-    ageMax: 65,
+    ageMin: 0,
+    ageMax: 100,
     jobs: [{ id: 1, job: "", functional: "", emotional: "", social: "", items: [] }],
     nextJobId: 2,
     nextItemId: 1,
