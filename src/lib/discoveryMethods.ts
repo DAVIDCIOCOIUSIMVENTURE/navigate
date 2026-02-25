@@ -1,4 +1,4 @@
-import { PieChart, Users, Globe, Target, UserSearch, type LucideIcon } from "lucide-react"
+import { Globe, Target, UserSearch, type LucideIcon } from "lucide-react"
 
 export type DiscoveryMethod = {
   id: string
@@ -35,32 +35,6 @@ export const DISCOVERY_METHODS: DiscoveryMethod[] = [
     ],
     href: "/problem-discovery/find-new-problems/finding-my-customers",
     icon: UserSearch,
-  },
-  {
-    id: "market-segmentation",
-    title: "Market Segmentation",
-    description:
-      "Divide a broad market into distinct subgroups of consumers who share common needs or characteristics. By understanding each segment's unique pain points, you can identify underserved problems worth solving.",
-    examples: [
-      "Small business owners struggling with payroll software designed for enterprises",
-      "Remote workers who need ergonomic equipment but can't access corporate buying programmes",
-      "Elderly users underserved by apps built for younger, tech-native audiences",
-    ],
-    href: "/problem-discovery/find-new-problems/market-segmentation",
-    icon: PieChart,
-  },
-  {
-    id: "demographic",
-    title: "Demographic",
-    description:
-      "Explore problems through the lens of age, income, education, occupation, or family structure. Demographic shifts often create new unmet needs as the makeup of society changes over time.",
-    examples: [
-      "Millennials navigating first-time home buying in high-cost markets",
-      "Working parents balancing childcare logistics and career demands",
-      "Retirees managing complex pension and investment decisions without professional help",
-    ],
-    href: null,
-    icon: Users,
   },
   {
     id: "environment-changes",

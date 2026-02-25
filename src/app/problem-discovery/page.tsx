@@ -46,7 +46,7 @@ const PLACEHOLDER_PROBLEMS: Problem[] = [
       "No proactive notifications when an order is delayed",
       "Returns process is confusing and hard to initiate",
     ],
-    toolId: "market-segmentation",
+    toolId: "finding-my-customers",
     status: "Exploring",
   },
   {
@@ -55,7 +55,7 @@ const PLACEHOLDER_PROBLEMS: Problem[] = [
       "Onboarding process takes too long for new team members",
       "Documentation is outdated and hard to navigate",
     ],
-    toolId: "demographic",
+    toolId: "finding-my-customers",
     status: "Draft",
   },
   {
@@ -63,7 +63,7 @@ const PLACEHOLDER_PROBLEMS: Problem[] = [
     problems: [
       "Reporting dashboards are too complex for non-technical users",
     ],
-    toolId: "market-segmentation",
+    toolId: "finding-my-customers",
     status: "Validated",
   },
   {
