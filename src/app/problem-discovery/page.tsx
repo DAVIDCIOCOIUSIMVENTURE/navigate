@@ -6,36 +6,42 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { useRouter } from "next/navigation"
-import { Plus, Users, AlertCircle, GitFork, Clock, ThumbsDown, Heart, BarChart2, X, Briefcase, Trash2 } from "lucide-react"
+import { Plus, Users, AlertCircle, GitFork, Clock, ThumbsDown, Heart, BarChart2, X, Briefcase, Pencil } from "lucide-react"
 import { useState, KeyboardEvent } from "react"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog"
 
-type Job = {
+type ImpactItem = { category: string; description: string }
+
+type Alternative = {
   id: number
-  job: string
-  functional: string
-  emotional: string
-  social: string
+  text: string
+  shortcomings: string[]
+}
+
+type Problem = {
+  id: number
+  text: string
+  linkedJob: string
+  alternatives: Alternative[]
+  context: string
+  emotionalImpact: string
+  impacts: ImpactItem[]
 }
 
 type CanvasField = {
-  key: string
+  key: keyof Pick<Problem, "context" | "emotionalImpact">
   label: string
   description: string
   icon: React.ElementType
   placeholder: string
   color: string
 }
-
-const CANVAS_FIELDS_BEFORE: CanvasField[] = [
-  {
-    key: "problem",
-    label: "Problem",
-    description: "The core problem your customers face",
-    icon: AlertCircle,
-    placeholder: "Describe the specific problem or pain point your customers experience...",
-    color: "bg-rose-50 border-rose-200",
-  },
-]
 
 const CANVAS_FIELDS_AFTER: CanvasField[] = [
   {
@@ -45,14 +51,6 @@ const CANVAS_FIELDS_AFTER: CanvasField[] = [
     icon: Clock,
     placeholder: "Describe the situation, trigger, or environment when the problem arises...",
     color: "bg-amber-50 border-amber-200",
-  },
-  {
-    key: "shortcomings",
-    label: "Alternatives Shortcomings",
-    description: "What are the disadvantages of the current alternatives?",
-    icon: ThumbsDown,
-    placeholder: "Explain why the existing alternatives fall short or create additional frustrations...",
-    color: "bg-emerald-50 border-emerald-200",
   },
   {
     key: "emotionalImpact",
@@ -95,8 +93,47 @@ const IMPACT_CATEGORIES = [
   "Compliance Risk",
 ]
 
-type ImpactItem = { category: string; description: string }
-type ImpactDraft = ImpactItem
+const DEFAULT_PROBLEM: Omit<Problem, "id"> = {
+  text: "",
+  linkedJob: "",
+  alternatives: [],
+  context: "",
+  emotionalImpact: "",
+  impacts: [],
+}
+
+let nextAltId = 1
+
+function ClickableCardTitle({
+  icon: Icon,
+  label,
+  description,
+  onEdit,
+}: {
+  icon: React.ElementType
+  label: string
+  description: string
+  onEdit: () => void
+}) {
+  return (
+    <div className="flex items-start gap-2.5">
+      <Icon className="h-4 w-4 mt-0.5 shrink-0 text-foreground/70" />
+      <div className="flex-1">
+        <button onClick={onEdit} className="flex items-center gap-1.5 group">
+          <span className="font-semibold text-sm leading-tight group-hover:underline underline-offset-2">
+            {label}
+          </span>
+          <Pencil className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+        </button>
+        <p className="text-xs text-muted-foreground mt-0.5">{description}</p>
+      </div>
+    </div>
+  )
+}
+
+function EmptyValue() {
+  return <span className="text-sm text-muted-foreground/50 italic">—</span>
+}
 
 function CustomersCard({
   value,
@@ -105,296 +142,469 @@ function CustomersCard({
   value: CustomerFields
   onChange: (updated: CustomerFields) => void
 }) {
+  const [open, setOpen] = useState(false)
   const set = (key: keyof CustomerFields, val: string) =>
     onChange({ ...value, [key]: val })
 
   return (
-    <div className="rounded-xl border-2 bg-blue-50 border-blue-200 p-5 flex flex-col gap-4 md:col-span-2">
-      <div className="flex items-start gap-2.5">
-        <Users className="h-4 w-4 mt-0.5 shrink-0 text-foreground/70" />
-        <div>
-          <p className="font-semibold text-sm leading-tight">Customers</p>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            Who they are, what they do, their goals and characteristics
-          </p>
+    <>
+      <div className="rounded-xl border-2 bg-blue-50 border-blue-200 p-5 flex flex-col gap-4">
+        <ClickableCardTitle
+          icon={Users}
+          label="Customers"
+          description="Who they are, what they do, their goals and characteristics"
+          onEdit={() => setOpen(true)}
+        />
+        {value.segmentName ? (
+          <p className="text-sm font-medium">{value.segmentName}</p>
+        ) : (
+          <span className="text-sm text-muted-foreground/50 italic">No segment name set</span>
+        )}
+      </div>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Customers</DialogTitle>
+            <DialogDescription>
+              Who they are, what they do, their goals and characteristics
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {CUSTOMER_TEXT_FIELDS.filter((f) => !f.multiline).map((f) => (
+              <div key={f.key} className="flex flex-col gap-1">
+                <label className="text-xs font-medium text-foreground/70">{f.label}</label>
+                <Input
+                  placeholder={f.placeholder}
+                  value={value[f.key]}
+                  onChange={(e) => set(f.key, e.target.value)}
+                  className="bg-blue-50/50 border-blue-200 text-sm h-8"
+                />
+              </div>
+            ))}
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {CUSTOMER_TEXT_FIELDS.filter((f) => f.multiline).map((f) => (
+              <div key={f.key} className="flex flex-col gap-1">
+                <label className="text-xs font-medium text-foreground/70">{f.label}</label>
+                <Textarea
+                  rows={3}
+                  placeholder={f.placeholder}
+                  value={value[f.key]}
+                  onChange={(e) => set(f.key, e.target.value)}
+                  className="bg-blue-50/50 border-blue-200 resize-none text-sm focus-visible:ring-1"
+                />
+              </div>
+            ))}
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  )
+}
+
+function ProblemSelector({
+  problems,
+  selectedId,
+  onSelect,
+  onAdd,
+}: {
+  problems: Problem[]
+  selectedId: number | null
+  onSelect: (id: number) => void
+  onAdd: () => void
+}) {
+  return (
+    <div className="md:col-span-2 flex flex-col gap-3 rounded-xl border-2 border-dashed border-muted-foreground/20 bg-muted/30 p-4">
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-semibold text-foreground/80">Select a different problem</p>
+        <Button variant="outline" size="sm" onClick={onAdd} className="gap-1.5">
+          <Plus className="h-3.5 w-3.5" />
+          Add Problem
+        </Button>
+      </div>
+
+      {problems.length === 0 ? (
+        <p className="text-xs text-muted-foreground">
+          No problems yet. Add one to start filling in the canvas.
+        </p>
+      ) : (
+        <div className="flex flex-wrap gap-2">
+          {problems.map((p) => {
+            const label = p.text.trim() || "Untitled Problem"
+            const truncated = label.length > 55 ? label.slice(0, 52) + "…" : label
+            const isSelected = p.id === selectedId
+            return (
+              <button
+                key={p.id}
+                onClick={() => onSelect(p.id)}
+                className={[
+                  "rounded-lg border px-3 py-1.5 text-xs font-medium text-left transition-colors",
+                  isSelected
+                    ? "border-rose-400 bg-rose-50 text-rose-700"
+                    : "border-border bg-background hover:border-rose-200 hover:bg-rose-50/50 text-foreground/70",
+                ].join(" ")}
+              >
+                {truncated}
+              </button>
+            )
+          })}
         </div>
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        {CUSTOMER_TEXT_FIELDS.filter((f) => !f.multiline).map((f) => (
-          <div key={f.key} className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-foreground/70">{f.label}</label>
-            <Input
-              placeholder={f.placeholder}
-              value={value[f.key]}
-              onChange={(e) => set(f.key, e.target.value)}
-              className="bg-white/70 border-blue-200 text-sm h-8"
-            />
-          </div>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        {CUSTOMER_TEXT_FIELDS.filter((f) => f.multiline).map((f) => (
-          <div key={f.key} className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-foreground/70">{f.label}</label>
-            <Textarea
-              rows={3}
-              placeholder={f.placeholder}
-              value={value[f.key]}
-              onChange={(e) => set(f.key, e.target.value)}
-              className="bg-white/70 border-blue-200 resize-none text-sm focus-visible:ring-1"
-            />
-          </div>
-        ))}
-      </div>
+      )}
     </div>
   )
 }
 
-function AlternativesCard({
-  items,
-  draft,
-  onDraftChange,
+function ProblemCard({
+  problem,
   onChange,
 }: {
-  items: string[]
-  draft: string
-  onDraftChange: (val: string) => void
-  onChange: (updated: string[]) => void
+  problem: Problem
+  onChange: (updated: Partial<Problem>) => void
 }) {
-  const add = () => {
-    const trimmed = draft.trim()
-    if (!trimmed) return
-    onChange([...items, trimmed])
-    onDraftChange("")
-  }
-
-  const remove = (index: number) =>
-    onChange(items.filter((_, i) => i !== index))
-
-  const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") { e.preventDefault(); add() }
-  }
+  const [open, setOpen] = useState(false)
 
   return (
-    <div className="rounded-xl border-2 bg-purple-50 border-purple-200 p-5 flex flex-col gap-3">
-      <div className="flex items-start gap-2.5">
-        <GitFork className="h-4 w-4 mt-0.5 shrink-0 text-foreground/70" />
-        <div>
-          <p className="font-semibold text-sm leading-tight">Alternatives to the Problem</p>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            How customers currently solve or work around this problem
-          </p>
+    <>
+      <div className="rounded-xl border-2 bg-rose-50 border-rose-200 p-5 flex flex-col gap-3">
+        <ClickableCardTitle
+          icon={AlertCircle}
+          label="Problem"
+          description="The core problem your customers face"
+          onEdit={() => setOpen(true)}
+        />
+        {problem.text ? (
+          <p className="text-sm whitespace-pre-wrap">{problem.text}</p>
+        ) : (
+          <span className="text-sm text-muted-foreground/50 italic">
+            Describe the specific problem or pain point your customers experience...
+          </span>
+        )}
+        <div className="flex flex-col gap-1 border-t border-rose-200 pt-3">
+          <div className="flex items-center gap-1.5">
+            <Briefcase className="h-3.5 w-3.5 text-foreground/50 shrink-0" />
+            <p className="text-xs font-medium text-foreground/60">Job to Be Done</p>
+          </div>
+          {problem.linkedJob ? (
+            <p className="text-sm">{problem.linkedJob}</p>
+          ) : (
+            <EmptyValue />
+          )}
         </div>
       </div>
 
-      {items.length > 0 && (
-        <ul className="flex flex-col gap-1.5">
-          {items.map((item, i) => (
-            <li key={i} className="flex items-center gap-2 bg-white/70 rounded-lg px-3 py-2 text-sm">
-              <span className="flex-1">{item}</span>
-              <button
-                onClick={() => remove(i)}
-                className="shrink-0 text-muted-foreground hover:text-destructive transition-colors"
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Problem</DialogTitle>
+            <DialogDescription>The core problem your customers face</DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-4">
+            <Textarea
+              rows={5}
+              placeholder="Describe the specific problem or pain point your customers experience..."
+              value={problem.text}
+              onChange={(e) => onChange({ text: e.target.value })}
+              className="bg-rose-50/50 border-rose-200 resize-none text-sm focus-visible:ring-1"
+            />
+            <div className="flex flex-col gap-1.5">
+              <div className="flex items-center gap-1.5">
+                <Briefcase className="h-3.5 w-3.5 text-foreground/50 shrink-0" />
+                <label className="text-xs font-medium text-foreground/60">Job to Be Done</label>
+              </div>
+              <Input
+                placeholder="What job is your customer trying to get done?"
+                value={problem.linkedJob}
+                onChange={(e) => onChange({ linkedJob: e.target.value })}
+                className="bg-rose-50/50 border-rose-200 text-sm h-8"
+              />
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  )
+}
 
-      <div className="flex flex-col gap-2 mt-auto">
-        <Input
-          placeholder="Type an alternative..."
-          value={draft}
-          onChange={(e) => onDraftChange(e.target.value)}
-          onKeyDown={onKeyDown}
-          className="bg-white/70 border-purple-200 text-sm h-8"
+function AlternativesShortcomingsCard({
+  items,
+  onChange,
+}: {
+  items: Alternative[]
+  onChange: (updated: Alternative[]) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const [altDraft, setAltDraft] = useState("")
+  const [shortcomingDrafts, setShortcomingDrafts] = useState<Record<number, string>>({})
+
+  const addAlt = () => {
+    const trimmed = altDraft.trim()
+    if (!trimmed) return
+    onChange([...items, { id: nextAltId++, text: trimmed, shortcomings: [] }])
+    setAltDraft("")
+  }
+
+  const removeAlt = (id: number) => onChange(items.filter((a) => a.id !== id))
+
+  const addShortcoming = (id: number) => {
+    const trimmed = (shortcomingDrafts[id] ?? "").trim()
+    if (!trimmed) return
+    onChange(items.map((a) => a.id === id ? { ...a, shortcomings: [...a.shortcomings, trimmed] } : a))
+    setShortcomingDrafts((d) => ({ ...d, [id]: "" }))
+  }
+
+  const removeShortcoming = (altId: number, idx: number) =>
+    onChange(items.map((a) => a.id === altId ? { ...a, shortcomings: a.shortcomings.filter((_, i) => i !== idx) } : a))
+
+  const handleOpenChange = (val: boolean) => {
+    if (!val) { setAltDraft(""); setShortcomingDrafts({}) }
+    setOpen(val)
+  }
+
+  return (
+    <>
+      <div className="rounded-xl border-2 bg-purple-50 border-purple-200 p-5 flex flex-col gap-3">
+        <ClickableCardTitle
+          icon={GitFork}
+          label="Alternatives & Shortcomings"
+          description="How customers currently solve this problem and why those solutions fall short"
+          onEdit={() => setOpen(true)}
         />
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={add}
-          disabled={!draft.trim()}
-          className="w-full border-purple-200 bg-white/70 hover:bg-white"
-        >
-          <Plus className="h-3.5 w-3.5" />
-          Add Alternative
-        </Button>
+        {items.length > 0 ? (
+          <ul className="flex flex-col gap-2">
+            {items.map((alt) => (
+              <li key={alt.id} className="flex flex-col gap-1">
+                <p className="text-sm font-medium">{alt.text}</p>
+                {alt.shortcomings.length > 0 && (
+                  <ul className="flex flex-col gap-0.5 pl-3">
+                    {alt.shortcomings.map((s, i) => (
+                      <li key={i} className="text-xs text-muted-foreground flex items-start gap-1.5">
+                        <ThumbsDown className="h-3 w-3 mt-0.5 shrink-0 text-purple-400" />
+                        {s}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <span className="text-sm text-muted-foreground/50 italic">No alternatives added yet</span>
+        )}
       </div>
-    </div>
+
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Alternatives & Shortcomings</DialogTitle>
+            <DialogDescription>
+              How customers currently solve this problem and why those solutions fall short
+            </DialogDescription>
+          </DialogHeader>
+
+          {/* Add new alternative */}
+          <div className="flex flex-col gap-1.5">
+            <p className="text-xs font-medium text-foreground/60">Add an alternative</p>
+            <div className="flex gap-2">
+              <Input
+                placeholder="e.g. Spreadsheets, hiring a consultant, manual process..."
+                value={altDraft}
+                onChange={(e) => setAltDraft(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addAlt() } }}
+                className="bg-purple-50/50 border-purple-200 text-sm h-8 flex-1"
+              />
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={addAlt}
+                disabled={!altDraft.trim()}
+                className="border-purple-200 bg-white/70 hover:bg-white gap-1 shrink-0"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                Add
+              </Button>
+            </div>
+          </div>
+
+          {/* Alternatives list */}
+          {items.length > 0 && (
+            <div className="flex flex-col gap-3 overflow-y-auto max-h-[50vh]">
+              <p className="text-xs font-medium text-foreground/60">
+                {items.length} alternative{items.length !== 1 ? "s" : ""}
+              </p>
+              {items.map((alt) => (
+                <div key={alt.id} className="rounded-lg border border-purple-200 bg-purple-50/40 p-3 flex flex-col gap-3">
+                  {/* Alternative row */}
+                  <div className="flex items-center gap-2">
+                    <GitFork className="h-3.5 w-3.5 shrink-0 text-purple-500" />
+                    <span className="text-sm font-medium flex-1">{alt.text}</span>
+                    <button
+                      onClick={() => removeAlt(alt.id)}
+                      className="shrink-0 text-muted-foreground hover:text-destructive transition-colors"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+
+                  {/* Shortcomings subsection */}
+                  <div className="flex flex-col gap-2 pl-3 border-l-2 border-purple-200">
+                    <p className="text-xs font-medium text-foreground/60">Shortcomings</p>
+                    {alt.shortcomings.length > 0 && (
+                      <ul className="flex flex-col gap-1">
+                        {alt.shortcomings.map((s, i) => (
+                          <li key={i} className="flex items-center gap-2 bg-white/80 rounded px-2.5 py-1.5 text-xs">
+                            <ThumbsDown className="h-3 w-3 shrink-0 text-purple-400" />
+                            <span className="flex-1">{s}</span>
+                            <button
+                              onClick={() => removeShortcoming(alt.id, i)}
+                              className="shrink-0 text-muted-foreground hover:text-destructive transition-colors"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="Describe a shortcoming..."
+                        value={shortcomingDrafts[alt.id] ?? ""}
+                        onChange={(e) => setShortcomingDrafts((d) => ({ ...d, [alt.id]: e.target.value }))}
+                        onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addShortcoming(alt.id) } }}
+                        className="bg-white/80 border-purple-200 text-xs h-7 flex-1"
+                      />
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => addShortcoming(alt.id)}
+                        disabled={!(shortcomingDrafts[alt.id] ?? "").trim()}
+                        className="h-7 text-xs border-purple-200 bg-white/80 hover:bg-white px-2 shrink-0"
+                      >
+                        <Plus className="h-3 w-3" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
 
 function QuantifiableImpactCard({
   items,
-  draft,
-  onDraftChange,
   onChange,
 }: {
   items: ImpactItem[]
-  draft: ImpactDraft
-  onDraftChange: (updated: ImpactDraft) => void
   onChange: (updated: ImpactItem[]) => void
 }) {
+  const [open, setOpen] = useState(false)
+  const [draft, setDraft] = useState<ImpactItem>({ category: "", description: "" })
+
   const add = () => {
     if (!draft.category.trim() && !draft.description.trim()) return
     onChange([...items, { category: draft.category.trim(), description: draft.description.trim() }])
-    onDraftChange({ category: "", description: "" })
+    setDraft({ category: "", description: "" })
   }
 
-  const remove = (index: number) =>
-    onChange(items.filter((_, i) => i !== index))
+  const remove = (index: number) => onChange(items.filter((_, i) => i !== index))
+
+  const handleOpenChange = (val: boolean) => {
+    if (!val) setDraft({ category: "", description: "" })
+    setOpen(val)
+  }
 
   return (
-    <div className="rounded-xl border-2 bg-orange-50 border-orange-200 p-5 flex flex-col gap-3">
-      <div className="flex items-start gap-2.5">
-        <BarChart2 className="h-4 w-4 mt-0.5 shrink-0 text-foreground/70" />
-        <div>
-          <p className="font-semibold text-sm leading-tight">Quantifiable Impact</p>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            What is the measurable cost of the problem?
-          </p>
-        </div>
+    <>
+      <div className="rounded-xl border-2 bg-orange-50 border-orange-200 p-5 flex flex-col gap-3">
+        <ClickableCardTitle
+          icon={BarChart2}
+          label="Quantifiable Impact"
+          description="What is the measurable cost of the problem?"
+          onEdit={() => setOpen(true)}
+        />
+        {items.length > 0 ? (
+          <ul className="flex flex-col gap-1.5">
+            {items.map((item, i) => (
+              <li key={i} className="flex items-center gap-2 bg-white/70 rounded-lg px-3 py-2 text-sm">
+                <span className="shrink-0 font-medium text-orange-700 min-w-[7rem]">
+                  {item.category || "—"}
+                </span>
+                <span className="flex-1 text-muted-foreground border-l border-orange-200 pl-2">
+                  {item.description || "—"}
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <span className="text-sm text-muted-foreground/50 italic">No impacts added yet</span>
+        )}
       </div>
 
-      {items.length > 0 && (
-        <ul className="flex flex-col gap-1.5">
-          {items.map((item, i) => (
-            <li key={i} className="flex items-center gap-2 bg-white/70 rounded-lg px-3 py-2 text-sm">
-              <span className="shrink-0 font-medium text-orange-700 min-w-[7rem]">{item.category || "—"}</span>
-              <span className="flex-1 text-muted-foreground border-l border-orange-200 pl-2">{item.description || "—"}</span>
-              <button
-                onClick={() => remove(i)}
-                className="shrink-0 text-muted-foreground hover:text-destructive transition-colors"
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <div className="flex flex-col gap-2 mt-auto">
-        <>
-          <datalist id="impact-categories">
-            {IMPACT_CATEGORIES.map((c) => <option key={c} value={c} />)}
-          </datalist>
-          <div className="flex gap-2">
-            <Input
-              list="impact-categories"
-              placeholder="Type or select category..."
-              value={draft.category}
-              onChange={(e) => onDraftChange({ ...draft, category: e.target.value })}
-              className="bg-white/70 border-orange-200 text-sm h-8 w-2/5 shrink-0"
-            />
-            <Input
-              placeholder="Describe the impact..."
-              value={draft.description}
-              onChange={(e) => onDraftChange({ ...draft, description: e.target.value })}
-              className="bg-white/70 border-orange-200 text-sm h-8 flex-1"
-            />
-          </div>
-        </>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={add}
-          disabled={!draft.category.trim() && !draft.description.trim()}
-          className="w-full border-orange-200 bg-white/70 hover:bg-white"
-        >
-          <Plus className="h-3.5 w-3.5" />
-          Add Quantifiable Impact
-        </Button>
-      </div>
-    </div>
-  )
-}
-
-function JobsToBeDoneCard({
-  jobs,
-  onChange,
-}: {
-  jobs: Job[]
-  onChange: (updated: Job[]) => void
-}) {
-  const add = () =>
-    onChange([...jobs, { id: Date.now(), job: "", functional: "", emotional: "", social: "" }])
-
-  const remove = (id: number) => onChange(jobs.filter((j) => j.id !== id))
-
-  const update = (id: number, field: keyof Omit<Job, "id">, val: string) =>
-    onChange(jobs.map((j) => (j.id === id ? { ...j, [field]: val } : j)))
-
-  return (
-    <div className="rounded-xl border-2 bg-teal-50 border-teal-200 p-5 flex flex-col gap-4 md:col-span-2">
-      <div className="flex items-start gap-2.5">
-        <Briefcase className="h-4 w-4 mt-0.5 shrink-0 text-foreground/70" />
-        <div>
-          <p className="font-semibold text-sm leading-tight">Jobs to Be Done</p>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            What your customers are trying to accomplish — functionally, emotionally, and socially
-          </p>
-        </div>
-      </div>
-
-      {jobs.length > 0 && (
-        <ul className="flex flex-col gap-3">
-          {jobs.map((job, i) => (
-            <li key={job.id} className="bg-white/70 rounded-lg p-3 flex flex-col gap-2.5">
-              <div className="flex items-center gap-2">
-                <p className="text-xs font-semibold text-foreground/60 flex-1">Job {i + 1}</p>
-                <button
-                  onClick={() => remove(job.id)}
-                  className="text-muted-foreground hover:text-destructive transition-colors"
-                  aria-label="Remove job"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                </button>
-              </div>
-              <Input
-                placeholder="What are your customers trying to get done?"
-                value={job.job}
-                onChange={(e) => update(job.id, "job", e.target.value)}
-                className="bg-white border-teal-200 text-sm h-8"
-              />
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                {(["functional", "emotional", "social"] as const).map((field) => (
-                  <div key={field} className="flex flex-col gap-1">
-                    <label className="text-xs font-medium text-foreground/60 capitalize">{field}</label>
-                    <Textarea
-                      rows={2}
-                      placeholder={
-                        field === "functional"
-                          ? "Practical outcome they need..."
-                          : field === "emotional"
-                          ? "How they want to feel..."
-                          : "How they want to be seen..."
-                      }
-                      value={job[field]}
-                      onChange={(e) => update(job.id, field, e.target.value)}
-                      className="bg-white border-teal-200 resize-none text-sm focus-visible:ring-1"
-                    />
-                  </div>
+      <Dialog open={open} onOpenChange={handleOpenChange}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Quantifiable Impact</DialogTitle>
+            <DialogDescription>What is the measurable cost of the problem?</DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-3">
+            {items.length > 0 && (
+              <ul className="flex flex-col gap-1.5">
+                {items.map((item, i) => (
+                  <li key={i} className="flex items-center gap-2 bg-orange-50/50 rounded-lg px-3 py-2 text-sm">
+                    <span className="shrink-0 font-medium text-orange-700 min-w-[7rem]">
+                      {item.category || "—"}
+                    </span>
+                    <span className="flex-1 text-muted-foreground border-l border-orange-200 pl-2">
+                      {item.description || "—"}
+                    </span>
+                    <button
+                      onClick={() => remove(i)}
+                      className="shrink-0 text-muted-foreground hover:text-destructive transition-colors"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </li>
                 ))}
+              </ul>
+            )}
+            <div className="flex flex-col gap-2">
+              <datalist id="impact-categories">
+                {IMPACT_CATEGORIES.map((c) => <option key={c} value={c} />)}
+              </datalist>
+              <div className="flex gap-2">
+                <Input
+                  list="impact-categories"
+                  placeholder="Type or select category..."
+                  value={draft.category}
+                  onChange={(e) => setDraft((d) => ({ ...d, category: e.target.value }))}
+                  className="bg-orange-50/50 border-orange-200 text-sm h-8 w-2/5 shrink-0"
+                />
+                <Input
+                  placeholder="Describe the impact..."
+                  value={draft.description}
+                  onChange={(e) => setDraft((d) => ({ ...d, description: e.target.value }))}
+                  className="bg-orange-50/50 border-orange-200 text-sm h-8 flex-1"
+                />
               </div>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={add}
-        className="w-full border-teal-200 bg-white/70 hover:bg-white"
-      >
-        <Plus className="h-3.5 w-3.5" />
-        Add Job to Be Done
-      </Button>
-    </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={add}
+                disabled={!draft.category.trim() && !draft.description.trim()}
+                className="w-full border-orange-200 bg-white/70 hover:bg-white"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                Add Quantifiable Impact
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
 
@@ -407,24 +617,41 @@ function CanvasCard({
   value: string
   onChange: (val: string) => void
 }) {
+  const [open, setOpen] = useState(false)
   const FieldIcon = field.icon
+
   return (
-    <div className={`rounded-xl border-2 p-5 flex flex-col gap-3 ${field.color}`}>
-      <div className="flex items-start gap-2.5">
-        <FieldIcon className="h-4 w-4 mt-0.5 shrink-0 text-foreground/70" />
-        <div>
-          <p className="font-semibold text-sm leading-tight">{field.label}</p>
-          <p className="text-xs text-muted-foreground mt-0.5">{field.description}</p>
-        </div>
+    <>
+      <div className={`rounded-xl border-2 p-5 flex flex-col gap-3 ${field.color}`}>
+        <ClickableCardTitle
+          icon={FieldIcon}
+          label={field.label}
+          description={field.description}
+          onEdit={() => setOpen(true)}
+        />
+        {value ? (
+          <p className="text-sm whitespace-pre-wrap">{value}</p>
+        ) : (
+          <span className="text-sm text-muted-foreground/50 italic">{field.placeholder}</span>
+        )}
       </div>
-      <Textarea
-        rows={4}
-        placeholder={field.placeholder}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="bg-white/70 border-0 resize-none text-sm focus-visible:ring-1"
-      />
-    </div>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle>{field.label}</DialogTitle>
+            <DialogDescription>{field.description}</DialogDescription>
+          </DialogHeader>
+          <Textarea
+            rows={6}
+            placeholder={field.placeholder}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            className="resize-none text-sm focus-visible:ring-1"
+          />
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
 
@@ -438,20 +665,28 @@ const DEFAULT_CUSTOMER: CustomerFields = {
   frustrationsAndChallenges: "",
 }
 
+let nextProblemId = 1
+
 export default function ProblemDiscoveryPage() {
   const navItem = getNavigationItem("/problem-discovery")
   const Icon = navItem?.icon
   const router = useRouter()
 
-  const [canvas, setCanvas] = useState<Record<string, string>>(
-    Object.fromEntries([...CANVAS_FIELDS_BEFORE, ...CANVAS_FIELDS_AFTER].map((f) => [f.key, ""]))
-  )
   const [customer, setCustomer] = useState<CustomerFields>(DEFAULT_CUSTOMER)
-  const [jobs, setJobs] = useState<Job[]>([])
-  const [alternatives, setAlternatives] = useState<string[]>([])
-  const [alternativesDraft, setAlternativesDraft] = useState("")
-  const [impacts, setImpacts] = useState<ImpactItem[]>([])
-  const [impactDraft, setImpactDraft] = useState<ImpactDraft>({ category: "", description: "" })
+  const [problems, setProblems] = useState<Problem[]>([])
+  const [selectedProblemId, setSelectedProblemId] = useState<number | null>(null)
+
+  const selectedProblem = problems.find((p) => p.id === selectedProblemId) ?? null
+
+  const updateProblem = (id: number, patch: Partial<Problem>) =>
+    setProblems((prev) => prev.map((p) => (p.id === id ? { ...p, ...patch } : p)))
+
+  const addProblem = () => {
+    const id = nextProblemId++
+    const newProblem: Problem = { id, ...DEFAULT_PROBLEM }
+    setProblems((prev) => [...prev, newProblem])
+    setSelectedProblemId(id)
+  }
 
   return (
     <Card className="w-full flex-1">
@@ -481,7 +716,7 @@ export default function ProblemDiscoveryPage() {
             <div>
               <h2 className="text-lg font-semibold">Problem Statement Canvas</h2>
               <p className="text-sm text-muted-foreground">
-                Fill in each section to build a clear picture of the problem you are solving.
+                Click a card title to edit its contents.
               </p>
             </div>
             <Button
@@ -495,42 +730,52 @@ export default function ProblemDiscoveryPage() {
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <CustomersCard value={customer} onChange={setCustomer} />
 
-            <JobsToBeDoneCard jobs={jobs} onChange={setJobs} />
-
-            {CANVAS_FIELDS_BEFORE.map((field) => (
-              <CanvasCard
-                key={field.key}
-                field={field}
-                value={canvas[field.key]}
-                onChange={(val) => setCanvas((prev) => ({ ...prev, [field.key]: val }))}
-              />
-            ))}
-
-            <AlternativesCard
-              items={alternatives}
-              draft={alternativesDraft}
-              onDraftChange={setAlternativesDraft}
-              onChange={setAlternatives}
+            <ProblemSelector
+              problems={problems}
+              selectedId={selectedProblemId}
+              onSelect={setSelectedProblemId}
+              onAdd={addProblem}
             />
 
-            {CANVAS_FIELDS_AFTER.map((field) => (
-              <CanvasCard
-                key={field.key}
-                field={field}
-                value={canvas[field.key]}
-                onChange={(val) => setCanvas((prev) => ({ ...prev, [field.key]: val }))}
-              />
-            ))}
+            {selectedProblem && (
+              <>
+                <ProblemCard
+                  problem={selectedProblem}
+                  onChange={(patch) => updateProblem(selectedProblem.id, patch)}
+                />
 
-            <QuantifiableImpactCard
-              items={impacts}
-              draft={impactDraft}
-              onDraftChange={setImpactDraft}
-              onChange={setImpacts}
-            />
+                <CanvasCard
+                  key={`context-${selectedProblem.id}`}
+                  field={CANVAS_FIELDS_AFTER[0]}
+                  value={selectedProblem.context}
+                  onChange={(val) => updateProblem(selectedProblem.id, { context: val })}
+                />
+
+                <AlternativesShortcomingsCard
+                  key={`alt-${selectedProblem.id}`}
+                  items={selectedProblem.alternatives}
+                  onChange={(updated) => updateProblem(selectedProblem.id, { alternatives: updated })}
+                />
+
+                <div className="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <CanvasCard
+                    key={`emotionalImpact-${selectedProblem.id}`}
+                    field={CANVAS_FIELDS_AFTER[1]}
+                    value={selectedProblem.emotionalImpact}
+                    onChange={(val) => updateProblem(selectedProblem.id, { emotionalImpact: val })}
+                  />
+
+                  <QuantifiableImpactCard
+                    key={`impact-${selectedProblem.id}`}
+                    items={selectedProblem.impacts}
+                    onChange={(updated) => updateProblem(selectedProblem.id, { impacts: updated })}
+                  />
+                </div>
+              </>
+            )}
           </div>
         </div>
       </CardContent>
