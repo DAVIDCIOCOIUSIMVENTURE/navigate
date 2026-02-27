@@ -15,7 +15,9 @@
       "Bash(ls /c/Development/OU/navigate/src/app/self-discovery/[categoryId]/[questionId]/)",
       "Bash(ls src/app/\\\\\\(app\\\\\\)/)",
       "Bash(ls -la /c/Development/OU/navigate/src/app/\\\\\\(app\\\\\\)/self-discovery/)",
-      "Bash(git add .)"
+      "Bash(git add .)",
+      "Bash(ls -1 /c/Development/OU/navigate/src/components/ui/*.tsx)",
+      "Bash(xargs -I {} basename {})"
     ]
   }
 }
