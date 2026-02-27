@@ -271,7 +271,7 @@ export default function QuickstartCanvasPage() {
       </Card>
 
       <div className="flex justify-end pb-4">
-        <Button onClick={() => router.push(`/ideas/${ideaId}/quickstart-validation`)}>
+        <Button onClick={() => router.push(`/ideas/${ideaId}/problem-validation/quickstart`)}>
           Continue to Problem Validation
         </Button>
       </div>

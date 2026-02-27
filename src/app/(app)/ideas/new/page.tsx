@@ -14,7 +14,7 @@ export default function NewIdeaPage() {
     if (mode === "guided") {
       router.push(`/ideas/${idea.id}/problem-discovery/customers`)
     } else {
-      router.push(`/ideas/${idea.id}/quickstart-discovery`)
+      router.push(`/ideas/${idea.id}/problem-discovery/quickstart`)
     }
   }
 

@@ -20,7 +20,9 @@
       "Bash(xargs -I {} basename {})",
       "Bash(npm show next version)",
       "Bash(npm show next@15 version)",
-      "Bash(npm show next dist-tags)"
+      "Bash(npm show next dist-tags)",
+      "Bash(find \"c:/Development/OU/navigate/src/app/\\(app\\)/ideas\" -type f)",
+      "Bash(find \"c:/Development/OU/navigate/src/app/\\(app\\)/ideas/[ideaId]\" -type f)"
     ]
   }
 }

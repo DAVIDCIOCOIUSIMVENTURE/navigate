@@ -181,7 +181,7 @@ export default function QuickstartValidationPage() {
             <div className="rounded-lg border border-dashed p-6 flex flex-col items-center gap-3 text-center text-muted-foreground">
               <Briefcase className="h-5 w-5" />
               <p className="text-sm">No problems yet. Add them in Problem Discovery first.</p>
-              <Button variant="outline" size="sm" onClick={() => router.push(`/ideas/${ideaId}/quickstart-discovery`)}>
+              <Button variant="outline" size="sm" onClick={() => router.push(`/ideas/${ideaId}/problem-discovery/quickstart`)}>
                 Back to Problem Discovery
               </Button>
             </div>
@@ -376,11 +376,11 @@ export default function QuickstartValidationPage() {
       )}
 
       <div className="flex justify-end gap-3 pb-4">
-        <Button variant="outline" onClick={() => router.push(`/ideas/${ideaId}/quickstart-discovery`)}>
+        <Button variant="outline" onClick={() => router.push(`/ideas/${ideaId}/problem-discovery/quickstart`)}>
           Back to Problem Discovery
         </Button>
         {selectedProblem && (
-          <Button onClick={() => { saveCurrentValidation(); router.push(`/ideas/${ideaId}/quickstart-discovery`) }}>
+          <Button onClick={() => { saveCurrentValidation(); router.push(`/ideas/${ideaId}/problem-discovery/quickstart`) }}>
             Save Validation
           </Button>
         )}

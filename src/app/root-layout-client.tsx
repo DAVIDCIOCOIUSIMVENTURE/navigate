@@ -20,35 +20,33 @@ import { AppStoreProvider } from "@/store/provider"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import { InnovationProvider } from "@/context/innovation-context"
-import { IdeasProvider } from "@/context/ideas-context"
+import { IdeasProvider, useIdeas } from "@/context/ideas-context"
 
-function generateBreadcrumbs(pathname: string) {
-  // 1. Split the path and remove empty strings
+function generateBreadcrumbs(pathname: string, getIdeaTitle: (id: number) => string | undefined) {
   const paths = pathname.split('/').filter(Boolean)
 
-  // 2. Map each path segment into a breadcrumb object
-  const breadcrumbs = paths.map((path, index) => {
-    // Create the full URL up to this segment
+  return paths.map((path, index) => {
     const href = `/${paths.slice(0, index + 1).join('/')}`
 
-    // Format the label: "self-discovery" -> "Self Discovery"
-    const label = path.split('-').map(word =>
+    // If this segment is a numeric idea ID, resolve it to the idea title
+    const numericId = /^\d+$/.test(path) ? Number(path) : null
+    const resolvedTitle = numericId ? getIdeaTitle(numericId) : undefined
+    const label = resolvedTitle ?? path.split('-').map(word =>
       word.charAt(0).toUpperCase() + word.slice(1)
     ).join(' ')
 
     return {
-      href,    // e.g., "/self-discovery"
-      label,   // e.g., "Self Discovery"
-      isLast: index === paths.length - 1  // true for last segment
+      href,
+      label,
+      isLast: index === paths.length - 1,
     }
   })
-
-  return breadcrumbs
 }
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const breadcrumbs = generateBreadcrumbs(pathname)
+  const { getIdea } = useIdeas()
+  const breadcrumbs = generateBreadcrumbs(pathname, (id) => getIdea(id)?.title)
   const [guidanceOpen, setGuidanceOpen] = useState(false)
 
   const sidebarMode = useSelector((state: RootState) => state.settings.sidebarMode)

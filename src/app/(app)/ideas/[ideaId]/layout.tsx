@@ -37,16 +37,16 @@ const STAGES_GUIDED = [
 
 const STAGES_QUICKSTART = [
   {
-    key: "quickstart-discovery",
+    key: "problem-discovery",
     label: "Problem Discovery",
-    path: "quickstart-discovery",
+    path: "problem-discovery/quickstart",
     completedKey: "problemDiscoveryComplete" as const,
     future: false,
   },
   {
-    key: "quickstart-validation",
+    key: "problem-validation",
     label: "Problem Validation",
-    path: "quickstart-validation",
+    path: "problem-validation/quickstart",
     completedKey: "problemValidationComplete" as const,
     future: false,
   },
@@ -80,11 +80,13 @@ export default function IdeaShellLayout({ children }: { children: React.ReactNod
 
   const handleModeSwitch = (mode: "guided" | "quickstart") => {
     updateIdea(ideaId, { mode })
-    if (mode === "quickstart") {
-      router.push(`/ideas/${ideaId}/quickstart-discovery`)
-    } else {
-      router.push(`/ideas/${ideaId}/problem-discovery/customers`)
-    }
+    const targetStages = mode === "quickstart" ? STAGES_QUICKSTART : STAGES_GUIDED
+    const currentStage = STAGES_GUIDED.concat(STAGES_QUICKSTART).find(
+      (s) => s.key && pathname.includes(s.key)
+    )
+    const targetStage = targetStages.find((s) => s.key === currentStage?.key)
+    const targetPath = targetStage?.path ?? targetStages[0].path
+    router.push(`/ideas/${ideaId}/${targetPath}`)
   }
 
   return (
