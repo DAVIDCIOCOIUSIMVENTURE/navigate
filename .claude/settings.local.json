@@ -17,7 +17,10 @@
       "Bash(ls -la /c/Development/OU/navigate/src/app/\\\\\\(app\\\\\\)/self-discovery/)",
       "Bash(git add .)",
       "Bash(ls -1 /c/Development/OU/navigate/src/components/ui/*.tsx)",
-      "Bash(xargs -I {} basename {})"
+      "Bash(xargs -I {} basename {})",
+      "Bash(npm show next version)",
+      "Bash(npm show next@15 version)",
+      "Bash(npm show next dist-tags)"
     ]
   }
 }
