@@ -42,8 +42,6 @@ export default function QuestionPage() {
 
     const category = SELF_DISCOVERY_CATEGORIES.find(c => c.url === categoryId) ?? null
     const question = category?.questions.find(q => q.url === questionId) ?? null
-    const allQuestions = SELF_DISCOVERY_CATEGORIES.flatMap(c => c.questions)
-
     const [answers, setAnswers] = useState<{ [key: string]: string }>({})
     const [problemTriggerToDelete, setProblemTriggerToDelete] = useState<ProblemTrigger | null>(null)
     const [sdgToAdd, setSdgToAdd] = useState<{ questionUrl: string; sdg: string } | null>(null)

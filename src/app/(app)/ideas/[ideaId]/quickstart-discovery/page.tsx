@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useIdeas } from "@/context/ideas-context"
 import { Users, Briefcase, AlertCircle, Plus, Trash2 } from "lucide-react"
-import type { CustomerFields, Job, ProblemItem } from "@/types/idea"
+import type { CustomerFields, Job } from "@/types/idea"
 
 const CUSTOMER_TEXT_FIELDS: {
   key: keyof CustomerFields; label: string; placeholder: string; multiline?: boolean
