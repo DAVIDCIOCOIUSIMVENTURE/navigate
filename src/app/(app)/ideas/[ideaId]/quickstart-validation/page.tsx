@@ -119,7 +119,7 @@ export default function QuickstartValidationPage() {
 
   function renderProblemButton(problem: (typeof problems)[number]) {
     const isSelected = selectedProblemId === problem.id
-    const v = idea.validations.find((v) => v.problemId === problem.id)
+    const v = idea!.validations.find((v) => v.problemId === problem.id)
     const badge = v ? STATUS_BADGE[v.status] : null
     return (
       <li key={problem.id}>
