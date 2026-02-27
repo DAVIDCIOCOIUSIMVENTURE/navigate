@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react"
 import type { Idea } from "@/types/idea"
-import { DEFAULT_CUSTOMER } from "@/types/idea"
+import { DEFAULT_CUSTOMER, DEFAULT_SUB_SEGMENT } from "@/types/idea"
 
 type IdeasContextValue = {
   ideas: Idea[]
@@ -25,6 +25,7 @@ export function IdeasProvider({ children }: { children: ReactNode }) {
       updatedAt: now,
       mode,
       customer: { ...DEFAULT_CUSTOMER },
+      subSegment: { ...DEFAULT_SUB_SEGMENT },
       jobs: [],
       problems: [],
       validations: [],

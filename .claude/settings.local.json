@@ -22,7 +22,14 @@
       "Bash(npm show next@15 version)",
       "Bash(npm show next dist-tags)",
       "Bash(find \"c:/Development/OU/navigate/src/app/\\(app\\)/ideas\" -type f)",
-      "Bash(find \"c:/Development/OU/navigate/src/app/\\(app\\)/ideas/[ideaId]\" -type f)"
+      "Bash(find \"c:/Development/OU/navigate/src/app/\\(app\\)/ideas/[ideaId]\" -type f)",
+      "Bash(tasklist /FI \"IMAGENAME eq node.exe\")",
+      "Bash(handle.exe \"c:/Development/OU/navigate/.next/trace\")",
+      "Bash(powershell -Command \":*)",
+      "Bash(powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | Select-Object Id, ProcessName, StartTime\")",
+      "Bash(powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | ForEach-Object { try { $_.MainModule.FileName + '' | '' + $_.Id } catch { ''Access denied: '' + $_.Id } }\")",
+      "Bash(powershell -File:*)",
+      "Bash(ls \"c:/Development/OU/navigate/src/app/\\(app\\)/ideas/[ideaId]/problem-discovery/\")"
     ]
   }
 }

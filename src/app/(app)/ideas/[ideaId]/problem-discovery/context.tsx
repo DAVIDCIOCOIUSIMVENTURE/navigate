@@ -2,14 +2,17 @@
 
 import { createContext, useContext, useCallback, type ReactNode } from "react"
 import { useIdeas } from "@/context/ideas-context"
-import type { CustomerFields, Job, ProblemItem } from "@/types/idea"
+import type { CustomerFields, SubSegmentFields, Job, ProblemItem } from "@/types/idea"
+import { DEFAULT_SUB_SEGMENT } from "@/types/idea"
 
-export type { CustomerFields, Job, ProblemItem }
+export type { CustomerFields, SubSegmentFields, Job, ProblemItem }
 
 type ProblemDiscoveryContextValue = {
   ideaId: number
   customer: CustomerFields
   setCustomer: (val: CustomerFields) => void
+  subSegment: SubSegmentFields
+  setSubSegment: (val: SubSegmentFields) => void
   jobs: Job[]
   setJobs: (val: Job[]) => void
   problems: ProblemItem[]
@@ -29,14 +32,19 @@ export function ProblemDiscoveryProvider({
   const idea = getIdea(ideaId)
 
   const customer = idea?.customer ?? {
-    segmentName: "", occupation: "", ageRange: "",
+    segmentName: "", ageFrom: "", ageTo: "",
     whoTheyAre: "", whatTheyDo: "", goalsAndMotivations: "", frustrationsAndChallenges: "",
   }
+  const subSegment = idea?.subSegment ?? { ...DEFAULT_SUB_SEGMENT }
   const jobs = idea?.jobs ?? []
   const problems = idea?.problems ?? []
 
   const setCustomer = useCallback(
     (val: CustomerFields) => updateIdea(ideaId, { customer: val }),
+    [ideaId, updateIdea]
+  )
+  const setSubSegment = useCallback(
+    (val: SubSegmentFields) => updateIdea(ideaId, { subSegment: val }),
     [ideaId, updateIdea]
   )
   const setJobs = useCallback(
@@ -50,7 +58,7 @@ export function ProblemDiscoveryProvider({
 
   return (
     <ProblemDiscoveryContext.Provider
-      value={{ ideaId, customer, setCustomer, jobs, setJobs, problems, setProblems }}
+      value={{ ideaId, customer, setCustomer, subSegment, setSubSegment, jobs, setJobs, problems, setProblems }}
     >
       {children}
     </ProblemDiscoveryContext.Provider>
@@ -64,7 +72,9 @@ export function useProblemDiscovery() {
 }
 
 export const NAV_ITEMS = [
+  { label: "Introduction", path: "introduction" },
   { label: "Customers", path: "customers" },
+  { label: "Customer Sub-Segment", path: "customer-sub-segment" },
   { label: "Jobs to Be Done", path: "jobs-to-be-done" },
   { label: "Problems", path: "problems" },
   { label: "Summary", path: "summary" },

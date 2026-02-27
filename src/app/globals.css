@@ -72,7 +72,13 @@
 
     --sidebar-border: 20 14.3% 4.1%;
 
-    --sidebar-ring: 217.2 91.2% 59.8%}
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --brand: 26 100% 50%;
+    --brand-foreground: 0 0% 100%;
+
+    --surface: 200 12% 27%;
+    --surface-foreground: 0 0% 100%}
   .dark {
 
     --background: 20 14.3% 4.1%;
@@ -138,7 +144,13 @@
 
     --sidebar-border: 20 14.3% 4.1%;
 
-    --sidebar-ring: 217.2 91.2% 59.8%}
+    --sidebar-ring: 217.2 91.2% 59.8%;
+
+    --brand: 26 100% 50%;
+    --brand-foreground: 0 0% 100%;
+
+    --surface: 200 12% 27%;
+    --surface-foreground: 0 0% 100%}
 }
 
 

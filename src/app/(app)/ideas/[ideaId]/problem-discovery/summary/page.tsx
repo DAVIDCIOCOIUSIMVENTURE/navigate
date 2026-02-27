@@ -70,8 +70,7 @@ export default function SummaryPage() {
           <Section title="Customers">
             <div className="grid grid-cols-2 gap-3">
               <Field label="Segment Name" value={customer.segmentName} />
-              <Field label="Occupation" value={customer.occupation} />
-              <Field label="Age Range" value={customer.ageRange} />
+              <Field label="Age Range" value={[customer.ageFrom, customer.ageTo].filter(Boolean).join(" – ")} />
             </div>
             <Field label="Who They Are" value={customer.whoTheyAre} />
             <Field label="What They Do" value={customer.whatTheyDo} />

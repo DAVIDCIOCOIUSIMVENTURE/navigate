@@ -1,7 +1,7 @@
 export type CustomerFields = {
   segmentName: string
-  occupation: string
-  ageRange: string
+  ageFrom: string
+  ageTo: string
   whoTheyAre: string
   whatTheyDo: string
   goalsAndMotivations: string
@@ -20,6 +20,20 @@ export type ProblemItem = {
   id: number
   jobId: number | null
   text: string
+}
+
+export type SubSegmentFields = {
+  name: string
+  differentiators: string
+  specificContext: string
+  uniqueNeeds: string
+}
+
+export const DEFAULT_SUB_SEGMENT: SubSegmentFields = {
+  name: "",
+  differentiators: "",
+  specificContext: "",
+  uniqueNeeds: "",
 }
 
 export type ImpactItem = { category: string; description: string }
@@ -47,6 +61,7 @@ export type Idea = {
 
   // Problem Discovery
   customer: CustomerFields
+  subSegment: SubSegmentFields
   jobs: Job[]
   problems: ProblemItem[]
 
@@ -61,8 +76,8 @@ export type Idea = {
 
 export const DEFAULT_CUSTOMER: CustomerFields = {
   segmentName: "",
-  occupation: "",
-  ageRange: "",
+  ageFrom: "",
+  ageTo: "",
   whoTheyAre: "",
   whatTheyDo: "",
   goalsAndMotivations: "",

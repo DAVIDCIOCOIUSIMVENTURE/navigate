@@ -9,7 +9,7 @@ export default function ProblemDiscoveryIndexPage() {
   const ideaId = params.ideaId
 
   useEffect(() => {
-    router.replace(`/ideas/${ideaId}/problem-discovery/customers`)
+    router.replace(`/ideas/${ideaId}/problem-discovery/introduction`)
   }, [ideaId, router])
 
   return null

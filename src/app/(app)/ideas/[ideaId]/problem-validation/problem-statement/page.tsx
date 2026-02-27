@@ -181,9 +181,9 @@ export default function ProblemStatementPage() {
           ) : (
             <span className="text-sm text-muted-foreground/50 italic">No segment set</span>
           )}
-          {(customer.occupation || customer.ageRange) && (
+          {(customer.ageFrom || customer.ageTo) && (
             <p className="text-xs text-muted-foreground">
-              {[customer.occupation, customer.ageRange].filter(Boolean).join(" · ")}
+              {[customer.ageFrom, customer.ageTo].filter(Boolean).join(" – ")}
             </p>
           )}
         </div>

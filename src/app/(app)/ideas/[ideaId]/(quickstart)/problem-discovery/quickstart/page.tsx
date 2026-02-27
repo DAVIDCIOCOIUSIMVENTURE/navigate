@@ -9,16 +9,19 @@ import { useIdeas } from "@/context/ideas-context"
 import { Users, Briefcase, AlertCircle, Plus, Trash2 } from "lucide-react"
 import type { CustomerFields, Job } from "@/types/idea"
 
-const CUSTOMER_TEXT_FIELDS: {
-  key: keyof CustomerFields; label: string; placeholder: string; multiline?: boolean
+const CUSTOMER_SINGLE_FIELDS: {
+  key: keyof CustomerFields; label: string; placeholder: string
 }[] = [
   { key: "segmentName", label: "Segment Name", placeholder: "e.g. Freelance Designers, Mid-market HR Teams..." },
-  { key: "occupation", label: "Occupation", placeholder: "e.g. Product Manager, Small Business Owner..." },
-  { key: "ageRange", label: "Age Range", placeholder: "e.g. 25–40" },
-  { key: "whoTheyAre", label: "Who They Are", placeholder: "Describe their background, lifestyle, and identity...", multiline: true },
-  { key: "whatTheyDo", label: "What They Do", placeholder: "Describe their daily activities and responsibilities...", multiline: true },
-  { key: "goalsAndMotivations", label: "Goals & Motivations", placeholder: "What are they trying to achieve? What drives them?", multiline: true },
-  { key: "frustrationsAndChallenges", label: "Frustrations & Challenges", placeholder: "What blocks them from achieving their goals?", multiline: true },
+]
+
+const CUSTOMER_MULTILINE_FIELDS: {
+  key: keyof CustomerFields; label: string; placeholder: string
+}[] = [
+  { key: "whoTheyAre", label: "Who They Are", placeholder: "Describe their background, lifestyle, and identity..." },
+  { key: "whatTheyDo", label: "What They Do", placeholder: "Describe their daily activities and responsibilities..." },
+  { key: "goalsAndMotivations", label: "Goals & Motivations", placeholder: "What are they trying to achieve? What drives them?" },
+  { key: "frustrationsAndChallenges", label: "Frustrations & Challenges", placeholder: "What blocks them from achieving their goals?" },
 ]
 
 export default function QuickstartCanvasPage() {
@@ -87,38 +90,58 @@ export default function QuickstartCanvasPage() {
       </div>
 
       {/* Customer Section */}
-      <Card>
+      <Card className="border-brand/20 bg-brand">
         <CardContent className="p-6 flex flex-col gap-4">
           <div className="flex items-center gap-2.5">
-            <Users className="h-4 w-4 text-muted-foreground" />
-            <h2 className="text-base font-semibold">Customer Segment</h2>
+            <Users className="h-4 w-4 text-brand-foreground/70" />
+            <h2 className="text-base font-semibold text-brand-foreground">Customer Segment</h2>
           </div>
+          <div className="flex flex-col gap-4">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            {CUSTOMER_TEXT_FIELDS.filter((f) => !f.multiline).map((f) => (
+            {CUSTOMER_SINGLE_FIELDS.map((f) => (
               <div key={f.key} className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-foreground/70">{f.label}</label>
+                <label className="text-xs font-medium text-brand-foreground">{f.label}</label>
                 <Input
                   placeholder={f.placeholder}
                   value={customer[f.key]}
                   onChange={(e) => setCustomerField(f.key, e.target.value)}
-                  className="text-sm h-8"
+                  className="text-sm h-8 bg-background text-foreground placeholder:text-muted-foreground border-brand/30"
                 />
               </div>
             ))}
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-medium text-brand-foreground">Age Range</label>
+              <div className="flex items-center gap-2">
+                <Input
+                  placeholder="From"
+                  value={customer.ageFrom}
+                  onChange={(e) => setCustomerField("ageFrom", e.target.value)}
+                  className="text-sm h-8 bg-background text-foreground placeholder:text-muted-foreground border-brand/30"
+                />
+                <span className="text-brand-foreground text-sm shrink-0">to</span>
+                <Input
+                  placeholder="To"
+                  value={customer.ageTo}
+                  onChange={(e) => setCustomerField("ageTo", e.target.value)}
+                  className="text-sm h-8 bg-background text-foreground placeholder:text-muted-foreground border-brand/30"
+                />
+              </div>
+            </div>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {CUSTOMER_TEXT_FIELDS.filter((f) => f.multiline).map((f) => (
+            {CUSTOMER_MULTILINE_FIELDS.map((f) => (
               <div key={f.key} className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-foreground/70">{f.label}</label>
+                <label className="text-xs font-medium text-brand-foreground">{f.label}</label>
                 <Textarea
                   rows={3}
                   placeholder={f.placeholder}
                   value={customer[f.key]}
                   onChange={(e) => setCustomerField(f.key, e.target.value)}
-                  className="resize-none text-sm focus-visible:ring-1"
+                  className="resize-none text-sm focus-visible:ring-1 bg-background text-foreground placeholder:text-muted-foreground border-brand/30"
                 />
               </div>
             ))}
+          </div>
           </div>
         </CardContent>
       </Card>
