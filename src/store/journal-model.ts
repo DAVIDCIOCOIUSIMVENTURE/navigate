@@ -1,6 +1,8 @@
 import { createModel } from "@rematch/core"
 import type { RootModel } from "."
 
+const STORAGE_KEY = "navigate-journal"
+
 interface JournalState {
   title: string
   text: string
@@ -33,35 +35,26 @@ export const journal = createModel<RootModel>()({
     },
   },
   effects: (dispatch) => ({
-    async load(journalId: string) {
-      dispatch.journal.setLoading(true)
+    load() {
+      if (typeof window === "undefined") return
       try {
-        const res = await fetch(`/journalEntry?id=${journalId}`)
-        const data = await res.json()
-        if (data && data.length > 0) {
-          dispatch.journal.setEntry({ title: data[0].title ?? "", text: data[0].text ?? "" })
+        const raw = localStorage.getItem(STORAGE_KEY)
+        if (raw) {
+          const stored = JSON.parse(raw)
+          dispatch.journal.setEntry({ title: stored.title ?? "", text: stored.text ?? "" })
         } else {
           dispatch.journal.setEntry({ title: "", text: "" })
         }
-      } finally {
-        dispatch.journal.setLoading(false)
+      } catch {
+        dispatch.journal.setEntry({ title: "", text: "" })
       }
     },
-    async save(payload: { journalId: string; title: string; text: string; userId: string }) {
-      dispatch.journal.setLoading(true)
+    save(payload: { title: string; text: string }) {
+      if (typeof window === "undefined") return
       try {
-        await fetch(`/journalEntry/${payload.journalId}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            id: payload.journalId,
-            title: payload.title,
-            text: payload.text,
-            userId: payload.userId,
-          }),
-        })
-      } finally {
-        dispatch.journal.setLoading(false)
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ title: payload.title, text: payload.text }))
+      } catch {
+        // ignore storage errors
       }
     },
   }),

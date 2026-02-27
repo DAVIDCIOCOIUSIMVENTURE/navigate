@@ -1,15 +1,12 @@
 "use client"
 
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { CURRENT_USER_ID } from "@/lib/config"
 import { Textarea } from "@/components/ui/textarea"
 import { Book } from "lucide-react"
 import { SidebarMenuButton } from "@/components/ui/sidebar"
 import { useEffect, useRef } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
-
-const JOURNAL_ID = "1"
 
 export function JournalDialog() {
   const title = useSelector((state: RootState) => state.journal.title)
@@ -21,7 +18,7 @@ export function JournalDialog() {
   // Load entry when dialog opens
   useEffect(() => {
     if (open) {
-      dispatch.journal.load(JOURNAL_ID)
+      dispatch.journal.load()
     }
   }, [open])
 
@@ -30,7 +27,7 @@ export function JournalDialog() {
     if (!open) return
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => {
-      dispatch.journal.save({ journalId: JOURNAL_ID, title, text, userId: CURRENT_USER_ID })
+      dispatch.journal.save({ title, text })
     }, 500)
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
@@ -71,4 +68,4 @@ export function JournalDialog() {
       </DialogContent>
     </Dialog>
   )
-} 
+}

@@ -19,6 +19,8 @@ import { GuidanceDialog } from "@/components/guidance-dialog"
 import { AppStoreProvider } from "@/store/provider"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
+import { InnovationProvider } from "@/context/innovation-context"
+import { IdeasProvider } from "@/context/ideas-context"
 
 function generateBreadcrumbs(pathname: string) {
   // 1. Split the path and remove empty strings
@@ -55,6 +57,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   // Load persisted settings from localStorage on mount
   useEffect(() => {
     dispatch.settings.init()
+    dispatch.problemTriggers.init()
   }, [])
 
   return (
@@ -115,7 +118,11 @@ export default function RootLayoutClient({
 }) {
   return (
     <AppStoreProvider>
-      <LayoutContent>{children}</LayoutContent>
+      <IdeasProvider>
+        <InnovationProvider>
+          <LayoutContent>{children}</LayoutContent>
+        </InnovationProvider>
+      </IdeasProvider>
     </AppStoreProvider>
   )
 }

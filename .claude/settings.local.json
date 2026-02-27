@@ -7,7 +7,15 @@
       "Bash(npx tsc:*)",
       "Bash(xargs cat)",
       "Bash(git stash)",
-      "Bash(git stash pop)"
+      "Bash(git stash pop)",
+      "Bash(npx next build)",
+      "Bash(npm run lint)",
+      "Bash(npm run build)",
+      "Bash(ls /c/Development/OU/navigate/src/app/self-discovery/[categoryId]/)",
+      "Bash(ls /c/Development/OU/navigate/src/app/self-discovery/[categoryId]/[questionId]/)",
+      "Bash(ls src/app/\\\\\\(app\\\\\\)/)",
+      "Bash(ls -la /c/Development/OU/navigate/src/app/\\\\\\(app\\\\\\)/self-discovery/)",
+      "Bash(git add .)"
     ]
   }
 }

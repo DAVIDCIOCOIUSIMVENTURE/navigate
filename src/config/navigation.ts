@@ -1,6 +1,13 @@
-import { Search, Compass, CheckCircle, Sparkles, ClipboardCheck, Heart, Book, Brain, Globe } from "lucide-react"
+import { Compass, Heart, Book, Brain, Globe, Lightbulb } from "lucide-react"
 
 export const navigationItems = {
+  ideas: [
+    {
+      title: "Ideas",
+      url: "/ideas",
+      icon: Lightbulb
+    },
+  ],
   selfDiscovery: [
     {
       title: "Self Discovery",
@@ -8,44 +15,20 @@ export const navigationItems = {
       icon: Compass
     },
   ],
-  problemDiscovery: [
-    {
-      title: "Problem Discovery",
-      url: "/problem-discovery",
-      icon: Search
-    },
-    {
-      title: "Problem Validation",
-      url: "/problem-validation",
-      icon: CheckCircle
-    },
-  ],
-  solution: [
-    {
-      title: "Solution Ideation",
-      url: "/solution-ideation",
-      icon: Sparkles
-    },
-    {
-      title: "Solution Validation",
-      url: "/solution-validation",
-      icon: ClipboardCheck
-    },
-  ]
 }
 
 export const selfDiscoveryCategoryIcons = {
-  "1": Heart,
-  "2": Book,
-  "3": Brain,
-  "4": Globe
+  "personal-interests": Heart,
+  "knowledge": Book,
+  "skills-expertise": Brain,
+  "social-impact": Globe
 }
 
 export function getNavigationItem(path: string) {
-  const allItems = [...navigationItems.selfDiscovery, ...navigationItems.problemDiscovery, ...navigationItems.solution]
+  const allItems = [...navigationItems.ideas, ...navigationItems.selfDiscovery]
   return allItems.find(item => item.url === path)
 }
 
 export function getSelfDiscoveryCategoryIcon(categoryId: string) {
   return selfDiscoveryCategoryIcons[categoryId as keyof typeof selfDiscoveryCategoryIcons]
-} 
+}

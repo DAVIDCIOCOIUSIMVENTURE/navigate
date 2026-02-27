@@ -8,14 +8,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev              # Start dev server on port 4000
 npm run build            # Build for production
 npm run lint             # Run ESLint
-npm run seed             # Seed the database (prisma db seed)
-npm run db:migrate       # Run database migrations (alias for prisma migrate dev)
-npx prisma studio        # Open Prisma Studio UI
-
-# Test database (uses .env.test)
-npm run db:migrate:test  # Run migrations on test DB
-npm run db:seed:test     # Seed test DB
-npm run db:studio:test   # Inspect test DB
 ```
 
 There is no test suite configured.
@@ -26,7 +18,6 @@ There is no test suite configured.
 
 ### Stack
 - **Framework**: Next.js 15 with App Router, React 19
-- **Database**: PostgreSQL via Prisma ORM (local on port 5434, database `navigate`)
 - **UI**: Radix UI primitives + Tailwind CSS; custom components in `src/components/ui/`
 - **State**: Rematch (Redux wrapper) — `@rematch/core` + `react-redux`; React Context for lighter feature workflows
 - **Drag & Drop**: `@dnd-kit` for sortable bucket organization
@@ -34,68 +25,80 @@ There is no test suite configured.
 - **Notifications**: `sonner`
 - **NLP/Parsing**: `compromise` + `js-yaml` (added for future problem parsing features)
 
+### Database Status
+
+**The database is currently disabled.** All data is stored in `localStorage`. Prisma and `@prisma/client` remain in `package.json` but are not imported or used anywhere in the active application code. `src/lib/prisma.ts` exists but is unused.
+
+At build time (e.g. on Vercel), Prisma may attempt to validate `DATABASE_URL` from `prisma/schema.prisma`. If the build fails with a Prisma-related error, set this environment variable to satisfy the schema check without needing a real DB:
+
+```
+DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
+```
+
 ### Path Alias
 
 `@/*` maps to `src/*` (configured in `tsconfig.json`).
 
 ### Project Structure
 
-- `src/app/api/` — CRUD API routes (`.js` files) for domain entities: `problemTriggers`, `problemTriggerBuckets`, `selfDiscoveryQuestionCategories`, `selfDiscoveryQuestions`
-- `src/lib/` — Core utilities: `prisma.ts` (singleton client), `config.ts` (app-wide constants including `CURRENT_USER_ID`)
+- `src/app/(app)/` — All main app pages, wrapped by the sidebar layout (`(app)/layout.tsx`)
+- `src/app/login/` — Password-protected login page (outside the sidebar layout)
+- `src/app/api/auth/` — Login (`POST`) and logout (`POST`) API routes for cookie-based auth
+- `src/middleware.ts` — Checks for `site-auth` cookie; redirects to `/login` if missing
+- `src/lib/` — Core utilities: `prisma.ts` (unused singleton), `config.ts` (app-wide constants)
 - `src/config/navigation.ts` — Centralized top-level nav items (title, url, icon) used by sidebar, dashboard, and breadcrumbs
-- `src/lib/discoveryMethods.ts` — Three problem discovery methods with hrefs and metadata (only "Finding My Customers" is implemented; others are `href: null`)
 - `src/components/ui/` — Shared Radix UI-based primitives
-- `src/store/` — Global Rematch store (models: `settings`, `journal`)
-- `prisma/schema.prisma` — Database schema (User, ProblemTrigger, ProblemTriggersBucket, SelfDiscoveryQuestion/Category)
+- `src/store/` — Global Rematch store (models: `settings`, `journal`, `problemTriggers`) — all localStorage-backed
+- `src/data/` — Static data files (e.g. `selfDiscoveryData.ts`)
+- `src/context/` — React Context providers (ideas, innovation)
+- `prisma/schema.prisma` — Database schema (kept for reference; not actively used)
 - `locales/` — i18n translations (en, es, fr) via `next-i18next`; infrastructure exists but not heavily used
 
-### Problem Discovery Routes
+### Password Protection
 
+The app is protected by a simple middleware-based password gate:
+- `src/middleware.ts` intercepts all requests and checks for an `httpOnly` cookie `site-auth=1`
+- If missing, redirects to `/login?from=<original-path>`
+- `/api/auth/login` validates the submitted password against the `SITE_PASSWORD` environment variable and sets the cookie (30-day expiry)
+- `/api/auth/logout` clears the cookie
+
+**Required environment variable:**
 ```
-/problem-discovery                          # Problem Statement Canvas (client-state only)
-/problem-discovery/find-new-problems        # Discovery method selector
-/problem-discovery/find-new-problems/finding-my-customers  # 4-step Rematch workflow
-/problem-discovery/guided-workflow          # 11-step Context workflow
-/problem-discovery/bucket/[id]              # Bucket detail view
+SITE_PASSWORD=your-password-here
 ```
+
+Set this in `.env` locally and in Vercel's Environment Variables for production.
 
 ### State Management
 
-Two patterns coexist — choose based on complexity:
+All state is client-side only (no database). Two patterns coexist — choose based on complexity:
 
 **Rematch (Redux)** — use for complex state with side effects or localStorage persistence:
-- **Global store** (`src/store/`): `settings` (sidebar collapsed/expanded, persisted to localStorage), `journal` (title, text, open state with async load/save effects)
-- **Feature-scoped stores**: Set up in the feature's `layout.tsx` as a nested provider. Example: `src/app/problem-discovery/find-new-problems/finding-my-customers/store/` has a single model with 20+ pure reducers managing customer profile, age range, jobs-to-be-done (with nested items/children), problems, and solutions
+- **Global store** (`src/store/`): `settings` (sidebar collapsed/expanded), `journal` (title + text, persisted to localStorage), `problemTriggers` (persisted to localStorage)
 - Access: `useSelector((state: RootState) => state.modelName.field)` and `useDispatch<AppDispatch>()`
 
-**React Context** — use for lighter, page-scoped multi-step forms without side effects:
-- **Guided Workflow**: `src/app/problem-discovery/guided-workflow/context.tsx` — exports `WorkflowProvider` and `useWorkflow()` hook; manages the 11-step workflow state (customer fields, jobs, problems, alternatives, impacts) with pure setter functions and `getAdjacentSteps()` navigation helper
-- Provider wraps the route tree in the feature's `layout.tsx`
-
-### API Route Pattern
-
-All routes live at `src/app/api/[entity]/route.js`. They:
-- Import the Prisma singleton from `@/lib/prisma`
-- Filter by `userId` query param (always `CURRENT_USER_ID` from config)
-- Return `NextResponse.json()` with try/catch error handling
-- Convert IDs to strings for consistency
-
-**Database-backed pages**: Self-Discovery questions/categories, Problem Triggers, Buckets
-**Client-state only (not yet persisted)**: Problem Statement Canvas (`/problem-discovery`), Guided Workflow (`/problem-discovery/guided-workflow`)
-
-### Single-User Mode
-
-All user-scoped data uses `CURRENT_USER_ID` from `src/lib/config.ts`. This ID must match the user created by `npm run seed` (upserts `david@simventure.co.uk`). **After seeding a fresh database**, run the app once, get the generated user ID from the DB, then update `config.ts`.
+**React Context** — use for lighter, page-scoped state without side effects:
+- `src/context/ideas-context.tsx` — manages ideas list
+- `src/context/innovation-context.tsx` — manages innovation process state
+- Provider wraps the route tree in `root-layout-client.tsx`
 
 ### Layout & Navigation Patterns
 
-- `src/app/root-layout-client.tsx` — Client layout wrapper with the global sidebar (`app-sidebar.tsx`), breadcrumbs (auto-generated from pathname), and the guidance dialog
-- Feature sub-flows use nested layouts with their own sidebar nav defined locally as `NAV_ITEMS` arrays (e.g., `finding-my-customers/layout.tsx` has 4 steps; `guided-workflow/layout.tsx` uses `NAV_ITEMS` from `context.tsx` with 11 steps)
+- `src/app/layout.tsx` — Root layout: HTML shell only (no sidebar). The `/login` route renders here directly.
+- `src/app/(app)/layout.tsx` — Wraps all main app pages with `RootLayoutClient` (sidebar + providers)
+- `src/app/root-layout-client.tsx` — Client layout with global sidebar (`app-sidebar.tsx`), breadcrumbs (auto-generated from pathname), and the guidance dialog
 - Breadcrumbs are auto-generated: kebab-case path segments become Title Case; intermediate segments are non-clickable
+
+### Vercel Deployment
+
+Required environment variables in Vercel:
+| Variable | Value |
+|---|---|
+| `SITE_PASSWORD` | your chosen password |
+| `DATABASE_URL` | `postgresql://dummy:dummy@localhost:5432/dummy` (only if build fails due to Prisma schema validation) |
 
 ### Known Inconsistencies / Work In Progress
 
-- **External service**: `src/app/problem-discovery/page.tsx` fetches from `localhost:3001` (an external JSON server) instead of the app's own `/api` routes. This is intentional for that page's current state.
-- **Fallback data**: The dashboard (`src/app/page.tsx`) shows hardcoded stats (triggers, buckets, problems, solutions) rather than live DB counts.
+- **Prisma leftovers**: `@prisma/client`, `prisma`, and related scripts remain in `package.json` but the database is not used. They can be removed once there's confidence no DB will be re-introduced soon.
 - **i18n**: Translation infrastructure is wired but pages mostly use static strings.
-- **No auth**: No middleware, sessions, or role-based access. Multi-user support is not yet implemented.
+- **No multi-user auth**: The password gate is a single shared password for all users. No per-user sessions or roles.
