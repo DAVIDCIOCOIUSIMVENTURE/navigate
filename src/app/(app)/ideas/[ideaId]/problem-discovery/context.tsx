@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useCallback, type ReactNode } from "react"
-import { useIdeas } from "@/context/ideas-context"
+import { useIdeas } from "@/store/ideas-hooks"
 import type { CustomerFields, SubSegmentFields, Job, ProblemItem } from "@/types/idea"
 import { DEFAULT_SUB_SEGMENT } from "@/types/idea"
 

@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
-import { useIdeas } from "@/context/ideas-context"
+import { useIdeas } from "@/store/ideas-hooks"
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from "@/components/ui/dialog"

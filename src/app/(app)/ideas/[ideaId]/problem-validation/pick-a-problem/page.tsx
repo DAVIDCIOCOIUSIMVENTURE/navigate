@@ -4,7 +4,7 @@ import { useParams, usePathname, useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useProblemValidation, getAdjacentSteps } from "../context"
-import { useIdeas } from "@/context/ideas-context"
+import { useIdeas } from "@/store/ideas-hooks"
 import { Briefcase, CircleDot, CheckCircle2 } from "lucide-react"
 import type { ProblemItem } from "@/types/idea"
 

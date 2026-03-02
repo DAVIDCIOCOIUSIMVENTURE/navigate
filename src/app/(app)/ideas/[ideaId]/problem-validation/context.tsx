@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react"
-import { useIdeas } from "@/context/ideas-context"
+import { useIdeas } from "@/store/ideas-hooks"
 import type { ImpactItem, ProblemValidation, ValidationStatus } from "@/types/idea"
 
 export type { ImpactItem, ProblemValidation, ValidationStatus }

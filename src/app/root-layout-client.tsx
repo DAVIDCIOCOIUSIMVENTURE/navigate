@@ -20,7 +20,7 @@ import { AppStoreProvider } from "@/store/provider"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import { InnovationProvider } from "@/context/innovation-context"
-import { IdeasProvider, useIdeas } from "@/context/ideas-context"
+import { useIdeas } from "@/store/ideas-hooks"
 
 function generateBreadcrumbs(pathname: string, getIdeaTitle: (id: number) => string | undefined) {
   const paths = pathname.split('/').filter(Boolean)
@@ -116,11 +116,9 @@ export default function RootLayoutClient({
 }) {
   return (
     <AppStoreProvider>
-      <IdeasProvider>
-        <InnovationProvider>
-          <LayoutContent>{children}</LayoutContent>
-        </InnovationProvider>
-      </IdeasProvider>
+      <InnovationProvider>
+        <LayoutContent>{children}</LayoutContent>
+      </InnovationProvider>
     </AppStoreProvider>
   )
 }

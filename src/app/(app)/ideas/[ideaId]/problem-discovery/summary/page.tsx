@@ -4,7 +4,7 @@ import { useParams, usePathname, useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useProblemDiscovery, getAdjacentSteps } from "../context"
-import { useIdeas } from "@/context/ideas-context"
+import { useIdeas } from "@/store/ideas-hooks"
 import { CheckCircle2, Briefcase, AlertTriangle } from "lucide-react"
 
 function Field({ label, value }: { label: string; value: string }) {

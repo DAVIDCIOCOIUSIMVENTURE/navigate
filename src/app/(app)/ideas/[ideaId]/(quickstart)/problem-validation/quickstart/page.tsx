@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { useIdeas } from "@/context/ideas-context"
+import { useIdeas } from "@/store/ideas-hooks"
 import {
   Users, CircleDot, GitFork, Clock, ThumbsDown, Heart, BarChart2,
   Briefcase, CheckCircle2, Plus, X, Trash2,

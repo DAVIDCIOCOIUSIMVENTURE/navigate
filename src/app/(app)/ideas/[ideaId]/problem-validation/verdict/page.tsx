@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useProblemValidation, getAdjacentSteps } from "../context"
-import { useIdeas } from "@/context/ideas-context"
+import { useIdeas } from "@/store/ideas-hooks"
 import { Gavel, CheckCircle2, XCircle, GitFork, Clock, ThumbsDown, Heart, BarChart2 } from "lucide-react"
 
 function SummaryField({ label, value }: { label: string; value: string }) {

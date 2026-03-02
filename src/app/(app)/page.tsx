@@ -6,7 +6,7 @@ import { ChevronRight, Lightbulb, Target, Trophy, Award, Star, Crown } from "luc
 import { AchievementItem } from "@/components/achievement-item"
 import Image from "next/image"
 import Link from "next/link"
-import { useIdeas } from "@/context/ideas-context"
+import { useIdeas } from "@/store/ideas-hooks"
 
 export default function DashboardPage() {
   const { ideas } = useIdeas()

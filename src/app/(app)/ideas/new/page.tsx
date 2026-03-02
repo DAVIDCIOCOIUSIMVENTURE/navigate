@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
-import { useIdeas } from "@/context/ideas-context"
+import { useIdeas } from "@/store/ideas-hooks"
 import { Map, Zap } from "lucide-react"
 
 export default function NewIdeaPage() {

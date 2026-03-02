@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation"
 import { useEffect } from "react"
-import { useIdeas } from "@/context/ideas-context"
+import { useIdeas } from "@/store/ideas-hooks"
 
 export default function IdeaRootPage() {
   const params = useParams()

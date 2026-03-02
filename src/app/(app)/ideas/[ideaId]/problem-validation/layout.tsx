@@ -4,7 +4,7 @@ import { useParams, usePathname, useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ProblemValidationProvider, useProblemValidation, NAV_ITEMS } from "./context"
-import { useIdeas } from "@/context/ideas-context"
+import { useIdeas } from "@/store/ideas-hooks"
 import {
   CircleDot, GitFork, Clock, ThumbsDown, Heart, BarChart2, Gavel, FileText, LayoutTemplate,
 } from "lucide-react"

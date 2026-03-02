@@ -1,7 +1,7 @@
 "use client"
 
 import { useParams, usePathname, useRouter } from "next/navigation"
-import { useIdeas } from "@/context/ideas-context"
+import { useIdeas } from "@/store/ideas-hooks"
 import { CheckCircle2, Lock, Map, Zap } from "lucide-react"
 
 const STAGES_GUIDED = [
