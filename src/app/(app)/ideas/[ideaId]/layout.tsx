@@ -3,6 +3,7 @@
 import { useParams, usePathname, useRouter } from "next/navigation"
 import { useIdeas } from "@/store/ideas-hooks"
 import { CheckCircle2, Lock, Map, Zap } from "lucide-react"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 const STAGES_GUIDED = [
   {
@@ -15,7 +16,7 @@ const STAGES_GUIDED = [
   {
     key: "problem-validation",
     label: "Problem Validation",
-    path: "problem-validation/pick-a-problem",
+    path: "problem-validation/introduction",
     completedKey: "problemValidationComplete" as const,
     future: false,
   },
@@ -46,7 +47,7 @@ const STAGES_QUICKSTART = [
   {
     key: "problem-validation",
     label: "Problem Validation",
-    path: "problem-validation/quickstart",
+    path: "problem-validation/introduction",
     completedKey: "problemValidationComplete" as const,
     future: false,
   },
@@ -137,30 +138,50 @@ export default function IdeaShellLayout({ children }: { children: React.ReactNod
         </div>
 
         {/* Mode toggle */}
-        <div className="flex items-stretch rounded-xl border bg-card overflow-hidden shrink-0">
-          <button
-            onClick={() => handleModeSwitch("guided")}
-            className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium transition-colors border-r
-              ${!isQuickStart
-                ? "bg-primary/5 text-primary"
-                : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-              }`}
+        <TooltipProvider>
+          <div
+            role="group"
+            aria-label="Journey mode"
+            className="flex items-stretch rounded-xl border bg-card overflow-hidden shrink-0"
           >
-            <Map className="h-3.5 w-3.5 shrink-0" />
-            Guided Journey
-          </button>
-          <button
-            onClick={() => handleModeSwitch("quickstart")}
-            className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium transition-colors
-              ${isQuickStart
-                ? "bg-primary/5 text-primary"
-                : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
-              }`}
-          >
-            <Zap className="h-3.5 w-3.5 shrink-0" />
-            Quick Start
-          </button>
-        </div>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => handleModeSwitch("guided")}
+                  aria-label="Guided Journey"
+                  aria-pressed={!isQuickStart}
+                  className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium transition-colors border-r
+                    ${!isQuickStart
+                      ? "bg-primary/5 text-primary"
+                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                    }`}
+                >
+                  <Map className="h-3.5 w-3.5 shrink-0" />
+                  <span className="md:hidden">Guided Journey</span>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent className="md:block hidden">Guided Journey</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => handleModeSwitch("quickstart")}
+                  aria-label="Quick Start"
+                  aria-pressed={isQuickStart}
+                  className={`flex items-center gap-1.5 px-4 py-3 text-sm font-medium transition-colors
+                    ${isQuickStart
+                      ? "bg-primary/5 text-primary"
+                      : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
+                    }`}
+                >
+                  <Zap className="h-3.5 w-3.5 shrink-0" />
+                  <span className="md:hidden">Quick Start</span>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent className="md:block hidden">Quick Start</TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
       </div>
 
       {children}

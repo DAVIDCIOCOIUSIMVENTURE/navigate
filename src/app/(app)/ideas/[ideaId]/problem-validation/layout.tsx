@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button"
 import { ProblemValidationProvider, useProblemValidation, NAV_ITEMS } from "./context"
 import { useIdeas } from "@/store/ideas-hooks"
 import {
-  CircleDot, GitFork, Clock, ThumbsDown, Heart, BarChart2, Gavel, FileText, LayoutTemplate,
+  CircleDot, GitFork, Clock, ThumbsDown, Heart, BarChart2, Gavel, FileText, LayoutTemplate, BookOpen,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
 const NAV_ICONS: Record<string, LucideIcon> = {
+  introduction: BookOpen,
   "pick-a-problem": CircleDot,
   alternatives: GitFork,
   "context-step": Clock,

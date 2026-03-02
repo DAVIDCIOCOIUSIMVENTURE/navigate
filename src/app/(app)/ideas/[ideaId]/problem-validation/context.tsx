@@ -146,6 +146,7 @@ export function useProblemValidation() {
 }
 
 export const NAV_ITEMS = [
+  { label: "Introduction", path: "introduction" },
   { label: "Pick a Problem", path: "pick-a-problem" },
   { label: "Alternatives", path: "alternatives" },
   { label: "Context", path: "context-step" },

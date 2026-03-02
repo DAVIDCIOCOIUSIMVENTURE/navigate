@@ -39,18 +39,9 @@ export function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              {navigationItems.ideas.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
-                    <Link href={item.url} className="hover:bg-accent/50 transition-colors">
-                      <div className="flex items-center justify-center w-6 h-6 rounded-md">
-                        <item.icon className="h-4 w-4" />
-                      </div>
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              <SidebarMenuItem>
+                <JournalDialog />
+              </SidebarMenuItem>
               {navigationItems.selfDiscovery.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild tooltip={item.title}>
@@ -63,9 +54,18 @@ export function AppSidebar() {
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
-              <SidebarMenuItem>
-                <JournalDialog />
-              </SidebarMenuItem>
+              {navigationItems.ideas.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild tooltip={item.title}>
+                    <Link href={item.url} className="hover:bg-accent/50 transition-colors">
+                      <div className="flex items-center justify-center w-6 h-6 rounded-md">
+                        <item.icon className="h-4 w-4" />
+                      </div>
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
