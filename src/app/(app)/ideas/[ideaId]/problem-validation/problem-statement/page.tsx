@@ -24,8 +24,8 @@ const CUSTOMER_TEXT_FIELDS: {
   key: keyof CustomerFields; label: string; placeholder: string; multiline?: boolean
 }[] = [
   { key: "segmentName", label: "Segment Name", placeholder: "e.g. Freelance Designers..." },
-  { key: "occupation", label: "Occupation", placeholder: "e.g. Product Manager..." },
-  { key: "ageRange", label: "Age Range", placeholder: "e.g. 25–40" },
+  { key: "ageFrom", label: "Age From", placeholder: "e.g. 25" },
+  { key: "ageTo", label: "Age To", placeholder: "e.g. 40" },
   { key: "whoTheyAre", label: "Who They Are", placeholder: "Describe their background...", multiline: true },
   { key: "whatTheyDo", label: "What They Do", placeholder: "Describe their daily activities...", multiline: true },
   { key: "goalsAndMotivations", label: "Goals & Motivations", placeholder: "What are they trying to achieve?", multiline: true },

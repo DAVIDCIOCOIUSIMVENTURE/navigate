@@ -8,9 +8,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 npm run dev              # Start dev server on port 4000
 npm run build            # Build for production
 npm run lint             # Run ESLint
+npm run test             # Run tests in watch mode
+npm run test:run         # Run tests once (used in CI)
+npx tsc --noEmit         # Type check without emitting files
 ```
-
-There is no test suite configured.
 
 ## Architecture
 
@@ -24,6 +25,8 @@ There is no test suite configured.
 - **Tables**: `@tanstack/react-table`
 - **Notifications**: `sonner`
 - **NLP/Parsing**: `compromise` + `js-yaml` (added for future problem parsing features)
+- **Testing**: Vitest + React Testing Library + happy-dom; test files co-located as `*.test.ts(x)`
+- **CI**: GitHub Actions (`.github/workflows/ci.yml`) — runs lint, type check, and tests on every push
 
 ### Database Status
 
@@ -96,6 +99,29 @@ Required environment variables in Vercel:
 |---|---|
 | `SITE_PASSWORD` | your chosen password |
 | `DATABASE_URL` | `postgresql://dummy:dummy@localhost:5432/dummy` (only if build fails due to Prisma schema validation) |
+
+### Testing
+
+- **Runner**: Vitest 4 with `happy-dom` environment (ESM-native; replaces jsdom)
+- **Config**: `vitest.config.ts` at root; setup file `vitest.setup.ts` imports `@testing-library/jest-dom`
+- **Globals**: `vitest/globals` and `@testing-library/jest-dom` types declared in `tsconfig.json` — no need to import `describe`/`it`/`expect` in test files
+- **Patterns by test type**:
+  - Pure data / utilities → plain `.test.ts`, call functions directly
+  - Rematch reducers → import the model, call `model.reducers.fn(state, payload)` directly (they're pure functions, no store setup needed)
+  - React Context hooks → `renderHook(() => useHook(), { wrapper: ProviderComponent })`; each state-dependent `act()` call must be in its own block (stale closure behaviour)
+- **Module system**: `"type": "module"` is set in `package.json` (required by Vite 7 / Vitest 4); `prisma/seed.cjs` uses `.cjs` extension to stay CommonJS
+
+### CI (GitHub Actions)
+
+`.github/workflows/ci.yml` runs on every push and on PRs to `main`:
+1. `npm ci` — clean install
+2. `npm run lint` — ESLint
+3. `npx tsc --noEmit` — type check
+4. `npm run test:run` — Vitest
+
+Uses Node 22 (Vite 7 requires `>=20.19.0`). The `SITE_PASSWORD` env var is set to a placeholder in CI so middleware doesn't error during the build step.
+
+To enforce CI as a merge gate: GitHub → Settings → Branches → main → **Require status checks to pass**.
 
 ### Known Inconsistencies / Work In Progress
 

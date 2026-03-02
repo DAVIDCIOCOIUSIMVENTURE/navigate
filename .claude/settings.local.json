@@ -30,7 +30,11 @@
       "Bash(powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | ForEach-Object { try { $_.MainModule.FileName + '' | '' + $_.Id } catch { ''Access denied: '' + $_.Id } }\")",
       "Bash(powershell -File:*)",
       "Bash(ls \"c:/Development/OU/navigate/src/app/\\(app\\)/ideas/[ideaId]/problem-discovery/\")",
-      "Bash(ls -la \"c:\\\\Development\\\\OU\\\\navigate\\\\src\\\\app\\\\\\(app\\)\\\\ideas\\\\[ideaId]\\\\problem-discovery\")"
+      "Bash(ls -la \"c:\\\\Development\\\\OU\\\\navigate\\\\src\\\\app\\\\\\(app\\)\\\\ideas\\\\[ideaId]\\\\problem-discovery\")",
+      "Bash(npm run test:run)",
+      "Bash(npm uninstall jsdom)",
+      "Bash(node --version)",
+      "Bash(npm uninstall @types/testing-library__jest-dom)"
     ]
   }
 }
