@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react"
+import { createContext, useContext, useState, useCallback, useRef, type ReactNode } from "react"
 import type { Idea } from "@/types/idea"
 import { DEFAULT_CUSTOMER, DEFAULT_SUB_SEGMENT } from "@/types/idea"
 
@@ -15,11 +15,12 @@ const IdeasContext = createContext<IdeasContextValue | null>(null)
 
 export function IdeasProvider({ children }: { children: ReactNode }) {
   const [ideas, setIdeas] = useState<Idea[]>([])
+  const idCounter = useRef(0)
 
   const createIdea = useCallback((mode: "guided" | "quickstart"): Idea => {
     const now = new Date().toISOString()
     const newIdea: Idea = {
-      id: Date.now(),
+      id: ++idCounter.current,
       title: `Idea ${ideas.length + 1}`,
       createdAt: now,
       updatedAt: now,
