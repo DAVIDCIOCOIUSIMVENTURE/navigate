@@ -47,7 +47,7 @@ const STAGES_QUICKSTART = [
   {
     key: "problem-validation",
     label: "Problem Validation",
-    path: "problem-validation/introduction",
+    path: "problem-validation/quickstart",
     completedKey: "problemValidationComplete" as const,
     future: false,
   },

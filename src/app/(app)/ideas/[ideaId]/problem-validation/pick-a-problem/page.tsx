@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useProblemValidation, getAdjacentSteps } from "../context"
 import { useIdeas } from "@/store/ideas-hooks"
-import { Briefcase, CircleDot, CheckCircle2 } from "lucide-react"
+import { Briefcase, CircleDot, CheckCircle2, ChevronLeft, ChevronRight } from "lucide-react"
 import type { ProblemItem } from "@/types/idea"
 
 const STATUS_BADGE: Record<string, { label: string; className: string }> = {
@@ -22,7 +22,7 @@ export default function PickAProblemPage() {
   const ideaId = Number(params.ideaId)
   const { selectedProblemId, setSelectedProblemId } = useProblemValidation()
   const { getIdea } = useIdeas()
-  const { nextPath } = getAdjacentSteps(pathname, ideaId)
+  const { prevPath, nextPath } = getAdjacentSteps(pathname, ideaId)
 
   const idea = getIdea(ideaId)
   const jobs = idea?.jobs ?? []
@@ -44,12 +44,7 @@ export default function PickAProblemPage() {
     return (
       <li key={problem.id}>
         <button
-          onClick={() => {
-            setSelectedProblemId(isSelected ? null : problem.id)
-            if (!isSelected && nextPath) {
-              router.push(nextPath)
-            }
-          }}
+          onClick={() => setSelectedProblemId(isSelected ? null : problem.id)}
           className={`w-full text-left rounded-lg border-2 px-4 py-3 flex items-center gap-3 transition-colors ${
             isSelected
               ? "border-primary bg-primary/5"
@@ -123,6 +118,24 @@ export default function PickAProblemPage() {
             )}
           </div>
         )}
+        <div className="flex justify-between mt-2">
+          {prevPath ? (
+            <Button variant="outline" onClick={() => router.push(prevPath)} className="gap-1.5">
+              <ChevronLeft className="h-4 w-4" />
+              Previous
+            </Button>
+          ) : <div />}
+          {nextPath && (
+            <Button
+              onClick={() => router.push(nextPath)}
+              disabled={selectedProblemId === null}
+              className="gap-1.5"
+            >
+              Next
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
       </CardContent>
     </Card>
   )
