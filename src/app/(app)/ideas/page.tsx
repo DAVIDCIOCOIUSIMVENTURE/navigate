@@ -4,8 +4,9 @@ import { useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useIdeas } from "@/store/ideas-hooks"
-import { Lightbulb, Plus } from "lucide-react"
+import { HelpCircle, Lightbulb, Plus } from "lucide-react"
 import type { Idea } from "@/types/idea"
+import { useGuidance } from "@/context/guidance-context"
 
 function IdeaCard({ idea }: { idea: Idea }) {
   const router = useRouter()
@@ -38,12 +39,23 @@ function IdeaCard({ idea }: { idea: Idea }) {
 export default function IdeasPage() {
   const router = useRouter()
   const { ideas } = useIdeas()
+  const { openGuidance } = useGuidance()
 
   return (
     <div className="flex flex-col gap-6 w-full flex-1">
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-1">
-          <h1 className="text-xl font-bold">Ideas</h1>
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl font-bold">Ideas</h1>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6 text-muted-foreground hover:text-foreground"
+              onClick={() => openGuidance("ideas")}
+            >
+              <HelpCircle className="h-4 w-4" />
+            </Button>
+          </div>
           <p className="text-sm text-muted-foreground">
             Each idea takes you from problem discovery to a validated solution.
           </p>

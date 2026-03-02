@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -26,6 +26,63 @@ const guidanceItems: GuidanceItem[] = [
             <li>Problem Discovery - Identify and analyze challenges</li>
             <li>Problem Trigger Buckets - Capture and organize your ideas</li>
           </ul>
+        </div>
+      </div>
+    )
+  },
+  {
+    id: "ideas",
+    title: "Ideas",
+    content: (
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">How Ideas Work</h3>
+        <p>
+          The Ideas section is the core of Navigate. Each idea you create takes you through a structured innovation
+          process from discovery through to a validated solution.
+        </p>
+        <div className="space-y-3">
+          <div>
+            <h4 className="font-medium">1. Create an Idea</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              Start by creating an idea — a space for exploring a specific domain or opportunity you want to investigate.
+              You can have multiple ideas running in parallel.
+            </p>
+          </div>
+          <div>
+            <h4 className="font-medium">2. Define your Customer Segment</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              Each idea has a target customer segment. This helps you focus on the right audience and understand
+              who you are solving problems for.
+            </p>
+          </div>
+          <div>
+            <h4 className="font-medium">3. Identify Jobs to Be Done</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              Within your customer segment, define the jobs — tasks or goals — your customers are trying to accomplish.
+              Each idea can have multiple jobs to be done.
+            </p>
+          </div>
+          <div>
+            <h4 className="font-medium">4. Discover Problems</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              For each job to be done, identify the problems your customers encounter. Multiple problems can exist
+              per job — capture them all during the discovery phase.
+            </p>
+          </div>
+          <div>
+            <h4 className="font-medium">5. Pick a Problem to Validate</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              Once you have a list of problems, select the most promising one to validate. You will then analyse
+              alternatives, shortcomings, and the emotional and quantifiable impact of that problem.
+            </p>
+          </div>
+          <div>
+            <h4 className="font-medium">6. Validate the Problem</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              Work through the validation steps to build a strong understanding of the problem and produce a
+              clear problem statement. This forms the foundation for designing your solution.
+            </p>
+          </div>
         </div>
       </div>
     )
@@ -68,8 +125,22 @@ const guidanceItems: GuidanceItem[] = [
   }
 ]
 
-export function GuidanceDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
-  const [selectedItem, setSelectedItem] = useState(guidanceItems[0].id)
+export function GuidanceDialog({
+  open,
+  onOpenChange,
+  initialTopic,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  initialTopic?: string
+}) {
+  const [selectedItem, setSelectedItem] = useState(initialTopic ?? guidanceItems[0].id)
+
+  useEffect(() => {
+    if (open && initialTopic) {
+      setSelectedItem(initialTopic)
+    }
+  }, [open, initialTopic])
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

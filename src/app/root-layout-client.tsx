@@ -16,6 +16,7 @@ import { Settings, HelpCircle } from "lucide-react"
 import { usePathname } from "next/navigation"
 import { useState, useEffect } from "react"
 import { GuidanceDialog } from "@/components/guidance-dialog"
+import { GuidanceProvider } from "@/context/guidance-context"
 import { AppStoreProvider } from "@/store/provider"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
@@ -48,6 +49,12 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const { getIdea } = useIdeas()
   const breadcrumbs = generateBreadcrumbs(pathname, (id) => getIdea(id)?.title)
   const [guidanceOpen, setGuidanceOpen] = useState(false)
+  const [guidanceTopic, setGuidanceTopic] = useState<string | undefined>(undefined)
+
+  const openGuidance = (topic?: string) => {
+    setGuidanceTopic(topic)
+    setGuidanceOpen(true)
+  }
 
   const sidebarMode = useSelector((state: RootState) => state.settings.sidebarMode)
   const dispatch = useDispatch<AppDispatch>()
@@ -90,7 +97,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             </Breadcrumb>
           </div>
           <div className="flex items-center gap-2">
-            <Button variant="outline" className="flex flex-row items-center gap-2 justify-center" onClick={() => setGuidanceOpen(true)}>
+            <Button variant="outline" className="flex flex-row items-center gap-2 justify-center" onClick={() => openGuidance()}>
               <HelpCircle />
               <span>Guidance</span>
             </Button>
@@ -101,11 +108,13 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         </header>
         <div className="flex flex-1 flex-col gap-4 p-8 bg-gray-100">
           <div className="max-w-7xl mx-auto flex flex-1 w-full">
-            {children}
+            <GuidanceProvider onOpen={openGuidance}>
+              {children}
+            </GuidanceProvider>
           </div>
         </div>
       </SidebarInset>
-      <GuidanceDialog open={guidanceOpen} onOpenChange={setGuidanceOpen} />
+      <GuidanceDialog open={guidanceOpen} onOpenChange={setGuidanceOpen} initialTopic={guidanceTopic} />
     </SidebarProvider>
   )
 }
