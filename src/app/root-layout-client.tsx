@@ -56,7 +56,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     dispatch.settings.init()
     dispatch.problemTriggers.init()
-  }, [])
+  }, [dispatch.settings, dispatch.problemTriggers])
 
   return (
     <SidebarProvider

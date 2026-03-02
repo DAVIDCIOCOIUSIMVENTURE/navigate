@@ -30,11 +30,11 @@ export default function IntroductionPage() {
         </div>
 
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Before building a solution, you need a clear picture of the problem. Problem Discovery helps you deeply understand who you're building for, what they're trying to accomplish, and where they're struggling — so you can ensure your idea addresses a real, meaningful need.
+          Before building a solution, you need a clear picture of the problem. Problem Discovery helps you deeply understand who you&apos;re building for, what they&apos;re trying to accomplish, and where they&apos;re struggling — so you can ensure your idea addresses a real, meaningful need.
         </p>
 
         <div className="flex flex-col gap-3">
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">What you'll work through</p>
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">What you&apos;ll work through</p>
           <div className="flex flex-col">
             {STEPS.map(({ icon: Icon, title, description, bg, color }, index) => (
               <div key={title} className="flex gap-4">

@@ -20,7 +20,7 @@ export function JournalDialog() {
     if (open) {
       dispatch.journal.load()
     }
-  }, [open])
+  }, [open, dispatch.journal])
 
   // Auto-save with debounce whenever title or text changes (while open)
   useEffect(() => {
@@ -32,7 +32,7 @@ export function JournalDialog() {
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
     }
-  }, [title, text, open])
+  }, [title, text, open, dispatch.journal])
 
   return (
     <Dialog open={open} onOpenChange={(val) => dispatch.journal.setOpen(val)}>
