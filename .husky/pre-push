@@ -1,0 +1,5 @@
+npm run lint && npx tsc --noEmit
+
+if [ "${SKIP_TESTS}" != "1" ]; then
+  npm run test:run
+fi
