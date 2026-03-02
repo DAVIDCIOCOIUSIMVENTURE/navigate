@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext } from "react"
 
 interface GuidanceContextValue {
   openGuidance: (topic?: string) => void
