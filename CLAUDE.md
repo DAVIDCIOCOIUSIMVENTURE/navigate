@@ -13,6 +13,27 @@ npm run test:run         # Run tests once (used in CI)
 npx tsc --noEmit         # Type check without emitting files
 ```
 
+Before committing or pushing, run these checks manually (mirrors what Husky enforces):
+
+```bash
+npm run lint && npx tsc --noEmit && npm run test:run
+```
+
+To skip tests during push (e.g. when tests are temporarily broken):
+
+```bash
+SKIP_TESTS=1 git push          # runs lint + type-check only
+git push --no-verify           # bypasses all Husky hooks entirely
+```
+
+### Git Hooks (Husky)
+
+Husky is configured with a `pre-push` hook at `.husky/pre-push`:
+- Always runs: `npm run lint` + `npx tsc --noEmit`
+- Conditionally runs: `npm run test:run` (skipped when `SKIP_TESTS=1`)
+
+To bypass all hooks (e.g. for WIP pushes): `git push --no-verify`
+
 ## Architecture
 
 **Navigate** is a Next.js 15 (App Router) application guiding users through an innovation process: Self-Discovery → Problem Triggers → Problem Discovery → Solution Ideation/Validation.
