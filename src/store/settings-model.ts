@@ -6,10 +6,12 @@ const STORAGE_KEY = "navigate-settings"
 
 interface SettingsState {
   sidebarMode: SidebarMode
+  ideaMode: "guided" | "quickstart"
 }
 
 const defaultState: SettingsState = {
   sidebarMode: "expanded",
+  ideaMode: "guided",
 }
 
 function saveToStorage(state: SettingsState) {
@@ -30,6 +32,11 @@ export const settings = createModel<RootModel>()({
       saveToStorage(next)
       return next
     },
+    setIdeaMode(state, ideaMode: "guided" | "quickstart") {
+      const next = { ...state, ideaMode }
+      saveToStorage(next)
+      return next
+    },
   },
 
   effects: (dispatch) => ({
@@ -41,6 +48,9 @@ export const settings = createModel<RootModel>()({
         const stored: Partial<SettingsState> = JSON.parse(raw)
         if (stored.sidebarMode) {
           dispatch.settings.setSidebarMode(stored.sidebarMode)
+        }
+        if (stored.ideaMode) {
+          dispatch.settings.setIdeaMode(stored.ideaMode)
         }
       } catch {
         // ignore parse errors

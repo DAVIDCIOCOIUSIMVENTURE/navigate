@@ -2,6 +2,8 @@
 
 import { useParams, usePathname, useRouter } from "next/navigation"
 import { useIdeas } from "@/store/ideas-hooks"
+import { useDispatch, useSelector } from "react-redux"
+import type { RootState, AppDispatch } from "@/store"
 import { CheckCircle2, Lock, Map, Zap } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
@@ -71,16 +73,18 @@ export default function IdeaShellLayout({ children }: { children: React.ReactNod
   const params = useParams()
   const pathname = usePathname()
   const router = useRouter()
-  const { getIdea, updateIdea } = useIdeas()
+  const { getIdea } = useIdeas()
+  const dispatch = useDispatch<AppDispatch>()
+  const ideaMode = useSelector((state: RootState) => state.settings.ideaMode)
 
   const ideaId = Number(params.ideaId)
   const idea = getIdea(ideaId)
 
-  const isQuickStart = idea?.mode === "quickstart"
+  const isQuickStart = ideaMode === "quickstart"
   const STAGES = isQuickStart ? STAGES_QUICKSTART : STAGES_GUIDED
 
   const handleModeSwitch = (mode: "guided" | "quickstart") => {
-    updateIdea(ideaId, { mode })
+    dispatch.settings.setIdeaMode(mode)
     const targetStages = mode === "quickstart" ? STAGES_QUICKSTART : STAGES_GUIDED
     const currentStage = STAGES_GUIDED.concat(STAGES_QUICKSTART).find(
       (s) => s.key && pathname.includes(s.key)

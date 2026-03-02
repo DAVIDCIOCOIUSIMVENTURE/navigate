@@ -3,13 +3,17 @@
 import { useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { useIdeas } from "@/store/ideas-hooks"
+import { useDispatch } from "react-redux"
+import type { AppDispatch } from "@/store"
 import { Map, Zap } from "lucide-react"
 
 export default function NewIdeaPage() {
   const router = useRouter()
   const { createIdea } = useIdeas()
+  const dispatch = useDispatch<AppDispatch>()
 
   const handleSelect = (mode: "guided" | "quickstart") => {
+    dispatch.settings.setIdeaMode(mode)
     const idea = createIdea(mode)
     if (mode === "guided") {
       router.push(`/ideas/${idea.id}/problem-discovery/customers`)

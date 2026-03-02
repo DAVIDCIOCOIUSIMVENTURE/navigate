@@ -4,18 +4,29 @@ import { useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useIdeas } from "@/store/ideas-hooks"
+import { useSelector } from "react-redux"
+import type { RootState } from "@/store"
 import { HelpCircle, Lightbulb, Plus } from "lucide-react"
 import type { Idea } from "@/types/idea"
 import { useGuidance } from "@/context/guidance-context"
 
 function IdeaCard({ idea }: { idea: Idea }) {
   const router = useRouter()
+  const ideaMode = useSelector((state: RootState) => state.settings.ideaMode)
 
   const openIdea = () => {
-    if (idea.problemDiscoveryComplete) {
-      router.push(`/ideas/${idea.id}/problem-validation/introduction`)
+    if (ideaMode === "quickstart") {
+      if (idea.problemDiscoveryComplete) {
+        router.push(`/ideas/${idea.id}/problem-validation/quickstart`)
+      } else {
+        router.push(`/ideas/${idea.id}/problem-discovery/quickstart`)
+      }
     } else {
-      router.push(`/ideas/${idea.id}/problem-discovery/customers`)
+      if (idea.problemDiscoveryComplete) {
+        router.push(`/ideas/${idea.id}/problem-validation/introduction`)
+      } else {
+        router.push(`/ideas/${idea.id}/problem-discovery/customers`)
+      }
     }
   }
 
