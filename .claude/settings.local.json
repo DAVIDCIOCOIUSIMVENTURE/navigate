@@ -29,7 +29,8 @@
       "Bash(powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | Select-Object Id, ProcessName, StartTime\")",
       "Bash(powershell -Command \"Get-Process node -ErrorAction SilentlyContinue | ForEach-Object { try { $_.MainModule.FileName + '' | '' + $_.Id } catch { ''Access denied: '' + $_.Id } }\")",
       "Bash(powershell -File:*)",
-      "Bash(ls \"c:/Development/OU/navigate/src/app/\\(app\\)/ideas/[ideaId]/problem-discovery/\")"
+      "Bash(ls \"c:/Development/OU/navigate/src/app/\\(app\\)/ideas/[ideaId]/problem-discovery/\")",
+      "Bash(ls -la \"c:\\\\Development\\\\OU\\\\navigate\\\\src\\\\app\\\\\\(app\\)\\\\ideas\\\\[ideaId]\\\\problem-discovery\")"
     ]
   }
 }
