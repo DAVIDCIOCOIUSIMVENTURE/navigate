@@ -36,7 +36,7 @@ To bypass all hooks (e.g. for WIP pushes): `git push --no-verify`
 
 ## Architecture
 
-**Navigate** is a Next.js 15 (App Router) application guiding users through an innovation process: Self-Discovery → Problem Triggers → Problem Discovery → Solution Ideation/Validation.
+**Navigate** is a Next.js 15 (App Router) application guiding users through an innovation process: Self-Discovery → Problem Triggers → Problem Discovery → Problem Validation.
 
 ### Stack
 - **Framework**: Next.js 15 with App Router, React 19
@@ -72,9 +72,9 @@ DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
 - `src/lib/` — Core utilities: `prisma.ts` (unused singleton), `config.ts` (app-wide constants)
 - `src/config/navigation.ts` — Centralized top-level nav items (title, url, icon) used by sidebar, dashboard, and breadcrumbs
 - `src/components/ui/` — Shared Radix UI-based primitives
-- `src/store/` — Global Rematch store (models: `settings`, `journal`, `problemTriggers`) — all localStorage-backed
+- `src/store/` — Global Rematch store (models: `settings`, `journal`, `problemTriggers`, `ideas`) — all localStorage-backed
 - `src/data/` — Static data files (e.g. `selfDiscoveryData.ts`)
-- `src/context/` — React Context providers (ideas, innovation)
+- `src/context/` — React Context providers (`innovation-context.tsx`; ideas was migrated to Rematch)
 - `prisma/schema.prisma` — Database schema (kept for reference; not actively used)
 - `locales/` — i18n translations (en, es, fr) via `next-i18next`; infrastructure exists but not heavily used
 
@@ -98,13 +98,54 @@ Set this in `.env` locally and in Vercel's Environment Variables for production.
 All state is client-side only (no database). Two patterns coexist — choose based on complexity:
 
 **Rematch (Redux)** — use for complex state with side effects or localStorage persistence:
-- **Global store** (`src/store/`): `settings` (sidebar collapsed/expanded), `journal` (title + text, persisted to localStorage), `problemTriggers` (persisted to localStorage)
+- **Global store** (`src/store/`): `settings` (sidebar collapsed/expanded), `journal` (title + text, persisted to localStorage), `problemTriggers` (persisted to localStorage), `ideas` (full CRUD with localStorage persistence — use the `useIdeas()` hook from `src/store/ideas-hooks.ts`)
 - Access: `useSelector((state: RootState) => state.modelName.field)` and `useDispatch<AppDispatch>()`
+- All models call `dispatch.modelName.init()` in `root-layout-client.tsx` on mount to hydrate from localStorage
 
 **React Context** — use for lighter, page-scoped state without side effects:
-- `src/context/ideas-context.tsx` — manages ideas list
-- `src/context/innovation-context.tsx` — manages innovation process state
+- `src/context/innovation-context.tsx` — manages legacy innovation process state
+- Per-stage contexts: `src/app/(app)/ideas/[ideaId]/problem-discovery/context.tsx` and `problem-validation/context.tsx` — mirror idea fields locally and persist to Rematch on mutation
 - Provider wraps the route tree in `root-layout-client.tsx`
+
+### Ideas Feature & Innovation Stages
+
+The Ideas feature (`src/app/(app)/ideas/`) is the core of the app. Each idea progresses through sequential stages.
+
+**Routing structure:**
+```
+src/app/(app)/ideas/
+├── page.tsx                         # Ideas list
+├── new/page.tsx                     # Create new idea
+└── [ideaId]/
+    ├── layout.tsx                   # Loads idea from Rematch, passes via context
+    ├── page.tsx                     # Idea overview
+    ├── (quickstart)/                # Condensed parallel route (quickstart mode)
+    │   ├── problem-discovery/quickstart/page.tsx
+    │   └── problem-validation/quickstart/page.tsx
+    ├── problem-discovery/           # Stage 1 (6 steps)
+    │   ├── layout.tsx               # Sidebar nav for all steps
+    │   ├── context.tsx              # ProblemDiscoveryProvider + useProblemDiscovery()
+    │   ├── introduction/page.tsx
+    │   ├── customers/page.tsx
+    │   ├── customer-sub-segment/page.tsx
+    │   ├── jobs-to-be-done/page.tsx
+    │   ├── problems/page.tsx
+    │   └── summary/page.tsx
+    └── problem-validation/          # Stage 2 (9 steps)
+        ├── layout.tsx               # Sidebar nav for all steps
+        ├── context.tsx              # ProblemValidationProvider + useProblemValidation()
+        ├── introduction/page.tsx
+        ├── pick-a-problem/page.tsx
+        ├── alternatives/page.tsx
+        ├── context-step/page.tsx
+        ├── shortcomings/page.tsx
+        ├── emotional-impact/page.tsx
+        ├── quantifiable-impact/page.tsx
+        ├── verdict/page.tsx
+        └── problem-statement/page.tsx
+```
+
+**Two flow modes:** `"guided"` (full step-by-step) and `"quickstart"` (condensed) — stored on the `Idea` type in `mode`.
 
 ### Layout & Navigation Patterns
 
