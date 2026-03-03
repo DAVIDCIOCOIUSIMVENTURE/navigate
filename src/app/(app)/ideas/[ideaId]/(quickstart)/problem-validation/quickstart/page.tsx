@@ -28,8 +28,8 @@ export default function QuickstartValidationPage() {
 
   const idea = getIdea(ideaId)
 
-  // scRows: per-saved-alt-id, pending input rows for new shortcomings
-  const [scRows, setScRows] = useState<Record<number, string[]>>({})
+  // editingScKeys: "altId:scIdx" keys for shortcomings currently being edited inline
+  const [editingScKeys, setEditingScKeys] = useState<Set<string>>(new Set())
   const [impactDraft, setImpactDraft] = useState({ category: "", description: "" })
 
   if (!idea) {
@@ -80,7 +80,7 @@ export default function QuickstartValidationPage() {
   }
 
   const selectProblem = (id: number) => {
-    setScRows({})
+    setEditingScKeys(new Set())
     setImpactDraft({ category: "", description: "" })
     updateIdea(ideaId, { selectedProblemId: id })
   }
@@ -98,11 +98,20 @@ export default function QuickstartValidationPage() {
     })
 
   const removeAlt = (altId: number) => {
-    setScRows((prev) => { const next = { ...prev }; delete next[altId]; return next })
+    setEditingScKeys((prev) => {
+      const next = new Set(prev)
+      for (const k of next) { if (k.startsWith(`${altId}:`)) next.delete(k) }
+      return next
+    })
     updateProblem({ alternatives: (selectedProblem?.alternatives ?? []).filter((alt) => alt.id !== altId) })
   }
 
-  const removeAltShortcoming = (altId: number, scIdx: number) =>
+  const removeAltShortcoming = (altId: number, scIdx: number) => {
+    setEditingScKeys((prev) => {
+      const next = new Set(prev)
+      next.delete(`${altId}:${scIdx}`)
+      return next
+    })
     updateProblem({
       alternatives: (selectedProblem?.alternatives ?? []).map((alt) =>
         alt.id === altId
@@ -110,20 +119,31 @@ export default function QuickstartValidationPage() {
           : alt
       ),
     })
+  }
 
-  const commitScRow = (altId: number, rowIdx: number) => {
-    const val = (scRows[altId] ?? [])[rowIdx] ?? ""
-    if (!val.trim()) {
-      setScRows((prev) => ({ ...prev, [altId]: (prev[altId] ?? []).filter((_, i) => i !== rowIdx) }))
-      return
-    }
+  const addScRow = (altId: number) => {
+    const alt = (selectedProblem?.alternatives ?? []).find((a) => a.id === altId)
+    if (!alt) return
+    const newIdx = alt.shortcomings.length
     updateProblem({
-      alternatives: (selectedProblem?.alternatives ?? []).map((alt) =>
-        alt.id === altId ? { ...alt, shortcomings: [...alt.shortcomings, val.trim()] } : alt
+      alternatives: (selectedProblem?.alternatives ?? []).map((a) =>
+        a.id === altId ? { ...a, shortcomings: [...a.shortcomings, ""] } : a
       ),
     })
-    setScRows((prev) => ({ ...prev, [altId]: (prev[altId] ?? []).filter((_, i) => i !== rowIdx) }))
+    setEditingScKeys((prev) => new Set(prev).add(`${altId}:${newIdx}`))
   }
+
+  const updateScValue = (altId: number, scIdx: number, value: string) =>
+    updateProblem({
+      alternatives: (selectedProblem?.alternatives ?? []).map((alt) =>
+        alt.id === altId
+          ? { ...alt, shortcomings: alt.shortcomings.map((sc, i) => (i === scIdx ? value : sc)) }
+          : alt
+      ),
+    })
+
+  const commitSc = (altId: number, scIdx: number) =>
+    setEditingScKeys((prev) => { const next = new Set(prev); next.delete(`${altId}:${scIdx}`); return next })
 
   const addImpact = () => {
     if (!impactDraft.category.trim() && !impactDraft.description.trim()) return
@@ -234,66 +254,76 @@ export default function QuickstartValidationPage() {
 
               {(selectedProblem.alternatives ?? []).length > 0 && (
                 <ul className="flex flex-col gap-3">
-                  {(selectedProblem.alternatives ?? []).map((item) => (
-                    <li key={item.id} className="flex flex-col gap-2 bg-muted/50 rounded-lg px-3 py-2.5">
-                      <div className="flex items-center gap-2">
-                        <Input
-                          placeholder="Describe the alternative..."
-                          value={item.text}
-                          onChange={(e) => updateAltText(item.id, e.target.value)}
-                          className="flex-1 text-sm h-8 bg-background font-medium"
-                          autoFocus={item.text === ""}
-                        />
+                  {(selectedProblem.alternatives ?? []).map((item, altIdx) => (
+                    <li key={item.id} className="rounded-lg border p-4 flex flex-col gap-3">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-semibold flex items-center gap-2">
+                          <GitFork className="h-4 w-4 text-muted-foreground" />
+                          Alternative {altIdx + 1}
+                        </p>
                         <button
                           onClick={() => removeAlt(item.id)}
-                          className="shrink-0 text-muted-foreground hover:text-destructive transition-colors"
+                          className="text-muted-foreground hover:text-destructive transition-colors"
+                          aria-label="Remove alternative"
                         >
-                          <X className="h-3.5 w-3.5" />
+                          <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
-                      {item.shortcomings.length > 0 && (
-                        <ul className="flex flex-col gap-1">
-                          {item.shortcomings.map((sc, j) => (
-                            <li key={j} className="flex items-center gap-2 bg-background rounded px-2 py-1 text-sm">
-                              <span className="flex-1">{sc}</span>
-                              <button onClick={() => removeAltShortcoming(item.id, j)} className="shrink-0 text-muted-foreground hover:text-destructive transition-colors">
-                                <X className="h-3 w-3" />
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                      {(scRows[item.id] ?? []).map((val, rowIdx) => (
-                        <Input
-                          key={rowIdx}
-                          placeholder="Add a shortcoming..."
-                          value={val}
-                          onChange={(e) => setScRows((prev) => ({ ...prev, [item.id]: (prev[item.id] ?? []).map((r, ri) => ri === rowIdx ? e.target.value : r) }))}
-                          onBlur={() => commitScRow(item.id, rowIdx)}
-                          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); commitScRow(item.id, rowIdx) } }}
-                          className="text-sm h-8 bg-background"
-                          autoFocus
-                        />
-                      ))}
-                      <button
-                        onClick={() => setScRows((prev) => ({ ...prev, [item.id]: [...(prev[item.id] ?? []), ""] }))}
-                        className="w-full flex items-center justify-center gap-1.5 rounded-md border border-dashed border-muted-foreground/30 py-1.5 text-xs text-muted-foreground hover:border-muted-foreground/60 hover:text-foreground transition-colors"
-                      >
-                        <Plus className="h-3.5 w-3.5" />
-                        Add shortcoming
-                      </button>
+                      <Input
+                        placeholder="Describe the alternative..."
+                        value={item.text}
+                        onChange={(e) => updateAltText(item.id, e.target.value)}
+                        className="text-sm h-9"
+                        autoFocus={item.text === ""}
+                      />
+                      <div className="flex flex-col gap-2 pt-1 border-t border-border">
+                        <div className="flex items-center gap-1.5">
+                          <X className="h-3.5 w-3.5 text-muted-foreground" />
+                          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Shortcomings</p>
+                        </div>
+                        {item.shortcomings.length > 0 && (
+                          <ul className="flex flex-col gap-1">
+                            {item.shortcomings.map((sc, j) => (
+                              <li key={j} className="flex items-center gap-2 bg-muted/50 rounded px-2 py-1 text-sm">
+                                {editingScKeys.has(`${item.id}:${j}`) ? (
+                                  <Input
+                                    placeholder="Add a shortcoming..."
+                                    value={sc}
+                                    onChange={(e) => updateScValue(item.id, j, e.target.value)}
+                                    onBlur={() => commitSc(item.id, j)}
+                                    onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); commitSc(item.id, j) } }}
+                                    className="flex-1 text-sm h-7 bg-background py-0"
+                                    autoFocus
+                                  />
+                                ) : (
+                                  <span
+                                    className="flex-1 cursor-text"
+                                    onClick={() => setEditingScKeys((prev) => new Set(prev).add(`${item.id}:${j}`))}
+                                  >
+                                    {sc || <span className="text-muted-foreground italic">empty shortcoming</span>}
+                                  </span>
+                                )}
+                                <button onClick={() => removeAltShortcoming(item.id, j)} className="shrink-0 text-muted-foreground hover:text-destructive transition-colors">
+                                  <X className="h-3 w-3" />
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                        <Button variant="outline" onClick={() => addScRow(item.id)} className="w-full gap-2">
+                          <Plus className="h-4 w-4" />
+                          Add Shortcoming
+                        </Button>
+                      </div>
                     </li>
                   ))}
                 </ul>
               )}
 
-              <button
-                onClick={addAlt}
-                className="w-full flex items-center justify-center gap-2 rounded-md border border-dashed border-muted-foreground/30 py-2 text-sm text-muted-foreground hover:border-muted-foreground/60 hover:text-foreground transition-colors"
-              >
+              <Button variant="outline" onClick={addAlt} className="w-full gap-2">
                 <Plus className="h-4 w-4" />
-                Add alternative
-              </button>
+                Add Alternative
+              </Button>
             </CardContent>
           </Card>
 
