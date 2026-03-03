@@ -30,80 +30,27 @@ function IdeaCard({ idea, onDelete }: { idea: Idea; onDelete: (id: number) => vo
     }
   }
 
-  const namedJobs = idea.jobs.filter((j) => j.name.trim())
-
   return (
     <Card
       className="hover:shadow-md transition-shadow cursor-pointer"
       onClick={openIdea}
     >
-      <CardContent className="p-5 flex flex-col gap-3">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex flex-col gap-1 min-w-0">
-            <h3 className="font-semibold text-sm truncate">{idea.title}</h3>
-            <p className="text-xs text-muted-foreground">
-              {new Date(idea.createdAt).toLocaleDateString("en-GB", {
-                day: "numeric", month: "short", year: "numeric",
-              })}
-            </p>
-          </div>
-          <button
-            onClick={(e) => { e.stopPropagation(); onDelete(idea.id) }}
-            className="shrink-0 text-muted-foreground hover:text-destructive transition-colors"
-            aria-label="Delete idea"
-          >
-            <Trash2 className="h-4 w-4" />
-          </button>
-        </div>
-
-        {namedJobs.length > 0 && (
-          <ul className="flex flex-col gap-2">
-            {namedJobs.map((job) => {
-              const jobProblems = job.problems
-              return (
-                <li key={job.id} className="flex flex-col gap-1.5">
-                  <div className="flex flex-col gap-0.5">
-                    <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wide">Job</p>
-                    <p className="text-xs font-medium text-foreground">{job.name}</p>
-                    {job.functional && (
-                      <p className="text-[11px] text-muted-foreground"><span className="font-medium">Functional:</span> {job.functional}</p>
-                    )}
-                    {job.emotional && (
-                      <p className="text-[11px] text-muted-foreground"><span className="font-medium">Emotional:</span> {job.emotional}</p>
-                    )}
-                    {job.social && (
-                      <p className="text-[11px] text-muted-foreground"><span className="font-medium">Social:</span> {job.social}</p>
-                    )}
-                  </div>
-                  {jobProblems.filter((p) => p.text.trim()).length > 0 && (
-                    <ul className="flex flex-col gap-1 pl-3 border-l border-border">
-                      {jobProblems.filter((p) => p.text.trim()).map((problem) => (
-                        <li key={problem.id} className="flex flex-col gap-0.5">
-                          <p className="text-[11px] text-foreground/80">{problem.text}</p>
-                          {problem.contextWhen && (
-                            <p className="text-[10px] text-muted-foreground"><span className="font-medium">Context:</span> {problem.contextWhen}</p>
-                          )}
-                          {problem.emotionalImpact && (
-                            <p className="text-[10px] text-muted-foreground"><span className="font-medium">Emotional impact:</span> {problem.emotionalImpact}</p>
-                          )}
-                          {problem.impacts.length > 0 && (
-                            <p className="text-[10px] text-muted-foreground">
-                              <span className="font-medium">Impacts:</span>{" "}
-                              {problem.impacts.map((i) => i.category).filter(Boolean).join(", ")}
-                            </p>
-                          )}
-                          {problem.reason && (
-                            <p className="text-[10px] text-muted-foreground"><span className="font-medium">Verdict:</span> {problem.reason}</p>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </li>
-              )
+      <CardContent className="p-5 flex items-start justify-between gap-2">
+        <div className="flex flex-col gap-1 min-w-0">
+          <h3 className="font-semibold text-sm truncate">{idea.title}</h3>
+          <p className="text-xs text-muted-foreground">
+            {new Date(idea.createdAt).toLocaleDateString("en-GB", {
+              day: "numeric", month: "short", year: "numeric",
             })}
-          </ul>
-        )}
+          </p>
+        </div>
+        <button
+          onClick={(e) => { e.stopPropagation(); onDelete(idea.id) }}
+          className="shrink-0 text-muted-foreground hover:text-destructive transition-colors"
+          aria-label="Delete idea"
+        >
+          <Trash2 className="h-4 w-4" />
+        </button>
       </CardContent>
     </Card>
   )
