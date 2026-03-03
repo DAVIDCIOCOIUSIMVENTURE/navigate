@@ -1,7 +1,7 @@
 import { createModel } from "@rematch/core"
 import type { RootModel } from "."
 import type { Idea } from "@/types/idea"
-import { DEFAULT_CUSTOMER, DEFAULT_SUB_SEGMENT } from "@/types/idea"
+import { DEFAULT_CUSTOMER, DEFAULT_SUB_SEGMENT, DEFAULT_PRIOR_KNOWLEDGE } from "@/types/idea"
 
 const STORAGE_KEY = "navigate-ideas"
 
@@ -80,6 +80,7 @@ export const ideas = createModel<RootModel>()({
         createdAt: now,
         updatedAt: now,
         mode,
+        priorKnowledge: { ...DEFAULT_PRIOR_KNOWLEDGE },
         customer: { ...DEFAULT_CUSTOMER },
         subSegment: { ...DEFAULT_SUB_SEGMENT },
         jobs: [],

@@ -1,3 +1,5 @@
+import type { PriorKnowledgeFields } from "@/types/idea"
+
 export type JobUseCase = {
   job: string
   functional: string
@@ -6,7 +8,26 @@ export type JobUseCase = {
   problems: string[]
 }
 
-export const USE_CASES = [
+export const USE_CASES: {
+  title: string
+  jobs: JobUseCase[]
+  customer: {
+    segment: string
+    ageFrom: string
+    ageTo: string
+    whoTheyAre: string
+    whatTheyDo: string
+    goalsAndMotivations: string
+    frustrationsAndChallenges: string
+  }
+  subSegment: {
+    name: string
+    differentiators: string
+    specificContext: string
+    uniqueNeeds: string
+  }
+  priorKnowledge: PriorKnowledgeFields
+}[] = [
   {
     title: "B2B SaaS — Mid-market HR Teams",
     jobs: [
@@ -48,6 +69,13 @@ export const USE_CASES = [
       differentiators: "Unlike enterprise HR, they have no legacy systems to work around — but also no established processes. They're building from scratch under pressure, often as a team of one or two.",
       specificContext: "Post-funding growth phase with aggressive hiring targets. They work closely with founders and have direct budget influence, but are overwhelmed by volume and speed.",
       uniqueNeeds: "They need tools that are fast to set up, require no IT involvement, and can flex as headcount doubles within 12 months.",
+    },
+    priorKnowledge: {
+      personalFrustrations: "When scaling a team from 20 to 50, I spent more time chasing hiring managers for interview feedback than actually recruiting. Every open role lived in a different spreadsheet and nobody had a single source of truth.",
+      whoStruggles: "HR managers at fast-growing startups who are often a team of one or two, suddenly responsible for hiring 30+ people a year with no real tooling or process.",
+      existingWorkarounds: "People use Notion or Google Sheets to track candidates, send feedback requests via Slack, and manually remind interviewers to submit scores. It works until it doesn't.",
+      complaintsHeard: "\"I had a great candidate drop out because we took two weeks to give feedback.\" \"I have no idea where this role stands — I have to ask the recruiter every time.\"",
+      whyItMatters: "Bad hiring is expensive and demoralising. If a startup can't hire quickly and well, it will lose its best candidates to competitors who have a smoother process.",
     },
   },
   {
@@ -92,6 +120,13 @@ export const USE_CASES = [
       specificContext: "Transitioning out of bootcamps or junior roles, working on small projects (landing pages, mobile app screens) for startups or small businesses. Often juggling 2–3 clients at once.",
       uniqueNeeds: "Clear frameworks for scoping and pricing work, simple contract templates, and ways to demonstrate value to clients who haven't worked with a designer before.",
     },
+    priorKnowledge: {
+      personalFrustrations: "I've done freelance work and the worst part was always scope creep — spending an extra 10 hours on a project because the client kept asking for \"one small change\" that wasn't in the original scope.",
+      whoStruggles: "Early-career designers who don't have established client relationships or a reputation to fall back on. They accept unclear briefs and avoid difficult conversations about scope because they fear losing the client.",
+      existingWorkarounds: "Using Notion templates for proposals, tracking revision rounds manually in a spreadsheet, sending politely-worded emails to push back on scope — none of it feels professional or scalable.",
+      complaintsHeard: "\"I ended up doing 3x the work I quoted.\" \"My client won't pay the invoice because they say the deliverables don't match what they expected.\" \"I don't know how to price this project.\"",
+      whyItMatters: "Scope creep doesn't just eat into income — it burns out designers and poisons client relationships. Solving this early in someone's freelance career could change their entire trajectory.",
+    },
   },
   {
     title: "Education — Community College Students",
@@ -134,6 +169,13 @@ export const USE_CASES = [
       differentiators: "They face a steeper learning curve in technical subjects without the study-group culture or tutoring access that four-year universities offer. Many are also supporting family members financially.",
       specificContext: "Enrolled in 2-year associate degree programs in fields like nursing, IT, or engineering tech. Commute to campus and have limited time for office hours or extracurriculars.",
       uniqueNeeds: "Flexible, asynchronous academic support, clear pathways from their degree to employment, and peer communities that reflect their background.",
+    },
+    priorKnowledge: {
+      personalFrustrations: "I've watched people close to me struggle to stay enrolled because they missed a financial aid deadline they didn't know existed. The information was available — but buried in emails nobody reads.",
+      whoStruggles: "First-generation college students who didn't grow up with family members who navigated higher education. They don't know what they don't know, and there's no one at home to fill in the gaps.",
+      existingWorkarounds: "Students ask each other on Reddit or group chats, visit advisors only when in crisis, or figure out requirements by trial and error. Some just drop out rather than navigate the complexity.",
+      complaintsHeard: "\"I didn't know I had to apply to graduate — I thought I just finished my credits.\" \"I lost my financial aid and nobody warned me.\" \"My advisor is impossible to get an appointment with.\"",
+      whyItMatters: "Community college is often the most accessible path to economic mobility for people without family wealth. If students drop out due to institutional friction rather than academic ability, that's a fixable problem.",
     },
   },
 ]

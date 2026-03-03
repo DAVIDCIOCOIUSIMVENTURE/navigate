@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, useCallback, type ReactNode } from "react"
+import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react"
 import { useIdeas } from "@/store/ideas-hooks"
 import type { AlternativeItem, ImpactItem, ValidationStatus } from "@/types/idea"
 
@@ -66,6 +66,15 @@ export function ProblemValidationProvider({
     },
     [ideaId, getIdea]
   )
+
+  useEffect(() => {
+    const idea = getIdea(ideaId)
+    if (idea?.selectedProblemId != null) {
+      setSelectedProblemIdRaw(idea.selectedProblemId)
+      loadValidation(idea.selectedProblemId)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ideaId])
 
   const saveCurrentValidation = useCallback(
     (problemId: number, statusOverride?: ValidationStatus) => {

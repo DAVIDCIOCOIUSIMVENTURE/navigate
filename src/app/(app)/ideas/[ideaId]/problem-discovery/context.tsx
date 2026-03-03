@@ -2,15 +2,17 @@
 
 import { createContext, useContext, useCallback, type ReactNode } from "react"
 import { useIdeas } from "@/store/ideas-hooks"
-import type { CustomerFields, SubSegmentFields, Job, Problem } from "@/types/idea"
-import { DEFAULT_SUB_SEGMENT } from "@/types/idea"
+import type { CustomerFields, SubSegmentFields, Job, Problem, PriorKnowledgeFields } from "@/types/idea"
+import { DEFAULT_SUB_SEGMENT, DEFAULT_PRIOR_KNOWLEDGE } from "@/types/idea"
 
-export type { CustomerFields, SubSegmentFields, Job, Problem }
+export type { CustomerFields, SubSegmentFields, Job, Problem, PriorKnowledgeFields }
 // Backwards-compatible alias for consumers that import ProblemItem from this context
 export type ProblemItem = Problem
 
 type ProblemDiscoveryContextValue = {
   ideaId: number
+  priorKnowledge: PriorKnowledgeFields
+  setPriorKnowledge: (val: PriorKnowledgeFields) => void
   customer: CustomerFields
   setCustomer: (val: CustomerFields) => void
   subSegment: SubSegmentFields
@@ -31,6 +33,7 @@ export function ProblemDiscoveryProvider({
   const { getIdea, updateIdea } = useIdeas()
   const idea = getIdea(ideaId)
 
+  const priorKnowledge = idea?.priorKnowledge ?? { ...DEFAULT_PRIOR_KNOWLEDGE }
   const customer = idea?.customer ?? {
     segmentName: "", ageFrom: "", ageTo: "",
     whoTheyAre: "", whatTheyDo: "", goalsAndMotivations: "", frustrationsAndChallenges: "",
@@ -38,6 +41,10 @@ export function ProblemDiscoveryProvider({
   const subSegment = idea?.subSegment ?? { ...DEFAULT_SUB_SEGMENT }
   const jobs = idea?.jobs ?? []
 
+  const setPriorKnowledge = useCallback(
+    (val: PriorKnowledgeFields) => updateIdea(ideaId, { priorKnowledge: val }),
+    [ideaId, updateIdea]
+  )
   const setCustomer = useCallback(
     (val: CustomerFields) => updateIdea(ideaId, { customer: val }),
     [ideaId, updateIdea]
@@ -53,7 +60,7 @@ export function ProblemDiscoveryProvider({
 
   return (
     <ProblemDiscoveryContext.Provider
-      value={{ ideaId, customer, setCustomer, subSegment, setSubSegment, jobs, setJobs }}
+      value={{ ideaId, priorKnowledge, setPriorKnowledge, customer, setCustomer, subSegment, setSubSegment, jobs, setJobs }}
     >
       {children}
     </ProblemDiscoveryContext.Provider>
@@ -68,6 +75,7 @@ export function useProblemDiscovery() {
 
 export const NAV_ITEMS = [
   { label: "Introduction", path: "introduction" },
+  { label: "Problem Exploration", path: "problem-exploration" },
   { label: "Customers", path: "customers" },
   { label: "Customer Sub-Segment", path: "customer-sub-segment" },
   { label: "Jobs to Be Done", path: "jobs-to-be-done" },
@@ -85,4 +93,19 @@ export function getAdjacentSteps(pathname: string, ideaId: number) {
     prevPath: idx > 0 ? `${base}/${STEP_PATHS[idx - 1]}` : null,
     nextPath: idx < STEP_PATHS.length - 1 ? `${base}/${STEP_PATHS[idx + 1]}` : null,
   }
+}
+
+export const PRIOR_KNOWLEDGE_RELEVANCE: Record<string, (keyof PriorKnowledgeFields)[]> = {
+  customers: ["whoStruggles", "whyItMatters"],
+  "customer-sub-segment": ["whoStruggles"],
+  "jobs-to-be-done": ["personalFrustrations", "complaintsHeard"],
+  problems: ["personalFrustrations", "existingWorkarounds", "complaintsHeard"],
+}
+
+export const PRIOR_KNOWLEDGE_LABELS: Record<keyof PriorKnowledgeFields, string> = {
+  personalFrustrations: "Frustrations you experienced",
+  whoStruggles: "Who struggles",
+  existingWorkarounds: "Existing workarounds",
+  complaintsHeard: "Complaints heard",
+  whyItMatters: "Why it matters",
 }

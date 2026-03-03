@@ -1,3 +1,19 @@
+export type PriorKnowledgeFields = {
+  personalFrustrations: string
+  whoStruggles: string
+  existingWorkarounds: string
+  complaintsHeard: string
+  whyItMatters: string
+}
+
+export const DEFAULT_PRIOR_KNOWLEDGE: PriorKnowledgeFields = {
+  personalFrustrations: "",
+  whoStruggles: "",
+  existingWorkarounds: "",
+  complaintsHeard: "",
+  whyItMatters: "",
+}
+
 export type CustomerFields = {
   segmentName: string
   ageFrom: string
@@ -67,6 +83,7 @@ export type Idea = {
   mode: "guided" | "quickstart"
 
   // Problem Discovery
+  priorKnowledge: PriorKnowledgeFields
   customer: CustomerFields
   subSegment: SubSegmentFields
   jobs: Job[]

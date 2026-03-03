@@ -4,9 +4,10 @@ import { useParams, usePathname, useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { getAdjacentSteps } from "../context"
-import { BookOpen, Users, UserSearch, Briefcase, AlertCircle, CheckCircle2 } from "lucide-react"
+import { BookOpen, Users, UserSearch, Briefcase, AlertCircle, CheckCircle2, Search } from "lucide-react"
 
 const STEPS = [
+  { icon: Search, title: "Problem Exploration", description: "Brainstorm from your existing knowledge and experience before diving into the structured flow.", bg: "bg-amber-100 dark:bg-amber-950", color: "text-amber-600 dark:text-amber-400" },
   { icon: Users, title: "Customers", description: "Define your target customer segment — who they are, what drives them, and what their daily lives look like.", bg: "bg-blue-100 dark:bg-blue-950", color: "text-blue-600 dark:text-blue-400" },
   { icon: UserSearch, title: "Customer Sub-Segment", description: "Narrow your segment to a more specific group with distinct needs, context, and differentiators.", bg: "bg-sky-100 dark:bg-sky-950", color: "text-sky-600 dark:text-sky-400" },
   { icon: Briefcase, title: "Jobs to Be Done", description: "Identify the tasks, goals, and outcomes your customers are trying to achieve.", bg: "bg-violet-100 dark:bg-violet-950", color: "text-violet-600 dark:text-violet-400" },

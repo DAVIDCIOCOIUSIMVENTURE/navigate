@@ -22,7 +22,7 @@ export default function JobsToBeDonePage() {
   const [tab, setTab] = useState<Tab>("strategy")
 
   const add = () =>
-    setJobs([...jobs, { id: Date.now(), name: "", functional: "", emotional: "", social: "" }])
+    setJobs([...jobs, { id: Date.now(), name: "", functional: "", emotional: "", social: "", problems: [] }])
 
   const remove = (id: number) => setJobs(jobs.filter((j) => j.id !== id))
 

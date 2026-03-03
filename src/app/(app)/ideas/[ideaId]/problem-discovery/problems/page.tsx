@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { useProblemDiscovery, getAdjacentSteps } from "../context"
 import { DEFAULT_PROBLEM } from "@/types/idea"
 import { USE_CASES } from "../use-cases"
-import { Briefcase, Plus, Trash2 } from "lucide-react"
+import { Briefcase, Plus, Trash2, Sparkles } from "lucide-react"
 
 type Tab = "strategy" | "use-cases"
 
@@ -17,7 +17,7 @@ export default function ProblemsPage() {
   const pathname = usePathname()
   const params = useParams()
   const ideaId = Number(params.ideaId)
-  const { jobs, setJobs } = useProblemDiscovery()
+  const { jobs, setJobs, priorKnowledge } = useProblemDiscovery()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, ideaId)
   const [tab, setTab] = useState<Tab>("strategy")
 
@@ -44,6 +44,20 @@ export default function ProblemsPage() {
         ? { ...j, problems: j.problems.filter((p) => p.id !== problemId) }
         : j
     ))
+
+  const seedProblems = (jobId: number) => {
+    const raw = [priorKnowledge.personalFrustrations, priorKnowledge.complaintsHeard]
+      .join("\n")
+    const lines = raw.split("\n").map((l) => l.trim()).filter(Boolean)
+    const newProblems = lines.map((text) => ({ ...DEFAULT_PROBLEM, id: Date.now() + Math.random(), text }))
+    setJobs(jobs.map((j) =>
+      j.id === jobId
+        ? { ...j, problems: [...j.problems, ...newProblems] }
+        : j
+    ))
+  }
+
+  const hasSeedContent = priorKnowledge.personalFrustrations.trim() || priorKnowledge.complaintsHeard.trim()
 
   return (
     <Card className="w-full flex-1">
@@ -135,6 +149,16 @@ export default function ProblemsPage() {
                         </li>
                       ))}
                     </ul>
+                  )}
+                  {hasSeedContent && job.problems.length === 0 && (
+                    <Button
+                      variant="on-primary"
+                      className="w-full gap-2 opacity-80"
+                      onClick={() => seedProblems(job.id)}
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      Seed from your notes
+                    </Button>
                   )}
                   <Button
                     variant="on-primary"

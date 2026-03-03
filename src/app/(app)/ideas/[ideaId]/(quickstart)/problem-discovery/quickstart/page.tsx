@@ -1,14 +1,25 @@
 "use client"
 
+import { useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useIdeas } from "@/store/ideas-hooks"
-import { Users, Briefcase, AlertCircle, Plus, Trash2 } from "lucide-react"
-import type { CustomerFields, Job } from "@/types/idea"
-import { DEFAULT_PROBLEM } from "@/types/idea"
+import { Users, Briefcase, AlertCircle, Plus, Trash2, Search, ChevronDown, ChevronUp } from "lucide-react"
+import type { CustomerFields, Job, PriorKnowledgeFields } from "@/types/idea"
+import { DEFAULT_PROBLEM, DEFAULT_PRIOR_KNOWLEDGE } from "@/types/idea"
+
+const PRIOR_KNOWLEDGE_FIELDS: {
+  key: keyof PriorKnowledgeFields; label: string; placeholder: string
+}[] = [
+  { key: "personalFrustrations", label: "What frustrations have you experienced?", placeholder: "Think about moments where you felt stuck, annoyed, or had to work around something..." },
+  { key: "whoStruggles", label: "Who do you see struggling with this?", placeholder: "Describe the types of people who face this problem. What's their situation?" },
+  { key: "existingWorkarounds", label: "What workarounds or makeshift solutions exist?", placeholder: "How are people currently dealing with this? Spreadsheets, manual processes, asking friends..." },
+  { key: "complaintsHeard", label: "What have you heard others complain about?", placeholder: "Think about conversations, social media, forums, or news stories..." },
+  { key: "whyItMatters", label: "Why does this matter to you?", placeholder: "What draws you to this problem space? What would change if it were solved?" },
+]
 
 const CUSTOMER_SINGLE_FIELDS: {
   key: keyof CustomerFields; label: string; placeholder: string
@@ -30,6 +41,7 @@ export default function QuickstartCanvasPage() {
   const router = useRouter()
   const ideaId = Number(params.ideaId)
   const { getIdea, updateIdea } = useIdeas()
+  const [explorationExpanded, setExplorationExpanded] = useState(false)
 
   const idea = getIdea(ideaId)
 
@@ -42,8 +54,12 @@ export default function QuickstartCanvasPage() {
     )
   }
 
+  const priorKnowledge = idea.priorKnowledge ?? { ...DEFAULT_PRIOR_KNOWLEDGE }
   const customer = idea.customer
   const jobs = idea.jobs
+
+  const setPriorKnowledgeField = (key: keyof PriorKnowledgeFields, val: string) =>
+    updateIdea(ideaId, { priorKnowledge: { ...priorKnowledge, [key]: val } })
 
   const setCustomerField = (key: keyof CustomerFields, val: string) =>
     updateIdea(ideaId, { customer: { ...customer, [key]: val } })
@@ -96,6 +112,46 @@ export default function QuickstartCanvasPage() {
           Define your customer segment, their jobs to be done, and the problems they face.
         </p>
       </div>
+
+      {/* Problem Exploration Section */}
+      <Card className="border-amber-200/50 dark:border-amber-800/50">
+        <CardContent className="p-6 flex flex-col gap-4">
+          <button
+            onClick={() => setExplorationExpanded((v) => !v)}
+            className="flex items-center justify-between w-full text-left"
+          >
+            <div className="flex items-center gap-2.5">
+              <Search className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+              <h2 className="text-base font-semibold">Problem Exploration</h2>
+            </div>
+            {explorationExpanded
+              ? <ChevronUp className="h-4 w-4 text-muted-foreground shrink-0" />
+              : <ChevronDown className="h-4 w-4 text-muted-foreground shrink-0" />
+            }
+          </button>
+          {!explorationExpanded && (
+            <p className="text-sm text-muted-foreground">
+              Capture what you already know — frustrations, observations, and complaints — before diving into the structured steps.
+            </p>
+          )}
+          {explorationExpanded && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {PRIOR_KNOWLEDGE_FIELDS.map((f) => (
+                <div key={f.key} className="flex flex-col gap-1">
+                  <label className="text-xs font-medium text-foreground/70">{f.label}</label>
+                  <Textarea
+                    rows={3}
+                    placeholder={f.placeholder}
+                    value={priorKnowledge[f.key]}
+                    onChange={(e) => setPriorKnowledgeField(f.key, e.target.value)}
+                    className="resize-none text-sm focus-visible:ring-1"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Customer Section */}
       <Card className="border-brand/20 bg-brand">
