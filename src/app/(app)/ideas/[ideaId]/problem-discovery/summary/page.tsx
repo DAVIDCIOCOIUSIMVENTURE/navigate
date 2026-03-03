@@ -34,12 +34,12 @@ export default function SummaryPage() {
   const pathname = usePathname()
   const params = useParams()
   const ideaId = Number(params.ideaId)
-  const { customer, jobs, problems } = useProblemDiscovery()
+  const { customer, jobs } = useProblemDiscovery()
   const { updateIdea } = useIdeas()
   const { prevPath } = getAdjacentSteps(pathname, ideaId)
 
-  const namedJobs = jobs.filter((j) => j.job.trim())
-  const filledProblems = problems.filter((p) => p.text.trim())
+  const namedJobs = jobs.filter((j) => j.name.trim())
+  const hasAnyProblems = namedJobs.some((j) => j.problems.some((p) => p.text.trim()))
 
   const handleContinue = () => {
     updateIdea(ideaId, { problemDiscoveryComplete: true })
@@ -57,7 +57,7 @@ export default function SummaryPage() {
           Review your problem discovery before moving on to validation.
         </p>
 
-        {filledProblems.length === 0 && (
+        {!hasAnyProblems && (
           <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 flex items-start gap-3">
             <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
             <p className="text-sm text-amber-800">
@@ -86,7 +86,7 @@ export default function SummaryPage() {
                     <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
                       Job {i + 1}
                     </p>
-                    {job.job && <p className="text-sm">{job.job}</p>}
+                    {job.name && <p className="text-sm">{job.name}</p>}
                     <div className="grid grid-cols-3 gap-2 mt-0.5">
                       {(["functional", "emotional", "social"] as const).map((field) => (
                         <div key={field}>
@@ -108,17 +108,17 @@ export default function SummaryPage() {
           </Section>
 
           <Section title="Problems">
-            {filledProblems.length > 0 ? (
-              <div className="flex flex-col gap-4">
+            {hasAnyProblems ? (
+              <ul className="flex flex-col gap-4">
                 {namedJobs.map((job) => {
-                  const jobProblems = filledProblems.filter((p) => p.jobId === job.id)
+                  const jobProblems = job.problems.filter((p) => p.text.trim())
                   if (jobProblems.length === 0) return null
                   return (
-                    <div key={job.id} className="flex flex-col gap-1.5">
+                    <li key={job.id} className="flex flex-col gap-1.5">
                       <div className="flex items-center gap-1.5">
                         <Briefcase className="h-3 w-3 text-muted-foreground" />
                         <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                          {job.job}
+                          {job.name}
                         </p>
                       </div>
                       <ul className="flex flex-col gap-1 pl-4">
@@ -129,29 +129,10 @@ export default function SummaryPage() {
                           </li>
                         ))}
                       </ul>
-                    </div>
+                    </li>
                   )
                 })}
-                {filledProblems.filter((p) => p.jobId === null).length > 0 && (
-                  <div className="flex flex-col gap-1.5">
-                    {namedJobs.length > 0 && (
-                      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                        Other
-                      </p>
-                    )}
-                    <ul className="flex flex-col gap-1 pl-4">
-                      {filledProblems
-                        .filter((p) => p.jobId === null)
-                        .map((p, i) => (
-                          <li key={p.id} className="text-sm flex gap-2">
-                            <span className="text-muted-foreground shrink-0">{i + 1}.</span>
-                            <span>{p.text}</span>
-                          </li>
-                        ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
+              </ul>
             ) : (
               <p className="text-sm text-muted-foreground italic">No problems added yet</p>
             )}

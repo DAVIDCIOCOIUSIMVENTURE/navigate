@@ -10,10 +10,10 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from "@/components/ui/dialog"
 import {
-  Users, AlertCircle, GitFork, Clock, ThumbsDown, Heart, BarChart2,
+  Users, AlertCircle, GitFork, Clock, Heart, BarChart2,
   Pencil, Plus, X, Briefcase,
 } from "lucide-react"
-import type { CustomerFields, ImpactItem } from "@/types/idea"
+import type { AlternativeItem, CustomerFields, ImpactItem, Problem } from "@/types/idea"
 
 const IMPACT_CATEGORIES = [
   "Time Lost", "Money Wasted", "Error Rates", "Customer Churn",
@@ -106,6 +106,7 @@ export default function ProblemStatementPage() {
   const [impactDraft, setImpactDraft] = useState<ImpactItem>({ category: "", description: "" })
   const [altOpen, setAltOpen] = useState(false)
   const [altDraft, setAltDraft] = useState("")
+  const [scDrafts, setScDrafts] = useState<Record<number, string>>({})
 
   if (!idea) {
     return (
@@ -121,44 +122,47 @@ export default function ProblemStatementPage() {
   const setCustomerField = (key: keyof CustomerFields, val: string) =>
     setCustomer({ ...customer, [key]: val })
 
-  const validValidation = idea.validations.find((v) => v.status === "valid")
-  const anyValidation = idea.validations[0] ?? null
-  const activeValidation = validValidation ?? anyValidation
+  const allProblems = idea.jobs.flatMap((j) => j.problems)
+  const filledProblems = allProblems.filter((p) => p.text.trim())
+  const activeProblem: Problem | null =
+    filledProblems.find((p) => p.validationStatus === "valid") ??
+    filledProblems.find((p) => p.validationStatus !== "unvalidated") ??
+    filledProblems[0] ??
+    null
 
-  const coreProblem = activeValidation
-    ? idea.problems.find((p) => p.id === activeValidation.problemId)
-    : idea.problems[0] ?? null
+  const coreProblem = activeProblem
 
-  const alternatives = activeValidation?.alternatives ?? []
-  const contextWhen = activeValidation?.contextWhen ?? ""
-  const shortcomings = activeValidation?.shortcomings ?? ""
-  const emotionalImpact = activeValidation?.emotionalImpact ?? ""
-  const impacts = activeValidation?.impacts ?? []
+  const alternatives = activeProblem?.alternatives ?? []
+  const contextWhen = activeProblem?.contextWhen ?? ""
+  const emotionalImpact = activeProblem?.emotionalImpact ?? ""
+  const impacts = activeProblem?.impacts ?? []
 
-  const updateValidationField = (patch: Partial<typeof activeValidation>) => {
-    if (!activeValidation) return
-    const next = idea.validations.map((v) =>
-      v.id === activeValidation.id ? { ...v, ...patch } : v
-    )
-    updateIdea(ideaId, { validations: next })
+  const updateActiveProblemField = (patch: Partial<Problem>) => {
+    if (!activeProblem) return
+    const updatedJobs = idea.jobs.map((j) => ({
+      ...j,
+      problems: j.problems.map((p) => (p.id === activeProblem.id ? { ...p, ...patch } : p)),
+    }))
+    updateIdea(ideaId, { jobs: updatedJobs })
   }
 
   const addImpact = () => {
     if (!impactDraft.category.trim() && !impactDraft.description.trim()) return
-    updateValidationField({ impacts: [...impacts, { ...impactDraft }] })
+    updateActiveProblemField({ impacts: [...impacts, { ...impactDraft }] })
     setImpactDraft({ category: "", description: "" })
   }
   const removeImpact = (i: number) =>
-    updateValidationField({ impacts: impacts.filter((_, idx) => idx !== i) })
+    updateActiveProblemField({ impacts: impacts.filter((_, idx) => idx !== i) })
 
   const addAlternative = () => {
     const trimmed = altDraft.trim()
     if (!trimmed) return
-    updateValidationField({ alternatives: [...alternatives, trimmed] })
+    const newItem: AlternativeItem = { id: Date.now(), text: trimmed, shortcomings: [] }
+    updateActiveProblemField({ alternatives: [...alternatives, newItem] })
     setAltDraft("")
   }
   const removeAlternative = (i: number) =>
-    updateValidationField({ alternatives: alternatives.filter((_, idx) => idx !== i) })
+    updateActiveProblemField({ alternatives: alternatives.filter((_, idx) => idx !== i) })
 
   return (
     <div className="flex flex-col gap-6 w-full flex-1">
@@ -204,14 +208,14 @@ export default function ProblemStatementPage() {
             </span>
           )}
           {coreProblem && (() => {
-            const job = idea.jobs.find((j) => j.id === coreProblem.jobId)
-            return job?.job ? (
+            const job = idea.jobs.find((j) => j.problems.some((p) => p.id === coreProblem.id))
+            return job?.name ? (
               <div className="flex flex-col gap-1 border-t border-rose-200 pt-3">
                 <div className="flex items-center gap-1.5">
                   <Briefcase className="h-3.5 w-3.5 text-foreground/50 shrink-0" />
                   <p className="text-xs font-medium text-foreground/60">Job to Be Done</p>
                 </div>
-                <p className="text-sm">{job.job}</p>
+                <p className="text-sm">{job.name}</p>
               </div>
             ) : null
           })()}
@@ -226,23 +230,35 @@ export default function ProblemStatementPage() {
           placeholder="Describe the situation, trigger, or environment..."
           color="bg-amber-50 border-amber-200"
           dialogColor="bg-amber-50/50 border-amber-200"
-          onChange={(val) => updateValidationField({ contextWhen: val })}
+          onChange={(val) => updateActiveProblemField({ contextWhen: val })}
         />
 
-        {/* Alternatives Card */}
+        {/* Alternatives & Shortcomings Card */}
         <div className="rounded-xl border-2 bg-purple-50 border-purple-200 p-5 flex flex-col gap-3">
           <ClickableCardTitle
             icon={GitFork}
-            label="Alternatives"
-            description="How customers currently solve or work around the problem"
+            label="Alternatives & Shortcomings"
+            description="How customers solve the problem and why those solutions fall short"
             onEdit={() => setAltOpen(true)}
           />
           {alternatives.length > 0 ? (
-            <ul className="flex flex-col gap-1">
+            <ul className="flex flex-col gap-2">
               {alternatives.map((alt, i) => (
-                <li key={i} className="text-sm flex gap-2">
-                  <span className="text-muted-foreground shrink-0">{i + 1}.</span>
-                  <span>{alt}</span>
+                <li key={i} className="flex flex-col gap-0.5">
+                  <div className="text-sm flex gap-2">
+                    <span className="text-muted-foreground shrink-0">{i + 1}.</span>
+                    <span className="font-medium">{alt.text}</span>
+                  </div>
+                  {alt.shortcomings.length > 0 && (
+                    <ul className="pl-4 flex flex-col gap-0.5">
+                      {alt.shortcomings.map((sc, j) => (
+                        <li key={j} className="text-sm text-muted-foreground flex gap-1.5">
+                          <span className="shrink-0">–</span>
+                          <span>{sc}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </li>
               ))}
             </ul>
@@ -250,18 +266,6 @@ export default function ProblemStatementPage() {
             <EmptyValue />
           )}
         </div>
-
-        {/* Shortcomings Card */}
-        <SimpleTextCard
-          icon={ThumbsDown}
-          label="Shortcomings"
-          description="Why existing alternatives fall short"
-          value={shortcomings}
-          placeholder="Explain why existing solutions fail or frustrate customers..."
-          color="bg-purple-50 border-purple-200"
-          dialogColor="bg-purple-50/50 border-purple-200"
-          onChange={(val) => updateValidationField({ shortcomings: val })}
-        />
 
         {/* Emotional Impact Card */}
         <SimpleTextCard
@@ -272,7 +276,7 @@ export default function ProblemStatementPage() {
           placeholder="Describe frustration, anxiety, stress, or other emotions..."
           color="bg-pink-50 border-pink-200"
           dialogColor="bg-pink-50/50 border-pink-200"
-          onChange={(val) => updateValidationField({ emotionalImpact: val })}
+          onChange={(val) => updateActiveProblemField({ emotionalImpact: val })}
         />
 
         {/* Quantifiable Impact Card */}
@@ -335,21 +339,82 @@ export default function ProblemStatementPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Alternatives dialog */}
+      {/* Alternatives & Shortcomings dialog */}
       <Dialog open={altOpen} onOpenChange={setAltOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>Alternatives</DialogTitle>
-            <DialogDescription>How customers currently solve or work around the problem</DialogDescription>
+            <DialogTitle>Alternatives & Shortcomings</DialogTitle>
+            <DialogDescription>How customers solve the problem and why those solutions fall short</DialogDescription>
           </DialogHeader>
           {alternatives.length > 0 && (
-            <ul className="flex flex-col gap-1.5">
+            <ul className="flex flex-col gap-3">
               {alternatives.map((item, i) => (
-                <li key={i} className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2 text-sm">
-                  <span className="flex-1">{item}</span>
-                  <button onClick={() => removeAlternative(i)} className="shrink-0 text-muted-foreground hover:text-destructive">
-                    <X className="h-3.5 w-3.5" />
-                  </button>
+                <li key={i} className="flex flex-col gap-2 bg-muted/50 rounded-lg px-3 py-2.5">
+                  <div className="flex items-center gap-2">
+                    <span className="flex-1 text-sm font-medium">{item.text}</span>
+                    <button onClick={() => removeAlternative(i)} className="shrink-0 text-muted-foreground hover:text-destructive">
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                  {item.shortcomings.length > 0 && (
+                    <ul className="flex flex-col gap-1">
+                      {item.shortcomings.map((sc, j) => (
+                        <li key={j} className="flex items-center gap-2 bg-background rounded px-2 py-1 text-sm">
+                          <span className="flex-1">{sc}</span>
+                          <button
+                            onClick={() =>
+                              updateActiveProblemField({
+                                alternatives: alternatives.map((alt, idx) =>
+                                  idx === i ? { ...alt, shortcomings: alt.shortcomings.filter((_, k) => k !== j) } : alt
+                                ),
+                              })
+                            }
+                            className="shrink-0 text-muted-foreground hover:text-destructive"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Add a shortcoming..."
+                      value={scDrafts[i] ?? ""}
+                      onChange={(e) => setScDrafts((prev) => ({ ...prev, [i]: e.target.value }))}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault()
+                          const trimmed = (scDrafts[i] ?? "").trim()
+                          if (!trimmed) return
+                          updateActiveProblemField({
+                            alternatives: alternatives.map((alt, idx) =>
+                              idx === i ? { ...alt, shortcomings: [...alt.shortcomings, trimmed] } : alt
+                            ),
+                          })
+                          setScDrafts((prev) => ({ ...prev, [i]: "" }))
+                        }
+                      }}
+                      className="text-sm h-8 bg-background"
+                    />
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      disabled={!(scDrafts[i] ?? "").trim()}
+                      onClick={() => {
+                        const trimmed = (scDrafts[i] ?? "").trim()
+                        if (!trimmed) return
+                        updateActiveProblemField({
+                          alternatives: alternatives.map((alt, idx) =>
+                            idx === i ? { ...alt, shortcomings: [...alt.shortcomings, trimmed] } : alt
+                          ),
+                        })
+                        setScDrafts((prev) => ({ ...prev, [i]: "" }))
+                      }}
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
                 </li>
               ))}
             </ul>

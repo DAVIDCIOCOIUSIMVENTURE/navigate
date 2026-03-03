@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useProblemValidation, getAdjacentSteps } from "../context"
 import { useIdeas } from "@/store/ideas-hooks"
-import { Gavel, CheckCircle2, XCircle, GitFork, Clock, ThumbsDown, Heart, BarChart2 } from "lucide-react"
+import { Gavel, CheckCircle2, XCircle, GitFork, Clock, Heart, BarChart2 } from "lucide-react"
 
 function SummaryField({ label, value }: { label: string; value: string }) {
   return (
@@ -28,30 +28,29 @@ export default function VerdictPage() {
   const ideaId = Number(params.ideaId)
   const { prevPath } = getAdjacentSteps(pathname, ideaId)
   const {
-    selectedProblemId, alternatives, contextWhen, shortcomings, emotionalImpact,
+    selectedProblemId, alternatives, contextWhen, emotionalImpact,
     impacts, status, setStatus, reason, setReason, saveValidation,
   } = useProblemValidation()
   const { getIdea, updateIdea } = useIdeas()
 
   const idea = getIdea(ideaId)
-  const selectedProblem = idea?.problems.find((p) => p.id === selectedProblemId)
+  const allProblems = idea?.jobs.flatMap((j) => j.problems) ?? []
+  const selectedProblem = allProblems.find((p) => p.id === selectedProblemId)
 
   const handleVerdict = (verdict: "valid" | "invalid") => {
     setStatus(verdict)
     saveValidation(verdict)
     // Check if all problems are now decided
-    const filledProblems = (idea?.problems ?? []).filter((p) => p.text.trim())
-    const updatedValidations = [
-      ...(idea?.validations ?? []).filter((v) => v.problemId !== selectedProblemId),
-      { problemId: selectedProblemId!, status: verdict } as never,
-    ]
-    const allDecided = filledProblems.every((p) =>
-      updatedValidations.some(
-        (v: { problemId: number; status: string }) =>
-          v.problemId === p.id && (v.status === "valid" || v.status === "invalid")
+    const filledProblems = allProblems.filter((p) => p.text.trim())
+    const allDecided =
+      filledProblems.length > 0 &&
+      filledProblems.every(
+        (p) =>
+          p.id === selectedProblemId
+            ? verdict === "valid" || verdict === "invalid"
+            : p.validationStatus === "valid" || p.validationStatus === "invalid"
       )
-    )
-    if (allDecided && filledProblems.length > 0) {
+    if (allDecided) {
       updateIdea(ideaId, { problemValidationComplete: true })
     }
     router.push(`/ideas/${ideaId}/problem-validation/pick-a-problem`)
@@ -88,11 +87,23 @@ export default function VerdictPage() {
               <p className="text-sm font-semibold">Alternatives</p>
             </div>
             {alternatives.length > 0 ? (
-              <ul className="flex flex-col gap-1">
+              <ul className="flex flex-col gap-2">
                 {alternatives.map((alt, i) => (
-                  <li key={i} className="text-sm flex gap-2">
-                    <span className="text-muted-foreground shrink-0">{i + 1}.</span>
-                    <span>{alt}</span>
+                  <li key={i} className="flex flex-col gap-0.5">
+                    <div className="text-sm flex gap-2">
+                      <span className="text-muted-foreground shrink-0">{i + 1}.</span>
+                      <span className="font-medium">{alt.text}</span>
+                    </div>
+                    {alt.shortcomings.length > 0 && (
+                      <ul className="pl-4 flex flex-col gap-0.5">
+                        {alt.shortcomings.map((sc, j) => (
+                          <li key={j} className="text-sm text-muted-foreground flex gap-1.5">
+                            <span className="shrink-0">–</span>
+                            <span>{sc}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -101,21 +112,12 @@ export default function VerdictPage() {
             )}
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-lg border p-4 flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <Clock className="h-3.5 w-3.5 text-muted-foreground" />
-                <p className="text-sm font-semibold">Context</p>
-              </div>
-              <SummaryField label="" value={contextWhen} />
+          <div className="rounded-lg border p-4 flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <Clock className="h-3.5 w-3.5 text-muted-foreground" />
+              <p className="text-sm font-semibold">Context</p>
             </div>
-            <div className="rounded-lg border p-4 flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <ThumbsDown className="h-3.5 w-3.5 text-muted-foreground" />
-                <p className="text-sm font-semibold">Shortcomings</p>
-              </div>
-              <SummaryField label="" value={shortcomings} />
-            </div>
+            <SummaryField label="" value={contextWhen} />
           </div>
 
           <div className="grid grid-cols-2 gap-3">

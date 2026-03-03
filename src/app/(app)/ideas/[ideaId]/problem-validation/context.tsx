@@ -2,20 +2,18 @@
 
 import { createContext, useContext, useState, useCallback, type ReactNode } from "react"
 import { useIdeas } from "@/store/ideas-hooks"
-import type { ImpactItem, ProblemValidation, ValidationStatus } from "@/types/idea"
+import type { AlternativeItem, ImpactItem, ValidationStatus } from "@/types/idea"
 
-export type { ImpactItem, ProblemValidation, ValidationStatus }
+export type { AlternativeItem, ImpactItem, ValidationStatus }
 
 type ProblemValidationContextValue = {
   ideaId: number
   selectedProblemId: number | null
   setSelectedProblemId: (id: number | null) => void
-  alternatives: string[]
-  setAlternatives: (val: string[]) => void
+  alternatives: AlternativeItem[]
+  setAlternatives: (val: AlternativeItem[]) => void
   contextWhen: string
   setContextWhen: (val: string) => void
-  shortcomings: string
-  setShortcomings: (val: string) => void
   emotionalImpact: string
   setEmotionalImpact: (val: string) => void
   impacts: ImpactItem[]
@@ -39,9 +37,8 @@ export function ProblemValidationProvider({
   const { getIdea, updateIdea } = useIdeas()
 
   const [selectedProblemId, setSelectedProblemIdRaw] = useState<number | null>(null)
-  const [alternatives, setAlternatives] = useState<string[]>([])
+  const [alternatives, setAlternatives] = useState<AlternativeItem[]>([])
   const [contextWhen, setContextWhen] = useState("")
-  const [shortcomings, setShortcomings] = useState("")
   const [emotionalImpact, setEmotionalImpact] = useState("")
   const [impacts, setImpacts] = useState<ImpactItem[]>([])
   const [status, setStatus] = useState<ValidationStatus>("unvalidated")
@@ -50,19 +47,17 @@ export function ProblemValidationProvider({
   const loadValidation = useCallback(
     (problemId: number) => {
       const idea = getIdea(ideaId)
-      const existing = idea?.validations.find((v) => v.problemId === problemId)
-      if (existing) {
-        setAlternatives(existing.alternatives)
-        setContextWhen(existing.contextWhen)
-        setShortcomings(existing.shortcomings)
-        setEmotionalImpact(existing.emotionalImpact)
-        setImpacts(existing.impacts)
-        setStatus(existing.status)
-        setReason(existing.reason)
+      const problem = idea?.jobs.flatMap((j) => j.problems).find((p) => p.id === problemId)
+      if (problem) {
+        setAlternatives(problem.alternatives)
+        setContextWhen(problem.contextWhen)
+        setEmotionalImpact(problem.emotionalImpact)
+        setImpacts(problem.impacts)
+        setStatus(problem.validationStatus)
+        setReason(problem.reason)
       } else {
         setAlternatives([])
         setContextWhen("")
-        setShortcomings("")
         setEmotionalImpact("")
         setImpacts([])
         setStatus("unvalidated")
@@ -76,29 +71,29 @@ export function ProblemValidationProvider({
     (problemId: number, statusOverride?: ValidationStatus) => {
       const idea = getIdea(ideaId)
       if (!idea) return
-      const existing = idea.validations.find((v) => v.problemId === problemId)
-      const updated: ProblemValidation = {
-        id: existing?.id ?? Date.now(),
-        problemId,
-        alternatives,
-        contextWhen,
-        shortcomings,
-        emotionalImpact,
-        impacts,
-        status: statusOverride ?? status,
-        reason,
-      }
-      const next = existing
-        ? idea.validations.map((v) => (v.problemId === problemId ? updated : v))
-        : [...idea.validations, updated]
-      updateIdea(ideaId, { validations: next, selectedProblemId: problemId })
+      const updatedJobs = idea.jobs.map((j) => ({
+        ...j,
+        problems: j.problems.map((p) =>
+          p.id === problemId
+            ? {
+                ...p,
+                validationStatus: statusOverride ?? status,
+                alternatives,
+                contextWhen,
+                emotionalImpact,
+                impacts,
+                reason,
+              }
+            : p
+        ),
+      }))
+      updateIdea(ideaId, { jobs: updatedJobs, selectedProblemId: problemId })
     },
-    [ideaId, getIdea, updateIdea, alternatives, contextWhen, shortcomings, emotionalImpact, impacts, status, reason]
+    [ideaId, getIdea, updateIdea, alternatives, contextWhen, emotionalImpact, impacts, status, reason]
   )
 
   const setSelectedProblemId = useCallback(
     (id: number | null) => {
-      // Auto-save current before switching
       if (selectedProblemId !== null) {
         saveCurrentValidation(selectedProblemId)
       }
@@ -126,7 +121,6 @@ export function ProblemValidationProvider({
         selectedProblemId, setSelectedProblemId,
         alternatives, setAlternatives,
         contextWhen, setContextWhen,
-        shortcomings, setShortcomings,
         emotionalImpact, setEmotionalImpact,
         impacts, setImpacts,
         status, setStatus,

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { useProblemValidation, getAdjacentSteps } from "../context"
 import { useIdeas } from "@/store/ideas-hooks"
 import { Briefcase, CircleDot, CheckCircle2, ChevronLeft, ChevronRight } from "lucide-react"
-import type { ProblemItem } from "@/types/idea"
+import type { Problem } from "@/types/idea"
 
 const STATUS_BADGE: Record<string, { label: string; className: string }> = {
   unvalidated: { label: "Unvalidated", className: "bg-gray-100 text-gray-600" },
@@ -25,21 +25,15 @@ export default function PickAProblemPage() {
   const { prevPath, nextPath } = getAdjacentSteps(pathname, ideaId)
 
   const idea = getIdea(ideaId)
-  const jobs = idea?.jobs ?? []
-  const problems = (idea?.problems ?? []).filter((p) => p.text.trim())
-  const validations = idea?.validations ?? []
-
-  const namedJobs = jobs.filter((j) => j.job.trim())
+  const namedJobs = (idea?.jobs ?? []).filter((j) => j.name.trim())
   const problemsByJob = namedJobs
-    .map((job) => ({ job, items: problems.filter((p) => p.jobId === job.id) }))
+    .map((job) => ({ job, items: job.problems.filter((p) => p.text.trim()) }))
     .filter((g) => g.items.length > 0)
-  const unlinkedProblems = problems.filter((p) => p.jobId === null)
-  const hasProblems = problems.length > 0
+  const hasProblems = namedJobs.some((j) => j.problems.some((p) => p.text.trim()))
 
-  function renderProblem(problem: ProblemItem) {
+  function renderProblem(problem: Problem) {
     const isSelected = selectedProblemId === problem.id
-    const validation = validations.find((v) => v.problemId === problem.id)
-    const badge = validation ? STATUS_BADGE[validation.status] : null
+    const badge = problem.validationStatus !== "unvalidated" ? STATUS_BADGE[problem.validationStatus] : null
 
     return (
       <li key={problem.id}>
@@ -100,22 +94,12 @@ export default function PickAProblemPage() {
                 <div className="flex items-center gap-1.5 px-1">
                   <Briefcase className="h-3.5 w-3.5 text-muted-foreground" />
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                    {job.job}
+                    {job.name}
                   </p>
                 </div>
                 <ul className="flex flex-col gap-2">{items.map(renderProblem)}</ul>
               </div>
             ))}
-            {unlinkedProblems.length > 0 && (
-              <div className="flex flex-col gap-2">
-                {problemsByJob.length > 0 && (
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide px-1">
-                    Other Problems
-                  </p>
-                )}
-                <ul className="flex flex-col gap-2">{unlinkedProblems.map(renderProblem)}</ul>
-              </div>
-            )}
           </div>
         )}
         <div className="flex justify-between mt-2">

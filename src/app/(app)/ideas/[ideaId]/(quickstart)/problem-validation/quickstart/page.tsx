@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, type KeyboardEvent } from "react"
+import { useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -8,10 +8,10 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useIdeas } from "@/store/ideas-hooks"
 import {
-  Users, CircleDot, GitFork, Clock, ThumbsDown, Heart, BarChart2,
+  Users, CircleDot, GitFork, Clock, Heart, BarChart2,
   Briefcase, CheckCircle2, Plus, X, Trash2, Gavel, XCircle,
 } from "lucide-react"
-import type { ImpactItem, ProblemValidation } from "@/types/idea"
+import type { ImpactItem, Problem } from "@/types/idea"
 
 const STATUS_BADGE: Record<string, { label: string; className: string }> = {
   unvalidated: { label: "Unvalidated", className: "bg-gray-100 text-gray-600" },
@@ -28,7 +28,8 @@ export default function QuickstartValidationPage() {
 
   const idea = getIdea(ideaId)
 
-  const [altDraft, setAltDraft] = useState("")
+  // scRows: per-saved-alt-id, pending input rows for new shortcomings
+  const [scRows, setScRows] = useState<Record<number, string[]>>({})
   const [impactDraft, setImpactDraft] = useState({ category: "", description: "" })
 
   if (!idea) {
@@ -40,83 +41,104 @@ export default function QuickstartValidationPage() {
     )
   }
 
-  const problems = idea.problems.filter((p) => p.text.trim())
-  const namedJobs = idea.jobs.filter((j) => j.job.trim())
+  const namedJobs = idea.jobs.filter((j) => j.name.trim())
   const problemsByJob = namedJobs
-    .map((job) => ({ job, items: problems.filter((p) => p.jobId === job.id) }))
+    .map((job) => ({ job, items: job.problems.filter((p) => p.text.trim()) }))
     .filter((g) => g.items.length > 0)
-  const unlinkedProblems = problems.filter((p) => p.jobId === null)
 
   const selectedProblemId = idea.selectedProblemId
-  const selectedProblem = problems.find((p) => p.id === selectedProblemId)
-  const validation = idea.validations.find((v) => v.problemId === selectedProblemId)
+  const selectedProblem = idea.jobs.flatMap((j) => j.problems).find((p) => p.id === selectedProblemId)
 
-  const updateValidation = (patch: Partial<Omit<ProblemValidation, "id" | "problemId">>, statusOverride?: ProblemValidation["status"]) => {
+  const updateProblem = (patch: Partial<Omit<Problem, "id" | "text">>, statusOverride?: Problem["validationStatus"]) => {
     if (selectedProblemId === null) return
-    const existing = idea.validations.find((v) => v.problemId === selectedProblemId)
-    const effectiveStatus = statusOverride ?? patch.status ?? existing?.status ?? "in_progress"
-    const updated: ProblemValidation = {
-      id: existing?.id ?? Date.now(),
-      problemId: selectedProblemId,
-      alternatives: existing?.alternatives ?? [],
-      contextWhen: existing?.contextWhen ?? "",
-      shortcomings: existing?.shortcomings ?? "",
-      emotionalImpact: existing?.emotionalImpact ?? "",
-      impacts: existing?.impacts ?? [],
-      reason: existing?.reason ?? "",
-      ...patch,
-      status: effectiveStatus === "unvalidated" ? "in_progress" : effectiveStatus,
-    }
-    const next = existing
-      ? idea.validations.map((x) => (x.problemId === selectedProblemId ? updated : x))
-      : [...idea.validations, updated]
+    const allProblems = idea.jobs.flatMap((j) => j.problems)
+    const existing = allProblems.find((p) => p.id === selectedProblemId)
+    if (!existing) return
 
-    const filledProblems = idea.problems.filter((p) => p.text.trim())
+    const effectiveStatus = statusOverride ?? patch.validationStatus ?? existing.validationStatus
+    const updated: Problem = {
+      ...existing,
+      ...patch,
+      validationStatus: effectiveStatus === "unvalidated" ? "in_progress" : effectiveStatus,
+    }
+
+    const filledProblems = allProblems.filter((p) => p.text.trim())
     const allDecided =
       filledProblems.length > 0 &&
-      filledProblems.every((p) =>
-        next.some((v) => v.problemId === p.id && (v.status === "valid" || v.status === "invalid"))
-      )
+      filledProblems.every((p) => {
+        const s = p.id === selectedProblemId ? updated.validationStatus : p.validationStatus
+        return s === "valid" || s === "invalid"
+      })
 
     updateIdea(ideaId, {
-      validations: next,
+      jobs: idea.jobs.map((j) => ({
+        ...j,
+        problems: j.problems.map((p) => (p.id === selectedProblemId ? updated : p)),
+      })),
       ...(allDecided ? { problemValidationComplete: true } : {}),
     })
   }
 
   const selectProblem = (id: number) => {
-    setAltDraft("")
+    setScRows({})
     setImpactDraft({ category: "", description: "" })
     updateIdea(ideaId, { selectedProblemId: id })
   }
 
   const addAlt = () => {
-    const trimmed = altDraft.trim()
-    if (!trimmed) return
-    updateValidation({ alternatives: [...(validation?.alternatives ?? []), trimmed] })
-    setAltDraft("")
+    const newAlt = { id: Date.now(), text: "", shortcomings: [] }
+    updateProblem({ alternatives: [...(selectedProblem?.alternatives ?? []), newAlt] })
   }
-  const onAltKey = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") { e.preventDefault(); addAlt() }
+
+  const updateAltText = (altId: number, text: string) =>
+    updateProblem({
+      alternatives: (selectedProblem?.alternatives ?? []).map((alt) =>
+        alt.id === altId ? { ...alt, text } : alt
+      ),
+    })
+
+  const removeAlt = (altId: number) => {
+    setScRows((prev) => { const next = { ...prev }; delete next[altId]; return next })
+    updateProblem({ alternatives: (selectedProblem?.alternatives ?? []).filter((alt) => alt.id !== altId) })
   }
-  const removeAlt = (i: number) =>
-    updateValidation({ alternatives: (validation?.alternatives ?? []).filter((_, idx) => idx !== i) })
+
+  const removeAltShortcoming = (altId: number, scIdx: number) =>
+    updateProblem({
+      alternatives: (selectedProblem?.alternatives ?? []).map((alt) =>
+        alt.id === altId
+          ? { ...alt, shortcomings: alt.shortcomings.filter((_, j) => j !== scIdx) }
+          : alt
+      ),
+    })
+
+  const commitScRow = (altId: number, rowIdx: number) => {
+    const val = (scRows[altId] ?? [])[rowIdx] ?? ""
+    if (!val.trim()) {
+      setScRows((prev) => ({ ...prev, [altId]: (prev[altId] ?? []).filter((_, i) => i !== rowIdx) }))
+      return
+    }
+    updateProblem({
+      alternatives: (selectedProblem?.alternatives ?? []).map((alt) =>
+        alt.id === altId ? { ...alt, shortcomings: [...alt.shortcomings, val.trim()] } : alt
+      ),
+    })
+    setScRows((prev) => ({ ...prev, [altId]: (prev[altId] ?? []).filter((_, i) => i !== rowIdx) }))
+  }
 
   const addImpact = () => {
     if (!impactDraft.category.trim() && !impactDraft.description.trim()) return
-    updateValidation({ impacts: [...(validation?.impacts ?? []), { ...impactDraft }] })
+    updateProblem({ impacts: [...(selectedProblem?.impacts ?? []), { ...impactDraft }] })
     setImpactDraft({ category: "", description: "" })
   }
   const removeImpact = (i: number) =>
-    updateValidation({ impacts: (validation?.impacts ?? []).filter((_, idx) => idx !== i) })
+    updateProblem({ impacts: (selectedProblem?.impacts ?? []).filter((_, idx) => idx !== i) })
 
   const setVerdict = (status: "valid" | "invalid") =>
-    updateValidation({ status }, status)
+    updateProblem({ validationStatus: status }, status)
 
-  function renderProblemButton(problem: (typeof problems)[number]) {
+  function renderProblemButton(problem: Problem) {
     const isSelected = selectedProblemId === problem.id
-    const v = idea!.validations.find((v) => v.problemId === problem.id)
-    const badge = v ? STATUS_BADGE[v.status] : null
+    const badge = problem.validationStatus !== "unvalidated" ? STATUS_BADGE[problem.validationStatus] : null
     return (
       <li key={problem.id}>
         <button
@@ -173,7 +195,7 @@ export default function QuickstartValidationPage() {
             <h2 className="text-base font-semibold">Select a Problem to Validate</h2>
           </div>
 
-          {problems.length === 0 ? (
+          {problemsByJob.length === 0 ? (
             <div className="rounded-lg border border-dashed p-6 flex flex-col items-center gap-3 text-center text-muted-foreground">
               <Briefcase className="h-5 w-5" />
               <p className="text-sm">No problems yet. Add them in Problem Discovery first.</p>
@@ -187,19 +209,11 @@ export default function QuickstartValidationPage() {
                 <div key={job.id} className="flex flex-col gap-2">
                   <div className="flex items-center gap-1.5 px-1">
                     <Briefcase className="h-3.5 w-3.5 text-muted-foreground" />
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{job.job}</p>
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{job.name}</p>
                   </div>
                   <ul className="flex flex-col gap-1.5">{items.map(renderProblemButton)}</ul>
                 </div>
               ))}
-              {unlinkedProblems.length > 0 && (
-                <div className="flex flex-col gap-2">
-                  {problemsByJob.length > 0 && (
-                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide px-1">Other Problems</p>
-                  )}
-                  <ul className="flex flex-col gap-1.5">{unlinkedProblems.map(renderProblemButton)}</ul>
-                </div>
-              )}
             </div>
           )}
         </CardContent>
@@ -207,41 +221,79 @@ export default function QuickstartValidationPage() {
 
       {selectedProblem && (
         <>
-          {/* Alternatives */}
+          {/* Alternatives & Shortcomings */}
           <Card>
             <CardContent className="p-6 flex flex-col gap-4">
               <div className="flex items-center gap-2.5">
                 <GitFork className="h-4 w-4 text-muted-foreground" />
-                <h2 className="text-base font-semibold">Alternatives</h2>
+                <h2 className="text-base font-semibold">Alternatives & Shortcomings</h2>
               </div>
               <p className="text-sm text-muted-foreground">
-                How are customers currently solving or working around this problem?
+                How are customers currently solving or working around this problem? For each alternative, note why it falls short.
               </p>
-              {(validation?.alternatives ?? []).length > 0 && (
-                <ul className="flex flex-col gap-1.5">
-                  {(validation?.alternatives ?? []).map((item, i) => (
-                    <li key={i} className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2 text-sm">
-                      <span className="flex-1">{item}</span>
-                      <button onClick={() => removeAlt(i)} className="shrink-0 text-muted-foreground hover:text-destructive transition-colors">
-                        <X className="h-3.5 w-3.5" />
+
+              {(selectedProblem.alternatives ?? []).length > 0 && (
+                <ul className="flex flex-col gap-3">
+                  {(selectedProblem.alternatives ?? []).map((item) => (
+                    <li key={item.id} className="flex flex-col gap-2 bg-muted/50 rounded-lg px-3 py-2.5">
+                      <div className="flex items-center gap-2">
+                        <Input
+                          placeholder="Describe the alternative..."
+                          value={item.text}
+                          onChange={(e) => updateAltText(item.id, e.target.value)}
+                          className="flex-1 text-sm h-8 bg-background font-medium"
+                          autoFocus={item.text === ""}
+                        />
+                        <button
+                          onClick={() => removeAlt(item.id)}
+                          className="shrink-0 text-muted-foreground hover:text-destructive transition-colors"
+                        >
+                          <X className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                      {item.shortcomings.length > 0 && (
+                        <ul className="flex flex-col gap-1">
+                          {item.shortcomings.map((sc, j) => (
+                            <li key={j} className="flex items-center gap-2 bg-background rounded px-2 py-1 text-sm">
+                              <span className="flex-1">{sc}</span>
+                              <button onClick={() => removeAltShortcoming(item.id, j)} className="shrink-0 text-muted-foreground hover:text-destructive transition-colors">
+                                <X className="h-3 w-3" />
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                      {(scRows[item.id] ?? []).map((val, rowIdx) => (
+                        <Input
+                          key={rowIdx}
+                          placeholder="Add a shortcoming..."
+                          value={val}
+                          onChange={(e) => setScRows((prev) => ({ ...prev, [item.id]: (prev[item.id] ?? []).map((r, ri) => ri === rowIdx ? e.target.value : r) }))}
+                          onBlur={() => commitScRow(item.id, rowIdx)}
+                          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); commitScRow(item.id, rowIdx) } }}
+                          className="text-sm h-8 bg-background"
+                          autoFocus
+                        />
+                      ))}
+                      <button
+                        onClick={() => setScRows((prev) => ({ ...prev, [item.id]: [...(prev[item.id] ?? []), ""] }))}
+                        className="w-full flex items-center justify-center gap-1.5 rounded-md border border-dashed border-muted-foreground/30 py-1.5 text-xs text-muted-foreground hover:border-muted-foreground/60 hover:text-foreground transition-colors"
+                      >
+                        <Plus className="h-3.5 w-3.5" />
+                        Add shortcoming
                       </button>
                     </li>
                   ))}
                 </ul>
               )}
-              <div className="flex gap-2">
-                <Input
-                  placeholder="Type an alternative and press Enter..."
-                  value={altDraft}
-                  onChange={(e) => setAltDraft(e.target.value)}
-                  onKeyDown={onAltKey}
-                  className="text-sm h-9"
-                />
-                <Button variant="outline" onClick={addAlt} disabled={!altDraft.trim()}>
-                  <Plus className="h-4 w-4" />
-                  Add
-                </Button>
-              </div>
+
+              <button
+                onClick={addAlt}
+                className="w-full flex items-center justify-center gap-2 rounded-md border border-dashed border-muted-foreground/30 py-2 text-sm text-muted-foreground hover:border-muted-foreground/60 hover:text-foreground transition-colors"
+              >
+                <Plus className="h-4 w-4" />
+                Add alternative
+              </button>
             </CardContent>
           </Card>
 
@@ -258,28 +310,8 @@ export default function QuickstartValidationPage() {
               <Textarea
                 rows={4}
                 placeholder="When does this problem occur? In what situation or context?"
-                value={validation?.contextWhen ?? ""}
-                onChange={(e) => updateValidation({ contextWhen: e.target.value })}
-                className="resize-none text-sm focus-visible:ring-1"
-              />
-            </CardContent>
-          </Card>
-
-          {/* Shortcomings */}
-          <Card>
-            <CardContent className="p-6 flex flex-col gap-4">
-              <div className="flex items-center gap-2.5">
-                <ThumbsDown className="h-4 w-4 text-muted-foreground" />
-                <h2 className="text-base font-semibold">Shortcomings of Alternatives</h2>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                Why are the existing alternatives not good enough? What do they fail to address?
-              </p>
-              <Textarea
-                rows={4}
-                placeholder="What's wrong with how customers currently solve this?"
-                value={validation?.shortcomings ?? ""}
-                onChange={(e) => updateValidation({ shortcomings: e.target.value })}
+                value={selectedProblem.contextWhen ?? ""}
+                onChange={(e) => updateProblem({ contextWhen: e.target.value })}
                 className="resize-none text-sm focus-visible:ring-1"
               />
             </CardContent>
@@ -298,8 +330,8 @@ export default function QuickstartValidationPage() {
               <Textarea
                 rows={4}
                 placeholder="Frustrated? Anxious? Embarrassed? Describe the emotional effect..."
-                value={validation?.emotionalImpact ?? ""}
-                onChange={(e) => updateValidation({ emotionalImpact: e.target.value })}
+                value={selectedProblem.emotionalImpact ?? ""}
+                onChange={(e) => updateProblem({ emotionalImpact: e.target.value })}
                 className="resize-none text-sm focus-visible:ring-1"
               />
             </CardContent>
@@ -316,9 +348,9 @@ export default function QuickstartValidationPage() {
                 What is the measurable cost or consequence of this problem — in time, money, lost revenue, or other metrics?
               </p>
 
-              {(validation?.impacts ?? []).length > 0 && (
+              {(selectedProblem.impacts ?? []).length > 0 && (
                 <ul className="flex flex-col gap-2">
-                  {(validation?.impacts ?? []).map((item: ImpactItem, i: number) => (
+                  {(selectedProblem.impacts ?? []).map((item: ImpactItem, i: number) => (
                     <li key={i} className="flex items-start gap-3 bg-muted/50 rounded-lg px-3 py-2 text-sm">
                       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
                         {item.category && <span className="font-medium text-xs text-muted-foreground uppercase tracking-wide">{item.category}</span>}
@@ -375,7 +407,7 @@ export default function QuickstartValidationPage() {
                 <button
                   onClick={() => setVerdict("valid")}
                   className={`flex-1 flex items-center justify-center gap-2 rounded-lg border-2 px-4 py-3 text-sm font-medium transition-colors ${
-                    validation?.status === "valid"
+                    selectedProblem.validationStatus === "valid"
                       ? "border-green-400 bg-green-50 text-green-700"
                       : "border-border hover:border-green-300 hover:bg-green-50/50 text-muted-foreground"
                   }`}
@@ -386,7 +418,7 @@ export default function QuickstartValidationPage() {
                 <button
                   onClick={() => setVerdict("invalid")}
                   className={`flex-1 flex items-center justify-center gap-2 rounded-lg border-2 px-4 py-3 text-sm font-medium transition-colors ${
-                    validation?.status === "invalid"
+                    selectedProblem.validationStatus === "invalid"
                       ? "border-red-400 bg-red-50 text-red-700"
                       : "border-border hover:border-red-300 hover:bg-red-50/50 text-muted-foreground"
                   }`}
@@ -401,8 +433,8 @@ export default function QuickstartValidationPage() {
                 <Textarea
                   rows={2}
                   placeholder="Add any notes about your decision..."
-                  value={validation?.reason ?? ""}
-                  onChange={(e) => updateValidation({ reason: e.target.value })}
+                  value={selectedProblem.reason ?? ""}
+                  onChange={(e) => updateProblem({ reason: e.target.value })}
                   className="resize-none text-sm focus-visible:ring-1"
                 />
               </div>

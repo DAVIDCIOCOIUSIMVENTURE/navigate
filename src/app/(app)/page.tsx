@@ -11,10 +11,13 @@ import { useIdeas } from "@/store/ideas-hooks"
 export default function DashboardPage() {
   const { ideas } = useIdeas()
 
-  const totalProblems = ideas.reduce((sum, idea) => sum + idea.problems.filter((p) => p.text.trim()).length, 0)
+  const totalProblems = ideas.reduce(
+    (sum, idea) => sum + idea.jobs.flatMap((j) => j.problems).filter((p) => p.text.trim()).length,
+    0
+  )
   const validatedProblems = ideas.reduce(
     (sum, idea) =>
-      sum + idea.validations.filter((v) => v.status === "valid" || v.status === "invalid").length,
+      sum + idea.jobs.flatMap((j) => j.problems).filter((p) => p.validationStatus === "valid" || p.validationStatus === "invalid").length,
     0
   )
 

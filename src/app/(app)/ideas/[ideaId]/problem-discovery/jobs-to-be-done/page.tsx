@@ -22,7 +22,7 @@ export default function JobsToBeDonePage() {
   const [tab, setTab] = useState<Tab>("strategy")
 
   const add = () =>
-    setJobs([...jobs, { id: Date.now(), job: "", functional: "", emotional: "", social: "" }])
+    setJobs([...jobs, { id: Date.now(), name: "", functional: "", emotional: "", social: "" }])
 
   const remove = (id: number) => setJobs(jobs.filter((j) => j.id !== id))
 
@@ -101,11 +101,11 @@ export default function JobsToBeDonePage() {
                   </button>
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-brand-foreground">Job</label>
+                  <label className="text-xs font-medium text-brand-foreground">Name</label>
                   <Input
                     placeholder="What are your customers trying to get done?"
-                    value={job.job}
-                    onChange={(e) => update(job.id, "job", e.target.value)}
+                    value={job.name}
+                    onChange={(e) => update(job.id, "name", e.target.value)}
                     className="text-sm h-9 bg-background text-foreground placeholder:text-muted-foreground border-brand/30"
                   />
                 </div>

@@ -31,11 +31,12 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const { getIdea } = useIdeas()
 
   const idea = getIdea(ideaId)
-  const selectedProblem = idea?.problems.find((p) => p.id === selectedProblemId)
-  const validatedCount = idea?.validations.filter(
-    (v) => v.status === "valid" || v.status === "invalid"
-  ).length ?? 0
-  const totalProblems = idea?.problems.filter((p) => p.text.trim()).length ?? 0
+  const allProblems = idea?.jobs.flatMap((j) => j.problems) ?? []
+  const selectedProblem = allProblems.find((p) => p.id === selectedProblemId)
+  const validatedCount = allProblems.filter(
+    (p) => p.validationStatus === "valid" || p.validationStatus === "invalid"
+  ).length
+  const totalProblems = allProblems.filter((p) => p.text.trim()).length
 
   const base = `/ideas/${ideaId}/problem-validation`
 

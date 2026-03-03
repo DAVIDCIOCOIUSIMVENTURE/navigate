@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useIdeas } from "@/store/ideas-hooks"
 import { Users, Briefcase, AlertCircle, Plus, Trash2 } from "lucide-react"
 import type { CustomerFields, Job } from "@/types/idea"
+import { DEFAULT_PROBLEM } from "@/types/idea"
 
 const CUSTOMER_SINGLE_FIELDS: {
   key: keyof CustomerFields; label: string; placeholder: string
@@ -43,42 +44,49 @@ export default function QuickstartCanvasPage() {
 
   const customer = idea.customer
   const jobs = idea.jobs
-  const problems = idea.problems
 
   const setCustomerField = (key: keyof CustomerFields, val: string) =>
     updateIdea(ideaId, { customer: { ...customer, [key]: val } })
 
   const addJob = () =>
     updateIdea(ideaId, {
-      jobs: [...jobs, { id: Date.now(), job: "", functional: "", emotional: "", social: "" }],
+      jobs: [...jobs, { id: Date.now(), name: "", functional: "", emotional: "", social: "", problems: [] }],
     })
 
-  const updateJob = (id: number, field: keyof Omit<Job, "id">, val: string) =>
+  const updateJob = (id: number, field: keyof Omit<Job, "id" | "problems">, val: string) =>
     updateIdea(ideaId, { jobs: jobs.map((j) => (j.id === id ? { ...j, [field]: val } : j)) })
 
-  const removeJob = (id: number) => {
-    const removedJob = jobs.find((j) => j.id === id)
+  const removeJob = (id: number) =>
+    updateIdea(ideaId, { jobs: jobs.filter((j) => j.id !== id) })
+
+  const addProblem = (jobId: number) =>
     updateIdea(ideaId, {
-      jobs: jobs.filter((j) => j.id !== id),
-      // Detach problems that belonged to this job
-      problems: problems.map((p) =>
-        p.jobId === (removedJob?.id ?? null) ? { ...p, jobId: null } : p
+      jobs: jobs.map((j) =>
+        j.id === jobId
+          ? { ...j, problems: [...j.problems, { ...DEFAULT_PROBLEM, id: Date.now() }] }
+          : j
       ),
     })
-  }
 
-  const addProblem = (jobId: number | null) =>
+  const updateProblem = (jobId: number, problemId: number, text: string) =>
     updateIdea(ideaId, {
-      problems: [...problems, { id: Date.now(), jobId, text: "" }],
+      jobs: jobs.map((j) =>
+        j.id === jobId
+          ? { ...j, problems: j.problems.map((p) => (p.id === problemId ? { ...p, text } : p)) }
+          : j
+      ),
     })
 
-  const updateProblem = (id: number, text: string) =>
-    updateIdea(ideaId, { problems: problems.map((p) => (p.id === id ? { ...p, text } : p)) })
+  const removeProblem = (jobId: number, problemId: number) =>
+    updateIdea(ideaId, {
+      jobs: jobs.map((j) =>
+        j.id === jobId
+          ? { ...j, problems: j.problems.filter((p) => p.id !== problemId) }
+          : j
+      ),
+    })
 
-  const removeProblem = (id: number) =>
-    updateIdea(ideaId, { problems: problems.filter((p) => p.id !== id) })
-
-  const namedJobs = jobs.filter((j) => j.job.trim())
+  const namedJobs = jobs.filter((j) => j.name.trim())
 
   return (
     <div className="flex flex-col gap-6 w-full flex-1">
@@ -146,7 +154,7 @@ export default function QuickstartCanvasPage() {
         </CardContent>
       </Card>
 
-      {/* Jobs to Be Done Section */}
+      {/* Jobs to Be Done + Problems (combined per-job) */}
       <Card>
         <CardContent className="p-6 flex flex-col gap-4">
           <div className="flex items-center gap-2.5">
@@ -176,8 +184,8 @@ export default function QuickstartCanvasPage() {
                   </div>
                   <Input
                     placeholder="What are your customers trying to get done?"
-                    value={job.job}
-                    onChange={(e) => updateJob(job.id, "job", e.target.value)}
+                    value={job.name}
+                    onChange={(e) => updateJob(job.id, "name", e.target.value)}
                     className="text-sm h-9"
                   />
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -200,96 +208,52 @@ export default function QuickstartCanvasPage() {
                       </div>
                     ))}
                   </div>
+
+                  {/* Problems for this job */}
+                  {job.name.trim() && (
+                    <div className="flex flex-col gap-2 pt-1 border-t border-border">
+                      <div className="flex items-center gap-1.5">
+                        <AlertCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Problems</p>
+                      </div>
+                      {job.problems.map((problem) => (
+                        <div key={problem.id} className="flex items-center gap-2">
+                          <Input
+                            placeholder="Describe a problem your customers face..."
+                            value={problem.text}
+                            onChange={(e) => updateProblem(job.id, problem.id, e.target.value)}
+                            className="text-sm h-9 flex-1"
+                          />
+                          <button
+                            onClick={() => removeProblem(job.id, problem.id)}
+                            className="text-muted-foreground hover:text-destructive transition-colors shrink-0"
+                            aria-label="Remove problem"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      ))}
+                      <Button variant="outline" onClick={() => addProblem(job.id)} className="w-full gap-2">
+                        <Plus className="h-4 w-4" />
+                        Add Problem
+                      </Button>
+                    </div>
+                  )}
                 </li>
               ))}
             </ul>
+          )}
+
+          {namedJobs.length === 0 && jobs.length === 0 && (
+            <p className="text-sm text-muted-foreground italic">
+              Add a job to get started, then add problems for each job.
+            </p>
           )}
 
           <Button variant="outline" onClick={addJob} className="w-full gap-2">
             <Plus className="h-4 w-4" />
             Add Job to Be Done
           </Button>
-        </CardContent>
-      </Card>
-
-      {/* Problems Section */}
-      <Card>
-        <CardContent className="p-6 flex flex-col gap-4">
-          <div className="flex items-center gap-2.5">
-            <AlertCircle className="h-4 w-4 text-muted-foreground" />
-            <h2 className="text-base font-semibold">Problems</h2>
-          </div>
-          <p className="text-sm text-muted-foreground">
-            For each job, list the problems your customers face when trying to accomplish it.
-          </p>
-
-          {namedJobs.length === 0 ? (
-            <div className="flex flex-col gap-3">
-              {problems.filter((p) => p.jobId === null).map((problem) => (
-                <div key={problem.id} className="flex items-center gap-2">
-                  <Input
-                    placeholder="Describe a problem your customers face..."
-                    value={problem.text}
-                    onChange={(e) => updateProblem(problem.id, e.target.value)}
-                    className="text-sm h-9 flex-1"
-                  />
-                  <button
-                    onClick={() => removeProblem(problem.id)}
-                    className="text-muted-foreground hover:text-destructive transition-colors shrink-0"
-                    aria-label="Remove problem"
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </button>
-                </div>
-              ))}
-              <Button variant="outline" onClick={() => addProblem(null)} className="w-full gap-2">
-                <Plus className="h-4 w-4" />
-                Add Problem
-              </Button>
-            </div>
-          ) : (
-            <ul className="flex flex-col gap-4">
-              {namedJobs.map((job) => {
-                const jobProblems = problems.filter((p) => p.jobId === job.id)
-                return (
-                  <li key={job.id} className="rounded-lg bg-primary p-5 flex flex-col gap-3 text-primary-foreground">
-                    <div className="flex flex-col gap-0.5">
-                      <p className="text-xs font-semibold text-primary-foreground/60 uppercase tracking-wide flex items-center gap-1.5">
-                        <Briefcase className="h-3 w-3" />
-                        Job
-                      </p>
-                      <p className="text-sm font-semibold">{job.job}</p>
-                    </div>
-                    {jobProblems.map((problem) => (
-                      <div key={problem.id} className="flex items-center gap-2">
-                        <Input
-                          placeholder="Describe a problem your customers face..."
-                          value={problem.text}
-                          onChange={(e) => updateProblem(problem.id, e.target.value)}
-                          className="bg-white border-white/20 text-foreground placeholder:text-muted-foreground flex-1"
-                        />
-                        <button
-                          onClick={() => removeProblem(problem.id)}
-                          className="text-primary-foreground/60 hover:text-primary-foreground transition-colors shrink-0"
-                          aria-label="Remove problem"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </button>
-                      </div>
-                    ))}
-                    <Button
-                      variant="on-primary"
-                      className="w-full gap-2"
-                      onClick={() => addProblem(job.id)}
-                    >
-                      <Plus className="h-4 w-4" />
-                      Add Problem
-                    </Button>
-                  </li>
-                )
-              })}
-            </ul>
-          )}
         </CardContent>
       </Card>
 

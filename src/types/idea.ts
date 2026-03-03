@@ -8,18 +8,41 @@ export type CustomerFields = {
   frustrationsAndChallenges: string
 }
 
+export type ImpactItem = { category: string; description: string }
+
+export type AlternativeItem = { id: number; text: string; shortcomings: string[] }
+
+export type ValidationStatus = "unvalidated" | "in_progress" | "valid" | "invalid"
+
+export type Problem = {
+  id: number
+  text: string
+  // Validation fields — populated when the user validates this problem
+  validationStatus: ValidationStatus
+  alternatives: AlternativeItem[]
+  contextWhen: string
+  emotionalImpact: string
+  impacts: ImpactItem[]
+  reason: string
+}
+
+export const DEFAULT_PROBLEM: Omit<Problem, "id"> = {
+  text: "",
+  validationStatus: "unvalidated",
+  alternatives: [],
+  contextWhen: "",
+  emotionalImpact: "",
+  impacts: [],
+  reason: "",
+}
+
 export type Job = {
   id: number
-  job: string
+  name: string
   functional: string
   emotional: string
   social: string
-}
-
-export type ProblemItem = {
-  id: number
-  jobId: number | null
-  text: string
+  problems: Problem[]
 }
 
 export type SubSegmentFields = {
@@ -36,22 +59,6 @@ export const DEFAULT_SUB_SEGMENT: SubSegmentFields = {
   uniqueNeeds: "",
 }
 
-export type ImpactItem = { category: string; description: string }
-
-export type ValidationStatus = "unvalidated" | "in_progress" | "valid" | "invalid"
-
-export type ProblemValidation = {
-  id: number
-  problemId: number
-  alternatives: string[]
-  contextWhen: string
-  shortcomings: string
-  emotionalImpact: string
-  impacts: ImpactItem[]
-  status: ValidationStatus
-  reason: string
-}
-
 export type Idea = {
   id: number
   title: string
@@ -63,10 +70,8 @@ export type Idea = {
   customer: CustomerFields
   subSegment: SubSegmentFields
   jobs: Job[]
-  problems: ProblemItem[]
 
-  // Problem Validation (one per problem)
-  validations: ProblemValidation[]
+  // Problem Validation
   selectedProblemId: number | null
 
   // Stage flags

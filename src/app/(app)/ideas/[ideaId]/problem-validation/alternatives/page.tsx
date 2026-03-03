@@ -20,7 +20,7 @@ export default function AlternativesPage() {
   const add = () => {
     const trimmed = draft.trim()
     if (!trimmed) return
-    setAlternatives([...alternatives, trimmed])
+    setAlternatives([...alternatives, { id: Date.now(), text: trimmed, shortcomings: [] }])
     setDraft("")
   }
 
@@ -46,7 +46,7 @@ export default function AlternativesPage() {
           <ul className="flex flex-col gap-1.5">
             {alternatives.map((item, i) => (
               <li key={i} className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2 text-sm">
-                <span className="flex-1">{item}</span>
+                <span className="flex-1">{item.text}</span>
                 <button onClick={() => remove(i)} className="shrink-0 text-muted-foreground hover:text-destructive transition-colors">
                   <X className="h-3.5 w-3.5" />
                 </button>

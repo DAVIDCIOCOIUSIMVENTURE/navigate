@@ -2,10 +2,12 @@
 
 import { createContext, useContext, useCallback, type ReactNode } from "react"
 import { useIdeas } from "@/store/ideas-hooks"
-import type { CustomerFields, SubSegmentFields, Job, ProblemItem } from "@/types/idea"
+import type { CustomerFields, SubSegmentFields, Job, Problem } from "@/types/idea"
 import { DEFAULT_SUB_SEGMENT } from "@/types/idea"
 
-export type { CustomerFields, SubSegmentFields, Job, ProblemItem }
+export type { CustomerFields, SubSegmentFields, Job, Problem }
+// Backwards-compatible alias for consumers that import ProblemItem from this context
+export type ProblemItem = Problem
 
 type ProblemDiscoveryContextValue = {
   ideaId: number
@@ -15,8 +17,6 @@ type ProblemDiscoveryContextValue = {
   setSubSegment: (val: SubSegmentFields) => void
   jobs: Job[]
   setJobs: (val: Job[]) => void
-  problems: ProblemItem[]
-  setProblems: (val: ProblemItem[]) => void
 }
 
 const ProblemDiscoveryContext = createContext<ProblemDiscoveryContextValue | null>(null)
@@ -37,7 +37,6 @@ export function ProblemDiscoveryProvider({
   }
   const subSegment = idea?.subSegment ?? { ...DEFAULT_SUB_SEGMENT }
   const jobs = idea?.jobs ?? []
-  const problems = idea?.problems ?? []
 
   const setCustomer = useCallback(
     (val: CustomerFields) => updateIdea(ideaId, { customer: val }),
@@ -51,14 +50,10 @@ export function ProblemDiscoveryProvider({
     (val: Job[]) => updateIdea(ideaId, { jobs: val }),
     [ideaId, updateIdea]
   )
-  const setProblems = useCallback(
-    (val: ProblemItem[]) => updateIdea(ideaId, { problems: val }),
-    [ideaId, updateIdea]
-  )
 
   return (
     <ProblemDiscoveryContext.Provider
-      value={{ ideaId, customer, setCustomer, subSegment, setSubSegment, jobs, setJobs, problems, setProblems }}
+      value={{ ideaId, customer, setCustomer, subSegment, setSubSegment, jobs, setJobs }}
     >
       {children}
     </ProblemDiscoveryContext.Provider>
