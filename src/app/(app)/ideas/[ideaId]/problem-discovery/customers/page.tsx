@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useParams, usePathname, useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -8,15 +8,148 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useProblemDiscovery, getAdjacentSteps, type CustomerFields } from "../context"
 import { USE_CASES } from "../use-cases"
-import { Users } from "lucide-react"
+import { Users, ChevronDown } from "lucide-react"
 
-const SINGLE_FIELDS: {
-  key: keyof CustomerFields
-  label: string
-  placeholder: string
-}[] = [
-  { key: "segmentName", label: "Segment Name", placeholder: "e.g. Freelance Designers, Mid-market HR Teams..." },
+const SEGMENT_SUGGESTIONS = [
+  // Tech & Digital
+  "Freelance Designers",
+  "Independent Software Developers",
+  "Early-stage Startup Founders",
+  "Mid-market SaaS Companies",
+  "Remote-first Tech Teams",
+  "Product Managers at B2B SaaS",
+  "UX Researchers",
+  "Data Scientists",
+  "DevOps Engineers",
+  "IT Managers at SMEs",
+  // Health & Wellness
+  "Busy Parents with Young Children",
+  "Fitness Enthusiasts (Ages 25–40)",
+  "Chronic Illness Patients",
+  "Mental Health-conscious Millennials",
+  "Personal Trainers",
+  "Nutritionists & Dietitians",
+  "Elderly Adults Living Independently",
+  "Caregivers for Aging Parents",
+  // Finance & Business
+  "Solopreneurs & Side-hustle Owners",
+  "Small Business Owners (1–10 employees)",
+  "Mid-market HR Teams",
+  "Finance Managers at Non-profits",
+  "Independent Financial Advisors",
+  "E-commerce Store Owners",
+  "Real Estate Agents",
+  "Accountants at Small Firms",
+  // Education
+  "University Students (STEM)",
+  "K-12 Teachers",
+  "Corporate Learning & Development Teams",
+  "Online Course Creators",
+  "Homeschooling Parents",
+  "Adult Learners Upskilling",
+  // Creative & Media
+  "Independent Podcasters",
+  "YouTube Content Creators",
+  "Indie Game Developers",
+  "Freelance Writers & Journalists",
+  "Social Media Managers",
+  "Graphic Designers at Agencies",
+  // Field & Trade
+  "Construction Project Managers",
+  "Field Service Technicians",
+  "Logistics Coordinators",
+  "Restaurant Owners",
+  "Retail Store Managers",
+  "Farmers & Agricultural Workers",
 ]
+
+function SegmentCombobox({
+  value,
+  onChange,
+  className,
+}: {
+  value: string
+  onChange: (val: string) => void
+  className?: string
+}) {
+  const [open, setOpen] = useState(false)
+  const [inputValue, setInputValue] = useState(value)
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  // Keep local input in sync when external value changes (e.g. use-case applied)
+  useEffect(() => {
+    setInputValue(value)
+  }, [value])
+
+  const filtered = inputValue.trim()
+    ? SEGMENT_SUGGESTIONS.filter((s) =>
+        s.toLowerCase().includes(inputValue.toLowerCase())
+      )
+    : SEGMENT_SUGGESTIONS
+
+  function handleSelect(suggestion: string) {
+    setInputValue(suggestion)
+    onChange(suggestion)
+    setOpen(false)
+  }
+
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setInputValue(e.target.value)
+    onChange(e.target.value)
+    setOpen(true)
+  }
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function onMouseDown(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener("mousedown", onMouseDown)
+    return () => document.removeEventListener("mousedown", onMouseDown)
+  }, [])
+
+  return (
+    <div ref={containerRef} className={`relative ${className ?? ""}`}>
+      <div className="relative">
+        <Input
+          placeholder="e.g. Freelance Designers, Mid-market HR Teams..."
+          value={inputValue}
+          onChange={handleInputChange}
+          onFocus={() => setOpen(true)}
+          className="text-sm h-8 bg-background text-foreground placeholder:text-muted-foreground border-brand/30 pr-7"
+        />
+        <button
+          type="button"
+          tabIndex={-1}
+          onClick={() => setOpen((o) => !o)}
+          className="absolute inset-y-0 right-1.5 flex items-center text-muted-foreground hover:text-foreground"
+        >
+          <ChevronDown className="h-3.5 w-3.5" />
+        </button>
+      </div>
+      {open && filtered.length > 0 && (
+        <ul className="absolute z-50 mt-1 w-full max-h-56 overflow-y-auto rounded-md border border-border bg-popover shadow-md">
+          {filtered.map((suggestion) => (
+            <li
+              key={suggestion}
+              onMouseDown={(e) => {
+                e.preventDefault()
+                handleSelect(suggestion)
+              }}
+              className={`cursor-pointer px-3 py-1.5 text-sm hover:bg-accent hover:text-accent-foreground ${
+                suggestion === value ? "bg-accent/50 font-medium" : ""
+              }`}
+            >
+              {suggestion}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+}
 
 const MULTILINE_FIELDS: {
   key: keyof CustomerFields
@@ -90,17 +223,13 @@ export default function CustomersPage() {
         {tab === "strategy" && (
           <div className="rounded-xl border border-brand/20 bg-brand p-5 flex flex-col gap-4">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {SINGLE_FIELDS.map((f) => (
-                <div key={f.key} className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-brand-foreground">{f.label}</label>
-                  <Input
-                    placeholder={f.placeholder}
-                    value={customer[f.key]}
-                    onChange={(e) => set(f.key, e.target.value)}
-                    className="text-sm h-8 bg-background text-foreground placeholder:text-muted-foreground border-brand/30"
-                  />
-                </div>
-              ))}
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium text-brand-foreground">Segment Name</label>
+                <SegmentCombobox
+                  value={customer.segmentName}
+                  onChange={(val) => set("segmentName", val)}
+                />
+              </div>
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-medium text-brand-foreground">Age Range</label>
                 <div className="flex items-center gap-2">
