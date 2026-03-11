@@ -16,6 +16,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import {
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerDescription,
+} from "@/components/ui/drawer"
+import {
   Table,
   TableBody,
   TableCell,
@@ -199,6 +206,7 @@ export default function BrainstormPage() {
   const initRef = useRef(false)
   const [saveDialogOpen, setSaveDialogOpen] = useState(false)
   const [saveFields, setSaveFields] = useState<Record<string, string>>({})
+  const [tableDrawerOpen, setTableDrawerOpen] = useState(false)
 
   const saveDebounced = useDebouncedCallback((fields: Record<string, string>) => {
     if (!editingProblem) return
@@ -273,7 +281,7 @@ export default function BrainstormPage() {
   }
 
   return (
-    <div className="flex flex-col gap-6 w-full flex-1">
+    <div className="flex flex-col gap-6 w-full flex-1 min-h-0">
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-1">
           <h1 className="text-xl font-bold">Discover Business Opportunities</h1>
@@ -282,11 +290,14 @@ export default function BrainstormPage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          {totalSelected > 0 && (
-            <span className="text-sm text-muted-foreground">
-              {totalSelected} selected
-            </span>
-          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setTableDrawerOpen(true)}
+            className="gap-2"
+          >
+            Show Saved Problems ({savedProblems.length})
+          </Button>
           <Button
             variant="outline"
             size="sm"
@@ -309,11 +320,11 @@ export default function BrainstormPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-4 gap-4 flex-1 min-h-0">
         {brainstormColumns.map((column) => {
           const columnSelected = getSelectedForColumn(column.items, selected)
           return (
-            <Card key={column.id} className="flex flex-col">
+            <Card key={column.id} className="flex flex-col min-h-0">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-semibold">
@@ -324,8 +335,8 @@ export default function BrainstormPage() {
                   </span>
                 </div>
               </CardHeader>
-              <CardContent className="flex-1 pt-0 flex flex-col gap-3">
-                <ScrollArea className="h-[calc(100vh-520px)]">
+              <CardContent className="flex-1 pt-0 flex flex-col gap-3 min-h-0">
+                <ScrollArea className="flex-1 min-h-0">
                   <div className="flex flex-col gap-0.5 pr-3">
                     {column.items.map((item) => (
                       <BrainstormCheckItem
@@ -362,89 +373,90 @@ export default function BrainstormPage() {
         })}
       </div>
 
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-semibold">
-            Saved Problems ({savedProblems.length})
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="pt-0">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-10">#</TableHead>
-                <TableHead>Description</TableHead>
-                {brainstormColumns.map((column) => (
-                  <TableHead key={column.id}>{column.title}</TableHead>
-                ))}
-                <TableHead className="w-24" />
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {savedProblems.length === 0 ? (
+      <Drawer open={tableDrawerOpen} onOpenChange={setTableDrawerOpen}>
+        <DrawerContent className="max-h-[70vh]">
+          <DrawerHeader>
+            <DrawerTitle>Saved Problems ({savedProblems.length})</DrawerTitle>
+            <DrawerDescription className="sr-only">Problems saved from the brainstorming tool</DrawerDescription>
+          </DrawerHeader>
+          <div className="overflow-auto px-4 pb-6">
+            <Table>
+              <TableHeader>
                 <TableRow>
-                  <TableCell
-                    colSpan={brainstormColumns.length + 3}
-                    className="text-center text-muted-foreground py-8"
-                  >
-                    No problems saved yet. Select items above and click &quot;Save Problem&quot;.
-                  </TableCell>
+                  <TableHead className="w-10">#</TableHead>
+                  <TableHead>Description</TableHead>
+                  {brainstormColumns.map((column) => (
+                    <TableHead key={column.id}>{column.title}</TableHead>
+                  ))}
+                  <TableHead className="w-24" />
                 </TableRow>
-              ) : (
-                savedProblems.map((problem, index) => (
-                  <TableRow key={problem.id}>
-                    <TableCell className="text-muted-foreground">
-                      {index + 1}
-                    </TableCell>
-                    <TableCell className="text-sm max-w-48">
-                      {problem.description ? (
-                        <span className="line-clamp-2">{problem.description}</span>
-                      ) : (
-                        <span className="text-muted-foreground">—</span>
-                      )}
-                    </TableCell>
-                    {brainstormColumns.map((column) => {
-                      const field = COLUMN_TO_FIELD[column.id]
-                      const labels = problem[field]
-                      return (
-                        <TableCell key={column.id}>
-                          {labels.length > 0 ? (
-                            <span className="text-sm">{labels.join(", ")}</span>
-                          ) : (
-                            <span className="text-sm text-muted-foreground">—</span>
-                          )}
-                        </TableCell>
-                      )
-                    })}
-                    <TableCell>
-                      <div className="flex items-center gap-1">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 text-muted-foreground"
-                          onClick={() => openEditDialog(problem)}
-                          aria-label="Edit problem"
-                        >
-                          <Pencil className="h-3.5 w-3.5" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 text-muted-foreground hover:text-destructive"
-                          onClick={() => dispatch.problems.delete(problem.id)}
-                          aria-label="Delete problem"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </Button>
-                      </div>
+              </TableHeader>
+              <TableBody>
+                {savedProblems.length === 0 ? (
+                  <TableRow>
+                    <TableCell
+                      colSpan={brainstormColumns.length + 3}
+                      className="text-center text-muted-foreground py-8"
+                    >
+                      No problems saved yet. Select items above and click &quot;Save Problem&quot;.
                     </TableCell>
                   </TableRow>
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+                ) : (
+                  savedProblems.map((problem, index) => (
+                    <TableRow key={problem.id}>
+                      <TableCell className="text-muted-foreground">
+                        {index + 1}
+                      </TableCell>
+                      <TableCell className="text-sm max-w-48">
+                        {problem.description ? (
+                          <span className="line-clamp-2">{problem.description}</span>
+                        ) : (
+                          <span className="text-muted-foreground">—</span>
+                        )}
+                      </TableCell>
+                      {brainstormColumns.map((column) => {
+                        const field = COLUMN_TO_FIELD[column.id]
+                        const labels = problem[field]
+                        return (
+                          <TableCell key={column.id}>
+                            {labels.length > 0 ? (
+                              <span className="text-sm">{labels.join(", ")}</span>
+                            ) : (
+                              <span className="text-sm text-muted-foreground">—</span>
+                            )}
+                          </TableCell>
+                        )
+                      })}
+                      <TableCell>
+                        <div className="flex items-center gap-1">
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 text-muted-foreground"
+                            onClick={() => openEditDialog(problem)}
+                            aria-label="Edit problem"
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                            onClick={() => dispatch.problems.delete(problem.id)}
+                            aria-label="Delete problem"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
+          </div>
+        </DrawerContent>
+      </Drawer>
 
       <ProblemFormDialog
         open={saveDialogOpen}

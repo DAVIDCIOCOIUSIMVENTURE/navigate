@@ -63,6 +63,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     <SidebarProvider
       sidebarMode={sidebarMode}
       onSidebarModeChange={(mode) => dispatch.settings.setSidebarMode(mode)}
+      className="h-svh !min-h-0 overflow-hidden"
     >
       <AppSidebar />
       <SidebarInset>
@@ -99,8 +100,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             </Button>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-8 bg-gray-100">
-          <div className="max-w-7xl mx-auto flex flex-1 w-full">
+        <div className="flex flex-1 flex-col gap-4 p-8 bg-gray-100 min-h-0">
+          <div className="max-w-7xl mx-auto flex flex-1 w-full min-h-0">
             <GuidanceProvider onOpen={openGuidance}>
               {children}
             </GuidanceProvider>
