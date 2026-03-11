@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -14,20 +14,50 @@ const IMPACT_CATEGORIES = [
   "Support Tickets", "Productivity Loss", "Revenue Impact", "Compliance Risk",
 ]
 
+const EMPTY_ITEM = (): ImpactItem => ({ category: "", description: "" })
+
 export default function QuantifiableImpactPage() {
   const router = useRouter()
   const pathname = usePathname()
   const { problemRef, impacts, setImpacts } = useProblemValidation()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, problemRef)
-  const [draft, setDraft] = useState<ImpactItem>({ category: "", description: "" })
 
-  const add = () => {
-    if (!draft.category.trim() && !draft.description.trim()) return
-    setImpacts([...impacts, { category: draft.category.trim(), description: draft.description.trim() }])
-    setDraft({ category: "", description: "" })
+  const [items, setItems] = useState<ImpactItem[]>([EMPTY_ITEM()])
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const isDirty = useRef(false)
+
+  // Sync from Redux until the user starts editing (handles store hydration after refresh)
+  useEffect(() => {
+    if (!isDirty.current) {
+      setItems(impacts.length > 0 ? impacts : [EMPTY_ITEM()])
+    }
+  }, [impacts])
+
+  const save = (next: ImpactItem[]) => {
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => {
+      setImpacts(next)
+    }, 400)
   }
 
-  const remove = (i: number) => setImpacts(impacts.filter((_, idx) => idx !== i))
+  const update = (i: number, field: keyof ImpactItem, value: string) => {
+    isDirty.current = true
+    const next = items.map((item, idx) => idx === i ? { ...item, [field]: value } : item)
+    setItems(next)
+    save(next)
+  }
+
+  const remove = (i: number) => {
+    const next = items.filter((_, idx) => idx !== i)
+    const final = next.length > 0 ? next : [EMPTY_ITEM()]
+    setItems(final)
+    save(final)
+  }
+
+  const addAnother = () => {
+    const next = [...items, EMPTY_ITEM()]
+    setItems(next)
+  }
 
   return (
     <Card className="w-full flex-1">
@@ -41,44 +71,40 @@ export default function QuantifiableImpactPage() {
           errors, or other metrics that make the problem tangible.
         </p>
 
-        {impacts.length > 0 && (
-          <ul className="flex flex-col gap-1.5">
-            {impacts.map((item, i) => (
-              <li key={i} className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2 text-sm">
-                <span className="shrink-0 font-medium min-w-[7rem]">{item.category || "—"}</span>
-                <span className="flex-1 text-muted-foreground border-l pl-2">{item.description || "—"}</span>
-                <button onClick={() => remove(i)} className="shrink-0 text-muted-foreground hover:text-destructive transition-colors">
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+        <datalist id="impact-cats-standalone">
+          {IMPACT_CATEGORIES.map((c) => <option key={c} value={c} />)}
+        </datalist>
 
         <div className="flex flex-col gap-2">
-          <datalist id="impact-cats-standalone">
-            {IMPACT_CATEGORIES.map((c) => <option key={c} value={c} />)}
-          </datalist>
-          <div className="flex gap-2">
-            <Input
-              list="impact-cats-standalone"
-              placeholder="Type or select category..."
-              value={draft.category}
-              onChange={(e) => setDraft({ ...draft, category: e.target.value })}
-              className="text-sm h-9 w-2/5 shrink-0"
-            />
-            <Input
-              placeholder="Describe the impact..."
-              value={draft.description}
-              onChange={(e) => setDraft({ ...draft, description: e.target.value })}
-              className="text-sm h-9 flex-1"
-            />
-            <Button variant="outline" onClick={add} disabled={!draft.category.trim() && !draft.description.trim()}>
-              <Plus className="h-4 w-4" />
-              Add
-            </Button>
-          </div>
+          {items.map((item, i) => (
+            <div key={i} className="flex gap-2 items-center">
+              <Input
+                list="impact-cats-standalone"
+                placeholder="Category..."
+                value={item.category}
+                onChange={(e) => update(i, "category", e.target.value)}
+                className="text-sm h-9 w-2/5 shrink-0"
+              />
+              <Input
+                placeholder="Describe the impact..."
+                value={item.description}
+                onChange={(e) => update(i, "description", e.target.value)}
+                className="text-sm h-9 flex-1"
+              />
+              <button
+                onClick={() => remove(i)}
+                className="shrink-0 text-muted-foreground hover:text-destructive transition-colors"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ))}
         </div>
+
+        <Button variant="outline" className="w-fit" onClick={addAnother}>
+          <Plus className="h-4 w-4" />
+          Add another
+        </Button>
 
         <div className="flex justify-between mt-2">
           {prevPath ? (

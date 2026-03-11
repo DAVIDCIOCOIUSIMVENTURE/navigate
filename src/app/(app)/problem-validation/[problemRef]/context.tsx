@@ -1,13 +1,12 @@
 "use client"
 
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react"
+import { useSelector, useDispatch } from "react-redux"
+import type { RootState, AppDispatch } from "@/store"
 import type { AlternativeItem, ImpactItem, ValidationStatus } from "@/types/idea"
 
 export type ValidationRecord = {
-  alternatives: AlternativeItem[]
   contextWhen: string
-  emotionalImpact: string
-  impacts: ImpactItem[]
   status: ValidationStatus
   reason: string
 }
@@ -56,10 +55,7 @@ function saveRecord(problemRef: string, record: ValidationRecord) {
 }
 
 const EMPTY_RECORD: ValidationRecord = {
-  alternatives: [],
   contextWhen: "",
-  emotionalImpact: "",
-  impacts: [],
   status: "unvalidated",
   reason: "",
 }
@@ -74,20 +70,41 @@ export function ProblemValidationProvider({
   children: ReactNode
 }) {
   const problemId = Number(problemRef)
+  const dispatch = useDispatch<AppDispatch>()
+  const problems = useSelector((state: RootState) => state.problems.problems)
+  const problem = problems.find((p) => p.id === problemId)
+  const alternatives = problem?.alternatives ?? []
+  const emotionalImpact = problem?.emotionalImpact ?? ""
+  const impacts = problem?.impacts ?? []
 
-  const [alternatives, setAlternatives] = useState<AlternativeItem[]>([])
+  const setAlternatives = useCallback(
+    (val: AlternativeItem[]) => {
+      dispatch.problems.update({ id: problemId, patch: { alternatives: val } })
+    },
+    [dispatch, problemId]
+  )
+
+  const setEmotionalImpact = useCallback(
+    (val: string) => {
+      dispatch.problems.update({ id: problemId, patch: { emotionalImpact: val } })
+    },
+    [dispatch, problemId]
+  )
+
+  const setImpacts = useCallback(
+    (val: ImpactItem[]) => {
+      dispatch.problems.update({ id: problemId, patch: { impacts: val } })
+    },
+    [dispatch, problemId]
+  )
+
   const [contextWhen, setContextWhen] = useState("")
-  const [emotionalImpact, setEmotionalImpact] = useState("")
-  const [impacts, setImpacts] = useState<ImpactItem[]>([])
   const [status, setStatus] = useState<ValidationStatus>("unvalidated")
   const [reason, setReason] = useState("")
 
   useEffect(() => {
     const record = loadRecord(problemRef)
-    setAlternatives(record.alternatives)
     setContextWhen(record.contextWhen)
-    setEmotionalImpact(record.emotionalImpact)
-    setImpacts(record.impacts)
     setStatus(record.status)
     setReason(record.reason)
   }, [problemRef])
@@ -96,16 +113,13 @@ export function ProblemValidationProvider({
     (statusOverride?: ValidationStatus) => {
       const effectiveStatus = statusOverride ?? status
       saveRecord(problemRef, {
-        alternatives,
         contextWhen,
-        emotionalImpact,
-        impacts,
         status: effectiveStatus,
         reason,
       })
       if (statusOverride) setStatus(statusOverride)
     },
-    [problemRef, alternatives, contextWhen, emotionalImpact, impacts, status, reason]
+    [problemRef, contextWhen, status, reason]
   )
 
   return (
@@ -135,8 +149,7 @@ export function useProblemValidation() {
 
 export const NAV_ITEMS = [
   { label: "Introduction", path: "introduction" },
-  { label: "Alternatives", path: "alternatives" },
-  { label: "Alternatives Shortcomings", path: "shortcomings" },
+  { label: "Alternatives & Shortcomings", path: "alternatives" },
   { label: "Emotional Impact", path: "emotional-impact" },
   { label: "Quantifiable Impact", path: "quantifiable-impact" },
   { label: "Verdict", path: "verdict" },

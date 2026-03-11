@@ -1,5 +1,6 @@
 import { createModel } from "@rematch/core"
 import type { RootModel } from "."
+import type { AlternativeItem, ImpactItem } from "@/types/idea"
 
 const STORAGE_KEY = "navigate-problems"
 
@@ -15,9 +16,12 @@ export type Problem = {
   jobsToBeDone: string[]
   problemTypes: string[]
   source: ProblemSource
+  alternatives: AlternativeItem[]
+  emotionalImpact: string
+  impacts: ImpactItem[]
 }
 
-export type ProblemPatch = Partial<Pick<Problem, "description" | "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes">>
+export type ProblemPatch = Partial<Pick<Problem, "description" | "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "alternatives" | "emotionalImpact" | "impacts">>
 
 export function getProblemLabel(problem: Problem): string {
   return [
@@ -115,6 +119,9 @@ export const problems = createModel<RootModel>()({
         jobsToBeDone: payload.jobsToBeDone ?? [],
         problemTypes: payload.problemTypes ?? [],
         source: payload.source,
+        alternatives: payload.alternatives ?? [],
+        emotionalImpact: payload.emotionalImpact ?? "",
+        impacts: payload.impacts ?? [],
       }
       dispatch.problems.addProblem(newProblem)
       const nextState: ProblemsState = {
