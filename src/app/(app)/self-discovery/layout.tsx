@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent } from "@/components/ui/card"
-import { getNavigationItem, getSelfDiscoveryCategoryIcon } from "@/config/navigation"
+import { navigationItems, getSelfDiscoveryCategoryIcon } from "@/config/navigation"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { useRouter, usePathname } from "next/navigation"
@@ -21,7 +21,7 @@ export default function SelfDiscoveryLayout({
 }) {
     const router = useRouter()
     const pathname = usePathname()
-    const navItem = getNavigationItem("/self-discovery")
+    const navItem = navigationItems.selfDiscovery[0]
     const Icon = navItem?.icon
     const [isOpen, setIsOpen] = useState(false)
 

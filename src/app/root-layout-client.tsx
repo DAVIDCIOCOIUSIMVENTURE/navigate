@@ -21,18 +21,12 @@ import { AppStoreProvider } from "@/store/provider"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import { InnovationProvider } from "@/context/innovation-context"
-import { useIdeas } from "@/store/ideas-hooks"
-
-function generateBreadcrumbs(pathname: string, getIdeaTitle: (id: number) => string | undefined) {
+function generateBreadcrumbs(pathname: string) {
   const paths = pathname.split('/').filter(Boolean)
 
   return paths.map((path, index) => {
     const href = `/${paths.slice(0, index + 1).join('/')}`
-
-    // If this segment is a numeric idea ID, resolve it to the idea title
-    const numericId = /^\d+$/.test(path) ? Number(path) : null
-    const resolvedTitle = numericId ? getIdeaTitle(numericId) : undefined
-    const label = resolvedTitle ?? path.split('-').map(word =>
+    const label = path.split('-').map(word =>
       word.charAt(0).toUpperCase() + word.slice(1)
     ).join(' ')
 
@@ -46,8 +40,7 @@ function generateBreadcrumbs(pathname: string, getIdeaTitle: (id: number) => str
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const { getIdea } = useIdeas()
-  const breadcrumbs = generateBreadcrumbs(pathname, (id) => getIdea(id)?.title)
+  const breadcrumbs = generateBreadcrumbs(pathname)
   const [guidanceOpen, setGuidanceOpen] = useState(false)
   const [guidanceTopic, setGuidanceTopic] = useState<string | undefined>(undefined)
 
@@ -64,7 +57,9 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     dispatch.settings.init()
     dispatch.problemTriggers.init()
     dispatch.ideas.init()
-  }, [dispatch.settings, dispatch.problemTriggers, dispatch.ideas])
+    dispatch.problems.init()
+    dispatch.brainstorm.init()
+  }, [dispatch.settings, dispatch.problemTriggers, dispatch.ideas, dispatch.problems, dispatch.brainstorm])
 
   return (
     <SidebarProvider

@@ -1,8 +1,11 @@
+"use client"
+
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -13,8 +16,11 @@ import { CustomRocket } from "@/components/icons/custom-rocket"
 import { LayoutDashboard } from "lucide-react"
 import Link from "next/link"
 import { JournalDialog } from "./journal-dialog"
+import { usePathname } from "next/navigation"
 
 export function AppSidebar() {
+  const pathname = usePathname()
+
   return (
     <Sidebar>
       <SidebarHeader className="px-6 py-6 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:py-4">
@@ -30,7 +36,7 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild tooltip="Dashboard">
+                <SidebarMenuButton asChild tooltip="Dashboard" isActive={pathname === "/"}>
                   <Link href="/" className="hover:bg-accent/50 transition-colors">
                     <div className="flex items-center justify-center w-6 h-6 rounded-md">
                       <LayoutDashboard className="h-4 w-4" />
@@ -44,19 +50,7 @@ export function AppSidebar() {
               </SidebarMenuItem>
               {navigationItems.selfDiscovery.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
-                    <Link href={item.url} className="hover:bg-accent/50 transition-colors">
-                      <div className="flex items-center justify-center w-6 h-6 rounded-md">
-                        <item.icon className="h-4 w-4" />
-                      </div>
-                      <span>{item.title}</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-              {navigationItems.ideas.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
+                  <SidebarMenuButton asChild tooltip={item.title} isActive={pathname === item.url}>
                     <Link href={item.url} className="hover:bg-accent/50 transition-colors">
                       <div className="flex items-center justify-center w-6 h-6 rounded-md">
                         <item.icon className="h-4 w-4" />
@@ -70,6 +64,25 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
+        <SidebarGroup>
+          <SidebarGroupLabel className="group-data-[collapsible=icon]:hidden">Innovation Process</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {navigationItems.innovation.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild tooltip={item.title} isActive={pathname.startsWith(item.url)}>
+                    <Link href={item.url} className="hover:bg-accent/50 transition-colors">
+                      <div className="flex items-center justify-center w-6 h-6 rounded-md">
+                        <item.icon className="h-4 w-4" />
+                      </div>
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
       </SidebarContent>
     </Sidebar>
   )

@@ -1,18 +1,33 @@
-import { Compass, Heart, Book, Brain, Globe, Lightbulb } from "lucide-react"
+import { Compass, Heart, Book, Brain, Globe, Search, CheckCircle, Lightbulb, FlaskConical } from "lucide-react"
 
 export const navigationItems = {
-  ideas: [
-    {
-      title: "Ideas",
-      url: "/ideas",
-      icon: Lightbulb
-    },
-  ],
   selfDiscovery: [
     {
       title: "Self Discovery",
       url: "/self-discovery",
       icon: Compass
+    },
+  ],
+  innovation: [
+    {
+      title: "Problem Discovery",
+      url: "/problem-discovery",
+      icon: Search
+    },
+    {
+      title: "Problem Validation",
+      url: "/problem-validation",
+      icon: CheckCircle
+    },
+    {
+      title: "Solution Discovery",
+      url: "/solution-discovery",
+      icon: Lightbulb
+    },
+    {
+      title: "Solution Ideation",
+      url: "/solution-ideation",
+      icon: FlaskConical
     },
   ],
 }
@@ -22,11 +37,6 @@ export const selfDiscoveryCategoryIcons = {
   "knowledge": Book,
   "skills-expertise": Brain,
   "social-impact": Globe
-}
-
-export function getNavigationItem(path: string) {
-  const allItems = [...navigationItems.ideas, ...navigationItems.selfDiscovery]
-  return allItems.find(item => item.url === path)
 }
 
 export function getSelfDiscoveryCategoryIcon(categoryId: string) {

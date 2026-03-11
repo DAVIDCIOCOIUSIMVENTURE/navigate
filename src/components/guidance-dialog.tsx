@@ -31,76 +31,56 @@ const guidanceItems: GuidanceItem[] = [
     )
   },
   {
-    id: "ideas",
-    title: "Ideas",
-    content: (
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold">How Ideas Work</h3>
-        <p>
-          The Ideas section is the core of Navigate. Each idea you create takes you through a structured innovation
-          process from discovery through to a validated solution.
-        </p>
-        <div className="space-y-3">
-          <div>
-            <h4 className="font-medium">1. Create an Idea</h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              Start by creating an idea — a space for exploring a specific domain or opportunity you want to investigate.
-              You can have multiple ideas running in parallel.
-            </p>
-          </div>
-          <div>
-            <h4 className="font-medium">2. Define your Customer Segment</h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              Each idea has a target customer segment. This helps you focus on the right audience and understand
-              who you are solving problems for.
-            </p>
-          </div>
-          <div>
-            <h4 className="font-medium">3. Identify Jobs to Be Done</h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              Within your customer segment, define the jobs — tasks or goals — your customers are trying to accomplish.
-              Each idea can have multiple jobs to be done.
-            </p>
-          </div>
-          <div>
-            <h4 className="font-medium">4. Discover Problems</h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              For each job to be done, identify the problems your customers encounter. Multiple problems can exist
-              per job — capture them all during the discovery phase.
-            </p>
-          </div>
-          <div>
-            <h4 className="font-medium">5. Pick a Problem to Validate</h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              Once you have a list of problems, select the most promising one to validate. You will then analyse
-              alternatives, shortcomings, and the emotional and quantifiable impact of that problem.
-            </p>
-          </div>
-          <div>
-            <h4 className="font-medium">6. Validate the Problem</h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              Work through the validation steps to build a strong understanding of the problem and produce a
-              clear problem statement. This forms the foundation for designing your solution.
-            </p>
-          </div>
-        </div>
-      </div>
-    )
-  },
-  {
     id: "self-discovery",
     title: "Self Discovery",
     content: (
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold">Self Discovery Process</h3>
-        <p>Use the self discovery section to explore your personal journey and identify key areas for growth.</p>
-        <div className="space-y-2">
-          <h4 className="font-medium">Tips:</h4>
-          <ul className="list-disc pl-4 space-y-1">
-            <li>Be honest with your responses</li>
-            <li>Take time to reflect on each question</li>
-            <li>Review your answers periodically</li>
-          </ul>
+        <h3 className="text-lg font-semibold">Self Discovery</h3>
+        <p className="text-sm text-muted-foreground">
+          Self Discovery is the starting point of the innovation journey. Its purpose is to help you surface
+          areas of personal resonance — problems or domains worth exploring — before committing to a specific
+          direction. Rather than jumping straight to a solution, you first look inward: your background,
+          experiences, frustrations, and goals.
+        </p>
+        <div className="space-y-3">
+          <div>
+            <h4 className="font-medium">What you are presented with</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              A series of guided questions organised into categories — for example, your professional background,
+              areas of daily frustration, causes you care about, or markets you are familiar with. Each category
+              focuses on a different lens through which to view potential opportunities.
+            </p>
+          </div>
+          <div>
+            <h4 className="font-medium">What to do</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              Work through each question at your own pace. For each one, enter short, honest answers — these
+              become <span className="font-medium text-foreground">problem triggers</span>: seeds of areas that
+              might be worth investigating further. You can add multiple answers per question and return to update
+              them as your thinking evolves.
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              Some questions include suggestion exercises to help you generate ideas if you are unsure where to start.
+              Use them as prompts, not constraints.
+            </p>
+          </div>
+          <div>
+            <h4 className="font-medium">The output</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              At the end of the Self Discovery section you will have a collection of problem triggers visible in the
+              left sidebar. These are not problems yet — they are areas of interest. You carry them into
+              Problem Discovery, where you use dedicated tools to sharpen them into concrete, well-framed problems
+              worth validating.
+            </p>
+          </div>
+          <div>
+            <h4 className="font-medium">Tips</h4>
+            <ul className="list-disc pl-4 space-y-1 text-sm text-muted-foreground mt-1">
+              <li>Be specific — &quot;healthcare admin is slow&quot; is more useful than &quot;healthcare&quot;</li>
+              <li>Quantity matters at this stage; capture everything, filter later</li>
+              <li>Return and update your answers as you learn more through the process</li>
+            </ul>
+          </div>
         </div>
       </div>
     )
@@ -110,15 +90,79 @@ const guidanceItems: GuidanceItem[] = [
     title: "Problem Discovery",
     content: (
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold">Problem Discovery Guide</h3>
-        <p>Learn how to effectively identify and analyze problems in your journey.</p>
-        <div className="space-y-2">
-          <h4 className="font-medium">Best Practices:</h4>
-          <ul className="list-disc pl-4 space-y-1">
-            <li>Break down complex problems into smaller parts</li>
-            <li>Consider multiple perspectives</li>
-            <li>Document your findings</li>
-          </ul>
+        <h3 className="text-lg font-semibold">Problem Discovery</h3>
+        <p className="text-sm text-muted-foreground">
+          Problem Discovery is where you turn the rough areas identified in Self Discovery into concrete,
+          well-framed problems worth investigating. The goal is to build a list of candidates before committing
+          to validating any one of them.
+        </p>
+        <div className="space-y-3">
+          <div>
+            <h4 className="font-medium">How it works</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              Click <span className="font-medium text-foreground">Search for new problem</span> to open the
+              tool selector. You can use one of the discovery tools to help you surface a problem, or define
+              one directly if you already know what you want to explore.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-medium">Brainstorming Tool</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              The brainstorming tool presents a structured four-column framework designed to help you think
+              systematically about who experiences a problem, in what situation, what they are trying to do,
+              and what kind of friction they face. The four columns are:
+            </p>
+            <ul className="list-disc pl-4 space-y-1 text-sm text-muted-foreground mt-2">
+              <li>
+                <span className="font-medium text-foreground">Customer Segment</span> — who you are focusing on
+                (e.g. early-career professionals, small business owners, parents of young children)
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Context</span> — the situation or environment in
+                which the problem occurs (e.g. daily commute, managing a remote team, a life transition like
+                starting a business)
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Job to Be Done</span> — the underlying goal or
+                task the person is trying to accomplish (e.g. stay organised, make a confident decision,
+                build a professional reputation)
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Problem Type</span> — the category of friction
+                they encounter (e.g. information gaps, access and affordability, trust and safety, coordination
+                overhead)
+              </li>
+            </ul>
+            <p className="text-sm text-muted-foreground mt-2">
+              Browse each column, tick the items that resonate with you, and click{" "}
+              <span className="font-medium text-foreground">Save Problem</span> to record the combination.
+              Each saved row represents one candidate problem. You can save as many as you like and come back
+              to edit or remove them.
+            </p>
+            <p className="text-sm text-muted-foreground mt-2">
+              The framework does not require you to fill in all four columns — a partial combination is still
+              useful. The goal is to be as specific as you can so that the problem is grounded in a real
+              person, in a real situation.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-medium">Define a Problem Statement</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              If you already have a clear problem in mind, skip the exploration tools and write it directly.
+              This is useful when you have prior knowledge of a domain or have already spoken to potential customers.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-medium">What comes next</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              Once you have a list of candidate problems, move on to Problem Validation to choose one and
+              analyse it in depth — examining alternatives, shortcomings, emotional and quantifiable impact,
+              and ultimately producing a validated problem statement.
+            </p>
+          </div>
         </div>
       </div>
     )
