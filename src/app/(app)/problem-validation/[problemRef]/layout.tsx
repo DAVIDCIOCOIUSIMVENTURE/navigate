@@ -1,19 +1,21 @@
 "use client"
 
 import { useParams, usePathname, useRouter } from "next/navigation"
+import { useSelector } from "react-redux"
+import type { RootState } from "@/store"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ProblemValidationProvider, useProblemValidation, NAV_ITEMS } from "./context"
-import { useIdeas } from "@/store/ideas-hooks"
+import { getProblemLabel } from "@/store/problems-model"
 import {
-  CircleDot, GitFork, ThumbsDown, Heart, BarChart2, Gavel, FileText, LayoutTemplate, BookOpen,
+  GitFork, Clock, ThumbsDown, Heart, BarChart2, Gavel, FileText, LayoutTemplate, BookOpen,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
 const NAV_ICONS: Record<string, LucideIcon> = {
   introduction: BookOpen,
-  "pick-a-problem": CircleDot,
   alternatives: GitFork,
+  "context-step": Clock,
   shortcomings: ThumbsDown,
   "emotional-impact": Heart,
   "quantifiable-impact": BarChart2,
@@ -21,23 +23,22 @@ const NAV_ICONS: Record<string, LucideIcon> = {
   "problem-statement": LayoutTemplate,
 }
 
+const STATUS_COLORS: Record<string, string> = {
+  unvalidated: "text-muted-foreground",
+  in_progress: "text-yellow-600",
+  valid: "text-green-600",
+  invalid: "text-red-600",
+}
+
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
-  const params = useParams()
-  const ideaId = Number(params.ideaId)
-  const { selectedProblemId } = useProblemValidation()
-  const { getIdea } = useIdeas()
+  const { problemRef, problemId, status } = useProblemValidation()
+  const problems = useSelector((state: RootState) => state.problems.problems)
 
-  const idea = getIdea(ideaId)
-  const allProblems = idea?.jobs.flatMap((j) => j.problems) ?? []
-  const selectedProblem = allProblems.find((p) => p.id === selectedProblemId)
-  const validatedCount = allProblems.filter(
-    (p) => p.validationStatus === "valid" || p.validationStatus === "invalid"
-  ).length
-  const totalProblems = allProblems.filter((p) => p.text.trim()).length
-
-  const base = `/ideas/${ideaId}/problem-validation`
+  const base = `/problem-validation/${problemRef}`
+  const problem = problems.find((p) => p.id === problemId)
+  const label = problem ? getProblemLabel(problem) : null
 
   return (
     <div className="flex gap-6 flex-1 w-full items-start">
@@ -65,23 +66,25 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         </Card>
 
         <Card>
-          <CardContent className="p-3 flex flex-col gap-1">
+          <CardContent className="p-3 flex flex-col gap-2">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide px-1">
-              Validating Problem
+              Validating
             </p>
-            <div className="flex items-start gap-2 px-1 py-1">
+            <div className="flex items-start gap-2 px-1">
               <FileText className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
-              {selectedProblem ? (
-                <span className="text-sm line-clamp-4">{selectedProblem.text}</span>
-              ) : (
-                <span className="text-sm text-muted-foreground italic">Not selected</span>
-              )}
+              <span className="text-sm line-clamp-4">{label ?? "—"}</span>
             </div>
-            {totalProblems > 0 && (
-              <p className="text-xs text-muted-foreground px-1 mt-1">
-                {validatedCount} of {totalProblems} validated
-              </p>
-            )}
+            <p className={`text-xs px-1 font-medium capitalize ${STATUS_COLORS[status] ?? ""}`}>
+              {status.replace("_", " ")}
+            </p>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="w-full justify-start text-xs text-muted-foreground h-7"
+              onClick={() => router.push("/problem-validation")}
+            >
+              ← All problems
+            </Button>
           </CardContent>
         </Card>
       </div>
@@ -91,12 +94,12 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   )
 }
 
-export default function ProblemValidationLayout({ children }: { children: React.ReactNode }) {
+export default function ProblemRefLayout({ children }: { children: React.ReactNode }) {
   const params = useParams()
-  const ideaId = Number(params.ideaId)
+  const problemRef = params.problemRef as string
 
   return (
-    <ProblemValidationProvider ideaId={ideaId}>
+    <ProblemValidationProvider problemRef={problemRef}>
       <LayoutContent>{children}</LayoutContent>
     </ProblemValidationProvider>
   )

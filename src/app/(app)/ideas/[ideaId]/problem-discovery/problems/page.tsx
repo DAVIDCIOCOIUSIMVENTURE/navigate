@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { useProblemDiscovery, getAdjacentSteps } from "../context"
 import { DEFAULT_PROBLEM } from "@/types/idea"
 import { USE_CASES } from "../use-cases"
-import { Briefcase, Plus, Trash2, Sparkles } from "lucide-react"
+import { Briefcase, Plus, Trash2, Sparkles, ArrowRight } from "lucide-react"
 
 type Tab = "strategy" | "use-cases"
 
@@ -139,6 +139,16 @@ export default function ProblemsPage() {
                             onChange={(e) => updateProblem(job.id, problem.id, e.target.value)}
                             className="bg-background border-brand/30 text-foreground placeholder:text-muted-foreground flex-1"
                           />
+                          {problem.text.trim() && (
+                            <button
+                              onClick={() => router.push(`/ideas/${ideaId}/problem-validation/pick-a-problem?select=${problem.id}`)}
+                              className="text-brand-foreground/60 hover:text-brand-foreground transition-colors shrink-0"
+                              aria-label="Validate problem"
+                              title="Validate this problem"
+                            >
+                              <ArrowRight className="h-4 w-4" />
+                            </button>
+                          )}
                           <button
                             onClick={() => removeProblem(job.id, problem.id)}
                             className="text-brand-foreground/60 hover:text-brand-foreground transition-colors shrink-0"

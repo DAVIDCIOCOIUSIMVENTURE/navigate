@@ -98,7 +98,7 @@ Set this in `.env` locally and in Vercel's Environment Variables for production.
 All state is client-side only (no database). Two patterns coexist — choose based on complexity:
 
 **Rematch (Redux)** — use for complex state with side effects or localStorage persistence:
-- **Global store** (`src/store/`): `settings` (sidebar collapsed/expanded), `journal` (title + text, persisted to localStorage), `problemTriggers` (persisted to localStorage), `ideas` (full CRUD with localStorage persistence — use the `useIdeas()` hook from `src/store/ideas-hooks.ts`)
+- **Global store** (`src/store/`): `settings` (sidebar collapsed/expanded), `journal` (title + text, persisted to localStorage), `problemTriggers` (persisted to localStorage), `ideas` (full CRUD with localStorage persistence — use the `useIdeas()` hook from `src/store/ideas-hooks.ts`), `problems` (global Problem list, persisted to `navigate-problems` in localStorage — CRUD via `dispatch.problems.create/update/delete`)
 - Access: `useSelector((state: RootState) => state.modelName.field)` and `useDispatch<AppDispatch>()`
 - All models call `dispatch.modelName.init()` in `root-layout-client.tsx` on mount to hydrate from localStorage
 
@@ -146,6 +146,28 @@ src/app/(app)/ideas/
 ```
 
 **Two flow modes:** `"guided"` (full step-by-step) and `"quickstart"` (condensed) — stored on the `Idea` type in `mode`.
+
+### Standalone Problem Validation
+
+In addition to the idea-scoped validation above, there is a standalone validation flow at `src/app/(app)/problem-validation/` that operates on the global `problems` Rematch model (not tied to any idea):
+
+```
+src/app/(app)/problem-validation/
+├── layout.tsx                     # Pass-through layout
+├── page.tsx                       # Lists all problems from state.problems; links into [problemRef]
+└── [problemRef]/                  # problemRef = problem ID (numeric string)
+    ├── layout.tsx                 # Sidebar nav + ProblemValidationProvider
+    ├── context.tsx                # ProblemValidationProvider + useProblemValidation(); persists to navigate-standalone-validation in localStorage
+    ├── introduction/page.tsx
+    ├── alternatives/page.tsx
+    ├── shortcomings/page.tsx
+    ├── emotional-impact/page.tsx
+    ├── quantifiable-impact/page.tsx
+    ├── verdict/page.tsx
+    └── problem-statement/page.tsx
+```
+
+Validation records are stored in localStorage under `navigate-standalone-validation` as a `Record<problemRef, ValidationRecord>`. The context exposes `saveValidation()` which must be called explicitly to persist changes.
 
 ### Layout & Navigation Patterns
 

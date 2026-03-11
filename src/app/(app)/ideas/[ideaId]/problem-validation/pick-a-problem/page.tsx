@@ -1,6 +1,7 @@
 "use client"
 
-import { useParams, usePathname, useRouter } from "next/navigation"
+import { useEffect } from "react"
+import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useProblemValidation, getAdjacentSteps } from "../context"
@@ -20,9 +21,21 @@ export default function PickAProblemPage() {
   const pathname = usePathname()
   const params = useParams()
   const ideaId = Number(params.ideaId)
+  const searchParams = useSearchParams()
   const { selectedProblemId, setSelectedProblemId } = useProblemValidation()
   const { getIdea } = useIdeas()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, ideaId)
+
+  useEffect(() => {
+    const selectParam = searchParams.get("select")
+    if (!selectParam) return
+    const problemId = Number(selectParam)
+    if (!Number.isNaN(problemId)) {
+      setSelectedProblemId(problemId)
+      router.replace(`/ideas/${ideaId}/problem-validation/alternatives`)
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const idea = getIdea(ideaId)
   const namedJobs = (idea?.jobs ?? []).filter((j) => j.name.trim())

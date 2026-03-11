@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useProblemDiscovery, getAdjacentSteps } from "../context"
 import { useIdeas } from "@/store/ideas-hooks"
-import { CheckCircle2, Briefcase, AlertTriangle } from "lucide-react"
+import { CheckCircle2, Briefcase, AlertTriangle, ArrowRight } from "lucide-react"
 
 function Field({ label, value }: { label: string; value: string }) {
   return (
@@ -123,9 +123,17 @@ export default function SummaryPage() {
                       </div>
                       <ul className="flex flex-col gap-1 pl-4">
                         {jobProblems.map((p, i) => (
-                          <li key={p.id} className="text-sm flex gap-2">
+                          <li key={p.id} className="text-sm flex items-center gap-2">
                             <span className="text-muted-foreground shrink-0">{i + 1}.</span>
-                            <span>{p.text}</span>
+                            <span className="flex-1">{p.text}</span>
+                            <button
+                              onClick={() => router.push(`/ideas/${ideaId}/problem-validation/pick-a-problem?select=${p.id}`)}
+                              className="text-muted-foreground hover:text-foreground transition-colors shrink-0"
+                              aria-label="Validate problem"
+                              title="Validate this problem"
+                            >
+                              <ArrowRight className="h-3.5 w-3.5" />
+                            </button>
                           </li>
                         ))}
                       </ul>

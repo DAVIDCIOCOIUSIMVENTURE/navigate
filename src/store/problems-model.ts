@@ -3,17 +3,33 @@ import type { RootModel } from "."
 
 const STORAGE_KEY = "navigate-problems"
 
-export type ProblemSource = "brainstorm" | "manual"
+export type ProblemSource = "manual" | "brainstorm"
 
-export type TopLevelProblem = {
+export type Problem = {
   id: number
-  statement: string
-  source: ProblemSource
   createdAt: string
+  editedAt: string
+  description: string
+  customerSegments: string[]
+  contexts: string[]
+  jobsToBeDone: string[]
+  problemTypes: string[]
+  source: ProblemSource
+}
+
+export type ProblemPatch = Partial<Pick<Problem, "description" | "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes">>
+
+export function getProblemLabel(problem: Problem): string {
+  return [
+    problem.customerSegments.join(", "),
+    problem.contexts.join(", "),
+    problem.jobsToBeDone.join(", "),
+    problem.problemTypes.join(", "),
+  ].filter((s) => s.length > 0).join(" / ")
 }
 
 interface ProblemsState {
-  problems: TopLevelProblem[]
+  problems: Problem[]
   nextId: number
 }
 
@@ -46,7 +62,7 @@ export const problems = createModel<RootModel>()({
   state: defaultState,
 
   reducers: {
-    addProblem(state, problem: TopLevelProblem) {
+    addProblem(state, problem: Problem) {
       return { ...state, problems: [...state.problems, problem], nextId: state.nextId + 1 }
     },
 
@@ -54,10 +70,10 @@ export const problems = createModel<RootModel>()({
       return { ...state, problems: state.problems.filter((p) => p.id !== id) }
     },
 
-    updateProblem(state, { id, statement }: { id: number; statement: string }) {
+    updateProblem(state, { id, patch }: { id: number; patch: ProblemPatch & { editedAt: string } }) {
       return {
         ...state,
-        problems: state.problems.map((p) => p.id === id ? { ...p, statement } : p),
+        problems: state.problems.map((p) => p.id === id ? { ...p, ...patch } : p),
       }
     },
 
@@ -74,22 +90,31 @@ export const problems = createModel<RootModel>()({
       }
     },
 
-    update({ id, statement }: { id: number; statement: string }, rootState) {
-      dispatch.problems.updateProblem({ id, statement })
+    update({ id, patch }: { id: number; patch: ProblemPatch }, rootState) {
+      const editedAt = new Date().toISOString()
+      dispatch.problems.updateProblem({ id, patch: { ...patch, editedAt } })
       const updated = rootState.problems.problems.map((p) =>
-        p.id === id ? { ...p, statement } : p
+        p.id === id ? { ...p, ...patch, editedAt } : p
       )
       saveToStorage({ problems: updated, nextId: rootState.problems.nextId })
     },
 
-    create({ statement, source }: { statement: string; source: ProblemSource }, rootState): TopLevelProblem {
+    create(
+      payload: ProblemPatch & { source: ProblemSource },
+      rootState
+    ): Problem {
       const state = rootState.problems
       const now = new Date().toISOString()
-      const newProblem: TopLevelProblem = {
+      const newProblem: Problem = {
         id: state.nextId,
-        statement,
-        source,
         createdAt: now,
+        editedAt: now,
+        description: payload.description ?? "",
+        customerSegments: payload.customerSegments ?? [],
+        contexts: payload.contexts ?? [],
+        jobsToBeDone: payload.jobsToBeDone ?? [],
+        problemTypes: payload.problemTypes ?? [],
+        source: payload.source,
       }
       dispatch.problems.addProblem(newProblem)
       const nextState: ProblemsState = {

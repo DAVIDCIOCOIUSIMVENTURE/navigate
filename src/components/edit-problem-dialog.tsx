@@ -1,0 +1,114 @@
+"use client"
+
+import { useState, useRef, useEffect } from "react"
+import { useDispatch } from "react-redux"
+import type { AppDispatch } from "@/store"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { brainstormColumns } from "@/data/brainstormData"
+import type { Problem, ProblemPatch } from "@/store/problems-model"
+
+const COLUMN_TO_FIELD: Record<string, keyof ProblemPatch> = {
+  "customer-segments": "customerSegments",
+  "contexts": "contexts",
+  "jobs-to-be-done": "jobsToBeDone",
+  "problem-types": "problemTypes",
+}
+
+function useDebouncedCallback<T>(callback: (value: T) => void, delay: number) {
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  return (value: T) => {
+    if (timer.current) clearTimeout(timer.current)
+    timer.current = setTimeout(() => callback(value), delay)
+  }
+}
+
+interface EditProblemDialogProps {
+  problem: Problem | null
+  onClose: () => void
+}
+
+export function EditProblemDialog({ problem, onClose }: EditProblemDialogProps) {
+  const dispatch = useDispatch<AppDispatch>()
+  const [editFields, setEditFields] = useState<Record<string, string>>({})
+  const initRef = useRef(false)
+
+  useEffect(() => {
+    if (!problem) return
+    initRef.current = false
+    const fields: Record<string, string> = { description: problem.description ?? "" }
+    for (const col of brainstormColumns) {
+      const field = COLUMN_TO_FIELD[col.id]
+      fields[col.id] = (problem[field] as string[]).join(", ")
+    }
+    setEditFields(fields)
+  }, [problem])
+
+  const saveDebounced = useDebouncedCallback((fields: Record<string, string>) => {
+    if (!problem) return
+    const patch: ProblemPatch = { description: fields["description"] ?? "" }
+    for (const col of brainstormColumns) {
+      const field = COLUMN_TO_FIELD[col.id]
+      const value = fields[col.id]?.trim()
+      ;(patch as Record<string, unknown>)[field] = value ? value.split(",").map((s) => s.trim()).filter(Boolean) : []
+    }
+    dispatch.problems.update({ id: problem.id, patch })
+  }, 500)
+
+  useEffect(() => {
+    if (!initRef.current) { initRef.current = true; return }
+    saveDebounced(editFields)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editFields])
+
+  return (
+    <Dialog open={problem !== null} onOpenChange={(open) => { if (!open) onClose() }}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Edit Problem</DialogTitle>
+          <DialogDescription className="sr-only">
+            Edit problem details
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex flex-col gap-4 py-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium" htmlFor="edit-description">
+              Problem Description
+            </label>
+            <Textarea
+              id="edit-description"
+              value={editFields["description"] ?? ""}
+              onChange={(e) =>
+                setEditFields((prev) => ({ ...prev, description: e.target.value }))
+              }
+              placeholder="Describe the problem..."
+              rows={3}
+            />
+          </div>
+          {brainstormColumns.map((col) => (
+            <div key={col.id} className="flex flex-col gap-1.5">
+              <label className="text-sm font-medium" htmlFor={`edit-${col.id}`}>
+                {col.title}
+              </label>
+              <Input
+                id={`edit-${col.id}`}
+                value={editFields[col.id] ?? ""}
+                onChange={(e) =>
+                  setEditFields((prev) => ({ ...prev, [col.id]: e.target.value }))
+                }
+                placeholder={`e.g. ${col.items[0]?.label}`}
+              />
+            </div>
+          ))}
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}

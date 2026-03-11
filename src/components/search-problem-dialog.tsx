@@ -15,6 +15,14 @@ import { useDispatch } from "react-redux"
 import type { AppDispatch } from "@/store"
 import { useRouter } from "next/navigation"
 import { brainstormColumns } from "@/data/brainstormData"
+import type { ProblemPatch } from "@/store/problems-model"
+
+const COLUMN_TO_FIELD: Record<string, keyof ProblemPatch> = {
+  "customer-segments": "customerSegments",
+  "contexts": "contexts",
+  "jobs-to-be-done": "jobsToBeDone",
+  "problem-types": "problemTypes",
+}
 
 interface SearchProblemDialogProps {
   open: boolean
@@ -36,15 +44,16 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
   }
 
   function handleManualSubmit() {
-    const selections: Record<string, string[]> = {}
+    const patch: ProblemPatch = {}
     for (const col of brainstormColumns) {
+      const field = COLUMN_TO_FIELD[col.id]
       const value = fields[col.id]?.trim()
       if (value) {
-        selections[col.id] = value.split(",").map((s) => s.trim()).filter(Boolean)
+        patch[field] = value.split(",").map((s) => s.trim()).filter(Boolean)
       }
     }
-    if (Object.keys(selections).length === 0) return
-    dispatch.brainstorm.add({ selectedIds: [], selections, savedAt: new Date().toISOString() })
+    if (Object.values(patch).every((v) => !v || v.length === 0)) return
+    dispatch.problems.create({ ...patch, source: "manual" })
     handleClose()
   }
 

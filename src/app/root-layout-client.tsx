@@ -20,7 +20,6 @@ import { GuidanceProvider } from "@/context/guidance-context"
 import { AppStoreProvider } from "@/store/provider"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
-import { InnovationProvider } from "@/context/innovation-context"
 function generateBreadcrumbs(pathname: string) {
   const paths = pathname.split('/').filter(Boolean)
 
@@ -58,8 +57,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     dispatch.problemTriggers.init()
     dispatch.ideas.init()
     dispatch.problems.init()
-    dispatch.brainstorm.init()
-  }, [dispatch.settings, dispatch.problemTriggers, dispatch.ideas, dispatch.problems, dispatch.brainstorm])
+  }, [dispatch.settings, dispatch.problemTriggers, dispatch.ideas, dispatch.problems])
 
   return (
     <SidebarProvider
@@ -121,9 +119,7 @@ export default function RootLayoutClient({
 }) {
   return (
     <AppStoreProvider>
-      <InnovationProvider>
-        <LayoutContent>{children}</LayoutContent>
-      </InnovationProvider>
+      <LayoutContent>{children}</LayoutContent>
     </AppStoreProvider>
   )
 }

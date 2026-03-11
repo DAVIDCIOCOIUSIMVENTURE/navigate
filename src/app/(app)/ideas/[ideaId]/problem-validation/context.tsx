@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react"
+import { createContext, useContext, useState, useCallback, useEffect, useRef, type ReactNode } from "react"
 import { useIdeas } from "@/store/ideas-hooks"
 import type { AlternativeItem, ImpactItem, ValidationStatus } from "@/types/idea"
 
@@ -44,8 +44,16 @@ export function ProblemValidationProvider({
   const [status, setStatus] = useState<ValidationStatus>("unvalidated")
   const [reason, setReason] = useState("")
 
+  // Used to skip auto-save on the render immediately after loading a problem's data
+  const justLoaded = useRef(false)
+  // Keep stable refs to the latest save function and selected problem id for the auto-save effect
+  const saveCurrentValidationRef = useRef<((id: number, statusOverride?: ValidationStatus) => void) | null>(null)
+  const selectedProblemIdRef = useRef<number | null>(null)
+  selectedProblemIdRef.current = selectedProblemId
+
   const loadValidation = useCallback(
     (problemId: number) => {
+      justLoaded.current = true
       const idea = getIdea(ideaId)
       const problem = idea?.jobs.flatMap((j) => j.problems).find((p) => p.id === problemId)
       if (problem) {
@@ -101,6 +109,21 @@ export function ProblemValidationProvider({
     [ideaId, getIdea, updateIdea, alternatives, contextWhen, emotionalImpact, impacts, status, reason]
   )
 
+  // Keep the ref current so the auto-save effect always calls the latest version
+  saveCurrentValidationRef.current = saveCurrentValidation
+
+  // Auto-save to localStorage whenever any validation field changes (skips the initial load)
+  useEffect(() => {
+    if (justLoaded.current) {
+      justLoaded.current = false
+      return
+    }
+    const problemId = selectedProblemIdRef.current
+    if (problemId === null) return
+    saveCurrentValidationRef.current?.(problemId)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [alternatives, contextWhen, emotionalImpact, impacts, status, reason])
+
   const setSelectedProblemId = useCallback(
     (id: number | null) => {
       if (selectedProblemId !== null) {
@@ -152,7 +175,6 @@ export const NAV_ITEMS = [
   { label: "Introduction", path: "introduction" },
   { label: "Pick a Problem", path: "pick-a-problem" },
   { label: "Alternatives", path: "alternatives" },
-  { label: "Context", path: "context-step" },
   { label: "Alternatives Shortcomings", path: "shortcomings" },
   { label: "Emotional Impact", path: "emotional-impact" },
   { label: "Quantifiable Impact", path: "quantifiable-impact" },

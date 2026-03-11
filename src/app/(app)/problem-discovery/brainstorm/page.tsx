@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, type ReactNode } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -23,15 +23,30 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { ChevronDown, ChevronRight, Pencil, RotateCcw, Save, Trash2 } from "lucide-react"
-import { brainstormColumns, type BrainstormItem, type SavedCombination } from "./data"
+import { ChevronDown, ChevronRight, Pencil, RotateCcw, Save, Trash2, X } from "lucide-react"
+import { Textarea } from "@/components/ui/textarea"
+import { brainstormColumns, type BrainstormItem } from "./data"
+import type { Problem } from "@/store/problems-model"
 import { cn } from "@/lib/utils"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+
+const COLUMN_TO_FIELD: Record<string, keyof Pick<Problem, "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes">> = {
+  "customer-segments": "customerSegments",
+  "contexts": "contexts",
+  "jobs-to-be-done": "jobsToBeDone",
+  "problem-types": "problemTypes",
+}
 
 function collectAllIds(items: BrainstormItem[]): string[] {
   return items.flatMap((item) =>
     item.children ? collectAllIds(item.children) : [item.id]
   )
+}
+
+function getSelectedForColumn(items: BrainstormItem[], selected: Set<string>): { id: string; label: string }[] {
+  return collectAllIds(items)
+    .filter((id) => selected.has(id))
+    .map((id) => ({ id, label: findLabel(items, id)! }))
 }
 
 function findLabel(items: BrainstormItem[], id: string): string | null {
@@ -117,25 +132,85 @@ function useDebouncedCallback<T>(callback: (value: T) => void, delay: number) {
   }
 }
 
+function ProblemFormDialog({
+  open,
+  onOpenChange,
+  title,
+  fields,
+  onFieldsChange,
+  actions,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  title: string
+  fields: Record<string, string>
+  onFieldsChange: (fields: Record<string, string>) => void
+  actions?: ReactNode
+}) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription className="sr-only">{title}</DialogDescription>
+        </DialogHeader>
+        <div className="flex flex-col gap-4 py-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium" htmlFor={`${title}-description`}>
+              Problem Description
+            </label>
+            <Textarea
+              id={`${title}-description`}
+              value={fields["description"] ?? ""}
+              onChange={(e) => onFieldsChange({ ...fields, description: e.target.value })}
+              placeholder="Describe the problem..."
+              rows={3}
+            />
+          </div>
+          {brainstormColumns.map((column) => (
+            <div key={column.id} className="flex flex-col gap-1.5">
+              <label className="text-sm font-medium" htmlFor={`${title}-${column.id}`}>
+                {column.title}
+              </label>
+              <Input
+                id={`${title}-${column.id}`}
+                value={fields[column.id] ?? ""}
+                onChange={(e) => onFieldsChange({ ...fields, [column.id]: e.target.value })}
+                placeholder={`e.g. ${column.items[0]?.label}, ${column.items[1]?.label}`}
+              />
+            </div>
+          ))}
+        </div>
+        {actions && <div className="flex justify-end gap-2">{actions}</div>}
+      </DialogContent>
+    </Dialog>
+  )
+}
+
 export default function BrainstormPage() {
   const dispatch = useDispatch<AppDispatch>()
-  const savedCombinations = useSelector((state: RootState) => state.brainstorm.combinations)
+  const savedProblems = useSelector((state: RootState) =>
+    state.problems.problems.filter((p) => p.source === "brainstorm")
+  )
 
   const [selected, setSelected] = useState<Set<string>>(new Set())
-  const [editingCombination, setEditingCombination] = useState<SavedCombination | null>(null)
+  const [editingProblem, setEditingProblem] = useState<Problem | null>(null)
   const [editFields, setEditFields] = useState<Record<string, string>>({})
   const initRef = useRef(false)
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false)
+  const [saveFields, setSaveFields] = useState<Record<string, string>>({})
 
   const saveDebounced = useDebouncedCallback((fields: Record<string, string>) => {
-    if (!editingCombination) return
-    const updatedSelections: Record<string, string[]> = {}
-    for (const column of brainstormColumns) {
-      const value = fields[column.id]?.trim()
-      if (value) {
-        updatedSelections[column.id] = value.split(",").map((s) => s.trim()).filter(Boolean)
-      }
+    if (!editingProblem) return
+    const patch: Partial<Pick<Problem, "description" | "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes">> = {
+      description: fields["description"] ?? "",
     }
-    dispatch.brainstorm.update({ id: editingCombination.id, selections: updatedSelections })
+    for (const column of brainstormColumns) {
+      const field = COLUMN_TO_FIELD[column.id]
+      const value = fields[column.id]?.trim()
+      patch[field] = value ? value.split(",").map((s) => s.trim()).filter(Boolean) : []
+    }
+    dispatch.problems.update({ id: editingProblem.id, patch })
   }, 500)
 
   useEffect(() => {
@@ -160,39 +235,41 @@ export default function BrainstormPage() {
 
   const totalSelected = selected.size
 
-  const saveCombination = () => {
-    const selections: Record<string, string[]> = {}
+  const openSaveDialog = () => {
+    const fields: Record<string, string> = { description: "" }
     for (const column of brainstormColumns) {
       const allIds = collectAllIds(column.items)
       const selectedLabels = allIds
         .filter((id) => selected.has(id))
         .map((id) => findLabel(column.items, id))
         .filter((label): label is string => label !== null)
-      if (selectedLabels.length > 0) {
-        selections[column.id] = selectedLabels
-      }
+      fields[column.id] = selectedLabels.join(", ")
     }
-
-    dispatch.brainstorm.add({
-      selectedIds: [...selected],
-      selections,
-      savedAt: new Date().toISOString(),
-    })
-    clearAll()
+    setSaveFields(fields)
+    setSaveDialogOpen(true)
   }
 
-  const openEditDialog = (combination: SavedCombination) => {
-    initRef.current = false
-    const fields: Record<string, string> = {}
+  const saveCombination = () => {
+    const patch: Partial<Pick<Problem, "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes">> = {}
     for (const column of brainstormColumns) {
-      fields[column.id] = combination.selections[column.id]?.join(", ") ?? ""
+      const field = COLUMN_TO_FIELD[column.id]
+      const value = saveFields[column.id]?.trim()
+      patch[field] = value ? value.split(",").map((s) => s.trim()).filter(Boolean) : []
+    }
+    dispatch.problems.create({ ...patch, source: "brainstorm", description: saveFields["description"]?.trim() ?? "" })
+    clearAll()
+    setSaveDialogOpen(false)
+  }
+
+  const openEditDialog = (problem: Problem) => {
+    initRef.current = false
+    const fields: Record<string, string> = { description: problem.description ?? "" }
+    for (const column of brainstormColumns) {
+      const field = COLUMN_TO_FIELD[column.id]
+      fields[column.id] = problem[field].join(", ")
     }
     setEditFields(fields)
-    setEditingCombination(combination)
-  }
-
-  const deleteCombination = (id: number) => {
-    dispatch.brainstorm.delete(id)
+    setEditingProblem(problem)
   }
 
   return (
@@ -222,7 +299,7 @@ export default function BrainstormPage() {
           </Button>
           <Button
             size="sm"
-            onClick={saveCombination}
+            onClick={openSaveDialog}
             disabled={totalSelected === 0}
             className="gap-2"
           >
@@ -233,40 +310,62 @@ export default function BrainstormPage() {
       </div>
 
       <div className="grid grid-cols-4 gap-4">
-        {brainstormColumns.map((column) => (
-          <Card key={column.id} className="flex flex-col">
-            <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-semibold">
-                  {column.title}
-                </CardTitle>
-                <span className="text-xs text-muted-foreground">
-                  {collectAllIds(column.items).filter((id) => selected.has(id)).length} / {collectAllIds(column.items).length}
-                </span>
-              </div>
-            </CardHeader>
-            <CardContent className="flex-1 pt-0">
-              <ScrollArea className="h-[calc(100vh-520px)]">
-                <div className="flex flex-col gap-0.5 pr-3">
-                  {column.items.map((item) => (
-                    <BrainstormCheckItem
-                      key={item.id}
-                      item={item}
-                      selected={selected}
-                      onToggle={toggleItem}
-                    />
-                  ))}
+        {brainstormColumns.map((column) => {
+          const columnSelected = getSelectedForColumn(column.items, selected)
+          return (
+            <Card key={column.id} className="flex flex-col">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-semibold">
+                    {column.title}
+                  </CardTitle>
+                  <span className="text-xs text-muted-foreground">
+                    {columnSelected.length} / {collectAllIds(column.items).length}
+                  </span>
                 </div>
-              </ScrollArea>
-            </CardContent>
-          </Card>
-        ))}
+              </CardHeader>
+              <CardContent className="flex-1 pt-0 flex flex-col gap-3">
+                <ScrollArea className="h-[calc(100vh-520px)]">
+                  <div className="flex flex-col gap-0.5 pr-3">
+                    {column.items.map((item) => (
+                      <BrainstormCheckItem
+                        key={item.id}
+                        item={item}
+                        selected={selected}
+                        onToggle={toggleItem}
+                      />
+                    ))}
+                  </div>
+                </ScrollArea>
+                {columnSelected.length > 0 && (
+                  <div className="border-t pt-2 flex flex-wrap gap-1.5">
+                    {columnSelected.map(({ id, label }) => (
+                      <span
+                        key={id}
+                        className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary rounded-full px-2 py-0.5"
+                      >
+                        {label}
+                        <button
+                          onClick={() => toggleItem(id)}
+                          className="hover:text-primary/70 transition-colors"
+                          aria-label={`Remove ${label}`}
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          )
+        })}
       </div>
 
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-sm font-semibold">
-            Saved Problems ({savedCombinations.length})
+            Saved Problems ({savedProblems.length})
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">
@@ -274,6 +373,7 @@ export default function BrainstormPage() {
             <TableHeader>
               <TableRow>
                 <TableHead className="w-10">#</TableHead>
+                <TableHead>Description</TableHead>
                 {brainstormColumns.map((column) => (
                   <TableHead key={column.id}>{column.title}</TableHead>
                 ))}
@@ -281,26 +381,34 @@ export default function BrainstormPage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {savedCombinations.length === 0 ? (
+              {savedProblems.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={brainstormColumns.length + 2}
+                    colSpan={brainstormColumns.length + 3}
                     className="text-center text-muted-foreground py-8"
                   >
                     No problems saved yet. Select items above and click &quot;Save Problem&quot;.
                   </TableCell>
                 </TableRow>
               ) : (
-                savedCombinations.map((combination, index) => (
-                  <TableRow key={combination.id}>
+                savedProblems.map((problem, index) => (
+                  <TableRow key={problem.id}>
                     <TableCell className="text-muted-foreground">
                       {index + 1}
                     </TableCell>
+                    <TableCell className="text-sm max-w-48">
+                      {problem.description ? (
+                        <span className="line-clamp-2">{problem.description}</span>
+                      ) : (
+                        <span className="text-muted-foreground">—</span>
+                      )}
+                    </TableCell>
                     {brainstormColumns.map((column) => {
-                      const labels = combination.selections[column.id]
+                      const field = COLUMN_TO_FIELD[column.id]
+                      const labels = problem[field]
                       return (
                         <TableCell key={column.id}>
-                          {labels ? (
+                          {labels.length > 0 ? (
                             <span className="text-sm">{labels.join(", ")}</span>
                           ) : (
                             <span className="text-sm text-muted-foreground">—</span>
@@ -314,8 +422,8 @@ export default function BrainstormPage() {
                           variant="ghost"
                           size="icon"
                           className="h-7 w-7 text-muted-foreground"
-                          onClick={() => openEditDialog(combination)}
-                          aria-label="Edit combination"
+                          onClick={() => openEditDialog(problem)}
+                          aria-label="Edit problem"
                         >
                           <Pencil className="h-3.5 w-3.5" />
                         </Button>
@@ -323,8 +431,8 @@ export default function BrainstormPage() {
                           variant="ghost"
                           size="icon"
                           className="h-7 w-7 text-muted-foreground hover:text-destructive"
-                          onClick={() => deleteCombination(combination.id)}
-                          aria-label="Delete combination"
+                          onClick={() => dispatch.problems.delete(problem.id)}
+                          aria-label="Delete problem"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
                         </Button>
@@ -338,33 +446,27 @@ export default function BrainstormPage() {
         </CardContent>
       </Card>
 
-      <Dialog open={editingCombination !== null} onOpenChange={(open) => { if (!open) setEditingCombination(null) }}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Edit Problem</DialogTitle>
-            <DialogDescription>
-              Changes are saved automatically. Use commas to separate multiple items.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex flex-col gap-4 py-4">
-            {brainstormColumns.map((column) => (
-              <div key={column.id} className="flex flex-col gap-1.5">
-                <label className="text-sm font-medium" htmlFor={`edit-${column.id}`}>
-                  {column.title}
-                </label>
-                <Input
-                  id={`edit-${column.id}`}
-                  value={editFields[column.id] ?? ""}
-                  onChange={(e) =>
-                    setEditFields((prev) => ({ ...prev, [column.id]: e.target.value }))
-                  }
-                  placeholder={`e.g. ${column.items[0]?.label}, ${column.items[1]?.label}`}
-                />
-              </div>
-            ))}
-          </div>
-        </DialogContent>
-      </Dialog>
+      <ProblemFormDialog
+        open={saveDialogOpen}
+        onOpenChange={(open) => { if (!open) setSaveDialogOpen(false) }}
+        title="Save Problem"
+        fields={saveFields}
+        onFieldsChange={setSaveFields}
+        actions={
+          <>
+            <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>Cancel</Button>
+            <Button onClick={saveCombination}>Save Problem</Button>
+          </>
+        }
+      />
+
+      <ProblemFormDialog
+        open={editingProblem !== null}
+        onOpenChange={(open) => { if (!open) setEditingProblem(null) }}
+        title="Edit Problem"
+        fields={editFields}
+        onFieldsChange={setEditFields}
+      />
     </div>
   )
 }

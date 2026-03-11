@@ -1,59 +1,41 @@
 "use client"
 
-import { useParams, usePathname, useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
+import { useSelector } from "react-redux"
+import type { RootState } from "@/store"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useProblemValidation, getAdjacentSteps } from "../context"
-import { useIdeas } from "@/store/ideas-hooks"
+import { getProblemLabel } from "@/store/problems-model"
 import { Gavel, CheckCircle2, XCircle, GitFork, Heart, BarChart2 } from "lucide-react"
 
-function SummaryField({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</p>
-      {value ? (
-        <p className="text-sm">{value}</p>
-      ) : (
-        <p className="text-sm text-muted-foreground italic">Not filled in</p>
-      )}
-    </div>
+function SummaryField({ value }: { value: string }) {
+  return value ? (
+    <p className="text-sm">{value}</p>
+  ) : (
+    <p className="text-sm text-muted-foreground italic">Not filled in</p>
   )
 }
 
 export default function VerdictPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const params = useParams()
-  const ideaId = Number(params.ideaId)
-  const { prevPath } = getAdjacentSteps(pathname, ideaId)
   const {
-    selectedProblemId, alternatives, emotionalImpact,
+    problemRef, problemId,
+    alternatives, emotionalImpact,
     impacts, status, setStatus, reason, setReason, saveValidation,
   } = useProblemValidation()
-  const { getIdea, updateIdea } = useIdeas()
+  const { prevPath } = getAdjacentSteps(pathname, problemRef)
 
-  const idea = getIdea(ideaId)
-  const allProblems = idea?.jobs.flatMap((j) => j.problems) ?? []
-  const selectedProblem = allProblems.find((p) => p.id === selectedProblemId)
+  const problems = useSelector((state: RootState) => state.problems.problems)
+  const problem = problems.find((p) => p.id === problemId)
+  const selectedLabel = problem ? getProblemLabel(problem) : null
 
   const handleVerdict = (verdict: "valid" | "invalid") => {
     setStatus(verdict)
     saveValidation(verdict)
-    // Check if all problems are now decided
-    const filledProblems = allProblems.filter((p) => p.text.trim())
-    const allDecided =
-      filledProblems.length > 0 &&
-      filledProblems.every(
-        (p) =>
-          p.id === selectedProblemId
-            ? verdict === "valid" || verdict === "invalid"
-            : p.validationStatus === "valid" || p.validationStatus === "invalid"
-      )
-    if (allDecided) {
-      updateIdea(ideaId, { problemValidationComplete: true })
-    }
-    router.push(`/ideas/${ideaId}/problem-validation/pick-a-problem`)
+    router.push("/problem-validation")
   }
 
   const handleSave = () => {
@@ -73,10 +55,10 @@ export default function VerdictPage() {
           Review your validation data and decide: is this problem worth solving?
         </p>
 
-        {selectedProblem && (
+        {selectedLabel && (
           <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4">
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Problem</p>
-            <p className="text-sm font-medium">{selectedProblem.text}</p>
+            <p className="text-sm font-medium">{selectedLabel}</p>
           </div>
         )}
 
@@ -118,7 +100,7 @@ export default function VerdictPage() {
                 <Heart className="h-3.5 w-3.5 text-muted-foreground" />
                 <p className="text-sm font-semibold">Emotional Impact</p>
               </div>
-              <SummaryField label="" value={emotionalImpact} />
+              <SummaryField value={emotionalImpact} />
             </div>
             <div className="rounded-lg border p-4 flex flex-col gap-2">
               <div className="flex items-center gap-2">
