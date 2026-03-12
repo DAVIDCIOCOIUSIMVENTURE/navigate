@@ -100,7 +100,9 @@ export const problems = createModel<RootModel>()({
           ...stored,
           problems: stored.problems.map((p) => ({
             ...p,
-            validationAssessment: p.validationAssessment ?? DEFAULT_VALIDATION_ASSESSMENT,
+            validationAssessment: p.validationAssessment
+              ? { ...DEFAULT_VALIDATION_ASSESSMENT, ...p.validationAssessment }
+              : DEFAULT_VALIDATION_ASSESSMENT,
             validationStatus: (p.validationStatus ?? "unvalidated") as ValidationStatus,
             validationReason: p.validationReason ?? "",
             contextWhen: p.contextWhen ?? "",
