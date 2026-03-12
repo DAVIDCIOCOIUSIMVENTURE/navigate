@@ -1,5 +1,6 @@
 "use client"
 
+import { useState, useEffect, useRef } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
@@ -57,6 +58,24 @@ function MetricInput({
   valuePlaceholder: string
   unitPlaceholder: string
 }) {
+  const [localValue, setLocalValue] = useState(metric.value !== null ? String(metric.value) : "")
+  const [localUnit, setLocalUnit] = useState(metric.unit)
+  const onChangeRef = useRef(onChange)
+  useEffect(() => { onChangeRef.current = onChange })
+
+  useEffect(() => {
+    const parsed = localValue !== "" ? Number(localValue) : null
+    if (parsed === metric.value) return
+    const timer = setTimeout(() => onChangeRef.current({ value: parsed }), 600)
+    return () => clearTimeout(timer)
+  }, [localValue]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (localUnit === metric.unit) return
+    const timer = setTimeout(() => onChangeRef.current({ unit: localUnit }), 600)
+    return () => clearTimeout(timer)
+  }, [localUnit]) // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
     <div className="flex flex-col gap-1.5">
       <LevelToggle value={metric.level} onChange={(l) => onChange({ level: l })} />
@@ -65,14 +84,14 @@ function MetricInput({
           type="number"
           placeholder={valuePlaceholder}
           className="h-7 text-xs w-24"
-          value={metric.value ?? ""}
-          onChange={(e) => onChange({ value: e.target.value !== "" ? Number(e.target.value) : null })}
+          value={localValue}
+          onChange={(e) => setLocalValue(e.target.value)}
         />
         <Input
           placeholder={unitPlaceholder}
           className="h-7 text-xs"
-          value={metric.unit}
-          onChange={(e) => onChange({ unit: e.target.value })}
+          value={localUnit}
+          onChange={(e) => setLocalUnit(e.target.value)}
         />
       </div>
     </div>
@@ -122,13 +141,22 @@ export default function VerdictPage() {
   const { timeToSolve, costToSolve, expectedReturn } = validationAssessment
   const signal = getSignal(timeToSolve.level, costToSolve.level, expectedReturn.level)
 
+  const [localReason, setLocalReason] = useState(reason)
+  const statusRef = useRef(status)
+  useEffect(() => { statusRef.current = status })
+
+  useEffect(() => {
+    if (localReason === reason) return
+    const timer = setTimeout(() => {
+      setReason(localReason)
+      if (statusRef.current === "unvalidated") setStatus("in_progress")
+    }, 600)
+    return () => clearTimeout(timer)
+  }, [localReason]) // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleVerdict = (verdict: "valid" | "invalid" | "unsure") => {
     setStatus(verdict)
     router.push("/problem-validation")
-  }
-
-  const handleSave = () => {
-    if (status === "unvalidated") setStatus("in_progress")
   }
 
   return (
@@ -324,8 +352,8 @@ export default function VerdictPage() {
           <Textarea
             rows={3}
             placeholder="Add any notes about your decision..."
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
+            value={localReason}
+            onChange={(e) => setLocalReason(e.target.value)}
             className="resize-none text-sm focus-visible:ring-1"
           />
         </div>
@@ -357,12 +385,11 @@ export default function VerdictPage() {
           </Button>
         </div>
 
-        <div className="flex justify-between">
-          {prevPath ? (
+        {prevPath && (
+          <div>
             <Button variant="outline" onClick={() => router.push(prevPath)}>Previous</Button>
-          ) : <div />}
-          <Button variant="ghost" onClick={handleSave}>Save Progress</Button>
-        </div>
+          </div>
+        )}
       </CardContent>
     </Card>
   )
