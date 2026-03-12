@@ -66,6 +66,7 @@ export type Problem = {
   timeLevel: DecisionLevel
   costLevel: DecisionLevel
   returnLevel: DecisionLevel
+  marketLevel: DecisionLevel
 }
 
 export const DEFAULT_PROBLEM: Omit<Problem, "id"> = {
@@ -79,6 +80,7 @@ export const DEFAULT_PROBLEM: Omit<Problem, "id"> = {
   timeLevel: "",
   costLevel: "",
   returnLevel: "",
+  marketLevel: "",
 }
 
 export type Job = {

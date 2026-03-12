@@ -28,6 +28,8 @@ type ProblemValidationContextValue = {
   setCostLevel: (val: DecisionLevel) => void
   returnLevel: DecisionLevel
   setReturnLevel: (val: DecisionLevel) => void
+  marketLevel: DecisionLevel
+  setMarketLevel: (val: DecisionLevel) => void
   saveValidation: (statusOverride?: ValidationStatus) => void
 }
 
@@ -52,6 +54,7 @@ export function ProblemValidationProvider({
   const [timeLevel, setTimeLevel] = useState<DecisionLevel>("")
   const [costLevel, setCostLevel] = useState<DecisionLevel>("")
   const [returnLevel, setReturnLevel] = useState<DecisionLevel>("")
+  const [marketLevel, setMarketLevel] = useState<DecisionLevel>("")
 
   // Used to skip auto-save on the render immediately after loading a problem's data
   const justLoaded = useRef(false)
@@ -75,6 +78,7 @@ export function ProblemValidationProvider({
         setTimeLevel(problem.timeLevel ?? "")
         setCostLevel(problem.costLevel ?? "")
         setReturnLevel(problem.returnLevel ?? "")
+        setMarketLevel(problem.marketLevel ?? "")
       } else {
         setAlternatives([])
         setContextWhen("")
@@ -85,6 +89,7 @@ export function ProblemValidationProvider({
         setTimeLevel("")
         setCostLevel("")
         setReturnLevel("")
+        setMarketLevel("")
       }
     },
     [ideaId, getIdea]
@@ -118,13 +123,14 @@ export function ProblemValidationProvider({
                 timeLevel,
                 costLevel,
                 returnLevel,
+                marketLevel,
               }
             : p
         ),
       }))
       updateIdea(ideaId, { jobs: updatedJobs, selectedProblemId: problemId })
     },
-    [ideaId, getIdea, updateIdea, alternatives, contextWhen, emotionalImpact, impacts, status, reason, timeLevel, costLevel, returnLevel]
+    [ideaId, getIdea, updateIdea, alternatives, contextWhen, emotionalImpact, impacts, status, reason, timeLevel, costLevel, returnLevel, marketLevel]
   )
 
   // Keep the ref current so the auto-save effect always calls the latest version
@@ -140,7 +146,7 @@ export function ProblemValidationProvider({
     if (problemId === null) return
     saveCurrentValidationRef.current?.(problemId)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [alternatives, contextWhen, emotionalImpact, impacts, status, reason, timeLevel, costLevel, returnLevel])
+  }, [alternatives, contextWhen, emotionalImpact, impacts, status, reason, timeLevel, costLevel, returnLevel, marketLevel])
 
   const setSelectedProblemId = useCallback(
     (id: number | null) => {
@@ -178,6 +184,7 @@ export function ProblemValidationProvider({
         timeLevel, setTimeLevel,
         costLevel, setCostLevel,
         returnLevel, setReturnLevel,
+        marketLevel, setMarketLevel,
         saveValidation,
       }}
     >

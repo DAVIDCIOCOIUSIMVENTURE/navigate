@@ -95,20 +95,7 @@ export const problems = createModel<RootModel>()({
     init() {
       const stored = loadFromStorage()
       if (stored) {
-        // Migrate existing problems that predate new fields
-        const migrated: typeof stored = {
-          ...stored,
-          problems: stored.problems.map((p) => ({
-            ...p,
-            validationAssessment: p.validationAssessment
-              ? { ...DEFAULT_VALIDATION_ASSESSMENT, ...p.validationAssessment }
-              : DEFAULT_VALIDATION_ASSESSMENT,
-            validationStatus: (p.validationStatus ?? "unvalidated") as ValidationStatus,
-            validationReason: p.validationReason ?? "",
-            contextWhen: p.contextWhen ?? "",
-          })),
-        }
-        dispatch.problems.setAll(migrated)
+        dispatch.problems.setAll(stored)
       }
     },
 

@@ -8,7 +8,7 @@ import { useProblemValidation, getAdjacentSteps } from "../context"
 import { useIdeas } from "@/store/ideas-hooks"
 import type { DecisionLevel } from "@/types/idea"
 import { cn } from "@/lib/utils"
-import { Gavel, CheckCircle2, XCircle, GitFork, Heart, BarChart2, Clock, DollarSign, TrendingUp, TrendingDown, Minus } from "lucide-react"
+import { Gavel, CheckCircle2, XCircle, GitFork, Heart, BarChart2, Clock, DollarSign, TrendingUp, TrendingDown, Minus, Globe } from "lucide-react"
 
 const LEVELS: DecisionLevel[] = ["low", "medium", "high"]
 
@@ -46,25 +46,28 @@ function LevelToggle({
 
 type Signal = { text: string; desc: string; icon: React.ReactNode; className: string }
 
-function getSignal(time: DecisionLevel, cost: DecisionLevel, ret: DecisionLevel): Signal | null {
+function getSignal(time: DecisionLevel, cost: DecisionLevel, ret: DecisionLevel, mktSize: DecisionLevel): Signal | null {
   if (!ret) return null
   const n = { "": 0, low: 1, medium: 2, high: 3 }
   const r = n[ret]
   const effort = Math.max(n[time], n[cost])
+  // Market size boosts or dampens the signal: high market = +1, low = -1, unset = 0
+  const mktBoost = mktSize === "high" ? 1 : mktSize === "low" ? -1 : 0
+  const opportunity = Math.min(3, Math.max(1, r + mktBoost))
 
-  if (r === 3 && effort <= 1)
+  if (opportunity >= 3 && effort <= 1)
     return { text: "Strong opportunity", desc: "High return with low effort — worth pursuing", icon: <TrendingUp className="h-4 w-4" />, className: "bg-green-50 border-green-200 text-green-800" }
-  if (r === 3 && effort === 2)
+  if (opportunity >= 3 && effort === 2)
     return { text: "Good opportunity", desc: "High return with manageable effort", icon: <TrendingUp className="h-4 w-4" />, className: "bg-green-50 border-green-200 text-green-800" }
-  if (r === 3 && effort === 3)
+  if (opportunity >= 3 && effort === 3)
     return { text: "High potential, high cost", desc: "Big return but significant investment required — consider carefully", icon: <Minus className="h-4 w-4" />, className: "bg-yellow-50 border-yellow-200 text-yellow-800" }
-  if (r === 2 && effort <= 1)
+  if (opportunity === 2 && effort <= 1)
     return { text: "Decent opportunity", desc: "Moderate return with low effort", icon: <TrendingUp className="h-4 w-4" />, className: "bg-green-50 border-green-200 text-green-800" }
-  if (r === 2 && effort === 2)
+  if (opportunity === 2 && effort === 2)
     return { text: "Borderline case", desc: "Moderate return for moderate effort — validate further", icon: <Minus className="h-4 w-4" />, className: "bg-yellow-50 border-yellow-200 text-yellow-800" }
-  if (r === 2 && effort === 3)
+  if (opportunity === 2 && effort === 3)
     return { text: "Questionable ROI", desc: "High effort for moderate return", icon: <TrendingDown className="h-4 w-4" />, className: "bg-orange-50 border-orange-200 text-orange-800" }
-  if (r === 1)
+  if (opportunity === 1)
     return { text: "Weak case", desc: "Low expected return may not justify the investment", icon: <TrendingDown className="h-4 w-4" />, className: "bg-red-50 border-red-200 text-red-800" }
   return null
 }
@@ -78,7 +81,7 @@ export default function VerdictPage() {
   const {
     selectedProblemId, alternatives, emotionalImpact,
     impacts, status, setStatus, reason, setReason,
-    timeLevel, setTimeLevel, costLevel, setCostLevel, returnLevel, setReturnLevel,
+    timeLevel, setTimeLevel, costLevel, setCostLevel, returnLevel, setReturnLevel, marketLevel, setMarketLevel,
     saveValidation,
   } = useProblemValidation()
   const { getIdea, updateIdea } = useIdeas()
@@ -87,7 +90,7 @@ export default function VerdictPage() {
   const allProblems = idea?.jobs.flatMap((j) => j.problems) ?? []
   const selectedProblem = allProblems.find((p) => p.id === selectedProblemId)
 
-  const signal = getSignal(timeLevel, costLevel, returnLevel)
+  const signal = getSignal(timeLevel, costLevel, returnLevel, marketLevel)
 
   const handleVerdict = (verdict: "valid" | "invalid") => {
     setStatus(verdict)
@@ -227,6 +230,14 @@ export default function VerdictPage() {
                 <span className="text-sm font-medium">Expected return</span>
               </div>
               <LevelToggle value={returnLevel} onChange={setReturnLevel} />
+            </div>
+
+            <div className="grid grid-cols-[1fr_2fr] items-center gap-3">
+              <div className="flex items-center gap-2">
+                <Globe className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                <span className="text-sm font-medium">Market size</span>
+              </div>
+              <LevelToggle value={marketLevel} onChange={setMarketLevel} />
             </div>
           </div>
 
