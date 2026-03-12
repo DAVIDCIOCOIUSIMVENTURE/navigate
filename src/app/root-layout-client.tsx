@@ -20,6 +20,7 @@ import { GuidanceProvider } from "@/context/guidance-context"
 import { AppStoreProvider } from "@/store/provider"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
+import { Toaster } from "@/components/ui/sonner"
 function generateBreadcrumbs(pathname: string) {
   const paths = pathname.split('/').filter(Boolean)
 
@@ -109,6 +110,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         </div>
       </SidebarInset>
       <GuidanceDialog open={guidanceOpen} onOpenChange={setGuidanceOpen} initialTopic={guidanceTopic} />
+      <Toaster />
     </SidebarProvider>
   )
 }

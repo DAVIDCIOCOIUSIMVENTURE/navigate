@@ -31,6 +31,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { ChevronDown, ChevronRight, Pencil, RotateCcw, Save, Trash2, X } from "lucide-react"
+import { toast } from "sonner"
 import { Textarea } from "@/components/ui/textarea"
 import { brainstormColumns, type BrainstormItem } from "./data"
 import type { Problem } from "@/store/problems-model"
@@ -267,6 +268,11 @@ export default function BrainstormPage() {
     dispatch.problems.create({ ...patch, source: "brainstorm", description: saveFields["description"]?.trim() ?? "" })
     clearAll()
     setSaveDialogOpen(false)
+    toast.success("Problem saved", {
+      description: saveFields["description"]?.trim() || "Your problem has been added to the saved problems list.",
+      style: { background: "#16a34a", color: "#ffffff", border: "1px solid #16a34a" },
+      classNames: { description: "!text-white", icon: "!text-white" },
+    })
   }
 
   const openEditDialog = (problem: Problem) => {
