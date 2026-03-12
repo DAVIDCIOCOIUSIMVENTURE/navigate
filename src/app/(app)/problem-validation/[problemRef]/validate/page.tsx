@@ -6,8 +6,9 @@ import type { RootState } from "@/store"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import { Input } from "@/components/ui/input"
 import { useProblemValidation, getAdjacentSteps } from "../context"
-import type { DecisionLevel } from "@/types/idea"
+import type { DecisionLevel, ValidationMetric } from "@/types/idea"
 import { cn } from "@/lib/utils"
 import { ShieldCheck, CheckCircle2, XCircle, GitFork, Heart, BarChart2, Clock, DollarSign, TrendingUp, TrendingDown, Minus } from "lucide-react"
 
@@ -45,6 +46,39 @@ function LevelToggle({
   )
 }
 
+function MetricInput({
+  metric,
+  onChange,
+  valuePlaceholder,
+  unitPlaceholder,
+}: {
+  metric: ValidationMetric
+  onChange: (patch: Partial<ValidationMetric>) => void
+  valuePlaceholder: string
+  unitPlaceholder: string
+}) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <LevelToggle value={metric.level} onChange={(l) => onChange({ level: l })} />
+      <div className="flex gap-2">
+        <Input
+          type="number"
+          placeholder={valuePlaceholder}
+          className="h-7 text-xs w-24"
+          value={metric.value ?? ""}
+          onChange={(e) => onChange({ value: e.target.value !== "" ? Number(e.target.value) : null })}
+        />
+        <Input
+          placeholder={unitPlaceholder}
+          className="h-7 text-xs"
+          value={metric.unit}
+          onChange={(e) => onChange({ unit: e.target.value })}
+        />
+      </div>
+    </div>
+  )
+}
+
 type Signal = { text: string; desc: string; icon: React.ReactNode; className: string }
 
 function getSignal(time: DecisionLevel, cost: DecisionLevel, ret: DecisionLevel): Signal | null {
@@ -77,8 +111,7 @@ export default function VerdictPage() {
     problemRef, problemId,
     alternatives, emotionalImpact,
     quantifiableImpacts, status, setStatus, reason, setReason,
-    timeLevel, setTimeLevel, costLevel, setCostLevel, returnLevel, setReturnLevel,
-    saveValidation,
+    validationAssessment, setTimeToSolve, setCostToSolve, setExpectedReturn,
   } = useProblemValidation()
   const { prevPath } = getAdjacentSteps(pathname, problemRef)
 
@@ -86,18 +119,16 @@ export default function VerdictPage() {
     state.problems.problems.find((p) => p.id === problemId)
   )
 
-  const signal = getSignal(timeLevel, costLevel, returnLevel)
+  const { timeToSolve, costToSolve, expectedReturn } = validationAssessment
+  const signal = getSignal(timeToSolve.level, costToSolve.level, expectedReturn.level)
 
   const handleVerdict = (verdict: "valid" | "invalid") => {
     setStatus(verdict)
-    saveValidation(verdict)
     router.push("/problem-validation")
   }
 
   const handleSave = () => {
-    const effectiveStatus = status === "unvalidated" ? "in_progress" : status
-    setStatus(effectiveStatus)
-    saveValidation(effectiveStatus)
+    if (status === "unvalidated") setStatus("in_progress")
   }
 
   return (
@@ -235,28 +266,43 @@ export default function VerdictPage() {
           </p>
 
           <div className="flex flex-col gap-3">
-            <div className="grid grid-cols-[1fr_2fr] items-center gap-3">
-              <div className="flex items-center gap-2">
+            <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
+              <div className="flex items-center gap-2 pt-1.5">
                 <Clock className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                 <span className="text-sm font-medium">Time to solve</span>
               </div>
-              <LevelToggle value={timeLevel} onChange={setTimeLevel} />
+              <MetricInput
+                metric={timeToSolve}
+                onChange={setTimeToSolve}
+                valuePlaceholder="e.g. 3"
+                unitPlaceholder="e.g. months"
+              />
             </div>
 
-            <div className="grid grid-cols-[1fr_2fr] items-center gap-3">
-              <div className="flex items-center gap-2">
+            <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
+              <div className="flex items-center gap-2 pt-1.5">
                 <DollarSign className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                 <span className="text-sm font-medium">Cost to solve</span>
               </div>
-              <LevelToggle value={costLevel} onChange={setCostLevel} />
+              <MetricInput
+                metric={costToSolve}
+                onChange={setCostToSolve}
+                valuePlaceholder="e.g. 50000"
+                unitPlaceholder="e.g. USD"
+              />
             </div>
 
-            <div className="grid grid-cols-[1fr_2fr] items-center gap-3">
-              <div className="flex items-center gap-2">
+            <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
+              <div className="flex items-center gap-2 pt-1.5">
                 <TrendingUp className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                 <span className="text-sm font-medium">Expected return</span>
               </div>
-              <LevelToggle value={returnLevel} onChange={setReturnLevel} />
+              <MetricInput
+                metric={expectedReturn}
+                onChange={setExpectedReturn}
+                valuePlaceholder="e.g. 200"
+                unitPlaceholder="e.g. %"
+              />
             </div>
           </div>
 

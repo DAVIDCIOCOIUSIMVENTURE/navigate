@@ -21,7 +21,7 @@ export default function SelfDiscoveryLayout({
 }) {
     const router = useRouter()
     const pathname = usePathname()
-    const navItem = navigationItems.selfDiscovery[0]
+    const navItem = navigationItems.innovation[0]
     const Icon = navItem?.icon
     const [isOpen, setIsOpen] = useState(false)
 

@@ -1,18 +1,10 @@
 "use client"
 
-import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react"
+import { createContext, useContext, useCallback, type ReactNode } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
-import type { AlternativeItem, ImpactItem, ValidationStatus, DecisionLevel } from "@/types/idea"
-
-export type ValidationRecord = {
-  contextWhen: string
-  status: ValidationStatus
-  reason: string
-  timeLevel: DecisionLevel
-  costLevel: DecisionLevel
-  returnLevel: DecisionLevel
-}
+import type { AlternativeItem, ImpactItem, ValidationStatus, ValidationMetric, ValidationAssessment } from "@/types/idea"
+import { DEFAULT_VALIDATION_ASSESSMENT } from "@/types/idea"
 
 type ProblemValidationContextValue = {
   problemRef: string
@@ -29,47 +21,10 @@ type ProblemValidationContextValue = {
   setStatus: (val: ValidationStatus) => void
   reason: string
   setReason: (val: string) => void
-  timeLevel: DecisionLevel
-  setTimeLevel: (val: DecisionLevel) => void
-  costLevel: DecisionLevel
-  setCostLevel: (val: DecisionLevel) => void
-  returnLevel: DecisionLevel
-  setReturnLevel: (val: DecisionLevel) => void
-  saveValidation: (statusOverride?: ValidationStatus) => void
-}
-
-const STORAGE_KEY = "navigate-standalone-validation"
-
-function loadRecord(problemRef: string): ValidationRecord {
-  if (typeof window === "undefined") return EMPTY_RECORD
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return EMPTY_RECORD
-    const all = JSON.parse(raw) as Record<string, ValidationRecord>
-    return all[problemRef] ?? EMPTY_RECORD
-  } catch {
-    return EMPTY_RECORD
-  }
-}
-
-function saveRecord(problemRef: string, record: ValidationRecord) {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    const all: Record<string, ValidationRecord> = raw ? JSON.parse(raw) : {}
-    all[problemRef] = record
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(all))
-  } catch {
-    // ignore
-  }
-}
-
-const EMPTY_RECORD: ValidationRecord = {
-  contextWhen: "",
-  status: "unvalidated",
-  reason: "",
-  timeLevel: "",
-  costLevel: "",
-  returnLevel: "",
+  validationAssessment: ValidationAssessment
+  setTimeToSolve: (patch: Partial<ValidationMetric>) => void
+  setCostToSolve: (patch: Partial<ValidationMetric>) => void
+  setExpectedReturn: (patch: Partial<ValidationMetric>) => void
 }
 
 const ProblemValidationContext = createContext<ProblemValidationContextValue | null>(null)
@@ -83,11 +38,17 @@ export function ProblemValidationProvider({
 }) {
   const problemId = Number(problemRef)
   const dispatch = useDispatch<AppDispatch>()
-  const problems = useSelector((state: RootState) => state.problems.problems)
-  const problem = problems.find((p) => p.id === problemId)
+  const problem = useSelector((state: RootState) =>
+    state.problems.problems.find((p) => p.id === problemId)
+  )
+
   const alternatives = problem?.alternatives ?? []
   const emotionalImpact = problem?.emotionalImpact ?? []
   const quantifiableImpacts = problem?.quantifiableImpacts ?? []
+  const validationAssessment = problem?.validationAssessment ?? DEFAULT_VALIDATION_ASSESSMENT
+  const contextWhen = problem?.contextWhen ?? ""
+  const status = problem?.validationStatus ?? "unvalidated"
+  const reason = problem?.validationReason ?? ""
 
   const setAlternatives = useCallback(
     (val: AlternativeItem[]) => {
@@ -110,37 +71,70 @@ export function ProblemValidationProvider({
     [dispatch, problemId]
   )
 
-  const [contextWhen, setContextWhen] = useState("")
-  const [status, setStatus] = useState<ValidationStatus>("unvalidated")
-  const [reason, setReason] = useState("")
-  const [timeLevel, setTimeLevel] = useState<DecisionLevel>("")
-  const [costLevel, setCostLevel] = useState<DecisionLevel>("")
-  const [returnLevel, setReturnLevel] = useState<DecisionLevel>("")
-
-  useEffect(() => {
-    const record = loadRecord(problemRef)
-    setContextWhen(record.contextWhen)
-    setStatus(record.status)
-    setReason(record.reason)
-    setTimeLevel(record.timeLevel ?? "")
-    setCostLevel(record.costLevel ?? "")
-    setReturnLevel(record.returnLevel ?? "")
-  }, [problemRef])
-
-  const saveValidation = useCallback(
-    (statusOverride?: ValidationStatus) => {
-      const effectiveStatus = statusOverride ?? status
-      saveRecord(problemRef, {
-        contextWhen,
-        status: effectiveStatus,
-        reason,
-        timeLevel,
-        costLevel,
-        returnLevel,
-      })
-      if (statusOverride) setStatus(statusOverride)
+  const setContextWhen = useCallback(
+    (val: string) => {
+      dispatch.problems.update({ id: problemId, patch: { contextWhen: val } })
     },
-    [problemRef, contextWhen, status, reason, timeLevel, costLevel, returnLevel]
+    [dispatch, problemId]
+  )
+
+  const setStatus = useCallback(
+    (val: ValidationStatus) => {
+      dispatch.problems.update({ id: problemId, patch: { validationStatus: val } })
+    },
+    [dispatch, problemId]
+  )
+
+  const setReason = useCallback(
+    (val: string) => {
+      dispatch.problems.update({ id: problemId, patch: { validationReason: val } })
+    },
+    [dispatch, problemId]
+  )
+
+  const setTimeToSolve = useCallback(
+    (patch: Partial<ValidationMetric>) => {
+      dispatch.problems.update({
+        id: problemId,
+        patch: {
+          validationAssessment: {
+            ...validationAssessment,
+            timeToSolve: { ...validationAssessment.timeToSolve, ...patch },
+          },
+        },
+      })
+    },
+    [dispatch, problemId, validationAssessment]
+  )
+
+  const setCostToSolve = useCallback(
+    (patch: Partial<ValidationMetric>) => {
+      dispatch.problems.update({
+        id: problemId,
+        patch: {
+          validationAssessment: {
+            ...validationAssessment,
+            costToSolve: { ...validationAssessment.costToSolve, ...patch },
+          },
+        },
+      })
+    },
+    [dispatch, problemId, validationAssessment]
+  )
+
+  const setExpectedReturn = useCallback(
+    (patch: Partial<ValidationMetric>) => {
+      dispatch.problems.update({
+        id: problemId,
+        patch: {
+          validationAssessment: {
+            ...validationAssessment,
+            expectedReturn: { ...validationAssessment.expectedReturn, ...patch },
+          },
+        },
+      })
+    },
+    [dispatch, problemId, validationAssessment]
   )
 
   return (
@@ -154,10 +148,10 @@ export function ProblemValidationProvider({
         quantifiableImpacts, setQuantifiableImpacts,
         status, setStatus,
         reason, setReason,
-        timeLevel, setTimeLevel,
-        costLevel, setCostLevel,
-        returnLevel, setReturnLevel,
-        saveValidation,
+        validationAssessment,
+        setTimeToSolve,
+        setCostToSolve,
+        setExpectedReturn,
       }}
     >
       {children}

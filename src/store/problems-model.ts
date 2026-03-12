@@ -1,6 +1,7 @@
 import { createModel } from "@rematch/core"
 import type { RootModel } from "."
-import type { AlternativeItem, ImpactItem } from "@/types/idea"
+import type { AlternativeItem, ImpactItem, ValidationAssessment, ValidationStatus } from "@/types/idea"
+import { DEFAULT_VALIDATION_ASSESSMENT } from "@/types/idea"
 
 const STORAGE_KEY = "navigate-problems"
 
@@ -19,9 +20,13 @@ export type Problem = {
   alternatives: AlternativeItem[]
   emotionalImpact: string[]
   quantifiableImpacts: ImpactItem[]
+  validationAssessment: ValidationAssessment
+  validationStatus: ValidationStatus
+  validationReason: string
+  contextWhen: string
 }
 
-export type ProblemPatch = Partial<Pick<Problem, "description" | "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "alternatives" | "emotionalImpact" | "quantifiableImpacts">>
+export type ProblemPatch = Partial<Pick<Problem, "description" | "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "alternatives" | "emotionalImpact" | "quantifiableImpacts" | "validationAssessment" | "validationStatus" | "validationReason" | "contextWhen">>
 
 export function getProblemLabel(problem: Problem): string {
   return [
@@ -90,7 +95,18 @@ export const problems = createModel<RootModel>()({
     init() {
       const stored = loadFromStorage()
       if (stored) {
-        dispatch.problems.setAll(stored)
+        // Migrate existing problems that predate new fields
+        const migrated: typeof stored = {
+          ...stored,
+          problems: stored.problems.map((p) => ({
+            ...p,
+            validationAssessment: p.validationAssessment ?? DEFAULT_VALIDATION_ASSESSMENT,
+            validationStatus: (p.validationStatus ?? "unvalidated") as ValidationStatus,
+            validationReason: p.validationReason ?? "",
+            contextWhen: p.contextWhen ?? "",
+          })),
+        }
+        dispatch.problems.setAll(migrated)
       }
     },
 
@@ -122,6 +138,10 @@ export const problems = createModel<RootModel>()({
         alternatives: payload.alternatives ?? [],
         emotionalImpact: payload.emotionalImpact ?? [],
         quantifiableImpacts: payload.quantifiableImpacts ?? [],
+        validationAssessment: payload.validationAssessment ?? DEFAULT_VALIDATION_ASSESSMENT,
+        validationStatus: payload.validationStatus ?? "unvalidated",
+        validationReason: payload.validationReason ?? "",
+        contextWhen: payload.contextWhen ?? "",
       }
       dispatch.problems.addProblem(newProblem)
       const nextState: ProblemsState = {

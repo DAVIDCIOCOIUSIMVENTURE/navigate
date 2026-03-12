@@ -52,7 +52,7 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
         ;(patch as Record<string, string[]>)[field] = value.split(",").map((s) => s.trim()).filter(Boolean)
       }
     }
-    if (Object.values(patch).every((v) => !v || v.length === 0)) return
+    if (Object.values(patch).every((v) => !v || (Array.isArray(v) && v.length === 0))) return
     dispatch.problems.create({ ...patch, source: "manual" })
     handleClose()
   }

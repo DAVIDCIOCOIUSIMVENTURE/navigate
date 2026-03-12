@@ -31,6 +31,26 @@ export type AlternativeItem = { id: number; text: string; shortcomings: string[]
 export type ValidationStatus = "unvalidated" | "in_progress" | "valid" | "invalid"
 export type DecisionLevel = "" | "low" | "medium" | "high"
 
+export type ValidationMetric = {
+  value: number | null
+  unit: string
+  level: DecisionLevel
+}
+
+export type ValidationAssessment = {
+  timeToSolve: ValidationMetric
+  costToSolve: ValidationMetric
+  expectedReturn: ValidationMetric
+}
+
+export const DEFAULT_VALIDATION_METRIC: ValidationMetric = { value: null, unit: "", level: "" }
+
+export const DEFAULT_VALIDATION_ASSESSMENT: ValidationAssessment = {
+  timeToSolve: { value: null, unit: "", level: "" },
+  costToSolve: { value: null, unit: "", level: "" },
+  expectedReturn: { value: null, unit: "", level: "" },
+}
+
 export type Problem = {
   id: number
   text: string
