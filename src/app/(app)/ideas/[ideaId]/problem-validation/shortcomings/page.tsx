@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, type KeyboardEvent } from "react"
+import { useState, useRef, useEffect, type KeyboardEvent } from "react"
 import { useParams, usePathname, useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -15,17 +15,27 @@ export default function ShortcomingsPage() {
   const ideaId = Number(params.ideaId)
   const { alternatives, setAlternatives } = useProblemValidation()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, ideaId)
+  const [adding, setAdding] = useState<Record<number, boolean>>({})
   const [drafts, setDrafts] = useState<Record<number, string>>({})
+  const inputRefs = useRef<Record<number, HTMLInputElement | null>>({})
+
+  useEffect(() => {
+    const entries = Object.entries(adding)
+    const lastTrue = entries.findLast(([, v]) => v)
+    if (lastTrue) inputRefs.current[Number(lastTrue[0])]?.focus()
+  }, [adding])
 
   const addShortcoming = (altIdx: number) => {
     const trimmed = (drafts[altIdx] ?? "").trim()
-    if (!trimmed) return
-    setAlternatives(
-      alternatives.map((alt, idx) =>
-        idx === altIdx ? { ...alt, shortcomings: [...alt.shortcomings, trimmed] } : alt
+    if (trimmed) {
+      setAlternatives(
+        alternatives.map((alt, idx) =>
+          idx === altIdx ? { ...alt, shortcomings: [...alt.shortcomings, trimmed] } : alt
+        )
       )
-    )
+    }
     setDrafts((prev) => ({ ...prev, [altIdx]: "" }))
+    setAdding((prev) => ({ ...prev, [altIdx]: false }))
   }
 
   const removeShortcoming = (altIdx: number, scIdx: number) =>
@@ -39,6 +49,7 @@ export default function ShortcomingsPage() {
 
   const onKeyDown = (altIdx: number, e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") { e.preventDefault(); addShortcoming(altIdx) }
+    if (e.key === "Escape") { setDrafts((prev) => ({ ...prev, [altIdx]: "" })); setAdding((prev) => ({ ...prev, [altIdx]: false })) }
   }
 
   return (
@@ -74,19 +85,26 @@ export default function ShortcomingsPage() {
                     ))}
                   </ul>
                 )}
-                <div className="flex gap-2">
+
+                {adding[i] ? (
                   <Input
+                    ref={(el) => { inputRefs.current[i] = el }}
                     placeholder="Add a shortcoming and press Enter..."
                     value={drafts[i] ?? ""}
                     onChange={(e) => setDrafts((prev) => ({ ...prev, [i]: e.target.value }))}
                     onKeyDown={(e) => onKeyDown(i, e)}
+                    onBlur={() => addShortcoming(i)}
                     className="text-sm h-9"
                   />
-                  <Button variant="outline" onClick={() => addShortcoming(i)} disabled={!(drafts[i] ?? "").trim()}>
+                ) : (
+                  <button
+                    onClick={() => setAdding((prev) => ({ ...prev, [i]: true }))}
+                    className="w-full flex items-center justify-center gap-1.5 border border-dashed rounded-lg py-2 text-sm text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"
+                  >
                     <Plus className="h-4 w-4" />
-                    Add
-                  </Button>
-                </div>
+                    Add shortcoming
+                  </button>
+                )}
               </div>
             ))}
           </div>

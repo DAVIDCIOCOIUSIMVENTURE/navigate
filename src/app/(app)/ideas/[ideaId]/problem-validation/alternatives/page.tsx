@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, type KeyboardEvent } from "react"
+import { useState, useRef, useEffect, type KeyboardEvent } from "react"
 import { useParams, usePathname, useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -15,19 +15,28 @@ export default function AlternativesPage() {
   const ideaId = Number(params.ideaId)
   const { alternatives, setAlternatives } = useProblemValidation()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, ideaId)
+  const [adding, setAdding] = useState(false)
   const [draft, setDraft] = useState("")
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (adding) inputRef.current?.focus()
+  }, [adding])
 
   const add = () => {
     const trimmed = draft.trim()
-    if (!trimmed) return
-    setAlternatives([...alternatives, { id: Date.now(), text: trimmed, shortcomings: [] }])
+    if (trimmed) {
+      setAlternatives([...alternatives, { id: Date.now(), text: trimmed, shortcomings: [] }])
+    }
     setDraft("")
+    setAdding(false)
   }
 
   const remove = (i: number) => setAlternatives(alternatives.filter((_, idx) => idx !== i))
 
   const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") { e.preventDefault(); add() }
+    if (e.key === "Escape") { setDraft(""); setAdding(false) }
   }
 
   return (
@@ -42,31 +51,39 @@ export default function AlternativesPage() {
           might use — tools, workarounds, doing nothing, or hiring someone.
         </p>
 
-        {alternatives.length > 0 && (
-          <ul className="flex flex-col gap-1.5">
-            {alternatives.map((item, i) => (
-              <li key={i} className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2 text-sm">
-                <span className="flex-1">{item.text}</span>
-                <button onClick={() => remove(i)} className="shrink-0 text-muted-foreground hover:text-destructive transition-colors">
-                  <X className="h-3.5 w-3.5" />
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+        <div className="flex flex-col gap-1.5">
+          {alternatives.length > 0 && (
+            <ul className="flex flex-col gap-1.5 mb-1.5">
+              {alternatives.map((item, i) => (
+                <li key={i} className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2 text-sm">
+                  <span className="flex-1">{item.text}</span>
+                  <button onClick={() => remove(i)} className="shrink-0 text-muted-foreground hover:text-destructive transition-colors">
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
 
-        <div className="flex gap-2">
-          <Input
-            placeholder="Type an alternative and press Enter..."
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            onKeyDown={onKeyDown}
-            className="text-sm h-9"
-          />
-          <Button variant="outline" onClick={add} disabled={!draft.trim()}>
-            <Plus className="h-4 w-4" />
-            Add
-          </Button>
+          {adding ? (
+            <Input
+              ref={inputRef}
+              placeholder="Type an alternative and press Enter..."
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              onKeyDown={onKeyDown}
+              onBlur={add}
+              className="text-sm h-9"
+            />
+          ) : (
+            <button
+              onClick={() => setAdding(true)}
+              className="w-full flex items-center justify-center gap-1.5 border border-dashed rounded-lg py-2.5 text-sm text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"
+            >
+              <Plus className="h-4 w-4" />
+              Add alternative
+            </button>
+          )}
         </div>
 
         <div className="flex justify-between mt-2">
