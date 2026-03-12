@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Pencil, Trash2, ArrowRight, CheckCircle2, XCircle, Clock, Circle } from "lucide-react"
+import { Pencil, Trash2, ArrowRight, CheckCircle2, XCircle, HelpCircle, Clock, Circle } from "lucide-react"
 import { brainstormColumns } from "@/data/brainstormData"
 import type { Problem, ProblemPatch } from "@/store/problems-model"
 import { EditProblemDialog } from "@/components/edit-problem-dialog"
@@ -28,13 +28,14 @@ const COLUMN_TO_FIELD: Record<string, keyof ProblemPatch> = {
 
 const STORAGE_KEY = "navigate-standalone-validation"
 
-type ValidationStatus = "unvalidated" | "in_progress" | "valid" | "invalid"
+type ValidationStatus = "unvalidated" | "in_progress" | "valid" | "invalid" | "unsure"
 
 const STATUS_CONFIG: Record<ValidationStatus, { icon: React.ElementType; label: string; className: string }> = {
   unvalidated: { icon: Circle, label: "Unvalidated", className: "text-muted-foreground" },
   in_progress: { icon: Clock, label: "In Progress", className: "text-yellow-600" },
   valid: { icon: CheckCircle2, label: "Valid", className: "text-green-600" },
   invalid: { icon: XCircle, label: "Invalid", className: "text-red-600" },
+  unsure: { icon: HelpCircle, label: "Unsure", className: "text-orange-600" },
 }
 
 function loadAllStatuses(): Record<number, ValidationStatus> {

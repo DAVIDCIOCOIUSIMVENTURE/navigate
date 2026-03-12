@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { useProblemValidation, getAdjacentSteps } from "../context"
 import type { DecisionLevel, ValidationMetric } from "@/types/idea"
 import { cn } from "@/lib/utils"
-import { ShieldCheck, CheckCircle2, XCircle, GitFork, Heart, BarChart2, Clock, DollarSign, TrendingUp, TrendingDown, Minus } from "lucide-react"
+import { ShieldCheck, CheckCircle2, XCircle, HelpCircle, GitFork, Heart, BarChart2, Clock, DollarSign, TrendingUp, TrendingDown, Minus } from "lucide-react"
 
 const LEVELS: DecisionLevel[] = ["low", "medium", "high"]
 
@@ -122,7 +122,7 @@ export default function VerdictPage() {
   const { timeToSolve, costToSolve, expectedReturn } = validationAssessment
   const signal = getSignal(timeToSolve.level, costToSolve.level, expectedReturn.level)
 
-  const handleVerdict = (verdict: "valid" | "invalid") => {
+  const handleVerdict = (verdict: "valid" | "invalid" | "unsure") => {
     setStatus(verdict)
     router.push("/problem-validation")
   }
@@ -338,6 +338,14 @@ export default function VerdictPage() {
           >
             <CheckCircle2 className="h-5 w-5 mr-2" />
             Valid — Worth Solving
+          </Button>
+          <Button
+            variant="outline"
+            className="flex-1 h-12 border-orange-300 hover:bg-orange-50 hover:border-orange-400 text-orange-700"
+            onClick={() => handleVerdict("unsure")}
+          >
+            <HelpCircle className="h-5 w-5 mr-2" />
+            Unsure — May Be Worth Solving
           </Button>
           <Button
             variant="outline"
