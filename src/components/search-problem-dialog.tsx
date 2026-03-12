@@ -49,7 +49,7 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
       const field = COLUMN_TO_FIELD[col.id]
       const value = fields[col.id]?.trim()
       if (value) {
-        patch[field] = value.split(",").map((s) => s.trim()).filter(Boolean)
+        ;(patch as Record<string, string[]>)[field] = value.split(",").map((s) => s.trim()).filter(Boolean)
       }
     }
     if (Object.values(patch).every((v) => !v || v.length === 0)) return

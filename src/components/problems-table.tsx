@@ -108,7 +108,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                     </TableCell>
                     {brainstormColumns.map((col) => {
                       const field = COLUMN_TO_FIELD[col.id]
-                      const labels = problem[field]
+                      const labels = problem[field] as string[]
                       return (
                         <TableCell key={col.id}>
                           {labels.length > 0 ? (
