@@ -11,7 +11,7 @@ import { AlertCircle, GitFork, Heart, BarChart2, Plus, X, CheckCircle2, HelpCirc
 import { Card, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useProblemValidation } from "../context"
-import type { AlternativeItem, ImpactItem, ValidationStatus } from "@/types/idea"
+import type { ImpactItem, ValidationStatus } from "@/types/idea"
 
 const IMPACT_CATEGORIES = [
   "Time Lost", "Money Wasted", "Error Rates", "Customer Churn",
