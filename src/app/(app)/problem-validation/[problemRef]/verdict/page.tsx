@@ -10,14 +10,6 @@ import { useProblemValidation, getAdjacentSteps } from "../context"
 import { getProblemLabel } from "@/store/problems-model"
 import { Gavel, CheckCircle2, XCircle, GitFork, Heart, BarChart2 } from "lucide-react"
 
-function SummaryField({ value }: { value: string }) {
-  return value ? (
-    <p className="text-sm">{value}</p>
-  ) : (
-    <p className="text-sm text-muted-foreground italic">Not filled in</p>
-  )
-}
-
 export default function VerdictPage() {
   const router = useRouter()
   const pathname = usePathname()
