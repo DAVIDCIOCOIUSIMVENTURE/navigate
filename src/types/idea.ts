@@ -29,6 +29,7 @@ export type ImpactItem = { category: string; description: string }
 export type AlternativeItem = { id: number; text: string; shortcomings: string[] }
 
 export type ValidationStatus = "unvalidated" | "in_progress" | "valid" | "invalid"
+export type DecisionLevel = "" | "low" | "medium" | "high"
 
 export type Problem = {
   id: number
@@ -40,6 +41,9 @@ export type Problem = {
   emotionalImpact: string
   impacts: ImpactItem[]
   reason: string
+  timeLevel: DecisionLevel
+  costLevel: DecisionLevel
+  returnLevel: DecisionLevel
 }
 
 export const DEFAULT_PROBLEM: Omit<Problem, "id"> = {
@@ -50,6 +54,9 @@ export const DEFAULT_PROBLEM: Omit<Problem, "id"> = {
   emotionalImpact: "",
   impacts: [],
   reason: "",
+  timeLevel: "",
+  costLevel: "",
+  returnLevel: "",
 }
 
 export type Job = {

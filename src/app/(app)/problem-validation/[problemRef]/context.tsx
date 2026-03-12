@@ -3,12 +3,15 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
-import type { AlternativeItem, ImpactItem, ValidationStatus } from "@/types/idea"
+import type { AlternativeItem, ImpactItem, ValidationStatus, DecisionLevel } from "@/types/idea"
 
 export type ValidationRecord = {
   contextWhen: string
   status: ValidationStatus
   reason: string
+  timeLevel: DecisionLevel
+  costLevel: DecisionLevel
+  returnLevel: DecisionLevel
 }
 
 type ProblemValidationContextValue = {
@@ -26,6 +29,12 @@ type ProblemValidationContextValue = {
   setStatus: (val: ValidationStatus) => void
   reason: string
   setReason: (val: string) => void
+  timeLevel: DecisionLevel
+  setTimeLevel: (val: DecisionLevel) => void
+  costLevel: DecisionLevel
+  setCostLevel: (val: DecisionLevel) => void
+  returnLevel: DecisionLevel
+  setReturnLevel: (val: DecisionLevel) => void
   saveValidation: (statusOverride?: ValidationStatus) => void
 }
 
@@ -58,6 +67,9 @@ const EMPTY_RECORD: ValidationRecord = {
   contextWhen: "",
   status: "unvalidated",
   reason: "",
+  timeLevel: "",
+  costLevel: "",
+  returnLevel: "",
 }
 
 const ProblemValidationContext = createContext<ProblemValidationContextValue | null>(null)
@@ -101,12 +113,18 @@ export function ProblemValidationProvider({
   const [contextWhen, setContextWhen] = useState("")
   const [status, setStatus] = useState<ValidationStatus>("unvalidated")
   const [reason, setReason] = useState("")
+  const [timeLevel, setTimeLevel] = useState<DecisionLevel>("")
+  const [costLevel, setCostLevel] = useState<DecisionLevel>("")
+  const [returnLevel, setReturnLevel] = useState<DecisionLevel>("")
 
   useEffect(() => {
     const record = loadRecord(problemRef)
     setContextWhen(record.contextWhen)
     setStatus(record.status)
     setReason(record.reason)
+    setTimeLevel(record.timeLevel ?? "")
+    setCostLevel(record.costLevel ?? "")
+    setReturnLevel(record.returnLevel ?? "")
   }, [problemRef])
 
   const saveValidation = useCallback(
@@ -116,10 +134,13 @@ export function ProblemValidationProvider({
         contextWhen,
         status: effectiveStatus,
         reason,
+        timeLevel,
+        costLevel,
+        returnLevel,
       })
       if (statusOverride) setStatus(statusOverride)
     },
-    [problemRef, contextWhen, status, reason]
+    [problemRef, contextWhen, status, reason, timeLevel, costLevel, returnLevel]
   )
 
   return (
@@ -133,6 +154,9 @@ export function ProblemValidationProvider({
         quantifiableImpacts, setQuantifiableImpacts,
         status, setStatus,
         reason, setReason,
+        timeLevel, setTimeLevel,
+        costLevel, setCostLevel,
+        returnLevel, setReturnLevel,
         saveValidation,
       }}
     >
@@ -152,7 +176,7 @@ export const NAV_ITEMS = [
   { label: "Alternatives & Shortcomings", path: "alternatives" },
   { label: "Quantifiable Impact", path: "quantifiable-impact" },
   { label: "Emotional Impact", path: "emotional-impact" },
-  { label: "Verdict", path: "verdict" },
+  { label: "Validate", path: "validate" },
   { label: "Problem Statement", path: "problem-statement" },
 ] as const
 

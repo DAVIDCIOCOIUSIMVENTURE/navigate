@@ -1,14 +1,12 @@
 import { Compass, Heart, Book, Brain, Globe, Search, CheckCircle, Lightbulb, FlaskConical } from "lucide-react"
 
 export const navigationItems = {
-  selfDiscovery: [
+  innovation: [
     {
       title: "Self Discovery",
       url: "/self-discovery",
       icon: Compass
     },
-  ],
-  innovation: [
     {
       title: "Problem Discovery",
       url: "/problem-discovery",

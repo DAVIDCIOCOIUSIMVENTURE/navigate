@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation"
 
-export default function ShortcomingsRedirect({ params }: { params: { problemRef: string } }) {
-  redirect(`/problem-validation/${params.problemRef}/alternatives`)
+export default async function ShortcomingsRedirect({ params }: { params: Promise<{ problemRef: string }> }) {
+  const { problemRef } = await params
+  redirect(`/problem-validation/${problemRef}/alternatives`)
 }

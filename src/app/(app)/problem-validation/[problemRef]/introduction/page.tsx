@@ -1,11 +1,13 @@
 "use client"
 
 import { usePathname, useRouter } from "next/navigation"
+import { useSelector } from "react-redux"
+import type { RootState } from "@/store"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { getAdjacentSteps, useProblemValidation } from "../context"
 import {
-  BookOpen, GitFork, Clock, ThumbsDown, Heart, BarChart2, Gavel, LayoutTemplate,
+  BookOpen, GitFork, Clock, ThumbsDown, Heart, BarChart2, ShieldCheck, LayoutTemplate,
 } from "lucide-react"
 
 const STEPS = [
@@ -14,15 +16,32 @@ const STEPS = [
   { icon: ThumbsDown, title: "Alternatives Shortcomings", description: "Explore why existing solutions fall short and where they leave customers frustrated or underserved.", bg: "bg-orange-100 dark:bg-orange-950", color: "text-orange-600 dark:text-orange-400" },
   { icon: Heart, title: "Emotional Impact", description: "Capture how the problem makes customers feel — the emotional weight that makes it genuinely meaningful to solve.", bg: "bg-pink-100 dark:bg-pink-950", color: "text-pink-600 dark:text-pink-400" },
   { icon: BarChart2, title: "Quantifiable Impact", description: "Measure the tangible cost of the problem in time, money, or other concrete terms.", bg: "bg-amber-100 dark:bg-amber-950", color: "text-amber-600 dark:text-amber-400" },
-  { icon: Gavel, title: "Verdict", description: "Decide whether the problem is valid and worth pursuing — or not worth solving right now.", bg: "bg-red-100 dark:bg-red-950", color: "text-red-600 dark:text-red-400" },
+  { icon: ShieldCheck, title: "Validate", description: "Decide whether the problem is valid and worth pursuing — or not worth solving right now.", bg: "bg-red-100 dark:bg-red-950", color: "text-red-600 dark:text-red-400" },
   { icon: LayoutTemplate, title: "Problem Statement", description: "Review the problem statement assembled from your discovery and validation work.", bg: "bg-green-100 dark:bg-green-950", color: "text-green-600 dark:text-green-400" },
 ]
+
+function FieldRow({ label, values }: { label: string; values: string[] }) {
+  if (values.length === 0) return null
+  return (
+    <div className="flex flex-col gap-1">
+      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</p>
+      <div className="flex flex-wrap gap-1.5">
+        {values.map((v) => (
+          <span key={v} className="rounded-md bg-muted px-2 py-0.5 text-xs">{v}</span>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 export default function IntroductionPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { problemRef } = useProblemValidation()
+  const { problemRef, problemId } = useProblemValidation()
   const { nextPath } = getAdjacentSteps(pathname, problemRef)
+  const problem = useSelector((state: RootState) =>
+    state.problems.problems.find((p) => p.id === problemId)
+  )
 
   return (
     <Card className="w-full flex-1">
@@ -31,6 +50,21 @@ export default function IntroductionPage() {
           <BookOpen className="h-4 w-4 text-muted-foreground" />
           <h2 className="text-lg font-semibold">Problem Validation</h2>
         </div>
+
+        {problem && (
+          <div className="flex flex-col gap-3 rounded-lg border p-4">
+            {problem.description && (
+              <div className="flex flex-col gap-1">
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Problem Description</p>
+                <p className="text-sm">{problem.description}</p>
+              </div>
+            )}
+            <FieldRow label="Customer Segments" values={problem.customerSegments} />
+            <FieldRow label="Context" values={problem.contexts} />
+            <FieldRow label="Jobs to Be Done" values={problem.jobsToBeDone} />
+            <FieldRow label="Problem Types" values={problem.problemTypes} />
+          </div>
+        )}
 
         <p className="text-sm text-muted-foreground leading-relaxed">
           It&apos;s time to validate whether this problem is truly worth solving. You&apos;ll stress-test it by examining the alternatives, context, emotional weight, and real-world impact — so you can make a confident, evidence-based decision before committing to a solution.

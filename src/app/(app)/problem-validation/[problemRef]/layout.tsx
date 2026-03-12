@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ProblemValidationProvider, useProblemValidation, NAV_ITEMS } from "./context"
 import {
-  GitFork, Clock, Heart, BarChart2, Gavel, FileText, LayoutTemplate, BookOpen,
+  GitFork, Clock, Heart, BarChart2, ShieldCheck, FileText, LayoutTemplate, BookOpen,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
@@ -15,7 +15,7 @@ const NAV_ICONS: Record<string, LucideIcon> = {
   "context-step": Clock,
   "emotional-impact": Heart,
   "quantifiable-impact": BarChart2,
-  verdict: Gavel,
+  validate: ShieldCheck,
   "problem-statement": LayoutTemplate,
 }
 
@@ -28,7 +28,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex gap-6 flex-1 w-full items-start">
-      <div className="w-56 sticky top-4 flex flex-col gap-3 shrink-0">
+      <div className="w-56 flex flex-col gap-3 shrink-0">
         <Card>
           <CardContent className="p-3">
             <div className="flex flex-col gap-1">

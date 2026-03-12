@@ -1,14 +1,15 @@
 "use client"
 
-import { useParams, usePathname, useRouter } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
+import { useSelector } from "react-redux"
+import type { RootState } from "@/store"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useProblemValidation, getAdjacentSteps } from "../context"
-import { useIdeas } from "@/store/ideas-hooks"
 import type { DecisionLevel } from "@/types/idea"
 import { cn } from "@/lib/utils"
-import { Gavel, CheckCircle2, XCircle, GitFork, Heart, BarChart2, Clock, DollarSign, TrendingUp, TrendingDown, Minus } from "lucide-react"
+import { ShieldCheck, CheckCircle2, XCircle, GitFork, Heart, BarChart2, Clock, DollarSign, TrendingUp, TrendingDown, Minus } from "lucide-react"
 
 const LEVELS: DecisionLevel[] = ["low", "medium", "high"]
 
@@ -72,39 +73,25 @@ function getSignal(time: DecisionLevel, cost: DecisionLevel, ret: DecisionLevel)
 export default function VerdictPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const params = useParams()
-  const ideaId = Number(params.ideaId)
-  const { prevPath } = getAdjacentSteps(pathname, ideaId)
   const {
-    selectedProblemId, alternatives, emotionalImpact,
-    impacts, status, setStatus, reason, setReason,
+    problemRef, problemId,
+    alternatives, emotionalImpact,
+    quantifiableImpacts, status, setStatus, reason, setReason,
     timeLevel, setTimeLevel, costLevel, setCostLevel, returnLevel, setReturnLevel,
     saveValidation,
   } = useProblemValidation()
-  const { getIdea, updateIdea } = useIdeas()
+  const { prevPath } = getAdjacentSteps(pathname, problemRef)
 
-  const idea = getIdea(ideaId)
-  const allProblems = idea?.jobs.flatMap((j) => j.problems) ?? []
-  const selectedProblem = allProblems.find((p) => p.id === selectedProblemId)
+  const problem = useSelector((state: RootState) =>
+    state.problems.problems.find((p) => p.id === problemId)
+  )
 
   const signal = getSignal(timeLevel, costLevel, returnLevel)
 
   const handleVerdict = (verdict: "valid" | "invalid") => {
     setStatus(verdict)
     saveValidation(verdict)
-    const filledProblems = allProblems.filter((p) => p.text.trim())
-    const allDecided =
-      filledProblems.length > 0 &&
-      filledProblems.every(
-        (p) =>
-          p.id === selectedProblemId
-            ? verdict === "valid" || verdict === "invalid"
-            : p.validationStatus === "valid" || p.validationStatus === "invalid"
-      )
-    if (allDecided) {
-      updateIdea(ideaId, { problemValidationComplete: true })
-    }
-    router.push(`/ideas/${ideaId}/problem-validation/pick-a-problem`)
+    router.push("/problem-validation")
   }
 
   const handleSave = () => {
@@ -117,17 +104,53 @@ export default function VerdictPage() {
     <Card className="w-full flex-1">
       <CardContent className="p-8 flex flex-col gap-6">
         <div className="flex items-center gap-2.5">
-          <Gavel className="h-4 w-4 text-muted-foreground" />
-          <h2 className="text-lg font-semibold">Verdict</h2>
+          <ShieldCheck className="h-4 w-4 text-muted-foreground" />
+          <h2 className="text-lg font-semibold">Validate</h2>
         </div>
         <p className="text-sm text-muted-foreground">
           Weigh the economics of solving this problem — does the expected return justify the time and cost?
         </p>
 
-        {selectedProblem && (
-          <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4">
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1">Problem</p>
-            <p className="text-sm font-medium">{selectedProblem.text}</p>
+        {problem && (
+          <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4 flex flex-col gap-3">
+            {problem.description && (
+              <div className="flex flex-col gap-1">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Problem Description</p>
+                <p className="text-sm font-medium">{problem.description}</p>
+              </div>
+            )}
+            {problem.customerSegments.length > 0 && (
+              <div className="flex flex-col gap-1">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Customer Segments</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {problem.customerSegments.map((v) => <span key={v} className="rounded-md bg-background px-2 py-0.5 text-xs border">{v}</span>)}
+                </div>
+              </div>
+            )}
+            {problem.contexts.length > 0 && (
+              <div className="flex flex-col gap-1">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Context</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {problem.contexts.map((v) => <span key={v} className="rounded-md bg-background px-2 py-0.5 text-xs border">{v}</span>)}
+                </div>
+              </div>
+            )}
+            {problem.jobsToBeDone.length > 0 && (
+              <div className="flex flex-col gap-1">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Jobs to Be Done</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {problem.jobsToBeDone.map((v) => <span key={v} className="rounded-md bg-background px-2 py-0.5 text-xs border">{v}</span>)}
+                </div>
+              </div>
+            )}
+            {problem.problemTypes.length > 0 && (
+              <div className="flex flex-col gap-1">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Problem Types</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {problem.problemTypes.map((v) => <span key={v} className="rounded-md bg-background px-2 py-0.5 text-xs border">{v}</span>)}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -170,8 +193,15 @@ export default function VerdictPage() {
                 <Heart className="h-3.5 w-3.5 text-muted-foreground" />
                 <p className="text-sm font-semibold">Emotional impact</p>
               </div>
-              {emotionalImpact ? (
-                <p className="text-sm">{emotionalImpact}</p>
+              {emotionalImpact.length > 0 ? (
+                <ul className="flex flex-col gap-1">
+                  {emotionalImpact.map((item, i) => (
+                    <li key={i} className="text-sm flex gap-1.5">
+                      <span className="text-muted-foreground shrink-0">–</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
               ) : (
                 <p className="text-sm text-muted-foreground italic">Not filled in</p>
               )}
@@ -181,9 +211,9 @@ export default function VerdictPage() {
                 <BarChart2 className="h-3.5 w-3.5 text-muted-foreground" />
                 <p className="text-sm font-semibold">Quantifiable impact</p>
               </div>
-              {impacts.length > 0 ? (
+              {quantifiableImpacts.length > 0 ? (
                 <ul className="flex flex-col gap-1">
-                  {impacts.map((item, i) => (
+                  {quantifiableImpacts.map((item, i) => (
                     <li key={i} className="text-sm flex gap-2">
                       <span className="font-medium shrink-0">{item.category || "—"}</span>
                       <span className="text-muted-foreground">{item.description || "—"}</span>

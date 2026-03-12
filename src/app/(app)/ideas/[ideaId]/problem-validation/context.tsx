@@ -2,9 +2,9 @@
 
 import { createContext, useContext, useState, useCallback, useEffect, useRef, type ReactNode } from "react"
 import { useIdeas } from "@/store/ideas-hooks"
-import type { AlternativeItem, ImpactItem, ValidationStatus } from "@/types/idea"
+import type { AlternativeItem, ImpactItem, ValidationStatus, DecisionLevel } from "@/types/idea"
 
-export type { AlternativeItem, ImpactItem, ValidationStatus }
+export type { AlternativeItem, ImpactItem, ValidationStatus, DecisionLevel }
 
 type ProblemValidationContextValue = {
   ideaId: number
@@ -22,6 +22,12 @@ type ProblemValidationContextValue = {
   setStatus: (val: ValidationStatus) => void
   reason: string
   setReason: (val: string) => void
+  timeLevel: DecisionLevel
+  setTimeLevel: (val: DecisionLevel) => void
+  costLevel: DecisionLevel
+  setCostLevel: (val: DecisionLevel) => void
+  returnLevel: DecisionLevel
+  setReturnLevel: (val: DecisionLevel) => void
   saveValidation: (statusOverride?: ValidationStatus) => void
 }
 
@@ -43,6 +49,9 @@ export function ProblemValidationProvider({
   const [impacts, setImpacts] = useState<ImpactItem[]>([])
   const [status, setStatus] = useState<ValidationStatus>("unvalidated")
   const [reason, setReason] = useState("")
+  const [timeLevel, setTimeLevel] = useState<DecisionLevel>("")
+  const [costLevel, setCostLevel] = useState<DecisionLevel>("")
+  const [returnLevel, setReturnLevel] = useState<DecisionLevel>("")
 
   // Used to skip auto-save on the render immediately after loading a problem's data
   const justLoaded = useRef(false)
@@ -63,6 +72,9 @@ export function ProblemValidationProvider({
         setImpacts(problem.impacts)
         setStatus(problem.validationStatus)
         setReason(problem.reason)
+        setTimeLevel(problem.timeLevel ?? "")
+        setCostLevel(problem.costLevel ?? "")
+        setReturnLevel(problem.returnLevel ?? "")
       } else {
         setAlternatives([])
         setContextWhen("")
@@ -70,6 +82,9 @@ export function ProblemValidationProvider({
         setImpacts([])
         setStatus("unvalidated")
         setReason("")
+        setTimeLevel("")
+        setCostLevel("")
+        setReturnLevel("")
       }
     },
     [ideaId, getIdea]
@@ -100,13 +115,16 @@ export function ProblemValidationProvider({
                 emotionalImpact,
                 impacts,
                 reason,
+                timeLevel,
+                costLevel,
+                returnLevel,
               }
             : p
         ),
       }))
       updateIdea(ideaId, { jobs: updatedJobs, selectedProblemId: problemId })
     },
-    [ideaId, getIdea, updateIdea, alternatives, contextWhen, emotionalImpact, impacts, status, reason]
+    [ideaId, getIdea, updateIdea, alternatives, contextWhen, emotionalImpact, impacts, status, reason, timeLevel, costLevel, returnLevel]
   )
 
   // Keep the ref current so the auto-save effect always calls the latest version
@@ -122,7 +140,7 @@ export function ProblemValidationProvider({
     if (problemId === null) return
     saveCurrentValidationRef.current?.(problemId)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [alternatives, contextWhen, emotionalImpact, impacts, status, reason])
+  }, [alternatives, contextWhen, emotionalImpact, impacts, status, reason, timeLevel, costLevel, returnLevel])
 
   const setSelectedProblemId = useCallback(
     (id: number | null) => {
@@ -157,6 +175,9 @@ export function ProblemValidationProvider({
         impacts, setImpacts,
         status, setStatus,
         reason, setReason,
+        timeLevel, setTimeLevel,
+        costLevel, setCostLevel,
+        returnLevel, setReturnLevel,
         saveValidation,
       }}
     >
