@@ -17,11 +17,11 @@ export type Problem = {
   problemTypes: string[]
   source: ProblemSource
   alternatives: AlternativeItem[]
-  emotionalImpact: string
-  impacts: ImpactItem[]
+  emotionalImpact: string[]
+  quantifiableImpacts: ImpactItem[]
 }
 
-export type ProblemPatch = Partial<Pick<Problem, "description" | "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "alternatives" | "emotionalImpact" | "impacts">>
+export type ProblemPatch = Partial<Pick<Problem, "description" | "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "alternatives" | "emotionalImpact" | "quantifiableImpacts">>
 
 export function getProblemLabel(problem: Problem): string {
   return [
@@ -120,8 +120,8 @@ export const problems = createModel<RootModel>()({
         problemTypes: payload.problemTypes ?? [],
         source: payload.source,
         alternatives: payload.alternatives ?? [],
-        emotionalImpact: payload.emotionalImpact ?? "",
-        impacts: payload.impacts ?? [],
+        emotionalImpact: payload.emotionalImpact ?? [],
+        quantifiableImpacts: payload.quantifiableImpacts ?? [],
       }
       dispatch.problems.addProblem(newProblem)
       const nextState: ProblemsState = {

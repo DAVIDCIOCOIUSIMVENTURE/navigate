@@ -18,10 +18,10 @@ type ProblemValidationContextValue = {
   setAlternatives: (val: AlternativeItem[]) => void
   contextWhen: string
   setContextWhen: (val: string) => void
-  emotionalImpact: string
-  setEmotionalImpact: (val: string) => void
-  impacts: ImpactItem[]
-  setImpacts: (val: ImpactItem[]) => void
+  emotionalImpact: string[]
+  setEmotionalImpact: (val: string[]) => void
+  quantifiableImpacts: ImpactItem[]
+  setQuantifiableImpacts: (val: ImpactItem[]) => void
   status: ValidationStatus
   setStatus: (val: ValidationStatus) => void
   reason: string
@@ -74,8 +74,8 @@ export function ProblemValidationProvider({
   const problems = useSelector((state: RootState) => state.problems.problems)
   const problem = problems.find((p) => p.id === problemId)
   const alternatives = problem?.alternatives ?? []
-  const emotionalImpact = problem?.emotionalImpact ?? ""
-  const impacts = problem?.impacts ?? []
+  const emotionalImpact = problem?.emotionalImpact ?? []
+  const quantifiableImpacts = problem?.quantifiableImpacts ?? []
 
   const setAlternatives = useCallback(
     (val: AlternativeItem[]) => {
@@ -85,15 +85,15 @@ export function ProblemValidationProvider({
   )
 
   const setEmotionalImpact = useCallback(
-    (val: string) => {
+    (val: string[]) => {
       dispatch.problems.update({ id: problemId, patch: { emotionalImpact: val } })
     },
     [dispatch, problemId]
   )
 
-  const setImpacts = useCallback(
+  const setQuantifiableImpacts = useCallback(
     (val: ImpactItem[]) => {
-      dispatch.problems.update({ id: problemId, patch: { impacts: val } })
+      dispatch.problems.update({ id: problemId, patch: { quantifiableImpacts: val } })
     },
     [dispatch, problemId]
   )
@@ -130,7 +130,7 @@ export function ProblemValidationProvider({
         alternatives, setAlternatives,
         contextWhen, setContextWhen,
         emotionalImpact, setEmotionalImpact,
-        impacts, setImpacts,
+        quantifiableImpacts, setQuantifiableImpacts,
         status, setStatus,
         reason, setReason,
         saveValidation,
@@ -150,8 +150,8 @@ export function useProblemValidation() {
 export const NAV_ITEMS = [
   { label: "Introduction", path: "introduction" },
   { label: "Alternatives & Shortcomings", path: "alternatives" },
-  { label: "Emotional Impact", path: "emotional-impact" },
   { label: "Quantifiable Impact", path: "quantifiable-impact" },
+  { label: "Emotional Impact", path: "emotional-impact" },
   { label: "Verdict", path: "verdict" },
   { label: "Problem Statement", path: "problem-statement" },
 ] as const

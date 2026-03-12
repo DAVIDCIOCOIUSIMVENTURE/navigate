@@ -81,7 +81,7 @@ export default function AlternativesPage() {
               className="w-full flex items-center justify-center gap-1.5 border border-dashed rounded-lg py-2.5 text-sm text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"
             >
               <Plus className="h-4 w-4" />
-              Add alternative
+              Add Alternative
             </button>
           )}
         </div>

@@ -24,7 +24,7 @@ export default function VerdictPage() {
   const {
     problemRef, problemId,
     alternatives, emotionalImpact,
-    impacts, status, setStatus, reason, setReason, saveValidation,
+    quantifiableImpacts, status, setStatus, reason, setReason, saveValidation,
   } = useProblemValidation()
   const { prevPath } = getAdjacentSteps(pathname, problemRef)
 
@@ -100,16 +100,27 @@ export default function VerdictPage() {
                 <Heart className="h-3.5 w-3.5 text-muted-foreground" />
                 <p className="text-sm font-semibold">Emotional Impact</p>
               </div>
-              <SummaryField value={emotionalImpact} />
+              {emotionalImpact.length > 0 ? (
+                <ul className="flex flex-col gap-1">
+                  {emotionalImpact.map((item, i) => (
+                    <li key={i} className="text-sm flex gap-1.5">
+                      <span className="text-muted-foreground shrink-0">–</span>
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-sm text-muted-foreground italic">Not filled in</p>
+              )}
             </div>
             <div className="rounded-lg border p-4 flex flex-col gap-2">
               <div className="flex items-center gap-2">
                 <BarChart2 className="h-3.5 w-3.5 text-muted-foreground" />
                 <p className="text-sm font-semibold">Quantifiable Impact</p>
               </div>
-              {impacts.length > 0 ? (
+              {quantifiableImpacts.length > 0 ? (
                 <ul className="flex flex-col gap-1">
-                  {impacts.map((item, i) => (
+                  {quantifiableImpacts.map((item, i) => (
                     <li key={i} className="text-sm flex gap-2">
                       <span className="font-medium shrink-0">{item.category || "—"}</span>
                       <span className="text-muted-foreground">{item.description || "—"}</span>

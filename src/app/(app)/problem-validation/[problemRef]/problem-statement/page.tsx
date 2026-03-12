@@ -87,8 +87,8 @@ export default function ProblemStatementPage() {
     problemId,
     alternatives, setAlternatives,
     contextWhen, setContextWhen,
-    emotionalImpact, setEmotionalImpact,
-    impacts, setImpacts,
+    emotionalImpact,
+    quantifiableImpacts, setQuantifiableImpacts,
   } = useProblemValidation()
 
   const problems = useSelector((state: RootState) => state.problems.problems)
@@ -103,10 +103,10 @@ export default function ProblemStatementPage() {
 
   const addImpact = () => {
     if (!impactDraft.category.trim() && !impactDraft.description.trim()) return
-    setImpacts([...impacts, { ...impactDraft }])
+    setQuantifiableImpacts([...quantifiableImpacts, { ...impactDraft }])
     setImpactDraft({ category: "", description: "" })
   }
-  const removeImpact = (i: number) => setImpacts(impacts.filter((_, idx) => idx !== i))
+  const removeImpact = (i: number) => setQuantifiableImpacts(quantifiableImpacts.filter((_, idx) => idx !== i))
 
   const addAlternative = () => {
     const trimmed = altDraft.trim()
@@ -183,16 +183,26 @@ export default function ProblemStatementPage() {
           )}
         </div>
 
-        <SimpleTextCard
-          icon={Heart}
-          label="Emotional Impact"
-          description="How does the problem make customers feel?"
-          value={emotionalImpact}
-          placeholder="Describe frustration, anxiety, stress, or other emotions..."
-          color="bg-pink-50 border-pink-200"
-          dialogColor="bg-pink-50/50 border-pink-200"
-          onChange={setEmotionalImpact}
-        />
+        <div className="rounded-xl border-2 bg-pink-50 border-pink-200 p-5 flex flex-col gap-3">
+          <ClickableCardTitle
+            icon={Heart}
+            label="Emotional Impact"
+            description="How does the problem make customers feel?"
+            onEdit={() => router.push(`/problem-validation/${problemId}/emotional-impact`)}
+          />
+          {emotionalImpact.length > 0 ? (
+            <ul className="flex flex-col gap-1">
+              {emotionalImpact.map((item, i) => (
+                <li key={i} className="text-sm flex gap-1.5">
+                  <span className="text-muted-foreground shrink-0">–</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <EmptyValue />
+          )}
+        </div>
 
         <div className="rounded-xl border-2 bg-orange-50 border-orange-200 p-5 flex flex-col gap-3">
           <ClickableCardTitle
@@ -201,9 +211,9 @@ export default function ProblemStatementPage() {
             description="What is the measurable cost of the problem?"
             onEdit={() => setImpactOpen(true)}
           />
-          {impacts.length > 0 ? (
+          {quantifiableImpacts.length > 0 ? (
             <ul className="flex flex-col gap-1.5">
-              {impacts.map((item, i) => (
+              {quantifiableImpacts.map((item, i) => (
                 <li key={i} className="flex items-center gap-2 bg-white/70 rounded-lg px-3 py-2 text-sm">
                   <span className="shrink-0 font-medium text-orange-700 min-w-[7rem]">{item.category || "—"}</span>
                   <span className="flex-1 text-muted-foreground border-l border-orange-200 pl-2">{item.description || "—"}</span>
@@ -311,9 +321,9 @@ export default function ProblemStatementPage() {
             <DialogTitle>Quantifiable Impact</DialogTitle>
             <DialogDescription>What is the measurable cost of the problem?</DialogDescription>
           </DialogHeader>
-          {impacts.length > 0 && (
+          {quantifiableImpacts.length > 0 && (
             <ul className="flex flex-col gap-1.5">
-              {impacts.map((item, i) => (
+              {quantifiableImpacts.map((item, i) => (
                 <li key={i} className="flex items-center gap-2 bg-orange-50/50 rounded-lg px-3 py-2 text-sm">
                   <span className="shrink-0 font-medium text-orange-700 min-w-[7rem]">{item.category || "—"}</span>
                   <span className="flex-1 text-muted-foreground border-l border-orange-200 pl-2">{item.description || "—"}</span>
