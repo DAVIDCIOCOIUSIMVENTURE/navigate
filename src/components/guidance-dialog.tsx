@@ -166,6 +166,114 @@ const guidanceItems: GuidanceItem[] = [
         </div>
       </div>
     )
+  },
+  {
+    id: "problem-validation",
+    title: "Problem Validation",
+    content: (
+      <div className="space-y-4">
+        <h3 className="text-lg font-semibold">Problem Validation</h3>
+        <p className="text-sm text-muted-foreground">
+          Problem Validation is where you stress-test a candidate problem before investing in building a
+          solution. The goal is not to prove the problem is valid — it is to gather enough evidence to make
+          an honest, informed decision about whether it is worth pursuing.
+        </p>
+        <div className="space-y-3">
+          <div>
+            <h4 className="font-medium">How it works</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              Each problem goes through a structured sequence of steps. Work through them in order — each
+              step builds on the last — but you can return and update any step as your thinking develops.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-medium">Alternatives &amp; Shortcomings</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              Start by listing how people currently deal with this problem — the tools, workarounds,
+              or habits they already use. Then, for each alternative, note its shortcomings: what it
+              fails to do well, what it costs, or what friction it introduces. This step grounds the
+              problem in reality and reveals the gap your solution would need to fill.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-medium">Emotional Impact</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              Capture how the problem makes people feel. Emotional weight is a strong signal of whether
+              a problem is genuinely painful — frustration, anxiety, embarrassment, or helplessness all
+              indicate that people care enough to want a better solution. Add as many emotional impacts
+              as apply; even one strong emotion is significant.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-medium">Quantifiable Impact</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              Document measurable evidence of the problem&apos;s cost. Choose a category — such as time
+              lost, money wasted, error rates, or customer churn — and describe the scale of the impact
+              in concrete terms. Numbers and specifics matter here: &quot;two hours per week per
+              employee&quot; is more compelling than &quot;wastes a lot of time&quot;.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-medium">Verdict</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              The verdict step synthesises everything you have gathered. Review the evidence summary —
+              alternatives, emotional impact, and quantifiable impact — alongside four decision factors:
+            </p>
+            <ul className="list-disc pl-4 space-y-1 text-sm text-muted-foreground mt-2">
+              <li>
+                <span className="font-medium text-foreground">Time to solve</span> — how long it would
+                realistically take to build a meaningful solution
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Cost to solve</span> — the estimated
+                investment required (money, people, infrastructure)
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Expected return</span> — the potential
+                upside if the solution works
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Market size</span> — how many people or
+                organisations experience this problem
+              </li>
+            </ul>
+            <p className="text-sm text-muted-foreground mt-2">
+              Set each factor to Low, Medium, or High and optionally enter a numeric estimate. A
+              validation signal is calculated from these factors to guide your thinking. Then record
+              your verdict: <span className="font-medium text-foreground">Valid</span>,{" "}
+              <span className="font-medium text-foreground">Unsure</span>, or{" "}
+              <span className="font-medium text-foreground">Invalid</span>. There is no right answer —
+              the verdict is your judgement call based on the evidence in front of you.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-medium">Problem Statement</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              The final step produces a consolidated summary of everything you have discovered. Review
+              the core problem definition — including customer segment, context, job to be done, and
+              problem type — alongside all the evidence you collected. You can edit any field directly
+              from this view. This statement becomes the artefact you carry forward if you decide to
+              pursue the problem.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-medium">Tips</h4>
+            <ul className="list-disc pl-4 space-y-1 text-sm text-muted-foreground mt-1">
+              <li>Be honest about the evidence — weak validation data is a signal, not a failure</li>
+              <li>Alternatives with many shortcomings suggest a genuine gap in the market</li>
+              <li>If you struggle to name emotional or quantifiable impacts, the problem may not be painful enough</li>
+              <li>You can validate multiple problems and compare verdicts before committing to one</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    )
   }
 ]
 
