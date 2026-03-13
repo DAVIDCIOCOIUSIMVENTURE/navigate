@@ -27,6 +27,13 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const base = `/problem-validation/${problemRef}`
 
   return (
+    <div className="flex flex-col gap-6 flex-1 w-full">
+      <div className="flex flex-col gap-1">
+        <h1 className="text-xl font-bold">Problem Validation</h1>
+        <p className="text-sm text-muted-foreground">
+          Validate that the problems you&apos;ve identified are real, painful, and worth solving.
+        </p>
+      </div>
     <div className="flex gap-6 flex-1 w-full items-start">
       <div className="w-56 flex flex-col gap-3 shrink-0">
         <Card>
@@ -53,6 +60,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       </div>
 
       <div className="flex-1">{children}</div>
+    </div>
     </div>
   )
 }

@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
-import { Card, CardContent, CardHeader, CardEyebrow, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
@@ -165,7 +165,6 @@ export default function VerdictPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-8 pt-8 pb-0">
-        <CardEyebrow icon={ShieldCheck}>Problem Validation</CardEyebrow>
         <CardTitle icon={ShieldCheck} className="text-lg">Validate</CardTitle>
       </CardHeader>
       <CardContent className="p-8 pt-6 flex flex-col gap-6">

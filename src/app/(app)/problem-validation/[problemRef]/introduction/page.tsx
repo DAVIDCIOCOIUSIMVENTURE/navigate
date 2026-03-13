@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
-import { Card, CardContent, CardHeader, CardEyebrow, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { getAdjacentSteps, useProblemValidation } from "../context"
 import {
@@ -44,7 +44,6 @@ export default function IntroductionPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-8 pt-8 pb-0">
-        <CardEyebrow icon={BookOpen}>Problem Validation</CardEyebrow>
         <CardTitle icon={BookOpen} className="text-lg">Introduction</CardTitle>
       </CardHeader>
       <CardContent className="p-8 pt-6 flex flex-col gap-6">

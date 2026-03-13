@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react"
 import { usePathname, useRouter } from "next/navigation"
-import { Card, CardContent, CardHeader, CardEyebrow, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useProblemValidation, getAdjacentSteps } from "../context"
@@ -62,7 +62,6 @@ export default function QuantifiableImpactPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-8 pt-8 pb-0">
-        <CardEyebrow icon={BarChart2}>Problem Validation</CardEyebrow>
         <CardTitle icon={BarChart2} className="text-lg">Quantifiable Impact</CardTitle>
       </CardHeader>
       <CardContent className="p-8 pt-6 flex flex-col gap-5">

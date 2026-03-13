@@ -8,7 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { AlertCircle, GitFork, Heart, BarChart2, Plus, X, CheckCircle2, HelpCircle, XCircle, Clock, Pencil, LayoutTemplate } from "lucide-react"
-import { Card, CardContent, CardHeader, CardEyebrow } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useProblemValidation } from "../context"
 import type { ImpactItem, ValidationStatus } from "@/types/idea"
@@ -201,8 +201,7 @@ export default function ProblemStatementPage() {
       <Card className="w-full flex-1">
         <CardHeader className="px-8 pt-8 pb-0 flex-row items-start justify-between gap-4 space-y-0">
           <div className="flex flex-col gap-1">
-            <CardEyebrow icon={LayoutTemplate}>Problem Validation</CardEyebrow>
-            <h1 className="text-xl font-bold">Problem Statement</h1>
+            <CardTitle icon={LayoutTemplate} className="text-lg">Problem Statement</CardTitle>
             <p className="text-sm text-muted-foreground">Click the pencil icon on any card to edit it.</p>
           </div>
           <StatusSelect status={status} setStatus={setStatus} />
