@@ -31,13 +31,11 @@ export default function SelfDiscoveryLayout({
         <div className="flex flex-col h-full w-full gap-6 flex-1">
             <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2.5">
                         {navItem && Icon && (
-                            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500">
-                                <Icon className="h-5 w-5 text-white" />
-                            </div>
+                            <Icon className="h-5 w-5 text-muted-foreground" />
                         )}
-                        <h1 className="text-xl font-bold">Self Discovery</h1>
+                        <h1 className="text-xl font-semibold leading-none tracking-tight">Self Discovery</h1>
                     </div>
                     <Sheet open={isOpen} onOpenChange={setIsOpen}>
                         <SheetTrigger asChild>
@@ -91,7 +89,7 @@ export default function SelfDiscoveryLayout({
                         </SheetContent>
                     </Sheet>
                 </div>
-                <p className="text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                     Explore your interests, skills, and potential through guided questions and exercises.
                 </p>
             </div>
@@ -99,31 +97,31 @@ export default function SelfDiscoveryLayout({
             <div className="flex gap-6 flex-1 w-full">
                 {/* Left Navigation */}
                 <Card className="w-72">
-                    <CardContent className="p-4">
-                        <div className="flex flex-col gap-2">
+                    <CardContent className="p-3">
+                        <div className="flex flex-col gap-1">
                             <Button
                                 variant={pathname === "/self-discovery" ? "secondary" : "ghost"}
-                                className="w-full justify-start h-auto py-2 text-left whitespace-normal"
+                                className="w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2"
                                 onClick={() => router.push("/self-discovery")}
                             >
                                 Intro
                             </Button>
-                            <Accordion type="single" collapsible className="w-full flex flex-col gap-2">
+                            <Accordion type="single" collapsible className="w-full flex flex-col gap-1">
                                 {SELF_DISCOVERY_CATEGORIES.map((category) => (
                                     <AccordionItem key={category.url} value={category.url}>
                                         <AccordionTrigger
-                                            className={`w-full h-auto py-2 gap-4 justify-between px-3 text-left whitespace-normal rounded-md hover:no-underline ${pathname.startsWith(`/self-discovery/${category.url}`)
+                                            className={`w-full h-auto py-1.5 gap-4 justify-between px-3 text-sm text-left whitespace-normal rounded-md hover:no-underline ${pathname.startsWith(`/self-discovery/${category.url}`)
                                                 ? "bg-secondary text-secondary-foreground"
                                                 : "hover:bg-accent hover:text-accent-foreground"
                                                 }`}
                                             aria-label={`${category.title} category`}
                                         >
-                                            <div className="flex items-center gap-3">
+                                            <div className="flex items-center gap-2">
                                                 {(() => {
                                                     const CategoryIcon = getSelfDiscoveryCategoryIcon(category.url)
-                                                    return CategoryIcon && <CategoryIcon className={cn("h-4 w-4 shrink-0",
+                                                    return CategoryIcon && <CategoryIcon className={cn("h-3.5 w-3.5 shrink-0",
                                                         pathname.startsWith(`/self-discovery/${category.url}`) ?
-                                                            "text-primary" :
+                                                            "text-blue-500" :
                                                             "text-muted-foreground"
                                                     )} aria-hidden="true" />
                                                 })()}
@@ -131,19 +129,26 @@ export default function SelfDiscoveryLayout({
                                             </div>
                                         </AccordionTrigger>
                                         <AccordionContent>
-                                            <ul className="pl-8 pr-4 space-y-2 list-disc mt-2" role="list">
-                                                {category.questions.map((question) => (
-                                                    <li
-                                                        key={question.url}
-                                                        className={`text-sm text-muted-foreground hover:text-foreground cursor-pointer ${pathname === `/self-discovery/${category.url}/${question.url}` ? "text-primary" : ""
-                                                            }`}
-                                                        onClick={() => router.push(`/self-discovery/${category.url}/${question.url}`)}
-                                                        role="menuitem"
-                                                        aria-current={pathname === `/self-discovery/${category.url}/${question.url}` ? "page" : undefined}
-                                                    >
-                                                        {question.title}
-                                                    </li>
-                                                ))}
+                                            <ul className="pl-8 pr-4 space-y-1 mt-2" role="list">
+                                                {category.questions.map((question) => {
+                                                    const isActive = pathname === `/self-discovery/${category.url}/${question.url}`
+                                                    return (
+                                                        <li
+                                                            key={question.url}
+                                                            className={cn(
+                                                                "text-sm cursor-pointer rounded-md px-2 py-1",
+                                                                isActive
+                                                                    ? "bg-secondary text-secondary-foreground font-medium"
+                                                                    : "text-muted-foreground hover:text-foreground"
+                                                            )}
+                                                            onClick={() => router.push(`/self-discovery/${category.url}/${question.url}`)}
+                                                            role="menuitem"
+                                                            aria-current={isActive ? "page" : undefined}
+                                                        >
+                                                            {question.title}
+                                                        </li>
+                                                    )
+                                                })}
                                             </ul>
                                         </AccordionContent>
                                     </AccordionItem>

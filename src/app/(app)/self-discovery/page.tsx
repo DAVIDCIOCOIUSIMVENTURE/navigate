@@ -1,10 +1,10 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { ChevronRight } from "lucide-react"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardEyebrow, CardTitle } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
+import { Compass } from "lucide-react"
 
 export default function SelfDiscoveryPage() {
   const router = useRouter()
@@ -12,19 +12,20 @@ export default function SelfDiscoveryPage() {
 
   return (
     <Card className="w-full flex-1">
-      <CardContent className="flex p-6 w-full flex-1 flex-col gap-6">
-        <div className="flex flex-col gap-3">
-          <h2 className="text-xl font-semibold">Welcome to Self Discovery</h2>
-          <p className="text-muted-foreground">
-            This guided journey will help you uncover your unique strengths, interests, and potential as a founder.
-            Through a series of questions and exercises, you&apos;ll gain valuable insights about yourself and your entrepreneurial path.
-            At the end of this exercise, you&apos;ll have a set of problem triggers that you can take into the Ideas section.
-          </p>
-        </div>
+      <CardHeader className="px-8 pt-8 pb-0">
+        <CardEyebrow icon={Compass}>Self Discovery</CardEyebrow>
+        <CardTitle icon={Compass} className="text-lg">Introduction</CardTitle>
+      </CardHeader>
+      <CardContent className="p-8 pt-6 flex flex-col gap-6">
+        <p className="text-sm text-muted-foreground leading-relaxed">
+          This guided journey will help you uncover your unique strengths, interests, and potential as a founder.
+          Through a series of questions and exercises, you&apos;ll gain valuable insights about yourself and your entrepreneurial path.
+          At the end of this exercise, you&apos;ll have a set of problem triggers that you can take into the Ideas section.
+        </p>
 
-        <div className="space-y-2">
-          <h3 className="text-lg font-medium">What to Expect:</h3>
-          <ul className="list-disc list-inside space-y-2 text-muted-foreground">
+        <div className="flex flex-col gap-3">
+          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">What you&apos;ll work through</p>
+          <ul className="list-disc list-inside space-y-2 text-sm text-muted-foreground">
             <li>Answer the questions within each category</li>
             <li>Optionally use suggestion exercises to discover more insights</li>
             <li>Take your time to reflect deeply on each question</li>
@@ -32,16 +33,13 @@ export default function SelfDiscoveryPage() {
             <li>Return to update your answers as you grow and learn</li>
           </ul>
         </div>
+
+        <div className="flex justify-end mt-2">
+          <Button onClick={() => router.push(`/self-discovery/${firstCategoryUrl}`)}>
+            Get Started
+          </Button>
+        </div>
       </CardContent>
-      <CardFooter className="flex justify-end">
-        <Button
-          className="bg-purple-600 hover:bg-purple-700 text-white"
-          onClick={() => router.push(`/self-discovery/${firstCategoryUrl}`)}
-        >
-          Next
-          <ChevronRight className="ml-2 h-4 w-4" />
-        </Button>
-      </CardFooter>
     </Card>
   )
 }

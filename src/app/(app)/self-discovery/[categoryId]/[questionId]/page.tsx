@@ -1,10 +1,10 @@
 "use client"
 
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardEyebrow, CardTitle } from "@/components/ui/card"
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { ChevronRight, Trash2, ChevronLeft } from "lucide-react"
+import { Trash2, Compass } from "lucide-react"
 import { useRouter, useParams } from "next/navigation"
 import Image from "next/image"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
@@ -134,7 +134,7 @@ export default function QuestionPage() {
 
     if (!category || !question) {
         return <Card className="w-full flex-1">
-            <CardContent className="flex p-6 w-full flex-1 flex-col gap-4">Loading...</CardContent>
+            <CardContent className="flex p-8 w-full flex-1 flex-col gap-4">Loading...</CardContent>
         </Card>
     }
 
@@ -143,26 +143,20 @@ export default function QuestionPage() {
     return (
         <>
             <Card className="w-full flex-1 h-full flex flex-col">
-                <CardContent className="flex-1 p-6 overflow-y-auto">
-                    <div className="flex flex-col gap-6">
-                        <div className="flex flex-col gap-2">
-                            <div className="flex items-center gap-4">
-                                {(() => {
-                                    const CategoryIcon = getSelfDiscoveryCategoryIcon(category.url)
-                                    return CategoryIcon && <CategoryIcon
-                                        className="flex items-center justify-center w-5 h-5 rounded-md shrink-0" />
-                                })()}
-                                <h2 className="text-xl font-semibold">{category.title}</h2>
-                            </div>
-                            <p className="text-muted-foreground">
-                                {category.description}
-                            </p>
-                        </div>
+                <CardHeader className="px-8 pt-8 pb-0">
+                    <CardEyebrow icon={Compass}>{category.title}</CardEyebrow>
+                    <CardTitle icon={(() => {
+                        const CategoryIcon = getSelfDiscoveryCategoryIcon(category.url)
+                        return CategoryIcon || Compass
+                    })()} className="text-lg">{question.title}</CardTitle>
+                </CardHeader>
+                <CardContent className="flex-1 p-8 pt-6 overflow-y-auto">
+                    <div className="flex flex-col gap-5">
+                        <p className="text-sm text-muted-foreground">
+                            {category.description}
+                        </p>
                         <div className="flex flex-col gap-4">
-                            <div className="flex flex-col gap-1">
-                                <div className="text-lg font-medium text-foreground">{question.title}</div>
-                                <p className="text-muted-foreground">{question.description}</p>
-                            </div>
+                            <p className="text-sm text-muted-foreground">{question.description}</p>
                             {question.titleId === "sustainability-goals" ? (
                                 <div className="grid grid-cols-6 gap-2">
                                     {Array.from({ length: 17 }, (_, i) => i + 1).map((num) => {
@@ -198,6 +192,7 @@ export default function QuestionPage() {
                                                 handleAddAnswer()
                                             }
                                         }}
+                                        className="text-sm h-9"
                                     />
                                     <Button onClick={handleAddAnswer}>
                                         Add
@@ -208,9 +203,9 @@ export default function QuestionPage() {
                                 {questionTriggers.map((trigger) => (
                                     <div
                                         key={trigger.id}
-                                        className="flex items-center gap-2 py-1 bg-secondary text-secondary-foreground rounded-md font-medium h-8 rounded-md px-3 text-xs"
+                                        className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2 text-sm"
                                     >
-                                        <span className="text-xs">{trigger.title}</span>
+                                        <span className="flex-1">{trigger.title}</span>
                                         <Button
                                             variant="destructive-ghost"
                                             size="icon"
@@ -224,24 +219,11 @@ export default function QuestionPage() {
                             </div>
                         </div>
                     </div>
+                    <div className="flex justify-between mt-2">
+                        <Button variant="outline" onClick={handleBack}>Previous</Button>
+                        <Button onClick={handleNext}>Next</Button>
+                    </div>
                 </CardContent>
-                <CardFooter className="flex justify-between mt-auto">
-                    <Button
-                        variant="outline"
-                        onClick={handleBack}
-                        className="border-purple-600 text-purple-600 hover:bg-purple-50 hover:text-purple-600"
-                    >
-                        <ChevronLeft className="mr-2 h-4 w-4" />
-                        Back
-                    </Button>
-                    <Button
-                        onClick={handleNext}
-                        className="bg-purple-600 hover:bg-purple-700 text-white"
-                    >
-                        Next
-                        <ChevronRight className="ml-2 h-4 w-4" />
-                    </Button>
-                </CardFooter>
             </Card>
 
             <Dialog open={!!problemTriggerToDelete} onOpenChange={() => setProblemTriggerToDelete(null)}>
