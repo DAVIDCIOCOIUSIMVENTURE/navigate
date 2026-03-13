@@ -21,6 +21,7 @@ import { AppStoreProvider } from "@/store/provider"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import { Toaster } from "@/components/ui/sonner"
+import Link from "next/link"
 function generateBreadcrumbs(pathname: string) {
   const paths = pathname.split('/').filter(Boolean)
 
@@ -58,7 +59,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     dispatch.problemTriggers.init()
     dispatch.ideas.init()
     dispatch.problems.init()
-  }, [dispatch.settings, dispatch.problemTriggers, dispatch.ideas, dispatch.problems])
+    dispatch.accountSettings.init()
+  }, [dispatch.settings, dispatch.problemTriggers, dispatch.ideas, dispatch.problems, dispatch.accountSettings])
 
   return (
     <SidebarProvider
@@ -96,8 +98,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               <HelpCircle />
               <span>Guidance</span>
             </Button>
-            <Button variant="outline" size="icon">
-              <Settings />
+            <Button variant="outline" size="icon" asChild>
+              <Link href="/settings">
+                <Settings />
+              </Link>
             </Button>
           </div>
         </header>
