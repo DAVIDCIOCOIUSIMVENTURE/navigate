@@ -1,7 +1,7 @@
 "use client"
 
 import { useParams, usePathname, useRouter } from "next/navigation"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardEyebrow, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useProblemDiscovery, getAdjacentSteps } from "../context"
 import { useIdeas } from "@/store/ideas-hooks"
@@ -48,11 +48,11 @@ export default function SummaryPage() {
 
   return (
     <Card className="w-full flex-1">
-      <CardContent className="p-8 flex flex-col gap-6">
-        <div className="flex items-center gap-2.5">
-          <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
-          <h2 className="text-lg font-semibold">Summary</h2>
-        </div>
+      <CardHeader className="px-8 pt-8 pb-0">
+        <CardEyebrow icon={CheckCircle2}>Problem Discovery</CardEyebrow>
+        <CardTitle icon={CheckCircle2} className="text-lg">Summary</CardTitle>
+      </CardHeader>
+      <CardContent className="p-8 pt-6 flex flex-col gap-6">
         <p className="text-sm text-muted-foreground">
           Review your problem discovery before moving on to validation.
         </p>

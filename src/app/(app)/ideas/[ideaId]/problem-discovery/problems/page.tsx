@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useParams, usePathname, useRouter } from "next/navigation"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardEyebrow, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useProblemDiscovery, getAdjacentSteps } from "../context"
@@ -61,11 +61,11 @@ export default function ProblemsPage() {
 
   return (
     <Card className="w-full flex-1">
-      <CardContent className="p-8 flex flex-col gap-5">
-        <div className="flex items-center gap-2.5">
-          <Briefcase className="h-4 w-4 text-muted-foreground" />
-          <h2 className="text-lg font-semibold">Problems</h2>
-        </div>
+      <CardHeader className="px-8 pt-8 pb-0">
+        <CardEyebrow icon={Briefcase}>Problem Discovery</CardEyebrow>
+        <CardTitle icon={Briefcase} className="text-lg">Problems</CardTitle>
+      </CardHeader>
+      <CardContent className="p-8 pt-6 flex flex-col gap-5">
         <div className="flex flex-col gap-3">
           <p className="text-sm text-muted-foreground">
             A <strong className="text-foreground/80">problem</strong> is a specific friction, gap, or frustration your customers encounter while trying to accomplish a job. Problems are the raw material of great products — without a real, painful problem, there is no compelling reason for your solution to exist.

@@ -1,7 +1,7 @@
 "use client"
 
 import { useParams, usePathname, useRouter } from "next/navigation"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardEyebrow, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { getAdjacentSteps } from "../context"
 import { BookOpen, Users, UserSearch, Briefcase, AlertCircle, CheckCircle2, Search } from "lucide-react"
@@ -24,11 +24,11 @@ export default function IntroductionPage() {
 
   return (
     <Card className="w-full flex-1">
-      <CardContent className="p-8 flex flex-col gap-6">
-        <div className="flex items-center gap-2.5">
-          <BookOpen className="h-4 w-4 text-muted-foreground" />
-          <h2 className="text-lg font-semibold">Problem Discovery</h2>
-        </div>
+      <CardHeader className="px-8 pt-8 pb-0">
+        <CardEyebrow icon={BookOpen}>Problem Discovery</CardEyebrow>
+        <CardTitle icon={BookOpen} className="text-lg">Introduction</CardTitle>
+      </CardHeader>
+      <CardContent className="p-8 pt-6 flex flex-col gap-6">
 
         <p className="text-sm text-muted-foreground leading-relaxed">
           Before building a solution, you need a clear picture of the problem. Problem Discovery helps you deeply understand who you&apos;re building for, what they&apos;re trying to accomplish, and where they&apos;re struggling — so you can ensure your idea addresses a real, meaningful need.

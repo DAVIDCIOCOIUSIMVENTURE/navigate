@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardEyebrow, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { getAdjacentSteps, useProblemValidation } from "../context"
 import {
@@ -43,11 +43,11 @@ export default function IntroductionPage() {
 
   return (
     <Card className="w-full flex-1">
-      <CardContent className="p-8 flex flex-col gap-6">
-        <div className="flex items-center gap-2.5">
-          <BookOpen className="h-4 w-4 text-muted-foreground" />
-          <h2 className="text-lg font-semibold">Problem Validation</h2>
-        </div>
+      <CardHeader className="px-8 pt-8 pb-0">
+        <CardEyebrow icon={BookOpen}>Problem Validation</CardEyebrow>
+        <CardTitle icon={BookOpen} className="text-lg">Introduction</CardTitle>
+      </CardHeader>
+      <CardContent className="p-8 pt-6 flex flex-col gap-6">
 
         <p className="text-sm text-muted-foreground leading-relaxed">
           It&apos;s time to validate whether this problem is truly worth solving. You&apos;ll stress-test it by examining the alternatives, context, emotional weight, and real-world impact — so you can make a confident, evidence-based decision before committing to a solution.

@@ -1,7 +1,7 @@
 "use client"
 
 import { useParams, usePathname, useRouter } from "next/navigation"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardEyebrow, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { getAdjacentSteps } from "../context"
 import {
@@ -28,11 +28,11 @@ export default function ProblemValidationIntroductionPage() {
 
   return (
     <Card className="w-full flex-1">
-      <CardContent className="p-8 flex flex-col gap-6">
-        <div className="flex items-center gap-2.5">
-          <BookOpen className="h-4 w-4 text-muted-foreground" />
-          <h2 className="text-lg font-semibold">Problem Validation</h2>
-        </div>
+      <CardHeader className="px-8 pt-8 pb-0">
+        <CardEyebrow icon={BookOpen}>Problem Validation</CardEyebrow>
+        <CardTitle icon={BookOpen} className="text-lg">Introduction</CardTitle>
+      </CardHeader>
+      <CardContent className="p-8 pt-6 flex flex-col gap-6">
 
         <p className="text-sm text-muted-foreground leading-relaxed">
           Having discovered problems worth exploring, it&apos;s time to validate whether they&apos;re truly worth solving. Problem Validation helps you stress-test each candidate problem — examining the alternatives, context, emotional weight, and real-world impact — so you can make a confident, evidence-based decision before committing to a solution.

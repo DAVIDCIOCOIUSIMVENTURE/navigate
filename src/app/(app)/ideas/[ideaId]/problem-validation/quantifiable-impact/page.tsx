@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useParams, usePathname, useRouter } from "next/navigation"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardEyebrow, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useProblemValidation, getAdjacentSteps, type ImpactItem } from "../context"
@@ -32,11 +32,11 @@ export default function QuantifiableImpactPage() {
 
   return (
     <Card className="w-full flex-1">
-      <CardContent className="p-8 flex flex-col gap-5">
-        <div className="flex items-center gap-2.5">
-          <BarChart2 className="h-4 w-4 text-muted-foreground" />
-          <h2 className="text-lg font-semibold">Quantifiable Impact</h2>
-        </div>
+      <CardHeader className="px-8 pt-8 pb-0">
+        <CardEyebrow icon={BarChart2}>Problem Validation</CardEyebrow>
+        <CardTitle icon={BarChart2} className="text-lg">Quantifiable Impact</CardTitle>
+      </CardHeader>
+      <CardContent className="p-8 pt-6 flex flex-col gap-5">
         <p className="text-sm text-muted-foreground">
           What is the measurable cost of the problem? Quantify the impact in concrete terms — time, money,
           errors, or other metrics that make the problem tangible.

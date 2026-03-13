@@ -2,7 +2,7 @@
 
 import { useEffect } from "react"
 import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardEyebrow, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useProblemValidation, getAdjacentSteps } from "../context"
 import { useIdeas } from "@/store/ideas-hooks"
@@ -76,11 +76,11 @@ export default function PickAProblemPage() {
 
   return (
     <Card className="w-full flex-1">
-      <CardContent className="p-8 flex flex-col gap-5">
-        <div className="flex items-center gap-2.5">
-          <CircleDot className="h-4 w-4 text-muted-foreground" />
-          <h2 className="text-lg font-semibold">Pick a Problem to Validate</h2>
-        </div>
+      <CardHeader className="px-8 pt-8 pb-0">
+        <CardEyebrow icon={CircleDot}>Problem Validation</CardEyebrow>
+        <CardTitle icon={CircleDot} className="text-lg">Pick a Problem to Validate</CardTitle>
+      </CardHeader>
+      <CardContent className="p-8 pt-6 flex flex-col gap-5">
         <p className="text-sm text-muted-foreground">
           Select a problem from your discovery to validate. You&apos;ll assess its alternatives, context,
           shortcomings, and impact to determine if it&apos;s worth solving.

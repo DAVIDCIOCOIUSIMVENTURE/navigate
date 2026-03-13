@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { useParams, usePathname, useRouter } from "next/navigation"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardEyebrow, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -38,11 +38,11 @@ export default function CustomerSubSegmentPage() {
 
   return (
     <Card className="w-full flex-1">
-      <CardContent className="p-8 flex flex-col gap-5">
-        <div className="flex items-center gap-2.5">
-          <UserSearch className="h-4 w-4 text-muted-foreground" />
-          <h2 className="text-lg font-semibold">Customer Sub-Segment</h2>
-        </div>
+      <CardHeader className="px-8 pt-8 pb-0">
+        <CardEyebrow icon={UserSearch}>Problem Discovery</CardEyebrow>
+        <CardTitle icon={UserSearch} className="text-lg">Customer Sub-Segment</CardTitle>
+      </CardHeader>
+      <CardContent className="p-8 pt-6 flex flex-col gap-5">
 
         <div className="flex flex-col gap-3">
           <p className="text-sm text-muted-foreground">

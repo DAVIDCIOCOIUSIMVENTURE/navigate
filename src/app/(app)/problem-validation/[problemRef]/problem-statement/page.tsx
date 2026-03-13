@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { AlertCircle, GitFork, Heart, BarChart2, Plus, X, CheckCircle2, HelpCircle, XCircle, Clock, Pencil } from "lucide-react"
-import { Card, CardContent } from "@/components/ui/card"
+import { AlertCircle, GitFork, Heart, BarChart2, Plus, X, CheckCircle2, HelpCircle, XCircle, Clock, Pencil, LayoutTemplate } from "lucide-react"
+import { Card, CardContent, CardHeader, CardEyebrow } from "@/components/ui/card"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useProblemValidation } from "../context"
 import type { ImpactItem, ValidationStatus } from "@/types/idea"
@@ -199,14 +199,15 @@ export default function ProblemStatementPage() {
   return (
     <>
       <Card className="w-full flex-1">
-        <CardContent className="p-8 flex flex-col gap-6">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex flex-col gap-1">
-              <h1 className="text-xl font-bold">Problem Statement</h1>
-              <p className="text-sm text-muted-foreground">Click the pencil icon on any card to edit it.</p>
-            </div>
-            <StatusSelect status={status} setStatus={setStatus} />
+        <CardHeader className="px-8 pt-8 pb-0 flex-row items-start justify-between gap-4 space-y-0">
+          <div className="flex flex-col gap-1">
+            <CardEyebrow icon={LayoutTemplate}>Problem Validation</CardEyebrow>
+            <h1 className="text-xl font-bold">Problem Statement</h1>
+            <p className="text-sm text-muted-foreground">Click the pencil icon on any card to edit it.</p>
           </div>
+          <StatusSelect status={status} setStatus={setStatus} />
+        </CardHeader>
+        <CardContent className="p-8 pt-6 flex flex-col gap-6">
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
 

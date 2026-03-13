@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { useParams, usePathname, useRouter } from "next/navigation"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardEyebrow, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -178,11 +178,11 @@ export default function CustomersPage() {
 
   return (
     <Card className="w-full flex-1">
-      <CardContent className="p-8 flex flex-col gap-5">
-        <div className="flex items-center gap-2.5">
-          <Users className="h-4 w-4 text-muted-foreground" />
-          <h2 className="text-lg font-semibold">Customers</h2>
-        </div>
+      <CardHeader className="px-8 pt-8 pb-0">
+        <CardEyebrow icon={Users}>Problem Discovery</CardEyebrow>
+        <CardTitle icon={Users} className="text-lg">Customers</CardTitle>
+      </CardHeader>
+      <CardContent className="p-8 pt-6 flex flex-col gap-5">
         <div className="flex flex-col gap-3">
           <p className="text-sm text-muted-foreground">
             A <strong className="text-foreground/80">customer segment</strong> is a clearly defined group of people who share similar characteristics, behaviors, and needs. Rather than trying to build for everyone, great innovators start with a specific type of person they deeply understand.

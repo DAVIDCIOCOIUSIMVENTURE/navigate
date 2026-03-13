@@ -29,16 +29,46 @@ const CardHeader = React.forwardRef<
 ))
 CardHeader.displayName = "CardHeader"
 
-const CardTitle = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("font-semibold leading-none tracking-tight", className)}
-    {...props}
-  />
-))
+type CardEyebrowProps = React.HTMLAttributes<HTMLDivElement> & {
+  icon?: React.ElementType
+}
+
+const CardEyebrow = React.forwardRef<HTMLDivElement, CardEyebrowProps>(
+  ({ className, icon: Icon, children, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn("flex items-center gap-1.5 mb-1", className)}
+      {...props}
+    >
+      {Icon && <Icon className="h-3 w-3 text-muted-foreground shrink-0" />}
+      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+        {children}
+      </p>
+    </div>
+  )
+)
+CardEyebrow.displayName = "CardEyebrow"
+
+type CardTitleProps = React.HTMLAttributes<HTMLHeadingElement> & {
+  icon?: React.ElementType
+  as?: "h1" | "h2" | "h3" | "h4"
+}
+
+const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
+  ({ className, icon: Icon, as: Tag = "h2", children, ...props }, ref) => (
+    <Tag
+      ref={ref}
+      className={cn(
+        "flex items-center gap-2.5 font-semibold leading-none tracking-tight",
+        className
+      )}
+      {...props}
+    >
+      {Icon && <Icon className="h-4 w-4 text-muted-foreground shrink-0" />}
+      {children}
+    </Tag>
+  )
+)
 CardTitle.displayName = "CardTitle"
 
 const CardDescription = React.forwardRef<
@@ -73,4 +103,4 @@ const CardFooter = React.forwardRef<
 ))
 CardFooter.displayName = "CardFooter"
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+export { Card, CardHeader, CardFooter, CardTitle, CardEyebrow, CardDescription, CardContent }
