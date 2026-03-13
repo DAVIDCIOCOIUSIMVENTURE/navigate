@@ -168,9 +168,26 @@ export default function VerdictPage() {
         <CardTitle icon={ShieldCheck} className="text-lg">Validate</CardTitle>
       </CardHeader>
       <CardContent className="p-8 pt-6 flex flex-col gap-6">
-        <p className="text-sm text-muted-foreground">
-          Weigh the economics of solving this problem — does the expected return justify the time and cost?
-        </p>
+        <div className="flex flex-col gap-3 text-sm text-muted-foreground">
+          <p>
+            You&apos;ve gathered the evidence — now make a call. Review the work you&apos;ve done across
+            the previous steps, then rate the four decision factors below to see whether solving this problem
+            makes economic sense.
+          </p>
+          <ul className="list-disc pl-5 flex flex-col gap-1">
+            <li><strong className="text-foreground">Time to solve</strong> — how long it would realistically take to build and ship a solution</li>
+            <li><strong className="text-foreground">Cost to solve</strong> — the total investment required (people, tools, infrastructure)</li>
+            <li><strong className="text-foreground">Expected return</strong> — the revenue, savings, or value you expect the solution to generate</li>
+            <li><strong className="text-foreground">Market size</strong> — how many people or businesses face this problem and could pay for a solution</li>
+          </ul>
+          <p>
+            Rate each factor <strong className="text-foreground">Low / Medium / High</strong> and optionally fill in
+            concrete numbers. The signal below will update automatically as you rate. When you&apos;re ready,
+            record your verdict — <strong className="text-foreground">Valid</strong> means you&apos;re confident
+            the problem is worth solving, <strong className="text-foreground">Unsure</strong> means you need more
+            evidence, and <strong className="text-foreground">Invalid</strong> means you&apos;re moving on.
+          </p>
+        </div>
 
         {problem && (
           <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4 flex flex-col gap-3">
