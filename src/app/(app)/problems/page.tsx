@@ -15,11 +15,16 @@ export default function ProblemsPage() {
   return (
     <div className="flex flex-col gap-6 w-full flex-1">
       <div className="flex items-center justify-between">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-xl font-bold">Problems</h1>
-          <p className="text-sm text-muted-foreground">
-            Discover and validate problems worth solving.
-          </p>
+        <div className="flex items-start gap-4">
+          <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-primary/10 shrink-0">
+            <Search className="h-6 w-6 text-primary" />
+          </div>
+          <div className="flex flex-col gap-1">
+            <h1 className="text-xl font-bold">Problems</h1>
+            <p className="text-sm text-muted-foreground">
+              Discover and validate problems worth solving.
+            </p>
+          </div>
         </div>
         <Button onClick={() => setDialogOpen(true)} className="gap-2">
           <Plus className="h-4 w-4" />
