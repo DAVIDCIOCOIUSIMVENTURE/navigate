@@ -157,7 +157,7 @@ export default function ProblemStatementPage() {
   const addAlternative = () => {
     const trimmed = altDraft.trim()
     if (!trimmed) return
-    const newItem: AlternativeItem = { id: Date.now(), text: trimmed, shortcomings: [] }
+    const newItem: AlternativeItem = { id: Date.now(), text: trimmed, shortcomings: [], impacts: [] }
     updateActiveProblemField({ alternatives: [...alternatives, newItem] })
     setAltDraft("")
   }

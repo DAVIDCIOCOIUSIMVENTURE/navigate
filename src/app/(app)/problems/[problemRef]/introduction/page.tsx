@@ -7,13 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { getAdjacentSteps, useProblemValidation } from "../context"
 import {
-  BookOpen, GitFork, Heart, BarChart2, ShieldCheck, LayoutTemplate, Users,
+  BookOpen, GitFork, Heart, ShieldCheck, LayoutTemplate, Users,
 } from "lucide-react"
 
 const STEPS = [
   { icon: Users, title: "Customer Segment", description: "Estimate how large the affected customer segment is — the market opportunity behind this problem.", bg: "bg-indigo-100 dark:bg-indigo-950", color: "text-indigo-600 dark:text-indigo-400" },
-  { icon: GitFork, title: "Alternatives & Shortcomings", description: "Identify how customers currently deal with this problem, and explore why those existing solutions fall short.", bg: "bg-sky-100 dark:bg-sky-950", color: "text-sky-600 dark:text-sky-400" },
-  { icon: BarChart2, title: "Quantifiable Impact", description: "Measure the tangible cost of the problem in time, money, or other concrete terms.", bg: "bg-amber-100 dark:bg-amber-950", color: "text-amber-600 dark:text-amber-400" },
+  { icon: GitFork, title: "Existing Solutions", description: "Identify how customers currently deal with this problem, capture shortcomings, and measure the quantifiable impact of each solution.", bg: "bg-sky-100 dark:bg-sky-950", color: "text-sky-600 dark:text-sky-400" },
   { icon: Heart, title: "Emotional Impact", description: "Capture how the problem makes customers feel — the emotional weight that makes it genuinely meaningful to solve.", bg: "bg-pink-100 dark:bg-pink-950", color: "text-pink-600 dark:text-pink-400" },
   { icon: ShieldCheck, title: "Validate", description: "Weigh the economics of solving this problem and decide whether it's worth pursuing.", bg: "bg-orange-100 dark:bg-orange-950", color: "text-orange-600 dark:text-orange-400" },
   { icon: LayoutTemplate, title: "Problem Statement", description: "Review the problem statement assembled from your discovery and validation work.", bg: "bg-green-100 dark:bg-green-950", color: "text-green-600 dark:text-green-400" },

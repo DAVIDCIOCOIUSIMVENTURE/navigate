@@ -132,9 +132,11 @@ export default function VerdictPage() {
   const {
     problemRef, problemId,
     alternatives, emotionalImpact,
-    quantifiableImpacts, status, setStatus, reason, setReason,
+    status, setStatus, reason, setReason,
     validationAssessment, setTimeToSolve, setCostToSolve, setExpectedReturn, setMarketSize,
   } = useProblemValidation()
+
+  const quantifiableImpacts = alternatives.flatMap((alt) => alt.impacts ?? []).filter((imp) => imp.category || imp.description)
   const { prevPath } = getAdjacentSteps(pathname, problemRef)
 
   const problem = useSelector((state: RootState) =>

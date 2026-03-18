@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ProblemValidationProvider, useProblemValidation, NAV_ITEMS } from "./context"
 import {
-  GitFork, Clock, Heart, BarChart2, ShieldCheck, FileText, LayoutTemplate, BookOpen, Users,
+  GitFork, Clock, Heart, ShieldCheck, FileText, LayoutTemplate, BookOpen, Users,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
@@ -15,7 +15,6 @@ const NAV_ICONS: Record<string, LucideIcon> = {
   "existing-solutions": GitFork,
   "context-step": Clock,
   "emotional-impact": Heart,
-  "quantifiable-impact": BarChart2,
   validate: ShieldCheck,
   "problem-statement": LayoutTemplate,
 }

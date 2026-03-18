@@ -11,14 +11,8 @@ import { AlertCircle, GitFork, Heart, BarChart2, Plus, X, Pencil, LayoutTemplate
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { StatusSelect } from "@/components/ui/status-select"
 import { useProblemValidation } from "../context"
-import type { ImpactItem, ValidationStatus } from "@/types/idea"
 
-const IMPACT_CATEGORIES = [
-  "Time Lost", "Money Wasted", "Error Rates", "Customer Churn",
-  "Support Tickets", "Productivity Loss", "Revenue Impact", "Compliance Risk",
-]
-
-type DialogId = "core" | "alternatives" | "emotional" | "quantifiable"
+type DialogId = "core" | "alternatives" | "emotional"
 
 // ── Shared primitives ─────────────────────────────────────────────────────────
 
@@ -109,9 +103,10 @@ export default function ProblemStatementPage() {
     problemId,
     alternatives, setAlternatives,
     emotionalImpact, setEmotionalImpact,
-    quantifiableImpacts, setQuantifiableImpacts,
     status, setStatus,
   } = useProblemValidation()
+
+  const quantifiableImpacts = alternatives.flatMap((alt) => alt.impacts ?? []).filter((imp) => imp.category || imp.description)
 
   const problem = useSelector((state: RootState) =>
     state.problems.problems.find((p) => p.id === problemId)
@@ -121,14 +116,6 @@ export default function ProblemStatementPage() {
 
   const updateProblem = (patch: Parameters<typeof dispatch.problems.update>[0]["patch"]) =>
     dispatch.problems.update({ id: problemId, patch })
-
-  // quantifiable impacts
-  const updateImpact = (i: number, patch: Partial<ImpactItem>) =>
-    setQuantifiableImpacts(quantifiableImpacts.map((item, idx) => idx === i ? { ...item, ...patch } : item))
-  const removeImpact = (i: number) =>
-    setQuantifiableImpacts(quantifiableImpacts.filter((_, idx) => idx !== i))
-  const addImpact = () =>
-    setQuantifiableImpacts([...quantifiableImpacts, { category: "", description: "" }])
 
   // emotional impact
   const updateEmotion = (i: number, value: string) =>
@@ -144,7 +131,7 @@ export default function ProblemStatementPage() {
   const removeAlternative = (i: number) =>
     setAlternatives(alternatives.filter((_, idx) => idx !== i))
   const addAlternative = () =>
-    setAlternatives([...alternatives, { id: Date.now(), text: "", shortcomings: [] }])
+    setAlternatives([...alternatives, { id: Date.now(), text: "", shortcomings: [], impacts: [] }])
 
   const updateShortcoming = (altIdx: number, scIdx: number, value: string) =>
     setAlternatives(alternatives.map((alt, i) =>
@@ -248,9 +235,12 @@ export default function ProblemStatementPage() {
               )}
             </div>
 
-            {/* ── Quantifiable Impact ── */}
+            {/* ── Quantifiable Impact (aggregated from alternatives) ── */}
             <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3">
-              <SectionTitle icon={BarChart2} label="Quantifiable Impact" onEdit={() => setOpenDialog("quantifiable")} />
+              <div className="flex items-center gap-2">
+                <BarChart2 className="h-4 w-4 shrink-0 text-foreground/70" />
+                <span className="font-semibold text-sm">Quantifiable Impact</span>
+              </div>
               {quantifiableImpacts.length > 0 ? (
                 <ul className="flex flex-col gap-1.5">
                   {quantifiableImpacts.map((item, i) => (
@@ -401,50 +391,6 @@ export default function ProblemStatementPage() {
         </DialogContent>
       </Dialog>
 
-      {/* ── Quantifiable Impact Dialog ── */}
-      <Dialog open={openDialog === "quantifiable"} onOpenChange={(o) => !o && setOpenDialog(null)}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <BarChart2 className="h-4 w-4 text-orange-500" /> Quantifiable Impact
-            </DialogTitle>
-          </DialogHeader>
-          <div className="flex flex-col gap-3 mt-2">
-            {quantifiableImpacts.length > 0 && (
-              <>
-                <datalist id="impact-cats-ps">
-                  {IMPACT_CATEGORIES.map((c) => <option key={c} value={c} />)}
-                </datalist>
-                <ul className="flex flex-col gap-1.5">
-                  {quantifiableImpacts.map((item, i) => (
-                    <li key={i} className="flex gap-2 items-center">
-                      <Input
-                        list="impact-cats-ps"
-                        placeholder="Category…"
-                        value={item.category}
-                        onChange={(e) => updateImpact(i, { category: e.target.value })}
-                        className="text-sm h-8 border-orange-200 w-2/5 shrink-0 font-medium text-orange-800"
-                      />
-                      <Input
-                        placeholder="Describe impact…"
-                        value={item.description}
-                        onChange={(e) => updateImpact(i, { description: e.target.value })}
-                        className="text-sm h-8 border-orange-200 flex-1"
-                      />
-                      <button onClick={() => removeImpact(i)} className="shrink-0 text-muted-foreground hover:text-destructive">
-                        <X className="h-3.5 w-3.5" />
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
-            <Button variant="outline" size="sm" onClick={addImpact} className="w-full border-orange-200 text-orange-700 hover:bg-orange-100 hover:text-orange-800">
-              <Plus className="h-3.5 w-3.5 mr-1" /> Add Quantifiable Impact
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
     </>
   )
 }

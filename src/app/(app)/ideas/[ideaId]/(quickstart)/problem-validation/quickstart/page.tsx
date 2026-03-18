@@ -86,7 +86,7 @@ export default function QuickstartValidationPage() {
   }
 
   const addAlt = () => {
-    const newAlt = { id: Date.now(), text: "", shortcomings: [] }
+    const newAlt = { id: Date.now(), text: "", shortcomings: [], impacts: [] }
     updateProblem({ alternatives: [...(selectedProblem?.alternatives ?? []), newAlt] })
   }
 

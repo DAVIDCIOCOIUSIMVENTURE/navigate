@@ -1,6 +1,6 @@
 import { createModel } from "@rematch/core"
 import type { RootModel } from "."
-import type { AlternativeItem, ImpactItem, ValidationAssessment, ValidationStatus } from "@/types/idea"
+import type { AlternativeItem, ValidationAssessment, ValidationStatus } from "@/types/idea"
 import { DEFAULT_VALIDATION_ASSESSMENT } from "@/types/idea"
 
 const STORAGE_KEY = "navigate-problems"
@@ -19,7 +19,6 @@ export type Problem = {
   source: ProblemSource
   alternatives: AlternativeItem[]
   emotionalImpact: string[]
-  quantifiableImpacts: ImpactItem[]
   validationAssessment: ValidationAssessment
   validationStatus: ValidationStatus
   validationReason: string
@@ -27,7 +26,7 @@ export type Problem = {
   segmentSize: number | null
 }
 
-export type ProblemPatch = Partial<Pick<Problem, "description" | "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "alternatives" | "emotionalImpact" | "quantifiableImpacts" | "validationAssessment" | "validationStatus" | "validationReason" | "contextWhen" | "segmentSize">>
+export type ProblemPatch = Partial<Pick<Problem, "description" | "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "alternatives" | "emotionalImpact" | "validationAssessment" | "validationStatus" | "validationReason" | "contextWhen" | "segmentSize">>
 
 export function getProblemLabel(problem: Problem): string {
   return [
@@ -127,7 +126,6 @@ export const problems = createModel<RootModel>()({
         source: payload.source,
         alternatives: payload.alternatives ?? [],
         emotionalImpact: payload.emotionalImpact ?? [],
-        quantifiableImpacts: payload.quantifiableImpacts ?? [],
         validationAssessment: payload.validationAssessment ?? DEFAULT_VALIDATION_ASSESSMENT,
         validationStatus: payload.validationStatus ?? "unvalidated",
         validationReason: payload.validationReason ?? "",

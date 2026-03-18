@@ -7,7 +7,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useProblemValidation, getAdjacentSteps } from "../context"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
-import { GitFork, Plus, X } from "lucide-react"
+import type { ImpactItem } from "@/types/idea"
+import { GitFork, Plus, X, BarChart2 } from "lucide-react"
+
+const IMPACT_CATEGORIES = [
+  "Time Lost", "Money Wasted", "Error Rates", "Customer Churn",
+  "Support Tickets", "Productivity Loss", "Revenue Impact", "Compliance Risk",
+]
 
 export default function AlternativesPage() {
   const router = useRouter()
@@ -34,7 +40,7 @@ export default function AlternativesPage() {
   const addAlternative = () => {
     const trimmed = draft.trim()
     if (trimmed) {
-      setAlternatives([...alternatives, { id: Date.now(), text: trimmed, shortcomings: [] }])
+      setAlternatives([...alternatives, { id: Date.now(), text: trimmed, shortcomings: [], impacts: [] }])
     }
     setDraft("")
     setAddingAlt(false)
@@ -74,6 +80,36 @@ export default function AlternativesPage() {
     if (e.key === "Escape") { setScDrafts((prev) => ({ ...prev, [altIdx]: "" })); setAddingSc((prev) => ({ ...prev, [altIdx]: false })) }
   }
 
+  // Impact helpers
+  const getImpacts = (alt: typeof alternatives[number]) => alt.impacts ?? []
+
+  const updateImpact = (altIdx: number, impactIdx: number, field: keyof ImpactItem, value: string) =>
+    setAlternatives(
+      alternatives.map((alt, idx) =>
+        idx === altIdx
+          ? { ...alt, impacts: getImpacts(alt).map((imp, j) => j === impactIdx ? { ...imp, [field]: value } : imp) }
+          : alt
+      )
+    )
+
+  const removeImpact = (altIdx: number, impactIdx: number) =>
+    setAlternatives(
+      alternatives.map((alt, idx) =>
+        idx === altIdx
+          ? { ...alt, impacts: getImpacts(alt).filter((_, j) => j !== impactIdx) }
+          : alt
+      )
+    )
+
+  const addImpact = (altIdx: number) =>
+    setAlternatives(
+      alternatives.map((alt, idx) =>
+        idx === altIdx
+          ? { ...alt, impacts: [...getImpacts(alt), { category: "", description: "" }] }
+          : alt
+      )
+    )
+
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-8 pt-8 pb-0">
@@ -92,15 +128,20 @@ export default function AlternativesPage() {
             <li><strong className="text-foreground">Doing nothing</strong> — ignoring or tolerating the problem</li>
           </ul>
           <p>
-            Then, for each existing solution, capture its <strong className="text-foreground">shortcomings</strong> — the
-            specific ways it fails to fully solve the problem. These unmet needs are the gap your solution must fill.
+            For each existing solution, capture its <strong className="text-foreground">shortcomings</strong> and
+            its <strong className="text-foreground">quantifiable impact</strong> — the measurable cost of the problem
+            when using that solution (time lost, money wasted, error rates, etc.).
           </p>
         </div>
 
+        <datalist id="impact-cats-es">
+          {IMPACT_CATEGORIES.map((c) => <option key={c} value={c} />)}
+        </datalist>
+
         <div className="flex flex-col gap-5">
           {alternatives.map((alt, i) => (
-            <div key={alt.id} className="flex flex-col gap-2 border rounded-lg p-4">
-              <div className="flex items-center gap-2">
+            <div key={alt.id} className="border rounded-lg p-4">
+              <div className="flex items-center gap-2 mb-3">
                 <Input
                   value={alt.text}
                   onChange={(e) => setAlternatives(alternatives.map((a, idx) => idx === i ? { ...a, text: e.target.value } : a))}
@@ -113,61 +154,104 @@ export default function AlternativesPage() {
                     </button>
                   }
                   title="Remove alternative?"
-                  description="This will also delete all shortcomings associated with it."
+                  description="This will also delete all shortcomings and impacts associated with it."
                   onConfirm={() => removeAlternative(i)}
                 />
               </div>
 
-              {alt.shortcomings.length > 0 && (
-                <p className="pl-2 text-xs text-muted-foreground">Shortcomings of this solution</p>
-              )}
-              {alt.shortcomings.length > 0 && (
-                <ul className="flex flex-col gap-1.5 pl-2">
-                  {alt.shortcomings.map((sc, j) => (
-                    <li key={j} className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2 text-sm">
-                      <Input
-                        value={sc}
-                        onChange={(e) => setAlternatives(alternatives.map((a, idx) =>
-                          idx === i ? { ...a, shortcomings: a.shortcomings.map((s, k) => k === j ? e.target.value : s) } : a
-                        ))}
-                        className="flex-1 text-sm h-7"
-                      />
-                      <ConfirmDialog
-                        trigger={
-                          <button className="shrink-0 text-muted-foreground hover:text-destructive transition-colors">
+              <div className="grid grid-cols-2 gap-4">
+                {/* Left: Shortcomings */}
+                <div className="flex flex-col gap-2">
+                  <p className="text-xs font-medium text-muted-foreground">Shortcomings</p>
+                  {alt.shortcomings.length > 0 && (
+                    <ul className="flex flex-col gap-1.5">
+                      {alt.shortcomings.map((sc, j) => (
+                        <li key={j} className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2 text-sm">
+                          <Input
+                            value={sc}
+                            onChange={(e) => setAlternatives(alternatives.map((a, idx) =>
+                              idx === i ? { ...a, shortcomings: a.shortcomings.map((s, k) => k === j ? e.target.value : s) } : a
+                            ))}
+                            className="flex-1 text-sm h-7"
+                          />
+                          <ConfirmDialog
+                            trigger={
+                              <button className="shrink-0 text-muted-foreground hover:text-destructive transition-colors">
+                                <X className="h-3.5 w-3.5" />
+                              </button>
+                            }
+                            title="Remove shortcoming?"
+                            description="This shortcoming will be permanently removed."
+                            onConfirm={() => removeShortcoming(i, j)}
+                          />
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {addingSc[i] ? (
+                    <Input
+                      ref={(el) => { scInputRefs.current[i] = el }}
+                      placeholder="Why does this fall short?"
+                      value={scDrafts[i] ?? ""}
+                      onChange={(e) => setScDrafts((prev) => ({ ...prev, [i]: e.target.value }))}
+                      onKeyDown={(e) => onScKeyDown(i, e)}
+                      onBlur={() => addShortcoming(i)}
+                      className="text-sm h-8"
+                    />
+                  ) : (
+                    <Button
+                      variant="dashed"
+                      size="sm"
+                      onClick={() => setAddingSc((prev) => ({ ...prev, [i]: true }))}
+                    >
+                      <Plus className="h-3 w-3" />
+                      Add shortcoming
+                    </Button>
+                  )}
+                </div>
+
+                {/* Right: Quantifiable Impact */}
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center gap-1.5">
+                    <BarChart2 className="h-3 w-3 text-muted-foreground" />
+                    <p className="text-xs font-medium text-muted-foreground">Quantifiable Impact</p>
+                  </div>
+                  {getImpacts(alt).length > 0 && (
+                    <ul className="flex flex-col gap-1.5">
+                      {getImpacts(alt).map((imp, j) => (
+                        <li key={j} className="flex items-center gap-2">
+                          <Input
+                            list="impact-cats-es"
+                            placeholder="Category..."
+                            value={imp.category}
+                            onChange={(e) => updateImpact(i, j, "category", e.target.value)}
+                            className="text-sm h-7 w-2/5 shrink-0"
+                          />
+                          <Input
+                            placeholder="Describe the impact..."
+                            value={imp.description}
+                            onChange={(e) => updateImpact(i, j, "description", e.target.value)}
+                            className="text-sm h-7 flex-1"
+                          />
+                          <button
+                            onClick={() => removeImpact(i, j)}
+                            className="shrink-0 text-muted-foreground hover:text-destructive transition-colors"
+                          >
                             <X className="h-3.5 w-3.5" />
                           </button>
-                        }
-                        title="Remove shortcoming?"
-                        description="This shortcoming will be permanently removed."
-                        onConfirm={() => removeShortcoming(i, j)}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              )}
-
-              <div className="pl-2">
-                {addingSc[i] ? (
-                  <Input
-                    ref={(el) => { scInputRefs.current[i] = el }}
-                    placeholder="Why does this fall short?"
-                    value={scDrafts[i] ?? ""}
-                    onChange={(e) => setScDrafts((prev) => ({ ...prev, [i]: e.target.value }))}
-                    onKeyDown={(e) => onScKeyDown(i, e)}
-                    onBlur={() => addShortcoming(i)}
-                    className="text-sm h-8"
-                  />
-                ) : (
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                   <Button
                     variant="dashed"
                     size="sm"
-                    onClick={() => setAddingSc((prev) => ({ ...prev, [i]: true }))}
+                    onClick={() => addImpact(i)}
                   >
                     <Plus className="h-3 w-3" />
-                    Add shortcoming
+                    Add impact
                   </Button>
-                )}
+                </div>
               </div>
             </div>
           ))}

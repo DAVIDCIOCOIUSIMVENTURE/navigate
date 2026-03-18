@@ -26,7 +26,7 @@ export default function AlternativesPage() {
   const add = () => {
     const trimmed = draft.trim()
     if (trimmed) {
-      setAlternatives([...alternatives, { id: Date.now(), text: trimmed, shortcomings: [] }])
+      setAlternatives([...alternatives, { id: Date.now(), text: trimmed, shortcomings: [], impacts: [] }])
     }
     setDraft("")
     setAdding(false)

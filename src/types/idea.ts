@@ -26,7 +26,7 @@ export type CustomerFields = {
 
 export type ImpactItem = { category: string; description: string }
 
-export type AlternativeItem = { id: number; text: string; shortcomings: string[] }
+export type AlternativeItem = { id: number; text: string; shortcomings: string[]; impacts: ImpactItem[] }
 
 export type ValidationStatus = "unvalidated" | "in_progress" | "valid" | "invalid" | "unsure"
 export type DecisionLevel = "" | "low" | "medium" | "high"

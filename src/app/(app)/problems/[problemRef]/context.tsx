@@ -3,7 +3,7 @@
 import { createContext, useContext, useCallback, type ReactNode } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
-import type { AlternativeItem, ImpactItem, ValidationStatus, ValidationMetric, ValidationAssessment } from "@/types/idea"
+import type { AlternativeItem, ValidationStatus, ValidationMetric, ValidationAssessment } from "@/types/idea"
 import { DEFAULT_VALIDATION_ASSESSMENT } from "@/types/idea"
 
 type ProblemValidationContextValue = {
@@ -17,8 +17,6 @@ type ProblemValidationContextValue = {
   setContextWhen: (val: string) => void
   emotionalImpact: string[]
   setEmotionalImpact: (val: string[]) => void
-  quantifiableImpacts: ImpactItem[]
-  setQuantifiableImpacts: (val: ImpactItem[]) => void
   status: ValidationStatus
   setStatus: (val: ValidationStatus) => void
   reason: string
@@ -48,7 +46,6 @@ export function ProblemValidationProvider({
   const segmentSize = problem?.segmentSize ?? null
   const alternatives = problem?.alternatives ?? []
   const emotionalImpact = problem?.emotionalImpact ?? []
-  const quantifiableImpacts = problem?.quantifiableImpacts ?? []
   const validationAssessment = problem?.validationAssessment ?? DEFAULT_VALIDATION_ASSESSMENT
   const contextWhen = problem?.contextWhen ?? ""
   const status = problem?.validationStatus ?? "unvalidated"
@@ -71,13 +68,6 @@ export function ProblemValidationProvider({
   const setEmotionalImpact = useCallback(
     (val: string[]) => {
       dispatch.problems.update({ id: problemId, patch: { emotionalImpact: val } })
-    },
-    [dispatch, problemId]
-  )
-
-  const setQuantifiableImpacts = useCallback(
-    (val: ImpactItem[]) => {
-      dispatch.problems.update({ id: problemId, patch: { quantifiableImpacts: val } })
     },
     [dispatch, problemId]
   )
@@ -172,7 +162,6 @@ export function ProblemValidationProvider({
         alternatives, setAlternatives,
         contextWhen, setContextWhen,
         emotionalImpact, setEmotionalImpact,
-        quantifiableImpacts, setQuantifiableImpacts,
         status, setStatus,
         reason, setReason,
         validationAssessment,
@@ -197,7 +186,6 @@ export const NAV_ITEMS = [
   { label: "Introduction", path: "introduction" },
   { label: "Customer Segment", path: "customer-segment" },
   { label: "Existing Solutions", path: "existing-solutions" },
-  { label: "Quantifiable Impact", path: "quantifiable-impact" },
   { label: "Emotional Impact", path: "emotional-impact" },
   { label: "Validate", path: "validate" },
   { label: "Problem Statement", path: "problem-statement" },
