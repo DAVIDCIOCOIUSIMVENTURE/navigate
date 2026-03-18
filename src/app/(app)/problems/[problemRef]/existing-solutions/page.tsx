@@ -138,6 +138,8 @@ export default function AlternativesPage() {
           {IMPACT_CATEGORIES.map((c) => <option key={c} value={c} />)}
         </datalist>
 
+        <h3 className="mt-8 text-base font-medium text-center"><span className="text-primary">Your Turn:</span> What Existing Solutions Are There?</h3>
+
         <div className="flex flex-col gap-5">
           {alternatives.map((alt, i) => (
             <div key={alt.id} className="border rounded-lg p-4">
