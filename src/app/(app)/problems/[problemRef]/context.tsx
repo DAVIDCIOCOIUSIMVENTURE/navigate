@@ -196,7 +196,7 @@ export function useProblemValidation() {
 export const NAV_ITEMS = [
   { label: "Introduction", path: "introduction" },
   { label: "Customer Segment", path: "customer-segment" },
-  { label: "Alternatives & Shortcomings", path: "alternatives" },
+  { label: "Existing Solutions", path: "existing-solutions" },
   { label: "Quantifiable Impact", path: "quantifiable-impact" },
   { label: "Emotional Impact", path: "emotional-impact" },
   { label: "Validate", path: "validate" },

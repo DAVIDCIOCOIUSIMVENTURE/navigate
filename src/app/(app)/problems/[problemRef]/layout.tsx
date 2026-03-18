@@ -12,7 +12,7 @@ import type { LucideIcon } from "lucide-react"
 const NAV_ICONS: Record<string, LucideIcon> = {
   introduction: BookOpen,
   "customer-segment": Users,
-  alternatives: GitFork,
+  "existing-solutions": GitFork,
   "context-step": Clock,
   "emotional-impact": Heart,
   "quantifiable-impact": BarChart2,
