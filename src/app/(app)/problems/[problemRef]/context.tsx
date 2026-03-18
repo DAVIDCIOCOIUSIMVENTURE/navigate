@@ -194,7 +194,7 @@ export const NAV_ITEMS = [
 const STEP_PATHS = NAV_ITEMS.map((item) => item.path)
 
 export function getAdjacentSteps(pathname: string, problemRef: string) {
-  const base = `/problem-validation/${problemRef}`
+  const base = `/problems/${problemRef}`
   const segment = pathname.split("/").pop() ?? ""
   const idx = STEP_PATHS.indexOf(segment as (typeof STEP_PATHS)[number])
   return {

@@ -1,4 +1,4 @@
-import type { BrainstormColumn } from "@/app/(app)/problem-discovery/brainstorm/data"
+import type { BrainstormColumn } from "@/app/(app)/problems/brainstorm/data"
 
 export const brainstormColumns: BrainstormColumn[] = [
   {

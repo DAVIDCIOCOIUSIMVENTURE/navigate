@@ -24,7 +24,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const { problemRef } = useProblemValidation()
 
-  const base = `/problem-validation/${problemRef}`
+  const base = `/problems/${problemRef}`
 
   return (
     <div className="flex flex-col gap-6 flex-1 w-full">

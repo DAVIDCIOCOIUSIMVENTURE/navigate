@@ -159,7 +159,7 @@ export default function VerdictPage() {
 
   const handleVerdict = (verdict: "valid" | "invalid" | "unsure") => {
     setStatus(verdict)
-    router.push("/problem-validation")
+    router.push("/problems")
   }
 
   return (

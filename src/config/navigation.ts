@@ -1,4 +1,4 @@
-import { Compass, Heart, Book, Brain, Globe, Search, CheckCircle, Lightbulb, FlaskConical } from "lucide-react"
+import { Compass, Heart, Book, Brain, Globe, Search, Lightbulb, FlaskConical } from "lucide-react"
 
 export const navigationItems = {
   innovation: [
@@ -8,14 +8,9 @@ export const navigationItems = {
       icon: Compass
     },
     {
-      title: "Problem Discovery",
-      url: "/problem-discovery",
+      title: "Problems",
+      url: "/problems",
       icon: Search
-    },
-    {
-      title: "Problem Validation",
-      url: "/problem-validation",
-      icon: CheckCircle
     },
     {
       title: "Solution Discovery",

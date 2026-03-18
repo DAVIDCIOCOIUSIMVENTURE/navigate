@@ -61,7 +61,7 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
 
   function handleBrainstorm() {
     handleClose()
-    router.push("/problem-discovery/brainstorm")
+    router.push("/problems/brainstorm")
   }
 
   return (

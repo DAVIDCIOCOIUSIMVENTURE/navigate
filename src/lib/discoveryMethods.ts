@@ -33,7 +33,7 @@ export const DISCOVERY_METHODS: DiscoveryMethod[] = [
       "New parents returning to work who can't find flexible childcare that fits their hours",
       "Independent café owners overwhelmed by staff scheduling without dedicated management tools",
     ],
-    href: "/problem-discovery/find-new-problems/finding-my-customers",
+    href: "/problems/find-new-problems/finding-my-customers",
     icon: UserSearch,
   },
   {

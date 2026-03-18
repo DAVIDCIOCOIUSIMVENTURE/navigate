@@ -8,7 +8,7 @@ import { SearchProblemDialog } from "@/components/search-problem-dialog"
 import { ProblemsTable } from "@/components/problems-table"
 import { Plus, Search } from "lucide-react"
 
-export default function ProblemDiscoveryPage() {
+export default function ProblemsPage() {
   const [dialogOpen, setDialogOpen] = useState(false)
   const problems = useSelector((state: RootState) => state.problems.problems)
 
@@ -16,9 +16,9 @@ export default function ProblemDiscoveryPage() {
     <div className="flex flex-col gap-6 w-full flex-1">
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-1">
-          <h1 className="text-xl font-bold">Problem Discovery</h1>
+          <h1 className="text-xl font-bold">Problems</h1>
           <p className="text-sm text-muted-foreground">
-            Identify and collect problems worth solving before deciding which one to validate.
+            Discover and validate problems worth solving.
           </p>
         </div>
         <Button onClick={() => setDialogOpen(true)} className="gap-2">
@@ -44,7 +44,7 @@ export default function ProblemDiscoveryPage() {
           </Button>
         </div>
       ) : (
-        <ProblemsTable problems={problems} showEditDelete />
+        <ProblemsTable problems={problems} showStatus showEditDelete />
       )}
 
       <SearchProblemDialog open={dialogOpen} onOpenChange={setDialogOpen} />
