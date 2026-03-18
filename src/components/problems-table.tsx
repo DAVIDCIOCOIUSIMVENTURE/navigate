@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useDispatch } from "react-redux"
 import type { AppDispatch } from "@/store"
 import { useRouter } from "next/navigation"
@@ -19,9 +19,7 @@ import { Pencil, Trash2, ArrowRight, CheckCircle2, XCircle, HelpCircle, Clock, C
 import type { Problem } from "@/store/problems-model"
 import { EditProblemDialog } from "@/components/edit-problem-dialog"
 
-const STORAGE_KEY = "navigate-standalone-validation"
-
-type ValidationStatus = "unvalidated" | "in_progress" | "valid" | "invalid" | "unsure"
+import type { ValidationStatus } from "@/types/idea"
 
 const STATUS_CONFIG: Record<ValidationStatus, { icon: React.ElementType; label: string; className: string }> = {
   unvalidated: { icon: Circle, label: "Unvalidated", className: "text-muted-foreground" },
@@ -29,22 +27,6 @@ const STATUS_CONFIG: Record<ValidationStatus, { icon: React.ElementType; label: 
   valid: { icon: CheckCircle2, label: "Valid", className: "text-green-600" },
   invalid: { icon: XCircle, label: "Invalid", className: "text-red-600" },
   unsure: { icon: HelpCircle, label: "Unsure", className: "text-orange-600" },
-}
-
-function loadAllStatuses(): Record<number, ValidationStatus> {
-  if (typeof window === "undefined") return {}
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return {}
-    const all = JSON.parse(raw) as Record<string, { status: ValidationStatus }>
-    const result: Record<number, ValidationStatus> = {}
-    for (const [key, val] of Object.entries(all)) {
-      result[Number(key)] = val.status ?? "unvalidated"
-    }
-    return result
-  } catch {
-    return {}
-  }
 }
 
 interface ProblemsTableProps {
@@ -57,11 +39,6 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const [editingProblem, setEditingProblem] = useState<Problem | null>(null)
-  const [statuses, setStatuses] = useState<Record<number, ValidationStatus>>({})
-
-  useEffect(() => {
-    if (showStatus) setStatuses(loadAllStatuses())
-  }, [showStatus])
 
   return (
     <>
@@ -85,7 +62,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
             </TableHeader>
             <TableBody>
               {problems.map((problem, index) => {
-                const status = showStatus ? (statuses[problem.id] ?? "unvalidated") : null
+                const status = showStatus ? (problem.validationStatus ?? "unvalidated") : null
                 const statusConfig = status ? STATUS_CONFIG[status] : null
                 return (
                   <TableRow key={problem.id}>
