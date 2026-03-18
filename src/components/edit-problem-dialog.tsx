@@ -13,7 +13,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { brainstormColumns } from "@/data/brainstormData"
+import { StatusSelect } from "@/components/ui/status-select"
 import type { Problem, ProblemPatch } from "@/store/problems-model"
+import type { ValidationStatus } from "@/types/idea"
 
 const COLUMN_TO_FIELD: Record<string, keyof ProblemPatch> = {
   "customer-segments": "customerSegments",
@@ -43,7 +45,7 @@ export function EditProblemDialog({ problem, onClose }: EditProblemDialogProps) 
   useEffect(() => {
     if (!problem) return
     initRef.current = false
-    const fields: Record<string, string> = { description: problem.description ?? "" }
+    const fields: Record<string, string> = { description: problem.description ?? "", validationStatus: problem.validationStatus ?? "unvalidated" }
     for (const col of brainstormColumns) {
       const field = COLUMN_TO_FIELD[col.id]
       fields[col.id] = (problem[field] as string[]).join(", ")
@@ -107,6 +109,13 @@ export function EditProblemDialog({ problem, onClose }: EditProblemDialogProps) 
               />
             </div>
           ))}
+          <StatusSelect
+            status={(editFields["validationStatus"] as ValidationStatus) ?? "unvalidated"}
+            setStatus={(v) => {
+              setEditFields((prev) => ({ ...prev, validationStatus: v }))
+              if (problem) dispatch.problems.update({ id: problem.id, patch: { validationStatus: v } })
+            }}
+          />
         </div>
       </DialogContent>
     </Dialog>

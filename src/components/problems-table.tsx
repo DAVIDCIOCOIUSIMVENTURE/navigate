@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux"
 import type { AppDispatch } from "@/store"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   Table,
@@ -126,16 +127,21 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                               <Pencil className="h-3.5 w-3.5" />
                               <span className="hidden md:inline ml-1">Edit</span>
                             </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 text-muted-foreground hover:text-destructive"
-                              onClick={() => dispatch.problems.delete(problem.id)}
-                              aria-label="Delete problem"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                              <span className="hidden md:inline ml-1">Delete</span>
-                            </Button>
+                            <ConfirmDialog
+                              trigger={
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-7 text-muted-foreground hover:text-destructive"
+                                  aria-label="Delete problem"
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                  <span className="hidden md:inline ml-1">Delete</span>
+                                </Button>
+                              }
+                              description="This will permanently delete this problem and any associated data."
+                              onConfirm={() => dispatch.problems.delete(problem.id)}
+                            />
                           </>
                         )}
                         <Button
