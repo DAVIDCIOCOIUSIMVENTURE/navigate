@@ -9,6 +9,8 @@ import { DEFAULT_VALIDATION_ASSESSMENT } from "@/types/idea"
 type ProblemValidationContextValue = {
   problemRef: string
   problemId: number
+  segmentSize: number | null
+  setSegmentSize: (val: number | null) => void
   alternatives: AlternativeItem[]
   setAlternatives: (val: AlternativeItem[]) => void
   contextWhen: string
@@ -43,6 +45,7 @@ export function ProblemValidationProvider({
     state.problems.problems.find((p) => p.id === problemId)
   )
 
+  const segmentSize = problem?.segmentSize ?? null
   const alternatives = problem?.alternatives ?? []
   const emotionalImpact = problem?.emotionalImpact ?? []
   const quantifiableImpacts = problem?.quantifiableImpacts ?? []
@@ -50,6 +53,13 @@ export function ProblemValidationProvider({
   const contextWhen = problem?.contextWhen ?? ""
   const status = problem?.validationStatus ?? "unvalidated"
   const reason = problem?.validationReason ?? ""
+
+  const setSegmentSize = useCallback(
+    (val: number | null) => {
+      dispatch.problems.update({ id: problemId, patch: { segmentSize: val } })
+    },
+    [dispatch, problemId]
+  )
 
   const setAlternatives = useCallback(
     (val: AlternativeItem[]) => {
@@ -158,6 +168,7 @@ export function ProblemValidationProvider({
       value={{
         problemRef,
         problemId,
+        segmentSize, setSegmentSize,
         alternatives, setAlternatives,
         contextWhen, setContextWhen,
         emotionalImpact, setEmotionalImpact,
@@ -184,6 +195,7 @@ export function useProblemValidation() {
 
 export const NAV_ITEMS = [
   { label: "Introduction", path: "introduction" },
+  { label: "Customer Segment", path: "customer-segment" },
   { label: "Alternatives & Shortcomings", path: "alternatives" },
   { label: "Quantifiable Impact", path: "quantifiable-impact" },
   { label: "Emotional Impact", path: "emotional-impact" },

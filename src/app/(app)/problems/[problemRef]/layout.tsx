@@ -5,12 +5,13 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ProblemValidationProvider, useProblemValidation, NAV_ITEMS } from "./context"
 import {
-  GitFork, Clock, Heart, BarChart2, ShieldCheck, FileText, LayoutTemplate, BookOpen,
+  GitFork, Clock, Heart, BarChart2, ShieldCheck, FileText, LayoutTemplate, BookOpen, Users,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
 const NAV_ICONS: Record<string, LucideIcon> = {
   introduction: BookOpen,
+  "customer-segment": Users,
   alternatives: GitFork,
   "context-step": Clock,
   "emotional-impact": Heart,
