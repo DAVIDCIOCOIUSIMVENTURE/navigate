@@ -15,16 +15,8 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Pencil, Trash2, ArrowRight, CheckCircle2, XCircle, HelpCircle, Clock, Circle } from "lucide-react"
-import { brainstormColumns } from "@/data/brainstormData"
-import type { Problem, ProblemPatch } from "@/store/problems-model"
+import type { Problem } from "@/store/problems-model"
 import { EditProblemDialog } from "@/components/edit-problem-dialog"
-
-const COLUMN_TO_FIELD: Record<string, keyof ProblemPatch> = {
-  "customer-segments": "customerSegments",
-  "contexts": "contexts",
-  "jobs-to-be-done": "jobsToBeDone",
-  "problem-types": "problemTypes",
-}
 
 const STORAGE_KEY = "navigate-standalone-validation"
 
@@ -83,14 +75,11 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
             <TableHeader>
               <TableRow>
                 <TableHead className="w-10">#</TableHead>
-                <TableHead>Description</TableHead>
-                {brainstormColumns.map((col) => (
-                  <TableHead key={col.id}>{col.title}</TableHead>
-                ))}
+                <TableHead className="w-full">Description</TableHead>
                 <TableHead className="w-24">Source</TableHead>
                 <TableHead className="w-28">Date</TableHead>
                 {showStatus && <TableHead className="w-36">Status</TableHead>}
-                <TableHead className="w-20" />
+                <TableHead />
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -100,26 +89,13 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                 return (
                   <TableRow key={problem.id}>
                     <TableCell className="text-muted-foreground">{index + 1}</TableCell>
-                    <TableCell className="text-sm max-w-48">
+                    <TableCell className="text-sm">
                       {problem.description ? (
                         <span className="line-clamp-2">{problem.description}</span>
                       ) : (
                         <span className="text-muted-foreground">—</span>
                       )}
                     </TableCell>
-                    {brainstormColumns.map((col) => {
-                      const field = COLUMN_TO_FIELD[col.id]
-                      const labels = problem[field] as string[]
-                      return (
-                        <TableCell key={col.id}>
-                          {labels.length > 0 ? (
-                            <span className="text-sm">{labels.join(", ")}</span>
-                          ) : (
-                            <span className="text-sm text-muted-foreground">—</span>
-                          )}
-                        </TableCell>
-                      )
-                    })}
                     <TableCell className="text-sm text-muted-foreground capitalize">
                       {problem.source}
                     </TableCell>
@@ -142,33 +118,35 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                           <>
                             <Button
                               variant="ghost"
-                              size="icon"
-                              className="h-7 w-7 text-muted-foreground"
+                              size="sm"
+                              className="h-7 text-muted-foreground"
                               onClick={() => setEditingProblem(problem)}
                               aria-label="Edit problem"
                             >
                               <Pencil className="h-3.5 w-3.5" />
+                              <span className="hidden md:inline ml-1">Edit</span>
                             </Button>
                             <Button
                               variant="ghost"
-                              size="icon"
-                              className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                              size="sm"
+                              className="h-7 text-muted-foreground hover:text-destructive"
                               onClick={() => dispatch.problems.delete(problem.id)}
                               aria-label="Delete problem"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
+                              <span className="hidden md:inline ml-1">Delete</span>
                             </Button>
                           </>
                         )}
                         <Button
                           variant="ghost"
-                          size="icon"
-                          className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                          size="sm"
+                          className="h-7 text-muted-foreground hover:text-foreground"
                           onClick={() => router.push(`/problem-validation/${problem.id}/alternatives`)}
                           aria-label="Validate problem"
-                          title="Validate this problem"
                         >
                           <ArrowRight className="h-3.5 w-3.5" />
+                          <span className="hidden md:inline ml-1">Validate</span>
                         </Button>
                       </div>
                     </TableCell>
