@@ -395,26 +395,26 @@ export default function VerdictPage() {
         <div className="flex gap-3">
           <Button
             variant="outline"
-            className="flex-1 h-12 border-green-300 hover:bg-green-50 hover:border-green-400 text-green-700"
+            className="flex-1 h-auto min-h-12 !whitespace-normal text-center border-green-300 hover:bg-green-50 hover:border-green-400 text-green-700"
             onClick={() => handleVerdict("valid")}
           >
-            <CheckCircle2 className="h-5 w-5 mr-2" />
+            <CheckCircle2 className="h-5 w-5 mr-2 shrink-0" />
             Valid — Worth Solving
           </Button>
           <Button
             variant="outline"
-            className="flex-1 h-12 border-orange-300 hover:bg-orange-50 hover:border-orange-400 text-orange-700"
+            className="flex-1 h-auto min-h-12 !whitespace-normal text-center border-orange-300 hover:bg-orange-50 hover:border-orange-400 text-orange-700"
             onClick={() => handleVerdict("unsure")}
           >
-            <HelpCircle className="h-5 w-5 mr-2" />
+            <HelpCircle className="h-5 w-5 mr-2 shrink-0" />
             Unsure — May Be Worth Solving
           </Button>
           <Button
             variant="outline"
-            className="flex-1 h-12 border-red-300 hover:bg-red-50 hover:border-red-400 text-red-700"
+            className="flex-1 h-auto min-h-12 !whitespace-normal text-center border-red-300 hover:bg-red-50 hover:border-red-400 text-red-700"
             onClick={() => handleVerdict("invalid")}
           >
-            <XCircle className="h-5 w-5 mr-2" />
+            <XCircle className="h-5 w-5 mr-2 shrink-0" />
             Invalid — Not Worth Solving
           </Button>
         </div>
