@@ -8,12 +8,12 @@ import { Input } from "@/components/ui/input"
 import { useProblemValidation, getAdjacentSteps } from "../context"
 import { GitFork, Plus, X } from "lucide-react"
 
-export default function AlternativesPage() {
+export default function ExistingSolutionsPage() {
   const router = useRouter()
   const pathname = usePathname()
   const params = useParams()
   const ideaId = Number(params.ideaId)
-  const { alternatives, setAlternatives } = useProblemValidation()
+  const { existingSolutions, setExistingSolutions } = useProblemValidation()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, ideaId)
   const [adding, setAdding] = useState(false)
   const [draft, setDraft] = useState("")
@@ -26,13 +26,13 @@ export default function AlternativesPage() {
   const add = () => {
     const trimmed = draft.trim()
     if (trimmed) {
-      setAlternatives([...alternatives, { id: Date.now(), text: trimmed, shortcomings: [], impacts: [] }])
+      setExistingSolutions([...existingSolutions, { id: Date.now(), text: trimmed, shortcomings: [], impacts: [] }])
     }
     setDraft("")
     setAdding(false)
   }
 
-  const remove = (i: number) => setAlternatives(alternatives.filter((_, idx) => idx !== i))
+  const remove = (i: number) => setExistingSolutions(existingSolutions.filter((_, idx) => idx !== i))
 
   const onKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") { e.preventDefault(); add() }
@@ -43,18 +43,18 @@ export default function AlternativesPage() {
     <Card className="w-full flex-1">
       <CardHeader className="px-8 pt-8 pb-0">
         <CardEyebrow icon={GitFork}>Problem Validation</CardEyebrow>
-        <CardTitle icon={GitFork} className="text-lg">Alternatives to the Problem</CardTitle>
+        <CardTitle icon={GitFork} className="text-lg">Existing Solutions</CardTitle>
       </CardHeader>
       <CardContent className="p-8 pt-6 flex flex-col gap-5">
         <p className="text-sm text-muted-foreground">
-          How are customers currently solving or working around this problem? List every alternative they
+          How are customers currently solving or working around this problem? List every existing solution they
           might use — tools, workarounds, doing nothing, or hiring someone.
         </p>
 
         <div className="flex flex-col gap-1.5">
-          {alternatives.length > 0 && (
+          {existingSolutions.length > 0 && (
             <ul className="flex flex-col gap-1.5 mb-1.5">
-              {alternatives.map((item, i) => (
+              {existingSolutions.map((item, i) => (
                 <li key={i} className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2 text-sm">
                   <span className="flex-1">{item.text}</span>
                   <button onClick={() => remove(i)} className="shrink-0 text-muted-foreground hover:text-destructive transition-colors">
@@ -68,7 +68,7 @@ export default function AlternativesPage() {
           {adding ? (
             <Input
               ref={inputRef}
-              placeholder="Type an alternative and press Enter..."
+              placeholder="Type an existing solution and press Enter..."
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
               onKeyDown={onKeyDown}
@@ -81,7 +81,7 @@ export default function AlternativesPage() {
               className="w-full flex items-center justify-center gap-1.5 border border-dashed rounded-lg py-2.5 text-sm text-muted-foreground hover:text-foreground hover:border-foreground transition-colors"
             >
               <Plus className="h-4 w-4" />
-              Add Alternative
+              Add Existing Solution
             </button>
           )}
         </div>

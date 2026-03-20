@@ -13,7 +13,7 @@ import {
   Users, AlertCircle, GitFork, Clock, Heart, BarChart2,
   Pencil, Plus, X, Briefcase,
 } from "lucide-react"
-import type { AlternativeItem, CustomerFields, ImpactItem, Problem } from "@/types/idea"
+import type { ExistingSolutionItem, CustomerFields, ImpactItem, Problem } from "@/types/idea"
 
 const IMPACT_CATEGORIES = [
   "Time Lost", "Money Wasted", "Error Rates", "Customer Churn",
@@ -104,8 +104,8 @@ export default function ProblemStatementPage() {
   const [customerOpen, setCustomerOpen] = useState(false)
   const [impactOpen, setImpactOpen] = useState(false)
   const [impactDraft, setImpactDraft] = useState<ImpactItem>({ category: "", description: "" })
-  const [altOpen, setAltOpen] = useState(false)
-  const [altDraft, setAltDraft] = useState("")
+  const [solutionOpen, setAltOpen] = useState(false)
+  const [solutionDraft, setAltDraft] = useState("")
   const [scDrafts, setScDrafts] = useState<Record<number, string>>({})
 
   if (!idea) {
@@ -132,7 +132,7 @@ export default function ProblemStatementPage() {
 
   const coreProblem = activeProblem
 
-  const alternatives = activeProblem?.alternatives ?? []
+  const existingSolutions = activeProblem?.existingSolutions ?? []
   const contextWhen = activeProblem?.contextWhen ?? ""
   const emotionalImpact = activeProblem?.emotionalImpact ?? ""
   const impacts = activeProblem?.impacts ?? []
@@ -154,15 +154,15 @@ export default function ProblemStatementPage() {
   const removeImpact = (i: number) =>
     updateActiveProblemField({ impacts: impacts.filter((_, idx) => idx !== i) })
 
-  const addAlternative = () => {
-    const trimmed = altDraft.trim()
+  const addSolution = () => {
+    const trimmed = solutionDraft.trim()
     if (!trimmed) return
-    const newItem: AlternativeItem = { id: Date.now(), text: trimmed, shortcomings: [], impacts: [] }
-    updateActiveProblemField({ alternatives: [...alternatives, newItem] })
+    const newItem: ExistingSolutionItem = { id: Date.now(), text: trimmed, shortcomings: [], impacts: [] }
+    updateActiveProblemField({ existingSolutions: [...existingSolutions, newItem] })
     setAltDraft("")
   }
-  const removeAlternative = (i: number) =>
-    updateActiveProblemField({ alternatives: alternatives.filter((_, idx) => idx !== i) })
+  const removeSolution = (i: number) =>
+    updateActiveProblemField({ existingSolutions: existingSolutions.filter((_, idx) => idx !== i) })
 
   return (
     <div className="flex flex-col gap-6 w-full flex-1">
@@ -233,17 +233,17 @@ export default function ProblemStatementPage() {
           onChange={(val) => updateActiveProblemField({ contextWhen: val })}
         />
 
-        {/* Alternatives & Shortcomings Card */}
+        {/* Existing Solutions & Shortcomings Card */}
         <div className="rounded-xl border-2 bg-purple-50 border-purple-200 p-5 flex flex-col gap-3">
           <ClickableCardTitle
             icon={GitFork}
-            label="Alternatives & Shortcomings"
+            label="Existing Solutions & Shortcomings"
             description="How customers solve the problem and why those solutions fall short"
             onEdit={() => setAltOpen(true)}
           />
-          {alternatives.length > 0 ? (
+          {existingSolutions.length > 0 ? (
             <ul className="flex flex-col gap-2">
-              {alternatives.map((alt, i) => (
+              {existingSolutions.map((alt, i) => (
                 <li key={i} className="flex flex-col gap-0.5">
                   <div className="text-sm flex gap-2">
                     <span className="text-muted-foreground shrink-0">{i + 1}.</span>
@@ -339,20 +339,20 @@ export default function ProblemStatementPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Alternatives & Shortcomings dialog */}
-      <Dialog open={altOpen} onOpenChange={setAltOpen}>
+      {/* Existing Solutions & Shortcomings dialog */}
+      <Dialog open={solutionOpen} onOpenChange={setAltOpen}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>Alternatives & Shortcomings</DialogTitle>
+            <DialogTitle>Existing Solutions & Shortcomings</DialogTitle>
             <DialogDescription>How customers solve the problem and why those solutions fall short</DialogDescription>
           </DialogHeader>
-          {alternatives.length > 0 && (
+          {existingSolutions.length > 0 && (
             <ul className="flex flex-col gap-3">
-              {alternatives.map((item, i) => (
+              {existingSolutions.map((item, i) => (
                 <li key={i} className="flex flex-col gap-2 bg-muted/50 rounded-lg px-3 py-2.5">
                   <div className="flex items-center gap-2">
                     <span className="flex-1 text-sm font-medium">{item.text}</span>
-                    <button onClick={() => removeAlternative(i)} className="shrink-0 text-muted-foreground hover:text-destructive">
+                    <button onClick={() => removeSolution(i)} className="shrink-0 text-muted-foreground hover:text-destructive">
                       <X className="h-3.5 w-3.5" />
                     </button>
                   </div>
@@ -364,7 +364,7 @@ export default function ProblemStatementPage() {
                           <button
                             onClick={() =>
                               updateActiveProblemField({
-                                alternatives: alternatives.map((alt, idx) =>
+                                existingSolutions: existingSolutions.map((alt, idx) =>
                                   idx === i ? { ...alt, shortcomings: alt.shortcomings.filter((_, k) => k !== j) } : alt
                                 ),
                               })
@@ -388,7 +388,7 @@ export default function ProblemStatementPage() {
                           const trimmed = (scDrafts[i] ?? "").trim()
                           if (!trimmed) return
                           updateActiveProblemField({
-                            alternatives: alternatives.map((alt, idx) =>
+                            existingSolutions: existingSolutions.map((alt, idx) =>
                               idx === i ? { ...alt, shortcomings: [...alt.shortcomings, trimmed] } : alt
                             ),
                           })
@@ -405,7 +405,7 @@ export default function ProblemStatementPage() {
                         const trimmed = (scDrafts[i] ?? "").trim()
                         if (!trimmed) return
                         updateActiveProblemField({
-                          alternatives: alternatives.map((alt, idx) =>
+                          existingSolutions: existingSolutions.map((alt, idx) =>
                             idx === i ? { ...alt, shortcomings: [...alt.shortcomings, trimmed] } : alt
                           ),
                         })
@@ -421,13 +421,13 @@ export default function ProblemStatementPage() {
           )}
           <div className="flex gap-2">
             <Input
-              placeholder="Type an alternative and press Enter..."
-              value={altDraft}
+              placeholder="Type an existing solution and press Enter..."
+              value={solutionDraft}
               onChange={(e) => setAltDraft(e.target.value)}
-              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addAlternative() } }}
+              onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); addSolution() } }}
               className="text-sm h-9"
             />
-            <Button variant="outline" onClick={addAlternative} disabled={!altDraft.trim()}>
+            <Button variant="outline" onClick={addSolution} disabled={!solutionDraft.trim()}>
               <Plus className="h-4 w-4" />
               Add
             </Button>

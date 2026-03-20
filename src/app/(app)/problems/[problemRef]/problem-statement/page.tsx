@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { StatusSelect } from "@/components/ui/status-select"
 import { useProblemValidation } from "../context"
 
-type DialogId = "core" | "alternatives" | "emotional"
+type DialogId = "core" | "existingSolutions" | "emotional"
 
 // ── Shared primitives ─────────────────────────────────────────────────────────
 
@@ -101,12 +101,12 @@ export default function ProblemStatementPage() {
 
   const {
     problemId,
-    alternatives, setAlternatives,
+    existingSolutions, setExistingSolutions,
     emotionalImpact, setEmotionalImpact,
     status, setStatus,
   } = useProblemValidation()
 
-  const quantifiableImpacts = alternatives.flatMap((alt) => alt.impacts ?? []).filter((imp) => imp.category || imp.description)
+  const quantifiableImpacts = existingSolutions.flatMap((alt) => alt.impacts ?? []).filter((imp) => imp.category || imp.description)
 
   const problem = useSelector((state: RootState) =>
     state.problems.problems.find((p) => p.id === problemId)
@@ -125,24 +125,24 @@ export default function ProblemStatementPage() {
   const addEmotion = () =>
     setEmotionalImpact([...emotionalImpact, ""])
 
-  // alternatives
-  const updateAltText = (i: number, value: string) =>
-    setAlternatives(alternatives.map((alt, idx) => idx === i ? { ...alt, text: value } : alt))
-  const removeAlternative = (i: number) =>
-    setAlternatives(alternatives.filter((_, idx) => idx !== i))
-  const addAlternative = () =>
-    setAlternatives([...alternatives, { id: Date.now(), text: "", shortcomings: [], impacts: [] }])
+  // existingSolutions
+  const updateSolutionText = (i: number, value: string) =>
+    setExistingSolutions(existingSolutions.map((alt, idx) => idx === i ? { ...alt, text: value } : alt))
+  const removeSolution = (i: number) =>
+    setExistingSolutions(existingSolutions.filter((_, idx) => idx !== i))
+  const addSolution = () =>
+    setExistingSolutions([...existingSolutions, { id: Date.now(), text: "", shortcomings: [], impacts: [] }])
 
   const updateShortcoming = (altIdx: number, scIdx: number, value: string) =>
-    setAlternatives(alternatives.map((alt, i) =>
+    setExistingSolutions(existingSolutions.map((alt, i) =>
       i === altIdx ? { ...alt, shortcomings: alt.shortcomings.map((sc, j) => j === scIdx ? value : sc) } : alt
     ))
   const removeShortcoming = (altIdx: number, scIdx: number) =>
-    setAlternatives(alternatives.map((alt, i) =>
+    setExistingSolutions(existingSolutions.map((alt, i) =>
       i === altIdx ? { ...alt, shortcomings: alt.shortcomings.filter((_, j) => j !== scIdx) } : alt
     ))
   const addShortcoming = (altIdx: number) =>
-    setAlternatives(alternatives.map((alt, i) =>
+    setExistingSolutions(existingSolutions.map((alt, i) =>
       i === altIdx ? { ...alt, shortcomings: [...alt.shortcomings, ""] } : alt
     ))
 
@@ -192,12 +192,12 @@ export default function ProblemStatementPage() {
               )}
             </div>
 
-            {/* ── Alternatives & Shortcomings ── */}
+            {/* ── Existing Solutions & Shortcomings ── */}
             <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3">
-              <SectionTitle icon={GitFork} label="Alternatives & Shortcomings" onEdit={() => setOpenDialog("alternatives")} />
-              {alternatives.length > 0 ? (
+              <SectionTitle icon={GitFork} label="Existing Solutions & Shortcomings" onEdit={() => setOpenDialog("existingSolutions")} />
+              {existingSolutions.length > 0 ? (
                 <ul className="flex flex-col gap-3">
-                  {alternatives.map((alt) => (
+                  {existingSolutions.map((alt) => (
                     <li key={alt.id} className="flex flex-col gap-1 bg-white/60 rounded-lg px-3 py-2.5 border border-border">
                       <p className="text-sm font-medium text-foreground/90">{alt.text || <span className="italic text-muted-foreground/60">Unnamed</span>}</p>
                       {alt.shortcomings.length > 0 && (
@@ -214,7 +214,7 @@ export default function ProblemStatementPage() {
                   ))}
                 </ul>
               ) : (
-                <span className="text-xs text-muted-foreground/60 italic">No alternatives added</span>
+                <span className="text-xs text-muted-foreground/60 italic">No existing solutions added</span>
               )}
             </div>
 
@@ -235,7 +235,7 @@ export default function ProblemStatementPage() {
               )}
             </div>
 
-            {/* ── Quantifiable Impact (aggregated from alternatives) ── */}
+            {/* ── Quantifiable Impact (aggregated from existingSolutions) ── */}
             <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3">
               <div className="flex items-center gap-2">
                 <BarChart2 className="h-4 w-4 shrink-0 text-foreground/70" />
@@ -298,27 +298,27 @@ export default function ProblemStatementPage() {
         </DialogContent>
       </Dialog>
 
-      {/* ── Alternatives & Shortcomings Dialog ── */}
-      <Dialog open={openDialog === "alternatives"} onOpenChange={(o) => !o && setOpenDialog(null)}>
+      {/* ── Existing Solutions & Shortcomings Dialog ── */}
+      <Dialog open={openDialog === "existingSolutions"} onOpenChange={(o) => !o && setOpenDialog(null)}>
         <DialogContent className="max-w-lg">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
-              <GitFork className="h-4 w-4 text-purple-500" /> Alternatives & Shortcomings
+              <GitFork className="h-4 w-4 text-purple-500" /> Existing Solutions & Shortcomings
             </DialogTitle>
           </DialogHeader>
           <div className="flex flex-col gap-3 mt-2">
-            {alternatives.length > 0 && (
+            {existingSolutions.length > 0 && (
               <ul className="flex flex-col gap-3">
-                {alternatives.map((alt, i) => (
+                {existingSolutions.map((alt, i) => (
                   <li key={alt.id} className="flex flex-col gap-2 bg-purple-50 rounded-lg px-3 py-2.5 border border-purple-100">
                     <div className="flex gap-2 items-center">
                       <Input
-                        placeholder="Alternative solution…"
+                        placeholder="Existing solution…"
                         value={alt.text}
-                        onChange={(e) => updateAltText(i, e.target.value)}
+                        onChange={(e) => updateSolutionText(i, e.target.value)}
                         className="text-sm h-8 bg-white border-purple-200 font-medium"
                       />
-                      <button onClick={() => removeAlternative(i)} className="shrink-0 text-muted-foreground hover:text-destructive">
+                      <button onClick={() => removeSolution(i)} className="shrink-0 text-muted-foreground hover:text-destructive">
                         <X className="h-3.5 w-3.5" />
                       </button>
                     </div>
@@ -350,8 +350,8 @@ export default function ProblemStatementPage() {
                 ))}
               </ul>
             )}
-            <Button variant="outline" size="sm" onClick={addAlternative} className="w-full border-purple-200 text-purple-700 hover:bg-purple-100 hover:text-purple-800">
-              <Plus className="h-3.5 w-3.5 mr-1" /> Add Alternative
+            <Button variant="outline" size="sm" onClick={addSolution} className="w-full border-purple-200 text-purple-700 hover:bg-purple-100 hover:text-purple-800">
+              <Plus className="h-3.5 w-3.5 mr-1" /> Add Existing Solution
             </Button>
           </div>
         </DialogContent>

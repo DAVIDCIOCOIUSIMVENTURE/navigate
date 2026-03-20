@@ -28,7 +28,7 @@ export default function QuickstartValidationPage() {
 
   const idea = getIdea(ideaId)
 
-  // editingScKeys: "altId:scIdx" keys for shortcomings currently being edited inline
+  // editingScKeys: "solutionId:scIdx" keys for shortcomings currently being edited inline
   const [editingScKeys, setEditingScKeys] = useState<Set<string>>(new Set())
   const [impactDraft, setImpactDraft] = useState({ category: "", description: "" })
 
@@ -85,35 +85,35 @@ export default function QuickstartValidationPage() {
     updateIdea(ideaId, { selectedProblemId: id })
   }
 
-  const addAlt = () => {
+  const addSolution = () => {
     const newAlt = { id: Date.now(), text: "", shortcomings: [], impacts: [] }
-    updateProblem({ alternatives: [...(selectedProblem?.alternatives ?? []), newAlt] })
+    updateProblem({ existingSolutions: [...(selectedProblem?.existingSolutions ?? []), newAlt] })
   }
 
-  const updateAltText = (altId: number, text: string) =>
+  const updateSolutionText = (altId: number, text: string) =>
     updateProblem({
-      alternatives: (selectedProblem?.alternatives ?? []).map((alt) =>
+      existingSolutions: (selectedProblem?.existingSolutions ?? []).map((alt) =>
         alt.id === altId ? { ...alt, text } : alt
       ),
     })
 
-  const removeAlt = (altId: number) => {
+  const removeSolution = (altId: number) => {
     setEditingScKeys((prev) => {
       const next = new Set(prev)
       for (const k of next) { if (k.startsWith(`${altId}:`)) next.delete(k) }
       return next
     })
-    updateProblem({ alternatives: (selectedProblem?.alternatives ?? []).filter((alt) => alt.id !== altId) })
+    updateProblem({ existingSolutions: (selectedProblem?.existingSolutions ?? []).filter((alt) => alt.id !== altId) })
   }
 
-  const removeAltShortcoming = (altId: number, scIdx: number) => {
+  const removeSolutionShortcoming = (altId: number, scIdx: number) => {
     setEditingScKeys((prev) => {
       const next = new Set(prev)
       next.delete(`${altId}:${scIdx}`)
       return next
     })
     updateProblem({
-      alternatives: (selectedProblem?.alternatives ?? []).map((alt) =>
+      existingSolutions: (selectedProblem?.existingSolutions ?? []).map((alt) =>
         alt.id === altId
           ? { ...alt, shortcomings: alt.shortcomings.filter((_, j) => j !== scIdx) }
           : alt
@@ -122,11 +122,11 @@ export default function QuickstartValidationPage() {
   }
 
   const addScRow = (altId: number) => {
-    const alt = (selectedProblem?.alternatives ?? []).find((a) => a.id === altId)
+    const alt = (selectedProblem?.existingSolutions ?? []).find((a) => a.id === altId)
     if (!alt) return
     const newIdx = alt.shortcomings.length
     updateProblem({
-      alternatives: (selectedProblem?.alternatives ?? []).map((a) =>
+      existingSolutions: (selectedProblem?.existingSolutions ?? []).map((a) =>
         a.id === altId ? { ...a, shortcomings: [...a.shortcomings, ""] } : a
       ),
     })
@@ -135,7 +135,7 @@ export default function QuickstartValidationPage() {
 
   const updateScValue = (altId: number, scIdx: number, value: string) =>
     updateProblem({
-      alternatives: (selectedProblem?.alternatives ?? []).map((alt) =>
+      existingSolutions: (selectedProblem?.existingSolutions ?? []).map((alt) =>
         alt.id === altId
           ? { ...alt, shortcomings: alt.shortcomings.map((sc, i) => (i === scIdx ? value : sc)) }
           : alt
@@ -241,38 +241,38 @@ export default function QuickstartValidationPage() {
 
       {selectedProblem && (
         <>
-          {/* Alternatives & Shortcomings */}
+          {/* Existing Solutions & Shortcomings */}
           <Card>
             <CardContent className="p-6 flex flex-col gap-4">
               <div className="flex items-center gap-2.5">
                 <GitFork className="h-4 w-4 text-muted-foreground" />
-                <h2 className="text-base font-semibold">Alternatives & Shortcomings</h2>
+                <h2 className="text-base font-semibold">Existing Solutions & Shortcomings</h2>
               </div>
               <p className="text-sm text-muted-foreground">
-                How are customers currently solving or working around this problem? For each alternative, note why it falls short.
+                How are customers currently solving or working around this problem? For each existing solution, note why it falls short.
               </p>
 
-              {(selectedProblem.alternatives ?? []).length > 0 && (
+              {(selectedProblem.existingSolutions ?? []).length > 0 && (
                 <ul className="flex flex-col gap-3">
-                  {(selectedProblem.alternatives ?? []).map((item, altIdx) => (
+                  {(selectedProblem.existingSolutions ?? []).map((item, altIdx) => (
                     <li key={item.id} className="rounded-lg border p-4 flex flex-col gap-3">
                       <div className="flex items-center justify-between">
                         <p className="text-sm font-semibold flex items-center gap-2">
                           <GitFork className="h-4 w-4 text-muted-foreground" />
-                          Alternative {altIdx + 1}
+                          Existing Solution {altIdx + 1}
                         </p>
                         <button
-                          onClick={() => removeAlt(item.id)}
+                          onClick={() => removeSolution(item.id)}
                           className="text-muted-foreground hover:text-destructive transition-colors"
-                          aria-label="Remove alternative"
+                          aria-label="Remove existing solution"
                         >
                           <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
                       <Input
-                        placeholder="Describe the alternative..."
+                        placeholder="Describe the existing solution..."
                         value={item.text}
-                        onChange={(e) => updateAltText(item.id, e.target.value)}
+                        onChange={(e) => updateSolutionText(item.id, e.target.value)}
                         className="text-sm h-9"
                         autoFocus={item.text === ""}
                       />
@@ -303,7 +303,7 @@ export default function QuickstartValidationPage() {
                                     {sc || <span className="text-muted-foreground italic">empty shortcoming</span>}
                                   </span>
                                 )}
-                                <button onClick={() => removeAltShortcoming(item.id, j)} className="shrink-0 text-muted-foreground hover:text-destructive transition-colors">
+                                <button onClick={() => removeSolutionShortcoming(item.id, j)} className="shrink-0 text-muted-foreground hover:text-destructive transition-colors">
                                   <X className="h-3 w-3" />
                                 </button>
                               </li>
@@ -320,9 +320,9 @@ export default function QuickstartValidationPage() {
                 </ul>
               )}
 
-              <Button variant="outline" onClick={addAlt} className="w-full gap-2">
+              <Button variant="outline" onClick={addSolution} className="w-full gap-2">
                 <Plus className="h-4 w-4" />
-                Add Alternative
+                Add Existing Solution
               </Button>
             </CardContent>
           </Card>

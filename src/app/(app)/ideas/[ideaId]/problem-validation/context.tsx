@@ -2,16 +2,16 @@
 
 import { createContext, useContext, useState, useCallback, useEffect, useRef, type ReactNode } from "react"
 import { useIdeas } from "@/store/ideas-hooks"
-import type { AlternativeItem, ImpactItem, ValidationStatus, DecisionLevel } from "@/types/idea"
+import type { ExistingSolutionItem, ImpactItem, ValidationStatus, DecisionLevel } from "@/types/idea"
 
-export type { AlternativeItem, ImpactItem, ValidationStatus, DecisionLevel }
+export type { ExistingSolutionItem, ImpactItem, ValidationStatus, DecisionLevel }
 
 type ProblemValidationContextValue = {
   ideaId: number
   selectedProblemId: number | null
   setSelectedProblemId: (id: number | null) => void
-  alternatives: AlternativeItem[]
-  setAlternatives: (val: AlternativeItem[]) => void
+  existingSolutions: ExistingSolutionItem[]
+  setExistingSolutions: (val: ExistingSolutionItem[]) => void
   contextWhen: string
   setContextWhen: (val: string) => void
   emotionalImpact: string
@@ -45,7 +45,7 @@ export function ProblemValidationProvider({
   const { getIdea, updateIdea } = useIdeas()
 
   const [selectedProblemId, setSelectedProblemIdRaw] = useState<number | null>(null)
-  const [alternatives, setAlternatives] = useState<AlternativeItem[]>([])
+  const [existingSolutions, setExistingSolutions] = useState<ExistingSolutionItem[]>([])
   const [contextWhen, setContextWhen] = useState("")
   const [emotionalImpact, setEmotionalImpact] = useState("")
   const [impacts, setImpacts] = useState<ImpactItem[]>([])
@@ -69,7 +69,7 @@ export function ProblemValidationProvider({
       const idea = getIdea(ideaId)
       const problem = idea?.jobs.flatMap((j) => j.problems).find((p) => p.id === problemId)
       if (problem) {
-        setAlternatives(problem.alternatives)
+        setExistingSolutions(problem.existingSolutions)
         setContextWhen(problem.contextWhen)
         setEmotionalImpact(problem.emotionalImpact)
         setImpacts(problem.impacts)
@@ -80,7 +80,7 @@ export function ProblemValidationProvider({
         setReturnLevel(problem.returnLevel ?? "")
         setMarketLevel(problem.marketLevel ?? "")
       } else {
-        setAlternatives([])
+        setExistingSolutions([])
         setContextWhen("")
         setEmotionalImpact("")
         setImpacts([])
@@ -115,7 +115,7 @@ export function ProblemValidationProvider({
             ? {
                 ...p,
                 validationStatus: statusOverride ?? status,
-                alternatives,
+                existingSolutions,
                 contextWhen,
                 emotionalImpact,
                 impacts,
@@ -130,7 +130,7 @@ export function ProblemValidationProvider({
       }))
       updateIdea(ideaId, { jobs: updatedJobs, selectedProblemId: problemId })
     },
-    [ideaId, getIdea, updateIdea, alternatives, contextWhen, emotionalImpact, impacts, status, reason, timeLevel, costLevel, returnLevel, marketLevel]
+    [ideaId, getIdea, updateIdea, existingSolutions, contextWhen, emotionalImpact, impacts, status, reason, timeLevel, costLevel, returnLevel, marketLevel]
   )
 
   // Keep the ref current so the auto-save effect always calls the latest version
@@ -145,8 +145,7 @@ export function ProblemValidationProvider({
     const problemId = selectedProblemIdRef.current
     if (problemId === null) return
     saveCurrentValidationRef.current?.(problemId)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [alternatives, contextWhen, emotionalImpact, impacts, status, reason, timeLevel, costLevel, returnLevel, marketLevel])
+  }, [existingSolutions, contextWhen, emotionalImpact, impacts, status, reason, timeLevel, costLevel, returnLevel, marketLevel])
 
   const setSelectedProblemId = useCallback(
     (id: number | null) => {
@@ -175,7 +174,7 @@ export function ProblemValidationProvider({
       value={{
         ideaId,
         selectedProblemId, setSelectedProblemId,
-        alternatives, setAlternatives,
+        existingSolutions, setExistingSolutions,
         contextWhen, setContextWhen,
         emotionalImpact, setEmotionalImpact,
         impacts, setImpacts,
@@ -202,8 +201,8 @@ export function useProblemValidation() {
 export const NAV_ITEMS = [
   { label: "Introduction", path: "introduction" },
   { label: "Pick a Problem", path: "pick-a-problem" },
-  { label: "Alternatives", path: "alternatives" },
-  { label: "Alternatives Shortcomings", path: "shortcomings" },
+  { label: "Existing Solutions", path: "alternatives" },
+  { label: "Existing Solutions Shortcomings", path: "shortcomings" },
   { label: "Emotional Impact", path: "emotional-impact" },
   { label: "Quantifiable Impact", path: "quantifiable-impact" },
   { label: "Verdict", path: "verdict" },

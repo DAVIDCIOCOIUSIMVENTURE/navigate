@@ -79,7 +79,7 @@ export default function VerdictPage() {
   const ideaId = Number(params.ideaId)
   const { prevPath } = getAdjacentSteps(pathname, ideaId)
   const {
-    selectedProblemId, alternatives, emotionalImpact,
+    selectedProblemId, existingSolutions, emotionalImpact,
     impacts, status, setStatus, reason, setReason,
     timeLevel, setTimeLevel, costLevel, setCostLevel, returnLevel, setReturnLevel, marketLevel, setMarketLevel,
     saveValidation,
@@ -139,11 +139,11 @@ export default function VerdictPage() {
           <div className="rounded-lg border p-4 flex flex-col gap-3">
             <div className="flex items-center gap-2">
               <GitFork className="h-3.5 w-3.5 text-muted-foreground" />
-              <p className="text-sm font-semibold">Alternatives & shortcomings</p>
+              <p className="text-sm font-semibold">Existing solutions & shortcomings</p>
             </div>
-            {alternatives.length > 0 ? (
+            {existingSolutions.length > 0 ? (
               <ul className="flex flex-col gap-2">
-                {alternatives.map((alt, i) => (
+                {existingSolutions.map((alt, i) => (
                   <li key={i} className="flex flex-col gap-0.5">
                     <div className="text-sm flex gap-2">
                       <span className="text-muted-foreground shrink-0">{i + 1}.</span>

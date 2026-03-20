@@ -13,7 +13,7 @@ export default function ShortcomingsPage() {
   const pathname = usePathname()
   const params = useParams()
   const ideaId = Number(params.ideaId)
-  const { alternatives, setAlternatives } = useProblemValidation()
+  const { existingSolutions, setExistingSolutions } = useProblemValidation()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, ideaId)
   const [adding, setAdding] = useState<Record<number, boolean>>({})
   const [drafts, setDrafts] = useState<Record<number, string>>({})
@@ -28,8 +28,8 @@ export default function ShortcomingsPage() {
   const addShortcoming = (altIdx: number) => {
     const trimmed = (drafts[altIdx] ?? "").trim()
     if (trimmed) {
-      setAlternatives(
-        alternatives.map((alt, idx) =>
+      setExistingSolutions(
+        existingSolutions.map((alt, idx) =>
           idx === altIdx ? { ...alt, shortcomings: [...alt.shortcomings, trimmed] } : alt
         )
       )
@@ -39,8 +39,8 @@ export default function ShortcomingsPage() {
   }
 
   const removeShortcoming = (altIdx: number, scIdx: number) =>
-    setAlternatives(
-      alternatives.map((alt, idx) =>
+    setExistingSolutions(
+      existingSolutions.map((alt, idx) =>
         idx === altIdx
           ? { ...alt, shortcomings: alt.shortcomings.filter((_, j) => j !== scIdx) }
           : alt
@@ -56,21 +56,21 @@ export default function ShortcomingsPage() {
     <Card className="w-full flex-1">
       <CardHeader className="px-8 pt-8 pb-0">
         <CardEyebrow icon={ThumbsDown}>Problem Validation</CardEyebrow>
-        <CardTitle icon={ThumbsDown} className="text-lg">Alternatives Shortcomings</CardTitle>
+        <CardTitle icon={ThumbsDown} className="text-lg">Existing Solutions Shortcomings</CardTitle>
       </CardHeader>
       <CardContent className="p-8 pt-6 flex flex-col gap-5">
         <p className="text-sm text-muted-foreground">
-          Why do the existing alternatives fall short? What frustrations, gaps, or additional problems do
+          Why do the existing solutions fall short? What frustrations, gaps, or additional problems do
           they create for customers?
         </p>
 
-        {alternatives.length === 0 ? (
+        {existingSolutions.length === 0 ? (
           <p className="text-sm text-muted-foreground italic">
-            No alternatives added yet. Go back and add some alternatives first.
+            No existing solutions added yet. Go back and add some existing solutions first.
           </p>
         ) : (
           <div className="flex flex-col gap-5">
-            {alternatives.map((alt, i) => (
+            {existingSolutions.map((alt, i) => (
               <div key={i} className="flex flex-col gap-2">
                 <p className="text-sm font-medium">{alt.text}</p>
                 {alt.shortcomings.length > 0 && (

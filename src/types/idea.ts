@@ -26,7 +26,7 @@ export type CustomerFields = {
 
 export type ImpactItem = { category: string; description: string }
 
-export type AlternativeItem = { id: number; text: string; shortcomings: string[]; impacts: ImpactItem[] }
+export type ExistingSolutionItem = { id: number; text: string; shortcomings: string[]; impacts: ImpactItem[] }
 
 export type ValidationStatus = "unvalidated" | "in_progress" | "valid" | "invalid" | "unsure"
 export type DecisionLevel = "" | "low" | "medium" | "high"
@@ -58,7 +58,7 @@ export type Problem = {
   text: string
   // Validation fields — populated when the user validates this problem
   validationStatus: ValidationStatus
-  alternatives: AlternativeItem[]
+  existingSolutions: ExistingSolutionItem[]
   contextWhen: string
   emotionalImpact: string
   impacts: ImpactItem[]
@@ -72,7 +72,7 @@ export type Problem = {
 export const DEFAULT_PROBLEM: Omit<Problem, "id"> = {
   text: "",
   validationStatus: "unvalidated",
-  alternatives: [],
+  existingSolutions: [],
   contextWhen: "",
   emotionalImpact: "",
   impacts: [],

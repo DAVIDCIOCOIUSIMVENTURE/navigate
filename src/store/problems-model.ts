@@ -1,6 +1,6 @@
 import { createModel } from "@rematch/core"
 import type { RootModel } from "."
-import type { AlternativeItem, ValidationAssessment, ValidationStatus } from "@/types/idea"
+import type { ExistingSolutionItem, ValidationAssessment, ValidationStatus } from "@/types/idea"
 import { DEFAULT_VALIDATION_ASSESSMENT } from "@/types/idea"
 
 const STORAGE_KEY = "navigate-problems"
@@ -17,7 +17,7 @@ export type Problem = {
   jobsToBeDone: string[]
   problemTypes: string[]
   source: ProblemSource
-  alternatives: AlternativeItem[]
+  existingSolutions: ExistingSolutionItem[]
   emotionalImpact: string[]
   validationAssessment: ValidationAssessment
   validationStatus: ValidationStatus
@@ -26,7 +26,7 @@ export type Problem = {
   segmentSize: number | null
 }
 
-export type ProblemPatch = Partial<Pick<Problem, "description" | "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "alternatives" | "emotionalImpact" | "validationAssessment" | "validationStatus" | "validationReason" | "contextWhen" | "segmentSize">>
+export type ProblemPatch = Partial<Pick<Problem, "description" | "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "existingSolutions" | "emotionalImpact" | "validationAssessment" | "validationStatus" | "validationReason" | "contextWhen" | "segmentSize">>
 
 export function getProblemLabel(problem: Problem): string {
   return [
@@ -61,7 +61,22 @@ function loadFromStorage(): ProblemsState | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return null
-    return JSON.parse(raw) as ProblemsState
+    const parsed = JSON.parse(raw) as ProblemsState
+    // Migrate legacy "alternatives" field → "existingSolutions"
+    let migrated = false
+    for (const p of parsed.problems) {
+      if ("alternatives" in p && !("existingSolutions" in p)) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ;(p as any).existingSolutions = (p as any).alternatives
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        delete (p as any).alternatives
+        migrated = true
+      }
+    }
+    if (migrated) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed))
+    }
+    return parsed
   } catch {
     return null
   }
@@ -124,7 +139,7 @@ export const problems = createModel<RootModel>()({
         jobsToBeDone: payload.jobsToBeDone ?? [],
         problemTypes: payload.problemTypes ?? [],
         source: payload.source,
-        alternatives: payload.alternatives ?? [],
+        existingSolutions: payload.existingSolutions ?? [],
         emotionalImpact: payload.emotionalImpact ?? [],
         validationAssessment: payload.validationAssessment ?? DEFAULT_VALIDATION_ASSESSMENT,
         validationStatus: payload.validationStatus ?? "unvalidated",

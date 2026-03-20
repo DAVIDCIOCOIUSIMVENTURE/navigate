@@ -131,12 +131,12 @@ export default function VerdictPage() {
   const pathname = usePathname()
   const {
     problemRef, problemId,
-    alternatives, emotionalImpact,
+    existingSolutions, emotionalImpact,
     status, setStatus, reason, setReason,
     validationAssessment, setTimeToSolve, setCostToSolve, setExpectedReturn, setMarketSize,
   } = useProblemValidation()
 
-  const quantifiableImpacts = alternatives.flatMap((alt) => alt.impacts ?? []).filter((imp) => imp.category || imp.description)
+  const quantifiableImpacts = existingSolutions.flatMap((alt) => alt.impacts ?? []).filter((imp) => imp.category || imp.description)
   const { prevPath } = getAdjacentSteps(pathname, problemRef)
 
   const problem = useSelector((state: RootState) =>
@@ -239,11 +239,11 @@ export default function VerdictPage() {
           <div className="rounded-lg border p-4 flex flex-col gap-3">
             <div className="flex items-center gap-2">
               <GitFork className="h-3.5 w-3.5 text-muted-foreground" />
-              <p className="text-sm font-semibold">Alternatives & shortcomings</p>
+              <p className="text-sm font-semibold">Existing solutions & shortcomings</p>
             </div>
-            {alternatives.length > 0 ? (
+            {existingSolutions.length > 0 ? (
               <ul className="flex flex-col gap-2">
-                {alternatives.map((alt, i) => (
+                {existingSolutions.map((alt, i) => (
                   <li key={i} className="flex flex-col gap-0.5">
                     <div className="text-sm flex gap-2">
                       <span className="text-muted-foreground shrink-0">{i + 1}.</span>

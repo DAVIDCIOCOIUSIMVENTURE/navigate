@@ -15,21 +15,21 @@ const IMPACT_CATEGORIES = [
   "Support Tickets", "Productivity Loss", "Revenue Impact", "Compliance Risk",
 ]
 
-export default function AlternativesPage() {
+export default function ExistingSolutionsPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { problemRef, alternatives, setAlternatives } = useProblemValidation()
+  const { problemRef, existingSolutions, setExistingSolutions } = useProblemValidation()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, problemRef)
-  const [addingAlt, setAddingAlt] = useState(false)
+  const [addingSolution, setAddingSolution] = useState(false)
   const [draft, setDraft] = useState("")
   const [addingSc, setAddingSc] = useState<Record<number, boolean>>({})
   const [scDrafts, setScDrafts] = useState<Record<number, string>>({})
-  const altInputRef = useRef<HTMLInputElement>(null)
+  const solutionInputRef = useRef<HTMLInputElement>(null)
   const scInputRefs = useRef<Record<number, HTMLInputElement | null>>({})
 
   useEffect(() => {
-    if (addingAlt) altInputRef.current?.focus()
-  }, [addingAlt])
+    if (addingSolution) solutionInputRef.current?.focus()
+  }, [addingSolution])
 
   useEffect(() => {
     const entries = Object.entries(addingSc)
@@ -37,76 +37,76 @@ export default function AlternativesPage() {
     if (lastTrue) scInputRefs.current[Number(lastTrue[0])]?.focus()
   }, [addingSc])
 
-  const addAlternative = () => {
+  const addSolution = () => {
     const trimmed = draft.trim()
     if (trimmed) {
-      setAlternatives([...alternatives, { id: Date.now(), text: trimmed, shortcomings: [], impacts: [] }])
+      setExistingSolutions([...existingSolutions, { id: Date.now(), text: trimmed, shortcomings: [], impacts: [] }])
     }
     setDraft("")
-    setAddingAlt(false)
+    setAddingSolution(false)
   }
 
-  const removeAlternative = (i: number) => setAlternatives(alternatives.filter((_, idx) => idx !== i))
+  const removeSolution = (i: number) => setExistingSolutions(existingSolutions.filter((_, idx) => idx !== i))
 
-  const onAltKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") { e.preventDefault(); addAlternative() }
-    if (e.key === "Escape") { setDraft(""); setAddingAlt(false) }
+  const onSolutionKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") { e.preventDefault(); addSolution() }
+    if (e.key === "Escape") { setDraft(""); setAddingSolution(false) }
   }
 
-  const addShortcoming = (altIdx: number) => {
-    const trimmed = (scDrafts[altIdx] ?? "").trim()
+  const addShortcoming = (solIdx: number) => {
+    const trimmed = (scDrafts[solIdx] ?? "").trim()
     if (trimmed) {
-      setAlternatives(
-        alternatives.map((alt, idx) =>
-          idx === altIdx ? { ...alt, shortcomings: [...alt.shortcomings, trimmed] } : alt
+      setExistingSolutions(
+        existingSolutions.map((sol, idx) =>
+          idx === solIdx ? { ...sol, shortcomings: [...sol.shortcomings, trimmed] } : sol
         )
       )
     }
-    setScDrafts((prev) => ({ ...prev, [altIdx]: "" }))
-    setAddingSc((prev) => ({ ...prev, [altIdx]: false }))
+    setScDrafts((prev) => ({ ...prev, [solIdx]: "" }))
+    setAddingSc((prev) => ({ ...prev, [solIdx]: false }))
   }
 
-  const removeShortcoming = (altIdx: number, scIdx: number) =>
-    setAlternatives(
-      alternatives.map((alt, idx) =>
-        idx === altIdx
-          ? { ...alt, shortcomings: alt.shortcomings.filter((_, j) => j !== scIdx) }
-          : alt
+  const removeShortcoming = (solIdx: number, scIdx: number) =>
+    setExistingSolutions(
+      existingSolutions.map((sol, idx) =>
+        idx === solIdx
+          ? { ...sol, shortcomings: sol.shortcomings.filter((_, j) => j !== scIdx) }
+          : sol
       )
     )
 
-  const onScKeyDown = (altIdx: number, e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") { e.preventDefault(); addShortcoming(altIdx) }
-    if (e.key === "Escape") { setScDrafts((prev) => ({ ...prev, [altIdx]: "" })); setAddingSc((prev) => ({ ...prev, [altIdx]: false })) }
+  const onScKeyDown = (solIdx: number, e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") { e.preventDefault(); addShortcoming(solIdx) }
+    if (e.key === "Escape") { setScDrafts((prev) => ({ ...prev, [solIdx]: "" })); setAddingSc((prev) => ({ ...prev, [solIdx]: false })) }
   }
 
   // Impact helpers
-  const getImpacts = (alt: typeof alternatives[number]) => alt.impacts ?? []
+  const getImpacts = (sol: typeof existingSolutions[number]) => sol.impacts ?? []
 
-  const updateImpact = (altIdx: number, impactIdx: number, field: keyof ImpactItem, value: string) =>
-    setAlternatives(
-      alternatives.map((alt, idx) =>
-        idx === altIdx
-          ? { ...alt, impacts: getImpacts(alt).map((imp, j) => j === impactIdx ? { ...imp, [field]: value } : imp) }
-          : alt
+  const updateImpact = (solIdx: number, impactIdx: number, field: keyof ImpactItem, value: string) =>
+    setExistingSolutions(
+      existingSolutions.map((sol, idx) =>
+        idx === solIdx
+          ? { ...sol, impacts: getImpacts(sol).map((imp, j) => j === impactIdx ? { ...imp, [field]: value } : imp) }
+          : sol
       )
     )
 
-  const removeImpact = (altIdx: number, impactIdx: number) =>
-    setAlternatives(
-      alternatives.map((alt, idx) =>
-        idx === altIdx
-          ? { ...alt, impacts: getImpacts(alt).filter((_, j) => j !== impactIdx) }
-          : alt
+  const removeImpact = (solIdx: number, impactIdx: number) =>
+    setExistingSolutions(
+      existingSolutions.map((sol, idx) =>
+        idx === solIdx
+          ? { ...sol, impacts: getImpacts(sol).filter((_, j) => j !== impactIdx) }
+          : sol
       )
     )
 
-  const addImpact = (altIdx: number) =>
-    setAlternatives(
-      alternatives.map((alt, idx) =>
-        idx === altIdx
-          ? { ...alt, impacts: [...getImpacts(alt), { category: "", description: "" }] }
-          : alt
+  const addImpact = (solIdx: number) =>
+    setExistingSolutions(
+      existingSolutions.map((sol, idx) =>
+        idx === solIdx
+          ? { ...sol, impacts: [...getImpacts(sol), { category: "", description: "" }] }
+          : sol
       )
     )
 
@@ -141,23 +141,27 @@ export default function AlternativesPage() {
         <h3 className="mt-8 text-base font-medium text-center"><span className="text-primary">Your Turn:</span> What Existing Solutions Are There?</h3>
 
         <div className="flex flex-col gap-5">
-          {alternatives.map((alt, i) => (
-            <div key={alt.id} className="border rounded-lg p-4">
-              <div className="flex items-center gap-2 mb-3">
+          {existingSolutions.map((sol, i) => (
+            <div key={sol.id} className="border rounded-lg p-4">
+              <div className="flex flex-col gap-1.5 mb-3">
+                <div className="flex items-center justify-between">
+                  <label htmlFor={`solution-${sol.id}`} className="text-xs font-semibold text-muted-foreground">Existing Solution {i + 1}</label>
+                  <ConfirmDialog
+                    trigger={
+                      <button className="shrink-0 text-muted-foreground hover:text-destructive transition-colors">
+                        <X className="h-3.5 w-3.5" />
+                      </button>
+                    }
+                    title="Remove existing solution?"
+                    description="This will also delete all shortcomings and impacts associated with it."
+                    onConfirm={() => removeSolution(i)}
+                  />
+                </div>
                 <Input
-                  value={alt.text}
-                  onChange={(e) => setAlternatives(alternatives.map((a, idx) => idx === i ? { ...a, text: e.target.value } : a))}
-                  className="flex-1 text-sm font-medium h-8"
-                />
-                <ConfirmDialog
-                  trigger={
-                    <button className="shrink-0 text-muted-foreground hover:text-destructive transition-colors">
-                      <X className="h-3.5 w-3.5" />
-                    </button>
-                  }
-                  title="Remove alternative?"
-                  description="This will also delete all shortcomings and impacts associated with it."
-                  onConfirm={() => removeAlternative(i)}
+                  id={`solution-${sol.id}`}
+                  value={sol.text}
+                  onChange={(e) => setExistingSolutions(existingSolutions.map((a, idx) => idx === i ? { ...a, text: e.target.value } : a))}
+                  className="text-sm font-medium h-8"
                 />
               </div>
 
@@ -165,13 +169,13 @@ export default function AlternativesPage() {
                 {/* Left: Shortcomings */}
                 <div className="flex flex-col gap-2">
                   <p className="text-xs font-medium text-muted-foreground">Shortcomings</p>
-                  {alt.shortcomings.length > 0 && (
+                  {sol.shortcomings.length > 0 && (
                     <ul className="flex flex-col gap-1.5">
-                      {alt.shortcomings.map((sc, j) => (
+                      {sol.shortcomings.map((sc, j) => (
                         <li key={j} className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2 text-sm">
                           <Input
                             value={sc}
-                            onChange={(e) => setAlternatives(alternatives.map((a, idx) =>
+                            onChange={(e) => setExistingSolutions(existingSolutions.map((a, idx) =>
                               idx === i ? { ...a, shortcomings: a.shortcomings.map((s, k) => k === j ? e.target.value : s) } : a
                             ))}
                             className="flex-1 text-sm h-7"
@@ -218,9 +222,9 @@ export default function AlternativesPage() {
                     <BarChart2 className="h-3 w-3 text-muted-foreground" />
                     <p className="text-xs font-medium text-muted-foreground">Quantifiable Impact</p>
                   </div>
-                  {getImpacts(alt).length > 0 && (
+                  {getImpacts(sol).length > 0 && (
                     <ul className="flex flex-col gap-1.5">
-                      {getImpacts(alt).map((imp, j) => (
+                      {getImpacts(sol).map((imp, j) => (
                         <li key={j} className="flex items-center gap-2">
                           <Input
                             list="impact-cats-es"
@@ -258,20 +262,20 @@ export default function AlternativesPage() {
             </div>
           ))}
 
-          {addingAlt ? (
+          {addingSolution ? (
             <Input
-              ref={altInputRef}
-              placeholder="Type an alternative and press Enter..."
+              ref={solutionInputRef}
+              placeholder="Type an existing solution and press Enter..."
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
-              onKeyDown={onAltKeyDown}
-              onBlur={addAlternative}
+              onKeyDown={onSolutionKeyDown}
+              onBlur={addSolution}
               className="text-sm h-9"
             />
           ) : (
-            <Button variant="dashed" onClick={() => setAddingAlt(true)}>
+            <Button variant="dashed" onClick={() => setAddingSolution(true)}>
               <Plus className="h-4 w-4" />
-              Add Alternative
+              Add Existing Solution
             </Button>
           )}
         </div>

@@ -3,7 +3,7 @@
 import { createContext, useContext, useCallback, type ReactNode } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
-import type { AlternativeItem, ValidationStatus, ValidationMetric, ValidationAssessment } from "@/types/idea"
+import type { ExistingSolutionItem, ValidationStatus, ValidationMetric, ValidationAssessment } from "@/types/idea"
 import { DEFAULT_VALIDATION_ASSESSMENT } from "@/types/idea"
 
 type ProblemValidationContextValue = {
@@ -11,8 +11,8 @@ type ProblemValidationContextValue = {
   problemId: number
   segmentSize: number | null
   setSegmentSize: (val: number | null) => void
-  alternatives: AlternativeItem[]
-  setAlternatives: (val: AlternativeItem[]) => void
+  existingSolutions: ExistingSolutionItem[]
+  setExistingSolutions: (val: ExistingSolutionItem[]) => void
   contextWhen: string
   setContextWhen: (val: string) => void
   emotionalImpact: string[]
@@ -44,7 +44,7 @@ export function ProblemValidationProvider({
   )
 
   const segmentSize = problem?.segmentSize ?? null
-  const alternatives = problem?.alternatives ?? []
+  const existingSolutions = problem?.existingSolutions ?? []
   const emotionalImpact = problem?.emotionalImpact ?? []
   const validationAssessment = problem?.validationAssessment ?? DEFAULT_VALIDATION_ASSESSMENT
   const contextWhen = problem?.contextWhen ?? ""
@@ -58,9 +58,9 @@ export function ProblemValidationProvider({
     [dispatch, problemId]
   )
 
-  const setAlternatives = useCallback(
-    (val: AlternativeItem[]) => {
-      dispatch.problems.update({ id: problemId, patch: { alternatives: val } })
+  const setExistingSolutions = useCallback(
+    (val: ExistingSolutionItem[]) => {
+      dispatch.problems.update({ id: problemId, patch: { existingSolutions: val } })
     },
     [dispatch, problemId]
   )
@@ -159,7 +159,7 @@ export function ProblemValidationProvider({
         problemRef,
         problemId,
         segmentSize, setSegmentSize,
-        alternatives, setAlternatives,
+        existingSolutions, setExistingSolutions,
         contextWhen, setContextWhen,
         emotionalImpact, setEmotionalImpact,
         status, setStatus,
