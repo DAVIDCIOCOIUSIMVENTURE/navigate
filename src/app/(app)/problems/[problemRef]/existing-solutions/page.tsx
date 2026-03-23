@@ -113,7 +113,7 @@ export default function ExistingSolutionsPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={GitFork} className="text-primary">Existing Solutions</CardTitle>
+        <CardTitle icon={GitFork}>Existing Solutions</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-md text-muted-foreground">
@@ -141,9 +141,9 @@ export default function ExistingSolutionsPage() {
 
         <hr className="border-border/40 my-4" />
 
-        <h3 className="mb-2 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> What existing solutions are there?</h3>
+        <h3 className="mb-2 text-xl font-bold text-center"><span className="text-[#615BDC]">Your Turn:</span> What existing solutions are there?</h3>
 
-        <div className="bg-primary rounded-xl p-8">
+        <div className="bg-[#615BDC] rounded-xl p-8">
           <div className="flex flex-col divide-y divide-white/20">
             {existingSolutions.map((sol, i) => (
               <div key={sol.id} className="py-5 first:pt-0 last:pb-0">

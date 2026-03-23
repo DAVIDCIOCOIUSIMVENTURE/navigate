@@ -45,7 +45,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
       <Card>
         <CardHeader className="pb-3">
           <CardTitle className="text-sm font-semibold">
-            Problems ({problems.length})
+            Problems Bank ({problems.length})
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-0">

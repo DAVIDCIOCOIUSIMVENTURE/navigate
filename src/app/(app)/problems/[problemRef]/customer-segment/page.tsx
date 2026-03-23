@@ -23,7 +23,7 @@ export default function CustomerSegmentPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={Users} className="text-primary">Customer Segment Size</CardTitle>
+        <CardTitle icon={Users}>Customer Segment Size</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-5">
         <p className="text-md text-muted-foreground">

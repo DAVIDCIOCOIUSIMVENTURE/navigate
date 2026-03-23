@@ -42,7 +42,7 @@ export default function EmotionalImpactPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={Heart} className="text-primary">Emotional Impact</CardTitle>
+        <CardTitle icon={Heart}>Emotional Impact</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
 
