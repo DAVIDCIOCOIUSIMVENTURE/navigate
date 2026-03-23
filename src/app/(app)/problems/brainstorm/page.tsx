@@ -288,14 +288,14 @@ export default function BrainstormPage() {
 
   return (
     <div className="flex flex-col gap-6 w-full flex-1 min-h-0">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-xl font-bold">Discover Business Opportunities</h1>
           <p className="text-sm text-muted-foreground">
             Explore potential areas for innovation by navigating through the options below.
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap sm:justify-end">
           <Button
             variant="outline"
             size="sm"
@@ -326,7 +326,7 @@ export default function BrainstormPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-4 gap-4 flex-1 min-h-0">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 flex-1 min-h-0">
         {brainstormColumns.map((column) => {
           const columnSelected = getSelectedForColumn(column.items, selected)
           return (

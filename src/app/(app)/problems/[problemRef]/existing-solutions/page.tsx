@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { useProblemValidation, getAdjacentSteps } from "../context"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import type { ImpactItem } from "@/types/idea"
-import { GitFork, Plus, X, BarChart2 } from "lucide-react"
+import { GitFork, Plus, X } from "lucide-react"
 
 const IMPACT_CATEGORIES = [
   "Time Lost", "Money Wasted", "Error Rates", "Customer Churn",
@@ -127,6 +127,7 @@ export default function ExistingSolutionsPage() {
             <li><strong className="text-foreground">Hiring or outsourcing</strong> — paying someone else to handle it</li>
             <li><strong className="text-foreground">Doing nothing</strong> — ignoring or tolerating the problem</li>
           </ul>
+          <h3 className="mt-4 text-xl font-bold text-foreground">What will you do?</h3>
           <p>
             For each existing solution, capture its <strong className="text-foreground">shortcomings</strong> and
             its <strong className="text-foreground">quantifiable impact</strong> — the measurable cost of the problem
@@ -138,7 +139,9 @@ export default function ExistingSolutionsPage() {
           {IMPACT_CATEGORIES.map((c) => <option key={c} value={c} />)}
         </datalist>
 
-        <h3 className="mt-8 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> What Existing Solutions Are There?</h3>
+        <hr className="border-border/40 my-4" />
+
+        <h3 className="mb-2 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> What existing solutions are there?</h3>
 
         <div className="bg-primary rounded-xl p-8">
           <div className="flex flex-col divide-y divide-white/20">
@@ -146,7 +149,7 @@ export default function ExistingSolutionsPage() {
               <div key={sol.id} className="py-5 first:pt-0 last:pb-0">
                 <div className="flex flex-col gap-1.5 mb-3">
                   <div className="flex items-center justify-between">
-                    <label htmlFor={`solution-${sol.id}`} className="text-xs font-semibold text-white/70">Existing Solution {i + 1}</label>
+                    <label htmlFor={`solution-${sol.id}`} className="text-sm font-medium text-white/70">Existing Solution {i + 1}</label>
                     <ConfirmDialog
                       trigger={
                         <button className="shrink-0 text-white/50 hover:text-white transition-colors">
@@ -169,7 +172,7 @@ export default function ExistingSolutionsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   {/* Left: Shortcomings */}
                   <div className="flex flex-col gap-2">
-                    <p className="text-xs font-medium text-white/70">Shortcomings</p>
+                    <p className="text-sm font-medium text-white/70">Shortcomings</p>
                     {sol.shortcomings.length > 0 && (
                       <ul className="flex flex-col gap-1.5">
                         {sol.shortcomings.map((sc, j) => (
@@ -219,10 +222,7 @@ export default function ExistingSolutionsPage() {
 
                   {/* Right: Quantifiable Impact */}
                   <div className="flex flex-col gap-2">
-                    <div className="flex items-center gap-1.5">
-                      <BarChart2 className="h-3 w-3 text-white/70" />
-                      <p className="text-xs font-medium text-white/70">Quantifiable Impact</p>
-                    </div>
+                    <p className="text-sm font-medium text-white/70">Quantifiable Impact</p>
                     {getImpacts(sol).length > 0 && (
                       <ul className="flex flex-col gap-1.5">
                         {getImpacts(sol).map((imp, j) => (
