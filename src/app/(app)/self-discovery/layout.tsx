@@ -121,7 +121,7 @@ export default function SelfDiscoveryLayout({
                                                     const CategoryIcon = getSelfDiscoveryCategoryIcon(category.url)
                                                     return CategoryIcon && <CategoryIcon className={cn("h-3.5 w-3.5 shrink-0",
                                                         pathname.startsWith(`/self-discovery/${category.url}`) ?
-                                                            "text-blue-500" :
+                                                            "text-primary" :
                                                             "text-muted-foreground"
                                                     )} aria-hidden="true" />
                                                 })()}

@@ -143,20 +143,20 @@ export default function QuestionPage() {
     return (
         <>
             <Card className="w-full flex-1 h-full flex flex-col">
-                <CardHeader className="px-8 pt-8 pb-0">
+                <CardHeader className="px-10 pt-10 pb-0">
                     <CardEyebrow icon={Compass}>{category.title}</CardEyebrow>
                     <CardTitle icon={(() => {
                         const CategoryIcon = getSelfDiscoveryCategoryIcon(category.url)
                         return CategoryIcon || Compass
-                    })()} className="text-lg">{question.title}</CardTitle>
+                    })()} className="text-primary">{question.title}</CardTitle>
                 </CardHeader>
-                <CardContent className="flex-1 p-8 pt-6 overflow-y-auto">
+                <CardContent className="flex-1 p-10 pt-6 overflow-y-auto">
                     <div className="flex flex-col gap-5">
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-md text-muted-foreground">
                             {category.description}
                         </p>
                         <div className="flex flex-col gap-4">
-                            <p className="text-sm text-muted-foreground">{question.description}</p>
+                            <p className="text-md text-muted-foreground">{question.description}</p>
                             {question.titleId === "sustainability-goals" ? (
                                 <div className="grid grid-cols-6 gap-2">
                                     {Array.from({ length: 17 }, (_, i) => i + 1).map((num) => {
