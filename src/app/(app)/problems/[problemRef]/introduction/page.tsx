@@ -11,10 +11,10 @@ import {
 } from "lucide-react"
 
 const STEPS = [
-  { icon: Users, title: "Customer", description: "Estimate how large the affected customer segment is — the market opportunity behind this problem.", bg: "bg-indigo-100 dark:bg-indigo-950", color: "text-indigo-600 dark:text-indigo-400" },
-  { icon: GitFork, title: "Existing Solutions", description: "Identify how customers currently deal with this problem, capture shortcomings, and measure the quantifiable impact of each solution.", bg: "bg-sky-100 dark:bg-sky-950", color: "text-sky-600 dark:text-sky-400" },
-  { icon: ShieldCheck, title: "Validate", description: "Weigh the economics of solving this problem and decide whether it's worth pursuing.", bg: "bg-orange-100 dark:bg-orange-950", color: "text-orange-600 dark:text-orange-400" },
-  { icon: LayoutTemplate, title: "Problem Statement", description: "Review the problem statement assembled from your discovery and validation work.", bg: "bg-green-100 dark:bg-green-950", color: "text-green-600 dark:text-green-400" },
+  { icon: Users, title: "Define your customer", description: "Estimate how large the affected customer segment is — the market opportunity behind this problem.", bg: "bg-indigo-100 dark:bg-indigo-950", color: "text-indigo-600 dark:text-indigo-400" },
+  { icon: GitFork, title: "Explore existing solutions", description: "Identify how customers currently deal with this problem, capture shortcomings, and measure the quantifiable impact of each solution.", bg: "bg-sky-100 dark:bg-sky-950", color: "text-sky-600 dark:text-sky-400" },
+  { icon: ShieldCheck, title: "Validate your problem", description: "Weigh the economics of solving this problem and decide whether it's worth pursuing.", bg: "bg-orange-100 dark:bg-orange-950", color: "text-orange-600 dark:text-orange-400" },
+  { icon: LayoutTemplate, title: "Summary", description: "Review the problem statement assembled from your discovery and validation work.", bg: "bg-green-100 dark:bg-green-950", color: "text-green-600 dark:text-green-400" },
 ]
 
 function FieldRow({ label, values }: { label: string; values: string[] }) {

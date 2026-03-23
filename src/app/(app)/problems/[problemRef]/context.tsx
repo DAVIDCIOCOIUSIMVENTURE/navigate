@@ -195,10 +195,10 @@ export function useProblemValidation() {
 
 export const NAV_ITEMS = [
   { label: "Introduction", path: "introduction" },
-  { label: "Customer", path: "customer" },
-  { label: "Existing Solutions", path: "existing-solutions" },
-  { label: "Validate", path: "validate" },
-  { label: "Problem Statement", path: "problem-statement" },
+  { label: "Define your customer", path: "customer" },
+  { label: "Explore existing solutions", path: "existing-solutions" },
+  { label: "Validate your problem", path: "validate" },
+  { label: "Summary", path: "problem-statement" },
 ] as const
 
 const STEP_PATHS = NAV_ITEMS.map((item) => item.path)

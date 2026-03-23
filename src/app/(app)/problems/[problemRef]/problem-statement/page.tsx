@@ -151,7 +151,7 @@ export default function ProblemStatementPage() {
       <Card className="w-full flex-1">
         <CardHeader className="px-10 pt-10 pb-0 flex-row items-start justify-between gap-4 space-y-0">
           <div className="flex flex-col gap-1">
-            <CardTitle icon={LayoutTemplate}>Problem Statement</CardTitle>
+            <CardTitle icon={LayoutTemplate}>Summary</CardTitle>
             <p className="text-md text-muted-foreground">Click the pencil icon on any card to edit it.</p>
           </div>
           <StatusSelect status={status} setStatus={setStatus} />

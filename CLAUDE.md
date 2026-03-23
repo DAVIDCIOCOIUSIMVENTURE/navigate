@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-```bash
+```Shell
 npm run dev              # Start dev server on port 4000
 npm run build            # Build for production
 npm run lint             # Run ESLint
@@ -15,13 +15,13 @@ npx tsc --noEmit         # Type check without emitting files
 
 Before committing or pushing, run these checks manually (mirrors what Husky enforces):
 
-```bash
+```Shell
 npm run lint && npx tsc --noEmit && npm run test:run
 ```
 
 To skip tests during push (e.g. when tests are temporarily broken):
 
-```bash
+```Shell
 SKIP_TESTS=1 git push          # runs lint + type-check only
 git push --no-verify           # bypasses all Husky hooks entirely
 ```
@@ -29,8 +29,9 @@ git push --no-verify           # bypasses all Husky hooks entirely
 ### Git Hooks (Husky)
 
 Husky is configured with a `pre-push` hook at `.husky/pre-push`:
-- Always runs: `npm run lint` + `npx tsc --noEmit`
-- Conditionally runs: `npm run test:run` (skipped when `SKIP_TESTS=1`)
+
+* Always runs: `npm run lint` + `npx tsc --noEmit`
+* Conditionally runs: `npm run test:run` (skipped when `SKIP_TESTS=1`)
 
 To bypass all hooks (e.g. for WIP pushes): `git push --no-verify`
 
@@ -39,15 +40,16 @@ To bypass all hooks (e.g. for WIP pushes): `git push --no-verify`
 **Navigate** is a Next.js 15 (App Router) application guiding users through an innovation process: Self-Discovery → Problem Triggers → Problem Discovery → Problem Validation.
 
 ### Stack
-- **Framework**: Next.js 15 with App Router, React 19
-- **UI**: Radix UI primitives + Tailwind CSS; custom components in `src/components/ui/`
-- **State**: Rematch (Redux wrapper) — `@rematch/core` + `react-redux`; React Context for lighter feature workflows
-- **Drag & Drop**: `@dnd-kit` for sortable bucket organization
-- **Tables**: `@tanstack/react-table`
-- **Notifications**: `sonner`
-- **NLP/Parsing**: `compromise` + `js-yaml` (added for future problem parsing features)
-- **Testing**: Vitest + React Testing Library + happy-dom; test files co-located as `*.test.ts(x)`
-- **CI**: GitHub Actions (`.github/workflows/ci.yml`) — runs lint, type check, and tests on every push
+
+* **Framework**: Next.js 15 with App Router, React 19
+* **UI**: Radix UI primitives + Tailwind CSS; custom components in `src/components/ui/`
+* **State**: Rematch (Redux wrapper) — `@rematch/core` + `react-redux`; React Context for lighter feature workflows
+* **Drag & Drop**: `@dnd-kit` for sortable bucket organization
+* **Tables**: `@tanstack/react-table`
+* **Notifications**: `sonner`
+* **NLP/Parsing**: `compromise` + `js-yaml` (added for future problem parsing features)
+* **Testing**: Vitest + React Testing Library + happy-dom; test files co-located as `*.test.ts(x)`
+* **CI**: GitHub Actions (`.github/workflows/ci.yml`) — runs lint, type check, and tests on every push
 
 ### Database Status
 
@@ -65,28 +67,30 @@ DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
 
 ### Project Structure
 
-- `src/app/(app)/` — All main app pages, wrapped by the sidebar layout (`(app)/layout.tsx`)
-- `src/app/login/` — Password-protected login page (outside the sidebar layout)
-- `src/app/api/auth/` — Login (`POST`) and logout (`POST`) API routes for cookie-based auth
-- `src/middleware.ts` — Checks for `site-auth` cookie; redirects to `/login` if missing
-- `src/lib/` — Core utilities: `prisma.ts` (unused singleton), `config.ts` (app-wide constants)
-- `src/config/navigation.ts` — Centralized top-level nav items (title, url, icon) used by sidebar, dashboard, and breadcrumbs
-- `src/components/ui/` — Shared Radix UI-based primitives
-- `src/store/` — Global Rematch store (models: `settings`, `journal`, `problemTriggers`, `ideas`) — all localStorage-backed
-- `src/data/` — Static data files (e.g. `selfDiscoveryData.ts`)
-- `src/context/` — React Context providers (`innovation-context.tsx`; ideas was migrated to Rematch)
-- `prisma/schema.prisma` — Database schema (kept for reference; not actively used)
-- `locales/` — i18n translations (en, es, fr) via `next-i18next`; infrastructure exists but not heavily used
+* `src/app/(app)/` — All main app pages, wrapped by the sidebar layout (`(app)/layout.tsx`)
+* `src/app/login/` — Password-protected login page (outside the sidebar layout)
+* `src/app/api/auth/` — Login (`POST`) and logout (`POST`) API routes for cookie-based auth
+* `src/middleware.ts` — Checks for `site-auth` cookie; redirects to `/login` if missing
+* `src/lib/` — Core utilities: `prisma.ts` (unused singleton), `config.ts` (app-wide constants)
+* `src/config/navigation.ts` — Centralized top-level nav items (title, url, icon) used by sidebar, dashboard, and breadcrumbs
+* `src/components/ui/` — Shared Radix UI-based primitives
+* `src/store/` — Global Rematch store (models: `settings`, `journal`, `problemTriggers`, `ideas`) — all localStorage-backed
+* `src/data/` — Static data files (e.g. `selfDiscoveryData.ts`)
+* `src/context/` — React Context providers (`innovation-context.tsx`; ideas was migrated to Rematch)
+* `prisma/schema.prisma` — Database schema (kept for reference; not actively used)
+* `locales/` — i18n translations (en, es, fr) via `next-i18next`; infrastructure exists but not heavily used
 
 ### Password Protection
 
 The app is protected by a simple middleware-based password gate:
-- `src/middleware.ts` intercepts all requests and checks for an `httpOnly` cookie `site-auth=1`
-- If missing, redirects to `/login?from=<original-path>`
-- `/api/auth/login` validates the submitted password against the `SITE_PASSWORD` environment variable and sets the cookie (30-day expiry)
-- `/api/auth/logout` clears the cookie
+
+* `src/middleware.ts` intercepts all requests and checks for an `httpOnly` cookie `site-auth=1`
+* If missing, redirects to `/login?from=<original-path>`
+* `/api/auth/login` validates the submitted password against the `SITE_PASSWORD` environment variable and sets the cookie (30-day expiry)
+* `/api/auth/logout` clears the cookie
 
 **Required environment variable:**
+
 ```
 SITE_PASSWORD=your-password-here
 ```
@@ -98,20 +102,23 @@ Set this in `.env` locally and in Vercel's Environment Variables for production.
 All state is client-side only (no database). Two patterns coexist — choose based on complexity:
 
 **Rematch (Redux)** — use for complex state with side effects or localStorage persistence:
-- **Global store** (`src/store/`): `settings` (sidebar collapsed/expanded), `journal` (title + text, persisted to localStorage), `problemTriggers` (persisted to localStorage), `ideas` (full CRUD with localStorage persistence — use the `useIdeas()` hook from `src/store/ideas-hooks.ts`), `problems` (global Problem list, persisted to `navigate-problems` in localStorage — CRUD via `dispatch.problems.create/update/delete`)
-- Access: `useSelector((state: RootState) => state.modelName.field)` and `useDispatch<AppDispatch>()`
-- All models call `dispatch.modelName.init()` in `root-layout-client.tsx` on mount to hydrate from localStorage
+
+* **Global store** (`src/store/`): `settings` (sidebar collapsed/expanded), `journal` (title + text, persisted to localStorage), `problemTriggers` (persisted to localStorage), `ideas` (full CRUD with localStorage persistence — use the `useIdeas()` hook from `src/store/ideas-hooks.ts`), `problems` (global Problem list, persisted to `navigate-problems` in localStorage — CRUD via `dispatch.problems.create/update/delete`)
+* Access: `useSelector((state: RootState) => state.modelName.field)` and `useDispatch<AppDispatch>()`
+* All models call `dispatch.modelName.init()` in `root-layout-client.tsx` on mount to hydrate from localStorage
 
 **React Context** — use for lighter, page-scoped state without side effects:
-- `src/context/innovation-context.tsx` — manages legacy innovation process state
-- Per-stage contexts: `src/app/(app)/ideas/[ideaId]/problem-discovery/context.tsx` and `problem-validation/context.tsx` — mirror idea fields locally and persist to Rematch on mutation
-- Provider wraps the route tree in `root-layout-client.tsx`
+
+* `src/context/innovation-context.tsx` — manages legacy innovation process state
+* Per-stage contexts: `src/app/(app)/ideas/[ideaId]/problem-discovery/context.tsx` and `problem-validation/context.tsx` — mirror idea fields locally and persist to Rematch on mutation
+* Provider wraps the route tree in `root-layout-client.tsx`
 
 ### Ideas Feature & Innovation Stages
 
 The Ideas feature (`src/app/(app)/ideas/`) is the core of the app. Each idea progresses through sequential stages.
 
 **Routing structure:**
+
 ```
 src/app/(app)/ideas/
 ├── page.tsx                         # Ideas list
@@ -171,33 +178,35 @@ Validation records are stored in localStorage under `navigate-standalone-validat
 
 ### Layout & Navigation Patterns
 
-- `src/app/layout.tsx` — Root layout: HTML shell only (no sidebar). The `/login` route renders here directly.
-- `src/app/(app)/layout.tsx` — Wraps all main app pages with `RootLayoutClient` (sidebar + providers)
-- `src/app/root-layout-client.tsx` — Client layout with global sidebar (`app-sidebar.tsx`), breadcrumbs (auto-generated from pathname), and the guidance dialog
-- Breadcrumbs are auto-generated: kebab-case path segments become Title Case; intermediate segments are non-clickable
+* `src/app/layout.tsx` — Root layout: HTML shell only (no sidebar). The `/login` route renders here directly.
+* `src/app/(app)/layout.tsx` — Wraps all main app pages with `RootLayoutClient` (sidebar + providers)
+* `src/app/root-layout-client.tsx` — Client layout with global sidebar (`app-sidebar.tsx`), breadcrumbs (auto-generated from pathname), and the guidance dialog
+* Breadcrumbs are auto-generated: kebab-case path segments become Title Case; intermediate segments are non-clickable
 
 ### Vercel Deployment
 
 Required environment variables in Vercel:
-| Variable | Value |
-|---|---|
-| `SITE_PASSWORD` | your chosen password |
-| `DATABASE_URL` | `postgresql://dummy:dummy@localhost:5432/dummy` (only if build fails due to Prisma schema validation) |
+
+| Variable        | Value                                                                                                 |
+| --------------- | ----------------------------------------------------------------------------------------------------- |
+| `SITE_PASSWORD` | your chosen password                                                                                  |
+| `DATABASE_URL`  | `postgresql://dummy:dummy@localhost:5432/dummy` (only if build fails due to Prisma schema validation) |
 
 ### Testing
 
-- **Runner**: Vitest 4 with `happy-dom` environment (ESM-native; replaces jsdom)
-- **Config**: `vitest.config.ts` at root; setup file `vitest.setup.ts` imports `@testing-library/jest-dom`
-- **Globals**: `vitest/globals` and `@testing-library/jest-dom` types declared in `tsconfig.json` — no need to import `describe`/`it`/`expect` in test files
-- **Patterns by test type**:
-  - Pure data / utilities → plain `.test.ts`, call functions directly
-  - Rematch reducers → import the model, call `model.reducers.fn(state, payload)` directly (they're pure functions, no store setup needed)
-  - React Context hooks → `renderHook(() => useHook(), { wrapper: ProviderComponent })`; each state-dependent `act()` call must be in its own block (stale closure behaviour)
-- **Module system**: `"type": "module"` is set in `package.json` (required by Vite 7 / Vitest 4); `prisma/seed.cjs` uses `.cjs` extension to stay CommonJS
+* **Runner**: Vitest 4 with `happy-dom` environment (ESM-native; replaces jsdom)
+* **Config**: `vitest.config.ts` at root; setup file `vitest.setup.ts` imports `@testing-library/jest-dom`
+* **Globals**: `vitest/globals` and `@testing-library/jest-dom` types declared in `tsconfig.json` — no need to import `describe`/`it`/`expect` in test files
+* **Patterns by test type**:
+  * Pure data / utilities → plain `.test.ts`, call functions directly
+  * Rematch reducers → import the model, call `model.reducers.fn(state, payload)` directly (they're pure functions, no store setup needed)
+  * React Context hooks → `renderHook(() => useHook(), { wrapper: ProviderComponent })`; each state-dependent `act()` call must be in its own block (stale closure behaviour)
+* **Module system**: `"type": "module"` is set in `package.json` (required by Vite 7 / Vitest 4); `prisma/seed.cjs` uses `.cjs` extension to stay CommonJS
 
 ### CI (GitHub Actions)
 
 `.github/workflows/ci.yml` runs on every push and on PRs to `main`:
+
 1. `npm ci` — clean install
 2. `npm run lint` — ESLint
 3. `npx tsc --noEmit` — type check
@@ -209,6 +218,7 @@ To enforce CI as a merge gate: GitHub → Settings → Branches → main → **R
 
 ### Known Inconsistencies / Work In Progress
 
-- **Prisma leftovers**: `@prisma/client`, `prisma`, and related scripts remain in `package.json` but the database is not used. They can be removed once there's confidence no DB will be re-introduced soon.
-- **i18n**: Translation infrastructure is wired but pages mostly use static strings.
-- **No multi-user auth**: The password gate is a single shared password for all users. No per-user sessions or roles.
+* **Prisma leftovers**: `@prisma/client`, `prisma`, and related scripts remain in `package.json` but the database is not used. They can be removed once there's confidence no DB will be re-introduced soon.
+* **i18n**: Translation infrastructure is wired but pages mostly use static strings.
+* **No multi-user auth**: The password gate is a single shared password for all users. No per-user sessions or roles.
+
