@@ -31,11 +31,16 @@ export default function SelfDiscoveryLayout({
         <div className="flex flex-col h-full w-full gap-6 flex-1">
             <div className="flex flex-col gap-2">
                 <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2.5">
+                    <div className="flex items-center gap-3">
                         {navItem && Icon && (
-                            <Icon className="h-5 w-5 text-muted-foreground" />
+                            <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-primary/10 shrink-0">
+                                <Icon className="h-6 w-6 text-primary" />
+                            </div>
                         )}
-                        <h1 className="text-xl font-semibold leading-none tracking-tight">Self Discovery</h1>
+                        <div className="flex flex-col gap-1">
+                            <h1 className="text-xl font-bold">Self Discovery</h1>
+                            <p className="text-sm text-muted-foreground">Uncover your strengths, interests, and potential as a founder.</p>
+                        </div>
                     </div>
                     <Sheet open={isOpen} onOpenChange={setIsOpen}>
                         <SheetTrigger asChild>
@@ -89,9 +94,6 @@ export default function SelfDiscoveryLayout({
                         </SheetContent>
                     </Sheet>
                 </div>
-                <p className="text-sm text-muted-foreground">
-                    Explore your interests, skills, and potential through guided questions and exercises.
-                </p>
             </div>
 
             <div className="flex gap-6 flex-1 w-full">
