@@ -34,7 +34,11 @@ export default {
   			},
   			primary: {
   				DEFAULT: 'hsl(var(--primary))',
-  				foreground: 'hsl(var(--primary-foreground))'
+  				foreground: 'hsl(var(--primary-foreground))',
+  				dark: 'hsl(var(--primary-dark))',
+  				'dark-foreground': 'hsl(var(--primary-dark-foreground))',
+  				light: 'hsl(var(--primary-light))',
+  				'light-foreground': 'hsl(var(--primary-light-foreground))'
   			},
   			secondary: {
   				DEFAULT: 'hsl(var(--secondary))',
@@ -80,6 +84,9 @@ export default {
   				border: 'hsl(var(--sidebar-border))',
   				ring: 'hsl(var(--sidebar-ring))'
   			}
+  		},
+  		fontSize: {
+  			'md': ['0.9375rem', { lineHeight: '1.375rem' }]
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

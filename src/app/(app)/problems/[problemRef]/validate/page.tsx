@@ -166,11 +166,11 @@ export default function VerdictPage() {
 
   return (
     <Card className="w-full flex-1">
-      <CardHeader className="px-8 pt-8 pb-0">
-        <CardTitle icon={ShieldCheck} className="text-lg">Validate</CardTitle>
+      <CardHeader className="px-10 pt-10 pb-0">
+        <CardTitle icon={ShieldCheck} className="text-primary">Validate</CardTitle>
       </CardHeader>
-      <CardContent className="p-8 pt-6 flex flex-col gap-6">
-        <div className="flex flex-col gap-3 text-sm text-muted-foreground">
+      <CardContent className="p-10 pt-6 flex flex-col gap-6">
+        <div className="flex flex-col gap-3 text-md text-muted-foreground">
           <p>
             You&apos;ve gathered the evidence — now make a call. Review the work you&apos;ve done across
             the previous steps, then rate the four decision factors below to see whether solving this problem
@@ -196,7 +196,7 @@ export default function VerdictPage() {
             {problem.description && (
               <div className="flex flex-col gap-1">
                 <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Problem Description</p>
-                <p className="text-sm font-medium">{problem.description}</p>
+                <p className="text-md font-medium">{problem.description}</p>
               </div>
             )}
             {problem.customerSegments.length > 0 && (
@@ -239,20 +239,20 @@ export default function VerdictPage() {
           <div className="rounded-lg border p-4 flex flex-col gap-3">
             <div className="flex items-center gap-2">
               <GitFork className="h-3.5 w-3.5 text-muted-foreground" />
-              <p className="text-sm font-semibold">Existing solutions & shortcomings</p>
+              <p className="text-md font-semibold">Existing solutions & shortcomings</p>
             </div>
             {existingSolutions.length > 0 ? (
               <ul className="flex flex-col gap-2">
                 {existingSolutions.map((alt, i) => (
                   <li key={i} className="flex flex-col gap-0.5">
-                    <div className="text-sm flex gap-2">
+                    <div className="text-md flex gap-2">
                       <span className="text-muted-foreground shrink-0">{i + 1}.</span>
                       <span className="font-medium">{alt.text}</span>
                     </div>
                     {alt.shortcomings.length > 0 && (
                       <ul className="pl-4 flex flex-col gap-0.5">
                         {alt.shortcomings.map((sc, j) => (
-                          <li key={j} className="text-sm text-muted-foreground flex gap-1.5">
+                          <li key={j} className="text-md text-muted-foreground flex gap-1.5">
                             <span className="shrink-0">–</span>
                             <span>{sc}</span>
                           </li>
@@ -263,7 +263,7 @@ export default function VerdictPage() {
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-muted-foreground italic">Not filled in</p>
+              <p className="text-md text-muted-foreground italic">Not filled in</p>
             )}
           </div>
 
@@ -271,37 +271,37 @@ export default function VerdictPage() {
             <div className="rounded-lg border p-4 flex flex-col gap-2">
               <div className="flex items-center gap-2">
                 <Heart className="h-3.5 w-3.5 text-muted-foreground" />
-                <p className="text-sm font-semibold">Emotional impact</p>
+                <p className="text-md font-semibold">Emotional impact</p>
               </div>
               {emotionalImpact.length > 0 ? (
                 <ul className="flex flex-col gap-1">
                   {emotionalImpact.map((item, i) => (
-                    <li key={i} className="text-sm flex gap-1.5">
+                    <li key={i} className="text-md flex gap-1.5">
                       <span className="text-muted-foreground shrink-0">–</span>
                       <span>{item}</span>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-sm text-muted-foreground italic">Not filled in</p>
+                <p className="text-md text-muted-foreground italic">Not filled in</p>
               )}
             </div>
             <div className="rounded-lg border p-4 flex flex-col gap-2">
               <div className="flex items-center gap-2">
                 <BarChart2 className="h-3.5 w-3.5 text-muted-foreground" />
-                <p className="text-sm font-semibold">Quantifiable impact</p>
+                <p className="text-md font-semibold">Quantifiable impact</p>
               </div>
               {quantifiableImpacts.length > 0 ? (
                 <ul className="flex flex-col gap-1">
                   {quantifiableImpacts.map((item, i) => (
-                    <li key={i} className="text-sm flex gap-2">
+                    <li key={i} className="text-md flex gap-2">
                       <span className="font-medium shrink-0">{item.category || "—"}</span>
                       <span className="text-muted-foreground">{item.description || "—"}</span>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="text-sm text-muted-foreground italic">Not filled in</p>
+                <p className="text-md text-muted-foreground italic">Not filled in</p>
               )}
             </div>
           </div>
@@ -309,7 +309,7 @@ export default function VerdictPage() {
 
         {/* Decision factors */}
         <div className="flex flex-col gap-4 rounded-lg border p-4">
-          <p className="text-sm font-semibold">Decision factors</p>
+          <p className="text-md font-semibold">Decision factors</p>
           <p className="text-xs text-muted-foreground -mt-2">
             Rate each dimension to assess whether solving this problem makes economic sense.
           </p>
@@ -318,7 +318,7 @@ export default function VerdictPage() {
             <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
               <div className="flex items-center gap-2 pt-1.5">
                 <Clock className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                <span className="text-sm font-medium">Time to solve</span>
+                <span className="text-md font-medium">Time to solve</span>
               </div>
               <MetricInput
                 metric={timeToSolve}
@@ -331,7 +331,7 @@ export default function VerdictPage() {
             <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
               <div className="flex items-center gap-2 pt-1.5">
                 <DollarSign className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                <span className="text-sm font-medium">Cost to solve</span>
+                <span className="text-md font-medium">Cost to solve</span>
               </div>
               <MetricInput
                 metric={costToSolve}
@@ -344,7 +344,7 @@ export default function VerdictPage() {
             <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
               <div className="flex items-center gap-2 pt-1.5">
                 <TrendingUp className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                <span className="text-sm font-medium">Expected return</span>
+                <span className="text-md font-medium">Expected return</span>
               </div>
               <MetricInput
                 metric={expectedReturn}
@@ -357,7 +357,7 @@ export default function VerdictPage() {
             <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
               <div className="flex items-center gap-2 pt-1.5">
                 <Globe className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                <span className="text-sm font-medium">Market size</span>
+                <span className="text-md font-medium">Market size</span>
               </div>
               <MetricInput
                 metric={marketSize}
@@ -372,7 +372,7 @@ export default function VerdictPage() {
             <div className={cn("flex items-start gap-2.5 rounded-md border px-3 py-2.5 mt-1", signal.className)}>
               {signal.icon}
               <div className="flex flex-col gap-0.5">
-                <p className="text-sm font-semibold">{signal.text}</p>
+                <p className="text-md font-semibold">{signal.text}</p>
                 <p className="text-xs">{signal.desc}</p>
               </div>
             </div>
@@ -388,7 +388,7 @@ export default function VerdictPage() {
             placeholder="Add any notes about your decision..."
             value={localReason}
             onChange={(e) => setLocalReason(e.target.value)}
-            className="resize-none text-sm focus-visible:ring-1"
+            className="resize-none text-md focus-visible:ring-1"
           />
         </div>
 

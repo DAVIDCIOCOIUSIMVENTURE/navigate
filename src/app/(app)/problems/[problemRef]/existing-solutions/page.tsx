@@ -112,11 +112,11 @@ export default function ExistingSolutionsPage() {
 
   return (
     <Card className="w-full flex-1">
-      <CardHeader className="px-8 pt-8 pb-0">
-        <CardTitle icon={GitFork} className="text-lg">Existing Solutions</CardTitle>
+      <CardHeader className="px-10 pt-10 pb-0">
+        <CardTitle icon={GitFork} className="text-primary">Existing Solutions</CardTitle>
       </CardHeader>
-      <CardContent className="p-8 pt-6 flex flex-col gap-6">
-        <div className="flex flex-col gap-3 text-sm text-muted-foreground">
+      <CardContent className="p-10 pt-6 flex flex-col gap-6">
+        <div className="flex flex-col gap-3 text-md text-muted-foreground">
           <p>
             How are people currently solving — or living with — this problem? List every existing solution
             they reach for today, even if it&apos;s imperfect or informal.
@@ -138,146 +138,151 @@ export default function ExistingSolutionsPage() {
           {IMPACT_CATEGORIES.map((c) => <option key={c} value={c} />)}
         </datalist>
 
-        <h3 className="mt-8 text-base font-medium text-center"><span className="text-primary">Your Turn:</span> What Existing Solutions Are There?</h3>
+        <h3 className="mt-8 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> What Existing Solutions Are There?</h3>
 
-        <div className="flex flex-col gap-5">
-          {existingSolutions.map((sol, i) => (
-            <div key={sol.id} className="border rounded-lg p-4">
-              <div className="flex flex-col gap-1.5 mb-3">
-                <div className="flex items-center justify-between">
-                  <label htmlFor={`solution-${sol.id}`} className="text-xs font-semibold text-muted-foreground">Existing Solution {i + 1}</label>
-                  <ConfirmDialog
-                    trigger={
-                      <button className="shrink-0 text-muted-foreground hover:text-destructive transition-colors">
-                        <X className="h-3.5 w-3.5" />
-                      </button>
-                    }
-                    title="Remove existing solution?"
-                    description="This will also delete all shortcomings and impacts associated with it."
-                    onConfirm={() => removeSolution(i)}
+        <div className="bg-primary rounded-xl p-8">
+          <div className="flex flex-col divide-y divide-white/20">
+            {existingSolutions.map((sol, i) => (
+              <div key={sol.id} className="py-5 first:pt-0 last:pb-0">
+                <div className="flex flex-col gap-1.5 mb-3">
+                  <div className="flex items-center justify-between">
+                    <label htmlFor={`solution-${sol.id}`} className="text-xs font-semibold text-white/70">Existing Solution {i + 1}</label>
+                    <ConfirmDialog
+                      trigger={
+                        <button className="shrink-0 text-white/50 hover:text-white transition-colors">
+                          <X className="h-3.5 w-3.5" />
+                        </button>
+                      }
+                      title="Remove existing solution?"
+                      description="This will also delete all shortcomings and impacts associated with it."
+                      onConfirm={() => removeSolution(i)}
+                    />
+                  </div>
+                  <Input
+                    id={`solution-${sol.id}`}
+                    value={sol.text}
+                    onChange={(e) => setExistingSolutions(existingSolutions.map((a, idx) => idx === i ? { ...a, text: e.target.value } : a))}
+                    className="text-md font-medium h-8 bg-white border-white text-foreground"
                   />
                 </div>
-                <Input
-                  id={`solution-${sol.id}`}
-                  value={sol.text}
-                  onChange={(e) => setExistingSolutions(existingSolutions.map((a, idx) => idx === i ? { ...a, text: e.target.value } : a))}
-                  className="text-sm font-medium h-8"
-                />
-              </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                {/* Left: Shortcomings */}
-                <div className="flex flex-col gap-2">
-                  <p className="text-xs font-medium text-muted-foreground">Shortcomings</p>
-                  {sol.shortcomings.length > 0 && (
-                    <ul className="flex flex-col gap-1.5">
-                      {sol.shortcomings.map((sc, j) => (
-                        <li key={j} className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2 text-sm">
-                          <Input
-                            value={sc}
-                            onChange={(e) => setExistingSolutions(existingSolutions.map((a, idx) =>
-                              idx === i ? { ...a, shortcomings: a.shortcomings.map((s, k) => k === j ? e.target.value : s) } : a
-                            ))}
-                            className="flex-1 text-sm h-7"
-                          />
-                          <ConfirmDialog
-                            trigger={
-                              <button className="shrink-0 text-muted-foreground hover:text-destructive transition-colors">
-                                <X className="h-3.5 w-3.5" />
-                              </button>
-                            }
-                            title="Remove shortcoming?"
-                            description="This shortcoming will be permanently removed."
-                            onConfirm={() => removeShortcoming(i, j)}
-                          />
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  {addingSc[i] ? (
-                    <Input
-                      ref={(el) => { scInputRefs.current[i] = el }}
-                      placeholder="Why does this fall short?"
-                      value={scDrafts[i] ?? ""}
-                      onChange={(e) => setScDrafts((prev) => ({ ...prev, [i]: e.target.value }))}
-                      onKeyDown={(e) => onScKeyDown(i, e)}
-                      onBlur={() => addShortcoming(i)}
-                      className="text-sm h-8"
-                    />
-                  ) : (
+                <div className="grid grid-cols-2 gap-4">
+                  {/* Left: Shortcomings */}
+                  <div className="flex flex-col gap-2">
+                    <p className="text-xs font-medium text-white/70">Shortcomings</p>
+                    {sol.shortcomings.length > 0 && (
+                      <ul className="flex flex-col gap-1.5">
+                        {sol.shortcomings.map((sc, j) => (
+                          <li key={j} className="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-md">
+                            <Input
+                              value={sc}
+                              onChange={(e) => setExistingSolutions(existingSolutions.map((a, idx) =>
+                                idx === i ? { ...a, shortcomings: a.shortcomings.map((s, k) => k === j ? e.target.value : s) } : a
+                              ))}
+                              className="flex-1 text-md h-7 bg-white border-white text-foreground"
+                            />
+                            <ConfirmDialog
+                              trigger={
+                                <button className="shrink-0 text-white/50 hover:text-white transition-colors">
+                                  <X className="h-3.5 w-3.5" />
+                                </button>
+                              }
+                              title="Remove shortcoming?"
+                              description="This shortcoming will be permanently removed."
+                              onConfirm={() => removeShortcoming(i, j)}
+                            />
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {addingSc[i] ? (
+                      <Input
+                        ref={(el) => { scInputRefs.current[i] = el }}
+                        placeholder="Why does this fall short?"
+                        value={scDrafts[i] ?? ""}
+                        onChange={(e) => setScDrafts((prev) => ({ ...prev, [i]: e.target.value }))}
+                        onKeyDown={(e) => onScKeyDown(i, e)}
+                        onBlur={() => addShortcoming(i)}
+                        className="text-md h-8 bg-white border-white text-foreground"
+                      />
+                    ) : (
+                      <Button
+                        variant="on-primary"
+                        size="sm"
+                        onClick={() => setAddingSc((prev) => ({ ...prev, [i]: true }))}
+                      >
+                        <Plus className="h-3 w-3" />
+                        Add shortcoming
+                      </Button>
+                    )}
+                  </div>
+
+                  {/* Right: Quantifiable Impact */}
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-1.5">
+                      <BarChart2 className="h-3 w-3 text-white/70" />
+                      <p className="text-xs font-medium text-white/70">Quantifiable Impact</p>
+                    </div>
+                    {getImpacts(sol).length > 0 && (
+                      <ul className="flex flex-col gap-1.5">
+                        {getImpacts(sol).map((imp, j) => (
+                          <li key={j} className="flex items-center gap-2">
+                            <Input
+                              list="impact-cats-es"
+                              placeholder="Category..."
+                              value={imp.category}
+                              onChange={(e) => updateImpact(i, j, "category", e.target.value)}
+                              className="text-md h-7 w-2/5 shrink-0 bg-white border-white text-foreground"
+                            />
+                            <Input
+                              placeholder="Describe the impact..."
+                              value={imp.description}
+                              onChange={(e) => updateImpact(i, j, "description", e.target.value)}
+                              className="text-md h-7 flex-1 bg-white border-white text-foreground"
+                            />
+                            <button
+                              onClick={() => removeImpact(i, j)}
+                              className="shrink-0 text-white/50 hover:text-white transition-colors"
+                            >
+                              <X className="h-3.5 w-3.5" />
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                     <Button
-                      variant="dashed"
+                      variant="on-primary"
                       size="sm"
-                      onClick={() => setAddingSc((prev) => ({ ...prev, [i]: true }))}
+                      onClick={() => addImpact(i)}
                     >
                       <Plus className="h-3 w-3" />
-                      Add shortcoming
+                      Add impact
                     </Button>
-                  )}
-                </div>
-
-                {/* Right: Quantifiable Impact */}
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center gap-1.5">
-                    <BarChart2 className="h-3 w-3 text-muted-foreground" />
-                    <p className="text-xs font-medium text-muted-foreground">Quantifiable Impact</p>
                   </div>
-                  {getImpacts(sol).length > 0 && (
-                    <ul className="flex flex-col gap-1.5">
-                      {getImpacts(sol).map((imp, j) => (
-                        <li key={j} className="flex items-center gap-2">
-                          <Input
-                            list="impact-cats-es"
-                            placeholder="Category..."
-                            value={imp.category}
-                            onChange={(e) => updateImpact(i, j, "category", e.target.value)}
-                            className="text-sm h-7 w-2/5 shrink-0"
-                          />
-                          <Input
-                            placeholder="Describe the impact..."
-                            value={imp.description}
-                            onChange={(e) => updateImpact(i, j, "description", e.target.value)}
-                            className="text-sm h-7 flex-1"
-                          />
-                          <button
-                            onClick={() => removeImpact(i, j)}
-                            className="shrink-0 text-muted-foreground hover:text-destructive transition-colors"
-                          >
-                            <X className="h-3.5 w-3.5" />
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                  <Button
-                    variant="dashed"
-                    size="sm"
-                    onClick={() => addImpact(i)}
-                  >
-                    <Plus className="h-3 w-3" />
-                    Add impact
-                  </Button>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
 
-          {addingSolution ? (
-            <Input
-              ref={solutionInputRef}
-              placeholder="Type an existing solution and press Enter..."
-              value={draft}
-              onChange={(e) => setDraft(e.target.value)}
-              onKeyDown={onSolutionKeyDown}
-              onBlur={addSolution}
-              className="text-sm h-9"
-            />
-          ) : (
-            <Button variant="dashed" onClick={() => setAddingSolution(true)}>
-              <Plus className="h-4 w-4" />
-              Add Existing Solution
-            </Button>
-          )}
+          </div>
+
+          <div className="mt-5 pt-5 border-t border-white/20">
+            {addingSolution ? (
+              <Input
+                ref={solutionInputRef}
+                placeholder="Type an existing solution and press Enter..."
+                value={draft}
+                onChange={(e) => setDraft(e.target.value)}
+                onKeyDown={onSolutionKeyDown}
+                onBlur={addSolution}
+                className="text-md h-9 bg-white border-white text-foreground"
+              />
+            ) : (
+              <Button variant="on-primary" className="w-full" onClick={() => setAddingSolution(true)}>
+                <Plus className="h-4 w-4" />
+                Add Existing Solution
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="flex justify-between mt-2">

@@ -22,11 +22,11 @@ export default function CustomerSegmentPage() {
 
   return (
     <Card className="w-full flex-1">
-      <CardHeader className="px-8 pt-8 pb-0">
-        <CardTitle icon={Users} className="text-lg">Customer Segment Size</CardTitle>
+      <CardHeader className="px-10 pt-10 pb-0">
+        <CardTitle icon={Users} className="text-primary">Customer Segment Size</CardTitle>
       </CardHeader>
-      <CardContent className="p-8 pt-6 flex flex-col gap-5">
-        <p className="text-sm text-muted-foreground">
+      <CardContent className="p-10 pt-6 flex flex-col gap-5">
+        <p className="text-md text-muted-foreground">
           Before diving into alternatives and shortcomings, estimate how many people actually
           experience this problem. A large segment signals a bigger market opportunity; a small
           one may still be worth pursuing if the pain is intense enough.
@@ -39,7 +39,7 @@ export default function CustomerSegmentPage() {
             </p>
             <div className="flex flex-wrap gap-1.5">
               {customerSegments.map((segment) => (
-                <span key={segment} className="rounded-md bg-muted px-2.5 py-1 text-sm">
+                <span key={segment} className="rounded-md bg-muted px-2.5 py-1 text-md">
                   {segment}
                 </span>
               ))}
@@ -47,7 +47,7 @@ export default function CustomerSegmentPage() {
           </div>
         )}
 
-        <div className="rounded-lg border bg-muted/30 p-4 flex flex-col gap-3 text-sm text-muted-foreground">
+        <div className="rounded-lg border bg-muted/30 p-4 flex flex-col gap-3 text-md text-muted-foreground">
           <p className="font-medium text-foreground">How to estimate segment size</p>
           <ul className="list-disc pl-5 flex flex-col gap-1.5">
             <li>
@@ -79,7 +79,7 @@ export default function CustomerSegmentPage() {
         </div>
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="segment-size" className="text-sm font-medium">
+          <label htmlFor="segment-size" className="text-md font-medium">
             Estimated number of people affected
           </label>
           <Input
@@ -92,7 +92,7 @@ export default function CustomerSegmentPage() {
               const val = e.target.value
               setSegmentSize(val === "" ? null : Number(val))
             }}
-            className="text-sm h-9 max-w-xs"
+            className="text-md h-9 max-w-xs"
           />
         </div>
 

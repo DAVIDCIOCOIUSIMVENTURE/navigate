@@ -43,12 +43,12 @@ export default function IntroductionPage() {
 
   return (
     <Card className="w-full flex-1">
-      <CardHeader className="px-8 pt-8 pb-0">
-        <CardTitle icon={BookOpen} className="text-lg">Introduction</CardTitle>
+      <CardHeader className="px-10 pt-10 pb-0">
+        <CardTitle icon={BookOpen} className="text-primary">Introduction</CardTitle>
       </CardHeader>
-      <CardContent className="p-8 pt-6 flex flex-col gap-6">
+      <CardContent className="p-10 pt-6 flex flex-col gap-6">
 
-        <p className="text-sm text-muted-foreground leading-relaxed">
+        <p className="text-md text-muted-foreground leading-relaxed">
           It&apos;s time to validate whether this problem is truly worth solving. You&apos;ll stress-test it by examining the alternatives, context, emotional weight, and real-world impact — so you can make a confident, evidence-based decision before committing to a solution.
         </p>
 
@@ -57,7 +57,7 @@ export default function IntroductionPage() {
             {problem.description && (
               <div className="flex flex-col gap-1">
                 <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Problem Description</p>
-                <p className="text-sm font-medium">{problem.description}</p>
+                <p className="text-md font-medium">{problem.description}</p>
               </div>
             )}
             <FieldRow label="Customer Segments" values={problem.customerSegments} />
@@ -81,7 +81,7 @@ export default function IntroductionPage() {
                   )}
                 </div>
                 <div className="flex flex-col gap-0.5 pb-5">
-                  <p className="text-sm font-medium leading-8">{title}</p>
+                  <p className="text-md font-medium leading-8">{title}</p>
                   <p className="text-xs text-muted-foreground leading-relaxed">{description}</p>
                 </div>
               </div>

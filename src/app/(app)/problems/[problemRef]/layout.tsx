@@ -51,10 +51,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                   <Button
                     key={item.path}
                     variant={isActive ? "secondary" : "ghost"}
-                    className="w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2"
+                    className={`w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2 ${isActive ? "text-primary" : ""}`}
                     onClick={() => router.push(`${base}/${item.path}`)}
                   >
-                    <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? "text-blue-500" : ""}`} />
+                    <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? "text-primary" : ""}`} />
                     {item.label}
                   </Button>
                 )

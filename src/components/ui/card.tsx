@@ -59,12 +59,16 @@ const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
     <Tag
       ref={ref}
       className={cn(
-        "flex items-center gap-2.5 font-semibold leading-none tracking-tight",
+        "flex items-center gap-2.5 text-2xl font-bold leading-none tracking-tight",
         className
       )}
       {...props}
     >
-      {Icon && <Icon className="h-4 w-4 text-muted-foreground shrink-0" />}
+      {Icon && (
+        <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 shrink-0">
+          <Icon className="h-5 w-5 text-primary" />
+        </div>
+      )}
       {children}
     </Tag>
   )

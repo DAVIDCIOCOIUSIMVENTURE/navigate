@@ -25,7 +25,7 @@ function SectionTitle({
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-2">
         <Icon className="h-4 w-4 shrink-0 text-foreground/70" />
-        <span className="font-semibold text-sm">{label}</span>
+        <span className="font-semibold text-md">{label}</span>
       </div>
       <button
         onClick={onEdit}
@@ -149,14 +149,14 @@ export default function ProblemStatementPage() {
   return (
     <>
       <Card className="w-full flex-1">
-        <CardHeader className="px-8 pt-8 pb-0 flex-row items-start justify-between gap-4 space-y-0">
+        <CardHeader className="px-10 pt-10 pb-0 flex-row items-start justify-between gap-4 space-y-0">
           <div className="flex flex-col gap-1">
-            <CardTitle icon={LayoutTemplate} className="text-lg">Problem Statement</CardTitle>
-            <p className="text-sm text-muted-foreground">Click the pencil icon on any card to edit it.</p>
+            <CardTitle icon={LayoutTemplate} className="text-primary">Problem Statement</CardTitle>
+            <p className="text-md text-muted-foreground">Click the pencil icon on any card to edit it.</p>
           </div>
           <StatusSelect status={status} setStatus={setStatus} />
         </CardHeader>
-        <CardContent className="p-8 pt-6 flex flex-col gap-6">
+        <CardContent className="p-10 pt-6 flex flex-col gap-6">
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
 
@@ -166,7 +166,7 @@ export default function ProblemStatementPage() {
               {problem ? (
                 <>
                   {problem.description ? (
-                    <p className="text-sm text-foreground/80 leading-relaxed">{problem.description}</p>
+                    <p className="text-md text-foreground/80 leading-relaxed">{problem.description}</p>
                   ) : (
                     <span className="text-xs text-muted-foreground/60 italic">No description</span>
                   )}
@@ -188,7 +188,7 @@ export default function ProblemStatementPage() {
                   </div>
                 </>
               ) : (
-                <span className="text-sm text-muted-foreground/50 italic">No problem selected</span>
+                <span className="text-md text-muted-foreground/50 italic">No problem selected</span>
               )}
             </div>
 
@@ -199,7 +199,7 @@ export default function ProblemStatementPage() {
                 <ul className="flex flex-col gap-3">
                   {existingSolutions.map((alt) => (
                     <li key={alt.id} className="flex flex-col gap-1 bg-white/60 rounded-lg px-3 py-2.5 border border-border">
-                      <p className="text-sm font-medium text-foreground/90">{alt.text || <span className="italic text-muted-foreground/60">Unnamed</span>}</p>
+                      <p className="text-md font-medium text-foreground/90">{alt.text || <span className="italic text-muted-foreground/60">Unnamed</span>}</p>
                       {alt.shortcomings.length > 0 && (
                         <ul className="flex flex-col gap-0.5 pl-2 mt-1">
                           {alt.shortcomings.map((sc, j) => (
@@ -224,7 +224,7 @@ export default function ProblemStatementPage() {
               {emotionalImpact.length > 0 ? (
                 <ul className="flex flex-col gap-1">
                   {emotionalImpact.map((item, i) => (
-                    <li key={i} className="text-sm text-foreground/80 flex gap-2">
+                    <li key={i} className="text-md text-foreground/80 flex gap-2">
                       <span className="text-muted-foreground shrink-0">–</span>
                       {item || <span className="italic text-muted-foreground/60">Empty</span>}
                     </li>
@@ -239,12 +239,12 @@ export default function ProblemStatementPage() {
             <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3">
               <div className="flex items-center gap-2">
                 <BarChart2 className="h-4 w-4 shrink-0 text-foreground/70" />
-                <span className="font-semibold text-sm">Quantifiable Impact</span>
+                <span className="font-semibold text-md">Quantifiable Impact</span>
               </div>
               {quantifiableImpacts.length > 0 ? (
                 <ul className="flex flex-col gap-1.5">
                   {quantifiableImpacts.map((item, i) => (
-                    <li key={i} className="flex gap-2 items-baseline text-sm">
+                    <li key={i} className="flex gap-2 items-baseline text-md">
                       <span className="font-medium shrink-0">{item.category || "—"}</span>
                       <span className="text-foreground/70 text-xs">{item.description}</span>
                     </li>
@@ -275,7 +275,7 @@ export default function ProblemStatementPage() {
                 placeholder="Describe the problem…"
                 value={problem.description}
                 onChange={(e) => updateProblem({ description: e.target.value })}
-                className="resize-none text-sm border-rose-200 focus-visible:ring-rose-300"
+                className="resize-none text-md border-rose-200 focus-visible:ring-rose-300"
               />
               <div className="flex flex-col gap-1">
                 <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Customer Segments</p>
@@ -316,7 +316,7 @@ export default function ProblemStatementPage() {
                         placeholder="Existing solution…"
                         value={alt.text}
                         onChange={(e) => updateSolutionText(i, e.target.value)}
-                        className="text-sm h-8 bg-white border-purple-200 font-medium"
+                        className="text-md h-8 bg-white border-purple-200 font-medium"
                       />
                       <button onClick={() => removeSolution(i)} className="shrink-0 text-muted-foreground hover:text-destructive">
                         <X className="h-3.5 w-3.5" />
@@ -370,12 +370,12 @@ export default function ProblemStatementPage() {
               <ul className="flex flex-col gap-1.5">
                 {emotionalImpact.map((item, i) => (
                   <li key={i} className="flex gap-2 items-center">
-                    <span className="text-muted-foreground text-sm shrink-0">–</span>
+                    <span className="text-muted-foreground text-md shrink-0">–</span>
                     <Input
                       placeholder="e.g. Frustrated, overwhelmed…"
                       value={item}
                       onChange={(e) => updateEmotion(i, e.target.value)}
-                      className="text-sm h-8 border-pink-200"
+                      className="text-md h-8 border-pink-200"
                     />
                     <button onClick={() => removeEmotion(i)} className="shrink-0 text-muted-foreground hover:text-destructive">
                       <X className="h-3.5 w-3.5" />

@@ -41,12 +41,12 @@ export default function EmotionalImpactPage() {
 
   return (
     <Card className="w-full flex-1">
-      <CardHeader className="px-8 pt-8 pb-0">
-        <CardTitle icon={Heart} className="text-lg">Emotional Impact</CardTitle>
+      <CardHeader className="px-10 pt-10 pb-0">
+        <CardTitle icon={Heart} className="text-primary">Emotional Impact</CardTitle>
       </CardHeader>
-      <CardContent className="p-8 pt-6 flex flex-col gap-6">
+      <CardContent className="p-10 pt-6 flex flex-col gap-6">
 
-        <div className="flex flex-col gap-3 text-sm text-muted-foreground">
+        <div className="flex flex-col gap-3 text-md text-muted-foreground">
           <p>
             How does this problem make people feel? Capturing the emotional weight helps you understand
             the real cost of the problem beyond the practical inconvenience.
@@ -71,7 +71,7 @@ export default function EmotionalImpactPage() {
                 onChange={(e) => setEmotionalImpact(
                   emotionalImpact.map((v, idx) => idx === i ? e.target.value : v)
                 )}
-                className="flex-1 text-sm h-8"
+                className="flex-1 text-md h-8"
               />
               <ConfirmDialog
                 trigger={
@@ -94,7 +94,7 @@ export default function EmotionalImpactPage() {
               onChange={(e) => setDraft(e.target.value)}
               onKeyDown={onKeyDown}
               onBlur={addItem}
-              className="text-sm h-9"
+              className="text-md h-9"
             />
           ) : (
             <Button variant="dashed" onClick={() => setAdding(true)}>

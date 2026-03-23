@@ -6,151 +6,147 @@
 
 @layer base {
   :root {
-
+    /* Background & Foreground — dark slate, not pure black */
     --background: 0 0% 100%;
+    --foreground: 198 22% 27%;
 
-    --foreground: 20 14.3% 4.1%;
-
+    /* Cards & Popovers */
     --card: 0 0% 100%;
-
-    --card-foreground: 20 14.3% 4.1%;
-
+    --card-foreground: 198 22% 27%;
     --popover: 0 0% 100%;
+    --popover-foreground: 198 22% 27%;
 
-    --popover-foreground: 20 14.3% 4.1%;
-
-    --primary: 217 91% 60%;
-
+    /* Primary — Vibrant Purple */
+    --primary: 262 83% 58%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 60 4.8% 95.9%;
+    /* Secondary — Subtle purple tint */
+    --secondary: 260 25% 95%;
+    --secondary-foreground: 215 20% 30%;
 
-    --secondary-foreground: 24 9.8% 10%;
+    /* Muted — Neutral with purple undertone */
+    --muted: 260 15% 95%;
+    --muted-foreground: 215 16% 47%;
 
-    --muted: 60 4.8% 95.9%;
+    /* Accent — Light purple */
+    --accent: 262 30% 93%;
+    --accent-foreground: 215 20% 30%;
 
-    --muted-foreground: 25 5.3% 44.7%;
+    /* Destructive */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --accent: 60 4.8% 95.9%;
+    /* Borders & Inputs */
+    --border: 260 12% 89%;
+    --input: 260 12% 89%;
+    --ring: 262 83% 58%;
 
-    --accent-foreground: 24 9.8% 10%;
-
-    --destructive: 0 84.2% 60.2%;
-
-    --destructive-foreground: 60 9.1% 97.8%;
-
-    --border: 20 5.9% 90%;
-
-    --input: 20 5.9% 90%;
-
-    --ring: 20 14.3% 4.1%;
-
-    --chart-1: 12 76% 61%;
-
+    /* Chart palette — purple-complementary */
+    --chart-1: 262 70% 58%;
     --chart-2: 173 58% 39%;
-
     --chart-3: 197 37% 24%;
-
     --chart-4: 43 74% 66%;
+    --chart-5: 326 70% 55%;
 
-    --chart-5: 27 87% 67%;
+    /* Border Radius — slightly larger for modern feel */
+    --radius: 0.625rem;
 
-    --radius: 0.5rem
-  ;
+    /* Primary dark variant */
+    --primary-dark: 262 83% 42%;
+    --primary-dark-foreground: 0 0% 100%;
 
-    --sidebar-background: 20 14.3% 4.1%;
+    /* Primary light variant — tinted background */
+    --primary-light: 262 60% 96%;
+    --primary-light-foreground: 262 40% 20%;
 
+    /* Sidebar — uses primary-dark */
+    --sidebar-background: var(--primary-dark);
     --sidebar-foreground: 0 0% 100%;
-
     --sidebar-primary: 0 0% 100%;
-
-    --sidebar-primary-foreground: 20 14.3% 4.1%;
-
-    --sidebar-accent: 20 14.3% 4.1%;
-
+    --sidebar-primary-foreground: 262 83% 58%;
+    --sidebar-accent: 262 83% 50%;
     --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 262 83% 50%;
+    --sidebar-ring: 0 0% 100%;
 
-    --sidebar-border: 20 14.3% 4.1%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-
-    --brand: 26 100% 50%;
+    /* Brand — keep distinct from primary for marketing/callout use */
+    --brand: 262 83% 58%;
     --brand-foreground: 0 0% 100%;
 
-    --surface: 200 12% 27%;
-    --surface-foreground: 0 0% 100%}
+    /* Surface — muted purple for elevated sections */
+    --surface: 262 30% 93%;
+    --surface-foreground: 262 40% 20%;
+  }
+
   .dark {
+    /* Background & Foreground */
+    --background: 260 20% 6%;
+    --foreground: 260 10% 95%;
 
-    --background: 20 14.3% 4.1%;
+    /* Cards & Popovers */
+    --card: 260 18% 10%;
+    --card-foreground: 260 10% 95%;
+    --popover: 260 18% 10%;
+    --popover-foreground: 260 10% 95%;
 
-    --foreground: 60 9.1% 97.8%;
+    /* Primary — Lighter purple for dark backgrounds */
+    --primary: 262 80% 68%;
+    --primary-foreground: 262 80% 10%;
 
-    --card: 20 14.3% 4.1%;
+    /* Primary dark variant */
+    --primary-dark: 262 80% 30%;
+    --primary-dark-foreground: 0 0% 100%;
 
-    --card-foreground: 60 9.1% 97.8%;
+    /* Primary light variant */
+    --primary-light: 262 40% 20%;
+    --primary-light-foreground: 260 10% 90%;
 
-    --popover: 20 14.3% 4.1%;
+    /* Secondary */
+    --secondary: 260 15% 16%;
+    --secondary-foreground: 260 10% 90%;
 
-    --popover-foreground: 60 9.1% 97.8%;
+    /* Muted */
+    --muted: 260 15% 16%;
+    --muted-foreground: 260 10% 60%;
 
-    --primary: 217 91% 60%;
+    /* Accent */
+    --accent: 262 30% 18%;
+    --accent-foreground: 260 10% 90%;
 
-    --primary-foreground: 0 0% 100%;
+    /* Destructive */
+    --destructive: 0 63% 35%;
+    --destructive-foreground: 0 0% 95%;
 
-    --secondary: 12 6.5% 15.1%;
+    /* Borders & Inputs */
+    --border: 260 12% 18%;
+    --input: 260 12% 18%;
+    --ring: 262 80% 68%;
 
-    --secondary-foreground: 60 9.1% 97.8%;
-
-    --muted: 12 6.5% 15.1%;
-
-    --muted-foreground: 24 5.4% 63.9%;
-
-    --accent: 12 6.5% 15.1%;
-
-    --accent-foreground: 60 9.1% 97.8%;
-
-    --destructive: 0 62.8% 30.6%;
-
-    --destructive-foreground: 60 9.1% 97.8%;
-
-    --border: 12 6.5% 15.1%;
-
-    --input: 12 6.5% 15.1%;
-
-    --ring: 24 5.7% 82.9%;
-
-    --chart-1: 220 70% 50%;
-
+    /* Chart palette — brighter for dark mode */
+    --chart-1: 262 70% 65%;
     --chart-2: 160 60% 45%;
-
     --chart-3: 30 80% 55%;
+    --chart-4: 200 65% 55%;
+    --chart-5: 326 70% 60%;
 
-    --chart-4: 280 65% 60%;
+    /* Sidebar — Deeper purple */
+    --sidebar-background: 262 60% 14%;
+    --sidebar-foreground: 260 20% 85%;
+    --sidebar-primary: 260 10% 95%;
+    --sidebar-primary-foreground: 262 60% 14%;
+    --sidebar-accent: 262 40% 22%;
+    --sidebar-accent-foreground: 260 10% 95%;
+    --sidebar-border: 262 30% 20%;
+    --sidebar-ring: 262 80% 68%;
 
-    --chart-5: 340 75% 55%
-  ;
+    /* Brand */
+    --brand: 262 80% 68%;
+    --brand-foreground: 262 80% 10%;
 
-    --sidebar-background: 20 14.3% 4.1%;
-
-    --sidebar-foreground: 60 9.1% 97.8%;
-
-    --sidebar-primary: 60 9.1% 97.8%;
-
-    --sidebar-primary-foreground: 20 14.3% 4.1%;
-
-    --sidebar-accent: 20 14.3% 4.1%;
-
-    --sidebar-accent-foreground: 60 9.1% 97.8%;
-
-    --sidebar-border: 20 14.3% 4.1%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-
-    --brand: 26 100% 50%;
-    --brand-foreground: 0 0% 100%;
-
-    --surface: 200 12% 27%;
-    --surface-foreground: 0 0% 100%}
+    /* Surface */
+    --surface: 260 18% 14%;
+    --surface-foreground: 260 10% 90%;
+  }
 }
 
 
@@ -161,6 +157,9 @@
   }
   html, body {
     height: 100%;
+  }
+  html {
+    font-size: 16px;
   }
   body {
     @apply bg-background text-foreground;
