@@ -65,8 +65,8 @@ const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
       {...props}
     >
       {Icon && (
-        <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 shrink-0">
-          <Icon className="h-5 w-5 text-primary" />
+        <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary shrink-0">
+          <Icon className="h-5 w-5 text-primary-foreground" />
         </div>
       )}
       {children}

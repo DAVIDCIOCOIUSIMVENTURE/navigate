@@ -33,8 +33,8 @@ export default function SelfDiscoveryLayout({
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         {navItem && Icon && (
-                            <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-primary/10 shrink-0">
-                                <Icon className="h-6 w-6 text-primary" />
+                            <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-primary shrink-0">
+                                <Icon className="h-6 w-6 text-primary-foreground" />
                             </div>
                         )}
                         <div className="flex flex-col gap-1">

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { useProblemValidation, getAdjacentSteps } from "../context"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import type { ImpactItem } from "@/types/idea"
-import { GitFork, Plus, X } from "lucide-react"
+import { GitFork, Plus, X, Monitor, Wrench, Users, Ban } from "lucide-react"
 
 const IMPACT_CATEGORIES = [
   "Time Lost", "Money Wasted", "Error Rates", "Customer Churn",
@@ -121,12 +121,32 @@ export default function ExistingSolutionsPage() {
             How are people currently solving — or living with — this problem? List every existing solution
             they reach for today, even if it&apos;s imperfect or informal.
           </p>
-          <ul className="list-disc pl-5 flex flex-col gap-1">
-            <li><strong className="text-foreground">Existing tools &amp; software</strong> — products already on the market</li>
-            <li><strong className="text-foreground">Manual workarounds</strong> — spreadsheets, sticky notes, email threads</li>
-            <li><strong className="text-foreground">Hiring or outsourcing</strong> — paying someone else to handle it</li>
-            <li><strong className="text-foreground">Doing nothing</strong> — ignoring or tolerating the problem</li>
-          </ul>
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500 shrink-0">
+                <Monitor className="h-4 w-4 text-white" />
+              </div>
+              <p><strong className="text-foreground">Existing tools &amp; software</strong> — products already on the market</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500 shrink-0">
+                <Wrench className="h-4 w-4 text-white" />
+              </div>
+              <p><strong className="text-foreground">Manual workarounds</strong> — spreadsheets, sticky notes, email threads</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500 shrink-0">
+                <Users className="h-4 w-4 text-white" />
+              </div>
+              <p><strong className="text-foreground">Hiring or outsourcing</strong> — paying someone else to handle it</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-rose-500 shrink-0">
+                <Ban className="h-4 w-4 text-white" />
+              </div>
+              <p><strong className="text-foreground">Doing nothing</strong> — ignoring or tolerating the problem</p>
+            </div>
+          </div>
           <h3 className="mt-4 text-xl font-bold text-foreground">What will you do?</h3>
           <p>
             For each existing solution, capture its <strong className="text-foreground">shortcomings</strong> and
@@ -141,9 +161,9 @@ export default function ExistingSolutionsPage() {
 
         <hr className="border-border/40 my-4" />
 
-        <h3 className="mb-2 text-xl font-bold text-center"><span className="text-[#615BDC]">Your Turn:</span> What existing solutions are there?</h3>
+        <h3 className="mb-2 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> What existing solutions are there?</h3>
 
-        <div className="bg-[#615BDC] rounded-xl p-8">
+        <div className="bg-primary rounded-xl p-8">
           <div className="flex flex-col divide-y divide-white/20">
             {existingSolutions.map((sol, i) => (
               <div key={sol.id} className="py-5 first:pt-0 last:pb-0">

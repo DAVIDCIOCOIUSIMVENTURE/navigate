@@ -11,6 +11,8 @@ type ProblemValidationContextValue = {
   problemId: number
   segmentSize: number | null
   setSegmentSize: (val: number | null) => void
+  customerDescription: string
+  setCustomerDescription: (val: string) => void
   existingSolutions: ExistingSolutionItem[]
   setExistingSolutions: (val: ExistingSolutionItem[]) => void
   contextWhen: string
@@ -44,6 +46,7 @@ export function ProblemValidationProvider({
   )
 
   const segmentSize = problem?.segmentSize ?? null
+  const customerDescription = problem?.customerDescription ?? ""
   const existingSolutions = problem?.existingSolutions ?? []
   const emotionalImpact = problem?.emotionalImpact ?? []
   const validationAssessment = problem?.validationAssessment ?? DEFAULT_VALIDATION_ASSESSMENT
@@ -54,6 +57,13 @@ export function ProblemValidationProvider({
   const setSegmentSize = useCallback(
     (val: number | null) => {
       dispatch.problems.update({ id: problemId, patch: { segmentSize: val } })
+    },
+    [dispatch, problemId]
+  )
+
+  const setCustomerDescription = useCallback(
+    (val: string) => {
+      dispatch.problems.update({ id: problemId, patch: { customerDescription: val } })
     },
     [dispatch, problemId]
   )
@@ -159,6 +169,7 @@ export function ProblemValidationProvider({
         problemRef,
         problemId,
         segmentSize, setSegmentSize,
+        customerDescription, setCustomerDescription,
         existingSolutions, setExistingSolutions,
         contextWhen, setContextWhen,
         emotionalImpact, setEmotionalImpact,
@@ -184,9 +195,8 @@ export function useProblemValidation() {
 
 export const NAV_ITEMS = [
   { label: "Introduction", path: "introduction" },
-  { label: "Customer Segment", path: "customer-segment" },
+  { label: "Customer", path: "customer" },
   { label: "Existing Solutions", path: "existing-solutions" },
-  { label: "Emotional Impact", path: "emotional-impact" },
   { label: "Validate", path: "validate" },
   { label: "Problem Statement", path: "problem-statement" },
 ] as const

@@ -5,16 +5,15 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ProblemValidationProvider, useProblemValidation, NAV_ITEMS } from "./context"
 import {
-  GitFork, Clock, Heart, ShieldCheck, FileText, LayoutTemplate, BookOpen, Users,
+  GitFork, Clock, ShieldCheck, FileText, LayoutTemplate, BookOpen, Users,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
 const NAV_ICONS: Record<string, LucideIcon> = {
   introduction: BookOpen,
-  "customer-segment": Users,
+  "customer": Users,
   "existing-solutions": GitFork,
   "context-step": Clock,
-  "emotional-impact": Heart,
   validate: ShieldCheck,
   "problem-statement": LayoutTemplate,
 }
@@ -29,8 +28,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-6 flex-1 w-full">
       <div className="flex items-start gap-4">
-        <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-primary/10 shrink-0">
-          <ShieldCheck className="h-6 w-6 text-primary" />
+        <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-primary shrink-0">
+          <ShieldCheck className="h-6 w-6 text-primary-foreground" />
         </div>
         <div className="flex flex-col gap-1">
           <h1 className="text-xl font-bold">Problem Validation</h1>

@@ -1,6 +1,6 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardEyebrow, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -144,7 +144,6 @@ export default function QuestionPage() {
         <>
             <Card className="w-full flex-1 h-full flex flex-col">
                 <CardHeader className="px-10 pt-10 pb-0">
-                    <CardEyebrow icon={Compass}>{category.title}</CardEyebrow>
                     <CardTitle icon={(() => {
                         const CategoryIcon = getSelfDiscoveryCategoryIcon(category.url)
                         return CategoryIcon || Compass

@@ -16,8 +16,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 198 22% 27%;
 
-    /* Primary — Vibrant Purple */
-    --primary: 262 83% 58%;
+    /* Primary — Indigo Purple */
+    --primary: 243 65% 61%;
     --primary-foreground: 0 0% 100%;
 
     /* Secondary — Subtle purple tint */
@@ -39,7 +39,7 @@
     /* Borders & Inputs */
     --border: 260 12% 89%;
     --input: 260 12% 89%;
-    --ring: 262 83% 58%;
+    --ring: 243 65% 61%;
 
     /* Chart palette — purple-complementary */
     --chart-1: 262 70% 58%;
@@ -52,7 +52,7 @@
     --radius: 0.625rem;
 
     /* Primary dark variant */
-    --primary-dark: 262 83% 42%;
+    --primary-dark: 243 65% 45%;
     --primary-dark-foreground: 0 0% 100%;
 
     /* Primary light variant — tinted background */
@@ -63,7 +63,7 @@
     --sidebar-background: 243 50% 52%;
     --sidebar-foreground: 0 0% 100%;
     --sidebar-primary: 0 0% 100%;
-    --sidebar-primary-foreground: 262 83% 58%;
+    --sidebar-primary-foreground: 243 65% 61%;
     --sidebar-accent: 243 50% 45%;
     --sidebar-accent-foreground: 0 0% 100%;
     --sidebar-border: 243 50% 45%;

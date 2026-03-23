@@ -24,9 +24,10 @@ export type Problem = {
   validationReason: string
   contextWhen: string
   segmentSize: number | null
+  customerDescription: string
 }
 
-export type ProblemPatch = Partial<Pick<Problem, "description" | "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "existingSolutions" | "emotionalImpact" | "validationAssessment" | "validationStatus" | "validationReason" | "contextWhen" | "segmentSize">>
+export type ProblemPatch = Partial<Pick<Problem, "description" | "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "existingSolutions" | "emotionalImpact" | "validationAssessment" | "validationStatus" | "validationReason" | "contextWhen" | "segmentSize" | "customerDescription">>
 
 export function getProblemLabel(problem: Problem): string {
   return [
@@ -146,6 +147,7 @@ export const problems = createModel<RootModel>()({
         validationReason: payload.validationReason ?? "",
         contextWhen: payload.contextWhen ?? "",
         segmentSize: payload.segmentSize ?? null,
+        customerDescription: payload.customerDescription ?? "",
       }
       dispatch.problems.addProblem(newProblem)
       const nextState: ProblemsState = {

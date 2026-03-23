@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardEyebrow, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useRouter } from "next/navigation"
 import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
 import { Compass } from "lucide-react"
@@ -13,8 +13,7 @@ export default function SelfDiscoveryPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardEyebrow icon={Compass}>Self Discovery</CardEyebrow>
-        <CardTitle icon={Compass} className="text-primary">Introduction</CardTitle>
+        <CardTitle icon={Compass}>Introduction</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <p className="text-md text-muted-foreground leading-relaxed">
