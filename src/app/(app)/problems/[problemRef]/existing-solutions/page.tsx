@@ -149,7 +149,7 @@ export default function ExistingSolutionsPage() {
               <div key={sol.id} className="py-5 first:pt-0 last:pb-0">
                 <div className="flex flex-col gap-1.5 mb-3">
                   <div className="flex items-center justify-between">
-                    <label htmlFor={`solution-${sol.id}`} className="text-sm font-medium text-white/70">Existing Solution {i + 1}</label>
+                    <label htmlFor={`solution-${sol.id}`} className="text-sm font-medium text-white">Existing Solution {i + 1}</label>
                     <ConfirmDialog
                       trigger={
                         <button className="shrink-0 text-white/50 hover:text-white transition-colors">
@@ -172,7 +172,7 @@ export default function ExistingSolutionsPage() {
                 <div className="grid grid-cols-2 gap-4">
                   {/* Left: Shortcomings */}
                   <div className="flex flex-col gap-2">
-                    <p className="text-sm font-medium text-white/70">Shortcomings</p>
+                    <p className="text-sm font-medium text-white">Shortcomings</p>
                     {sol.shortcomings.length > 0 && (
                       <ul className="flex flex-col gap-1.5">
                         {sol.shortcomings.map((sc, j) => (
@@ -222,7 +222,7 @@ export default function ExistingSolutionsPage() {
 
                   {/* Right: Quantifiable Impact */}
                   <div className="flex flex-col gap-2">
-                    <p className="text-sm font-medium text-white/70">Quantifiable Impact</p>
+                    <p className="text-sm font-medium text-white">Quantifiable Impact</p>
                     {getImpacts(sol).length > 0 && (
                       <ul className="flex flex-col gap-1.5">
                         {getImpacts(sol).map((imp, j) => (
