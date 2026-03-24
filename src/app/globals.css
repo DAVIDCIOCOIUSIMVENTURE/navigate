@@ -73,9 +73,9 @@
     --brand: 262 83% 58%;
     --brand-foreground: 0 0% 100%;
 
-    /* Surface — muted purple for elevated sections */
-    --surface: 262 30% 93%;
-    --surface-foreground: 262 40% 20%;
+    /* Surface — dark blue-grey for case study sections (#37474F) */
+    --surface: 200 16% 27%;
+    --surface-foreground: 200 15% 95%;
   }
 
   .dark {
@@ -143,9 +143,9 @@
     --brand: 262 80% 68%;
     --brand-foreground: 262 80% 10%;
 
-    /* Surface */
-    --surface: 260 18% 14%;
-    --surface-foreground: 260 10% 90%;
+    /* Surface — dark blue-grey for case study sections (#37474F) */
+    --surface: 200 16% 27%;
+    --surface-foreground: 200 15% 95%;
   }
 }
 

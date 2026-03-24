@@ -170,7 +170,7 @@ export default function CustomerSegmentPage() {
           </TabsContent>
 
           <TabsContent value="case-studies">
-            <div className="rounded-xl border border-surface/20 bg-surface p-5 flex flex-col gap-4">
+            <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-4">
               <p className="text-sm text-surface-foreground/70">
                 See how successful companies defined their early customer. Notice how specific they were — they didn&apos;t try to serve everyone. Use these examples as inspiration when writing your own strategy.
               </p>

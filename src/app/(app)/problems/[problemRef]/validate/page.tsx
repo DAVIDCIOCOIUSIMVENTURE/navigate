@@ -311,7 +311,7 @@ export default function VerdictPage() {
           </TabsContent>
 
           <TabsContent value="case-studies">
-            <div className="rounded-xl border border-surface/20 bg-surface p-5 flex flex-col gap-5">
+            <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
               <p className="text-sm text-surface-foreground/70">
                 See how successful companies assessed the opportunity behind their core problem — rating reach, frequency, and value to decide whether to pursue it.
               </p>
