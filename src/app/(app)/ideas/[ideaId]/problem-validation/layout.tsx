@@ -1,12 +1,15 @@
 "use client"
 
+import { useState } from "react"
 import { useParams, usePathname, useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
 import { ProblemValidationProvider, useProblemValidation, NAV_ITEMS } from "./context"
 import { useIdeas } from "@/store/ideas-hooks"
 import {
   CircleDot, GitFork, ThumbsDown, Heart, BarChart2, Gavel, FileText, LayoutTemplate, BookOpen,
+  ChevronDown,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
@@ -21,6 +24,39 @@ const NAV_ICONS: Record<string, LucideIcon> = {
   "problem-statement": LayoutTemplate,
 }
 
+function NavItems({
+  base,
+  pathname,
+  onNavigate,
+}: {
+  base: string
+  pathname: string
+  onNavigate: (path: string) => void
+}) {
+  return (
+    <ul className="flex flex-col gap-1 list-none m-0 p-0" role="list">
+      {NAV_ITEMS.map((item) => {
+        const href = `${base}/${item.path}`
+        const isActive = pathname === href
+        const Icon = NAV_ICONS[item.path] ?? FileText
+        return (
+          <li key={item.path}>
+            <Button
+              variant={isActive ? "secondary" : "ghost"}
+              className="w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2"
+              onClick={() => onNavigate(href)}
+              aria-current={isActive ? "page" : undefined}
+            >
+              <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? "text-blue-500" : ""}`} aria-hidden="true" />
+              {item.label}
+            </Button>
+          </li>
+        )
+      })}
+    </ul>
+  )
+}
+
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
@@ -28,6 +64,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const ideaId = Number(params.ideaId)
   const { selectedProblemId } = useProblemValidation()
   const { getIdea } = useIdeas()
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
   const idea = getIdea(ideaId)
   const allProblems = idea?.jobs.flatMap((j) => j.problems) ?? []
@@ -39,28 +76,72 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   const base = `/ideas/${ideaId}/problem-validation`
 
+  const activeItem = NAV_ITEMS.find((item) => pathname === `${base}/${item.path}`)
+  const ActiveIcon = activeItem ? (NAV_ICONS[activeItem.path] ?? FileText) : BookOpen
+
+  const handleNavigate = (href: string) => {
+    setMobileNavOpen(false)
+    router.push(href)
+  }
+
   return (
-    <div className="flex gap-6 flex-1 w-full items-start">
-      <div className="w-56 sticky top-4 flex flex-col gap-3 shrink-0">
+    <div className="flex flex-col lg:flex-row gap-6 flex-1 w-full items-start">
+      {/* Mobile: collapsible top bar */}
+      <nav aria-label="Problem validation steps" className="lg:hidden w-full">
+        <Collapsible open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
+          <Card>
+            <CardContent className="p-2">
+              <CollapsibleTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="w-full justify-between h-auto py-2 px-3"
+                >
+                  <span className="flex items-center gap-2 text-sm font-medium">
+                    <ActiveIcon className="h-3.5 w-3.5 shrink-0 text-blue-500" aria-hidden="true" />
+                    {activeItem?.label ?? "Navigation"}
+                  </span>
+                  <ChevronDown
+                    className={`h-4 w-4 text-muted-foreground transition-transform ${
+                      mobileNavOpen ? "rotate-180" : ""
+                    }`}
+                    aria-hidden="true"
+                  />
+                </Button>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="pt-1">
+                <NavItems base={base} pathname={pathname} onNavigate={handleNavigate} />
+
+                {(selectedProblem || totalProblems > 0) && (
+                  <div className="border-t mt-2 pt-2 px-1">
+                    <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                      Validating Problem
+                    </p>
+                    <div className="flex items-start gap-2 py-1">
+                      <FileText className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
+                      {selectedProblem ? (
+                        <span className="text-sm line-clamp-2">{selectedProblem.text}</span>
+                      ) : (
+                        <span className="text-sm text-muted-foreground italic">Not selected</span>
+                      )}
+                    </div>
+                    {totalProblems > 0 && (
+                      <p className="text-xs text-muted-foreground">
+                        {validatedCount} of {totalProblems} validated
+                      </p>
+                    )}
+                  </div>
+                )}
+              </CollapsibleContent>
+            </CardContent>
+          </Card>
+        </Collapsible>
+      </nav>
+
+      {/* Desktop: sidebar */}
+      <nav aria-label="Problem validation steps" className="hidden lg:flex w-56 sticky top-4 flex-col gap-3 shrink-0">
         <Card>
           <CardContent className="p-3">
-            <div className="flex flex-col gap-1">
-              {NAV_ITEMS.map((item) => {
-                const isActive = pathname === `${base}/${item.path}`
-                const Icon = NAV_ICONS[item.path] ?? FileText
-                return (
-                  <Button
-                    key={item.path}
-                    variant={isActive ? "secondary" : "ghost"}
-                    className="w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2"
-                    onClick={() => router.push(`${base}/${item.path}`)}
-                  >
-                    <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? "text-blue-500" : ""}`} />
-                    {item.label}
-                  </Button>
-                )
-              })}
-            </div>
+            <NavItems base={base} pathname={pathname} onNavigate={handleNavigate} />
           </CardContent>
         </Card>
 
@@ -84,7 +165,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             )}
           </CardContent>
         </Card>
-      </div>
+      </nav>
 
       <div className="flex-1">{children}</div>
     </div>
