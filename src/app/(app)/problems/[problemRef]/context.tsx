@@ -24,10 +24,9 @@ type ProblemValidationContextValue = {
   reason: string
   setReason: (val: string) => void
   validationAssessment: ValidationAssessment
-  setTimeToSolve: (patch: Partial<ValidationMetric>) => void
-  setCostToSolve: (patch: Partial<ValidationMetric>) => void
-  setExpectedReturn: (patch: Partial<ValidationMetric>) => void
-  setMarketSize: (patch: Partial<ValidationMetric>) => void
+  setHowManyPeople: (patch: Partial<ValidationMetric>) => void
+  setHowOften: (patch: Partial<ValidationMetric>) => void
+  setWorthToThem: (patch: Partial<ValidationMetric>) => void
 }
 
 const ProblemValidationContext = createContext<ProblemValidationContextValue | null>(null)
@@ -103,14 +102,14 @@ export function ProblemValidationProvider({
     [dispatch, problemId]
   )
 
-  const setTimeToSolve = useCallback(
+  const setHowManyPeople = useCallback(
     (patch: Partial<ValidationMetric>) => {
       dispatch.problems.update({
         id: problemId,
         patch: {
           validationAssessment: {
             ...validationAssessment,
-            timeToSolve: { ...validationAssessment.timeToSolve, ...patch },
+            howManyPeople: { ...validationAssessment.howManyPeople, ...patch },
           },
         },
       })
@@ -118,14 +117,14 @@ export function ProblemValidationProvider({
     [dispatch, problemId, validationAssessment]
   )
 
-  const setCostToSolve = useCallback(
+  const setHowOften = useCallback(
     (patch: Partial<ValidationMetric>) => {
       dispatch.problems.update({
         id: problemId,
         patch: {
           validationAssessment: {
             ...validationAssessment,
-            costToSolve: { ...validationAssessment.costToSolve, ...patch },
+            howOften: { ...validationAssessment.howOften, ...patch },
           },
         },
       })
@@ -133,29 +132,14 @@ export function ProblemValidationProvider({
     [dispatch, problemId, validationAssessment]
   )
 
-  const setExpectedReturn = useCallback(
+  const setWorthToThem = useCallback(
     (patch: Partial<ValidationMetric>) => {
       dispatch.problems.update({
         id: problemId,
         patch: {
           validationAssessment: {
             ...validationAssessment,
-            expectedReturn: { ...validationAssessment.expectedReturn, ...patch },
-          },
-        },
-      })
-    },
-    [dispatch, problemId, validationAssessment]
-  )
-
-  const setMarketSize = useCallback(
-    (patch: Partial<ValidationMetric>) => {
-      dispatch.problems.update({
-        id: problemId,
-        patch: {
-          validationAssessment: {
-            ...validationAssessment,
-            marketSize: { ...validationAssessment.marketSize, ...patch },
+            worthToThem: { ...validationAssessment.worthToThem, ...patch },
           },
         },
       })
@@ -176,10 +160,9 @@ export function ProblemValidationProvider({
         status, setStatus,
         reason, setReason,
         validationAssessment,
-        setTimeToSolve,
-        setCostToSolve,
-        setExpectedReturn,
-        setMarketSize,
+        setHowManyPeople,
+        setHowOften,
+        setWorthToThem,
       }}
     >
       {children}

@@ -220,25 +220,21 @@ const guidanceItems: GuidanceItem[] = [
           <div>
             <h4 className="font-medium">Verdict</h4>
             <p className="text-sm text-muted-foreground mt-1">
-              The verdict step synthesises everything you have gathered. Review the evidence summary —
-              alternatives, emotional impact, and quantifiable impact — alongside four decision factors:
+              The verdict step asks you to rate three decision factors that determine whether
+              the problem represents a real opportunity:
             </p>
             <ul className="list-disc pl-4 space-y-1 text-sm text-muted-foreground mt-2">
               <li>
-                <span className="font-medium text-foreground">Time to solve</span> — how long it would
-                realistically take to build a meaningful solution
+                <span className="font-medium text-foreground">How many people</span> — how large is
+                the audience experiencing this problem?
               </li>
               <li>
-                <span className="font-medium text-foreground">Cost to solve</span> — the estimated
-                investment required (money, people, infrastructure)
+                <span className="font-medium text-foreground">How often</span> — how frequently do
+                they encounter the problem?
               </li>
               <li>
-                <span className="font-medium text-foreground">Expected return</span> — the potential
-                upside if the solution works
-              </li>
-              <li>
-                <span className="font-medium text-foreground">Market size</span> — how many people or
-                organisations experience this problem
+                <span className="font-medium text-foreground">How much is it worth</span> — how much
+                would they pay or benefit from a solution?
               </li>
             </ul>
             <p className="text-sm text-muted-foreground mt-2">

@@ -38,19 +38,17 @@ export type ValidationMetric = {
 }
 
 export type ValidationAssessment = {
-  timeToSolve: ValidationMetric
-  costToSolve: ValidationMetric
-  expectedReturn: ValidationMetric
-  marketSize: ValidationMetric
+  howManyPeople: ValidationMetric
+  howOften: ValidationMetric
+  worthToThem: ValidationMetric
 }
 
 export const DEFAULT_VALIDATION_METRIC: ValidationMetric = { value: null, unit: "", level: "" }
 
 export const DEFAULT_VALIDATION_ASSESSMENT: ValidationAssessment = {
-  timeToSolve: { value: null, unit: "", level: "" },
-  costToSolve: { value: null, unit: "", level: "" },
-  expectedReturn: { value: null, unit: "", level: "" },
-  marketSize: { value: null, unit: "", level: "" },
+  howManyPeople: { value: null, unit: "", level: "" },
+  howOften: { value: null, unit: "", level: "" },
+  worthToThem: { value: null, unit: "", level: "" },
 }
 
 export type Problem = {

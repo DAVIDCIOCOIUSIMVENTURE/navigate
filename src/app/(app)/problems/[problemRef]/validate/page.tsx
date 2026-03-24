@@ -2,8 +2,6 @@
 
 import { useState, useEffect, useRef } from "react"
 import { usePathname, useRouter } from "next/navigation"
-import { useSelector } from "react-redux"
-import type { RootState } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -11,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { useProblemValidation, getAdjacentSteps } from "../context"
 import type { DecisionLevel, ValidationMetric } from "@/types/idea"
 import { cn } from "@/lib/utils"
-import { ShieldCheck, CheckCircle2, XCircle, HelpCircle, GitFork, Heart, BarChart2, Clock, DollarSign, TrendingUp, TrendingDown, Minus, Globe } from "lucide-react"
+import { ShieldCheck, CheckCircle2, XCircle, HelpCircle, Users, RefreshCw, DollarSign, TrendingUp, TrendingDown, Minus } from "lucide-react"
 
 const LEVELS: DecisionLevel[] = ["low", "medium", "high"]
 
@@ -23,21 +21,21 @@ function LevelToggle({
   onChange: (v: DecisionLevel) => void
 }) {
   return (
-    <div className="flex rounded-md border overflow-hidden text-xs font-medium">
+    <div className="flex rounded-md border border-white/30 overflow-hidden text-xs font-medium">
       {LEVELS.map((level, i) => (
         <button
           key={level}
           onClick={() => onChange(value === level ? "" : level)}
           className={cn(
             "flex-1 py-1.5 capitalize transition-colors",
-            i < LEVELS.length - 1 && "border-r",
+            i < LEVELS.length - 1 && "border-r border-white/30",
             value === level
               ? level === "low"
-                ? "bg-green-100 text-green-800 border-green-200"
+                ? "bg-green-100 text-green-800"
                 : level === "medium"
-                ? "bg-yellow-100 text-yellow-800 border-yellow-200"
-                : "bg-red-100 text-red-800 border-red-200"
-              : "hover:bg-muted text-muted-foreground"
+                ? "bg-yellow-100 text-yellow-800"
+                : "bg-red-100 text-red-800"
+              : "text-white/70 hover:bg-white/10"
           )}
         >
           {level}
@@ -83,13 +81,13 @@ function MetricInput({
         <Input
           type="number"
           placeholder={valuePlaceholder}
-          className="h-7 text-xs w-24"
+          className="h-7 text-xs w-24 bg-white border-white text-foreground"
           value={localValue}
           onChange={(e) => setLocalValue(e.target.value)}
         />
         <Input
           placeholder={unitPlaceholder}
-          className="h-7 text-xs"
+          className="h-7 text-xs bg-white border-white text-foreground"
           value={localUnit}
           onChange={(e) => setLocalUnit(e.target.value)}
         />
@@ -100,51 +98,34 @@ function MetricInput({
 
 type Signal = { text: string; desc: string; icon: React.ReactNode; className: string }
 
-function getSignal(time: DecisionLevel, cost: DecisionLevel, ret: DecisionLevel, mktSize: DecisionLevel): Signal | null {
-  if (!ret) return null
+function getSignal(people: DecisionLevel, frequency: DecisionLevel, worth: DecisionLevel): Signal | null {
   const n = { "": 0, low: 1, medium: 2, high: 3 }
-  const r = n[ret]
-  const effort = Math.max(n[time], n[cost])
-  // Market size boosts or dampens the signal: high market = +1, low = -1, unset = 0
-  const mktBoost = mktSize === "high" ? 1 : mktSize === "low" ? -1 : 0
-  const opportunity = Math.min(3, Math.max(1, r + mktBoost))
+  const filled = [people, frequency, worth].filter(Boolean).length
+  if (filled === 0) return null
+  const total = n[people] + n[frequency] + n[worth]
 
-  if (opportunity >= 3 && effort <= 1)
-    return { text: "Strong opportunity", desc: "High return with low effort — worth pursuing", icon: <TrendingUp className="h-4 w-4" />, className: "bg-green-50 border-green-200 text-green-800" }
-  if (opportunity >= 3 && effort === 2)
-    return { text: "Good opportunity", desc: "High return with manageable effort", icon: <TrendingUp className="h-4 w-4" />, className: "bg-green-50 border-green-200 text-green-800" }
-  if (opportunity >= 3 && effort === 3)
-    return { text: "High potential, high cost", desc: "Big return but significant investment required — consider carefully", icon: <Minus className="h-4 w-4" />, className: "bg-yellow-50 border-yellow-200 text-yellow-800" }
-  if (opportunity === 2 && effort <= 1)
-    return { text: "Decent opportunity", desc: "Moderate return with low effort", icon: <TrendingUp className="h-4 w-4" />, className: "bg-green-50 border-green-200 text-green-800" }
-  if (opportunity === 2 && effort === 2)
-    return { text: "Borderline case", desc: "Moderate return for moderate effort — validate further", icon: <Minus className="h-4 w-4" />, className: "bg-yellow-50 border-yellow-200 text-yellow-800" }
-  if (opportunity === 2 && effort === 3)
-    return { text: "Questionable ROI", desc: "High effort for moderate return", icon: <TrendingDown className="h-4 w-4" />, className: "bg-orange-50 border-orange-200 text-orange-800" }
-  if (opportunity === 1)
-    return { text: "Weak case", desc: "Low expected return may not justify the investment", icon: <TrendingDown className="h-4 w-4" />, className: "bg-red-50 border-red-200 text-red-800" }
-  return null
+  if (total >= 8)
+    return { text: "Strong opportunity", desc: "Large audience, frequent problem, high value — worth pursuing", icon: <TrendingUp className="h-4 w-4" />, className: "bg-green-50 border-green-200 text-green-800" }
+  if (total >= 6)
+    return { text: "Good opportunity", desc: "Solid combination of reach, frequency, and value", icon: <TrendingUp className="h-4 w-4" />, className: "bg-green-50 border-green-200 text-green-800" }
+  if (total >= 4)
+    return { text: "Moderate opportunity", desc: "Some factors are promising but others need more evidence", icon: <Minus className="h-4 w-4" />, className: "bg-yellow-50 border-yellow-200 text-yellow-800" }
+  return { text: "Weak case", desc: "Low reach, frequency, or value — consider whether this is painful enough", icon: <TrendingDown className="h-4 w-4" />, className: "bg-red-50 border-red-200 text-red-800" }
 }
 
 export default function VerdictPage() {
   const router = useRouter()
   const pathname = usePathname()
   const {
-    problemRef, problemId,
-    existingSolutions, emotionalImpact,
+    problemRef,
     status, setStatus, reason, setReason,
-    validationAssessment, setTimeToSolve, setCostToSolve, setExpectedReturn, setMarketSize,
+    validationAssessment, setHowManyPeople, setHowOften, setWorthToThem,
   } = useProblemValidation()
 
-  const quantifiableImpacts = existingSolutions.flatMap((alt) => alt.impacts ?? []).filter((imp) => imp.category || imp.description)
   const { prevPath } = getAdjacentSteps(pathname, problemRef)
 
-  const problem = useSelector((state: RootState) =>
-    state.problems.problems.find((p) => p.id === problemId)
-  )
-
-  const { timeToSolve, costToSolve, expectedReturn, marketSize } = validationAssessment
-  const signal = getSignal(timeToSolve.level, costToSolve.level, expectedReturn.level, marketSize.level)
+  const { howManyPeople, howOften, worthToThem } = validationAssessment
+  const signal = getSignal(howManyPeople.level, howOften.level, worthToThem.level)
 
   const [localReason, setLocalReason] = useState(reason)
   const statusRef = useRef(status)
@@ -160,8 +141,7 @@ export default function VerdictPage() {
   }, [localReason]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleVerdict = (verdict: "valid" | "invalid" | "unsure") => {
-    setStatus(verdict)
-    router.push("/problems")
+    setStatus(status === verdict ? "in_progress" : verdict)
   }
 
   return (
@@ -172,258 +152,163 @@ export default function VerdictPage() {
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-md text-muted-foreground">
           <p>
-            You&apos;ve gathered the evidence — now make a call. Review the work you&apos;ve done across
-            the previous steps, then rate the four decision factors below to see whether solving this problem
-            makes economic sense.
+            Before committing to a problem, assess how big the opportunity really is.
+            Three factors matter most:
           </p>
-          <ul className="list-disc pl-5 flex flex-col gap-1">
-            <li><strong className="text-foreground">Time to solve</strong> — how long it would realistically take to build and ship a solution</li>
-            <li><strong className="text-foreground">Cost to solve</strong> — the total investment required (people, tools, infrastructure)</li>
-            <li><strong className="text-foreground">Expected return</strong> — the revenue, savings, or value you expect the solution to generate</li>
-            <li><strong className="text-foreground">Market size</strong> — how many people or businesses face this problem and could pay for a solution</li>
-          </ul>
-          <p>
-            Rate each factor <strong className="text-foreground">Low / Medium / High</strong> and optionally fill in
-            concrete numbers. The signal below will update automatically as you rate. When you&apos;re ready,
-            record your verdict — <strong className="text-foreground">Valid</strong> means you&apos;re confident
-            the problem is worth solving, <strong className="text-foreground">Unsure</strong> means you need more
-            evidence, and <strong className="text-foreground">Invalid</strong> means you&apos;re moving on.
-          </p>
-        </div>
-
-        {problem && (
-          <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4 flex flex-col gap-3">
-            {problem.description && (
-              <div className="flex flex-col gap-1">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Problem Description</p>
-                <p className="text-md font-medium">{problem.description}</p>
-              </div>
-            )}
-            {problem.customerSegments.length > 0 && (
-              <div className="flex flex-col gap-1">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Customer Segments</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {problem.customerSegments.map((v) => <span key={v} className="rounded-md bg-background px-2 py-0.5 text-xs border">{v}</span>)}
-                </div>
-              </div>
-            )}
-            {problem.contexts.length > 0 && (
-              <div className="flex flex-col gap-1">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Context</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {problem.contexts.map((v) => <span key={v} className="rounded-md bg-background px-2 py-0.5 text-xs border">{v}</span>)}
-                </div>
-              </div>
-            )}
-            {problem.jobsToBeDone.length > 0 && (
-              <div className="flex flex-col gap-1">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Jobs to Be Done</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {problem.jobsToBeDone.map((v) => <span key={v} className="rounded-md bg-background px-2 py-0.5 text-xs border">{v}</span>)}
-                </div>
-              </div>
-            )}
-            {problem.problemTypes.length > 0 && (
-              <div className="flex flex-col gap-1">
-                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Problem Types</p>
-                <div className="flex flex-wrap gap-1.5">
-                  {problem.problemTypes.map((v) => <span key={v} className="rounded-md bg-background px-2 py-0.5 text-xs border">{v}</span>)}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Evidence summary */}
-        <div className="flex flex-col gap-3">
-          <div className="rounded-lg border p-4 flex flex-col gap-3">
-            <div className="flex items-center gap-2">
-              <GitFork className="h-3.5 w-3.5 text-muted-foreground" />
-              <p className="text-md font-semibold">Existing solutions & shortcomings</p>
-            </div>
-            {existingSolutions.length > 0 ? (
-              <ul className="flex flex-col gap-2">
-                {existingSolutions.map((alt, i) => (
-                  <li key={i} className="flex flex-col gap-0.5">
-                    <div className="text-md flex gap-2">
-                      <span className="text-muted-foreground shrink-0">{i + 1}.</span>
-                      <span className="font-medium">{alt.text}</span>
-                    </div>
-                    {alt.shortcomings.length > 0 && (
-                      <ul className="pl-4 flex flex-col gap-0.5">
-                        {alt.shortcomings.map((sc, j) => (
-                          <li key={j} className="text-md text-muted-foreground flex gap-1.5">
-                            <span className="shrink-0">–</span>
-                            <span>{sc}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-md text-muted-foreground italic">Not filled in</p>
-            )}
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-lg border p-4 flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <Heart className="h-3.5 w-3.5 text-muted-foreground" />
-                <p className="text-md font-semibold">Emotional impact</p>
-              </div>
-              {emotionalImpact.length > 0 ? (
-                <ul className="flex flex-col gap-1">
-                  {emotionalImpact.map((item, i) => (
-                    <li key={i} className="text-md flex gap-1.5">
-                      <span className="text-muted-foreground shrink-0">–</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-md text-muted-foreground italic">Not filled in</p>
-              )}
-            </div>
-            <div className="rounded-lg border p-4 flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <BarChart2 className="h-3.5 w-3.5 text-muted-foreground" />
-                <p className="text-md font-semibold">Quantifiable impact</p>
-              </div>
-              {quantifiableImpacts.length > 0 ? (
-                <ul className="flex flex-col gap-1">
-                  {quantifiableImpacts.map((item, i) => (
-                    <li key={i} className="text-md flex gap-2">
-                      <span className="font-medium shrink-0">{item.category || "—"}</span>
-                      <span className="text-muted-foreground">{item.description || "—"}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="text-md text-muted-foreground italic">Not filled in</p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Decision factors */}
-        <div className="flex flex-col gap-4 rounded-lg border p-4">
-          <p className="text-md font-semibold">Decision factors</p>
-          <p className="text-xs text-muted-foreground -mt-2">
-            Rate each dimension to assess whether solving this problem makes economic sense.
-          </p>
-
           <div className="flex flex-col gap-3">
-            <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
-              <div className="flex items-center gap-2 pt-1.5">
-                <Clock className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                <span className="text-md font-medium">Time to solve</span>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500 shrink-0">
+                <Users className="h-4 w-4 text-white" />
               </div>
-              <MetricInput
-                metric={timeToSolve}
-                onChange={setTimeToSolve}
-                valuePlaceholder="e.g. 3"
-                unitPlaceholder="e.g. months"
-              />
+              <p><strong className="text-foreground">How many people</strong> — how large is the audience experiencing this problem?</p>
             </div>
-
-            <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
-              <div className="flex items-center gap-2 pt-1.5">
-                <DollarSign className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                <span className="text-md font-medium">Cost to solve</span>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500 shrink-0">
+                <RefreshCw className="h-4 w-4 text-white" />
               </div>
-              <MetricInput
-                metric={costToSolve}
-                onChange={setCostToSolve}
-                valuePlaceholder="e.g. 50000"
-                unitPlaceholder="e.g. USD"
-              />
+              <p><strong className="text-foreground">How often</strong> — how frequently do they encounter it?</p>
             </div>
-
-            <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
-              <div className="flex items-center gap-2 pt-1.5">
-                <TrendingUp className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                <span className="text-md font-medium">Expected return</span>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500 shrink-0">
+                <DollarSign className="h-4 w-4 text-white" />
               </div>
-              <MetricInput
-                metric={expectedReturn}
-                onChange={setExpectedReturn}
-                valuePlaceholder="e.g. 200"
-                unitPlaceholder="e.g. %"
-              />
-            </div>
-
-            <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
-              <div className="flex items-center gap-2 pt-1.5">
-                <Globe className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                <span className="text-md font-medium">Market size</span>
-              </div>
-              <MetricInput
-                metric={marketSize}
-                onChange={setMarketSize}
-                valuePlaceholder="e.g. 500"
-                unitPlaceholder="e.g. M USD"
-              />
+              <p><strong className="text-foreground">How much is it worth</strong> — how much would they pay or benefit from a solution?</p>
             </div>
           </div>
+          <h3 className="mt-4 text-xl font-bold text-foreground">What you&apos;ll do</h3>
+          <div className="flex flex-col gap-3">
+            <div className="flex items-center gap-3">
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">1</span>
+              <p><strong className="text-foreground">Rate each factor</strong> — set How many people, How often, and How much is it worth to Low, Medium, or High.</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">2</span>
+              <p><strong className="text-foreground">Add concrete numbers</strong> — optionally fill in estimates to back up your ratings.</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">3</span>
+              <p><strong className="text-foreground">Record your verdict</strong> — decide whether the problem is <strong className="text-foreground">Valid</strong>, <strong className="text-foreground">Unsure</strong>, or <strong className="text-foreground">Invalid</strong>.</p>
+            </div>
+          </div>
+        </div>
 
-          {signal && (
-            <div className={cn("flex items-start gap-2.5 rounded-md border px-3 py-2.5 mt-1", signal.className)}>
-              {signal.icon}
-              <div className="flex flex-col gap-0.5">
-                <p className="text-md font-semibold">{signal.text}</p>
-                <p className="text-xs">{signal.desc}</p>
+        <hr className="border-border/40 my-4" />
+
+        <h3 className="mb-2 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> Rate the opportunity</h3>
+
+        <div className="bg-primary rounded-xl p-8">
+          <div className="flex flex-col gap-5">
+            {/* Decision factors */}
+            <div className="flex flex-col gap-4">
+              <p className="text-sm font-medium text-white">Decision Factors</p>
+
+              <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
+                <div className="flex items-center gap-2 pt-1.5">
+                  <Users className="h-3.5 w-3.5 text-white/70 shrink-0" />
+                  <span className="text-md font-medium text-white">How many people</span>
+                </div>
+                <MetricInput
+                  metric={howManyPeople}
+                  onChange={setHowManyPeople}
+                  valuePlaceholder="e.g. 10000"
+                  unitPlaceholder="e.g. users"
+                />
+              </div>
+
+              <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
+                <div className="flex items-center gap-2 pt-1.5">
+                  <RefreshCw className="h-3.5 w-3.5 text-white/70 shrink-0" />
+                  <span className="text-md font-medium text-white">How often</span>
+                </div>
+                <MetricInput
+                  metric={howOften}
+                  onChange={setHowOften}
+                  valuePlaceholder="e.g. 5"
+                  unitPlaceholder="e.g. times per week"
+                />
+              </div>
+
+              <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
+                <div className="flex items-center gap-2 pt-1.5">
+                  <DollarSign className="h-3.5 w-3.5 text-white/70 shrink-0" />
+                  <span className="text-md font-medium text-white">How much is it worth</span>
+                </div>
+                <MetricInput
+                  metric={worthToThem}
+                  onChange={setWorthToThem}
+                  valuePlaceholder="e.g. 50"
+                  unitPlaceholder="e.g. USD per month"
+                />
               </div>
             </div>
-          )}
+
+            {signal && (
+              <div className={cn("flex items-start gap-2.5 rounded-md border px-3 py-2.5", signal.className)}>
+                {signal.icon}
+                <div className="flex flex-col gap-0.5">
+                  <p className="text-md font-semibold">{signal.text}</p>
+                  <p className="text-xs">{signal.desc}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Notes */}
+            <div className="flex flex-col gap-2 pt-2 border-t border-white/20">
+              <p className="text-sm font-medium text-white">Notes (optional)</p>
+              <Textarea
+                rows={3}
+                placeholder="Add any notes about your decision..."
+                value={localReason}
+                onChange={(e) => setLocalReason(e.target.value)}
+                className="resize-none text-md focus-visible:ring-1 bg-white border-white text-foreground"
+              />
+            </div>
+
+            {/* Verdict checkboxes */}
+            <div className="flex flex-col gap-3 pt-2 border-t border-white/20">
+              <p className="text-sm font-medium text-white">Your verdict</p>
+              {([
+                { value: "valid" as const, label: "Valid — Worth Solving", icon: <CheckCircle2 className="h-4 w-4" />, color: "text-green-700 border-green-300 bg-green-50" },
+                { value: "unsure" as const, label: "Unsure — May Be Worth Solving", icon: <HelpCircle className="h-4 w-4" />, color: "text-orange-700 border-orange-300 bg-orange-50" },
+                { value: "invalid" as const, label: "Invalid — Not Worth Solving", icon: <XCircle className="h-4 w-4" />, color: "text-red-700 border-red-300 bg-red-50" },
+              ]).map((option) => (
+                <button
+                  key={option.value}
+                  onClick={() => handleVerdict(option.value)}
+                  className={cn(
+                    "flex items-center gap-3 rounded-lg border-2 px-4 py-3 text-left transition-all",
+                    status === option.value
+                      ? option.color
+                      : "bg-white/10 border-white/20 text-white hover:bg-white/20"
+                  )}
+                >
+                  <div className={cn(
+                    "flex items-center justify-center w-5 h-5 rounded-full border-2 shrink-0 transition-colors",
+                    status === option.value
+                      ? option.value === "valid" ? "border-green-600 bg-green-600" : option.value === "unsure" ? "border-orange-500 bg-orange-500" : "border-red-500 bg-red-500"
+                      : "border-white/50"
+                  )}>
+                    {status === option.value && (
+                      <svg className="w-3 h-3 text-white" viewBox="0 0 12 12" fill="none">
+                        <path d="M2.5 6L5 8.5L9.5 3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {option.icon}
+                    <span className="text-md font-medium">{option.label}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
-        <div className="flex flex-col gap-2">
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-            Notes (optional)
-          </p>
-          <Textarea
-            rows={3}
-            placeholder="Add any notes about your decision..."
-            value={localReason}
-            onChange={(e) => setLocalReason(e.target.value)}
-            className="resize-none text-md focus-visible:ring-1"
-          />
-        </div>
-
-        <div className="flex gap-3">
-          <Button
-            variant="outline"
-            className="flex-1 h-auto min-h-12 !whitespace-normal text-center border-green-300 hover:bg-green-50 hover:border-green-400 text-green-700"
-            onClick={() => handleVerdict("valid")}
-          >
-            <CheckCircle2 className="h-5 w-5 mr-2 shrink-0" />
-            Valid — Worth Solving
-          </Button>
-          <Button
-            variant="outline"
-            className="flex-1 h-auto min-h-12 !whitespace-normal text-center border-orange-300 hover:bg-orange-50 hover:border-orange-400 text-orange-700"
-            onClick={() => handleVerdict("unsure")}
-          >
-            <HelpCircle className="h-5 w-5 mr-2 shrink-0" />
-            Unsure — May Be Worth Solving
-          </Button>
-          <Button
-            variant="outline"
-            className="flex-1 h-auto min-h-12 !whitespace-normal text-center border-red-300 hover:bg-red-50 hover:border-red-400 text-red-700"
-            onClick={() => handleVerdict("invalid")}
-          >
-            <XCircle className="h-5 w-5 mr-2 shrink-0" />
-            Invalid — Not Worth Solving
-          </Button>
-        </div>
-
-        {prevPath && (
-          <div>
+        <div className="flex justify-between mt-2">
+          {prevPath ? (
             <Button variant="outline" onClick={() => router.push(prevPath)}>Previous</Button>
-          </div>
-        )}
+          ) : <div />}
+        </div>
       </CardContent>
     </Card>
   )
