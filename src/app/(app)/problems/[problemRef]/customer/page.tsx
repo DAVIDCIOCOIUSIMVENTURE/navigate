@@ -171,27 +171,27 @@ export default function CustomerSegmentPage() {
 
           <TabsContent value="case-studies">
             <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-4">
-              <p className="text-sm text-surface-foreground/70">
+              <p className="text-sm text-white">
                 See how successful companies defined their early customer. Notice how specific they were — they didn&apos;t try to serve everyone. Use these examples as inspiration when writing your own strategy.
               </p>
               {CUSTOMER_CASE_STUDIES.map((cs) => (
                 <div
                   key={cs.company}
-                  className="rounded-lg border border-surface-foreground/10 bg-surface-foreground/10 p-4 flex flex-col gap-3"
+                  className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-3"
                 >
-                  <p className="text-sm font-semibold text-surface-foreground">{cs.company}</p>
+                  <p className="text-sm font-semibold text-white">{cs.company}</p>
                   <div className="grid grid-cols-1 gap-y-3 text-sm">
                     <div>
-                      <span className="text-xs font-medium text-surface-foreground/50 uppercase tracking-wide">Customer Description</span>
-                      <p className="mt-0.5 text-surface-foreground/80">{cs.customerDescription}</p>
+                      <span className="text-xs font-medium text-white uppercase tracking-wide">Customer Description</span>
+                      <p className="mt-0.5 text-white">{cs.customerDescription}</p>
                     </div>
                     <div>
-                      <span className="text-xs font-medium text-surface-foreground/50 uppercase tracking-wide">Estimated Segment Size</span>
-                      <p className="mt-0.5 text-surface-foreground/80">{cs.segmentSize}</p>
+                      <span className="text-xs font-medium text-white uppercase tracking-wide">Estimated Segment Size</span>
+                      <p className="mt-0.5 text-white">{cs.segmentSize}</p>
                     </div>
                     <div>
-                      <span className="text-xs font-medium text-surface-foreground/50 uppercase tracking-wide">Why This Works</span>
-                      <p className="mt-0.5 text-surface-foreground/80">{cs.whyThisWorks}</p>
+                      <span className="text-xs font-medium text-white uppercase tracking-wide">Why This Works</span>
+                      <p className="mt-0.5 text-white">{cs.whyThisWorks}</p>
                     </div>
                   </div>
                 </div>

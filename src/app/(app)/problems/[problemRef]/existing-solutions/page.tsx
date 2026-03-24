@@ -315,37 +315,37 @@ export default function ExistingSolutionsPage() {
 
           <TabsContent value="case-studies">
             <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
-              <p className="text-sm text-surface-foreground/70">
+              <p className="text-sm text-white">
                 See how successful companies mapped out the existing solutions their customers were already using — and identified the shortcomings that created the opportunity.
               </p>
               {EXISTING_SOLUTIONS_CASE_STUDIES.map((cs) => (
                 <div
                   key={cs.company}
-                  className="rounded-lg border border-surface-foreground/10 bg-surface-foreground/10 p-4 flex flex-col gap-4"
+                  className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-4"
                 >
-                  <p className="text-sm font-semibold text-surface-foreground">{cs.company}</p>
+                  <p className="text-sm font-semibold text-white">{cs.company}</p>
                   <div className="flex flex-col gap-3">
                     {cs.solutions.map((sol) => (
-                      <div key={sol.name} className="flex flex-col gap-2 rounded-md border border-surface-foreground/10 bg-surface-foreground/5 p-3">
-                        <p className="text-sm font-medium text-surface-foreground">{sol.name}</p>
+                      <div key={sol.name} className="flex flex-col gap-2 rounded-md border border-white/10 bg-white/5 p-3">
+                        <p className="text-sm font-medium text-white">{sol.name}</p>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                           <div>
-                            <span className="text-xs font-medium text-surface-foreground/50 uppercase tracking-wide">Shortcomings</span>
+                            <span className="text-xs font-medium text-white uppercase tracking-wide">Shortcomings</span>
                             <ul className="mt-1 flex flex-col gap-0.5">
                               {sol.shortcomings.map((sc, j) => (
-                                <li key={j} className="text-surface-foreground/80 flex gap-1.5">
-                                  <span className="shrink-0 text-surface-foreground/40">•</span>
+                                <li key={j} className="text-white flex gap-1.5">
+                                  <span className="shrink-0">•</span>
                                   {sc}
                                 </li>
                               ))}
                             </ul>
                           </div>
                           <div>
-                            <span className="text-xs font-medium text-surface-foreground/50 uppercase tracking-wide">Impact</span>
+                            <span className="text-xs font-medium text-white uppercase tracking-wide">Impact</span>
                             <ul className="mt-1 flex flex-col gap-0.5">
                               {sol.impacts.map((imp, j) => (
-                                <li key={j} className="text-surface-foreground/80 flex gap-1.5">
-                                  <span className="shrink-0 text-surface-foreground/40">•</span>
+                                <li key={j} className="text-white flex gap-1.5">
+                                  <span className="shrink-0">•</span>
                                   {imp}
                                 </li>
                               ))}
