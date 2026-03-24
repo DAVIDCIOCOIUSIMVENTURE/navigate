@@ -13,6 +13,7 @@ import { GitFork, Plus, X, Monitor, Wrench, Users, Ban } from "lucide-react"
 const IMPACT_CATEGORIES = [
   "Time Lost", "Money Wasted", "Error Rates", "Customer Churn",
   "Support Tickets", "Productivity Loss", "Revenue Impact", "Compliance Risk",
+  "Emotional Impact",
 ]
 
 export default function ExistingSolutionsPage() {
@@ -150,8 +151,9 @@ export default function ExistingSolutionsPage() {
           <h3 className="mt-4 text-xl font-bold text-foreground">What will you do?</h3>
           <p>
             For each existing solution, capture its <strong className="text-foreground">shortcomings</strong> and
-            its <strong className="text-foreground">quantifiable impact</strong> — the measurable cost of the problem
-            when using that solution (time lost, money wasted, error rates, etc.).
+            its <strong className="text-foreground">impact</strong> — both <strong className="text-foreground">quantifiable</strong> (time lost,
+            money wasted, error rates, etc.) and <strong className="text-foreground">emotional</strong> (frustration,
+            anxiety, loss of trust, etc.).
           </p>
         </div>
 
@@ -238,7 +240,7 @@ export default function ExistingSolutionsPage() {
 
                   {/* Right: Quantifiable Impact */}
                   <div className="flex flex-col gap-2">
-                    <p className="text-sm font-medium text-white">Quantifiable Impact</p>
+                    <p className="text-sm font-medium text-white">Impact</p>
                     {getImpacts(sol).length > 0 && (
                       <ul className="flex flex-col gap-1.5">
                         {getImpacts(sol).map((imp, j) => (
