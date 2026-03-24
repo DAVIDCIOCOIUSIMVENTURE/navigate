@@ -29,11 +29,7 @@ function LevelToggle({
             "flex-1 py-1.5 capitalize transition-colors",
             i < LEVELS.length - 1 && "border-r",
             value === level
-              ? level === "low"
-                ? "bg-green-100 text-green-800 border-green-200"
-                : level === "medium"
-                ? "bg-yellow-100 text-yellow-800 border-yellow-200"
-                : "bg-red-100 text-red-800 border-red-200"
+              ? "bg-white text-foreground"
               : "hover:bg-muted text-muted-foreground"
           )}
         >
