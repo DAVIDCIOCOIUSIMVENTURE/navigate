@@ -32,6 +32,13 @@ export default function ProblemsPage() {
         </Button>
       </div>
 
+      <div className="rounded-lg border bg-white p-4 text-sm text-muted-foreground leading-relaxed">
+        <p>
+          This is your <span className="font-medium text-foreground">problem library</span> — a central place to collect, refine, and track the problems you&apos;ve identified.
+          Use the <span className="font-medium text-foreground">Search for new problem</span> button to brainstorm and discover problems worth solving, then validate each one to determine whether it&apos;s a real pain point with a viable opportunity behind it.
+        </p>
+      </div>
+
       {problems.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center gap-6 py-24">
           <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-primary">
