@@ -6,7 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useProblemValidation, getAdjacentSteps } from "../context"
+import { VALIDATE_CASE_STUDIES } from "./case-studies"
 import type { DecisionLevel, ValidationMetric } from "@/types/idea"
 import { cn } from "@/lib/utils"
 import { ShieldCheck, CheckCircle2, XCircle, HelpCircle, Users, RefreshCw, DollarSign, TrendingUp, TrendingDown, Minus } from "lucide-react"
@@ -192,113 +194,165 @@ export default function VerdictPage() {
 
         <h3 className="mb-2 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> Rate the opportunity</h3>
 
-        <div className="bg-primary rounded-xl p-8">
-          <div className="flex flex-col gap-5">
-            {/* Decision factors */}
-            <div className="flex flex-col gap-4">
-              <p className="text-sm font-medium text-white">Decision Factors</p>
+        <Tabs defaultValue="strategy" className="flex flex-col gap-4">
+          <TabsList className="self-center">
+            <TabsTrigger value="strategy">Your Strategy</TabsTrigger>
+            <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
+          </TabsList>
 
-              <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
-                <div className="flex items-center gap-2 pt-1.5">
-                  <Users className="h-3.5 w-3.5 text-white/70 shrink-0" />
-                  <span className="text-md font-medium text-white">How many people</span>
-                </div>
-                <MetricInput
-                  metric={howManyPeople}
-                  onChange={setHowManyPeople}
-                  valuePlaceholder="e.g. 10000"
-                  unitPlaceholder="e.g. users"
-                />
-              </div>
+          <TabsContent value="strategy">
+            <div className="bg-primary rounded-xl p-8">
+              <div className="flex flex-col gap-5">
+                {/* Decision factors */}
+                <div className="flex flex-col gap-4">
+                  <p className="text-sm font-medium text-white">Decision Factors</p>
 
-              <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
-                <div className="flex items-center gap-2 pt-1.5">
-                  <RefreshCw className="h-3.5 w-3.5 text-white/70 shrink-0" />
-                  <span className="text-md font-medium text-white">How often</span>
-                </div>
-                <MetricInput
-                  metric={howOften}
-                  onChange={setHowOften}
-                  valuePlaceholder="e.g. 5"
-                  unitPlaceholder="e.g. times per week"
-                />
-              </div>
+                  <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
+                    <div className="flex items-center gap-2 pt-1.5">
+                      <Users className="h-3.5 w-3.5 text-white/70 shrink-0" />
+                      <span className="text-md font-medium text-white">How many people</span>
+                    </div>
+                    <MetricInput
+                      metric={howManyPeople}
+                      onChange={setHowManyPeople}
+                      valuePlaceholder="e.g. 10000"
+                      unitPlaceholder="e.g. users"
+                    />
+                  </div>
 
-              <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
-                <div className="flex items-center gap-2 pt-1.5">
-                  <DollarSign className="h-3.5 w-3.5 text-white/70 shrink-0" />
-                  <span className="text-md font-medium text-white">How much is it worth</span>
+                  <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
+                    <div className="flex items-center gap-2 pt-1.5">
+                      <RefreshCw className="h-3.5 w-3.5 text-white/70 shrink-0" />
+                      <span className="text-md font-medium text-white">How often</span>
+                    </div>
+                    <MetricInput
+                      metric={howOften}
+                      onChange={setHowOften}
+                      valuePlaceholder="e.g. 5"
+                      unitPlaceholder="e.g. times per week"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
+                    <div className="flex items-center gap-2 pt-1.5">
+                      <DollarSign className="h-3.5 w-3.5 text-white/70 shrink-0" />
+                      <span className="text-md font-medium text-white">How much is it worth</span>
+                    </div>
+                    <MetricInput
+                      metric={worthToThem}
+                      onChange={setWorthToThem}
+                      valuePlaceholder="e.g. 50"
+                      unitPlaceholder="e.g. USD per month"
+                    />
+                  </div>
                 </div>
-                <MetricInput
-                  metric={worthToThem}
-                  onChange={setWorthToThem}
-                  valuePlaceholder="e.g. 50"
-                  unitPlaceholder="e.g. USD per month"
-                />
+
+                {signal && (
+                  <div className={cn("flex items-start gap-2.5 rounded-md border px-3 py-2.5", signal.className)}>
+                    {signal.icon}
+                    <div className="flex flex-col gap-0.5">
+                      <p className="text-md font-semibold">{signal.text}</p>
+                      <p className="text-xs">{signal.desc}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Notes */}
+                <div className="flex flex-col gap-2 pt-2 border-t border-white/20">
+                  <p className="text-sm font-medium text-white">Notes (optional)</p>
+                  <Textarea
+                    rows={3}
+                    placeholder="Add any notes about your decision..."
+                    value={localReason}
+                    onChange={(e) => setLocalReason(e.target.value)}
+                    className="resize-none text-md focus-visible:ring-1 bg-white border-white text-foreground"
+                  />
+                </div>
+
+                {/* Verdict checkboxes */}
+                <div className="flex flex-col gap-3 pt-2 border-t border-white/20">
+                  <p className="text-sm font-medium text-white">Your verdict</p>
+                  {([
+                    { value: "valid" as const, label: "Valid — Worth Solving", icon: <CheckCircle2 className="h-4 w-4" />, color: "text-green-700 border-green-300 bg-green-50" },
+                    { value: "unsure" as const, label: "Unsure — May Be Worth Solving", icon: <HelpCircle className="h-4 w-4" />, color: "text-orange-700 border-orange-300 bg-orange-50" },
+                    { value: "invalid" as const, label: "Invalid — Not Worth Solving", icon: <XCircle className="h-4 w-4" />, color: "text-red-700 border-red-300 bg-red-50" },
+                  ]).map((option) => (
+                    <button
+                      key={option.value}
+                      onClick={() => handleVerdict(option.value)}
+                      className={cn(
+                        "flex items-center gap-3 rounded-lg border-2 px-4 py-3 text-left transition-all",
+                        status === option.value
+                          ? option.color
+                          : "bg-white/10 border-white/20 text-white hover:bg-white/20"
+                      )}
+                    >
+                      <div className={cn(
+                        "flex items-center justify-center w-5 h-5 rounded-full border-2 shrink-0 transition-colors",
+                        status === option.value
+                          ? option.value === "valid" ? "border-green-600 bg-green-600" : option.value === "unsure" ? "border-orange-500 bg-orange-500" : "border-red-500 bg-red-500"
+                          : "border-white/50"
+                      )}>
+                        {status === option.value && (
+                          <svg className="w-3 h-3 text-white" viewBox="0 0 12 12" fill="none">
+                            <path d="M2.5 6L5 8.5L9.5 3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {option.icon}
+                        <span className="text-md font-medium">{option.label}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
+          </TabsContent>
 
-            {signal && (
-              <div className={cn("flex items-start gap-2.5 rounded-md border px-3 py-2.5", signal.className)}>
-                {signal.icon}
-                <div className="flex flex-col gap-0.5">
-                  <p className="text-md font-semibold">{signal.text}</p>
-                  <p className="text-xs">{signal.desc}</p>
-                </div>
-              </div>
-            )}
-
-            {/* Notes */}
-            <div className="flex flex-col gap-2 pt-2 border-t border-white/20">
-              <p className="text-sm font-medium text-white">Notes (optional)</p>
-              <Textarea
-                rows={3}
-                placeholder="Add any notes about your decision..."
-                value={localReason}
-                onChange={(e) => setLocalReason(e.target.value)}
-                className="resize-none text-md focus-visible:ring-1 bg-white border-white text-foreground"
-              />
-            </div>
-
-            {/* Verdict checkboxes */}
-            <div className="flex flex-col gap-3 pt-2 border-t border-white/20">
-              <p className="text-sm font-medium text-white">Your verdict</p>
-              {([
-                { value: "valid" as const, label: "Valid — Worth Solving", icon: <CheckCircle2 className="h-4 w-4" />, color: "text-green-700 border-green-300 bg-green-50" },
-                { value: "unsure" as const, label: "Unsure — May Be Worth Solving", icon: <HelpCircle className="h-4 w-4" />, color: "text-orange-700 border-orange-300 bg-orange-50" },
-                { value: "invalid" as const, label: "Invalid — Not Worth Solving", icon: <XCircle className="h-4 w-4" />, color: "text-red-700 border-red-300 bg-red-50" },
-              ]).map((option) => (
-                <button
-                  key={option.value}
-                  onClick={() => handleVerdict(option.value)}
-                  className={cn(
-                    "flex items-center gap-3 rounded-lg border-2 px-4 py-3 text-left transition-all",
-                    status === option.value
-                      ? option.color
-                      : "bg-white/10 border-white/20 text-white hover:bg-white/20"
-                  )}
+          <TabsContent value="case-studies">
+            <div className="rounded-xl border border-surface/20 bg-surface p-5 flex flex-col gap-5">
+              <p className="text-sm text-surface-foreground/70">
+                See how successful companies assessed the opportunity behind their core problem — rating reach, frequency, and value to decide whether to pursue it.
+              </p>
+              {VALIDATE_CASE_STUDIES.map((cs) => (
+                <div
+                  key={cs.company}
+                  className="rounded-lg border border-surface-foreground/10 bg-surface-foreground/10 p-4 flex flex-col gap-3"
                 >
-                  <div className={cn(
-                    "flex items-center justify-center w-5 h-5 rounded-full border-2 shrink-0 transition-colors",
-                    status === option.value
-                      ? option.value === "valid" ? "border-green-600 bg-green-600" : option.value === "unsure" ? "border-orange-500 bg-orange-500" : "border-red-500 bg-red-500"
-                      : "border-white/50"
-                  )}>
-                    {status === option.value && (
-                      <svg className="w-3 h-3 text-white" viewBox="0 0 12 12" fill="none">
-                        <path d="M2.5 6L5 8.5L9.5 3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    )}
+                  <p className="text-sm font-semibold text-surface-foreground">{cs.company}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+                    <div>
+                      <span className="text-xs font-medium text-surface-foreground/50 uppercase tracking-wide">How Many People</span>
+                      <p className="mt-0.5 text-surface-foreground/80">
+                        <span className="inline-block rounded bg-surface-foreground/10 px-1.5 py-0.5 text-xs font-semibold text-surface-foreground mr-1">{cs.howManyPeople.level}</span>
+                        {cs.howManyPeople.detail}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-xs font-medium text-surface-foreground/50 uppercase tracking-wide">How Often</span>
+                      <p className="mt-0.5 text-surface-foreground/80">
+                        <span className="inline-block rounded bg-surface-foreground/10 px-1.5 py-0.5 text-xs font-semibold text-surface-foreground mr-1">{cs.howOften.level}</span>
+                        {cs.howOften.detail}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-xs font-medium text-surface-foreground/50 uppercase tracking-wide">How Much Is It Worth</span>
+                      <p className="mt-0.5 text-surface-foreground/80">
+                        <span className="inline-block rounded bg-surface-foreground/10 px-1.5 py-0.5 text-xs font-semibold text-surface-foreground mr-1">{cs.worthToThem.level}</span>
+                        {cs.worthToThem.detail}
+                      </p>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    {option.icon}
-                    <span className="text-md font-medium">{option.label}</span>
+                  <div className="border-t border-surface-foreground/10 pt-3 mt-1">
+                    <span className="text-xs font-medium text-surface-foreground/50 uppercase tracking-wide">Verdict: {cs.verdict}</span>
+                    <p className="mt-0.5 text-sm text-surface-foreground/80">{cs.reasoning}</p>
                   </div>
-                </button>
+                </div>
               ))}
             </div>
-          </div>
-        </div>
+          </TabsContent>
+        </Tabs>
 
         <div className="flex justify-between mt-2">
           {prevPath ? (

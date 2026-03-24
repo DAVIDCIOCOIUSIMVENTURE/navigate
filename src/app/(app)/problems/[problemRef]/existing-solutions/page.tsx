@@ -5,8 +5,10 @@ import { usePathname, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useProblemValidation, getAdjacentSteps } from "../context"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
+import { EXISTING_SOLUTIONS_CASE_STUDIES } from "./case-studies"
 import type { ImpactItem } from "@/types/idea"
 import { GitFork, Plus, X, Monitor, Wrench, Users, Ban } from "lucide-react"
 
@@ -165,143 +167,199 @@ export default function ExistingSolutionsPage() {
 
         <h3 className="mb-2 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> What existing solutions are there?</h3>
 
-        <div className="bg-primary rounded-xl p-8">
-          <div className="flex flex-col divide-y divide-white/20">
-            {existingSolutions.map((sol, i) => (
-              <div key={sol.id} className="py-5 first:pt-0 last:pb-0">
-                <div className="flex flex-col gap-1.5 mb-3">
-                  <div className="flex items-center justify-between">
-                    <label htmlFor={`solution-${sol.id}`} className="text-sm font-medium text-white">Existing Solution {i + 1}</label>
-                    <ConfirmDialog
-                      trigger={
-                        <button className="shrink-0 text-white/50 hover:text-white transition-colors">
-                          <X className="h-3.5 w-3.5" />
-                        </button>
-                      }
-                      title="Remove existing solution?"
-                      description="This will also delete all shortcomings and impacts associated with it."
-                      onConfirm={() => removeSolution(i)}
-                    />
-                  </div>
-                  <Input
-                    id={`solution-${sol.id}`}
-                    value={sol.text}
-                    onChange={(e) => setExistingSolutions(existingSolutions.map((a, idx) => idx === i ? { ...a, text: e.target.value } : a))}
-                    className="text-md font-medium h-8 bg-white border-white text-foreground"
-                  />
-                </div>
+        <Tabs defaultValue="strategy" className="flex flex-col gap-4">
+          <TabsList className="self-center">
+            <TabsTrigger value="strategy">Your Strategy</TabsTrigger>
+            <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
+          </TabsList>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  {/* Left: Shortcomings */}
-                  <div className="flex flex-col gap-2">
-                    <p className="text-sm font-medium text-white">Shortcomings</p>
-                    {sol.shortcomings.map((sc, j) => (
-                      <div key={j} className="flex items-center gap-2 text-md">
-                        <Input
-                          value={sc}
-                          onChange={(e) => setExistingSolutions(existingSolutions.map((a, idx) =>
-                            idx === i ? { ...a, shortcomings: a.shortcomings.map((s, k) => k === j ? e.target.value : s) } : a
-                          ))}
-                          className="flex-1 text-md h-7 bg-white border-white text-foreground"
-                        />
+          <TabsContent value="strategy">
+            <div className="bg-primary rounded-xl p-8">
+              <div className="flex flex-col divide-y divide-white/20">
+                {existingSolutions.map((sol, i) => (
+                  <div key={sol.id} className="py-5 first:pt-0 last:pb-0">
+                    <div className="flex flex-col gap-1.5 mb-3">
+                      <div className="flex items-center justify-between">
+                        <label htmlFor={`solution-${sol.id}`} className="text-sm font-medium text-white">Existing Solution {i + 1}</label>
                         <ConfirmDialog
                           trigger={
                             <button className="shrink-0 text-white/50 hover:text-white transition-colors">
                               <X className="h-3.5 w-3.5" />
                             </button>
                           }
-                          title="Remove shortcoming?"
-                          description="This shortcoming will be permanently removed."
-                          onConfirm={() => removeShortcoming(i, j)}
+                          title="Remove existing solution?"
+                          description="This will also delete all shortcomings and impacts associated with it."
+                          onConfirm={() => removeSolution(i)}
                         />
                       </div>
-                    ))}
-                    {addingSc[i] ? (
                       <Input
-                        ref={(el) => { scInputRefs.current[i] = el }}
-                        placeholder="Why does this fall short?"
-                        value={scDrafts[i] ?? ""}
-                        onChange={(e) => setScDrafts((prev) => ({ ...prev, [i]: e.target.value }))}
-                        onKeyDown={(e) => onScKeyDown(i, e)}
-                        onBlur={() => addShortcoming(i)}
-                        className="text-md h-8 bg-white border-white text-foreground"
+                        id={`solution-${sol.id}`}
+                        value={sol.text}
+                        onChange={(e) => setExistingSolutions(existingSolutions.map((a, idx) => idx === i ? { ...a, text: e.target.value } : a))}
+                        className="text-md font-medium h-8 bg-white border-white text-foreground"
                       />
-                    ) : (
-                      <Button
-                        variant="on-primary"
-                        size="sm"
-                        onClick={() => setAddingSc((prev) => ({ ...prev, [i]: true }))}
-                      >
-                        <Plus className="h-3 w-3" />
-                        Add shortcoming
-                      </Button>
-                    )}
-                  </div>
+                    </div>
 
-                  {/* Right: Quantifiable Impact */}
-                  <div className="flex flex-col gap-2">
-                    <p className="text-sm font-medium text-white">Impact</p>
-                    {getImpacts(sol).length > 0 && (
-                      <ul className="flex flex-col gap-1.5">
-                        {getImpacts(sol).map((imp, j) => (
-                          <li key={j} className="flex items-center gap-2">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      {/* Left: Shortcomings */}
+                      <div className="flex flex-col gap-2">
+                        <p className="text-sm font-medium text-white">Shortcomings</p>
+                        {sol.shortcomings.map((sc, j) => (
+                          <div key={j} className="flex items-center gap-2 text-md">
                             <Input
-                              list="impact-cats-es"
-                              placeholder="Category..."
-                              value={imp.category}
-                              onChange={(e) => updateImpact(i, j, "category", e.target.value)}
-                              className="text-md h-7 w-2/5 shrink-0 bg-white border-white text-foreground"
+                              value={sc}
+                              onChange={(e) => setExistingSolutions(existingSolutions.map((a, idx) =>
+                                idx === i ? { ...a, shortcomings: a.shortcomings.map((s, k) => k === j ? e.target.value : s) } : a
+                              ))}
+                              className="flex-1 text-md h-7 bg-white border-white text-foreground"
                             />
-                            <Input
-                              placeholder="Describe the impact..."
-                              value={imp.description}
-                              onChange={(e) => updateImpact(i, j, "description", e.target.value)}
-                              className="text-md h-7 flex-1 bg-white border-white text-foreground"
+                            <ConfirmDialog
+                              trigger={
+                                <button className="shrink-0 text-white/50 hover:text-white transition-colors">
+                                  <X className="h-3.5 w-3.5" />
+                                </button>
+                              }
+                              title="Remove shortcoming?"
+                              description="This shortcoming will be permanently removed."
+                              onConfirm={() => removeShortcoming(i, j)}
                             />
-                            <button
-                              onClick={() => removeImpact(i, j)}
-                              className="shrink-0 text-white/50 hover:text-white transition-colors"
-                            >
-                              <X className="h-3.5 w-3.5" />
-                            </button>
-                          </li>
+                          </div>
                         ))}
-                      </ul>
-                    )}
-                    <Button
-                      variant="on-primary"
-                      size="sm"
-                      onClick={() => addImpact(i)}
-                    >
-                      <Plus className="h-3 w-3" />
-                      Add impact
-                    </Button>
+                        {addingSc[i] ? (
+                          <Input
+                            ref={(el) => { scInputRefs.current[i] = el }}
+                            placeholder="Why does this fall short?"
+                            value={scDrafts[i] ?? ""}
+                            onChange={(e) => setScDrafts((prev) => ({ ...prev, [i]: e.target.value }))}
+                            onKeyDown={(e) => onScKeyDown(i, e)}
+                            onBlur={() => addShortcoming(i)}
+                            className="text-md h-8 bg-white border-white text-foreground"
+                          />
+                        ) : (
+                          <Button
+                            variant="on-primary"
+                            size="sm"
+                            onClick={() => setAddingSc((prev) => ({ ...prev, [i]: true }))}
+                          >
+                            <Plus className="h-3 w-3" />
+                            Add shortcoming
+                          </Button>
+                        )}
+                      </div>
+
+                      {/* Right: Quantifiable Impact */}
+                      <div className="flex flex-col gap-2">
+                        <p className="text-sm font-medium text-white">Impact</p>
+                        {getImpacts(sol).length > 0 && (
+                          <ul className="flex flex-col gap-1.5">
+                            {getImpacts(sol).map((imp, j) => (
+                              <li key={j} className="flex items-center gap-2">
+                                <Input
+                                  list="impact-cats-es"
+                                  placeholder="Category..."
+                                  value={imp.category}
+                                  onChange={(e) => updateImpact(i, j, "category", e.target.value)}
+                                  className="text-md h-7 w-2/5 shrink-0 bg-white border-white text-foreground"
+                                />
+                                <Input
+                                  placeholder="Describe the impact..."
+                                  value={imp.description}
+                                  onChange={(e) => updateImpact(i, j, "description", e.target.value)}
+                                  className="text-md h-7 flex-1 bg-white border-white text-foreground"
+                                />
+                                <button
+                                  onClick={() => removeImpact(i, j)}
+                                  className="shrink-0 text-white/50 hover:text-white transition-colors"
+                                >
+                                  <X className="h-3.5 w-3.5" />
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                        <Button
+                          variant="on-primary"
+                          size="sm"
+                          onClick={() => addImpact(i)}
+                        >
+                          <Plus className="h-3 w-3" />
+                          Add impact
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+              </div>
+
+              <div className="mt-5 pt-5 border-t border-white/20">
+                {addingSolution ? (
+                  <Input
+                    ref={solutionInputRef}
+                    placeholder="Type an existing solution and press Enter..."
+                    value={draft}
+                    onChange={(e) => setDraft(e.target.value)}
+                    onKeyDown={onSolutionKeyDown}
+                    onBlur={addSolution}
+                    className="text-md h-9 bg-white border-white text-foreground"
+                  />
+                ) : (
+                  <Button variant="on-primary" className="w-full" onClick={() => setAddingSolution(true)}>
+                    <Plus className="h-4 w-4" />
+                    Add Existing Solution
+                  </Button>
+                )}
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="case-studies">
+            <div className="rounded-xl border border-surface/20 bg-surface p-5 flex flex-col gap-5">
+              <p className="text-sm text-surface-foreground/70">
+                See how successful companies mapped out the existing solutions their customers were already using — and identified the shortcomings that created the opportunity.
+              </p>
+              {EXISTING_SOLUTIONS_CASE_STUDIES.map((cs) => (
+                <div
+                  key={cs.company}
+                  className="rounded-lg border border-surface-foreground/10 bg-surface-foreground/10 p-4 flex flex-col gap-4"
+                >
+                  <p className="text-sm font-semibold text-surface-foreground">{cs.company}</p>
+                  <div className="flex flex-col gap-3">
+                    {cs.solutions.map((sol) => (
+                      <div key={sol.name} className="flex flex-col gap-2 rounded-md border border-surface-foreground/10 bg-surface-foreground/5 p-3">
+                        <p className="text-sm font-medium text-surface-foreground">{sol.name}</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                          <div>
+                            <span className="text-xs font-medium text-surface-foreground/50 uppercase tracking-wide">Shortcomings</span>
+                            <ul className="mt-1 flex flex-col gap-0.5">
+                              {sol.shortcomings.map((sc, j) => (
+                                <li key={j} className="text-surface-foreground/80 flex gap-1.5">
+                                  <span className="shrink-0 text-surface-foreground/40">•</span>
+                                  {sc}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div>
+                            <span className="text-xs font-medium text-surface-foreground/50 uppercase tracking-wide">Impact</span>
+                            <ul className="mt-1 flex flex-col gap-0.5">
+                              {sol.impacts.map((imp, j) => (
+                                <li key={j} className="text-surface-foreground/80 flex gap-1.5">
+                                  <span className="shrink-0 text-surface-foreground/40">•</span>
+                                  {imp}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </div>
-            ))}
-
-          </div>
-
-          <div className="mt-5 pt-5 border-t border-white/20">
-            {addingSolution ? (
-              <Input
-                ref={solutionInputRef}
-                placeholder="Type an existing solution and press Enter..."
-                value={draft}
-                onChange={(e) => setDraft(e.target.value)}
-                onKeyDown={onSolutionKeyDown}
-                onBlur={addSolution}
-                className="text-md h-9 bg-white border-white text-foreground"
-              />
-            ) : (
-              <Button variant="on-primary" className="w-full" onClick={() => setAddingSolution(true)}>
-                <Plus className="h-4 w-4" />
-                Add Existing Solution
-              </Button>
-            )}
-          </div>
-        </div>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
 
         <div className="flex justify-between mt-2">
           {prevPath ? (

@@ -7,7 +7,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useProblemValidation, getAdjacentSteps } from "../context"
+import { CUSTOMER_CASE_STUDIES } from "./case-studies"
 import { Users, Target, MapPin, Briefcase, Filter } from "lucide-react"
 
 export default function CustomerSegmentPage() {
@@ -120,44 +122,83 @@ export default function CustomerSegmentPage() {
 
         <h3 className="mb-2 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> Who is your customer?</h3>
 
-        <div className="bg-primary rounded-xl p-8">
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="customer-description" className="text-sm font-medium text-white">
-                Describe your customer
-              </label>
-              <Textarea
-                id="customer-description"
-                placeholder="e.g. Early-career freelance designers (1–3 years experience) in the UK who struggle to price their work competitively..."
-                value={customerDescription}
-                onChange={(e) => setCustomerDescription(e.target.value)}
-                rows={3}
-                className="text-md bg-white border-white text-foreground"
-              />
-            </div>
+        <Tabs defaultValue="strategy" className="flex flex-col gap-4">
+          <TabsList className="self-center">
+            <TabsTrigger value="strategy">Your Strategy</TabsTrigger>
+            <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
+          </TabsList>
 
-            <div className="flex flex-col gap-1.5">
-              <label htmlFor="segment-size" className="text-sm font-medium text-white">
-                Estimated number of people affected
-              </label>
-              <Input
-                id="segment-size"
-                type="number"
-                min={0}
-                placeholder="e.g. 500000"
-                value={segmentSize ?? ""}
-                onChange={(e) => {
-                  const val = e.target.value
-                  setSegmentSize(val === "" ? null : Number(val))
-                }}
-                className="text-md h-9 max-w-xs bg-white border-white text-foreground"
-              />
-              <p className="text-sm text-white/70 mt-1">
-                An order-of-magnitude estimate is fine — thousands, hundreds of thousands, or millions.
-              </p>
+          <TabsContent value="strategy">
+            <div className="bg-primary rounded-xl p-8">
+              <div className="flex flex-col gap-6">
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="customer-description" className="text-sm font-medium text-white">
+                    Describe your customer
+                  </label>
+                  <Textarea
+                    id="customer-description"
+                    placeholder="e.g. Early-career freelance designers (1–3 years experience) in the UK who struggle to price their work competitively..."
+                    value={customerDescription}
+                    onChange={(e) => setCustomerDescription(e.target.value)}
+                    rows={3}
+                    className="text-md bg-white border-white text-foreground"
+                  />
+                </div>
+
+                <div className="flex flex-col gap-1.5">
+                  <label htmlFor="segment-size" className="text-sm font-medium text-white">
+                    Estimated number of people affected
+                  </label>
+                  <Input
+                    id="segment-size"
+                    type="number"
+                    min={0}
+                    placeholder="e.g. 500000"
+                    value={segmentSize ?? ""}
+                    onChange={(e) => {
+                      const val = e.target.value
+                      setSegmentSize(val === "" ? null : Number(val))
+                    }}
+                    className="text-md h-9 max-w-xs bg-white border-white text-foreground"
+                  />
+                  <p className="text-sm text-white/70 mt-1">
+                    An order-of-magnitude estimate is fine — thousands, hundreds of thousands, or millions.
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+          </TabsContent>
+
+          <TabsContent value="case-studies">
+            <div className="rounded-xl border border-surface/20 bg-surface p-5 flex flex-col gap-4">
+              <p className="text-sm text-surface-foreground/70">
+                See how successful companies defined their early customer. Notice how specific they were — they didn&apos;t try to serve everyone. Use these examples as inspiration when writing your own strategy.
+              </p>
+              {CUSTOMER_CASE_STUDIES.map((cs) => (
+                <div
+                  key={cs.company}
+                  className="rounded-lg border border-surface-foreground/10 bg-surface-foreground/10 p-4 flex flex-col gap-3"
+                >
+                  <p className="text-sm font-semibold text-surface-foreground">{cs.company}</p>
+                  <div className="grid grid-cols-1 gap-y-3 text-sm">
+                    <div>
+                      <span className="text-xs font-medium text-surface-foreground/50 uppercase tracking-wide">Customer Description</span>
+                      <p className="mt-0.5 text-surface-foreground/80">{cs.customerDescription}</p>
+                    </div>
+                    <div>
+                      <span className="text-xs font-medium text-surface-foreground/50 uppercase tracking-wide">Estimated Segment Size</span>
+                      <p className="mt-0.5 text-surface-foreground/80">{cs.segmentSize}</p>
+                    </div>
+                    <div>
+                      <span className="text-xs font-medium text-surface-foreground/50 uppercase tracking-wide">Why This Works</span>
+                      <p className="mt-0.5 text-surface-foreground/80">{cs.whyThisWorks}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </TabsContent>
+        </Tabs>
 
         <div className="flex justify-between mt-2">
           {prevPath ? (
