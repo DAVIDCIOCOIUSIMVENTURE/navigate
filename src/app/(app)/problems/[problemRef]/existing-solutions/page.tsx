@@ -189,35 +189,31 @@ export default function ExistingSolutionsPage() {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {/* Left: Shortcomings */}
                   <div className="flex flex-col gap-2">
                     <p className="text-sm font-medium text-white">Shortcomings</p>
-                    {sol.shortcomings.length > 0 && (
-                      <ul className="flex flex-col gap-1.5">
-                        {sol.shortcomings.map((sc, j) => (
-                          <li key={j} className="flex items-center gap-2 bg-white/10 rounded-lg px-3 py-2 text-md">
-                            <Input
-                              value={sc}
-                              onChange={(e) => setExistingSolutions(existingSolutions.map((a, idx) =>
-                                idx === i ? { ...a, shortcomings: a.shortcomings.map((s, k) => k === j ? e.target.value : s) } : a
-                              ))}
-                              className="flex-1 text-md h-7 bg-white border-white text-foreground"
-                            />
-                            <ConfirmDialog
-                              trigger={
-                                <button className="shrink-0 text-white/50 hover:text-white transition-colors">
-                                  <X className="h-3.5 w-3.5" />
-                                </button>
-                              }
-                              title="Remove shortcoming?"
-                              description="This shortcoming will be permanently removed."
-                              onConfirm={() => removeShortcoming(i, j)}
-                            />
-                          </li>
-                        ))}
-                      </ul>
-                    )}
+                    {sol.shortcomings.map((sc, j) => (
+                      <div key={j} className="flex items-center gap-2 text-md">
+                        <Input
+                          value={sc}
+                          onChange={(e) => setExistingSolutions(existingSolutions.map((a, idx) =>
+                            idx === i ? { ...a, shortcomings: a.shortcomings.map((s, k) => k === j ? e.target.value : s) } : a
+                          ))}
+                          className="flex-1 text-md h-7 bg-white border-white text-foreground"
+                        />
+                        <ConfirmDialog
+                          trigger={
+                            <button className="shrink-0 text-white/50 hover:text-white transition-colors">
+                              <X className="h-3.5 w-3.5" />
+                            </button>
+                          }
+                          title="Remove shortcoming?"
+                          description="This shortcoming will be permanently removed."
+                          onConfirm={() => removeShortcoming(i, j)}
+                        />
+                      </div>
+                    ))}
                     {addingSc[i] ? (
                       <Input
                         ref={(el) => { scInputRefs.current[i] = el }}
