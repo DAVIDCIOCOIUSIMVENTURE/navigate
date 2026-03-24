@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect, type ReactNode } from "react"
+import { useRouter } from "next/navigation"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -30,7 +31,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { ChevronDown, ChevronRight, Pencil, RotateCcw, Save, Trash2, X } from "lucide-react"
+import { ArrowRight, ChevronDown, ChevronRight, Pencil, RotateCcw, Save, Trash2, X } from "lucide-react"
 import { toast } from "sonner"
 import { Textarea } from "@/components/ui/textarea"
 import { brainstormColumns, type BrainstormItem } from "./data"
@@ -196,6 +197,7 @@ function ProblemFormDialog({
 }
 
 export default function BrainstormPage() {
+  const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const savedProblems = useSelector((state: RootState) =>
     state.problems.problems.filter((p) => p.source === "brainstorm")
@@ -452,6 +454,16 @@ export default function BrainstormPage() {
                             aria-label="Delete problem"
                           >
                             <Trash2 className="h-3.5 w-3.5" />
+                          </Button>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 text-muted-foreground hover:text-foreground"
+                            onClick={() => router.push(`/problems/${problem.id}/alternatives`)}
+                            aria-label="Validate problem"
+                          >
+                            <ArrowRight className="h-3.5 w-3.5" />
+                            <span className="ml-1">Validate</span>
                           </Button>
                         </div>
                       </TableCell>
