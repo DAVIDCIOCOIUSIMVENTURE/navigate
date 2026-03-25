@@ -295,7 +295,7 @@ export default function VerdictPage() {
           <TabsContent value="case-studies">
             <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
               <p className="text-sm text-white">
-                See how successful companies assessed the opportunity behind their core problem, rating reach, frequency, and value to decide whether to pursue it.
+                See how successful companies quantified the opportunity behind their core problem, estimating reach, frequency, value, and switching cost to decide whether to pursue it.
               </p>
               {VALIDATE_CASE_STUDIES.map((cs) => (
                 <div
@@ -303,26 +303,33 @@ export default function VerdictPage() {
                   className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-3"
                 >
                   <p className="text-sm font-semibold text-white">{cs.company}</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
                     <div>
                       <span className="text-xs font-medium text-white uppercase tracking-wide">How Many Customers</span>
                       <p className="mt-0.5 text-white">
-                        <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-xs font-semibold text-white mr-1">{cs.howManyPeople.level}</span>
+                        <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-xs font-semibold text-white mr-1">{cs.howManyPeople.value.toLocaleString()}</span>
                         {cs.howManyPeople.detail}
                       </p>
                     </div>
                     <div>
                       <span className="text-xs font-medium text-white uppercase tracking-wide">How Often</span>
                       <p className="mt-0.5 text-white">
-                        <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-xs font-semibold text-white mr-1">{cs.howOften.level}</span>
+                        <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-xs font-semibold text-white mr-1">{cs.howOften.value} {cs.howOften.unit}</span>
                         {cs.howOften.detail}
                       </p>
                     </div>
                     <div>
                       <span className="text-xs font-medium text-white uppercase tracking-wide">How Much Is It Worth</span>
                       <p className="mt-0.5 text-white">
-                        <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-xs font-semibold text-white mr-1">{cs.worthToThem.level}</span>
+                        <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-xs font-semibold text-white mr-1">{cs.worthToThem.value} {cs.worthToThem.unit}</span>
                         {cs.worthToThem.detail}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-xs font-medium text-white uppercase tracking-wide">Cost of Switching</span>
+                      <p className="mt-0.5 text-white">
+                        <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-xs font-semibold text-white mr-1">{cs.costOfSwitching.value} {cs.costOfSwitching.unit}</span>
+                        {cs.costOfSwitching.detail}
                       </p>
                     </div>
                   </div>
