@@ -204,7 +204,7 @@ export default function ProblemStatementPage() {
             <p className="text-sm whitespace-pre-wrap">{coreProblem.text}</p>
           ) : (
             <span className="text-sm text-muted-foreground/50 italic">
-              No problem selected — pick a problem to validate first
+              No problem selected. Pick a problem to validate first.
             </span>
           )}
           {coreProblem && (() => {

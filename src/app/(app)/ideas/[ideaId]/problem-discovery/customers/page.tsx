@@ -188,10 +188,10 @@ export default function CustomersPage() {
             A <strong className="text-foreground/80">customer segment</strong> is a clearly defined group of people who share similar characteristics, behaviors, and needs. Rather than trying to build for everyone, great innovators start with a specific type of person they deeply understand.
           </p>
           <p className="text-sm text-muted-foreground">
-            Use this page to paint a vivid picture of who your target customer is. Think beyond demographics — consider their day-to-day life, what they&apos;re trying to accomplish, and where they get stuck. The more concrete and specific you are, the easier it becomes to identify real problems worth solving.
+            Use this page to paint a vivid picture of who your target customer is. Think beyond demographics: consider their day-to-day life, what they&apos;re trying to accomplish, and where they get stuck. The more concrete and specific you are, the easier it becomes to identify real problems worth solving.
           </p>
           <p className="text-sm text-muted-foreground">
-            Not sure who to focus on? Revisit your <strong className="text-foreground/80">Self-Discovery</strong> section — your values, strengths, and lived experiences often point directly to the people you&apos;re best placed to help.
+            Not sure who to focus on? Revisit your <strong className="text-foreground/80">Self-Discovery</strong> section; your values, strengths, and lived experiences often point directly to the people you&apos;re best placed to help.
           </p>
         </div>
 

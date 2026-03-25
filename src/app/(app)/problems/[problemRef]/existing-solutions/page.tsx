@@ -121,7 +121,7 @@ export default function ExistingSolutionsPage() {
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-md text-muted-foreground">
           <p>
-            How are people currently solving — or living with — this problem? List every existing solution
+            How are people currently solving, or living with, this problem? List every existing solution
             they reach for today, even if it&apos;s imperfect or informal.
           </p>
           <div className="flex flex-col gap-3">
@@ -129,31 +129,31 @@ export default function ExistingSolutionsPage() {
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500 shrink-0">
                 <Monitor className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">Existing tools &amp; software</strong> — products already on the market</p>
+              <p><strong className="text-foreground">Existing tools &amp; software</strong>: products already on the market</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500 shrink-0">
                 <Wrench className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">Manual workarounds</strong> — spreadsheets, sticky notes, email threads</p>
+              <p><strong className="text-foreground">Manual workarounds</strong>: spreadsheets, sticky notes, email threads</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500 shrink-0">
                 <Users className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">Hiring or outsourcing</strong> — paying someone else to handle it</p>
+              <p><strong className="text-foreground">Hiring or outsourcing</strong>: paying someone else to handle it</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-rose-500 shrink-0">
                 <Ban className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">Doing nothing</strong> — ignoring or tolerating the problem</p>
+              <p><strong className="text-foreground">Doing nothing</strong>: ignoring or tolerating the problem</p>
             </div>
           </div>
           <h3 className="mt-4 text-xl font-bold text-foreground">What will you do?</h3>
           <p>
             For each existing solution, capture its <strong className="text-foreground">shortcomings</strong> and
-            its <strong className="text-foreground">impact</strong> — both <strong className="text-foreground">quantifiable</strong> (time lost,
+            its <strong className="text-foreground">impact</strong>, both <strong className="text-foreground">quantifiable</strong> (time lost,
             money wasted, error rates, etc.) and <strong className="text-foreground">emotional</strong> (frustration,
             anxiety, loss of trust, etc.).
           </p>
@@ -316,7 +316,7 @@ export default function ExistingSolutionsPage() {
           <TabsContent value="case-studies">
             <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
               <p className="text-sm text-white">
-                See how successful companies mapped out the existing solutions their customers were already using — and identified the shortcomings that created the opportunity.
+                See how successful companies mapped out the existing solutions their customers were already using, and identified the shortcomings that created the opportunity.
               </p>
               {EXISTING_SOLUTIONS_CASE_STUDIES.map((cs) => (
                 <div

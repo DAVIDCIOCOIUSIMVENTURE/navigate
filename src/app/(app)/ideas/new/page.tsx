@@ -44,7 +44,7 @@ export default function NewIdeaPage() {
               <div className="flex flex-col gap-1.5">
                 <h2 className="font-semibold text-base">Guided Journey</h2>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  Walk me through it step by step — discover your customer segment, map out jobs to be done, identify problems, and validate the best one.
+                  Walk me through it step by step. Discover your customer segment, map out jobs to be done, identify problems, and validate the best one.
                 </p>
               </div>
               <div className="flex flex-col gap-1 text-xs text-muted-foreground mt-auto">
@@ -72,7 +72,7 @@ export default function NewIdeaPage() {
               <div className="flex flex-col gap-1.5">
                 <h2 className="font-semibold text-base">Quick Start</h2>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  I already know what I&apos;m doing — take me straight to the idea canvas to fill in the details directly.
+                  I already know what I&apos;m doing. Take me straight to the idea canvas to fill in the details directly.
                 </p>
               </div>
               <div className="flex flex-col gap-1 text-xs text-muted-foreground mt-auto">

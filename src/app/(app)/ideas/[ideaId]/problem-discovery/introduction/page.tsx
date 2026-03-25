@@ -8,7 +8,7 @@ import { BookOpen, Users, UserSearch, Briefcase, AlertCircle, CheckCircle2, Sear
 
 const STEPS = [
   { icon: Search, title: "Problem Exploration", description: "Brainstorm from your existing knowledge and experience before diving into the structured flow.", bg: "bg-amber-100 dark:bg-amber-950", color: "text-amber-600 dark:text-amber-400" },
-  { icon: Users, title: "Customers", description: "Define your target customer segment — who they are, what drives them, and what their daily lives look like.", bg: "bg-blue-100 dark:bg-blue-950", color: "text-blue-600 dark:text-blue-400" },
+  { icon: Users, title: "Customers", description: "Define your target customer segment: who they are, what drives them, and what their daily lives look like.", bg: "bg-blue-100 dark:bg-blue-950", color: "text-blue-600 dark:text-blue-400" },
   { icon: UserSearch, title: "Customer Sub-Segment", description: "Narrow your segment to a more specific group with distinct needs, context, and differentiators.", bg: "bg-sky-100 dark:bg-sky-950", color: "text-sky-600 dark:text-sky-400" },
   { icon: Briefcase, title: "Jobs to Be Done", description: "Identify the tasks, goals, and outcomes your customers are trying to achieve.", bg: "bg-violet-100 dark:bg-violet-950", color: "text-violet-600 dark:text-violet-400" },
   { icon: AlertCircle, title: "Problems", description: "Uncover the pains, frustrations, and obstacles that get in the way of those outcomes.", bg: "bg-orange-100 dark:bg-orange-950", color: "text-orange-600 dark:text-orange-400" },
@@ -31,7 +31,7 @@ export default function IntroductionPage() {
       <CardContent className="p-8 pt-6 flex flex-col gap-6">
 
         <p className="text-sm text-muted-foreground leading-relaxed">
-          Before building a solution, you need a clear picture of the problem. Problem Discovery helps you deeply understand who you&apos;re building for, what they&apos;re trying to accomplish, and where they&apos;re struggling — so you can ensure your idea addresses a real, meaningful need.
+          Before building a solution, you need a clear picture of the problem. Problem Discovery helps you deeply understand who you&apos;re building for, what they&apos;re trying to accomplish, and where they&apos;re struggling, so you can ensure your idea addresses a real, meaningful need.
         </p>
 
         <div className="flex flex-col gap-3">

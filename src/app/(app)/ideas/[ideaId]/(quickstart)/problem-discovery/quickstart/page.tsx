@@ -131,7 +131,7 @@ export default function QuickstartCanvasPage() {
           </button>
           {!explorationExpanded && (
             <p className="text-sm text-muted-foreground">
-              Capture what you already know — frustrations, observations, and complaints — before diving into the structured steps.
+              Capture what you already know, frustrations, observations, and complaints, before diving into the structured steps.
             </p>
           )}
           {explorationExpanded && (

@@ -52,15 +52,15 @@ function getSignal(time: DecisionLevel, cost: DecisionLevel, ret: DecisionLevel,
   const opportunity = Math.min(3, Math.max(1, r + mktBoost))
 
   if (opportunity >= 3 && effort <= 1)
-    return { text: "Strong opportunity", desc: "High return with low effort — worth pursuing", icon: <TrendingUp className="h-4 w-4" />, className: "bg-green-50 border-green-200 text-green-800" }
+    return { text: "Strong opportunity", desc: "High return with low effort, worth pursuing", icon: <TrendingUp className="h-4 w-4" />, className: "bg-green-50 border-green-200 text-green-800" }
   if (opportunity >= 3 && effort === 2)
     return { text: "Good opportunity", desc: "High return with manageable effort", icon: <TrendingUp className="h-4 w-4" />, className: "bg-green-50 border-green-200 text-green-800" }
   if (opportunity >= 3 && effort === 3)
-    return { text: "High potential, high cost", desc: "Big return but significant investment required — consider carefully", icon: <Minus className="h-4 w-4" />, className: "bg-yellow-50 border-yellow-200 text-yellow-800" }
+    return { text: "High potential, high cost", desc: "Big return but significant investment required; consider carefully", icon: <Minus className="h-4 w-4" />, className: "bg-yellow-50 border-yellow-200 text-yellow-800" }
   if (opportunity === 2 && effort <= 1)
     return { text: "Decent opportunity", desc: "Moderate return with low effort", icon: <TrendingUp className="h-4 w-4" />, className: "bg-green-50 border-green-200 text-green-800" }
   if (opportunity === 2 && effort === 2)
-    return { text: "Borderline case", desc: "Moderate return for moderate effort — validate further", icon: <Minus className="h-4 w-4" />, className: "bg-yellow-50 border-yellow-200 text-yellow-800" }
+    return { text: "Borderline case", desc: "Moderate return for moderate effort; validate further", icon: <Minus className="h-4 w-4" />, className: "bg-yellow-50 border-yellow-200 text-yellow-800" }
   if (opportunity === 2 && effort === 3)
     return { text: "Questionable ROI", desc: "High effort for moderate return", icon: <TrendingDown className="h-4 w-4" />, className: "bg-orange-50 border-orange-200 text-orange-800" }
   if (opportunity === 1)
@@ -120,7 +120,7 @@ export default function VerdictPage() {
       </CardHeader>
       <CardContent className="p-8 pt-6 flex flex-col gap-6">
         <p className="text-sm text-muted-foreground">
-          Weigh the economics of solving this problem — does the expected return justify the time and cost?
+          Weigh the economics of solving this problem. Does the expected return justify the time and cost?
         </p>
 
         {selectedProblem && (
@@ -268,7 +268,7 @@ export default function VerdictPage() {
             onClick={() => handleVerdict("valid")}
           >
             <CheckCircle2 className="h-5 w-5 mr-2" />
-            Valid — Worth Solving
+            Valid: Worth Solving
           </Button>
           <Button
             variant="outline"
@@ -276,7 +276,7 @@ export default function VerdictPage() {
             onClick={() => handleVerdict("invalid")}
           >
             <XCircle className="h-5 w-5 mr-2" />
-            Invalid — Not Worth Solving
+            Invalid: Not Worth Solving
           </Button>
         </div>
 

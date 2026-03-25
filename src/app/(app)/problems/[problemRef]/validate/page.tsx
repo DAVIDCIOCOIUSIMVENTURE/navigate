@@ -143,36 +143,36 @@ export default function VerdictPage() {
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500 shrink-0">
                 <Users className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">How many customers</strong> how large is the audience experiencing this problem?</p>
+              <p><strong className="text-foreground">How many customers</strong>: how large is the audience experiencing this problem?</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500 shrink-0">
                 <RefreshCw className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">How often</strong> how frequently do they encounter it?</p>
+              <p><strong className="text-foreground">How often</strong>: how frequently do they encounter it?</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500 shrink-0">
                 <DollarSign className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">How much is it worth</strong> how much would they pay or benefit from a solution?</p>
+              <p><strong className="text-foreground">How much is it worth</strong>: how much would they pay or benefit from a solution?</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-500 shrink-0">
                 <ArrowRightLeft className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">Cost of switching</strong> how much effort or cost does it take for customers to switch from their current solution?</p>
+              <p><strong className="text-foreground">Cost of switching</strong>: how much effort or cost does it take for customers to switch from their current solution?</p>
             </div>
           </div>
           <h3 className="mt-4 text-xl font-bold text-foreground">What you&apos;ll do</h3>
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-3">
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">1</span>
-              <p><strong className="text-foreground">Estimate each factor</strong> enter numbers for each of the four factors to quantify the opportunity.</p>
+              <p><strong className="text-foreground">Estimate each factor</strong>: enter numbers for each of the four factors to quantify the opportunity.</p>
             </div>
             <div className="flex items-center gap-3">
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">2</span>
-              <p><strong className="text-foreground">Record your verdict</strong> decide whether the problem is <strong className="text-foreground">Valid</strong>, <strong className="text-foreground">Unsure</strong>, or <strong className="text-foreground">Invalid</strong>.</p>
+              <p><strong className="text-foreground">Record your verdict</strong>: decide whether the problem is <strong className="text-foreground">Valid</strong>, <strong className="text-foreground">Unsure</strong>, or <strong className="text-foreground">Invalid</strong>.</p>
             </div>
           </div>
         </div>
@@ -255,9 +255,9 @@ export default function VerdictPage() {
                 <div className="flex flex-col gap-3 pt-2 border-t border-white/20">
                   <p className="text-sm font-medium text-white">Your verdict</p>
                   {([
-                    { value: "valid" as const, label: "Valid — Worth Solving", icon: <CheckCircle2 className="h-4 w-4" />, color: "text-green-700 border-green-300 bg-green-50" },
-                    { value: "unsure" as const, label: "Unsure — May Be Worth Solving", icon: <HelpCircle className="h-4 w-4" />, color: "text-orange-700 border-orange-300 bg-orange-50" },
-                    { value: "invalid" as const, label: "Invalid — Not Worth Solving", icon: <XCircle className="h-4 w-4" />, color: "text-red-700 border-red-300 bg-red-50" },
+                    { value: "valid" as const, label: "Valid: Worth Solving", icon: <CheckCircle2 className="h-4 w-4" />, color: "text-green-700 border-green-300 bg-green-50" },
+                    { value: "unsure" as const, label: "Unsure: May Be Worth Solving", icon: <HelpCircle className="h-4 w-4" />, color: "text-orange-700 border-orange-300 bg-orange-50" },
+                    { value: "invalid" as const, label: "Invalid: Not Worth Solving", icon: <XCircle className="h-4 w-4" />, color: "text-red-700 border-red-300 bg-red-50" },
                   ]).map((option) => (
                     <button
                       key={option.value}
@@ -295,7 +295,7 @@ export default function VerdictPage() {
           <TabsContent value="case-studies">
             <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
               <p className="text-sm text-white">
-                See how successful companies assessed the opportunity behind their core problem — rating reach, frequency, and value to decide whether to pursue it.
+                See how successful companies assessed the opportunity behind their core problem, rating reach, frequency, and value to decide whether to pursue it.
               </p>
               {VALIDATE_CASE_STUDIES.map((cs) => (
                 <div

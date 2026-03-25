@@ -36,9 +36,9 @@ export default function CustomerSegmentPage() {
             solution that resonates.
           </p>
           <p>
-            Avoid broad labels like &quot;everyone&quot; or &quot;businesses&quot; —
-            narrow down until you can picture a real person. A well-defined customer isn&apos;t just
-            a demographic — it&apos;s someone whose daily life you understand well enough to describe
+            Avoid broad labels like &quot;everyone&quot; or &quot;businesses.&quot;
+            Narrow down until you can picture a real person. A well-defined customer isn&apos;t just
+            a demographic, it&apos;s someone whose daily life you understand well enough to describe
             their frustrations, habits, and the workarounds they already use.
           </p>
         </div>
@@ -69,25 +69,25 @@ export default function CustomerSegmentPage() {
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500 shrink-0">
                 <Briefcase className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">Role &amp; industry</strong> — what do they do, and in which sector? (e.g. freelance graphic designers, NHS nurses, SaaS founders)</p>
+              <p><strong className="text-foreground">Role &amp; industry</strong>: what do they do, and in which sector? (e.g. freelance graphic designers, NHS nurses, SaaS founders)</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500 shrink-0">
                 <MapPin className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">Demographics &amp; geography</strong> — age range, location, income level, company size</p>
+              <p><strong className="text-foreground">Demographics &amp; geography</strong>: age range, location, income level, company size</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500 shrink-0">
                 <Target className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">Behaviour &amp; situation</strong> — what triggers the problem? When and how often does it happen?</p>
+              <p><strong className="text-foreground">Behaviour &amp; situation</strong>: what triggers the problem? When and how often does it happen?</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-rose-500 shrink-0">
                 <Filter className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">Urgency &amp; willingness</strong> — how badly do they need a solution? Are they already spending time or money trying to fix it?</p>
+              <p><strong className="text-foreground">Urgency &amp; willingness</strong>: how badly do they need a solution? Are they already spending time or money trying to fix it?</p>
             </div>
           </div>
         </div>
@@ -96,7 +96,7 @@ export default function CustomerSegmentPage() {
           <p className="font-medium text-foreground">Why this matters</p>
           <p>
             A vague customer means vague problems and vague solutions. When you can describe
-            your customer precisely — their role, context, and pain points — you unlock sharper
+            your customer precisely, their role, context, and pain points, you unlock sharper
             insights at every later stage: better alternatives analysis, more accurate market sizing,
             and a problem statement that actually resonates.
           </p>
@@ -110,11 +110,11 @@ export default function CustomerSegmentPage() {
         <div className="flex flex-col gap-3 text-md text-muted-foreground">
           <div className="flex items-center gap-3">
             <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">1</span>
-            <p><strong className="text-foreground">Describe your customer</strong> — paint a clear picture of who experiences this problem, using the filters above to be as specific as possible.</p>
+            <p><strong className="text-foreground">Describe your customer</strong>: paint a clear picture of who experiences this problem, using the filters above to be as specific as possible.</p>
           </div>
           <div className="flex items-center gap-3">
             <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">2</span>
-            <p><strong className="text-foreground">Estimate the segment size</strong> — how many people fit this description? An order-of-magnitude is fine.</p>
+            <p><strong className="text-foreground">Estimate the segment size</strong>: how many people fit this description? An order-of-magnitude is fine.</p>
           </div>
         </div>
 
@@ -162,7 +162,7 @@ export default function CustomerSegmentPage() {
                     className="text-md h-9 max-w-xs bg-white border-white text-foreground"
                   />
                   <p className="text-sm text-white/70 mt-1">
-                    An order-of-magnitude estimate is fine — thousands, hundreds of thousands, or millions.
+                    An order-of-magnitude estimate is fine: thousands, hundreds of thousands, or millions.
                   </p>
                 </div>
               </div>
@@ -172,7 +172,7 @@ export default function CustomerSegmentPage() {
           <TabsContent value="case-studies">
             <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-4">
               <p className="text-sm text-white">
-                See how successful companies defined their early customer. Notice how specific they were — they didn&apos;t try to serve everyone. Use these examples as inspiration when writing your own strategy.
+                See how successful companies defined their early customer. Notice how specific they were; they didn&apos;t try to serve everyone. Use these examples as inspiration when writing your own strategy.
               </p>
               {CUSTOMER_CASE_STUDIES.map((cs) => (
                 <div

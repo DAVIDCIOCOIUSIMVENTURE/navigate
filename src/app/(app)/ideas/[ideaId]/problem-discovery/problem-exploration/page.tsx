@@ -65,7 +65,7 @@ export default function ProblemExplorationPage() {
         </div>
         <div className="flex flex-col gap-3">
           <p className="text-sm text-muted-foreground">
-            Before diving into the structured steps, take a moment to capture what you already know. Most people come to innovation with a wealth of lived experience — problems they&apos;ve run into, people they&apos;ve seen struggle, workarounds they&apos;ve noticed. This step helps you get it all out of your head.
+            Before diving into the structured steps, take a moment to capture what you already know. Most people come to innovation with a wealth of lived experience: problems they&apos;ve run into, people they&apos;ve seen struggle, workarounds they&apos;ve noticed. This step helps you get it all out of your head.
           </p>
           <p className="text-sm text-muted-foreground">
             Don&apos;t worry about being structured or polished here. Write freely. These notes will appear as a reference panel throughout the rest of the process, helping you stay grounded in real observations as you define your customer, jobs, and problems.
@@ -117,7 +117,7 @@ export default function ProblemExplorationPage() {
         {tab === "use-cases" && (
           <div className="rounded-xl border border-surface/20 bg-surface p-5 flex flex-col gap-4">
             <p className="text-sm text-surface-foreground/70">
-              Here&apos;s how the same brainstorming step might look for each of our example innovators — before they had a defined customer segment or problem statement.
+              Here&apos;s how the same brainstorming step might look for each of our example innovators, before they had a defined customer segment or problem statement.
             </p>
             {USE_CASES.map((uc) => (
               <div

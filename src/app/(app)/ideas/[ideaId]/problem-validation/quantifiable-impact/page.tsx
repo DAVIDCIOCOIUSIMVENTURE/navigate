@@ -38,7 +38,7 @@ export default function QuantifiableImpactPage() {
       </CardHeader>
       <CardContent className="p-8 pt-6 flex flex-col gap-5">
         <p className="text-sm text-muted-foreground">
-          What is the measurable cost of the problem? Quantify the impact in concrete terms — time, money,
+          What is the measurable cost of the problem? Quantify the impact in concrete terms: time, money,
           errors, or other metrics that make the problem tangible.
         </p>
 

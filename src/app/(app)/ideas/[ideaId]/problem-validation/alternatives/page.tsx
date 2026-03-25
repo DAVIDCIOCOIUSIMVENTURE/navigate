@@ -48,7 +48,7 @@ export default function ExistingSolutionsPage() {
       <CardContent className="p-8 pt-6 flex flex-col gap-5">
         <p className="text-sm text-muted-foreground">
           How are customers currently solving or working around this problem? List every existing solution they
-          might use — tools, workarounds, doing nothing, or hiring someone.
+          might use, including tools, workarounds, doing nothing, or hiring someone.
         </p>
 
         <div className="flex flex-col gap-1.5">

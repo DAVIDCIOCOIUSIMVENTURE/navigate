@@ -68,13 +68,13 @@ export default function ProblemsPage() {
       <CardContent className="p-8 pt-6 flex flex-col gap-5">
         <div className="flex flex-col gap-3">
           <p className="text-sm text-muted-foreground">
-            A <strong className="text-foreground/80">problem</strong> is a specific friction, gap, or frustration your customers encounter while trying to accomplish a job. Problems are the raw material of great products — without a real, painful problem, there is no compelling reason for your solution to exist.
+            A <strong className="text-foreground/80">problem</strong> is a specific friction, gap, or frustration your customers encounter while trying to accomplish a job. Problems are the raw material of great products, and without a real, painful problem, there is no compelling reason for your solution to exist.
           </p>
           <p className="text-sm text-muted-foreground">
-            For each job to be done, think about where things go wrong: what slows people down, what they have to work around, what they find confusing or exhausting. Be as specific as possible — vague problems lead to vague solutions. You can add as many problems as you like here; you&apos;ll narrow them down and pick the most important one to validate in the next step.
+            For each job to be done, think about where things go wrong: what slows people down, what they have to work around, what they find confusing or exhausting. Be as specific as possible; vague problems lead to vague solutions. You can add as many problems as you like here; you&apos;ll narrow them down and pick the most important one to validate in the next step.
           </p>
           <p className="text-sm text-muted-foreground">
-            If you haven&apos;t defined any jobs yet, head back to <strong className="text-foreground/80">Jobs to Be Done</strong> first — problems are most useful when they&apos;re anchored to a specific goal your customer is trying to achieve.
+            If you haven&apos;t defined any jobs yet, head back to <strong className="text-foreground/80">Jobs to Be Done</strong> first. Problems are most useful when they&apos;re anchored to a specific goal your customer is trying to achieve.
           </p>
         </div>
 
@@ -187,7 +187,7 @@ export default function ProblemsPage() {
         {tab === "use-cases" && (
           <div className="rounded-xl border border-surface/20 bg-surface p-5 flex flex-col gap-4">
             <p className="text-sm text-surface-foreground/70">
-              These examples show the kinds of problems that surface when customers try to accomplish the jobs defined in the previous step — grounded in the same three use cases.
+              These examples show the kinds of problems that surface when customers try to accomplish the jobs defined in the previous step, grounded in the same three use cases.
             </p>
             {USE_CASES.map((uc) => (
               <div

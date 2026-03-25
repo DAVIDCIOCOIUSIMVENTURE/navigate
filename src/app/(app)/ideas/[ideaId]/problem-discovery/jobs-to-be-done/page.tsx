@@ -40,18 +40,18 @@ export default function JobsToBeDonePage() {
         <div className="flex flex-col gap-3">
           <p className="text-sm text-muted-foreground">
             A <strong className="text-foreground/80">job to be done</strong> is the underlying goal or
-            progress a person is trying to make in a given situation — not just the task itself, but the
+            progress a person is trying to make in a given situation, not just the task itself, but the
             outcome they&apos;re seeking. People don&apos;t buy products; they hire them to get a job done.
             Understanding the job helps you build something customers actually want.
           </p>
           <p className="text-sm text-muted-foreground">
             Every job has three dimensions. The <strong className="text-foreground/80">functional</strong> dimension
-            is the practical outcome — what they need to accomplish. The <strong className="text-foreground/80">emotional</strong> dimension
+            is the practical outcome, what they need to accomplish. The <strong className="text-foreground/80">emotional</strong> dimension
             is how they want to feel as a result. The <strong className="text-foreground/80">social</strong> dimension
             is how they want to be perceived by others. The most powerful solutions address all three.
           </p>
           <p className="text-sm text-muted-foreground">
-            Start with the customer segment and sub-segment you defined — then ask: what is this person
+            Start with the customer segment and sub-segment you defined, then ask: what is this person
             genuinely trying to accomplish? What would success look and feel like for them? Most segments
             have more than one important job, so add as many as are relevant.
           </p>
@@ -148,7 +148,7 @@ export default function JobsToBeDonePage() {
         {tab === "use-cases" && (
           <div className="rounded-xl border border-surface/20 bg-surface p-5 flex flex-col gap-4">
             <p className="text-sm text-surface-foreground/70">
-              These examples show how the same customer segments identified earlier translate into concrete jobs to be done — each with functional, emotional, and social dimensions mapped out.
+              These examples show how the same customer segments identified earlier translate into concrete jobs to be done, each with functional, emotional, and social dimensions mapped out.
             </p>
             {USE_CASES.map((uc) => (
               <div

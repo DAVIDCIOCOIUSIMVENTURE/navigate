@@ -375,7 +375,7 @@ export default function QuickstartValidationPage() {
                 <h2 className="text-base font-semibold">Quantifiable Impact</h2>
               </div>
               <p className="text-sm text-muted-foreground">
-                What is the measurable cost or consequence of this problem — in time, money, lost revenue, or other metrics?
+                What is the measurable cost or consequence of this problem, in time, money, lost revenue, or other metrics?
               </p>
 
               {(selectedProblem.impacts ?? []).length > 0 && (
@@ -443,7 +443,7 @@ export default function QuickstartValidationPage() {
                   }`}
                 >
                   <CheckCircle2 className="h-4 w-4" />
-                  Valid — Worth Solving
+                  Valid: Worth Solving
                 </button>
                 <button
                   onClick={() => setVerdict("invalid")}
@@ -454,7 +454,7 @@ export default function QuickstartValidationPage() {
                   }`}
                 >
                   <XCircle className="h-4 w-4" />
-                  Invalid — Not Worth Solving
+                  Invalid: Not Worth Solving
                 </button>
               </div>
 

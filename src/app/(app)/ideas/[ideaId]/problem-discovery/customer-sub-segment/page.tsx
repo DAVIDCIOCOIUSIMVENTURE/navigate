@@ -46,13 +46,13 @@ export default function CustomerSubSegmentPage() {
 
         <div className="flex flex-col gap-3">
           <p className="text-sm text-muted-foreground">
-            A <strong className="text-foreground/80">customer sub-segment</strong> is a narrower slice of your broader customer group — people who share even more specific characteristics, circumstances, or needs. The tighter your focus, the easier it is to uncover sharp, actionable problems.
+            A <strong className="text-foreground/80">customer sub-segment</strong> is a narrower slice of your broader customer group, people who share even more specific characteristics, circumstances, or needs. The tighter your focus, the easier it is to uncover sharp, actionable problems.
           </p>
           <p className="text-sm text-muted-foreground">
             Think about what makes a particular subset of your customer segment distinct: their career stage, geography, company size, life situation, or level of urgency. A well-defined sub-segment helps you avoid building for a vague average and instead target someone real.
           </p>
           <p className="text-sm text-muted-foreground">
-            Use what you filled in on the <strong className="text-foreground/80">Customers</strong> page as your starting point — the sub-segment should feel like a zoomed-in version of the segment you already described.
+            Use what you filled in on the <strong className="text-foreground/80">Customers</strong> page as your starting point; the sub-segment should feel like a zoomed-in version of the segment you already described.
           </p>
         </div>
 
@@ -120,7 +120,7 @@ export default function CustomerSubSegmentPage() {
         {tab === "use-cases" && (
           <div className="rounded-xl border border-surface/20 bg-surface p-5 flex flex-col gap-4">
             <p className="text-sm text-surface-foreground/70">
-              These examples correspond to the customer segments on the previous page — each one narrows the broader segment into a more specific, actionable group.
+              These examples correspond to the customer segments on the previous page, each one narrowing the broader segment into a more specific, actionable group.
             </p>
             {USE_CASES.map((uc) => (
               <div
