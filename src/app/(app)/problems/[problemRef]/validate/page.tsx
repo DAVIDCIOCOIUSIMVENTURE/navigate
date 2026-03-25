@@ -12,6 +12,7 @@ import { VALIDATE_CASE_STUDIES } from "./case-studies"
 import type { ValidationMetric } from "@/types/idea"
 import { cn } from "@/lib/utils"
 import { ShieldCheck, CheckCircle2, XCircle, HelpCircle, Users, RefreshCw, DollarSign, ArrowRightLeft, Target, Building2 } from "lucide-react"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 function HowManyInput({
   metric,
@@ -34,14 +35,14 @@ function HowManyInput({
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">
-        <Users className="h-3.5 w-3.5 text-white/70 shrink-0" />
-        <span className="text-md font-medium text-white">How many customers</span>
+        <Users className="h-3.5 w-3.5 text-white shrink-0" />
+        <span className="text-base font-semibold text-white">How many customers</span>
       </div>
       <p className="text-sm text-white">Estimate the total number of people who experience this problem. Think about your target market segment and how widespread the issue is.</p>
       <Input
         type="number"
         placeholder="e.g. 10000"
-        className="h-8 text-xs w-28 bg-white border-white text-foreground"
+        className="mt-2 h-8 text-xs w-28 bg-white border-white text-foreground"
         value={localValue}
         onChange={(e) => setLocalValue(e.target.value)}
       />
@@ -79,7 +80,7 @@ function MetricInput({
   }, [localUnit]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="flex gap-2">
+    <div className="mt-2 flex gap-2">
       <Input
         type="number"
         placeholder={valuePlaceholder}
@@ -204,15 +205,15 @@ export default function VerdictPage() {
             <div className="bg-primary rounded-xl p-8">
               <div className="flex flex-col gap-5">
                 {/* Decision factors */}
-                <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-6">
                   <p className="text-sm font-medium text-white">Decision Factors</p>
 
                   <HowManyInput metric={howManyPeople} onChange={setHowManyPeople} />
 
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2">
-                      <RefreshCw className="h-3.5 w-3.5 text-white/70 shrink-0" />
-                      <span className="text-md font-medium text-white">How often does the problem occur</span>
+                      <RefreshCw className="h-3.5 w-3.5 text-white shrink-0" />
+                      <span className="text-base font-semibold text-white">How often does the problem occur</span>
                     </div>
                     <p className="text-sm text-white">How frequently do customers encounter this problem? A problem that happens daily is far more urgent than one that occurs once a year.</p>
                     <MetricInput
@@ -225,8 +226,8 @@ export default function VerdictPage() {
 
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2">
-                      <DollarSign className="h-3.5 w-3.5 text-white/70 shrink-0" />
-                      <span className="text-md font-medium text-white">How much is it worth</span>
+                      <DollarSign className="h-3.5 w-3.5 text-white shrink-0" />
+                      <span className="text-base font-semibold text-white">How much is it worth</span>
                     </div>
                     <p className="text-sm text-white">What is the monetary value of solving this problem? Consider how much customers currently spend on workarounds, or how much time and money they lose because of it.</p>
                     <MetricInput
@@ -239,74 +240,74 @@ export default function VerdictPage() {
 
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2">
-                      <ArrowRightLeft className="h-3.5 w-3.5 text-white/70 shrink-0" />
-                      <span className="text-md font-medium text-white">What is the cost of switching</span>
+                      <ArrowRightLeft className="h-3.5 w-3.5 text-white shrink-0" />
+                      <span className="text-base font-semibold text-white">What is the cost of switching</span>
                     </div>
                     <p className="text-sm text-white">How much effort, money, or disruption does it take for customers to move away from their current solution? High switching costs mean customers are more locked in, so your solution needs to offer a compelling reason to change.</p>
-                    <div className="flex gap-2 flex-wrap">
+                    <ToggleGroup
+                      className="mt-2"
+                      type="single"
+                      value={costOfSwitching.level}
+                      onValueChange={(val) => setCostOfSwitching({ level: val as typeof costOfSwitching.level })}
+                    >
                       {(["none", "low", "medium", "high", "prohibitive"] as const).map((level) => (
-                        <button
+                        <ToggleGroupItem
                           key={level}
-                          onClick={() => setCostOfSwitching({ level: costOfSwitching.level === level ? "" : level })}
-                          className={cn(
-                            "px-4 py-1.5 rounded-md text-sm font-medium capitalize transition-all",
-                            costOfSwitching.level === level
-                              ? level === "none" ? "bg-emerald-500 text-white" : level === "low" ? "bg-green-500 text-white" : level === "medium" ? "bg-amber-500 text-white" : level === "high" ? "bg-red-500 text-white" : "bg-red-700 text-white"
-                              : "bg-white/10 text-white hover:bg-white/20"
-                          )}
+                          value={level}
+                          className="px-4 py-1.5 text-sm font-medium capitalize bg-white text-muted-foreground data-[state=on]:bg-white data-[state=on]:text-primary hover:bg-white hover:text-foreground rounded-none border-r border-border last:border-r-0"
                         >
                           {level}
-                        </button>
+                        </ToggleGroupItem>
                       ))}
-                    </div>
+                    </ToggleGroup>
                   </div>
 
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2">
-                      <Target className="h-3.5 w-3.5 text-white/70 shrink-0" />
-                      <span className="text-md font-medium text-white">How effective are existing solutions</span>
+                      <Target className="h-3.5 w-3.5 text-white shrink-0" />
+                      <span className="text-base font-semibold text-white">How effective are existing solutions</span>
                     </div>
                     <p className="text-sm text-white">How well do current solutions already address this problem? If existing solutions work well, customers have less incentive to switch. If they are poor, there is a bigger gap for you to fill.</p>
-                    <div className="flex gap-2 flex-wrap">
+                    <ToggleGroup
+                      className="mt-2"
+                      type="single"
+                      value={solutionEffectiveness.level}
+                      onValueChange={(val) => setSolutionEffectiveness({ level: val as typeof solutionEffectiveness.level })}
+                    >
                       {(["terrible", "poor", "average", "good", "excellent"] as const).map((level) => (
-                        <button
+                        <ToggleGroupItem
                           key={level}
-                          onClick={() => setSolutionEffectiveness({ level: solutionEffectiveness.level === level ? "" : level })}
-                          className={cn(
-                            "px-4 py-1.5 rounded-md text-sm font-medium capitalize transition-all",
-                            solutionEffectiveness.level === level
-                              ? level === "terrible" ? "bg-green-600 text-white" : level === "poor" ? "bg-green-500 text-white" : level === "average" ? "bg-amber-500 text-white" : level === "good" ? "bg-red-500 text-white" : "bg-red-700 text-white"
-                              : "bg-white/10 text-white hover:bg-white/20"
-                          )}
+                          value={level}
+                          className="px-4 py-1.5 text-sm font-medium capitalize bg-white text-muted-foreground data-[state=on]:bg-white data-[state=on]:text-primary hover:bg-white hover:text-foreground rounded-none border-r border-border last:border-r-0"
                         >
                           {level}
-                        </button>
+                        </ToggleGroupItem>
                       ))}
-                    </div>
+                    </ToggleGroup>
                   </div>
 
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2">
-                      <Building2 className="h-3.5 w-3.5 text-white/70 shrink-0" />
-                      <span className="text-md font-medium text-white">How big are the competitors</span>
+                      <Building2 className="h-3.5 w-3.5 text-white shrink-0" />
+                      <span className="text-base font-semibold text-white">How big are the competitors</span>
                     </div>
                     <p className="text-sm text-white">How large and established are the companies already solving this problem? Competing against well-funded incumbents requires a strong differentiator, while a market with only small players may signal an easier entry.</p>
-                    <div className="flex gap-2 flex-wrap">
+                    <ToggleGroup
+                      className="mt-2"
+                      type="single"
+                      value={competitorSize.level}
+                      onValueChange={(val) => setCompetitorSize({ level: val as typeof competitorSize.level })}
+                    >
                       {(["micro", "small", "medium", "large", "giant"] as const).map((level) => (
-                        <button
+                        <ToggleGroupItem
                           key={level}
-                          onClick={() => setCompetitorSize({ level: competitorSize.level === level ? "" : level })}
-                          className={cn(
-                            "px-4 py-1.5 rounded-md text-sm font-medium capitalize transition-all",
-                            competitorSize.level === level
-                              ? level === "micro" ? "bg-emerald-500 text-white" : level === "small" ? "bg-green-500 text-white" : level === "medium" ? "bg-amber-500 text-white" : level === "large" ? "bg-red-500 text-white" : "bg-red-700 text-white"
-                              : "bg-white/10 text-white hover:bg-white/20"
-                          )}
+                          value={level}
+                          className="px-4 py-1.5 text-sm font-medium capitalize bg-white text-muted-foreground data-[state=on]:bg-white data-[state=on]:text-primary hover:bg-white hover:text-foreground rounded-none border-r border-border last:border-r-0"
                         >
                           {level}
-                        </button>
+                        </ToggleGroupItem>
                       ))}
-                    </div>
+                    </ToggleGroup>
                   </div>
                 </div>
 
