@@ -41,6 +41,7 @@ export type ValidationAssessment = {
   howManyPeople: ValidationMetric
   howOften: ValidationMetric
   worthToThem: ValidationMetric
+  costOfSwitching: ValidationMetric
 }
 
 export const DEFAULT_VALIDATION_METRIC: ValidationMetric = { value: null, unit: "", level: "" }
@@ -49,6 +50,7 @@ export const DEFAULT_VALIDATION_ASSESSMENT: ValidationAssessment = {
   howManyPeople: { value: null, unit: "", level: "" },
   howOften: { value: null, unit: "", level: "" },
   worthToThem: { value: null, unit: "", level: "" },
+  costOfSwitching: { value: null, unit: "", level: "" },
 }
 
 export type Problem = {

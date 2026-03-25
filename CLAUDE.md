@@ -10,7 +10,9 @@ npm run build            # Build for production
 npm run lint             # Run ESLint
 npm run test             # Run tests in watch mode
 npm run test:run         # Run tests once (used in CI)
+npm run test:ui          # Run tests with browser UI
 npx tsc --noEmit         # Type check without emitting files
+npx vitest run src/store/ideas-model.test.ts   # Run a single test file
 ```
 
 Before committing or pushing, run these checks manually (mirrors what Husky enforces):
@@ -76,7 +78,10 @@ DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
 * `src/components/ui/` — Shared Radix UI-based primitives
 * `src/store/` — Global Rematch store (models: `settings`, `journal`, `problemTriggers`, `ideas`) — all localStorage-backed
 * `src/data/` — Static data files (e.g. `selfDiscoveryData.ts`)
-* `src/context/` — React Context providers (`innovation-context.tsx`; ideas was migrated to Rematch)
+* `src/app/(app)/self-discovery/` — Self-discovery questionnaire with `[categoryId]` sub-routing
+* `src/app/(app)/solutions/` — Solutions listing page
+* `src/app/(app)/problems/brainstorm/` — Interactive brainstorm canvas for generating problem ideas across columns (Customer Segments, Contexts, Jobs-to-Be-Done, Problem Types)
+* `src/context/` — React Context providers (`innovation-context.tsx`, `guidance-context.tsx`; ideas was migrated to Rematch)
 * `prisma/schema.prisma` — Database schema (kept for reference; not actively used)
 * `locales/` — i18n translations (en, es, fr) via `next-i18next`; infrastructure exists but not heavily used
 
@@ -103,13 +108,14 @@ All state is client-side only (no database). Two patterns coexist — choose bas
 
 **Rematch (Redux)** — use for complex state with side effects or localStorage persistence:
 
-* **Global store** (`src/store/`): `settings` (sidebar collapsed/expanded), `journal` (title + text, persisted to localStorage), `problemTriggers` (persisted to localStorage), `ideas` (full CRUD with localStorage persistence — use the `useIdeas()` hook from `src/store/ideas-hooks.ts`), `problems` (global Problem list, persisted to `navigate-problems` in localStorage — CRUD via `dispatch.problems.create/update/delete`)
+* **Global store** (`src/store/`): `settings` (sidebar collapsed/expanded), `journal` (title + text, persisted to localStorage), `problemTriggers` (persisted to localStorage), `ideas` (full CRUD with localStorage persistence — use the `useIdeas()` hook from `src/store/ideas-hooks.ts`), `problems` (global Problem list, persisted to `navigate-problems` in localStorage — CRUD via `dispatch.problems.create/update/delete`), `accountSettings` (display name, email, theme, compact mode, notification preferences)
 * Access: `useSelector((state: RootState) => state.modelName.field)` and `useDispatch<AppDispatch>()`
 * All models call `dispatch.modelName.init()` in `root-layout-client.tsx` on mount to hydrate from localStorage
 
 **React Context** — use for lighter, page-scoped state without side effects:
 
 * `src/context/innovation-context.tsx` — manages legacy innovation process state
+* `src/context/guidance-context.tsx` — provides `openGuidance()` / `useGuidance()` for the guidance dialog
 * Per-stage contexts: `src/app/(app)/ideas/[ideaId]/problem-discovery/context.tsx` and `problem-validation/context.tsx` — mirror idea fields locally and persist to Rematch on mutation
 * Provider wraps the route tree in `root-layout-client.tsx`
 

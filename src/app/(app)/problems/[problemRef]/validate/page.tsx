@@ -9,36 +9,42 @@ import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useProblemValidation, getAdjacentSteps } from "../context"
 import { VALIDATE_CASE_STUDIES } from "./case-studies"
-import type { DecisionLevel, ValidationMetric } from "@/types/idea"
+import type { ValidationMetric } from "@/types/idea"
 import { cn } from "@/lib/utils"
-import { ShieldCheck, CheckCircle2, XCircle, HelpCircle, Users, RefreshCw, DollarSign, TrendingUp, TrendingDown, Minus } from "lucide-react"
+import { ShieldCheck, CheckCircle2, XCircle, HelpCircle, Users, RefreshCw, DollarSign, ArrowRightLeft } from "lucide-react"
 
-const LEVELS: DecisionLevel[] = ["low", "medium", "high"]
-
-function LevelToggle({
-  value,
+function HowManyInput({
+  metric,
   onChange,
 }: {
-  value: DecisionLevel
-  onChange: (v: DecisionLevel) => void
+  metric: ValidationMetric
+  onChange: (patch: Partial<ValidationMetric>) => void
 }) {
+  const [localValue, setLocalValue] = useState(metric.value !== null ? String(metric.value) : "")
+  const onChangeRef = useRef(onChange)
+  useEffect(() => { onChangeRef.current = onChange })
+
+  useEffect(() => {
+    const parsed = localValue !== "" ? Number(localValue) : null
+    if (parsed === metric.value) return
+    const timer = setTimeout(() => onChangeRef.current({ value: parsed }), 600)
+    return () => clearTimeout(timer)
+  }, [localValue]) // eslint-disable-line react-hooks/exhaustive-deps
+
   return (
-    <div className="flex rounded-md border border-white/30 overflow-hidden text-xs font-medium">
-      {LEVELS.map((level, i) => (
-        <button
-          key={level}
-          onClick={() => onChange(value === level ? "" : level)}
-          className={cn(
-            "flex-1 py-1.5 capitalize transition-colors",
-            i < LEVELS.length - 1 && "border-r border-white/30",
-            value === level
-              ? "bg-white text-foreground"
-              : "text-white/70 hover:bg-white/10"
-          )}
-        >
-          {level}
-        </button>
-      ))}
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <Users className="h-3.5 w-3.5 text-white/70 shrink-0" />
+        <span className="text-md font-medium text-white">How many customers</span>
+      </div>
+      <p className="text-xs text-white/60">Estimate the total number of people who experience this problem. Think about your target market segment and how widespread the issue is.</p>
+      <Input
+        type="number"
+        placeholder="e.g. 10000"
+        className="h-8 text-xs w-28 bg-white border-white text-foreground"
+        value={localValue}
+        onChange={(e) => setLocalValue(e.target.value)}
+      />
     </div>
   )
 }
@@ -73,42 +79,22 @@ function MetricInput({
   }, [localUnit]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="flex flex-col gap-1.5">
-      <LevelToggle value={metric.level} onChange={(l) => onChange({ level: l })} />
-      <div className="flex gap-2">
-        <Input
-          type="number"
-          placeholder={valuePlaceholder}
-          className="h-7 text-xs w-24 bg-white border-white text-foreground"
-          value={localValue}
-          onChange={(e) => setLocalValue(e.target.value)}
-        />
-        <Input
-          placeholder={unitPlaceholder}
-          className="h-7 text-xs bg-white border-white text-foreground"
-          value={localUnit}
-          onChange={(e) => setLocalUnit(e.target.value)}
-        />
-      </div>
+    <div className="flex gap-2">
+      <Input
+        type="number"
+        placeholder={valuePlaceholder}
+        className="h-8 text-xs w-28 bg-white border-white text-foreground"
+        value={localValue}
+        onChange={(e) => setLocalValue(e.target.value)}
+      />
+      <Input
+        placeholder={unitPlaceholder}
+        className="h-8 text-xs bg-white border-white text-foreground"
+        value={localUnit}
+        onChange={(e) => setLocalUnit(e.target.value)}
+      />
     </div>
   )
-}
-
-type Signal = { text: string; desc: string; icon: React.ReactNode; className: string }
-
-function getSignal(people: DecisionLevel, frequency: DecisionLevel, worth: DecisionLevel): Signal | null {
-  const n = { "": 0, low: 1, medium: 2, high: 3 }
-  const filled = [people, frequency, worth].filter(Boolean).length
-  if (filled === 0) return null
-  const total = n[people] + n[frequency] + n[worth]
-
-  if (total >= 8)
-    return { text: "Strong opportunity", desc: "Large audience, frequent problem, high value — worth pursuing", icon: <TrendingUp className="h-4 w-4" />, className: "bg-green-50 border-green-200 text-green-800" }
-  if (total >= 6)
-    return { text: "Good opportunity", desc: "Solid combination of reach, frequency, and value", icon: <TrendingUp className="h-4 w-4" />, className: "bg-green-50 border-green-200 text-green-800" }
-  if (total >= 4)
-    return { text: "Moderate opportunity", desc: "Some factors are promising but others need more evidence", icon: <Minus className="h-4 w-4" />, className: "bg-yellow-50 border-yellow-200 text-yellow-800" }
-  return { text: "Weak case", desc: "Low reach, frequency, or value — consider whether this is painful enough", icon: <TrendingDown className="h-4 w-4" />, className: "bg-red-50 border-red-200 text-red-800" }
 }
 
 export default function VerdictPage() {
@@ -117,13 +103,12 @@ export default function VerdictPage() {
   const {
     problemRef,
     status, setStatus, reason, setReason,
-    validationAssessment, setHowManyPeople, setHowOften, setWorthToThem,
+    validationAssessment, setHowManyPeople, setHowOften, setWorthToThem, setCostOfSwitching,
   } = useProblemValidation()
 
   const { prevPath } = getAdjacentSteps(pathname, problemRef)
 
-  const { howManyPeople, howOften, worthToThem } = validationAssessment
-  const signal = getSignal(howManyPeople.level, howOften.level, worthToThem.level)
+  const { howManyPeople, howOften, worthToThem, costOfSwitching } = validationAssessment
 
   const [localReason, setLocalReason] = useState(reason)
   const statusRef = useRef(status)
@@ -151,14 +136,14 @@ export default function VerdictPage() {
         <div className="flex flex-col gap-3 text-md text-muted-foreground">
           <p>
             Before committing to a problem, assess how big the opportunity really is.
-            Three factors matter most:
+            Four factors matter most:
           </p>
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500 shrink-0">
                 <Users className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">How many people</strong> — how large is the audience experiencing this problem?</p>
+              <p><strong className="text-foreground">How many customers</strong> — how large is the audience experiencing this problem?</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500 shrink-0">
@@ -172,19 +157,21 @@ export default function VerdictPage() {
               </div>
               <p><strong className="text-foreground">How much is it worth</strong> — how much would they pay or benefit from a solution?</p>
             </div>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-500 shrink-0">
+                <ArrowRightLeft className="h-4 w-4 text-white" />
+              </div>
+              <p><strong className="text-foreground">Cost of switching</strong> — how much effort or cost does it take for customers to switch from their current solution?</p>
+            </div>
           </div>
           <h3 className="mt-4 text-xl font-bold text-foreground">What you&apos;ll do</h3>
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-3">
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">1</span>
-              <p><strong className="text-foreground">Rate each factor</strong> — set How many people, How often, and How much is it worth to Low, Medium, or High.</p>
+              <p><strong className="text-foreground">Estimate each factor</strong> — enter numbers for each of the four factors to quantify the opportunity.</p>
             </div>
             <div className="flex items-center gap-3">
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">2</span>
-              <p><strong className="text-foreground">Add concrete numbers</strong> — optionally fill in estimates to back up your ratings.</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">3</span>
               <p><strong className="text-foreground">Record your verdict</strong> — decide whether the problem is <strong className="text-foreground">Valid</strong>, <strong className="text-foreground">Unsure</strong>, or <strong className="text-foreground">Invalid</strong>.</p>
             </div>
           </div>
@@ -204,27 +191,17 @@ export default function VerdictPage() {
             <div className="bg-primary rounded-xl p-8">
               <div className="flex flex-col gap-5">
                 {/* Decision factors */}
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-5">
                   <p className="text-sm font-medium text-white">Decision Factors</p>
 
-                  <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
-                    <div className="flex items-center gap-2 pt-1.5">
-                      <Users className="h-3.5 w-3.5 text-white/70 shrink-0" />
-                      <span className="text-md font-medium text-white">How many people</span>
-                    </div>
-                    <MetricInput
-                      metric={howManyPeople}
-                      onChange={setHowManyPeople}
-                      valuePlaceholder="e.g. 10000"
-                      unitPlaceholder="e.g. users"
-                    />
-                  </div>
+                  <HowManyInput metric={howManyPeople} onChange={setHowManyPeople} />
 
-                  <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
-                    <div className="flex items-center gap-2 pt-1.5">
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
                       <RefreshCw className="h-3.5 w-3.5 text-white/70 shrink-0" />
-                      <span className="text-md font-medium text-white">How often</span>
+                      <span className="text-md font-medium text-white">How often does the problem occur</span>
                     </div>
+                    <p className="text-xs text-white/60">How frequently do customers encounter this problem? A problem that happens daily is far more urgent than one that occurs once a year.</p>
                     <MetricInput
                       metric={howOften}
                       onChange={setHowOften}
@@ -233,11 +210,12 @@ export default function VerdictPage() {
                     />
                   </div>
 
-                  <div className="grid grid-cols-[1fr_2fr] items-start gap-3">
-                    <div className="flex items-center gap-2 pt-1.5">
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
                       <DollarSign className="h-3.5 w-3.5 text-white/70 shrink-0" />
                       <span className="text-md font-medium text-white">How much is it worth</span>
                     </div>
+                    <p className="text-xs text-white/60">What is the monetary value of solving this problem? Consider how much customers currently spend on workarounds, or how much time and money they lose because of it.</p>
                     <MetricInput
                       metric={worthToThem}
                       onChange={setWorthToThem}
@@ -245,17 +223,21 @@ export default function VerdictPage() {
                       unitPlaceholder="e.g. USD per month"
                     />
                   </div>
-                </div>
 
-                {signal && (
-                  <div className={cn("flex items-start gap-2.5 rounded-md border px-3 py-2.5", signal.className)}>
-                    {signal.icon}
-                    <div className="flex flex-col gap-0.5">
-                      <p className="text-md font-semibold">{signal.text}</p>
-                      <p className="text-xs">{signal.desc}</p>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                      <ArrowRightLeft className="h-3.5 w-3.5 text-white/70 shrink-0" />
+                      <span className="text-md font-medium text-white">What is the cost of switching</span>
                     </div>
+                    <p className="text-xs text-white/60">How much effort, money, or disruption does it take for customers to move away from their current solution? High switching costs mean customers are more locked in — your solution needs to offer a compelling reason to change.</p>
+                    <MetricInput
+                      metric={costOfSwitching}
+                      onChange={setCostOfSwitching}
+                      valuePlaceholder="e.g. 200"
+                      unitPlaceholder="e.g. USD one-time"
+                    />
                   </div>
-                )}
+                </div>
 
                 {/* Notes */}
                 <div className="flex flex-col gap-2 pt-2 border-t border-white/20">
@@ -323,7 +305,7 @@ export default function VerdictPage() {
                   <p className="text-sm font-semibold text-white">{cs.company}</p>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
                     <div>
-                      <span className="text-xs font-medium text-white uppercase tracking-wide">How Many People</span>
+                      <span className="text-xs font-medium text-white uppercase tracking-wide">How Many Customers</span>
                       <p className="mt-0.5 text-white">
                         <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-xs font-semibold text-white mr-1">{cs.howManyPeople.level}</span>
                         {cs.howManyPeople.detail}

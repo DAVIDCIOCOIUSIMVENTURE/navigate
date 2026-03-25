@@ -27,6 +27,7 @@ type ProblemValidationContextValue = {
   setHowManyPeople: (patch: Partial<ValidationMetric>) => void
   setHowOften: (patch: Partial<ValidationMetric>) => void
   setWorthToThem: (patch: Partial<ValidationMetric>) => void
+  setCostOfSwitching: (patch: Partial<ValidationMetric>) => void
 }
 
 const ProblemValidationContext = createContext<ProblemValidationContextValue | null>(null)
@@ -147,6 +148,21 @@ export function ProblemValidationProvider({
     [dispatch, problemId, validationAssessment]
   )
 
+  const setCostOfSwitching = useCallback(
+    (patch: Partial<ValidationMetric>) => {
+      dispatch.problems.update({
+        id: problemId,
+        patch: {
+          validationAssessment: {
+            ...validationAssessment,
+            costOfSwitching: { ...validationAssessment.costOfSwitching, ...patch },
+          },
+        },
+      })
+    },
+    [dispatch, problemId, validationAssessment]
+  )
+
   return (
     <ProblemValidationContext.Provider
       value={{
@@ -163,6 +179,7 @@ export function ProblemValidationProvider({
         setHowManyPeople,
         setHowOften,
         setWorthToThem,
+        setCostOfSwitching,
       }}
     >
       {children}
