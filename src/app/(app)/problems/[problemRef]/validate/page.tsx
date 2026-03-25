@@ -37,7 +37,7 @@ function HowManyInput({
         <Users className="h-3.5 w-3.5 text-white/70 shrink-0" />
         <span className="text-md font-medium text-white">How many customers</span>
       </div>
-      <p className="text-xs text-white/60">Estimate the total number of people who experience this problem. Think about your target market segment and how widespread the issue is.</p>
+      <p className="text-sm text-white/60">Estimate the total number of people who experience this problem. Think about your target market segment and how widespread the issue is.</p>
       <Input
         type="number"
         placeholder="e.g. 10000"
@@ -143,36 +143,36 @@ export default function VerdictPage() {
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500 shrink-0">
                 <Users className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">How many customers</strong> — how large is the audience experiencing this problem?</p>
+              <p><strong className="text-foreground">How many customers</strong> how large is the audience experiencing this problem?</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500 shrink-0">
                 <RefreshCw className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">How often</strong> — how frequently do they encounter it?</p>
+              <p><strong className="text-foreground">How often</strong> how frequently do they encounter it?</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500 shrink-0">
                 <DollarSign className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">How much is it worth</strong> — how much would they pay or benefit from a solution?</p>
+              <p><strong className="text-foreground">How much is it worth</strong> how much would they pay or benefit from a solution?</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-500 shrink-0">
                 <ArrowRightLeft className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">Cost of switching</strong> — how much effort or cost does it take for customers to switch from their current solution?</p>
+              <p><strong className="text-foreground">Cost of switching</strong> how much effort or cost does it take for customers to switch from their current solution?</p>
             </div>
           </div>
           <h3 className="mt-4 text-xl font-bold text-foreground">What you&apos;ll do</h3>
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-3">
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">1</span>
-              <p><strong className="text-foreground">Estimate each factor</strong> — enter numbers for each of the four factors to quantify the opportunity.</p>
+              <p><strong className="text-foreground">Estimate each factor</strong> enter numbers for each of the four factors to quantify the opportunity.</p>
             </div>
             <div className="flex items-center gap-3">
               <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">2</span>
-              <p><strong className="text-foreground">Record your verdict</strong> — decide whether the problem is <strong className="text-foreground">Valid</strong>, <strong className="text-foreground">Unsure</strong>, or <strong className="text-foreground">Invalid</strong>.</p>
+              <p><strong className="text-foreground">Record your verdict</strong> decide whether the problem is <strong className="text-foreground">Valid</strong>, <strong className="text-foreground">Unsure</strong>, or <strong className="text-foreground">Invalid</strong>.</p>
             </div>
           </div>
         </div>
@@ -201,7 +201,7 @@ export default function VerdictPage() {
                       <RefreshCw className="h-3.5 w-3.5 text-white/70 shrink-0" />
                       <span className="text-md font-medium text-white">How often does the problem occur</span>
                     </div>
-                    <p className="text-xs text-white/60">How frequently do customers encounter this problem? A problem that happens daily is far more urgent than one that occurs once a year.</p>
+                    <p className="text-sm text-white/60">How frequently do customers encounter this problem? A problem that happens daily is far more urgent than one that occurs once a year.</p>
                     <MetricInput
                       metric={howOften}
                       onChange={setHowOften}
@@ -215,7 +215,7 @@ export default function VerdictPage() {
                       <DollarSign className="h-3.5 w-3.5 text-white/70 shrink-0" />
                       <span className="text-md font-medium text-white">How much is it worth</span>
                     </div>
-                    <p className="text-xs text-white/60">What is the monetary value of solving this problem? Consider how much customers currently spend on workarounds, or how much time and money they lose because of it.</p>
+                    <p className="text-sm text-white/60">What is the monetary value of solving this problem? Consider how much customers currently spend on workarounds, or how much time and money they lose because of it.</p>
                     <MetricInput
                       metric={worthToThem}
                       onChange={setWorthToThem}
@@ -229,7 +229,7 @@ export default function VerdictPage() {
                       <ArrowRightLeft className="h-3.5 w-3.5 text-white/70 shrink-0" />
                       <span className="text-md font-medium text-white">What is the cost of switching</span>
                     </div>
-                    <p className="text-xs text-white/60">How much effort, money, or disruption does it take for customers to move away from their current solution? High switching costs mean customers are more locked in — your solution needs to offer a compelling reason to change.</p>
+                    <p className="text-sm text-white/60">How much effort, money, or disruption does it take for customers to move away from their current solution? High switching costs mean customers are more locked in, so your solution needs to offer a compelling reason to change.</p>
                     <MetricInput
                       metric={costOfSwitching}
                       onChange={setCostOfSwitching}

@@ -34,7 +34,7 @@ export default function ProblemsPage() {
 
       <div className="rounded-lg border bg-white p-4 text-sm text-muted-foreground leading-relaxed">
         <p>
-          This is your <span className="font-medium text-foreground">problem library</span> — a central place to collect, refine, and track the problems you&apos;ve identified.
+          This is your <span className="font-medium text-foreground">problem library</span>, a central place to collect, refine, and track the problems you&apos;ve identified.
           Use the <span className="font-medium text-foreground">Search for new problem</span> button to brainstorm and discover problems worth solving, then validate each one to determine whether it&apos;s a real pain point with a viable opportunity behind it.
         </p>
       </div>
