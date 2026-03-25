@@ -3,7 +3,9 @@ export type ValidateCaseStudy = {
   howManyPeople: { value: number; detail: string }
   howOften: { value: number; unit: string; detail: string }
   worthToThem: { value: number; unit: string; detail: string }
-  costOfSwitching: { level: "low" | "medium" | "high"; detail: string }
+  costOfSwitching: { level: "none" | "low" | "medium" | "high" | "prohibitive"; detail: string }
+  solutionEffectiveness: { level: "terrible" | "poor" | "average" | "good" | "excellent"; detail: string }
+  competitorSize: { level: "micro" | "small" | "medium" | "large" | "giant"; detail: string }
   verdict: string
   reasoning: string
 }
@@ -26,8 +28,16 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
       detail: "Each email campaign could drive $50-500 in direct sales for a small shop. Businesses were willing to pay $10-30/month, modest individually but massive at scale.",
     },
     costOfSwitching: {
-      level: "low",
+      level: "none",
       detail: "Most small businesses had no existing email tool, so there was nothing to switch from. The free tier eliminated any financial barrier to getting started.",
+    },
+    solutionEffectiveness: {
+      level: "poor",
+      detail: "Existing tools like Constant Contact were clunky, expensive, and designed for enterprises. Small businesses either used nothing or cobbled together manual BCC emails, which were error-prone and unprofessional.",
+    },
+    competitorSize: {
+      level: "medium",
+      detail: "Constant Contact and AWeber existed but were mid-sized companies focused on larger businesses. No dominant player owned the small business email marketing space.",
     },
     verdict: "Valid: Worth Solving",
     reasoning:
@@ -52,6 +62,14 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
     costOfSwitching: {
       level: "high",
       detail: "Migrating notes, docs, and workflows from multiple tools required significant effort. Teams needed to rebuild templates, retrain habits, and convince every member to adopt the new tool.",
+    },
+    solutionEffectiveness: {
+      level: "average",
+      detail: "Individual tools (Trello, Evernote, Google Docs) each did their specific job adequately, but the fragmentation across multiple tools created friction. No single solution addressed the full workflow effectively.",
+    },
+    competitorSize: {
+      level: "large",
+      detail: "Google Workspace, Microsoft Office, Atlassian, and Evernote were all large, well-funded competitors. However, none offered a unified all-in-one workspace, leaving a gap Notion could exploit.",
     },
     verdict: "Valid: Worth Solving",
     reasoning:

@@ -44,9 +44,9 @@ type Signal = { text: string; desc: string; icon: React.ReactNode; className: st
 
 function getSignal(time: DecisionLevel, cost: DecisionLevel, ret: DecisionLevel, mktSize: DecisionLevel): Signal | null {
   if (!ret) return null
-  const n = { "": 0, low: 1, medium: 2, high: 3 }
-  const r = n[ret]
-  const effort = Math.max(n[time], n[cost])
+  const n: Record<string, number> = { "": 0, low: 1, medium: 2, high: 3 }
+  const r = n[ret] ?? 0
+  const effort = Math.max(n[time] ?? 0, n[cost] ?? 0)
   // Market size boosts or dampens the signal: high market = +1, low = -1, unset = 0
   const mktBoost = mktSize === "high" ? 1 : mktSize === "low" ? -1 : 0
   const opportunity = Math.min(3, Math.max(1, r + mktBoost))

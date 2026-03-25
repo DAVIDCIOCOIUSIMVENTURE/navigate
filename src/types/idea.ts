@@ -29,7 +29,7 @@ export type ImpactItem = { category: string; description: string }
 export type ExistingSolutionItem = { id: number; text: string; shortcomings: string[]; impacts: ImpactItem[] }
 
 export type ValidationStatus = "unvalidated" | "in_progress" | "valid" | "invalid" | "unsure"
-export type DecisionLevel = "" | "low" | "medium" | "high"
+export type DecisionLevel = "" | "none" | "low" | "medium" | "high" | "prohibitive" | "small" | "large" | "terrible" | "poor" | "average" | "good" | "excellent" | "micro" | "giant"
 
 export type ValidationMetric = {
   value: number | null
@@ -42,6 +42,8 @@ export type ValidationAssessment = {
   howOften: ValidationMetric
   worthToThem: ValidationMetric
   costOfSwitching: ValidationMetric
+  solutionEffectiveness: ValidationMetric
+  competitorSize: ValidationMetric
 }
 
 export const DEFAULT_VALIDATION_METRIC: ValidationMetric = { value: null, unit: "", level: "" }
@@ -51,6 +53,8 @@ export const DEFAULT_VALIDATION_ASSESSMENT: ValidationAssessment = {
   howOften: { value: null, unit: "", level: "" },
   worthToThem: { value: null, unit: "", level: "" },
   costOfSwitching: { value: null, unit: "", level: "" },
+  solutionEffectiveness: { value: null, unit: "", level: "" },
+  competitorSize: { value: null, unit: "", level: "" },
 }
 
 export type Problem = {

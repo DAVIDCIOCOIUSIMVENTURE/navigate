@@ -28,6 +28,8 @@ type ProblemValidationContextValue = {
   setHowOften: (patch: Partial<ValidationMetric>) => void
   setWorthToThem: (patch: Partial<ValidationMetric>) => void
   setCostOfSwitching: (patch: Partial<ValidationMetric>) => void
+  setSolutionEffectiveness: (patch: Partial<ValidationMetric>) => void
+  setCompetitorSize: (patch: Partial<ValidationMetric>) => void
 }
 
 const ProblemValidationContext = createContext<ProblemValidationContextValue | null>(null)
@@ -163,6 +165,36 @@ export function ProblemValidationProvider({
     [dispatch, problemId, validationAssessment]
   )
 
+  const setSolutionEffectiveness = useCallback(
+    (patch: Partial<ValidationMetric>) => {
+      dispatch.problems.update({
+        id: problemId,
+        patch: {
+          validationAssessment: {
+            ...validationAssessment,
+            solutionEffectiveness: { ...validationAssessment.solutionEffectiveness, ...patch },
+          },
+        },
+      })
+    },
+    [dispatch, problemId, validationAssessment]
+  )
+
+  const setCompetitorSize = useCallback(
+    (patch: Partial<ValidationMetric>) => {
+      dispatch.problems.update({
+        id: problemId,
+        patch: {
+          validationAssessment: {
+            ...validationAssessment,
+            competitorSize: { ...validationAssessment.competitorSize, ...patch },
+          },
+        },
+      })
+    },
+    [dispatch, problemId, validationAssessment]
+  )
+
   return (
     <ProblemValidationContext.Provider
       value={{
@@ -180,6 +212,8 @@ export function ProblemValidationProvider({
         setHowOften,
         setWorthToThem,
         setCostOfSwitching,
+        setSolutionEffectiveness,
+        setCompetitorSize,
       }}
     >
       {children}

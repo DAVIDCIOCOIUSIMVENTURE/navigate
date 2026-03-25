@@ -11,7 +11,7 @@ import { useProblemValidation, getAdjacentSteps } from "../context"
 import { VALIDATE_CASE_STUDIES } from "./case-studies"
 import type { ValidationMetric } from "@/types/idea"
 import { cn } from "@/lib/utils"
-import { ShieldCheck, CheckCircle2, XCircle, HelpCircle, Users, RefreshCw, DollarSign, ArrowRightLeft } from "lucide-react"
+import { ShieldCheck, CheckCircle2, XCircle, HelpCircle, Users, RefreshCw, DollarSign, ArrowRightLeft, Target, Building2 } from "lucide-react"
 
 function HowManyInput({
   metric,
@@ -37,7 +37,7 @@ function HowManyInput({
         <Users className="h-3.5 w-3.5 text-white/70 shrink-0" />
         <span className="text-md font-medium text-white">How many customers</span>
       </div>
-      <p className="text-sm text-white/60">Estimate the total number of people who experience this problem. Think about your target market segment and how widespread the issue is.</p>
+      <p className="text-sm text-white">Estimate the total number of people who experience this problem. Think about your target market segment and how widespread the issue is.</p>
       <Input
         type="number"
         placeholder="e.g. 10000"
@@ -104,11 +104,12 @@ export default function VerdictPage() {
     problemRef,
     status, setStatus, reason, setReason,
     validationAssessment, setHowManyPeople, setHowOften, setWorthToThem, setCostOfSwitching,
+    setSolutionEffectiveness, setCompetitorSize,
   } = useProblemValidation()
 
   const { prevPath } = getAdjacentSteps(pathname, problemRef)
 
-  const { howManyPeople, howOften, worthToThem, costOfSwitching } = validationAssessment
+  const { howManyPeople, howOften, worthToThem, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
 
   const [localReason, setLocalReason] = useState(reason)
   const statusRef = useRef(status)
@@ -136,7 +137,7 @@ export default function VerdictPage() {
         <div className="flex flex-col gap-3 text-md text-muted-foreground">
           <p>
             Before committing to a problem, assess how big the opportunity really is.
-            Four factors matter most:
+            Six factors matter most:
           </p>
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-3">
@@ -162,6 +163,18 @@ export default function VerdictPage() {
                 <ArrowRightLeft className="h-4 w-4 text-white" />
               </div>
               <p><strong className="text-foreground">Cost of switching</strong>: how much effort or cost does it take for customers to switch from their current solution?</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-rose-500 shrink-0">
+                <Target className="h-4 w-4 text-white" />
+              </div>
+              <p><strong className="text-foreground">Solution effectiveness</strong>: how well do existing solutions already solve this problem?</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-500 shrink-0">
+                <Building2 className="h-4 w-4 text-white" />
+              </div>
+              <p><strong className="text-foreground">Competitor size</strong>: how big and established are the competitors already solving this problem?</p>
             </div>
           </div>
           <h3 className="mt-4 text-xl font-bold text-foreground">What you&apos;ll do</h3>
@@ -201,7 +214,7 @@ export default function VerdictPage() {
                       <RefreshCw className="h-3.5 w-3.5 text-white/70 shrink-0" />
                       <span className="text-md font-medium text-white">How often does the problem occur</span>
                     </div>
-                    <p className="text-sm text-white/60">How frequently do customers encounter this problem? A problem that happens daily is far more urgent than one that occurs once a year.</p>
+                    <p className="text-sm text-white">How frequently do customers encounter this problem? A problem that happens daily is far more urgent than one that occurs once a year.</p>
                     <MetricInput
                       metric={howOften}
                       onChange={setHowOften}
@@ -215,7 +228,7 @@ export default function VerdictPage() {
                       <DollarSign className="h-3.5 w-3.5 text-white/70 shrink-0" />
                       <span className="text-md font-medium text-white">How much is it worth</span>
                     </div>
-                    <p className="text-sm text-white/60">What is the monetary value of solving this problem? Consider how much customers currently spend on workarounds, or how much time and money they lose because of it.</p>
+                    <p className="text-sm text-white">What is the monetary value of solving this problem? Consider how much customers currently spend on workarounds, or how much time and money they lose because of it.</p>
                     <MetricInput
                       metric={worthToThem}
                       onChange={setWorthToThem}
@@ -229,16 +242,64 @@ export default function VerdictPage() {
                       <ArrowRightLeft className="h-3.5 w-3.5 text-white/70 shrink-0" />
                       <span className="text-md font-medium text-white">What is the cost of switching</span>
                     </div>
-                    <p className="text-sm text-white/60">How much effort, money, or disruption does it take for customers to move away from their current solution? High switching costs mean customers are more locked in, so your solution needs to offer a compelling reason to change.</p>
-                    <div className="flex gap-2">
-                      {(["low", "medium", "high"] as const).map((level) => (
+                    <p className="text-sm text-white">How much effort, money, or disruption does it take for customers to move away from their current solution? High switching costs mean customers are more locked in, so your solution needs to offer a compelling reason to change.</p>
+                    <div className="flex gap-2 flex-wrap">
+                      {(["none", "low", "medium", "high", "prohibitive"] as const).map((level) => (
                         <button
                           key={level}
                           onClick={() => setCostOfSwitching({ level: costOfSwitching.level === level ? "" : level })}
                           className={cn(
                             "px-4 py-1.5 rounded-md text-sm font-medium capitalize transition-all",
                             costOfSwitching.level === level
-                              ? level === "low" ? "bg-green-500 text-white" : level === "medium" ? "bg-amber-500 text-white" : "bg-red-500 text-white"
+                              ? level === "none" ? "bg-emerald-500 text-white" : level === "low" ? "bg-green-500 text-white" : level === "medium" ? "bg-amber-500 text-white" : level === "high" ? "bg-red-500 text-white" : "bg-red-700 text-white"
+                              : "bg-white/10 text-white hover:bg-white/20"
+                          )}
+                        >
+                          {level}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                      <Target className="h-3.5 w-3.5 text-white/70 shrink-0" />
+                      <span className="text-md font-medium text-white">How effective are existing solutions</span>
+                    </div>
+                    <p className="text-sm text-white">How well do current solutions already address this problem? If existing solutions work well, customers have less incentive to switch. If they are poor, there is a bigger gap for you to fill.</p>
+                    <div className="flex gap-2 flex-wrap">
+                      {(["terrible", "poor", "average", "good", "excellent"] as const).map((level) => (
+                        <button
+                          key={level}
+                          onClick={() => setSolutionEffectiveness({ level: solutionEffectiveness.level === level ? "" : level })}
+                          className={cn(
+                            "px-4 py-1.5 rounded-md text-sm font-medium capitalize transition-all",
+                            solutionEffectiveness.level === level
+                              ? level === "terrible" ? "bg-green-600 text-white" : level === "poor" ? "bg-green-500 text-white" : level === "average" ? "bg-amber-500 text-white" : level === "good" ? "bg-red-500 text-white" : "bg-red-700 text-white"
+                              : "bg-white/10 text-white hover:bg-white/20"
+                          )}
+                        >
+                          {level}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center gap-2">
+                      <Building2 className="h-3.5 w-3.5 text-white/70 shrink-0" />
+                      <span className="text-md font-medium text-white">How big are the competitors</span>
+                    </div>
+                    <p className="text-sm text-white">How large and established are the companies already solving this problem? Competing against well-funded incumbents requires a strong differentiator, while a market with only small players may signal an easier entry.</p>
+                    <div className="flex gap-2 flex-wrap">
+                      {(["micro", "small", "medium", "large", "giant"] as const).map((level) => (
+                        <button
+                          key={level}
+                          onClick={() => setCompetitorSize({ level: competitorSize.level === level ? "" : level })}
+                          className={cn(
+                            "px-4 py-1.5 rounded-md text-sm font-medium capitalize transition-all",
+                            competitorSize.level === level
+                              ? level === "micro" ? "bg-emerald-500 text-white" : level === "small" ? "bg-green-500 text-white" : level === "medium" ? "bg-amber-500 text-white" : level === "large" ? "bg-red-500 text-white" : "bg-red-700 text-white"
                               : "bg-white/10 text-white hover:bg-white/20"
                           )}
                         >
@@ -313,7 +374,7 @@ export default function VerdictPage() {
                   className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-3"
                 >
                   <p className="text-sm font-semibold text-white">{cs.company}</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
                     <div>
                       <span className="text-xs font-medium text-white uppercase tracking-wide">How Many Customers</span>
                       <p className="mt-0.5 text-white">
@@ -340,9 +401,29 @@ export default function VerdictPage() {
                       <p className="mt-0.5 text-white">
                         <span className={cn(
                           "inline-block rounded px-1.5 py-0.5 text-xs font-semibold text-white mr-1 capitalize",
-                          cs.costOfSwitching.level === "low" ? "bg-green-500/30" : cs.costOfSwitching.level === "medium" ? "bg-amber-500/30" : "bg-red-500/30"
+                          cs.costOfSwitching.level === "none" ? "bg-emerald-500/30" : cs.costOfSwitching.level === "low" ? "bg-green-500/30" : cs.costOfSwitching.level === "medium" ? "bg-amber-500/30" : cs.costOfSwitching.level === "high" ? "bg-red-500/30" : "bg-red-700/30"
                         )}>{cs.costOfSwitching.level}</span>
                         {cs.costOfSwitching.detail}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-xs font-medium text-white uppercase tracking-wide">Solution Effectiveness</span>
+                      <p className="mt-0.5 text-white">
+                        <span className={cn(
+                          "inline-block rounded px-1.5 py-0.5 text-xs font-semibold text-white mr-1 capitalize",
+                          cs.solutionEffectiveness.level === "terrible" || cs.solutionEffectiveness.level === "poor" ? "bg-green-500/30" : cs.solutionEffectiveness.level === "average" ? "bg-amber-500/30" : "bg-red-500/30"
+                        )}>{cs.solutionEffectiveness.level}</span>
+                        {cs.solutionEffectiveness.detail}
+                      </p>
+                    </div>
+                    <div>
+                      <span className="text-xs font-medium text-white uppercase tracking-wide">Competitor Size</span>
+                      <p className="mt-0.5 text-white">
+                        <span className={cn(
+                          "inline-block rounded px-1.5 py-0.5 text-xs font-semibold text-white mr-1 capitalize",
+                          cs.competitorSize.level === "micro" ? "bg-emerald-500/30" : cs.competitorSize.level === "small" ? "bg-green-500/30" : cs.competitorSize.level === "medium" ? "bg-amber-500/30" : cs.competitorSize.level === "large" ? "bg-red-500/30" : "bg-red-700/30"
+                        )}>{cs.competitorSize.level}</span>
+                        {cs.competitorSize.detail}
                       </p>
                     </div>
                   </div>
