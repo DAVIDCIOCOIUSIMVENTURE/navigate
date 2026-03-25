@@ -230,12 +230,22 @@ export default function VerdictPage() {
                       <span className="text-md font-medium text-white">What is the cost of switching</span>
                     </div>
                     <p className="text-sm text-white/60">How much effort, money, or disruption does it take for customers to move away from their current solution? High switching costs mean customers are more locked in, so your solution needs to offer a compelling reason to change.</p>
-                    <MetricInput
-                      metric={costOfSwitching}
-                      onChange={setCostOfSwitching}
-                      valuePlaceholder="e.g. 200"
-                      unitPlaceholder="e.g. USD one-time"
-                    />
+                    <div className="flex gap-2">
+                      {(["low", "medium", "high"] as const).map((level) => (
+                        <button
+                          key={level}
+                          onClick={() => setCostOfSwitching({ level: costOfSwitching.level === level ? "" : level })}
+                          className={cn(
+                            "px-4 py-1.5 rounded-md text-sm font-medium capitalize transition-all",
+                            costOfSwitching.level === level
+                              ? level === "low" ? "bg-green-500 text-white" : level === "medium" ? "bg-amber-500 text-white" : "bg-red-500 text-white"
+                              : "bg-white/10 text-white hover:bg-white/20"
+                          )}
+                        >
+                          {level}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
@@ -328,7 +338,10 @@ export default function VerdictPage() {
                     <div>
                       <span className="text-xs font-medium text-white uppercase tracking-wide">Cost of Switching</span>
                       <p className="mt-0.5 text-white">
-                        <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-xs font-semibold text-white mr-1">{cs.costOfSwitching.value} {cs.costOfSwitching.unit}</span>
+                        <span className={cn(
+                          "inline-block rounded px-1.5 py-0.5 text-xs font-semibold text-white mr-1 capitalize",
+                          cs.costOfSwitching.level === "low" ? "bg-green-500/30" : cs.costOfSwitching.level === "medium" ? "bg-amber-500/30" : "bg-red-500/30"
+                        )}>{cs.costOfSwitching.level}</span>
                         {cs.costOfSwitching.detail}
                       </p>
                     </div>

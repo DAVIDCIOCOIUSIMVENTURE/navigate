@@ -3,7 +3,7 @@ export type ValidateCaseStudy = {
   howManyPeople: { value: number; detail: string }
   howOften: { value: number; unit: string; detail: string }
   worthToThem: { value: number; unit: string; detail: string }
-  costOfSwitching: { value: number; unit: string; detail: string }
+  costOfSwitching: { level: "low" | "medium" | "high"; detail: string }
   verdict: string
   reasoning: string
 }
@@ -26,8 +26,7 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
       detail: "Each email campaign could drive $50-500 in direct sales for a small shop. Businesses were willing to pay $10-30/month, modest individually but massive at scale.",
     },
     costOfSwitching: {
-      value: 0,
-      unit: "USD one-time",
+      level: "low",
       detail: "Most small businesses had no existing email tool, so there was nothing to switch from. The free tier eliminated any financial barrier to getting started.",
     },
     verdict: "Valid: Worth Solving",
@@ -51,8 +50,7 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
       detail: "Teams were already paying $10-30/user/month across multiple tools (Trello, Evernote, Google Workspace). Consolidating into one tool did not necessarily cost more, the value was in time saved and reduced complexity.",
     },
     costOfSwitching: {
-      value: 500,
-      unit: "USD per team",
+      level: "high",
       detail: "Migrating notes, docs, and workflows from multiple tools required significant effort. Teams needed to rebuild templates, retrain habits, and convince every member to adopt the new tool.",
     },
     verdict: "Valid: Worth Solving",
