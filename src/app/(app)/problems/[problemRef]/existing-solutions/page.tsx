@@ -125,29 +125,41 @@ export default function ExistingSolutionsPage() {
             they reach for today, even if it&apos;s imperfect or informal.
           </p>
           <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500 shrink-0">
+            <div className="flex items-start gap-3">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500 shrink-0 mt-0.5">
                 <Monitor className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">Existing tools &amp; software</strong>: products already on the market</p>
+              <div>
+                <p className="font-semibold text-foreground">Existing tools &amp; software</p>
+                <p className="text-[15px]">Products already on the market</p>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500 shrink-0">
+            <div className="flex items-start gap-3">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500 shrink-0 mt-0.5">
                 <Wrench className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">Manual workarounds</strong>: spreadsheets, sticky notes, email threads</p>
+              <div>
+                <p className="font-semibold text-foreground">Manual workarounds</p>
+                <p className="text-[15px]">Spreadsheets, sticky notes, email threads</p>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500 shrink-0">
+            <div className="flex items-start gap-3">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500 shrink-0 mt-0.5">
                 <Users className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">Hiring or outsourcing</strong>: paying someone else to handle it</p>
+              <div>
+                <p className="font-semibold text-foreground">Hiring or outsourcing</p>
+                <p className="text-[15px]">Paying someone else to handle it</p>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-rose-500 shrink-0">
+            <div className="flex items-start gap-3">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-rose-500 shrink-0 mt-0.5">
                 <Ban className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">Doing nothing</strong>: ignoring or tolerating the problem</p>
+              <div>
+                <p className="font-semibold text-foreground">Doing nothing</p>
+                <p className="text-[15px]">Ignoring or tolerating the problem</p>
+              </div>
             </div>
           </div>
           <h3 className="mt-4 text-xl font-bold text-foreground">What will you do?</h3>

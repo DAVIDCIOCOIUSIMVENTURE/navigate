@@ -65,29 +65,41 @@ export default function CustomerSegmentPage() {
             sharpens your focus and makes the problem more concrete.
           </p>
           <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500 shrink-0">
+            <div className="flex items-start gap-3">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500 shrink-0 mt-0.5">
                 <Briefcase className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">Role &amp; industry</strong>: what do they do, and in which sector? (e.g. freelance graphic designers, NHS nurses, SaaS founders)</p>
+              <div>
+                <p className="font-semibold text-foreground">Role &amp; industry</p>
+                <p className="text-[15px]">What do they do, and in which sector? (e.g. freelance graphic designers, NHS nurses, SaaS founders)</p>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500 shrink-0">
+            <div className="flex items-start gap-3">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500 shrink-0 mt-0.5">
                 <MapPin className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">Demographics &amp; geography</strong>: age range, location, income level, company size</p>
+              <div>
+                <p className="font-semibold text-foreground">Demographics &amp; geography</p>
+                <p className="text-[15px]">Age range, location, income level, company size</p>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500 shrink-0">
+            <div className="flex items-start gap-3">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500 shrink-0 mt-0.5">
                 <Target className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">Behaviour &amp; situation</strong>: what triggers the problem? When and how often does it happen?</p>
+              <div>
+                <p className="font-semibold text-foreground">Behaviour &amp; situation</p>
+                <p className="text-[15px]">What triggers the problem? When and how often does it happen?</p>
+              </div>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-rose-500 shrink-0">
+            <div className="flex items-start gap-3">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-rose-500 shrink-0 mt-0.5">
                 <Filter className="h-4 w-4 text-white" />
               </div>
-              <p><strong className="text-foreground">Urgency &amp; willingness</strong>: how badly do they need a solution? Are they already spending time or money trying to fix it?</p>
+              <div>
+                <p className="font-semibold text-foreground">Urgency &amp; willingness</p>
+                <p className="text-[15px]">How badly do they need a solution? Are they already spending time or money trying to fix it?</p>
+              </div>
             </div>
           </div>
         </div>
@@ -110,11 +122,17 @@ export default function CustomerSegmentPage() {
         <div className="flex flex-col gap-3 text-md text-muted-foreground">
           <div className="flex items-center gap-3">
             <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">1</span>
-            <p><strong className="text-foreground">Describe your customer</strong>: paint a clear picture of who experiences this problem, using the filters above to be as specific as possible.</p>
+            <div>
+              <p className="font-semibold text-foreground">Describe your customer</p>
+              <p className="text-[15px]">Paint a clear picture of who experiences this problem, using the filters above to be as specific as possible.</p>
+            </div>
           </div>
           <div className="flex items-center gap-3">
             <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">2</span>
-            <p><strong className="text-foreground">Estimate the segment size</strong>: how many people fit this description? An order-of-magnitude is fine.</p>
+            <div>
+              <p className="font-semibold text-foreground">Estimate the segment size</p>
+              <p className="text-[15px]">How many people fit this description? An order-of-magnitude is fine.</p>
+            </div>
           </div>
         </div>
 
