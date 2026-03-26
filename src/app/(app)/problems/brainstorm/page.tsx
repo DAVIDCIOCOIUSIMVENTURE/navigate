@@ -476,7 +476,7 @@ export default function BrainstormPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {Icon && <Icon className={cn("h-4 w-4", colors?.icon || "text-muted-foreground")} />}
-                    <CardTitle className="text-sm font-semibold">
+                    <CardTitle className={cn("text-sm font-semibold", colors?.icon)}>
                       {column.title}
                     </CardTitle>
                   </div>
