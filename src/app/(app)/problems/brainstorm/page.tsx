@@ -51,7 +51,6 @@ import {
   Users,
   X,
 } from "lucide-react"
-import { toast } from "sonner"
 import { Textarea } from "@/components/ui/textarea"
 import { brainstormColumns, type BrainstormItem, type BrainstormColumn } from "./data"
 import type { Problem } from "@/store/problems-model"
