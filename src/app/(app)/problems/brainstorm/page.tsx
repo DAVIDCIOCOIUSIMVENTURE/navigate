@@ -295,6 +295,8 @@ export default function BrainstormPage() {
   const initRef = useRef(false)
   const [saveDialogOpen, setSaveDialogOpen] = useState(false)
   const [saveFields, setSaveFields] = useState<Record<string, string>>({})
+  const [nextStepDialogOpen, setNextStepDialogOpen] = useState(false)
+  const [lastSavedProblemId, setLastSavedProblemId] = useState<number | null>(null)
   const [tableDrawerOpen, setTableDrawerOpen] = useState(false)
   const fullView = useSelector((state: RootState) => state.settings.fullView)
 
@@ -365,21 +367,18 @@ export default function BrainstormPage() {
     setSaveDialogOpen(true)
   }
 
-  const saveCombination = () => {
+  const saveCombination = async () => {
     const patch: Partial<Pick<Problem, "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "selfDiscovery">> = {}
     for (const column of allColumns) {
       const field = COLUMN_TO_FIELD[column.id]
       const value = saveFields[column.id]?.trim()
       patch[field] = value ? value.split(",").map((s) => s.trim()).filter(Boolean) : []
     }
-    dispatch.problems.create({ ...patch, source: "brainstorm", description: saveFields["description"]?.trim() ?? "" })
+    const newProblem = await dispatch.problems.create({ ...patch, source: "brainstorm", description: saveFields["description"]?.trim() ?? "" })
     clearAll()
     setSaveDialogOpen(false)
-    toast.success("Problem saved", {
-      description: saveFields["description"]?.trim() || "Your problem has been added to the saved problems list.",
-      style: { background: "#16a34a", color: "#ffffff", border: "1px solid #16a34a" },
-      classNames: { description: "!text-white", icon: "!text-white" },
-    })
+    setLastSavedProblemId(newProblem.id)
+    setNextStepDialogOpen(true)
   }
 
   const openEditDialog = (problem: Problem) => {
@@ -673,6 +672,37 @@ export default function BrainstormPage() {
         onFieldsChange={setEditFields}
         columns={allColumns}
       />
+
+      <Dialog open={nextStepDialogOpen} onOpenChange={setNextStepDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Problem Saved</DialogTitle>
+            <DialogDescription>
+              Your problem has been saved. What would you like to do next?
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-3 pt-4">
+            <Button
+              onClick={() => {
+                setNextStepDialogOpen(false)
+                if (lastSavedProblemId !== null) {
+                  router.push(`/problems/${lastSavedProblemId}/introduction`)
+                }
+              }}
+              className="gap-2"
+            >
+              <ArrowRight className="h-4 w-4" />
+              Continue to Problem Validation
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => setNextStepDialogOpen(false)}
+            >
+              Keep Brainstorming
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 
