@@ -9,6 +9,7 @@ interface SettingsState {
   ideaMode: "guided" | "quickstart"
   hiddenBrainstormColumns: string[]
   fullView: boolean
+  brainstormSelected: string[]
 }
 
 const defaultState: SettingsState = {
@@ -16,6 +17,7 @@ const defaultState: SettingsState = {
   ideaMode: "guided",
   hiddenBrainstormColumns: [],
   fullView: false,
+  brainstormSelected: [],
 }
 
 function saveToStorage(state: SettingsState) {
@@ -49,6 +51,10 @@ export const settings = createModel<RootModel>()({
     setFullView(state, fullView: boolean) {
       // Not persisted — resets on reload
       return { ...state, fullView }
+    },
+    setBrainstormSelected(state, brainstormSelected: string[]) {
+      // Not persisted — resets on reload
+      return { ...state, brainstormSelected }
     },
   },
 

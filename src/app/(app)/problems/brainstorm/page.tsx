@@ -284,7 +284,12 @@ export default function BrainstormPage() {
     dispatch.settings.setHiddenBrainstormColumns(next)
   }
 
-  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const brainstormSelectedArray = useSelector((state: RootState) => state.settings.brainstormSelected)
+  const selected = useMemo(() => new Set(brainstormSelectedArray), [brainstormSelectedArray])
+  const setSelected = (updater: Set<string> | ((prev: Set<string>) => Set<string>)) => {
+    const next = typeof updater === "function" ? updater(selected) : updater
+    dispatch.settings.setBrainstormSelected(Array.from(next))
+  }
   const [editingProblem, setEditingProblem] = useState<Problem | null>(null)
   const [editFields, setEditFields] = useState<Record<string, string>>({})
   const initRef = useRef(false)
