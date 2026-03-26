@@ -31,7 +31,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { ArrowRight, ChevronDown, ChevronRight, Pencil, RotateCcw, Save, Trash2, X } from "lucide-react"
+import {
+  ArrowRight,
+  ChevronDown,
+  ChevronRight,
+  Compass,
+  Eye,
+  EyeOff,
+  MapPin,
+  Pencil,
+  RotateCcw,
+  Save,
+  Settings,
+  Target,
+  Trash2,
+  TriangleAlert,
+  Users,
+  X,
+} from "lucide-react"
 import { toast } from "sonner"
 import { Textarea } from "@/components/ui/textarea"
 import { brainstormColumns, type BrainstormItem, type BrainstormColumn } from "./data"
@@ -39,6 +56,28 @@ import type { Problem } from "@/store/problems-model"
 import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
 import { cn } from "@/lib/utils"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
+const COLUMN_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
+  "customer-segments": Users,
+  "contexts": MapPin,
+  "jobs-to-be-done": Target,
+  "problem-types": TriangleAlert,
+  "self-discovery": Compass,
+}
+
+const COLUMN_COLORS: Record<string, { icon: string; border: string; pill: string }> = {
+  "customer-segments": { icon: "text-blue-500", border: "border-t-blue-500", pill: "bg-blue-500/10 text-blue-700 dark:text-blue-400" },
+  "contexts": { icon: "text-amber-500", border: "border-t-amber-500", pill: "bg-amber-500/10 text-amber-700 dark:text-amber-400" },
+  "jobs-to-be-done": { icon: "text-emerald-500", border: "border-t-emerald-500", pill: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400" },
+  "problem-types": { icon: "text-rose-500", border: "border-t-rose-500", pill: "bg-rose-500/10 text-rose-700 dark:text-rose-400" },
+  "self-discovery": { icon: "text-violet-500", border: "border-t-violet-500", pill: "bg-violet-500/10 text-violet-700 dark:text-violet-400" },
+}
 
 const COLUMN_TO_FIELD: Record<string, keyof Pick<Problem, "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "selfDiscovery">> = {
   "customer-segments": "customerSegments",
@@ -229,9 +268,19 @@ export default function BrainstormPage() {
   }, [triggers])
 
   const allColumns = useMemo<BrainstormColumn[]>(
-    () => [...brainstormColumns, selfDiscoveryColumn],
+    () => [selfDiscoveryColumn, ...brainstormColumns],
     [selfDiscoveryColumn]
   )
+
+  const hiddenColumnsArray = useSelector((state: RootState) => state.settings.hiddenBrainstormColumns)
+  const hiddenColumns = useMemo(() => new Set(hiddenColumnsArray), [hiddenColumnsArray])
+
+  const toggleColumnVisibility = (columnId: string) => {
+    const next = hiddenColumns.has(columnId)
+      ? hiddenColumnsArray.filter((id) => id !== columnId)
+      : [...hiddenColumnsArray, columnId]
+    dispatch.settings.setHiddenBrainstormColumns(next)
+  }
 
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [editingProblem, setEditingProblem] = useState<Problem | null>(null)
@@ -358,19 +407,67 @@ export default function BrainstormPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 flex-1 min-h-0">
+      <div className="flex gap-4 flex-1 min-h-0">
         {allColumns.map((column) => {
           const columnSelected = getSelectedForColumn(column.items, selected)
+          const isHidden = hiddenColumns.has(column.id)
+          const Icon = COLUMN_ICONS[column.id]
+
+          const colors = COLUMN_COLORS[column.id]
+
+          if (isHidden) {
+            return (
+              <Card key={column.id} className={cn("flex flex-col items-center pt-3 pb-4 min-h-0 w-12 shrink-0 border-t-2", colors?.border)}>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0">
+                      <Settings className="h-3.5 w-3.5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    <DropdownMenuItem onClick={() => toggleColumnVisibility(column.id)}>
+                      <Eye className="h-4 w-4 mr-2" />
+                      Show column
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+                <div className="flex-1" />
+                <span className={cn("text-xs font-semibold [writing-mode:vertical-lr] rotate-180 select-none mb-3", colors?.icon || "text-muted-foreground")}>
+                  {column.title}
+                </span>
+                {Icon && <Icon className={cn("h-4 w-4 mb-3", colors?.icon || "text-muted-foreground")} />}
+              </Card>
+            )
+          }
+
           return (
-            <Card key={column.id} className="flex flex-col min-h-0">
+            <Card key={column.id} className={cn("flex flex-col min-h-0 flex-1 min-w-0 border-t-2", colors?.border)}>
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-semibold">
-                    {column.title}
-                  </CardTitle>
-                  <span className="text-xs text-muted-foreground">
-                    {columnSelected.length} / {collectAllIds(column.items).length}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    {Icon && <Icon className={cn("h-4 w-4", colors?.icon || "text-muted-foreground")} />}
+                    <CardTitle className="text-sm font-semibold">
+                      {column.title}
+                    </CardTitle>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs text-muted-foreground">
+                      {columnSelected.length} / {collectAllIds(column.items).length}
+                    </span>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon" className="h-7 w-7">
+                          <Settings className="h-3.5 w-3.5" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => toggleColumnVisibility(column.id)}>
+                          <EyeOff className="h-4 w-4 mr-2" />
+                          Hide column
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
                 </div>
               </CardHeader>
               <CardContent className="flex-1 pt-0 flex flex-col gap-3 min-h-0">
@@ -395,34 +492,28 @@ export default function BrainstormPage() {
       {totalSelected > 0 && (
         <Card className="shrink-0">
           <CardContent className="py-3">
-            <div className="flex items-start gap-6">
-              {allColumns.map((column) => {
+            <div className="flex flex-wrap gap-1.5">
+              {allColumns.flatMap((column) => {
                 const columnSelected = getSelectedForColumn(column.items, selected)
-                if (columnSelected.length === 0) return null
-                return (
-                  <div key={column.id} className="flex flex-col gap-1.5 min-w-0">
-                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-                      {column.title}
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {columnSelected.map(({ id, label }) => (
-                        <span
-                          key={id}
-                          className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary rounded-full px-2 py-0.5"
-                        >
-                          {label}
-                          <button
-                            onClick={() => toggleItem(id)}
-                            className="hover:text-primary/70 transition-colors"
-                            aria-label={`Remove ${label}`}
-                          >
-                            <X className="h-3 w-3" />
-                          </button>
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )
+                if (columnSelected.length === 0) return []
+                const colors = COLUMN_COLORS[column.id]
+                const Icon = COLUMN_ICONS[column.id]
+                return columnSelected.map(({ id, label }) => (
+                  <span
+                    key={id}
+                    className={cn("inline-flex items-center gap-1 text-xs rounded-full px-2 py-0.5", colors?.pill || "bg-primary/10 text-primary")}
+                  >
+                    {Icon && <Icon className="h-3 w-3 shrink-0" />}
+                    {label}
+                    <button
+                      onClick={() => toggleItem(id)}
+                      className="hover:opacity-70 transition-opacity"
+                      aria-label={`Remove ${label}`}
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                ))
               })}
             </div>
           </CardContent>

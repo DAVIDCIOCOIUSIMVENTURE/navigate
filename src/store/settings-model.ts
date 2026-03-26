@@ -7,11 +7,13 @@ const STORAGE_KEY = "navigate-settings"
 interface SettingsState {
   sidebarMode: SidebarMode
   ideaMode: "guided" | "quickstart"
+  hiddenBrainstormColumns: string[]
 }
 
 const defaultState: SettingsState = {
   sidebarMode: "expanded",
   ideaMode: "guided",
+  hiddenBrainstormColumns: [],
 }
 
 function saveToStorage(state: SettingsState) {
@@ -37,6 +39,11 @@ export const settings = createModel<RootModel>()({
       saveToStorage(next)
       return next
     },
+    setHiddenBrainstormColumns(state, hiddenBrainstormColumns: string[]) {
+      const next = { ...state, hiddenBrainstormColumns }
+      saveToStorage(next)
+      return next
+    },
   },
 
   effects: (dispatch) => ({
@@ -51,6 +58,9 @@ export const settings = createModel<RootModel>()({
         }
         if (stored.ideaMode) {
           dispatch.settings.setIdeaMode(stored.ideaMode)
+        }
+        if (stored.hiddenBrainstormColumns) {
+          dispatch.settings.setHiddenBrainstormColumns(stored.hiddenBrainstormColumns)
         }
       } catch {
         // ignore parse errors
