@@ -1,53 +1,33 @@
 "use client"
 
-import { useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Input } from "@/components/ui/input"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import {
-  AlertCircle, GitFork, Heart, BarChart2, Plus, X, Pencil, LayoutTemplate,
-  ArrowRight, CheckCircle2, HelpCircle, XCircle, Copy, RotateCcw, Lightbulb,
-} from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { StatusSelect } from "@/components/ui/status-select"
+import {
+  AlertCircle, GitFork, Users, LayoutTemplate,
+  ArrowRight, CheckCircle2, HelpCircle, XCircle, Copy, RotateCcw, Lightbulb,
+  RefreshCw, DollarSign, ArrowRightLeft, Target, Building2, BarChart2,
+} from "lucide-react"
 import { useProblemValidation, getAdjacentSteps } from "../context"
+import type { ValidationMetric } from "@/types/idea"
 
-type DialogId = "core" | "existingSolutions" | "emotional"
-
-// ── Shared primitives ─────────────────────────────────────────────────────────
-
-function SectionTitle({
-  icon: Icon, label, onEdit,
-}: {
-  icon: React.ElementType; label: string; onEdit: () => void
-}) {
+function SectionHeader({ icon: Icon, label }: { icon: React.ElementType; label: string }) {
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-2">
-        <Icon className="h-4 w-4 shrink-0 text-foreground/70" />
-        <span className="font-semibold text-md">{label}</span>
-      </div>
-      <button
-        onClick={onEdit}
-        className="text-muted-foreground hover:text-foreground transition-colors p-0.5 rounded"
-        aria-label={`Edit ${label}`}
-      >
-        <Pencil className="h-3.5 w-3.5" />
-      </button>
+    <div className="flex items-center gap-2">
+      <Icon className="h-4 w-4 shrink-0 text-foreground/70" />
+      <span className="font-semibold text-md">{label}</span>
     </div>
   )
 }
 
-function ChipList({ items, chipClass }: { items: string[]; chipClass?: string }) {
+function ChipList({ items }: { items: string[] }) {
   if (items.length === 0) return <span className="text-xs text-muted-foreground/60 italic">None added</span>
   return (
     <div className="flex flex-wrap gap-1">
       {items.map((t) => (
-        <span key={t} className={`inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-xs border ${chipClass ?? "border-border"}`}>
+        <span key={t} className="inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-xs border border-border">
           {t}
         </span>
       ))}
@@ -55,105 +35,62 @@ function ChipList({ items, chipClass }: { items: string[]; chipClass?: string })
   )
 }
 
-function TagInput({
-  tags, onChange, placeholder, chipBorder,
+function EmptyText({ text = "Not provided" }: { text?: string }) {
+  return <span className="text-xs text-muted-foreground/60 italic">{text}</span>
+}
+
+function MetricDisplay({
+  icon: Icon,
+  label,
+  metric,
 }: {
-  tags: string[]; onChange: (t: string[]) => void; placeholder: string; chipBorder?: string
+  icon: React.ElementType
+  label: string
+  metric: ValidationMetric
 }) {
-  const [draft, setDraft] = useState("")
-  const add = () => {
-    const v = draft.trim()
-    if (!v) return
-    onChange([...tags, v])
-    setDraft("")
-  }
+  const hasValue = metric.value !== null
+  const hasLevel = metric.level !== ""
+  if (!hasValue && !hasLevel) return null
+
+  const display = hasValue
+    ? `${metric.value?.toLocaleString()}${metric.unit ? ` ${metric.unit}` : ""}`
+    : metric.level
+
   return (
-    <div className="flex flex-col gap-1.5">
-      {tags.length > 0 && (
-        <div className="flex flex-wrap gap-1">
-          {tags.map((t) => (
-            <span key={t} className={`inline-flex items-center gap-1 rounded-md bg-white/80 px-2 py-0.5 text-xs border ${chipBorder ?? "border-border"}`}>
-              {t}
-              <button onClick={() => onChange(tags.filter((x) => x !== t))} className="text-muted-foreground hover:text-destructive">
-                <X className="h-2.5 w-2.5" />
-              </button>
-            </span>
-          ))}
-        </div>
-      )}
-      <div className="flex gap-1.5">
-        <Input
-          placeholder={placeholder}
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); add() } }}
-          className="h-7 text-xs"
-        />
-        <Button variant="outline" size="sm" className="h-7 px-2 shrink-0" onClick={add} disabled={!draft.trim()}>
-          <Plus className="h-3 w-3" />
-        </Button>
-      </div>
+    <div className="flex items-center gap-2">
+      <Icon className="h-3.5 w-3.5 shrink-0 text-foreground/70" />
+      <span className="text-sm font-medium text-foreground">{label}</span>
+      <span className="text-sm text-foreground/70 capitalize">{display}</span>
     </div>
   )
 }
 
-// ── Page ──────────────────────────────────────────────────────────────────────
-
-export default function ProblemStatementPage() {
+export default function SummaryPage() {
   const router = useRouter()
   const pathname = usePathname()
   const dispatch = useDispatch<AppDispatch>()
-  const [openDialog, setOpenDialog] = useState<DialogId | null>(null)
 
   const {
     problemRef,
     problemId,
-    existingSolutions, setExistingSolutions,
-    emotionalImpact, setEmotionalImpact,
-    status, setStatus,
+    segmentSize,
+    customerDescription,
+    existingSolutions,
+    status,
+    reason,
+    validationAssessment,
   } = useProblemValidation()
 
   const { prevPath } = getAdjacentSteps(pathname, problemRef)
-
-  const quantifiableImpacts = existingSolutions.flatMap((alt) => alt.impacts ?? []).filter((imp) => imp.category || imp.description)
 
   const problem = useSelector((state: RootState) =>
     state.problems.problems.find((p) => p.id === problemId)
   )
 
-  // ── helpers ──
+  const { howManyPeople, howOften, worthToThem, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
 
-  const updateProblem = (patch: Parameters<typeof dispatch.problems.update>[0]["patch"]) =>
-    dispatch.problems.update({ id: problemId, patch })
-
-  // emotional impact
-  const updateEmotion = (i: number, value: string) =>
-    setEmotionalImpact(emotionalImpact.map((item, idx) => idx === i ? value : item))
-  const removeEmotion = (i: number) =>
-    setEmotionalImpact(emotionalImpact.filter((_, idx) => idx !== i))
-  const addEmotion = () =>
-    setEmotionalImpact([...emotionalImpact, ""])
-
-  // existingSolutions
-  const updateSolutionText = (i: number, value: string) =>
-    setExistingSolutions(existingSolutions.map((alt, idx) => idx === i ? { ...alt, text: value } : alt))
-  const removeSolution = (i: number) =>
-    setExistingSolutions(existingSolutions.filter((_, idx) => idx !== i))
-  const addSolution = () =>
-    setExistingSolutions([...existingSolutions, { id: Date.now(), text: "", shortcomings: [], impacts: [] }])
-
-  const updateShortcoming = (altIdx: number, scIdx: number, value: string) =>
-    setExistingSolutions(existingSolutions.map((alt, i) =>
-      i === altIdx ? { ...alt, shortcomings: alt.shortcomings.map((sc, j) => j === scIdx ? value : sc) } : alt
-    ))
-  const removeShortcoming = (altIdx: number, scIdx: number) =>
-    setExistingSolutions(existingSolutions.map((alt, i) =>
-      i === altIdx ? { ...alt, shortcomings: alt.shortcomings.filter((_, j) => j !== scIdx) } : alt
-    ))
-  const addShortcoming = (altIdx: number) =>
-    setExistingSolutions(existingSolutions.map((alt, i) =>
-      i === altIdx ? { ...alt, shortcomings: [...alt.shortcomings, ""] } : alt
-    ))
+  const hasAnyMetric = [howManyPeople, howOften, worthToThem, costOfSwitching, solutionEffectiveness, competitorSize]
+    .some((m) => m.value !== null || m.level !== "")
 
   const handleDuplicate = () => {
     const problems = JSON.parse(localStorage.getItem("navigate-problems") || '{"problems":[]}')
@@ -177,413 +114,320 @@ export default function ProblemStatementPage() {
   }
 
   return (
-    <>
-      <Card className="w-full flex-1">
-        <CardHeader className="px-10 pt-10 pb-0 flex-row items-start justify-between gap-4 space-y-0">
-          <div className="flex flex-col gap-1">
-            <CardTitle icon={LayoutTemplate}>Summary</CardTitle>
-            <p className="text-md text-muted-foreground">Click the pencil icon on any card to edit it.</p>
+    <Card className="w-full flex-1">
+      <CardHeader className="px-10 pt-10 pb-0">
+        <CardTitle icon={LayoutTemplate}>Summary & Next Steps</CardTitle>
+        <p className="text-md text-muted-foreground">A read-only overview of everything you have captured so far.</p>
+      </CardHeader>
+      <CardContent className="p-10 pt-6 flex flex-col gap-6">
+
+        {/* ── Row 1: Core Problem + Customer ── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+
+          {/* ── Core Problem ── */}
+          <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3">
+            <SectionHeader icon={AlertCircle} label="Core Problem" />
+            {problem ? (
+              <>
+                {problem.description ? (
+                  <p className="text-md text-foreground/80 leading-relaxed">{problem.description}</p>
+                ) : (
+                  <EmptyText text="No description" />
+                )}
+                <div className="flex flex-col gap-1">
+                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Customer Segments</p>
+                  <ChipList items={problem.customerSegments} />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Context</p>
+                  <ChipList items={problem.contexts} />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Jobs to Be Done</p>
+                  <ChipList items={problem.jobsToBeDone} />
+                </div>
+                <div className="flex flex-col gap-1">
+                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Problem Types</p>
+                  <ChipList items={problem.problemTypes} />
+                </div>
+              </>
+            ) : (
+              <EmptyText text="No problem selected" />
+            )}
           </div>
-          <StatusSelect status={status} setStatus={setStatus} />
-        </CardHeader>
-        <CardContent className="p-10 pt-6 flex flex-col gap-6">
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
-
-            {/* ── Core Problem ── */}
-            <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-4">
-              <SectionTitle icon={AlertCircle} label="Core Problem" onEdit={() => setOpenDialog("core")} />
-              {problem ? (
-                <>
-                  {problem.description ? (
-                    <p className="text-md text-foreground/80 leading-relaxed">{problem.description}</p>
-                  ) : (
-                    <span className="text-xs text-muted-foreground/60 italic">No description</span>
-                  )}
-                  <div className="flex flex-col gap-1">
-                    <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Customer Segments</p>
-                    <ChipList items={problem.customerSegments} />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Context</p>
-                    <ChipList items={problem.contexts} />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Jobs to Be Done</p>
-                    <ChipList items={problem.jobsToBeDone} />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Problem Types</p>
-                    <ChipList items={problem.problemTypes} />
-                  </div>
-                </>
+          {/* ── Customer ── */}
+          <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3">
+            <SectionHeader icon={Users} label="Customer" />
+            <div className="flex flex-col gap-1">
+              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Segment Size</p>
+              {segmentSize !== null ? (
+                <p className="text-md text-foreground/80">{segmentSize.toLocaleString()}</p>
               ) : (
-                <span className="text-md text-muted-foreground/50 italic">No problem selected</span>
+                <EmptyText />
               )}
             </div>
+            <div className="flex flex-col gap-1">
+              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Description</p>
+              {customerDescription ? (
+                <p className="text-md text-foreground/80 leading-relaxed">{customerDescription}</p>
+              ) : (
+                <EmptyText />
+              )}
+            </div>
+          </div>
 
-            {/* ── Existing Solutions & Shortcomings ── */}
-            <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3">
-              <SectionTitle icon={GitFork} label="Existing Solutions & Shortcomings" onEdit={() => setOpenDialog("existingSolutions")} />
-              {existingSolutions.length > 0 ? (
-                <ul className="flex flex-col gap-3">
-                  {existingSolutions.map((alt) => (
-                    <li key={alt.id} className="flex flex-col gap-1 bg-white/60 rounded-lg px-3 py-2.5 border border-border">
-                      <p className="text-md font-medium text-foreground/90">{alt.text || <span className="italic text-muted-foreground/60">Unnamed</span>}</p>
-                      {alt.shortcomings.length > 0 && (
-                        <ul className="flex flex-col gap-0.5 pl-2 mt-1">
+        </div>
+
+        {/* ── Row 2: Solutions + Validation Assessment ── */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+
+          {/* ── Existing Solutions, Shortcomings & Impacts ── */}
+          <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3">
+            <SectionHeader icon={GitFork} label="Existing Solutions, Shortcomings & Impacts" />
+            {existingSolutions.length > 0 ? (
+              <ul className="flex flex-col gap-3">
+                {existingSolutions.map((alt) => (
+                  <li key={alt.id} className="flex flex-col gap-2 bg-white/60 rounded-lg px-3 py-2.5 border border-border">
+                    <p className="text-md font-medium text-foreground/90">{alt.text || <EmptyText text="Unnamed" />}</p>
+                    {alt.shortcomings.length > 0 && (
+                      <div className="flex flex-col gap-0.5 pl-2">
+                        <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Shortcomings</p>
+                        <ul className="flex flex-col gap-0.5">
                           {alt.shortcomings.map((sc, j) => (
                             <li key={j} className="text-xs text-foreground/70 flex gap-1.5">
                               <span className="text-muted-foreground shrink-0">–</span>
-                              {sc || <span className="italic text-muted-foreground/60">Empty</span>}
+                              {sc || <EmptyText text="Empty" />}
                             </li>
                           ))}
                         </ul>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <span className="text-xs text-muted-foreground/60 italic">No existing solutions added</span>
-              )}
-            </div>
-
-            {/* ── Emotional Impact ── */}
-            <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3">
-              <SectionTitle icon={Heart} label="Emotional Impact" onEdit={() => setOpenDialog("emotional")} />
-              {emotionalImpact.length > 0 ? (
-                <ul className="flex flex-col gap-1">
-                  {emotionalImpact.map((item, i) => (
-                    <li key={i} className="text-md text-foreground/80 flex gap-2">
-                      <span className="text-muted-foreground shrink-0">–</span>
-                      {item || <span className="italic text-muted-foreground/60">Empty</span>}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <span className="text-xs text-muted-foreground/60 italic">No emotional impacts added</span>
-              )}
-            </div>
-
-            {/* ── Quantifiable Impact (aggregated from existingSolutions) ── */}
-            <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3">
-              <div className="flex items-center gap-2">
-                <BarChart2 className="h-4 w-4 shrink-0 text-foreground/70" />
-                <span className="font-semibold text-md">Quantifiable Impact</span>
-              </div>
-              {quantifiableImpacts.length > 0 ? (
-                <ul className="flex flex-col gap-1.5">
-                  {quantifiableImpacts.map((item, i) => (
-                    <li key={i} className="flex gap-2 items-baseline text-md">
-                      <span className="font-medium shrink-0">{item.category || "—"}</span>
-                      <span className="text-foreground/70 text-xs">{item.description}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <span className="text-xs text-muted-foreground/60 italic">No impacts added</span>
-              )}
-            </div>
-
-          </div>{/* end grid */}
-
-          {/* ── Next Steps ── */}
-          <div className="border-t pt-6">
-            <h2 className="text-lg font-semibold flex items-center gap-2 mb-2">
-              <ArrowRight className="h-5 w-5" /> Next Steps
-            </h2>
-            <p className="text-md text-muted-foreground mb-4">
-              Based on your validation verdict, here is what you can do next.
-            </p>
-
-            {status === "valid" && (
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-3">
-                  <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0" />
-                  <h3 className="text-lg font-semibold text-foreground">Your problem is valid</h3>
-                </div>
-                <p className="text-md text-muted-foreground">
-                  You have confirmed that this problem is real, painful, and worth pursuing.
-                  The next step is to brainstorm and evaluate potential solutions.
-                </p>
-                <Button
-                  className="self-start"
-                  onClick={() => router.push("/solutions")}
-                >
-                  <Lightbulb className="h-4 w-4 mr-2" />
-                  Continue to Solutions
-                </Button>
-              </div>
-            )}
-
-            {status === "unsure" && (
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-3">
-                  <HelpCircle className="h-5 w-5 text-orange-500 shrink-0" />
-                  <h3 className="text-lg font-semibold text-foreground">You are unsure about this problem</h3>
-                </div>
-                <p className="text-md text-muted-foreground">
-                  Uncertainty is normal at this stage. It usually means you need more information
-                  before you can confidently commit to solving this problem. You have two options:
-                </p>
-                <div className="flex flex-col gap-4 mt-1">
-                  <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-2">
-                    <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
-                      <Copy className="h-3.5 w-3.5 text-muted-foreground" /> Duplicate and start again
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      This creates a fresh copy of your problem, keeping the core description and
-                      customer definition intact. The existing solutions and validation data will be
-                      cleared so you can approach the problem from a different angle. For example,
-                      try narrowing down to a more specific customer segment, reframing the context,
-                      or exploring different existing solutions you may have overlooked.
-                    </p>
-                    <Button
-                      size="sm"
-                      className="self-start mt-1"
-                      onClick={handleDuplicate}
-                    >
-                      <Copy className="h-4 w-4 mr-2" />
-                      Duplicate &amp; Start Again
-                    </Button>
-                  </div>
-                  <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-2">
-                    <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
-                      <RotateCcw className="h-3.5 w-3.5 text-muted-foreground" /> Revisit your validation
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      Go back to the validation step and review your scores. Think about whether your
-                      estimates for market size, frequency, or willingness to pay were too conservative
-                      or too optimistic. Adjusting even one factor can shift the overall picture.
-                      You can also update your notes to capture what is making you uncertain, which
-                      will help you decide what research or conversations you need next.
-                    </p>
-                    <Button
-                      size="sm"
-                      className="self-start mt-1"
-                      onClick={() => router.push(`/problems/${problemRef}/validate`)}
-                    >
-                      <RotateCcw className="h-4 w-4 mr-2" />
-                      Revisit Validation
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {status === "invalid" && (
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-3">
-                  <XCircle className="h-5 w-5 text-red-500 shrink-0" />
-                  <h3 className="text-lg font-semibold text-foreground">This problem is not valid</h3>
-                </div>
-                <p className="text-md text-muted-foreground">
-                  Your validation suggests this problem is not worth solving in its current form.
-                  That does not mean the underlying idea is bad. Often, a problem becomes valid
-                  when you look at it through a different lens.
-                </p>
-                <div className="flex flex-col gap-4 mt-1">
-                  <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-2">
-                    <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
-                      <Copy className="h-3.5 w-3.5 text-muted-foreground" /> Duplicate and try a different angle
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      This creates a fresh copy of your problem, keeping the core description and
-                      customer definition but clearing all existing solutions and validation data.
-                      Use this to explore whether the problem becomes valid with a different customer
-                      segment, a more focused context, or by reframing the jobs to be done. Many
-                      successful products started by pivoting to a niche that the original validation missed.
-                    </p>
-                    <Button
-                      size="sm"
-                      className="self-start mt-1"
-                      onClick={handleDuplicate}
-                    >
-                      <Copy className="h-4 w-4 mr-2" />
-                      Duplicate &amp; Start Again
-                    </Button>
-                  </div>
-                  <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-2">
-                    <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
-                      <RotateCcw className="h-3.5 w-3.5 text-muted-foreground" /> Move on to a different problem
-                    </h4>
-                    <p className="text-sm text-muted-foreground">
-                      If you are confident this problem is not the right one, go back to your
-                      problem list and pick another problem to validate. Ruling out a problem
-                      is still progress, as it frees you to focus your energy where it matters most.
-                    </p>
-                    <Button
-                      size="sm"
-                      className="self-start mt-1"
-                      onClick={() => router.push("/problems")}
-                    >
-                      Back to Problems
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {(status === "unvalidated" || status === "in_progress") && (
-              <div className="flex flex-col gap-4">
-                <div className="flex items-center gap-3">
-                  <HelpCircle className="h-5 w-5 text-muted-foreground shrink-0" />
-                  <h3 className="text-lg font-semibold text-foreground">No verdict yet</h3>
-                </div>
-                <p className="text-md text-muted-foreground">
-                  Complete the validation step first to see your next steps.
-                </p>
-                <Button
-                  className="self-start"
-                  onClick={() => router.push(`/problems/${problemRef}/validate`)}
-                >
-                  <RotateCcw className="h-4 w-4 mr-2" />
-                  Go to Validation
-                </Button>
-              </div>
+                      </div>
+                    )}
+                    {(alt.impacts ?? []).filter((imp) => imp.category || imp.description).length > 0 && (
+                      <div className="flex flex-col gap-0.5 pl-2">
+                        <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Impacts</p>
+                        <ul className="flex flex-col gap-0.5">
+                          {alt.impacts.filter((imp) => imp.category || imp.description).map((imp, k) => (
+                            <li key={k} className="text-xs text-foreground/70 flex gap-2 items-baseline">
+                              <BarChart2 className="h-3 w-3 shrink-0 text-muted-foreground" />
+                              <span className="font-medium">{imp.category || "—"}</span>
+                              {imp.description && <span>{imp.description}</span>}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <EmptyText text="No existing solutions added" />
             )}
           </div>
 
-          <div className="flex justify-between mt-2">
-            {prevPath ? (
-              <Button variant="outline" onClick={() => router.push(prevPath)}>Previous</Button>
-            ) : <div />}
+          {/* ── Validation Assessment ── */}
+          <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-4">
+            <SectionHeader icon={Target} label="Validation Assessment" />
+            {hasAnyMetric ? (
+              <>
+                <div className="flex flex-col gap-4">
+                  <MetricDisplay icon={Users} label="How many customers" metric={howManyPeople} />
+                  <MetricDisplay icon={RefreshCw} label="How often" metric={howOften} />
+                  <MetricDisplay icon={DollarSign} label="How much is it worth" metric={worthToThem} />
+                  <MetricDisplay icon={ArrowRightLeft} label="Cost of switching" metric={costOfSwitching} />
+                  <MetricDisplay icon={Target} label="Solution effectiveness" metric={solutionEffectiveness} />
+                  <MetricDisplay icon={Building2} label="Competitor size" metric={competitorSize} />
+                </div>
+                {reason && (
+                  <div className="flex flex-col gap-1 border-t pt-3">
+                    <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Notes</p>
+                    <p className="text-md text-foreground/80 leading-relaxed">{reason}</p>
+                  </div>
+                )}
+              </>
+            ) : (
+              <EmptyText text="No validation data yet — complete the validation step first" />
+            )}
+
+            {/* Verdict badge */}
+            {(status === "valid" || status === "invalid" || status === "unsure") && (
+              <div className="border-t pt-3 flex items-center gap-2">
+                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Verdict:</p>
+                {status === "valid" && (
+                  <span className="inline-flex items-center gap-1.5 rounded-md bg-green-50 border border-green-200 px-2.5 py-1 text-sm font-medium text-green-700">
+                    <CheckCircle2 className="h-3.5 w-3.5" /> Valid
+                  </span>
+                )}
+                {status === "unsure" && (
+                  <span className="inline-flex items-center gap-1.5 rounded-md bg-orange-50 border border-orange-200 px-2.5 py-1 text-sm font-medium text-orange-700">
+                    <HelpCircle className="h-3.5 w-3.5" /> Unsure
+                  </span>
+                )}
+                {status === "invalid" && (
+                  <span className="inline-flex items-center gap-1.5 rounded-md bg-red-50 border border-red-200 px-2.5 py-1 text-sm font-medium text-red-700">
+                    <XCircle className="h-3.5 w-3.5" /> Invalid
+                  </span>
+                )}
+              </div>
+            )}
           </div>
+        </div>
 
-        </CardContent>
-      </Card>
+        {/* ── Next Steps ── */}
+        <div className="border-t pt-6">
+          <h2 className="text-lg font-semibold flex items-center gap-2 mb-2">
+            <ArrowRight className="h-5 w-5" /> Next Steps
+          </h2>
+          <p className="text-md text-muted-foreground mb-4">
+            Based on your validation verdict, here is what you can do next.
+          </p>
 
-      {/* ── Core Problem Dialog ── */}
-      <Dialog open={openDialog === "core"} onOpenChange={(o) => !o && setOpenDialog(null)}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <AlertCircle className="h-4 w-4 text-rose-500" /> Core Problem
-            </DialogTitle>
-          </DialogHeader>
-          {problem && (
-            <div className="flex flex-col gap-4 mt-2">
-              <Textarea
-                rows={3}
-                placeholder="Describe the problem…"
-                value={problem.description}
-                onChange={(e) => updateProblem({ description: e.target.value })}
-                className="resize-none text-md border-rose-200 focus-visible:ring-rose-300"
-              />
-              <div className="flex flex-col gap-1">
-                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Customer Segments</p>
-                <TagInput tags={problem.customerSegments} onChange={(v) => updateProblem({ customerSegments: v })} placeholder="Add segment…" chipBorder="border-rose-200" />
+          {status === "valid" && (
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-3">
+                <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0" />
+                <h3 className="text-lg font-semibold text-foreground">Your problem is valid</h3>
               </div>
-              <div className="flex flex-col gap-1">
-                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Context</p>
-                <TagInput tags={problem.contexts} onChange={(v) => updateProblem({ contexts: v })} placeholder="Add context…" chipBorder="border-rose-200" />
+              <p className="text-md text-muted-foreground">
+                You have confirmed that this problem is real, painful, and worth pursuing.
+                The next step is to brainstorm and evaluate potential solutions.
+              </p>
+              <Button
+                className="self-start"
+                onClick={() => router.push("/solutions")}
+              >
+                <Lightbulb className="h-4 w-4 mr-2" />
+                Continue to Solutions
+              </Button>
+            </div>
+          )}
+
+          {status === "unsure" && (
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-3">
+                <HelpCircle className="h-5 w-5 text-orange-500 shrink-0" />
+                <h3 className="text-lg font-semibold text-foreground">You are unsure about this problem</h3>
               </div>
-              <div className="flex flex-col gap-1">
-                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Jobs to Be Done</p>
-                <TagInput tags={problem.jobsToBeDone} onChange={(v) => updateProblem({ jobsToBeDone: v })} placeholder="Add job…" chipBorder="border-rose-200" />
-              </div>
-              <div className="flex flex-col gap-1">
-                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Problem Types</p>
-                <TagInput tags={problem.problemTypes} onChange={(v) => updateProblem({ problemTypes: v })} placeholder="Add type…" chipBorder="border-rose-200" />
+              <p className="text-md text-muted-foreground">
+                Uncertainty is normal at this stage. It usually means you need more information
+                before you can confidently commit to solving this problem. You have two options:
+              </p>
+              <div className="flex flex-col gap-4 mt-1">
+                <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-2">
+                  <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                    <Copy className="h-3.5 w-3.5 text-muted-foreground" /> Duplicate and start again
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    This creates a fresh copy of your problem, keeping the core description and
+                    customer definition intact. The existing solutions and validation data will be
+                    cleared so you can approach the problem from a different angle.
+                  </p>
+                  <Button
+                    size="sm"
+                    className="self-start mt-1"
+                    onClick={handleDuplicate}
+                  >
+                    <Copy className="h-4 w-4 mr-2" />
+                    Duplicate &amp; Start Again
+                  </Button>
+                </div>
+                <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-2">
+                  <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                    <RotateCcw className="h-3.5 w-3.5 text-muted-foreground" /> Revisit your validation
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    Go back to the validation step and review your scores. Adjusting even one
+                    factor can shift the overall picture.
+                  </p>
+                  <Button
+                    size="sm"
+                    className="self-start mt-1"
+                    onClick={() => router.push(`/problems/${problemRef}/validate`)}
+                  >
+                    <RotateCcw className="h-4 w-4 mr-2" />
+                    Revisit Validation
+                  </Button>
+                </div>
               </div>
             </div>
           )}
-        </DialogContent>
-      </Dialog>
 
-      {/* ── Existing Solutions & Shortcomings Dialog ── */}
-      <Dialog open={openDialog === "existingSolutions"} onOpenChange={(o) => !o && setOpenDialog(null)}>
-        <DialogContent className="max-w-lg">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <GitFork className="h-4 w-4 text-purple-500" /> Existing Solutions & Shortcomings
-            </DialogTitle>
-          </DialogHeader>
-          <div className="flex flex-col gap-3 mt-2">
-            {existingSolutions.length > 0 && (
-              <ul className="flex flex-col gap-3">
-                {existingSolutions.map((alt, i) => (
-                  <li key={alt.id} className="flex flex-col gap-2 bg-purple-50 rounded-lg px-3 py-2.5 border border-purple-100">
-                    <div className="flex gap-2 items-center">
-                      <Input
-                        placeholder="Existing solution…"
-                        value={alt.text}
-                        onChange={(e) => updateSolutionText(i, e.target.value)}
-                        className="text-md h-8 bg-white border-purple-200 font-medium"
-                      />
-                      <button onClick={() => removeSolution(i)} className="shrink-0 text-muted-foreground hover:text-destructive">
-                        <X className="h-3.5 w-3.5" />
-                      </button>
-                    </div>
-                    {alt.shortcomings.length > 0 && (
-                      <ul className="flex flex-col gap-1.5 pl-2">
-                        {alt.shortcomings.map((sc, j) => (
-                          <li key={j} className="flex gap-1.5 items-center">
-                            <span className="text-muted-foreground text-xs shrink-0">–</span>
-                            <Input
-                              placeholder="Shortcoming…"
-                              value={sc}
-                              onChange={(e) => updateShortcoming(i, j, e.target.value)}
-                              className="text-xs h-7 bg-white border-purple-100"
-                            />
-                            <button onClick={() => removeShortcoming(i, j)} className="shrink-0 text-muted-foreground hover:text-destructive">
-                              <X className="h-3 w-3" />
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    <button
-                      onClick={() => addShortcoming(i)}
-                      className="self-start text-xs text-purple-600 hover:text-purple-800 flex items-center gap-1"
-                    >
-                      <Plus className="h-3 w-3" /> Add shortcoming
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <Button variant="outline" size="sm" onClick={addSolution} className="w-full border-purple-200 text-purple-700 hover:bg-purple-100 hover:text-purple-800">
-              <Plus className="h-3.5 w-3.5 mr-1" /> Add Existing Solution
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+          {status === "invalid" && (
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-3">
+                <XCircle className="h-5 w-5 text-red-500 shrink-0" />
+                <h3 className="text-lg font-semibold text-foreground">This problem is not valid</h3>
+              </div>
+              <p className="text-md text-muted-foreground">
+                Your validation suggests this problem is not worth solving in its current form.
+                That does not mean the underlying idea is bad. Often, a problem becomes valid
+                when you look at it through a different lens.
+              </p>
+              <div className="flex flex-col gap-4 mt-1">
+                <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-2">
+                  <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                    <Copy className="h-3.5 w-3.5 text-muted-foreground" /> Duplicate and try a different angle
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    This creates a fresh copy of your problem, keeping the core description and
+                    customer definition but clearing all existing solutions and validation data.
+                  </p>
+                  <Button
+                    size="sm"
+                    className="self-start mt-1"
+                    onClick={handleDuplicate}
+                  >
+                    <Copy className="h-4 w-4 mr-2" />
+                    Duplicate &amp; Start Again
+                  </Button>
+                </div>
+                <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-2">
+                  <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                    <RotateCcw className="h-3.5 w-3.5 text-muted-foreground" /> Move on to a different problem
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    Go back to your problem list and pick another problem to validate. Ruling out
+                    a problem is still progress.
+                  </p>
+                  <Button
+                    size="sm"
+                    className="self-start mt-1"
+                    onClick={() => router.push("/problems")}
+                  >
+                    Back to Problems
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
 
-      {/* ── Emotional Impact Dialog ── */}
-      <Dialog open={openDialog === "emotional"} onOpenChange={(o) => !o && setOpenDialog(null)}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Heart className="h-4 w-4 text-pink-500" /> Emotional Impact
-            </DialogTitle>
-          </DialogHeader>
-          <div className="flex flex-col gap-3 mt-2">
-            {emotionalImpact.length > 0 && (
-              <ul className="flex flex-col gap-1.5">
-                {emotionalImpact.map((item, i) => (
-                  <li key={i} className="flex gap-2 items-center">
-                    <span className="text-muted-foreground text-md shrink-0">–</span>
-                    <Input
-                      placeholder="e.g. Frustrated, overwhelmed…"
-                      value={item}
-                      onChange={(e) => updateEmotion(i, e.target.value)}
-                      className="text-md h-8 border-pink-200"
-                    />
-                    <button onClick={() => removeEmotion(i)} className="shrink-0 text-muted-foreground hover:text-destructive">
-                      <X className="h-3.5 w-3.5" />
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <Button variant="outline" size="sm" onClick={addEmotion} className="w-full border-pink-200 text-pink-700 hover:bg-pink-100 hover:text-pink-800">
-              <Plus className="h-3.5 w-3.5 mr-1" /> Add Emotional Impact
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+          {(status === "unvalidated" || status === "in_progress") && (
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center gap-3">
+                <HelpCircle className="h-5 w-5 text-muted-foreground shrink-0" />
+                <h3 className="text-lg font-semibold text-foreground">No verdict yet</h3>
+              </div>
+              <p className="text-md text-muted-foreground">
+                Complete the validation step first to see your next steps.
+              </p>
+              <Button
+                className="self-start"
+                onClick={() => router.push(`/problems/${problemRef}/validate`)}
+              >
+                <RotateCcw className="h-4 w-4 mr-2" />
+                Go to Validation
+              </Button>
+            </div>
+          )}
+        </div>
 
-    </>
+        <div className="flex justify-between mt-2">
+          {prevPath ? (
+            <Button variant="outline" onClick={() => router.push(prevPath)}>Previous</Button>
+          ) : <div />}
+        </div>
+
+      </CardContent>
+    </Card>
   )
 }
