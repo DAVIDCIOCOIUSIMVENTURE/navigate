@@ -8,12 +8,14 @@ interface SettingsState {
   sidebarMode: SidebarMode
   ideaMode: "guided" | "quickstart"
   hiddenBrainstormColumns: string[]
+  fullView: boolean
 }
 
 const defaultState: SettingsState = {
   sidebarMode: "expanded",
   ideaMode: "guided",
   hiddenBrainstormColumns: [],
+  fullView: false,
 }
 
 function saveToStorage(state: SettingsState) {
@@ -43,6 +45,10 @@ export const settings = createModel<RootModel>()({
       const next = { ...state, hiddenBrainstormColumns }
       saveToStorage(next)
       return next
+    },
+    setFullView(state, fullView: boolean) {
+      // Not persisted — resets on reload
+      return { ...state, fullView }
     },
   },
 

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect, useMemo, type ReactNode } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -39,6 +39,8 @@ import {
   Eye,
   EyeOff,
   MapPin,
+  Maximize2,
+  Minimize2,
   Pencil,
   RotateCcw,
   Save,
@@ -289,6 +291,25 @@ export default function BrainstormPage() {
   const [saveDialogOpen, setSaveDialogOpen] = useState(false)
   const [saveFields, setSaveFields] = useState<Record<string, string>>({})
   const [tableDrawerOpen, setTableDrawerOpen] = useState(false)
+  const fullView = useSelector((state: RootState) => state.settings.fullView)
+
+  // Exit full view when navigating away from this page
+  const pathname = usePathname()
+  useEffect(() => {
+    if (!pathname.includes("/brainstorm")) {
+      dispatch.settings.setFullView(false)
+    }
+  }, [pathname, dispatch.settings])
+
+  // Escape key exits full view
+  useEffect(() => {
+    if (!fullView) return
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") dispatch.settings.setFullView(false)
+    }
+    document.addEventListener("keydown", handler)
+    return () => document.removeEventListener("keydown", handler)
+  }, [fullView, dispatch.settings])
 
   const saveDebounced = useDebouncedCallback((fields: Record<string, string>) => {
     if (!editingProblem) return
@@ -367,7 +388,7 @@ export default function BrainstormPage() {
     setEditingProblem(problem)
   }
 
-  return (
+  const content = (
     <div className="flex flex-col gap-6 w-full flex-1 min-h-0">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex flex-col gap-1">
@@ -377,6 +398,15 @@ export default function BrainstormPage() {
           </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap sm:justify-end">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => dispatch.settings.setFullView(!fullView)}
+            className="gap-2"
+          >
+            {fullView ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+            {fullView ? "Exit Full View" : "Full View"}
+          </Button>
           <Button
             variant="outline"
             size="sm"
@@ -640,4 +670,6 @@ export default function BrainstormPage() {
       />
     </div>
   )
+
+  return content
 }

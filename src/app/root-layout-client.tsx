@@ -51,6 +51,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   }
 
   const sidebarMode = useSelector((state: RootState) => state.settings.sidebarMode)
+  const fullView = useSelector((state: RootState) => state.settings.fullView)
   const dispatch = useDispatch<AppDispatch>()
 
   // Load persisted settings from localStorage on mount
@@ -61,6 +62,22 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     dispatch.problems.init()
     dispatch.accountSettings.init()
   }, [dispatch.settings, dispatch.problemTriggers, dispatch.ideas, dispatch.problems, dispatch.accountSettings])
+
+  if (fullView) {
+    return (
+      <div className="h-svh flex flex-col bg-gray-100 overflow-hidden">
+        <div className="flex flex-1 flex-col gap-4 px-6 py-6 min-h-0 overflow-y-auto">
+          <div className="flex flex-1 w-full min-h-0">
+            <GuidanceProvider onOpen={openGuidance}>
+              {children}
+            </GuidanceProvider>
+          </div>
+        </div>
+        <GuidanceDialog open={guidanceOpen} onOpenChange={setGuidanceOpen} initialTopic={guidanceTopic} />
+        <Toaster />
+      </div>
+    )
+  }
 
   return (
     <SidebarProvider
