@@ -233,6 +233,7 @@ export const NAV_ITEMS = [
   { label: "Explore existing solutions", path: "existing-solutions" },
   { label: "Validate your problem", path: "validate" },
   { label: "Summary", path: "problem-statement" },
+  { label: "Next Steps", path: "next-steps" },
 ] as const
 
 const STEP_PATHS = NAV_ITEMS.map((item) => item.path)

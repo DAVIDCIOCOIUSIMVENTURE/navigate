@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { usePathname, useRouter } from "next/navigation"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import { Button } from "@/components/ui/button"
@@ -10,7 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { AlertCircle, GitFork, Heart, BarChart2, Plus, X, Pencil, LayoutTemplate } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { StatusSelect } from "@/components/ui/status-select"
-import { useProblemValidation } from "../context"
+import { useProblemValidation, getAdjacentSteps } from "../context"
 
 type DialogId = "core" | "existingSolutions" | "emotional"
 
@@ -96,15 +97,20 @@ function TagInput({
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function ProblemStatementPage() {
+  const router = useRouter()
+  const pathname = usePathname()
   const dispatch = useDispatch<AppDispatch>()
   const [openDialog, setOpenDialog] = useState<DialogId | null>(null)
 
   const {
+    problemRef,
     problemId,
     existingSolutions, setExistingSolutions,
     emotionalImpact, setEmotionalImpact,
     status, setStatus,
   } = useProblemValidation()
+
+  const { prevPath, nextPath } = getAdjacentSteps(pathname, problemRef)
 
   const quantifiableImpacts = existingSolutions.flatMap((alt) => alt.impacts ?? []).filter((imp) => imp.category || imp.description)
 
@@ -256,6 +262,15 @@ export default function ProblemStatementPage() {
             </div>
 
           </div>{/* end grid */}
+
+          <div className="flex justify-between mt-2">
+            {prevPath ? (
+              <Button variant="outline" onClick={() => router.push(prevPath)}>Previous</Button>
+            ) : <div />}
+            {nextPath && (
+              <Button onClick={() => router.push(nextPath)}>Next</Button>
+            )}
+          </div>
 
         </CardContent>
       </Card>

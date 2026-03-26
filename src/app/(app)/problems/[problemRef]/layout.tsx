@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
 import { ProblemValidationProvider, useProblemValidation, NAV_ITEMS } from "./context"
 import {
-  GitFork, Clock, ShieldCheck, FileText, LayoutTemplate, BookOpen, Users, ChevronDown,
+  GitFork, Clock, ShieldCheck, FileText, LayoutTemplate, BookOpen, Users, ChevronDown, ArrowRight,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
@@ -18,6 +18,7 @@ const NAV_ICONS: Record<string, LucideIcon> = {
   "context-step": Clock,
   validate: ShieldCheck,
   "problem-statement": LayoutTemplate,
+  "next-steps": ArrowRight,
 }
 
 function NavItems({

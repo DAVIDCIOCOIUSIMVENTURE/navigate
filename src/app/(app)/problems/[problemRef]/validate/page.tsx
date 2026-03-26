@@ -108,7 +108,7 @@ export default function VerdictPage() {
     setSolutionEffectiveness, setCompetitorSize,
   } = useProblemValidation()
 
-  const { prevPath } = getAdjacentSteps(pathname, problemRef)
+  const { prevPath, nextPath } = getAdjacentSteps(pathname, problemRef)
 
   const { howManyPeople, howOften, worthToThem, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
 
@@ -442,6 +442,9 @@ export default function VerdictPage() {
           {prevPath ? (
             <Button variant="outline" onClick={() => router.push(prevPath)}>Previous</Button>
           ) : <div />}
+          {nextPath && (
+            <Button onClick={() => router.push(nextPath)}>Next</Button>
+          )}
         </div>
       </CardContent>
     </Card>

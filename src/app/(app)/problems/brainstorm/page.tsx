@@ -459,7 +459,7 @@ export default function BrainstormPage() {
                             variant="ghost"
                             size="sm"
                             className="h-7 text-muted-foreground hover:text-foreground"
-                            onClick={() => router.push(`/problems/${problem.id}/alternatives`)}
+                            onClick={() => router.push(`/problems/${problem.id}/introduction`)}
                             aria-label="Validate problem"
                           >
                             <ArrowRight className="h-3.5 w-3.5" />
