@@ -12,7 +12,7 @@ interface SettingsState {
 }
 
 const defaultState: SettingsState = {
-  sidebarMode: "expanded",
+  sidebarMode: "icon",
   ideaMode: "guided",
   hiddenBrainstormColumns: [],
   fullView: false,
@@ -57,7 +57,11 @@ export const settings = createModel<RootModel>()({
       if (typeof window === "undefined") return
       try {
         const raw = localStorage.getItem(STORAGE_KEY)
-        if (!raw) return
+        if (!raw) {
+          // No saved settings — expand sidebar as default first-visit experience
+          dispatch.settings.setSidebarMode("expanded")
+          return
+        }
         const stored: Partial<SettingsState> = JSON.parse(raw)
         if (stored.sidebarMode) {
           dispatch.settings.setSidebarMode(stored.sidebarMode)
