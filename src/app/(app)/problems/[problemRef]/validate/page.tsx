@@ -142,79 +142,38 @@ export default function VerdictPage() {
           <p>
             The goal here is not to prove yourself right, but to honestly evaluate whether this problem represents a genuine opportunity. A problem worth solving sits at the intersection of large reach, high frequency, meaningful value, and a competitive landscape you can realistically enter. Use the six factors below to build a structured picture of the opportunity — and let the evidence guide your verdict, even if it means moving on to a stronger problem.
           </p>
-          <p>
-            Six factors matter most:
-          </p>
-          <div className="flex flex-col gap-3">
-            <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500 shrink-0 mt-0.5">
-                <Users className="h-4 w-4 text-white" />
+          <h3 className="mt-4 text-xl font-bold text-foreground">Validate your problem in 4 steps</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-3">
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-[15px] font-bold shrink-0">1</span>
+                <div>
+                  <p className="font-semibold text-foreground">How many customers &amp; how often</p>
+                  <p className="text-[15px]">Estimate the size of the audience and how frequently they encounter this problem.</p>
+                </div>
               </div>
-              <div>
-                <p className="font-semibold text-foreground">How many customers</p>
-                <p className="text-[15px]">How large is the audience experiencing this problem?</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500 shrink-0 mt-0.5">
-                <RefreshCw className="h-4 w-4 text-white" />
-              </div>
-              <div>
-                <p className="font-semibold text-foreground">How often</p>
-                <p className="text-[15px]">How frequently do they encounter it?</p>
+              <div className="flex items-center gap-3">
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-[15px] font-bold shrink-0">2</span>
+                <div>
+                  <p className="font-semibold text-foreground">How much is it worth</p>
+                  <p className="text-[15px]">Quantify how much customers would pay or benefit from a solution.</p>
+                </div>
               </div>
             </div>
-            <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500 shrink-0 mt-0.5">
-                <DollarSign className="h-4 w-4 text-white" />
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-3">
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-[15px] font-bold shrink-0">3</span>
+                <div>
+                  <p className="font-semibold text-foreground">Competitive landscape</p>
+                  <p className="text-[15px]">Assess the cost of switching, how effective existing solutions are, and how big the competitors are.</p>
+                </div>
               </div>
-              <div>
-                <p className="font-semibold text-foreground">How much is it worth</p>
-                <p className="text-[15px]">How much would they pay or benefit from a solution?</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-500 shrink-0 mt-0.5">
-                <ArrowRightLeft className="h-4 w-4 text-white" />
-              </div>
-              <div>
-                <p className="font-semibold text-foreground">Cost of switching</p>
-                <p className="text-[15px]">How much effort or cost does it take for customers to switch from their current solution?</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-rose-500 shrink-0 mt-0.5">
-                <Target className="h-4 w-4 text-white" />
-              </div>
-              <div>
-                <p className="font-semibold text-foreground">Solution effectiveness</p>
-                <p className="text-[15px]">How well do existing solutions already solve this problem?</p>
-              </div>
-            </div>
-            <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-500 shrink-0 mt-0.5">
-                <Building2 className="h-4 w-4 text-white" />
-              </div>
-              <div>
-                <p className="font-semibold text-foreground">Competitor size</p>
-                <p className="text-[15px]">How big and established are the competitors already solving this problem?</p>
-              </div>
-            </div>
-          </div>
-          <h3 className="mt-4 text-xl font-bold text-foreground">What you&apos;ll do</h3>
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-3">
-              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-[15px] font-bold shrink-0">1</span>
-              <div>
-                <p className="font-semibold text-foreground">Estimate each factor</p>
-                <p className="text-[15px]">Enter numbers for each of the four factors to quantify the opportunity.</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-[15px] font-bold shrink-0">2</span>
-              <div>
-                <p className="font-semibold text-foreground">Record your verdict</p>
-                <p className="text-[15px]">Decide whether the problem is <strong className="text-foreground">Valid</strong>, <strong className="text-foreground">Unsure</strong>, or <strong className="text-foreground">Invalid</strong>.</p>
+              <div className="flex items-center gap-3">
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-[15px] font-bold shrink-0">4</span>
+                <div>
+                  <p className="font-semibold text-foreground">Record your verdict</p>
+                  <p className="text-[15px]">Decide whether the problem is <strong className="text-foreground">Valid</strong>, <strong className="text-foreground">Unsure</strong>, or <strong className="text-foreground">Invalid</strong>.</p>
+                </div>
               </div>
             </div>
           </div>
