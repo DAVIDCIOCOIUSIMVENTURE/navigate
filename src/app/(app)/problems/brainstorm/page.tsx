@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect, type ReactNode } from "react"
+import { useState, useRef, useEffect, useMemo, type ReactNode } from "react"
 import { useRouter } from "next/navigation"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
@@ -34,16 +34,18 @@ import {
 import { ArrowRight, ChevronDown, ChevronRight, Pencil, RotateCcw, Save, Trash2, X } from "lucide-react"
 import { toast } from "sonner"
 import { Textarea } from "@/components/ui/textarea"
-import { brainstormColumns, type BrainstormItem } from "./data"
+import { brainstormColumns, type BrainstormItem, type BrainstormColumn } from "./data"
 import type { Problem } from "@/store/problems-model"
+import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
 import { cn } from "@/lib/utils"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 
-const COLUMN_TO_FIELD: Record<string, keyof Pick<Problem, "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes">> = {
+const COLUMN_TO_FIELD: Record<string, keyof Pick<Problem, "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "selfDiscovery">> = {
   "customer-segments": "customerSegments",
   "contexts": "contexts",
   "jobs-to-be-done": "jobsToBeDone",
   "problem-types": "problemTypes",
+  "self-discovery": "selfDiscovery",
 }
 
 function collectAllIds(items: BrainstormItem[]): string[] {
@@ -147,6 +149,7 @@ function ProblemFormDialog({
   title,
   fields,
   onFieldsChange,
+  columns,
   actions,
 }: {
   open: boolean
@@ -154,6 +157,7 @@ function ProblemFormDialog({
   title: string
   fields: Record<string, string>
   onFieldsChange: (fields: Record<string, string>) => void
+  columns: BrainstormColumn[]
   actions?: ReactNode
 }) {
   return (
@@ -176,7 +180,7 @@ function ProblemFormDialog({
               rows={3}
             />
           </div>
-          {brainstormColumns.map((column) => (
+          {columns.map((column) => (
             <div key={column.id} className="flex flex-col gap-1.5">
               <label className="text-sm font-medium" htmlFor={`${title}-${column.id}`}>
                 {column.title}
@@ -202,6 +206,32 @@ export default function BrainstormPage() {
   const savedProblems = useSelector((state: RootState) =>
     state.problems.problems.filter((p) => p.source === "brainstorm")
   )
+  const triggers = useSelector((state: RootState) => state.problemTriggers.triggers)
+
+  const selfDiscoveryColumn = useMemo<BrainstormColumn>(() => {
+    const questionMap = new Map<string, string>()
+    for (const cat of SELF_DISCOVERY_CATEGORIES) {
+      for (const q of cat.questions) {
+        questionMap.set(q.url, q.title)
+      }
+    }
+    const groups = new Map<string, BrainstormItem[]>()
+    for (const t of triggers) {
+      if (!groups.has(t.questionUrl)) groups.set(t.questionUrl, [])
+      groups.get(t.questionUrl)!.push({ id: t.id, label: t.title })
+    }
+    const items: BrainstormItem[] = Array.from(groups.entries()).map(([url, children]) => ({
+      id: `sd-group-${url}`,
+      label: questionMap.get(url) ?? url,
+      children,
+    }))
+    return { id: "self-discovery", title: "Self Discovery", items }
+  }, [triggers])
+
+  const allColumns = useMemo<BrainstormColumn[]>(
+    () => [...brainstormColumns, selfDiscoveryColumn],
+    [selfDiscoveryColumn]
+  )
 
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [editingProblem, setEditingProblem] = useState<Problem | null>(null)
@@ -213,10 +243,10 @@ export default function BrainstormPage() {
 
   const saveDebounced = useDebouncedCallback((fields: Record<string, string>) => {
     if (!editingProblem) return
-    const patch: Partial<Pick<Problem, "description" | "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes">> = {
+    const patch: Partial<Pick<Problem, "description" | "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "selfDiscovery">> = {
       description: fields["description"] ?? "",
     }
-    for (const column of brainstormColumns) {
+    for (const column of allColumns) {
       const field = COLUMN_TO_FIELD[column.id]
       const value = fields[column.id]?.trim()
       patch[field] = value ? value.split(",").map((s) => s.trim()).filter(Boolean) : []
@@ -248,7 +278,7 @@ export default function BrainstormPage() {
 
   const openSaveDialog = () => {
     const fields: Record<string, string> = { description: "" }
-    for (const column of brainstormColumns) {
+    for (const column of allColumns) {
       const allIds = collectAllIds(column.items)
       const selectedLabels = allIds
         .filter((id) => selected.has(id))
@@ -261,8 +291,8 @@ export default function BrainstormPage() {
   }
 
   const saveCombination = () => {
-    const patch: Partial<Pick<Problem, "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes">> = {}
-    for (const column of brainstormColumns) {
+    const patch: Partial<Pick<Problem, "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "selfDiscovery">> = {}
+    for (const column of allColumns) {
       const field = COLUMN_TO_FIELD[column.id]
       const value = saveFields[column.id]?.trim()
       patch[field] = value ? value.split(",").map((s) => s.trim()).filter(Boolean) : []
@@ -280,7 +310,7 @@ export default function BrainstormPage() {
   const openEditDialog = (problem: Problem) => {
     initRef.current = false
     const fields: Record<string, string> = { description: problem.description ?? "" }
-    for (const column of brainstormColumns) {
+    for (const column of allColumns) {
       const field = COLUMN_TO_FIELD[column.id]
       fields[column.id] = problem[field].join(", ")
     }
@@ -328,8 +358,8 @@ export default function BrainstormPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 flex-1 min-h-0">
-        {brainstormColumns.map((column) => {
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4 flex-1 min-h-0">
+        {allColumns.map((column) => {
           const columnSelected = getSelectedForColumn(column.items, selected)
           return (
             <Card key={column.id} className="flex flex-col min-h-0">
@@ -366,7 +396,7 @@ export default function BrainstormPage() {
         <Card className="shrink-0">
           <CardContent className="py-3">
             <div className="flex items-start gap-6">
-              {brainstormColumns.map((column) => {
+              {allColumns.map((column) => {
                 const columnSelected = getSelectedForColumn(column.items, selected)
                 if (columnSelected.length === 0) return null
                 return (
@@ -411,7 +441,7 @@ export default function BrainstormPage() {
                 <TableRow>
                   <TableHead className="w-10">#</TableHead>
                   <TableHead>Description</TableHead>
-                  {brainstormColumns.map((column) => (
+                  {allColumns.map((column) => (
                     <TableHead key={column.id}>{column.title}</TableHead>
                   ))}
                   <TableHead className="w-24" />
@@ -421,7 +451,7 @@ export default function BrainstormPage() {
                 {savedProblems.length === 0 ? (
                   <TableRow>
                     <TableCell
-                      colSpan={brainstormColumns.length + 3}
+                      colSpan={allColumns.length + 3}
                       className="text-center text-muted-foreground py-8"
                     >
                       No problems saved yet. Select items above and click &quot;Save Problem&quot;.
@@ -440,7 +470,7 @@ export default function BrainstormPage() {
                           <span className="text-muted-foreground">—</span>
                         )}
                       </TableCell>
-                      {brainstormColumns.map((column) => {
+                      {allColumns.map((column) => {
                         const field = COLUMN_TO_FIELD[column.id]
                         const labels = problem[field]
                         return (
@@ -500,6 +530,7 @@ export default function BrainstormPage() {
         title="Save Problem"
         fields={saveFields}
         onFieldsChange={setSaveFields}
+        columns={allColumns}
         actions={
           <>
             <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>Cancel</Button>
@@ -514,6 +545,7 @@ export default function BrainstormPage() {
         title="Edit Problem"
         fields={editFields}
         onFieldsChange={setEditFields}
+        columns={allColumns}
       />
     </div>
   )
