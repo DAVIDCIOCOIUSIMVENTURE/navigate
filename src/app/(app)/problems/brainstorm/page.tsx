@@ -356,30 +356,48 @@ export default function BrainstormPage() {
                     ))}
                   </div>
                 </ScrollArea>
-                {columnSelected.length > 0 && (
-                  <div className="border-t pt-2 flex flex-wrap gap-1.5">
-                    {columnSelected.map(({ id, label }) => (
-                      <span
-                        key={id}
-                        className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary rounded-full px-2 py-0.5"
-                      >
-                        {label}
-                        <button
-                          onClick={() => toggleItem(id)}
-                          className="hover:text-primary/70 transition-colors"
-                          aria-label={`Remove ${label}`}
-                        >
-                          <X className="h-3 w-3" />
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-                )}
               </CardContent>
             </Card>
           )
         })}
       </div>
+
+      {totalSelected > 0 && (
+        <Card className="shrink-0">
+          <CardContent className="py-3">
+            <div className="flex items-start gap-6">
+              {brainstormColumns.map((column) => {
+                const columnSelected = getSelectedForColumn(column.items, selected)
+                if (columnSelected.length === 0) return null
+                return (
+                  <div key={column.id} className="flex flex-col gap-1.5 min-w-0">
+                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                      {column.title}
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {columnSelected.map(({ id, label }) => (
+                        <span
+                          key={id}
+                          className="inline-flex items-center gap-1 text-xs bg-primary/10 text-primary rounded-full px-2 py-0.5"
+                        >
+                          {label}
+                          <button
+                            onClick={() => toggleItem(id)}
+                            className="hover:text-primary/70 transition-colors"
+                            aria-label={`Remove ${label}`}
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <Drawer open={tableDrawerOpen} onOpenChange={setTableDrawerOpen}>
         <DrawerContent className="max-h-[70vh]">
