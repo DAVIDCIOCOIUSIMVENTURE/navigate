@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   AlertCircle, GitFork, Users, LayoutTemplate,
   ArrowRight, CheckCircle2, HelpCircle, XCircle, Copy, RotateCcw, Lightbulb,
-  RefreshCw, DollarSign, ArrowRightLeft, Target, Building2, BarChart2,
+  Target, BarChart2,
 } from "lucide-react"
 import { useProblemValidation, getAdjacentSteps } from "../context"
 import type { ValidationMetric } from "@/types/idea"
@@ -39,28 +39,24 @@ function EmptyText({ text = "Not provided" }: { text?: string }) {
   return <span className="text-xs text-muted-foreground/60 italic">{text}</span>
 }
 
-function MetricDisplay({
-  icon: Icon,
-  label,
-  metric,
-}: {
-  icon: React.ElementType
-  label: string
-  metric: ValidationMetric
-}) {
+function MetricField({ label, metric }: { label: string; metric: ValidationMetric }) {
   const hasValue = metric.value !== null
   const hasLevel = metric.level !== ""
-  if (!hasValue && !hasLevel) return null
 
   const display = hasValue
     ? `${metric.value?.toLocaleString()}${metric.unit ? ` ${metric.unit}` : ""}`
-    : metric.level
+    : hasLevel
+      ? metric.level
+      : null
 
   return (
-    <div className="flex items-center gap-2">
-      <Icon className="h-3.5 w-3.5 shrink-0 text-foreground/70" />
-      <span className="text-sm font-medium text-foreground">{label}</span>
-      <span className="text-sm text-foreground/70 capitalize">{display}</span>
+    <div className="flex flex-col gap-1">
+      <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">{label}</p>
+      {display ? (
+        <span className="inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-xs border border-border capitalize self-start">{display}</span>
+      ) : (
+        <EmptyText />
+      )}
     </div>
   )
 }
@@ -121,7 +117,30 @@ export default function SummaryPage() {
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
 
-        {/* ── Row 1: Core Problem + Customer ── */}
+        {/* ── Row 1: Customer ── */}
+        <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3">
+          <SectionHeader icon={Users} label="Customer" />
+          <div className="flex flex-col sm:flex-row sm:gap-6 gap-3">
+            <div className="flex flex-col gap-1 shrink-0">
+              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Segment Size</p>
+              {segmentSize !== null ? (
+                <span className="inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-xs border border-border self-start">{segmentSize.toLocaleString()}</span>
+              ) : (
+                <EmptyText />
+              )}
+            </div>
+            <div className="flex flex-col gap-1 min-w-0">
+              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Description</p>
+              {customerDescription ? (
+                <span className="inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-xs border border-border self-start">{customerDescription}</span>
+              ) : (
+                <EmptyText />
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* ── Row 2: Core Problem + Solutions ── */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
 
           {/* ── Core Problem ── */}
@@ -155,32 +174,6 @@ export default function SummaryPage() {
               <EmptyText text="No problem selected" />
             )}
           </div>
-
-          {/* ── Customer ── */}
-          <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3">
-            <SectionHeader icon={Users} label="Customer" />
-            <div className="flex flex-col gap-1">
-              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Segment Size</p>
-              {segmentSize !== null ? (
-                <p className="text-md text-foreground/80">{segmentSize.toLocaleString()}</p>
-              ) : (
-                <EmptyText />
-              )}
-            </div>
-            <div className="flex flex-col gap-1">
-              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Description</p>
-              {customerDescription ? (
-                <p className="text-md text-foreground/80 leading-relaxed">{customerDescription}</p>
-              ) : (
-                <EmptyText />
-              )}
-            </div>
-          </div>
-
-        </div>
-
-        {/* ── Row 2: Solutions + Validation Assessment ── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
 
           {/* ── Existing Solutions, Shortcomings & Impacts ── */}
           <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3">
@@ -225,52 +218,57 @@ export default function SummaryPage() {
             )}
           </div>
 
-          {/* ── Validation Assessment ── */}
-          <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-4">
-            <SectionHeader icon={Target} label="Validation Assessment" />
-            {hasAnyMetric ? (
-              <>
-                <div className="flex flex-col gap-4">
-                  <MetricDisplay icon={Users} label="How many customers" metric={howManyPeople} />
-                  <MetricDisplay icon={RefreshCw} label="How often" metric={howOften} />
-                  <MetricDisplay icon={DollarSign} label="How much is it worth" metric={worthToThem} />
-                  <MetricDisplay icon={ArrowRightLeft} label="Cost of switching" metric={costOfSwitching} />
-                  <MetricDisplay icon={Target} label="Solution effectiveness" metric={solutionEffectiveness} />
-                  <MetricDisplay icon={Building2} label="Competitor size" metric={competitorSize} />
-                </div>
-                {reason && (
-                  <div className="flex flex-col gap-1 border-t pt-3">
-                    <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Notes</p>
-                    <p className="text-md text-foreground/80 leading-relaxed">{reason}</p>
-                  </div>
-                )}
-              </>
-            ) : (
-              <EmptyText text="No validation data yet — complete the validation step first" />
-            )}
+        </div>
 
-            {/* Verdict badge */}
-            {(status === "valid" || status === "invalid" || status === "unsure") && (
-              <div className="border-t pt-3 flex items-center gap-2">
-                <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Verdict:</p>
-                {status === "valid" && (
-                  <span className="inline-flex items-center gap-1.5 rounded-md bg-green-50 border border-green-200 px-2.5 py-1 text-sm font-medium text-green-700">
-                    <CheckCircle2 className="h-3.5 w-3.5" /> Valid
-                  </span>
-                )}
-                {status === "unsure" && (
-                  <span className="inline-flex items-center gap-1.5 rounded-md bg-orange-50 border border-orange-200 px-2.5 py-1 text-sm font-medium text-orange-700">
-                    <HelpCircle className="h-3.5 w-3.5" /> Unsure
-                  </span>
-                )}
-                {status === "invalid" && (
-                  <span className="inline-flex items-center gap-1.5 rounded-md bg-red-50 border border-red-200 px-2.5 py-1 text-sm font-medium text-red-700">
-                    <XCircle className="h-3.5 w-3.5" /> Invalid
-                  </span>
-                )}
+        {/* ── Row 3: Validation Assessment ── */}
+        <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-4">
+          <SectionHeader icon={Target} label="Validation Assessment" />
+          {hasAnyMetric ? (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-3">
+                  <MetricField label="How Many Customers" metric={howManyPeople} />
+                  <MetricField label="How Often" metric={howOften} />
+                  <MetricField label="How Much Is It Worth" metric={worthToThem} />
+                </div>
+                <div className="flex flex-col gap-3">
+                  <MetricField label="Cost of Switching" metric={costOfSwitching} />
+                  <MetricField label="Solution Effectiveness" metric={solutionEffectiveness} />
+                  <MetricField label="Competitor Size" metric={competitorSize} />
+                </div>
               </div>
-            )}
-          </div>
+              {reason && (
+                <div className="flex flex-col gap-1 border-t pt-3">
+                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Notes</p>
+                  <p className="text-md text-foreground/80 leading-relaxed">{reason}</p>
+                </div>
+              )}
+            </>
+          ) : (
+            <EmptyText text="No validation data yet — complete the validation step first" />
+          )}
+
+          {/* Verdict badge */}
+          {(status === "valid" || status === "invalid" || status === "unsure") && (
+            <div className="border-t pt-3 flex items-center gap-2">
+              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Verdict:</p>
+              {status === "valid" && (
+                <span className="inline-flex items-center gap-1.5 rounded-md bg-green-50 border border-green-200 px-2.5 py-1 text-sm font-medium text-green-700">
+                  <CheckCircle2 className="h-3.5 w-3.5" /> Valid
+                </span>
+              )}
+              {status === "unsure" && (
+                <span className="inline-flex items-center gap-1.5 rounded-md bg-orange-50 border border-orange-200 px-2.5 py-1 text-sm font-medium text-orange-700">
+                  <HelpCircle className="h-3.5 w-3.5" /> Unsure
+                </span>
+              )}
+              {status === "invalid" && (
+                <span className="inline-flex items-center gap-1.5 rounded-md bg-red-50 border border-red-200 px-2.5 py-1 text-sm font-medium text-red-700">
+                  <XCircle className="h-3.5 w-3.5" /> Invalid
+                </span>
+              )}
+            </div>
+          )}
         </div>
 
         {/* ── Next Steps ── */}
