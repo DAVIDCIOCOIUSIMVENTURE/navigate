@@ -49,12 +49,12 @@ export type ValidationAssessment = {
 export const DEFAULT_VALIDATION_METRIC: ValidationMetric = { value: null, unit: "", level: "" }
 
 export const DEFAULT_VALIDATION_ASSESSMENT: ValidationAssessment = {
-  howManyPeople: { value: null, unit: "", level: "" },
-  howOften: { value: null, unit: "", level: "" },
-  worthToThem: { value: null, unit: "", level: "" },
-  costOfSwitching: { value: null, unit: "", level: "" },
-  solutionEffectiveness: { value: null, unit: "", level: "" },
-  competitorSize: { value: null, unit: "", level: "" },
+  howManyPeople: { value: 0, unit: "", level: "" },
+  howOften: { value: 0, unit: "", level: "" },
+  worthToThem: { value: 0, unit: "", level: "" },
+  costOfSwitching: { value: null, unit: "", level: "medium" },
+  solutionEffectiveness: { value: null, unit: "", level: "average" },
+  competitorSize: { value: null, unit: "", level: "medium" },
 }
 
 export type Problem = {

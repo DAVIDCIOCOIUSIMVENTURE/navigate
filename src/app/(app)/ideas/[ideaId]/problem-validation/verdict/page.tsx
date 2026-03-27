@@ -29,8 +29,8 @@ function LevelToggle({
             "flex-1 py-1.5 capitalize transition-colors",
             i < LEVELS.length - 1 && "border-r",
             value === level
-              ? "bg-white text-foreground"
-              : "hover:bg-muted text-muted-foreground"
+              ? "bg-primary text-white shadow-md"
+              : "bg-white hover:bg-muted/50 text-muted-foreground"
           )}
         >
           {level}

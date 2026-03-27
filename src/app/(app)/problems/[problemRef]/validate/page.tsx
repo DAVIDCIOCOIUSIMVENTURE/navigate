@@ -268,22 +268,24 @@ export default function VerdictPage() {
                       <span className="text-base font-semibold text-white">What is the cost of switching</span>
                     </div>
                     <p className="text-[15px] text-white">How much effort, money, or disruption does it take for customers to move away from their current solution? High switching costs mean customers are more locked in, so your solution needs to offer a compelling reason to change.</p>
-                    <ToggleGroup
-                      className="mt-2"
-                      type="single"
-                      value={costOfSwitching.level}
-                      onValueChange={(val) => setCostOfSwitching({ level: val as typeof costOfSwitching.level })}
-                    >
-                      {(["none", "low", "medium", "high", "prohibitive"] as const).map((level) => (
-                        <ToggleGroupItem
-                          key={level}
-                          value={level}
-                          className="px-4 py-1.5 text-[15px] font-medium capitalize bg-white text-muted-foreground data-[state=on]:bg-white data-[state=on]:text-primary hover:bg-white hover:text-foreground rounded-none border-r border-border last:border-r-0"
-                        >
-                          {level}
-                        </ToggleGroupItem>
-                      ))}
-                    </ToggleGroup>
+                    <div className="mt-2 inline-flex w-fit rounded-xl bg-white/10 p-1.5">
+                      <ToggleGroup
+                        className="border-none"
+                        type="single"
+                        value={costOfSwitching.level}
+                        onValueChange={(val) => setCostOfSwitching({ level: val as typeof costOfSwitching.level })}
+                      >
+                        {(["none", "low", "medium", "high", "prohibitive"] as const).map((level) => (
+                          <ToggleGroupItem
+                            key={level}
+                            value={level}
+                            className="px-4 py-1.5 text-[15px] font-medium capitalize bg-transparent text-white/70 data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 hover:text-white rounded-md border-none"
+                          >
+                            {level}
+                          </ToggleGroupItem>
+                        ))}
+                      </ToggleGroup>
+                    </div>
                   </div>
 
                   <div className="flex flex-col gap-2">
@@ -292,22 +294,24 @@ export default function VerdictPage() {
                       <span className="text-base font-semibold text-white">How effective are existing solutions</span>
                     </div>
                     <p className="text-[15px] text-white">How well do current solutions already address this problem? If existing solutions work well, customers have less incentive to switch. If they are poor, there is a bigger gap for you to fill.</p>
-                    <ToggleGroup
-                      className="mt-2"
-                      type="single"
-                      value={solutionEffectiveness.level}
-                      onValueChange={(val) => setSolutionEffectiveness({ level: val as typeof solutionEffectiveness.level })}
-                    >
-                      {(["terrible", "poor", "average", "good", "excellent"] as const).map((level) => (
-                        <ToggleGroupItem
-                          key={level}
-                          value={level}
-                          className="px-4 py-1.5 text-[15px] font-medium capitalize bg-white text-muted-foreground data-[state=on]:bg-white data-[state=on]:text-primary hover:bg-white hover:text-foreground rounded-none border-r border-border last:border-r-0"
-                        >
-                          {level}
-                        </ToggleGroupItem>
-                      ))}
-                    </ToggleGroup>
+                    <div className="mt-2 inline-flex w-fit rounded-xl bg-white/10 p-1.5">
+                      <ToggleGroup
+                        className="border-none"
+                        type="single"
+                        value={solutionEffectiveness.level}
+                        onValueChange={(val) => setSolutionEffectiveness({ level: val as typeof solutionEffectiveness.level })}
+                      >
+                        {(["terrible", "poor", "average", "good", "excellent"] as const).map((level) => (
+                          <ToggleGroupItem
+                            key={level}
+                            value={level}
+                            className="px-4 py-1.5 text-[15px] font-medium capitalize bg-transparent text-white/70 data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 hover:text-white rounded-md border-none"
+                          >
+                            {level}
+                          </ToggleGroupItem>
+                        ))}
+                      </ToggleGroup>
+                    </div>
                   </div>
 
                   <div className="flex flex-col gap-2">
@@ -316,22 +320,24 @@ export default function VerdictPage() {
                       <span className="text-base font-semibold text-white">How big are the competitors</span>
                     </div>
                     <p className="text-[15px] text-white">How large and established are the companies already solving this problem? Competing against well-funded incumbents requires a strong differentiator, while a market with only small players may signal an easier entry.</p>
-                    <ToggleGroup
-                      className="mt-2"
-                      type="single"
-                      value={competitorSize.level}
-                      onValueChange={(val) => setCompetitorSize({ level: val as typeof competitorSize.level })}
-                    >
-                      {(["micro", "small", "medium", "large", "giant"] as const).map((level) => (
-                        <ToggleGroupItem
-                          key={level}
-                          value={level}
-                          className="px-4 py-1.5 text-[15px] font-medium capitalize bg-white text-muted-foreground data-[state=on]:bg-white data-[state=on]:text-primary hover:bg-white hover:text-foreground rounded-none border-r border-border last:border-r-0"
-                        >
-                          {level}
-                        </ToggleGroupItem>
-                      ))}
-                    </ToggleGroup>
+                    <div className="mt-2 inline-flex w-fit rounded-xl bg-white/10 p-1.5">
+                      <ToggleGroup
+                        className="border-none"
+                        type="single"
+                        value={competitorSize.level}
+                        onValueChange={(val) => setCompetitorSize({ level: val as typeof competitorSize.level })}
+                      >
+                        {(["micro", "small", "medium", "large", "giant"] as const).map((level) => (
+                          <ToggleGroupItem
+                            key={level}
+                            value={level}
+                            className="px-4 py-1.5 text-[15px] font-medium capitalize bg-transparent text-white/70 data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 hover:text-white rounded-md border-none"
+                          >
+                            {level}
+                          </ToggleGroupItem>
+                        ))}
+                      </ToggleGroup>
+                    </div>
                   </div>
                 </div>
 
