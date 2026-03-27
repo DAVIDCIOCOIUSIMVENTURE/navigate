@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect, useMemo, type ReactNode } from "react"
+import { useState, useRef, useEffect, useMemo, useDeferredValue, type ReactNode } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
@@ -44,6 +44,7 @@ import {
   Pencil,
   RotateCcw,
   Save,
+  Search,
   Settings,
   Target,
   Trash2,
@@ -111,24 +112,41 @@ function findLabel(items: BrainstormItem[], id: string): string | null {
   return null
 }
 
+function filterItems(items: BrainstormItem[], query: string): BrainstormItem[] {
+  const lower = query.toLowerCase()
+  return items.flatMap((item) => {
+    if (item.children) {
+      const filtered = filterItems(item.children, query)
+      if (filtered.length > 0) return [{ ...item, children: filtered }]
+      // Also include group if its own label matches
+      if (item.label.toLowerCase().includes(lower)) return [item]
+      return []
+    }
+    return item.label.toLowerCase().includes(lower) ? [item] : []
+  })
+}
+
 function BrainstormCheckItem({
   item,
   selected,
   onToggle,
+  forceOpen,
 }: {
   item: BrainstormItem
   selected: Set<string>
   onToggle: (id: string) => void
+  forceOpen?: boolean
 }) {
   const isGroup = !!item.children?.length
   const [open, setOpen] = useState(true)
+  const effectiveOpen = forceOpen || open
 
   if (isGroup) {
     const selectedCount = item.children!.filter((c) => selected.has(c.id)).length
     return (
-      <Collapsible open={open} onOpenChange={setOpen}>
+      <Collapsible open={effectiveOpen} onOpenChange={setOpen}>
         <CollapsibleTrigger className="flex w-full items-center gap-1.5 px-1 py-1.5 rounded-md hover:bg-accent/50 transition-colors group">
-          {open
+          {effectiveOpen
             ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
             : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
           }
@@ -149,6 +167,7 @@ function BrainstormCheckItem({
                 item={child}
                 selected={selected}
                 onToggle={onToggle}
+                forceOpen={forceOpen}
               />
             ))}
           </div>
@@ -294,6 +313,18 @@ export default function BrainstormPage() {
     const next = typeof updater === "function" ? updater(selected) : updater
     dispatch.settings.setBrainstormSelected(Array.from(next))
   }
+  const [searchQuery, setSearchQuery] = useState("")
+  const debouncedQuery = useDeferredValue(searchQuery)
+
+  const filteredColumnsMap = useMemo(() => {
+    if (!debouncedQuery) return null
+    const map = new Map<string, BrainstormItem[]>()
+    for (const col of allColumns) {
+      map.set(col.id, filterItems(col.items, debouncedQuery))
+    }
+    return map
+  }, [debouncedQuery, allColumns])
+
   const [editingProblem, setEditingProblem] = useState<Problem | null>(null)
   const [editFields, setEditFields] = useState<Record<string, string>>({})
   const initRef = useRef(false)
@@ -406,6 +437,24 @@ export default function BrainstormPage() {
           </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap sm:justify-end">
+          <div className="relative">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9 h-8 w-44"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                aria-label="Clear search"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
           <Button
             variant="outline"
             size="sm"
@@ -511,14 +560,20 @@ export default function BrainstormPage() {
               <CardContent className="flex-1 pt-0 flex flex-col gap-3 min-h-0">
                 <ScrollArea className="flex-1 min-h-0">
                   <div className="flex flex-col gap-0.5 pr-3">
-                    {column.items.map((item) => (
-                      <BrainstormCheckItem
-                        key={item.id}
-                        item={item}
-                        selected={selected}
-                        onToggle={toggleItem}
-                      />
-                    ))}
+                    {(() => {
+                      const items = filteredColumnsMap?.get(column.id) ?? column.items
+                      return items.length > 0 ? items.map((item) => (
+                        <BrainstormCheckItem
+                          key={item.id}
+                          item={item}
+                          selected={selected}
+                          onToggle={toggleItem}
+                          forceOpen={!!debouncedQuery}
+                        />
+                      )) : (
+                        <p className="text-xs text-muted-foreground py-4 text-center">No matches</p>
+                      )
+                    })()}
                   </div>
                 </ScrollArea>
               </CardContent>
