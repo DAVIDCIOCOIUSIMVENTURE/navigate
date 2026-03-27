@@ -13,6 +13,7 @@ import type { ValidationMetric } from "@/types/idea"
 import { cn } from "@/lib/utils"
 import { ShieldCheck, CheckCircle2, XCircle, HelpCircle, Users, RefreshCw, DollarSign, ArrowRightLeft, Target, Building2 } from "lucide-react"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 function HowManyInput({
   metric,
@@ -50,19 +51,25 @@ function HowManyInput({
   )
 }
 
-function MetricInput({
+const FREQUENCY_OPTIONS = [
+  "per hour", "per day", "per week", "per fortnight",
+  "per month", "per quarter", "per year",
+]
+
+const CURRENCY_OPTIONS = [
+  "USD", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF",
+  "CNY", "INR", "BRL", "KRW", "SEK", "NOK", "DKK",
+  "NZD", "SGD", "HKD", "MXN", "ZAR", "PLN",
+]
+
+function FrequencyInput({
   metric,
   onChange,
-  valuePlaceholder,
-  unitPlaceholder,
 }: {
   metric: ValidationMetric
   onChange: (patch: Partial<ValidationMetric>) => void
-  valuePlaceholder: string
-  unitPlaceholder: string
 }) {
   const [localValue, setLocalValue] = useState(metric.value !== null ? String(metric.value) : "")
-  const [localUnit, setLocalUnit] = useState(metric.unit)
   const onChangeRef = useRef(onChange)
   useEffect(() => { onChangeRef.current = onChange })
 
@@ -73,27 +80,66 @@ function MetricInput({
     return () => clearTimeout(timer)
   }, [localValue]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  return (
+    <div className="mt-2 flex gap-2">
+      <Input
+        type="number"
+        placeholder="e.g. 5"
+        className="h-8 text-[15px] w-28 bg-white border-white text-foreground"
+        value={localValue}
+        onChange={(e) => setLocalValue(e.target.value)}
+      />
+      <Select value={metric.unit || "per day"} onValueChange={(val) => onChange({ unit: val })}>
+        <SelectTrigger className="h-8 text-[15px] w-40 bg-white border-white text-foreground">
+          <SelectValue placeholder="Frequency" />
+        </SelectTrigger>
+        <SelectContent>
+          {FREQUENCY_OPTIONS.map((opt) => (
+            <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </div>
+  )
+}
+
+function CurrencyInput({
+  metric,
+  onChange,
+}: {
+  metric: ValidationMetric
+  onChange: (patch: Partial<ValidationMetric>) => void
+}) {
+  const [localValue, setLocalValue] = useState(metric.value !== null ? String(metric.value) : "")
+  const onChangeRef = useRef(onChange)
+  useEffect(() => { onChangeRef.current = onChange })
+
   useEffect(() => {
-    if (localUnit === metric.unit) return
-    const timer = setTimeout(() => onChangeRef.current({ unit: localUnit }), 600)
+    const parsed = localValue !== "" ? Number(localValue) : null
+    if (parsed === metric.value) return
+    const timer = setTimeout(() => onChangeRef.current({ value: parsed }), 600)
     return () => clearTimeout(timer)
-  }, [localUnit]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [localValue]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="mt-2 flex gap-2">
       <Input
         type="number"
-        placeholder={valuePlaceholder}
+        placeholder="e.g. 50"
         className="h-8 text-[15px] w-28 bg-white border-white text-foreground"
         value={localValue}
         onChange={(e) => setLocalValue(e.target.value)}
       />
-      <Input
-        placeholder={unitPlaceholder}
-        className="h-8 text-[15px] bg-white border-white text-foreground"
-        value={localUnit}
-        onChange={(e) => setLocalUnit(e.target.value)}
-      />
+      <Select value={metric.unit || "GBP"} onValueChange={(val) => onChange({ unit: val })}>
+        <SelectTrigger className="h-8 text-[15px] w-28 bg-white border-white text-foreground">
+          <SelectValue placeholder="Currency" />
+        </SelectTrigger>
+        <SelectContent>
+          {CURRENCY_OPTIONS.map((opt) => (
+            <SelectItem key={opt} value={opt}>{opt}</SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   )
 }
@@ -204,12 +250,7 @@ export default function VerdictPage() {
                       <span className="text-base font-semibold text-white">How often does the problem occur</span>
                     </div>
                     <p className="text-[15px] text-white">How frequently do customers encounter this problem? A problem that happens daily is far more urgent than one that occurs once a year.</p>
-                    <MetricInput
-                      metric={howOften}
-                      onChange={setHowOften}
-                      valuePlaceholder="e.g. 5"
-                      unitPlaceholder="e.g. times per week"
-                    />
+                    <FrequencyInput metric={howOften} onChange={setHowOften} />
                   </div>
 
                   <div className="flex flex-col gap-2">
@@ -218,12 +259,7 @@ export default function VerdictPage() {
                       <span className="text-base font-semibold text-white">How much is it worth</span>
                     </div>
                     <p className="text-[15px] text-white">What is the monetary value of solving this problem? Consider how much customers currently spend on workarounds, or how much time and money they lose because of it.</p>
-                    <MetricInput
-                      metric={worthToThem}
-                      onChange={setWorthToThem}
-                      valuePlaceholder="e.g. 50"
-                      unitPlaceholder="e.g. USD per month"
-                    />
+                    <CurrencyInput metric={worthToThem} onChange={setWorthToThem} />
                   </div>
 
                   <div className="flex flex-col gap-2">
