@@ -249,20 +249,25 @@ export default function BrainstormPage() {
   const triggers = useSelector((state: RootState) => state.problemTriggers.triggers)
 
   const selfDiscoveryColumn = useMemo<BrainstormColumn>(() => {
-    const questionMap = new Map<string, string>()
+    // Map each question URL to its parent category
+    const questionToCat = new Map<string, { url: string; title: string }>()
     for (const cat of SELF_DISCOVERY_CATEGORIES) {
       for (const q of cat.questions) {
-        questionMap.set(q.url, q.title)
+        questionToCat.set(q.url, { url: cat.url, title: cat.title })
       }
     }
-    const groups = new Map<string, BrainstormItem[]>()
+    // Group triggers by category
+    const groups = new Map<string, { title: string; children: BrainstormItem[] }>()
     for (const t of triggers) {
-      if (!groups.has(t.questionUrl)) groups.set(t.questionUrl, [])
-      groups.get(t.questionUrl)!.push({ id: t.id, label: t.title })
+      const cat = questionToCat.get(t.questionUrl)
+      const catUrl = cat?.url ?? t.questionUrl
+      const catTitle = cat?.title ?? t.questionUrl
+      if (!groups.has(catUrl)) groups.set(catUrl, { title: catTitle, children: [] })
+      groups.get(catUrl)!.children.push({ id: t.id, label: t.title })
     }
-    const items: BrainstormItem[] = Array.from(groups.entries()).map(([url, children]) => ({
+    const items: BrainstormItem[] = Array.from(groups.entries()).map(([url, { title, children }]) => ({
       id: `sd-group-${url}`,
-      label: questionMap.get(url) ?? url,
+      label: title,
       children,
     }))
     return { id: "self-discovery", title: "Self Discovery", items }
