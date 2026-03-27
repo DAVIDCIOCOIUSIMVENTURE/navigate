@@ -27,7 +27,7 @@ function ChipList({ items }: { items: string[] }) {
   return (
     <div className="flex flex-wrap gap-1">
       {items.map((t) => (
-        <span key={t} className="inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-xs border border-border">
+        <span key={t} className="inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-sm border border-border">
           {t}
         </span>
       ))}
@@ -51,9 +51,9 @@ function MetricField({ label, metric }: { label: string; metric: ValidationMetri
 
   return (
     <div className="flex flex-col gap-1">
-      <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">{label}</p>
+      <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">{label}</p>
       {display ? (
-        <span className="inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-xs border border-border capitalize self-start">{display}</span>
+        <span className="inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-sm border border-border capitalize self-start">{display}</span>
       ) : (
         <EmptyText />
       )}
@@ -122,17 +122,17 @@ export default function SummaryPage() {
           <SectionHeader icon={Users} label="Customer" />
           <div className="flex flex-col sm:flex-row sm:gap-6 gap-3">
             <div className="flex flex-col gap-1 shrink-0">
-              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Segment Size</p>
+              <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Segment Size</p>
               {segmentSize !== null ? (
-                <span className="inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-xs border border-border self-start">{segmentSize.toLocaleString()}</span>
+                <span className="inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-sm border border-border self-start">{segmentSize.toLocaleString()}</span>
               ) : (
                 <EmptyText />
               )}
             </div>
             <div className="flex flex-col gap-1 min-w-0">
-              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Description</p>
+              <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Description</p>
               {customerDescription ? (
-                <span className="inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-xs border border-border self-start">{customerDescription}</span>
+                <span className="inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-sm border border-border self-start">{customerDescription}</span>
               ) : (
                 <EmptyText />
               )}
@@ -154,19 +154,19 @@ export default function SummaryPage() {
                   <EmptyText text="No description" />
                 )}
                 <div className="flex flex-col gap-1">
-                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Customer Segments</p>
+                  <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Customer Segments</p>
                   <ChipList items={problem.customerSegments} />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Context</p>
+                  <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Context</p>
                   <ChipList items={problem.contexts} />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Jobs to Be Done</p>
+                  <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Jobs to Be Done</p>
                   <ChipList items={problem.jobsToBeDone} />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Problem Types</p>
+                  <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Problem Types</p>
                   <ChipList items={problem.problemTypes} />
                 </div>
               </>
@@ -185,7 +185,7 @@ export default function SummaryPage() {
                     <p className="text-md font-medium text-foreground/90">{alt.text || <EmptyText text="Unnamed" />}</p>
                     {alt.shortcomings.length > 0 && (
                       <div className="flex flex-col gap-0.5 pl-2">
-                        <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Shortcomings</p>
+                        <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Shortcomings</p>
                         <ul className="flex flex-col gap-0.5">
                           {alt.shortcomings.map((sc, j) => (
                             <li key={j} className="text-xs text-foreground/70 flex gap-1.5">
@@ -198,7 +198,7 @@ export default function SummaryPage() {
                     )}
                     {(alt.impacts ?? []).filter((imp) => imp.category || imp.description).length > 0 && (
                       <div className="flex flex-col gap-0.5 pl-2">
-                        <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Impacts</p>
+                        <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Impacts</p>
                         <ul className="flex flex-col gap-0.5">
                           {alt.impacts.filter((imp) => imp.category || imp.description).map((imp, k) => (
                             <li key={k} className="text-xs text-foreground/70 flex gap-2 items-baseline">
@@ -239,7 +239,7 @@ export default function SummaryPage() {
               </div>
               {reason && (
                 <div className="flex flex-col gap-1 border-t pt-3">
-                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Notes</p>
+                  <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Notes</p>
                   <p className="text-md text-foreground/80 leading-relaxed">{reason}</p>
                 </div>
               )}
@@ -251,7 +251,7 @@ export default function SummaryPage() {
           {/* Verdict badge */}
           {(status === "valid" || status === "invalid" || status === "unsure") && (
             <div className="border-t pt-3 flex items-center gap-2">
-              <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wide">Verdict:</p>
+              <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Verdict:</p>
               {status === "valid" && (
                 <span className="inline-flex items-center gap-1.5 rounded-md bg-green-50 border border-green-200 px-2.5 py-1 text-sm font-medium text-green-700">
                   <CheckCircle2 className="h-3.5 w-3.5" /> Valid
