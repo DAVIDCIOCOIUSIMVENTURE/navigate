@@ -5,11 +5,14 @@ import { useParams, usePathname, useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog"
 import { ProblemValidationProvider, useProblemValidation, NAV_ITEMS } from "./context"
 import { useIdeas } from "@/store/ideas-hooks"
 import {
   CircleDot, GitFork, ThumbsDown, Heart, BarChart2, Gavel, FileText, LayoutTemplate, BookOpen,
-  ChevronDown,
+  ChevronDown, Eye,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
@@ -57,6 +60,15 @@ function NavItems({
   )
 }
 
+function ViewProblemButton({ onClick }: { onClick: () => void }) {
+  return (
+    <Button variant="outline" size="sm" className="w-full gap-2" onClick={onClick}>
+      <Eye className="h-3.5 w-3.5" />
+      View Problem
+    </Button>
+  )
+}
+
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
@@ -65,6 +77,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const { selectedProblemId } = useProblemValidation()
   const { getIdea } = useIdeas()
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(false)
 
   const idea = getIdea(ideaId)
   const allProblems = idea?.jobs.flatMap((j) => j.problems) ?? []
@@ -129,6 +142,11 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                         {validatedCount} of {totalProblems} validated
                       </p>
                     )}
+                    {selectedProblem && (
+                      <div className="mt-2">
+                        <ViewProblemButton onClick={() => setDialogOpen(true)} />
+                      </div>
+                    )}
                   </div>
                 )}
               </CollapsibleContent>
@@ -163,11 +181,69 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                 {validatedCount} of {totalProblems} validated
               </p>
             )}
+            {selectedProblem && (
+              <div className="px-1 mt-2">
+                <ViewProblemButton onClick={() => setDialogOpen(true)} />
+              </div>
+            )}
           </CardContent>
         </Card>
       </nav>
 
       <div className="flex-1">{children}</div>
+
+      {selectedProblem && (
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+          <DialogContent className="max-h-[85vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Problem Summary</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col gap-4">
+              <div>
+                <p className="text-sm font-medium text-muted-foreground mb-1">Problem</p>
+                <p className="text-sm">{selectedProblem.text}</p>
+              </div>
+              {selectedProblem.contextWhen && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground mb-1">Context</p>
+                  <p className="text-sm">{selectedProblem.contextWhen}</p>
+                </div>
+              )}
+              {selectedProblem.emotionalImpact && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground mb-1">Emotional Impact</p>
+                  <p className="text-sm">{selectedProblem.emotionalImpact}</p>
+                </div>
+              )}
+              {selectedProblem.existingSolutions.length > 0 && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground mb-1">Existing Solutions</p>
+                  <ul className="list-disc list-inside text-sm space-y-1">
+                    {selectedProblem.existingSolutions.map((sol) => (
+                      <li key={sol.id}>{sol.text}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {selectedProblem.impacts.length > 0 && (
+                <div>
+                  <p className="text-sm font-medium text-muted-foreground mb-1">Impacts</p>
+                  <ul className="list-disc list-inside text-sm space-y-1">
+                    {selectedProblem.impacts.map((impact, i) => (
+                      <li key={i}>
+                        <span className="font-medium">{impact.category}:</span> {impact.description}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                <span>Status: {selectedProblem.validationStatus}</span>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   )
 }

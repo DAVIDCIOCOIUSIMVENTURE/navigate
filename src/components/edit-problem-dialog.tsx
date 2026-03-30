@@ -35,9 +35,11 @@ function useDebouncedCallback<T>(callback: (value: T) => void, delay: number) {
 interface EditProblemDialogProps {
   problem: Problem | null
   onClose: () => void
+  title?: string
+  showStatus?: boolean
 }
 
-export function EditProblemDialog({ problem, onClose }: EditProblemDialogProps) {
+export function EditProblemDialog({ problem, onClose, title = "Edit Problem", showStatus = true }: EditProblemDialogProps) {
   const dispatch = useDispatch<AppDispatch>()
   const [editFields, setEditFields] = useState<Record<string, string>>({})
   const initRef = useRef(false)
@@ -74,9 +76,9 @@ export function EditProblemDialog({ problem, onClose }: EditProblemDialogProps) 
     <Dialog open={problem !== null} onOpenChange={(open) => { if (!open) onClose() }}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Edit Problem</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
           <DialogDescription className="sr-only">
-            Edit problem details
+            {title}
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-4 py-4">
@@ -109,13 +111,15 @@ export function EditProblemDialog({ problem, onClose }: EditProblemDialogProps) 
               />
             </div>
           ))}
-          <StatusSelect
-            status={(editFields["validationStatus"] as ValidationStatus) ?? "unvalidated"}
-            setStatus={(v) => {
-              setEditFields((prev) => ({ ...prev, validationStatus: v }))
-              if (problem) dispatch.problems.update({ id: problem.id, patch: { validationStatus: v } })
-            }}
-          />
+          {showStatus && (
+            <StatusSelect
+              status={(editFields["validationStatus"] as ValidationStatus) ?? "unvalidated"}
+              setStatus={(v) => {
+                setEditFields((prev) => ({ ...prev, validationStatus: v }))
+                if (problem) dispatch.problems.update({ id: problem.id, patch: { validationStatus: v } })
+              }}
+            />
+          )}
         </div>
       </DialogContent>
     </Dialog>
