@@ -4,11 +4,10 @@ import { useState } from "react"
 import { useParams, usePathname, useRouter } from "next/navigation"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
-import type { Problem } from "@/store/problems-model"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
-import { EditProblemDialog } from "@/components/edit-problem-dialog"
+import { ProblemSummaryDialog, type ProblemSummaryData } from "@/components/problem-summary-dialog"
 import { ProblemValidationProvider, useProblemValidation, NAV_ITEMS } from "./context"
 import {
   GitFork, Clock, ShieldCheck, FileText, LayoutTemplate, BookOpen, Users, ChevronDown, Eye,
@@ -73,8 +72,24 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const problem = useSelector((state: RootState) =>
     state.problems.problems.find((p) => p.id === problemId)
   ) ?? null
-  const [editingProblem, setEditingProblem] = useState<Problem | null>(null)
+  const [dialogOpen, setDialogOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+
+  const summaryData: ProblemSummaryData | null = problem ? {
+    text: problem.description,
+    tags: [
+      { label: "Customer Segments", values: problem.customerSegments },
+      { label: "Contexts", values: problem.contexts },
+      { label: "Jobs to be Done", values: problem.jobsToBeDone },
+      { label: "Problem Types", values: problem.problemTypes },
+    ],
+    context: problem.contextWhen,
+    emotionalImpact: problem.emotionalImpact,
+    existingSolutions: problem.existingSolutions,
+    validationStatus: problem.validationStatus,
+    reason: problem.validationReason,
+    assessment: problem.validationAssessment,
+  } : null
 
   const base = `/problems/${problemRef}`
 
@@ -125,7 +140,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             <CollapsibleContent className="pt-1">
               <NavItems base={base} pathname={pathname} onNavigate={handleNavigate} />
               <div className="border-t mt-2 pt-2 px-1">
-                <ViewProblemButton onClick={() => setEditingProblem(problem)} />
+                <ViewProblemButton onClick={() => setDialogOpen(true)} />
               </div>
             </CollapsibleContent>
           </CardContent>
@@ -140,7 +155,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           <CardContent className="p-3">
             <NavItems base={base} pathname={pathname} onNavigate={handleNavigate} />
             <div className="border-t mt-2 pt-2">
-              <ViewProblemButton onClick={() => setEditingProblem(problem)} />
+              <ViewProblemButton onClick={() => setDialogOpen(true)} />
             </div>
           </CardContent>
         </Card>
@@ -149,7 +164,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       <div className="flex-1 min-w-0">{children}</div>
     </div>
 
-    <EditProblemDialog problem={editingProblem} onClose={() => setEditingProblem(null)} title="Problem Summary" showStatus={false} />
+    <ProblemSummaryDialog open={dialogOpen} onOpenChange={setDialogOpen} data={summaryData} />
     </div>
   )
 }

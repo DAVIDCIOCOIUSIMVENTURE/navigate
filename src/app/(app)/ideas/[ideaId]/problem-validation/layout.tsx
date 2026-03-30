@@ -5,9 +5,7 @@ import { useParams, usePathname, useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog"
+import { ProblemSummaryDialog } from "@/components/problem-summary-dialog"
 import { ProblemValidationProvider, useProblemValidation, NAV_ITEMS } from "./context"
 import { useIdeas } from "@/store/ideas-hooks"
 import {
@@ -192,58 +190,25 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
       <div className="flex-1">{children}</div>
 
-      {selectedProblem && (
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogContent className="max-h-[85vh] overflow-y-auto">
-            <DialogHeader>
-              <DialogTitle>Problem Summary</DialogTitle>
-            </DialogHeader>
-            <div className="flex flex-col gap-4">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-1">Problem</p>
-                <p className="text-sm">{selectedProblem.text}</p>
-              </div>
-              {selectedProblem.contextWhen && (
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-1">Context</p>
-                  <p className="text-sm">{selectedProblem.contextWhen}</p>
-                </div>
-              )}
-              {selectedProblem.emotionalImpact && (
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-1">Emotional Impact</p>
-                  <p className="text-sm">{selectedProblem.emotionalImpact}</p>
-                </div>
-              )}
-              {selectedProblem.existingSolutions.length > 0 && (
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-1">Existing Solutions</p>
-                  <ul className="list-disc list-inside text-sm space-y-1">
-                    {selectedProblem.existingSolutions.map((sol) => (
-                      <li key={sol.id}>{sol.text}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {selectedProblem.impacts.length > 0 && (
-                <div>
-                  <p className="text-sm font-medium text-muted-foreground mb-1">Impacts</p>
-                  <ul className="list-disc list-inside text-sm space-y-1">
-                    {selectedProblem.impacts.map((impact, i) => (
-                      <li key={i}>
-                        <span className="font-medium">{impact.category}:</span> {impact.description}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                <span>Status: {selectedProblem.validationStatus}</span>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-      )}
+      <ProblemSummaryDialog
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        data={selectedProblem ? {
+          text: selectedProblem.text,
+          context: selectedProblem.contextWhen,
+          emotionalImpact: selectedProblem.emotionalImpact,
+          existingSolutions: selectedProblem.existingSolutions,
+          impacts: selectedProblem.impacts,
+          validationStatus: selectedProblem.validationStatus,
+          reason: selectedProblem.reason,
+          verdict: {
+            timeLevel: selectedProblem.timeLevel,
+            costLevel: selectedProblem.costLevel,
+            returnLevel: selectedProblem.returnLevel,
+            marketLevel: selectedProblem.marketLevel,
+          },
+        } : null}
+      />
     </div>
   )
 }
