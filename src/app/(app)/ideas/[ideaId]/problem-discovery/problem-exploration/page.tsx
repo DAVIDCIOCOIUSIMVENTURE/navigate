@@ -101,7 +101,7 @@ export default function ProblemExplorationPage() {
           <div className="rounded-xl border border-brand/20 bg-brand p-5 flex flex-col gap-4">
             {FIELDS.map((f) => (
               <div key={f.key} className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-brand-foreground">{f.label}</label>
+                <label className="text-sm font-medium text-brand-foreground">{f.label}</label>
                 <Textarea
                   rows={3}
                   placeholder={f.placeholder}

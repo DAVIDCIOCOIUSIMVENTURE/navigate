@@ -138,7 +138,7 @@ export default function QuickstartCanvasPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {PRIOR_KNOWLEDGE_FIELDS.map((f) => (
                 <div key={f.key} className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-foreground/70">{f.label}</label>
+                  <label className="text-sm font-medium text-foreground/70">{f.label}</label>
                   <Textarea
                     rows={3}
                     placeholder={f.placeholder}
@@ -164,7 +164,7 @@ export default function QuickstartCanvasPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {CUSTOMER_SINGLE_FIELDS.map((f) => (
               <div key={f.key} className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-brand-foreground">{f.label}</label>
+                <label className="text-sm font-medium text-brand-foreground">{f.label}</label>
                 <Input
                   placeholder={f.placeholder}
                   value={customer[f.key]}
@@ -174,7 +174,7 @@ export default function QuickstartCanvasPage() {
               </div>
             ))}
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-brand-foreground">Age Range</label>
+              <label className="text-sm font-medium text-brand-foreground">Age Range</label>
               <div className="flex items-center gap-2">
                 <Input
                   placeholder="From"
@@ -195,7 +195,7 @@ export default function QuickstartCanvasPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {CUSTOMER_MULTILINE_FIELDS.map((f) => (
               <div key={f.key} className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-brand-foreground">{f.label}</label>
+                <label className="text-sm font-medium text-brand-foreground">{f.label}</label>
                 <Textarea
                   rows={3}
                   placeholder={f.placeholder}
@@ -247,7 +247,7 @@ export default function QuickstartCanvasPage() {
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     {(["functional", "emotional", "social"] as const).map((field) => (
                       <div key={field} className="flex flex-col gap-1">
-                        <label className="text-xs font-medium text-foreground/70 capitalize">{field}</label>
+                        <label className="text-sm font-medium text-foreground/70 capitalize">{field}</label>
                         <Textarea
                           rows={2}
                           placeholder={

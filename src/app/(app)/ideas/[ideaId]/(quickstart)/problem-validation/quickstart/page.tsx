@@ -459,7 +459,7 @@ export default function QuickstartValidationPage() {
               </div>
 
               <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-muted-foreground">Notes (optional)</label>
+                <label className="text-sm font-medium text-muted-foreground">Notes (optional)</label>
                 <Textarea
                   rows={2}
                   placeholder="Add any notes about your decision..."

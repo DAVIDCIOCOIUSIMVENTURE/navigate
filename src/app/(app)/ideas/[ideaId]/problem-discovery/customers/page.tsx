@@ -224,14 +224,14 @@ export default function CustomersPage() {
           <div className="rounded-xl border border-brand/20 bg-brand p-5 flex flex-col gap-4">
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-brand-foreground">Segment Name</label>
+                <label className="text-sm font-medium text-brand-foreground">Segment Name</label>
                 <SegmentCombobox
                   value={customer.segmentName}
                   onChange={(val) => set("segmentName", val)}
                 />
               </div>
               <div className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-brand-foreground">Age Range</label>
+                <label className="text-sm font-medium text-brand-foreground">Age Range</label>
                 <div className="flex items-center gap-2">
                   <Input
                     placeholder="From"
@@ -253,7 +253,7 @@ export default function CustomersPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {MULTILINE_FIELDS.map((f) => (
                 <div key={f.key} className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-brand-foreground">{f.label}</label>
+                  <label className="text-sm font-medium text-brand-foreground">{f.label}</label>
                   <Textarea
                     rows={3}
                     placeholder={f.placeholder}

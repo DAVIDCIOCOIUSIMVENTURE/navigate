@@ -91,7 +91,7 @@ export default function CustomerSubSegmentPage() {
         {tab === "strategy" && (
           <div className="rounded-xl border border-brand/20 bg-brand p-5 flex flex-col gap-4">
             <div className="flex flex-col gap-1">
-              <label className="text-xs font-medium text-brand-foreground">{FIELDS[0].label}</label>
+              <label className="text-sm font-medium text-brand-foreground">{FIELDS[0].label}</label>
               <Input
                 placeholder={FIELDS[0].placeholder}
                 value={subSegment[FIELDS[0].key]}
@@ -103,7 +103,7 @@ export default function CustomerSubSegmentPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {FIELDS.filter((f) => f.multiline).map((f) => (
                 <div key={f.key} className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-brand-foreground">{f.label}</label>
+                  <label className="text-sm font-medium text-brand-foreground">{f.label}</label>
                   <Textarea
                     rows={4}
                     placeholder={f.placeholder}

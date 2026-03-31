@@ -101,7 +101,7 @@ export default function JobsToBeDonePage() {
                   </button>
                 </div>
                 <div className="flex flex-col gap-1">
-                  <label className="text-xs font-medium text-brand-foreground">Name</label>
+                  <label className="text-sm font-medium text-brand-foreground">Name</label>
                   <Input
                     placeholder="What are your customers trying to get done?"
                     value={job.name}
@@ -112,7 +112,7 @@ export default function JobsToBeDonePage() {
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {(["functional", "emotional", "social"] as const).map((field) => (
                     <div key={field} className="flex flex-col gap-1">
-                      <label className="text-xs font-medium text-brand-foreground capitalize">{field}</label>
+                      <label className="text-sm font-medium text-brand-foreground capitalize">{field}</label>
                       <Textarea
                         rows={3}
                         placeholder={

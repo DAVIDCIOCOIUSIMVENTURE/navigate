@@ -312,7 +312,7 @@ export default function ProblemStatementPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {CUSTOMER_TEXT_FIELDS.filter((f) => !f.multiline).map((f) => (
               <div key={f.key} className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-foreground/70">{f.label}</label>
+                <label className="text-sm font-medium text-foreground/70">{f.label}</label>
                 <Input
                   placeholder={f.placeholder}
                   value={customer[f.key]}
@@ -325,7 +325,7 @@ export default function ProblemStatementPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {CUSTOMER_TEXT_FIELDS.filter((f) => f.multiline).map((f) => (
               <div key={f.key} className="flex flex-col gap-1">
-                <label className="text-xs font-medium text-foreground/70">{f.label}</label>
+                <label className="text-sm font-medium text-foreground/70">{f.label}</label>
                 <Textarea
                   rows={3}
                   placeholder={f.placeholder}
