@@ -76,7 +76,7 @@ export default function IntroductionPage() {
         )}
 
         <div className="flex flex-col gap-3">
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">What you&apos;ll work through</p>
+          <h3 className="text-xl font-bold text-foreground mb-1">What you&apos;ll work through</h3>
           <div className="flex flex-col">
             {STEPS.map(({ icon: Icon, title, description, bg, color }, index) => (
               <div key={title} className="flex gap-4">
@@ -90,7 +90,7 @@ export default function IntroductionPage() {
                 </div>
                 <div className="flex flex-col gap-0.5 pb-5">
                   <p className="text-md font-medium leading-8">{title}</p>
-                  <p className="text-xs leading-relaxed">{description}</p>
+                  <p className="text-md leading-relaxed">{description}</p>
                 </div>
               </div>
             ))}

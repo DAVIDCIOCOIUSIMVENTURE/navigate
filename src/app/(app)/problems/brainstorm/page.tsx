@@ -431,7 +431,7 @@ export default function BrainstormPage() {
     <div className="flex flex-col gap-6 w-full flex-1 min-h-0">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex flex-col gap-1">
-          <h1 className="text-xl font-bold">Discover Business Opportunities</h1>
+          <h1 className="text-xl font-bold">Discover Problems</h1>
           <p className="text-sm text-muted-foreground">
             Explore potential areas for innovation by navigating through the options below.
           </p>
