@@ -61,7 +61,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     dispatch.ideas.init()
     dispatch.problems.init()
     dispatch.accountSettings.init()
-  }, [dispatch.settings, dispatch.problemTriggers, dispatch.ideas, dispatch.problems, dispatch.accountSettings])
+    dispatch.solutions.init()
+  }, [dispatch.settings, dispatch.problemTriggers, dispatch.ideas, dispatch.problems, dispatch.accountSettings, dispatch.solutions])
 
   if (fullView) {
     return (
