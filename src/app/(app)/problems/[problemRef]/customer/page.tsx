@@ -59,7 +59,7 @@ export default function CustomerSegmentPage() {
         )}
 
         <div className="flex flex-col gap-3 text-md text-muted-foreground">
-          <p className="font-medium text-foreground">How to narrow down your customer</p>
+          <p className="text-xl font-bold text-foreground">How to narrow down your customer</p>
           <p>
             Start broad, then layer on filters until you reach a specific group. Each filter
             sharpens your focus and makes the problem more concrete.
@@ -71,7 +71,7 @@ export default function CustomerSegmentPage() {
               </div>
               <div>
                 <p className="font-semibold text-foreground">Role &amp; industry</p>
-                <p className="text-[15px]">What do they do, and in which sector? (e.g. freelance graphic designers, NHS nurses, SaaS founders)</p>
+                <p className="text-md">What do they do, and in which sector? (e.g. freelance graphic designers, NHS nurses, SaaS founders)</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -80,7 +80,7 @@ export default function CustomerSegmentPage() {
               </div>
               <div>
                 <p className="font-semibold text-foreground">Demographics &amp; geography</p>
-                <p className="text-[15px]">Age range, location, income level, company size</p>
+                <p className="text-md">Age range, location, income level, company size</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -89,7 +89,7 @@ export default function CustomerSegmentPage() {
               </div>
               <div>
                 <p className="font-semibold text-foreground">Behaviour &amp; situation</p>
-                <p className="text-[15px]">What triggers the problem? When and how often does it happen?</p>
+                <p className="text-md">What triggers the problem? When and how often does it happen?</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -98,7 +98,7 @@ export default function CustomerSegmentPage() {
               </div>
               <div>
                 <p className="font-semibold text-foreground">Urgency &amp; willingness</p>
-                <p className="text-[15px]">How badly do they need a solution? Are they already spending time or money trying to fix it?</p>
+                <p className="text-md">How badly do they need a solution? Are they already spending time or money trying to fix it?</p>
               </div>
             </div>
           </div>
@@ -124,14 +124,14 @@ export default function CustomerSegmentPage() {
             <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">1</span>
             <div>
               <p className="font-semibold text-foreground">Describe your customer</p>
-              <p className="text-[15px]">Paint a clear picture of who experiences this problem, using the filters above to be as specific as possible.</p>
+              <p className="text-md">Paint a clear picture of who experiences this problem, using the filters above to be as specific as possible.</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">2</span>
             <div>
               <p className="font-semibold text-foreground">Estimate the segment size</p>
-              <p className="text-[15px]">How many people fit this description? An order-of-magnitude is fine.</p>
+              <p className="text-md">How many people fit this description? An order-of-magnitude is fine.</p>
             </div>
           </div>
         </div>

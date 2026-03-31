@@ -99,7 +99,7 @@ function ReverseBrainstormForm() {
       <div className="rounded-lg border bg-background p-4 flex flex-col gap-2">
         <label className="text-sm font-semibold">How could you make this problem worse?</label>
         <p className="text-xs text-muted-foreground">
-          Think of every way to aggravate the problem. Be creative — the more outlandish, the better.
+          Think of every way to aggravate the problem. Be creative, the more outlandish the better.
         </p>
         <Textarea
           value={reverseBrainstorm}
@@ -365,13 +365,13 @@ const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo:
     hints: [
       { icon: Shuffle, title: "7 creative angles", subtitle: "Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate, Reverse", bg: "bg-blue-500" },
       { icon: Plus, title: "Save the best ideas", subtitle: "Click \"Add as Candidate\" to promote ideas for scoring later", bg: "bg-amber-500" },
-      { icon: Shuffle, title: "Quantity over quality", subtitle: "Generate lots of ideas first — you'll refine them later", bg: "bg-emerald-500" },
+      { icon: Shuffle, title: "Quantity over quality", subtitle: "Generate lots of ideas first. You'll refine them later", bg: "bg-emerald-500" },
     ],
   },
   reverse: {
     title: "Reverse Brainstorming",
     description: "Instead of solving the problem directly, first brainstorm how to make it worse. Then flip each \"make it worse\" idea to discover creative solutions you might not have considered. This counterintuitive approach breaks you out of conventional thinking patterns.",
-    whatYouDo: "First, list every way to <strong>make the problem worse</strong>. Be creative — the more outlandish, the better. Then <strong>flip each idea</strong> into its opposite to reveal solution ideas. Save the best flips as candidates.",
+    whatYouDo: "First, list every way to <strong>make the problem worse</strong>. Be creative, the more outlandish the better. Then <strong>flip each idea</strong> into its opposite to reveal solution ideas. Save the best flips as candidates.",
     hints: [
       { icon: RotateCcw, title: "Think backwards", subtitle: "How could you make the problem worse?", bg: "bg-rose-500" },
       { icon: RotateCcw, title: "Flip each idea", subtitle: "The opposite of a bad idea is often a great solution", bg: "bg-blue-500" },
@@ -422,7 +422,7 @@ export default function DiscoverPage() {
                   </div>
                   <div>
                     <p className="font-semibold text-foreground">{title}</p>
-                    <p className="text-[15px]">{subtitle}</p>
+                    <p className="text-md">{subtitle}</p>
                   </div>
                 </div>
               ))}

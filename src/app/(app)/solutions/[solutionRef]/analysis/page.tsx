@@ -106,7 +106,7 @@ export default function AnalysisPage() {
                     {DIMENSIONS.map((dim) => (
                       <div key={dim.key} className="flex flex-col gap-1.5">
                         <div className="flex justify-between items-center">
-                          <label className="text-xs font-medium">{dim.label}</label>
+                          <label className="text-sm font-medium">{dim.label}</label>
                           <span className="text-[10px] text-muted-foreground">{dim.lowLabel} → {dim.highLabel}</span>
                         </div>
                         <ToggleGroup
@@ -132,7 +132,7 @@ export default function AnalysisPage() {
                     className="text-sm"
                   />
                   {computeScore(candidate) !== null && (
-                    <div className="text-xs font-medium text-primary">
+                    <div className="text-sm font-medium text-primary">
                       Composite Score: {computeScore(candidate)} / 20
                     </div>
                   )}
@@ -149,7 +149,7 @@ export default function AnalysisPage() {
                           {i + 1}
                         </span>
                         <span className="flex-1">{c.title}</span>
-                        <span className="text-xs font-medium text-muted-foreground">{c.totalScore}/20</span>
+                        <span className="text-sm font-medium text-muted-foreground">{c.totalScore}/20</span>
                       </div>
                     ))}
                   </div>

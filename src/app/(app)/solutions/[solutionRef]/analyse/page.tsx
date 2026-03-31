@@ -162,7 +162,7 @@ function FiveWhysForm() {
                   {i < 4 && <div className="w-px h-4 bg-border" />}
                 </div>
                 <div className="flex-1 flex flex-col gap-1">
-                  <label className="text-xs font-medium text-muted-foreground">{label}</label>
+                  <label className="text-sm font-medium text-muted-foreground">{label}</label>
                   <Textarea
                     value={chain.whys[i] ?? ""}
                     onChange={(e) => updateWhy(chain.id, i, e.target.value)}
@@ -221,7 +221,7 @@ function AffectedGroupsForm() {
         <div key={group.id} className="rounded-lg border bg-background p-4 flex flex-col gap-3">
           <div className="flex items-center justify-between gap-2">
             <div className="flex-1 flex flex-col gap-1">
-              <label className="text-xs font-medium text-muted-foreground">Group Name</label>
+              <label className="text-sm font-medium text-muted-foreground">Group Name</label>
               <Input
                 value={group.name}
                 onChange={(e) => updateGroup(group.id, { name: e.target.value })}
@@ -239,7 +239,7 @@ function AffectedGroupsForm() {
             </Button>
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-muted-foreground">Description</label>
+            <label className="text-sm font-medium text-muted-foreground">Description</label>
             <Textarea
               value={group.description}
               onChange={(e) => updateGroup(group.id, { description: e.target.value })}
@@ -248,7 +248,7 @@ function AffectedGroupsForm() {
             />
           </div>
           <div className="flex flex-col gap-1">
-            <label className="text-xs font-medium text-muted-foreground">Severity</label>
+            <label className="text-sm font-medium text-muted-foreground">Severity</label>
             <ToggleGroup
               type="single"
               value={group.severity}
@@ -256,7 +256,7 @@ function AffectedGroupsForm() {
               className="justify-start"
             >
               {SEVERITY_OPTIONS.map((opt) => (
-                <ToggleGroupItem key={opt.value} value={opt.value} className="text-xs">
+                <ToggleGroupItem key={opt.value} value={opt.value} className="text-sm">
                   {opt.label}
                 </ToggleGroupItem>
               ))}
@@ -283,7 +283,7 @@ const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo:
     whatYouDo: "Brainstorm every underlying reason the problem exists. Focus on the <strong>root causes</strong>, not the symptoms. Then add <strong>notes</strong> to capture any patterns or connections you spot.",
     hints: [
       { icon: Search, title: "Dig deeper", subtitle: "Go beyond surface-level symptoms", bg: "bg-blue-500" },
-      { icon: Plus, title: "Capture everything", subtitle: "Don't filter yet — list all possible causes", bg: "bg-amber-500" },
+      { icon: Plus, title: "Capture everything", subtitle: "Don't filter yet, list all possible causes", bg: "bg-amber-500" },
       { icon: Trash2, title: "Refine later", subtitle: "You can remove weak causes after brainstorming", bg: "bg-emerald-500" },
     ],
   },
@@ -341,7 +341,7 @@ export default function AnalysePage() {
                   </div>
                   <div>
                     <p className="font-semibold text-foreground">{title}</p>
-                    <p className="text-[15px]">{subtitle}</p>
+                    <p className="text-md">{subtitle}</p>
                   </div>
                 </div>
               ))}

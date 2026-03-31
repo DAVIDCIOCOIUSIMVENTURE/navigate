@@ -36,11 +36,11 @@ const FIVE_WHYS_CASE = {
   title: "E-Commerce Returns",
   problem: "High rate of product returns",
   chain: [
-    "Why? — Customers say the product doesn't match expectations",
-    "Why? — Product photos don't accurately represent colours and sizes",
-    "Why? — Photos are supplied by manufacturers, not shot in-house",
-    "Why? — The team lacks a product photography workflow",
-    "Why? — No budget was allocated because returns weren't tracked by cause",
+    "Customers say the product doesn't match expectations",
+    "Product photos don't accurately represent colours and sizes",
+    "Photos are supplied by manufacturers, not shot in-house",
+    "The team lacks a product photography workflow",
+    "No budget was allocated because returns weren't tracked by cause",
   ],
 }
 
@@ -116,8 +116,8 @@ export default function ChooseAnalysisPage() {
 
           <TabsContent value="root-causes">
             <div className="rounded-xl bg-muted/50 p-8 flex flex-col gap-5">
-              <h3 className="text-lg font-semibold">Root Causes</h3>
-              <p className="text-sm leading-relaxed">
+              <h3 className="text-lg font-semibold text-primary">Root Causes</h3>
+              <p className="text-md leading-relaxed">
                 {TOOL_DESCRIPTIONS["root-causes"].description}
               </p>
 
@@ -125,9 +125,9 @@ export default function ChooseAnalysisPage() {
                 <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Examples</p>
                 {ROOT_CAUSE_CASES.map((cs) => (
                   <div key={cs.title} className="rounded-lg border bg-card p-4 flex flex-col gap-2">
-                    <p className="text-sm font-semibold">{cs.title}</p>
-                    <p className="text-xs text-muted-foreground"><strong>Problem:</strong> {cs.problem}</p>
-                    <ul className="list-disc pl-5 text-xs text-muted-foreground flex flex-col gap-1">
+                    <p className="text-md font-semibold">{cs.title}</p>
+                    <p className="text-md text-muted-foreground"><strong>Problem:</strong> {cs.problem}</p>
+                    <ul className="list-disc pl-5 text-md text-muted-foreground flex flex-col gap-1">
                       {cs.rootCauses.map((rc) => (
                         <li key={rc}>{rc}</li>
                       ))}
@@ -140,19 +140,19 @@ export default function ChooseAnalysisPage() {
 
           <TabsContent value="five-whys">
             <div className="rounded-xl bg-muted/50 p-8 flex flex-col gap-5">
-              <h3 className="text-lg font-semibold">5 Whys Technique</h3>
-              <p className="text-sm leading-relaxed">
+              <h3 className="text-lg font-semibold text-primary">5 Whys Technique</h3>
+              <p className="text-md leading-relaxed">
                 {TOOL_DESCRIPTIONS["five-whys"].description}
               </p>
 
               <div className="flex flex-col gap-3">
                 <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Example</p>
                 <div className="rounded-lg border bg-card p-4 flex flex-col gap-2">
-                  <p className="text-sm font-semibold">{FIVE_WHYS_CASE.title}</p>
-                  <p className="text-xs text-muted-foreground"><strong>Problem:</strong> {FIVE_WHYS_CASE.problem}</p>
+                  <p className="text-md font-semibold">{FIVE_WHYS_CASE.title}</p>
+                  <p className="text-md text-muted-foreground"><strong>Problem:</strong> {FIVE_WHYS_CASE.problem}</p>
                   <ul className="flex flex-col gap-1.5 mt-1">
                     {FIVE_WHYS_CASE.chain.map((step, i) => (
-                      <li key={i} className="flex gap-2 items-start text-xs text-muted-foreground">
+                      <li key={i} className="flex gap-2 items-start text-md text-muted-foreground">
                         <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">
                           {i + 1}
                         </span>
@@ -167,8 +167,8 @@ export default function ChooseAnalysisPage() {
 
           <TabsContent value="affected-groups">
             <div className="rounded-xl bg-muted/50 p-8 flex flex-col gap-5">
-              <h3 className="text-lg font-semibold">Affected Groups</h3>
-              <p className="text-sm leading-relaxed">
+              <h3 className="text-lg font-semibold text-primary">Affected Groups</h3>
+              <p className="text-md leading-relaxed">
                 {TOOL_DESCRIPTIONS["affected-groups"].description}
               </p>
 
@@ -176,16 +176,16 @@ export default function ChooseAnalysisPage() {
                 <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Example</p>
                 {AFFECTED_GROUP_CASES.map((cs) => (
                   <div key={cs.title} className="rounded-lg border bg-card p-4 flex flex-col gap-2">
-                    <p className="text-sm font-semibold">{cs.title}</p>
-                    <p className="text-xs text-muted-foreground"><strong>Problem:</strong> {cs.problem}</p>
+                    <p className="text-md font-semibold">{cs.title}</p>
+                    <p className="text-md text-muted-foreground"><strong>Problem:</strong> {cs.problem}</p>
                     <div className="flex flex-col gap-2 mt-1">
                       {cs.groups.map((g) => (
                         <div key={g.name} className="flex flex-col gap-0.5 rounded bg-muted/50 p-2">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-semibold">{g.name}</span>
-                            <span className="text-[10px] rounded bg-primary/10 text-primary px-1.5 py-0.5 font-medium">{g.severity}</span>
+                            <span className="text-md font-semibold">{g.name}</span>
+                            <span className="text-xs rounded bg-primary/10 text-primary px-1.5 py-0.5 font-medium">{g.severity}</span>
                           </div>
-                          <p className="text-xs text-muted-foreground">{g.description}</p>
+                          <p className="text-md text-muted-foreground">{g.description}</p>
                         </div>
                       ))}
                     </div>

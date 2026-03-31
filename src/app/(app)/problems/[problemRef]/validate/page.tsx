@@ -39,11 +39,11 @@ function HowManyInput({
         <Users className="h-3.5 w-3.5 text-white shrink-0" />
         <span className="text-base font-semibold text-white">How many customers</span>
       </div>
-      <p className="text-[15px] text-white">Estimate the total number of people who experience this problem. Think about your target market segment and how widespread the issue is.</p>
+      <p className="text-md text-white">Estimate the total number of people who experience this problem. Think about your target market segment and how widespread the issue is.</p>
       <Input
         type="number"
         placeholder="e.g. 10000"
-        className="mt-2 h-8 text-[15px] w-28 bg-white border-white text-foreground"
+        className="mt-2 h-8 text-md w-28 bg-white border-white text-foreground"
         value={localValue}
         onChange={(e) => setLocalValue(e.target.value)}
       />
@@ -85,12 +85,12 @@ function FrequencyInput({
       <Input
         type="number"
         placeholder="e.g. 5"
-        className="h-8 text-[15px] w-28 bg-white border-white text-foreground"
+        className="h-8 text-md w-28 bg-white border-white text-foreground"
         value={localValue}
         onChange={(e) => setLocalValue(e.target.value)}
       />
       <Select value={metric.unit || "per day"} onValueChange={(val) => onChange({ unit: val })}>
-        <SelectTrigger className="h-8 text-[15px] w-40 bg-white border-white text-foreground">
+        <SelectTrigger className="h-8 text-md w-40 bg-white border-white text-foreground">
           <SelectValue placeholder="Frequency" />
         </SelectTrigger>
         <SelectContent>
@@ -126,12 +126,12 @@ function CurrencyInput({
       <Input
         type="number"
         placeholder="e.g. 50"
-        className="h-8 text-[15px] w-28 bg-white border-white text-foreground"
+        className="h-8 text-md w-28 bg-white border-white text-foreground"
         value={localValue}
         onChange={(e) => setLocalValue(e.target.value)}
       />
       <Select value={metric.unit || "GBP"} onValueChange={(val) => onChange({ unit: val })}>
-        <SelectTrigger className="h-8 text-[15px] w-28 bg-white border-white text-foreground">
+        <SelectTrigger className="h-8 text-md w-28 bg-white border-white text-foreground">
           <SelectValue placeholder="Currency" />
         </SelectTrigger>
         <SelectContent>
@@ -192,33 +192,33 @@ export default function VerdictPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-[15px] font-bold shrink-0">1</span>
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-md font-bold shrink-0">1</span>
                 <div>
                   <p className="font-semibold text-foreground">How many customers &amp; how often</p>
-                  <p className="text-[15px]">Estimate the size of the audience and how frequently they encounter this problem.</p>
+                  <p className="text-md">Estimate the size of the audience and how frequently they encounter this problem.</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-[15px] font-bold shrink-0">2</span>
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-md font-bold shrink-0">2</span>
                 <div>
                   <p className="font-semibold text-foreground">How much is it worth</p>
-                  <p className="text-[15px]">Quantify how much customers would pay or benefit from a solution.</p>
+                  <p className="text-md">Quantify how much customers would pay or benefit from a solution.</p>
                 </div>
               </div>
             </div>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-[15px] font-bold shrink-0">3</span>
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-md font-bold shrink-0">3</span>
                 <div>
                   <p className="font-semibold text-foreground">Competitive landscape</p>
-                  <p className="text-[15px]">Assess the cost of switching, how effective existing solutions are, and how big the competitors are.</p>
+                  <p className="text-md">Assess the cost of switching, how effective existing solutions are, and how big the competitors are.</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-[15px] font-bold shrink-0">4</span>
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-md font-bold shrink-0">4</span>
                 <div>
                   <p className="font-semibold text-foreground">Record your verdict</p>
-                  <p className="text-[15px]">Decide whether the problem is <strong className="text-foreground">Valid</strong>, <strong className="text-foreground">Unsure</strong>, or <strong className="text-foreground">Invalid</strong>.</p>
+                  <p className="text-md">Decide whether the problem is <strong className="text-foreground">Valid</strong>, <strong className="text-foreground">Unsure</strong>, or <strong className="text-foreground">Invalid</strong>.</p>
                 </div>
               </div>
             </div>
@@ -240,7 +240,7 @@ export default function VerdictPage() {
               <div className="flex flex-col gap-5">
                 {/* Decision factors */}
                 <div className="flex flex-col gap-6">
-                  <p className="text-[15px] font-medium text-white">Decision Factors</p>
+                  <p className="text-md font-medium text-white">Decision Factors</p>
 
                   <HowManyInput metric={howManyPeople} onChange={setHowManyPeople} />
 
@@ -249,7 +249,7 @@ export default function VerdictPage() {
                       <RefreshCw className="h-3.5 w-3.5 text-white shrink-0" />
                       <span className="text-base font-semibold text-white">How often does the problem occur</span>
                     </div>
-                    <p className="text-[15px] text-white">How frequently do customers encounter this problem? A problem that happens daily is far more urgent than one that occurs once a year.</p>
+                    <p className="text-md text-white">How frequently do customers encounter this problem? A problem that happens daily is far more urgent than one that occurs once a year.</p>
                     <FrequencyInput metric={howOften} onChange={setHowOften} />
                   </div>
 
@@ -258,7 +258,7 @@ export default function VerdictPage() {
                       <DollarSign className="h-3.5 w-3.5 text-white shrink-0" />
                       <span className="text-base font-semibold text-white">How much is it worth</span>
                     </div>
-                    <p className="text-[15px] text-white">What is the monetary value of solving this problem? Consider how much customers currently spend on workarounds, or how much time and money they lose because of it.</p>
+                    <p className="text-md text-white">What is the monetary value of solving this problem? Consider how much customers currently spend on workarounds, or how much time and money they lose because of it.</p>
                     <CurrencyInput metric={worthToThem} onChange={setWorthToThem} />
                   </div>
 
@@ -267,7 +267,7 @@ export default function VerdictPage() {
                       <ArrowRightLeft className="h-3.5 w-3.5 text-white shrink-0" />
                       <span className="text-base font-semibold text-white">What is the cost of switching</span>
                     </div>
-                    <p className="text-[15px] text-white">How much effort, money, or disruption does it take for customers to move away from their current solution? High switching costs mean customers are more locked in, so your solution needs to offer a compelling reason to change.</p>
+                    <p className="text-md text-white">How much effort, money, or disruption does it take for customers to move away from their current solution? High switching costs mean customers are more locked in, so your solution needs to offer a compelling reason to change.</p>
                     <div className="mt-2 inline-flex w-fit rounded-xl bg-white/10 p-1.5">
                       <ToggleGroup
                         className="border-none"
@@ -279,7 +279,7 @@ export default function VerdictPage() {
                           <ToggleGroupItem
                             key={level}
                             value={level}
-                            className="px-4 py-1.5 text-[15px] font-medium capitalize bg-transparent text-white/70 data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 hover:text-white rounded-md border-none"
+                            className="px-4 py-1.5 text-md font-medium capitalize bg-transparent text-white/70 data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 hover:text-white rounded-md border-none"
                           >
                             {level}
                           </ToggleGroupItem>
@@ -293,7 +293,7 @@ export default function VerdictPage() {
                       <Target className="h-3.5 w-3.5 text-white shrink-0" />
                       <span className="text-base font-semibold text-white">How effective are existing solutions</span>
                     </div>
-                    <p className="text-[15px] text-white">How well do current solutions already address this problem? If existing solutions work well, customers have less incentive to switch. If they are poor, there is a bigger gap for you to fill.</p>
+                    <p className="text-md text-white">How well do current solutions already address this problem? If existing solutions work well, customers have less incentive to switch. If they are poor, there is a bigger gap for you to fill.</p>
                     <div className="mt-2 inline-flex w-fit rounded-xl bg-white/10 p-1.5">
                       <ToggleGroup
                         className="border-none"
@@ -305,7 +305,7 @@ export default function VerdictPage() {
                           <ToggleGroupItem
                             key={level}
                             value={level}
-                            className="px-4 py-1.5 text-[15px] font-medium capitalize bg-transparent text-white/70 data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 hover:text-white rounded-md border-none"
+                            className="px-4 py-1.5 text-md font-medium capitalize bg-transparent text-white/70 data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 hover:text-white rounded-md border-none"
                           >
                             {level}
                           </ToggleGroupItem>
@@ -319,7 +319,7 @@ export default function VerdictPage() {
                       <Building2 className="h-3.5 w-3.5 text-white shrink-0" />
                       <span className="text-base font-semibold text-white">How big are the competitors</span>
                     </div>
-                    <p className="text-[15px] text-white">How large and established are the companies already solving this problem? Competing against well-funded incumbents requires a strong differentiator, while a market with only small players may signal an easier entry.</p>
+                    <p className="text-md text-white">How large and established are the companies already solving this problem? Competing against well-funded incumbents requires a strong differentiator, while a market with only small players may signal an easier entry.</p>
                     <div className="mt-2 inline-flex w-fit rounded-xl bg-white/10 p-1.5">
                       <ToggleGroup
                         className="border-none"
@@ -331,7 +331,7 @@ export default function VerdictPage() {
                           <ToggleGroupItem
                             key={level}
                             value={level}
-                            className="px-4 py-1.5 text-[15px] font-medium capitalize bg-transparent text-white/70 data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 hover:text-white rounded-md border-none"
+                            className="px-4 py-1.5 text-md font-medium capitalize bg-transparent text-white/70 data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 hover:text-white rounded-md border-none"
                           >
                             {level}
                           </ToggleGroupItem>
@@ -343,7 +343,7 @@ export default function VerdictPage() {
 
                 {/* Notes */}
                 <div className="flex flex-col gap-2 pt-2 border-t border-white/20">
-                  <p className="text-[15px] font-medium text-white">Notes (optional)</p>
+                  <p className="text-md font-medium text-white">Notes (optional)</p>
                   <Textarea
                     rows={3}
                     placeholder="Add any notes about your decision..."
@@ -355,7 +355,7 @@ export default function VerdictPage() {
 
                 {/* Verdict checkboxes */}
                 <div className="flex flex-col gap-3 pt-2 border-t border-white/20">
-                  <p className="text-[15px] font-medium text-white">Your verdict</p>
+                  <p className="text-md font-medium text-white">Your verdict</p>
                   {([
                     { value: "valid" as const, label: "Valid: Worth Solving", icon: <CheckCircle2 className="h-4 w-4" />, color: "text-green-700 border-green-300 bg-green-50" },
                     { value: "unsure" as const, label: "Unsure: May Be Worth Solving", icon: <HelpCircle className="h-4 w-4" />, color: "text-orange-700 border-orange-300 bg-orange-50" },
@@ -396,7 +396,7 @@ export default function VerdictPage() {
 
           <TabsContent value="case-studies">
             <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
-              <p className="text-[15px] text-white">
+              <p className="text-md text-white">
                 See how successful companies quantified the opportunity behind their core problem, estimating reach, frequency, value, and switching cost to decide whether to pursue it.
               </p>
               {VALIDATE_CASE_STUDIES.map((cs) => (
@@ -404,54 +404,54 @@ export default function VerdictPage() {
                   key={cs.company}
                   className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-3"
                 >
-                  <p className="text-[15px] font-semibold text-white">{cs.company}</p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-[15px]">
+                  <p className="text-md font-semibold text-white">{cs.company}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-md">
                     <div>
-                      <span className="text-[15px] font-medium text-white uppercase tracking-wide">How Many Customers</span>
+                      <span className="text-md font-medium text-white uppercase tracking-wide">How Many Customers</span>
                       <p className="mt-0.5 text-white">
-                        <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-[15px] font-semibold text-white mr-1">{cs.howManyPeople.value.toLocaleString()}</span>
+                        <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-md font-semibold text-white mr-1">{cs.howManyPeople.value.toLocaleString()}</span>
                         {cs.howManyPeople.detail}
                       </p>
                     </div>
                     <div>
-                      <span className="text-[15px] font-medium text-white uppercase tracking-wide">How Often</span>
+                      <span className="text-md font-medium text-white uppercase tracking-wide">How Often</span>
                       <p className="mt-0.5 text-white">
-                        <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-[15px] font-semibold text-white mr-1">{cs.howOften.value} {cs.howOften.unit}</span>
+                        <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-md font-semibold text-white mr-1">{cs.howOften.value} {cs.howOften.unit}</span>
                         {cs.howOften.detail}
                       </p>
                     </div>
                     <div>
-                      <span className="text-[15px] font-medium text-white uppercase tracking-wide">How Much Is It Worth</span>
+                      <span className="text-md font-medium text-white uppercase tracking-wide">How Much Is It Worth</span>
                       <p className="mt-0.5 text-white">
-                        <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-[15px] font-semibold text-white mr-1">{cs.worthToThem.value} {cs.worthToThem.unit}</span>
+                        <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-md font-semibold text-white mr-1">{cs.worthToThem.value} {cs.worthToThem.unit}</span>
                         {cs.worthToThem.detail}
                       </p>
                     </div>
                     <div>
-                      <span className="text-[15px] font-medium text-white uppercase tracking-wide">Cost of Switching</span>
+                      <span className="text-md font-medium text-white uppercase tracking-wide">Cost of Switching</span>
                       <p className="mt-0.5 text-white">
                         <span className={cn(
-                          "inline-block rounded px-1.5 py-0.5 text-[15px] font-semibold text-white mr-1 capitalize",
+                          "inline-block rounded px-1.5 py-0.5 text-md font-semibold text-white mr-1 capitalize",
                           cs.costOfSwitching.level === "none" ? "bg-emerald-500/30" : cs.costOfSwitching.level === "low" ? "bg-green-500/30" : cs.costOfSwitching.level === "medium" ? "bg-amber-500/30" : cs.costOfSwitching.level === "high" ? "bg-red-500/30" : "bg-red-700/30"
                         )}>{cs.costOfSwitching.level}</span>
                         {cs.costOfSwitching.detail}
                       </p>
                     </div>
                     <div>
-                      <span className="text-[15px] font-medium text-white uppercase tracking-wide">Solution Effectiveness</span>
+                      <span className="text-md font-medium text-white uppercase tracking-wide">Solution Effectiveness</span>
                       <p className="mt-0.5 text-white">
                         <span className={cn(
-                          "inline-block rounded px-1.5 py-0.5 text-[15px] font-semibold text-white mr-1 capitalize",
+                          "inline-block rounded px-1.5 py-0.5 text-md font-semibold text-white mr-1 capitalize",
                           cs.solutionEffectiveness.level === "terrible" || cs.solutionEffectiveness.level === "poor" ? "bg-green-500/30" : cs.solutionEffectiveness.level === "average" ? "bg-amber-500/30" : "bg-red-500/30"
                         )}>{cs.solutionEffectiveness.level}</span>
                         {cs.solutionEffectiveness.detail}
                       </p>
                     </div>
                     <div>
-                      <span className="text-[15px] font-medium text-white uppercase tracking-wide">Competitor Size</span>
+                      <span className="text-md font-medium text-white uppercase tracking-wide">Competitor Size</span>
                       <p className="mt-0.5 text-white">
                         <span className={cn(
-                          "inline-block rounded px-1.5 py-0.5 text-[15px] font-semibold text-white mr-1 capitalize",
+                          "inline-block rounded px-1.5 py-0.5 text-md font-semibold text-white mr-1 capitalize",
                           cs.competitorSize.level === "micro" ? "bg-emerald-500/30" : cs.competitorSize.level === "small" ? "bg-green-500/30" : cs.competitorSize.level === "medium" ? "bg-amber-500/30" : cs.competitorSize.level === "large" ? "bg-red-500/30" : "bg-red-700/30"
                         )}>{cs.competitorSize.level}</span>
                         {cs.competitorSize.detail}
@@ -459,8 +459,8 @@ export default function VerdictPage() {
                     </div>
                   </div>
                   <div className="border-t border-white/10 pt-3 mt-1">
-                    <span className="text-[15px] font-medium text-white uppercase tracking-wide">Verdict: {cs.verdict}</span>
-                    <p className="mt-0.5 text-[15px] text-white">{cs.reasoning}</p>
+                    <span className="text-md font-medium text-white uppercase tracking-wide">Verdict: {cs.verdict}</span>
+                    <p className="mt-0.5 text-md text-white">{cs.reasoning}</p>
                   </div>
                 </div>
               ))}

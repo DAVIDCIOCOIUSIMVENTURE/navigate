@@ -131,7 +131,7 @@ export default function ExistingSolutionsPage() {
               </div>
               <div>
                 <p className="font-semibold text-foreground">Existing tools &amp; software</p>
-                <p className="text-[15px]">Products already on the market</p>
+                <p className="text-md">Products already on the market</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -140,7 +140,7 @@ export default function ExistingSolutionsPage() {
               </div>
               <div>
                 <p className="font-semibold text-foreground">Manual workarounds</p>
-                <p className="text-[15px]">Spreadsheets, sticky notes, email threads</p>
+                <p className="text-md">Spreadsheets, sticky notes, email threads</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -149,7 +149,7 @@ export default function ExistingSolutionsPage() {
               </div>
               <div>
                 <p className="font-semibold text-foreground">Hiring or outsourcing</p>
-                <p className="text-[15px]">Paying someone else to handle it</p>
+                <p className="text-md">Paying someone else to handle it</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -158,7 +158,7 @@ export default function ExistingSolutionsPage() {
               </div>
               <div>
                 <p className="font-semibold text-foreground">Doing nothing</p>
-                <p className="text-[15px]">Ignoring or tolerating the problem</p>
+                <p className="text-md">Ignoring or tolerating the problem</p>
               </div>
             </div>
           </div>

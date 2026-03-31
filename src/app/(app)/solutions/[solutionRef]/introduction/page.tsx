@@ -4,27 +4,27 @@ import { usePathname, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useSolution, getAdjacentSteps } from "../context"
-import { BookOpen, Search, Shuffle, BarChart2 } from "lucide-react"
+import { BookOpen, Search, Lightbulb, BarChart2 } from "lucide-react"
 
 const STEPS = [
   {
     icon: Search,
-    title: "Root Cause Analysis",
-    description: "Dig deeper into the problem. Identify root causes using techniques like the 5 Whys, and map out who is most affected.",
+    title: "Analyse",
+    description: "Choose an analysis technique (Root Causes, 5 Whys, or Affected Groups) to dig deeper into why the problem exists and who it impacts.",
     bg: "bg-indigo-100 dark:bg-indigo-950",
     color: "text-indigo-600 dark:text-indigo-400",
   },
   {
-    icon: Shuffle,
-    title: "Solution Discovery",
-    description: "Use creative brainstorming techniques — SCAMPER, reverse brainstorming, and analogy thinking — to generate solution candidates.",
+    icon: Lightbulb,
+    title: "Discover",
+    description: "Pick a creative brainstorming method (SCAMPER, Reverse Brainstorming, or Analogy Thinking) to generate solution candidates.",
     bg: "bg-sky-100 dark:bg-sky-950",
     color: "text-sky-600 dark:text-sky-400",
   },
   {
     icon: BarChart2,
-    title: "Solution Analysis",
-    description: "Score your solution candidates on feasibility, impact, cost, and time. Compare them and pick the best one to pursue.",
+    title: "Evaluate",
+    description: "Score each solution candidate on feasibility, impact, cost, and time. Compare them side by side and decide which one to pursue.",
     bg: "bg-green-100 dark:bg-green-950",
     color: "text-green-600 dark:text-green-400",
   },
@@ -57,7 +57,7 @@ export default function IntroductionPage() {
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <p className="text-md leading-relaxed">
-          Now that you&apos;ve validated your problem, it&apos;s time to find a solution. You&apos;ll first analyse the problem deeper to understand its root causes, then use creative techniques to brainstorm solutions, and finally evaluate which solution is worth pursuing.
+          Now that you&apos;ve validated your problem, it&apos;s time to find a solution. You&apos;ll choose an analysis tool to understand the root causes, then pick a creative technique to brainstorm solution candidates, and finally score and compare them to decide which one is worth pursuing.
         </p>
 
         {problem && (

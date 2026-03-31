@@ -33,7 +33,7 @@ const SCAMPER_CASE = {
   problem: "Drivers spend 20+ minutes looking for parking",
   examples: [
     { letter: "S", idea: "Substitute car parks with shared drop-off zones (like ride-share pick-up points)" },
-    { letter: "C", idea: "Combine parking with public transit — park at hubs, take a shuttle the last mile" },
+    { letter: "C", idea: "Combine parking with public transit: park at hubs, take a shuttle the last mile" },
     { letter: "A", idea: "Adapt hotel valet concepts: app-based valet that parks your car while you shop" },
     { letter: "E", idea: "Eliminate the need to park by incentivising remote work or delivery services" },
     { letter: "R", idea: "Reverse: instead of drivers finding parking, parking finds drivers (real-time slot alerts)" },
@@ -52,7 +52,7 @@ const ANALOGY_CASES = [
     title: "Hospital Patient Flow",
     problem: "Emergency rooms are overcrowded",
     domain: "Airport security",
-    insight: "Airports use triage lanes (TSA PreCheck, priority, standard). Hospitals adopted tiered intake — fast-track for minor injuries, express diagnostics for moderate cases, and full ER for critical patients. This reduced average wait by 40%.",
+    insight: "Airports use triage lanes (TSA PreCheck, priority, standard). Hospitals adopted tiered intake: fast-track for minor injuries, express diagnostics for moderate cases, and full ER for critical patients. This reduced average wait by 40%.",
   },
   {
     title: "Software Deployment Risk",
@@ -103,23 +103,23 @@ export default function ChooseDiscoveryPage() {
 
           <TabsContent value="scamper">
             <div className="rounded-xl bg-muted/50 p-8 flex flex-col gap-5">
-              <h3 className="text-lg font-semibold">SCAMPER Method</h3>
-              <p className="text-sm leading-relaxed">
+              <h3 className="text-lg font-semibold text-primary">SCAMPER Method</h3>
+              <p className="text-md leading-relaxed">
                 {TOOL_DESCRIPTIONS.scamper.description}
               </p>
 
               <div className="flex flex-col gap-3">
                 <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Example</p>
                 <div className="rounded-lg border bg-card p-4 flex flex-col gap-2">
-                  <p className="text-sm font-semibold">{SCAMPER_CASE.title}</p>
-                  <p className="text-xs text-muted-foreground"><strong>Problem:</strong> {SCAMPER_CASE.problem}</p>
+                  <p className="text-md font-semibold">{SCAMPER_CASE.title}</p>
+                  <p className="text-md text-muted-foreground"><strong>Problem:</strong> {SCAMPER_CASE.problem}</p>
                   <div className="flex flex-col gap-2 mt-1">
                     {SCAMPER_CASE.examples.map((ex) => (
                       <div key={ex.letter} className="flex gap-2 items-start">
                         <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">
                           {ex.letter}
                         </span>
-                        <p className="text-xs text-muted-foreground">{ex.idea}</p>
+                        <p className="text-md text-muted-foreground">{ex.idea}</p>
                       </div>
                     ))}
                   </div>
@@ -130,24 +130,24 @@ export default function ChooseDiscoveryPage() {
 
           <TabsContent value="reverse">
             <div className="rounded-xl bg-muted/50 p-8 flex flex-col gap-5">
-              <h3 className="text-lg font-semibold">Reverse Brainstorming</h3>
-              <p className="text-sm leading-relaxed">
+              <h3 className="text-lg font-semibold text-primary">Reverse Brainstorming</h3>
+              <p className="text-md leading-relaxed">
                 {TOOL_DESCRIPTIONS.reverse.description}
               </p>
 
               <div className="flex flex-col gap-3">
                 <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Example</p>
                 <div className="rounded-lg border bg-card p-4 flex flex-col gap-3">
-                  <p className="text-sm font-semibold">{REVERSE_CASE.title}</p>
-                  <p className="text-xs text-muted-foreground"><strong>Problem:</strong> {REVERSE_CASE.problem}</p>
+                  <p className="text-md font-semibold">{REVERSE_CASE.title}</p>
+                  <p className="text-md text-muted-foreground"><strong>Problem:</strong> {REVERSE_CASE.problem}</p>
                   <div className="flex flex-col gap-2">
                     <div className="rounded bg-red-50 dark:bg-red-950/30 p-3">
-                      <p className="text-xs font-semibold text-red-700 dark:text-red-400 mb-1">Make it worse:</p>
-                      <p className="text-xs text-muted-foreground">{REVERSE_CASE.worse}</p>
+                      <p className="text-md font-semibold text-red-700 dark:text-red-400 mb-1">Make it worse:</p>
+                      <p className="text-md text-muted-foreground">{REVERSE_CASE.worse}</p>
                     </div>
                     <div className="rounded bg-green-50 dark:bg-green-950/30 p-3">
-                      <p className="text-xs font-semibold text-green-700 dark:text-green-400 mb-1">Flip it:</p>
-                      <p className="text-xs text-muted-foreground">{REVERSE_CASE.inverted}</p>
+                      <p className="text-md font-semibold text-green-700 dark:text-green-400 mb-1">Flip it:</p>
+                      <p className="text-md text-muted-foreground">{REVERSE_CASE.inverted}</p>
                     </div>
                   </div>
                 </div>
@@ -157,8 +157,8 @@ export default function ChooseDiscoveryPage() {
 
           <TabsContent value="analogy">
             <div className="rounded-xl bg-muted/50 p-8 flex flex-col gap-5">
-              <h3 className="text-lg font-semibold">Analogy Thinking</h3>
-              <p className="text-sm leading-relaxed">
+              <h3 className="text-lg font-semibold text-primary">Analogy Thinking</h3>
+              <p className="text-md leading-relaxed">
                 {TOOL_DESCRIPTIONS.analogy.description}
               </p>
 
@@ -166,13 +166,13 @@ export default function ChooseDiscoveryPage() {
                 <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Examples</p>
                 {ANALOGY_CASES.map((cs) => (
                   <div key={cs.title} className="rounded-lg border bg-card p-4 flex flex-col gap-2">
-                    <p className="text-sm font-semibold">{cs.title}</p>
-                    <p className="text-xs text-muted-foreground"><strong>Problem:</strong> {cs.problem}</p>
+                    <p className="text-md font-semibold">{cs.title}</p>
+                    <p className="text-md text-muted-foreground"><strong>Problem:</strong> {cs.problem}</p>
                     <div className="rounded bg-blue-50 dark:bg-blue-950/30 p-3 mt-1">
-                      <p className="text-xs font-semibold text-blue-700 dark:text-blue-400 mb-1">
+                      <p className="text-md font-semibold text-blue-700 dark:text-blue-400 mb-1">
                         Analogy from: {cs.domain}
                       </p>
-                      <p className="text-xs text-muted-foreground">{cs.insight}</p>
+                      <p className="text-md text-muted-foreground">{cs.insight}</p>
                     </div>
                   </div>
                 ))}
