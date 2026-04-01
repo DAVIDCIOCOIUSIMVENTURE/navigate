@@ -265,6 +265,22 @@ function ProblemFormDialog({
   )
 }
 
+function NoSearchResults({ onClear }: { onClear?: () => void }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-8 gap-2 text-center">
+      <Search className="h-5 w-5 text-muted-foreground" />
+      <p className="text-sm text-muted-foreground">No items match your search.</p>
+      <p className="text-xs text-muted-foreground">Try a different term or clear the search.</p>
+      {onClear && (
+        <Button variant="outline" size="sm" onClick={onClear} className="mt-1 gap-1.5">
+          <X className="h-3.5 w-3.5" />
+          Clear search
+        </Button>
+      )}
+    </div>
+  )
+}
+
 /* ─── Problem Builder (guided mode) ─── */
 
 const BUILDER_STEPS = [
@@ -279,9 +295,13 @@ type BuilderStepId = (typeof BUILDER_STEPS)[number]["id"]
 function ProblemBuilder({
   columns,
   onSave,
+  resetRef,
+  onClearSearch,
 }: {
   columns: BrainstormColumn[]
   onSave: (selections: Record<string, string[]>, description: string) => void
+  resetRef?: React.MutableRefObject<(() => void) | null>
+  onClearSearch?: () => void
 }) {
   const [step, setStep] = useState<BuilderStepId>("pick")
   const [activeColumnId, setActiveColumnId] = useState<string | null>(null)
@@ -298,6 +318,10 @@ function ProblemBuilder({
     [columns, usedColumnIds]
   )
   const activeColumn = columns.find((c) => c.id === activeColumnId)
+  const hasAnyItems = useMemo(
+    () => columns.some((c) => c.items.length > 0),
+    [columns]
+  )
   const totalSelections = Object.values(selectedByColumn).reduce((sum, ids) => sum + ids.length, 0)
 
   const pickColumn = (columnId: string) => {
@@ -331,12 +355,16 @@ function ProblemBuilder({
     setStep("pick")
   }
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setSelectedByColumn({})
     setActiveColumnId(null)
     setDescription("")
     setStep("pick")
-  }
+  }, [])
+
+  useEffect(() => {
+    if (resetRef) resetRef.current = reset
+  }, [reset, resetRef])
 
   return (
     <Card className="flex flex-col flex-1 min-h-0">
@@ -425,7 +453,9 @@ function ProblemBuilder({
               <p className="text-sm text-muted-foreground">
                 Choose which dimension you want to explore.
               </p>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {!hasAnyItems ? (
+                <NoSearchResults onClear={onClearSearch} />
+              ) : <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {columns.map((col) => {
                   const Icon = COLUMN_ICONS[col.id]
                   const colors = COLUMN_COLORS[col.id]
@@ -458,7 +488,7 @@ function ProblemBuilder({
                     </button>
                   )
                 })}
-              </div>
+              </div>}
             </div>
           )}
 
@@ -488,7 +518,9 @@ function ProblemBuilder({
               </div>
               <ScrollArea className="flex-1 min-h-0 max-h-[50vh] border rounded-lg p-3">
                 <div className="flex flex-col gap-0.5 pr-3">
-                  {activeColumn.items.map((item) => (
+                  {activeColumn.items.length === 0 ? (
+                    <NoSearchResults onClear={onClearSearch} />
+                  ) : activeColumn.items.map((item) => (
                     <BrainstormCheckItem
                       key={item.id}
                       item={item}
@@ -517,7 +549,9 @@ function ProblemBuilder({
                   <ArrowRight className="h-3.5 w-3.5" />
                 </Button>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {!hasAnyItems ? (
+                <NoSearchResults onClear={onClearSearch} />
+              ) : <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {columns.map((col) => {
                   const Icon = COLUMN_ICONS[col.id]
                   const colors = COLUMN_COLORS[col.id]
@@ -550,7 +584,7 @@ function ProblemBuilder({
                     </button>
                   )
                 })}
-              </div>
+              </div>}
             </div>
           )}
 
@@ -667,6 +701,14 @@ export default function BrainstormPage() {
     return map
   }, [debouncedQuery, allColumns])
 
+  const filteredColumns = useMemo(() => {
+    if (!filteredColumnsMap) return allColumns
+    return allColumns.map((col) => ({
+      ...col,
+      items: filteredColumnsMap.get(col.id) ?? col.items,
+    }))
+  }, [allColumns, filteredColumnsMap])
+
   const [editingProblem, setEditingProblem] = useState<Problem | null>(null)
   const [editFields, setEditFields] = useState<Record<string, string>>({})
   const initRef = useRef(false)
@@ -675,6 +717,7 @@ export default function BrainstormPage() {
   const [nextStepDialogOpen, setNextStepDialogOpen] = useState(false)
   const [lastSavedProblemId, setLastSavedProblemId] = useState<number | null>(null)
   const [tableDrawerOpen, setTableDrawerOpen] = useState(false)
+  const builderResetRef = useRef<(() => void) | null>(null)
   const fullView = useSelector((state: RootState) => state.settings.fullView)
   const brainstormMode = useSelector((state: RootState) => state.settings.brainstormMode)
 
@@ -819,37 +862,33 @@ export default function BrainstormPage() {
               Builder
             </ToggleGroupItem>
           </ToggleGroup>
-          {brainstormMode === "canvas" && (
-            <>
-              <div className="relative">
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 h-8 w-44"
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery("")}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    aria-label="Clear search"
-                  >
-                    <X className="h-3.5 w-3.5" />
-                  </button>
-                )}
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => dispatch.settings.setFullView(!fullView)}
-                className="gap-2"
+          <div className="relative">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9 h-8 w-44"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                aria-label="Clear search"
               >
-                {fullView ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
-                {fullView ? "Exit Full View" : "Full View"}
-              </Button>
-            </>
-          )}
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => dispatch.settings.setFullView(!fullView)}
+            className="gap-2"
+          >
+            {fullView ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+            {fullView ? "Exit Full View" : "Full View"}
+          </Button>
           <Button
             variant="outline"
             size="sm"
@@ -858,34 +897,37 @@ export default function BrainstormPage() {
           >
             Show Saved Problems ({savedProblems.length})
           </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => {
+              if (brainstormMode === "canvas") {
+                clearAll()
+              } else {
+                builderResetRef.current?.()
+              }
+            }}
+            className="gap-2"
+          >
+            <RotateCcw className="h-3.5 w-3.5" />
+            Reset
+          </Button>
           {brainstormMode === "canvas" && (
-            <>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={clearAll}
-                disabled={totalSelected === 0}
-                className="gap-2"
-              >
-                <RotateCcw className="h-3.5 w-3.5" />
-                Reset
-              </Button>
-              <Button
-                size="sm"
-                onClick={openSaveDialog}
-                disabled={totalSelected === 0}
-                className="gap-2"
-              >
-                <Save className="h-3.5 w-3.5" />
-                Save Problem
-              </Button>
-            </>
+            <Button
+              size="sm"
+              onClick={openSaveDialog}
+              disabled={totalSelected === 0}
+              className="gap-2"
+            >
+              <Save className="h-3.5 w-3.5" />
+              Save Problem
+            </Button>
           )}
         </div>
       </div>
 
       {brainstormMode === "builder" ? (
-        <ProblemBuilder columns={allColumns} onSave={handleBuilderSave} />
+        <ProblemBuilder columns={filteredColumns} onSave={handleBuilderSave} resetRef={builderResetRef} onClearSearch={() => setSearchQuery("")} />
       ) : (<>
       <div className="flex gap-4 flex-1 min-h-0">
         {allColumns.map((column) => {
