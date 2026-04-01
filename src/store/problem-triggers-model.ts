@@ -7,6 +7,7 @@ export interface ProblemTrigger {
   id: string
   title: string
   questionUrl: string
+  suggestionId?: string
 }
 
 interface ProblemTriggersState {
@@ -30,12 +31,12 @@ export const problemTriggers = createModel<RootModel>()({
   state: defaultState,
 
   reducers: {
-    addTrigger(state, payload: { title: string; questionUrl: string }) {
+    addTrigger(state, payload: { title: string; questionUrl: string; suggestionId?: string }) {
       const next = {
         ...state,
         triggers: [
           ...state.triggers,
-          { id: crypto.randomUUID(), title: payload.title, questionUrl: payload.questionUrl },
+          { id: crypto.randomUUID(), title: payload.title, questionUrl: payload.questionUrl, ...(payload.suggestionId ? { suggestionId: payload.suggestionId } : {}) },
         ],
       }
       saveToStorage(next)

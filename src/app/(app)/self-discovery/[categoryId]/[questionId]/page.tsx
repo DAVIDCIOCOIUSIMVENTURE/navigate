@@ -4,15 +4,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Trash2, Compass } from "lucide-react"
+import { Trash2, Compass, ChevronDown, ChevronRight, Plus } from "lucide-react"
 import { useRouter, useParams } from "next/navigation"
 import Image from "next/image"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { getSelfDiscoveryCategoryIcon } from "@/config/navigation"
-import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
+import { SELF_DISCOVERY_CATEGORIES, type SuggestionItem } from "@/data/selfDiscoveryData"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import type { ProblemTrigger } from "@/store/problem-triggers-model"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { cn } from "@/lib/utils"
+import { ScrollArea } from "@/components/ui/scroll-area"
 
 const SDGS = [
     "No poverty",
@@ -33,6 +36,83 @@ const SDGS = [
     "Peace, justice and strong institutions",
     "Partnership for the goals"
 ]
+
+function SuggestionTreeItem({
+    item,
+    selectedIds,
+    onToggle,
+}: {
+    item: SuggestionItem
+    selectedIds: Set<string>
+    onToggle: (id: string, label: string) => void
+}) {
+    const isGroup = !!item.children?.length
+    const [open, setOpen] = useState(true)
+
+    if (isGroup) {
+        const selectedCount = item.children!.filter((c) => selectedIds.has(c.id)).length
+        return (
+            <Collapsible open={open} onOpenChange={setOpen}>
+                <CollapsibleTrigger className="flex w-full items-center gap-1.5 px-1 py-1.5 rounded-md hover:bg-accent/50 transition-colors">
+                    {open
+                        ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                        : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                    }
+                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide select-none flex-1 text-left">
+                        {item.label}
+                    </span>
+                    {selectedCount > 0 && (
+                        <span className="text-xs text-primary font-medium tabular-nums">
+                            {selectedCount}
+                        </span>
+                    )}
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                    <div className="ml-4 flex flex-col">
+                        {item.children!.map((child) => (
+                            <SuggestionTreeItem
+                                key={child.id}
+                                item={child}
+                                selectedIds={selectedIds}
+                                onToggle={onToggle}
+                            />
+                        ))}
+                    </div>
+                </CollapsibleContent>
+            </Collapsible>
+        )
+    }
+
+    const isSelected = selectedIds.has(item.id)
+
+    return (
+        <button
+            type="button"
+            onClick={() => onToggle(item.id, item.label)}
+            className={cn(
+                "flex items-center gap-2.5 px-1 py-1.5 cursor-pointer rounded-md hover:bg-accent/50 transition-colors text-left w-full",
+                isSelected && "bg-primary/5"
+            )}
+        >
+            <div className={cn(
+                "h-4 w-4 rounded-sm border flex items-center justify-center shrink-0 transition-colors",
+                isSelected ? "bg-primary border-primary text-primary-foreground" : "border-muted-foreground/30"
+            )}>
+                {isSelected && (
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                        <path d="M8.5 2.5L3.5 7.5L1.5 5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                )}
+            </div>
+            <span className={cn(
+                "text-sm select-none",
+                isSelected ? "font-medium text-foreground" : "text-muted-foreground"
+            )}>
+                {item.label}
+            </span>
+        </button>
+    )
+}
 
 export default function QuestionPage() {
     const router = useRouter()
@@ -132,6 +212,18 @@ export default function QuestionPage() {
         setSdgToAdd(null)
     }
 
+    const selectedSuggestionIds = new Set(triggers.filter(t => t.questionUrl === question?.url && t.suggestionId).map(t => t.suggestionId!))
+
+    const handleToggleSuggestion = (suggestionId: string, label: string) => {
+        if (!question) return
+        const existing = triggers.find(t => t.questionUrl === question.url && t.suggestionId === suggestionId)
+        if (existing) {
+            dispatch.problemTriggers.removeTrigger(existing.id)
+        } else {
+            dispatch.problemTriggers.addTrigger({ title: label, questionUrl: question.url, suggestionId })
+        }
+    }
+
     if (!category || !question) {
         return <Card className="w-full flex-1">
             <CardContent className="flex p-8 w-full flex-1 flex-col gap-4">Loading...</CardContent>
@@ -179,6 +271,38 @@ export default function QuestionPage() {
                                             </Button>
                                         )
                                     })}
+                                </div>
+                            ) : question.suggestions ? (
+                                <div className="flex flex-col gap-3">
+                                    <ScrollArea className="h-[400px] rounded-lg border p-3">
+                                        <div className="flex flex-col">
+                                            {question.suggestions.map((item) => (
+                                                <SuggestionTreeItem
+                                                    key={item.id}
+                                                    item={item}
+                                                    selectedIds={selectedSuggestionIds}
+                                                    onToggle={handleToggleSuggestion}
+                                                />
+                                            ))}
+                                        </div>
+                                    </ScrollArea>
+                                    <div className="flex gap-2">
+                                        <Input
+                                            placeholder="Add your own..."
+                                            value={answers[question.url] || ''}
+                                            onChange={(e) => setAnswers(prev => ({ ...prev, [question.url]: e.target.value }))}
+                                            onKeyDown={(e) => {
+                                                if (e.key === 'Enter') {
+                                                    handleAddAnswer()
+                                                }
+                                            }}
+                                            className="text-sm h-9"
+                                        />
+                                        <Button onClick={handleAddAnswer} size="sm" className="gap-1.5">
+                                            <Plus className="h-3.5 w-3.5" />
+                                            Add
+                                        </Button>
+                                    </div>
                                 </div>
                             ) : (
                                 <div className="flex gap-2">
