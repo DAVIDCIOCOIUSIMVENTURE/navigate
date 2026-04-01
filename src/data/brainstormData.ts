@@ -189,6 +189,85 @@ export const brainstormColumns: BrainstormColumn[] = [
           { id: "ctx-managing-finances-online", label: "Managing Finances Online" },
         ],
       },
+      // ── Financial moments ──
+      {
+        id: "ctx-financial",
+        label: "Financial Moments",
+        children: [
+          { id: "ctx-tax-season", label: "Tax Season / Filing Taxes" },
+          { id: "ctx-large-purchase", label: "Making a Large Purchase (Car, Home)" },
+          { id: "ctx-insurance-claims", label: "Dealing with Insurance Claims" },
+          { id: "ctx-applying-loans", label: "Applying for Loans / Credit" },
+          { id: "ctx-managing-debt", label: "Managing Debt" },
+          { id: "ctx-unexpected-expenses", label: "Unexpected Expenses" },
+          { id: "ctx-investing", label: "Investing & Financial Planning" },
+        ],
+      },
+      // ── Health & wellness ──
+      {
+        id: "ctx-health",
+        label: "Health & Wellness",
+        children: [
+          { id: "ctx-doctor-visit", label: "At the Doctor / Dentist" },
+          { id: "ctx-chronic-condition", label: "Managing a Chronic Condition" },
+          { id: "ctx-recovering-illness", label: "Recovering from Illness / Injury" },
+          { id: "ctx-mental-health-care", label: "Mental Health Care" },
+          { id: "ctx-navigating-health-insurance", label: "Navigating Health Insurance / Billing" },
+          { id: "ctx-caring-for-sick-family", label: "Caring for a Sick Family Member" },
+        ],
+      },
+      // ── Parenting & childcare ──
+      {
+        id: "ctx-parenting",
+        label: "Parenting & Childcare",
+        children: [
+          { id: "ctx-school-dropoff-pickup", label: "School Drop-Off / Pickup" },
+          { id: "ctx-helping-homework", label: "Helping with Homework" },
+          { id: "ctx-finding-childcare", label: "Finding Childcare" },
+          { id: "ctx-kids-activities", label: "Managing Kids' Activities & Schedules" },
+          { id: "ctx-dealing-with-schools", label: "Dealing with Schools & Teachers" },
+          { id: "ctx-screen-time", label: "Managing Screen Time" },
+        ],
+      },
+      // ── Learning & education ──
+      {
+        id: "ctx-learning",
+        label: "Learning & Education",
+        children: [
+          { id: "ctx-studying-exams", label: "Studying for Exams" },
+          { id: "ctx-online-course", label: "Taking an Online Course" },
+          { id: "ctx-learning-new-tool", label: "Learning a New Tool at Work" },
+          { id: "ctx-onboarding-software", label: "Onboarding into New Software" },
+          { id: "ctx-professional-certification", label: "Professional Certification" },
+          { id: "ctx-self-teaching", label: "Self-Teaching a New Skill" },
+        ],
+      },
+      // ── Emergencies & unexpected events ──
+      {
+        id: "ctx-emergencies",
+        label: "Emergencies & Unexpected Events",
+        children: [
+          { id: "ctx-car-breakdown", label: "Car Breakdown" },
+          { id: "ctx-home-repair-emergency", label: "Home Repair Emergency" },
+          { id: "ctx-natural-disaster", label: "Natural Disaster" },
+          { id: "ctx-dealing-bureaucracy", label: "Dealing with Bureaucracy (Legal / Government)" },
+          { id: "ctx-identity-theft", label: "Identity Theft / Fraud" },
+          { id: "ctx-medical-emergency", label: "Medical Emergency" },
+        ],
+      },
+      // ── Leisure & recreation ──
+      {
+        id: "ctx-leisure",
+        label: "Leisure & Recreation",
+        children: [
+          { id: "ctx-planning-vacation", label: "Planning a Vacation" },
+          { id: "ctx-dining-out", label: "Dining Out" },
+          { id: "ctx-attending-events", label: "Attending Concerts / Events" },
+          { id: "ctx-hosting-party", label: "Hosting a Party / Gathering" },
+          { id: "ctx-weekend-activities", label: "Weekend Activities" },
+          { id: "ctx-outdoor-recreation", label: "Outdoor Recreation & Sports" },
+        ],
+      },
     ],
   },
   {
@@ -373,6 +452,84 @@ export const brainstormColumns: BrainstormColumn[] = [
           { id: "pt-waste-overconsumption", label: "Waste & Overconsumption" },
           { id: "pt-social-inequality", label: "Social Inequality" },
           { id: "pt-ethical-concerns", label: "Ethical Concerns" },
+        ],
+      },
+      // ── Timing & urgency ──
+      {
+        id: "pt-timing",
+        label: "Timing & Urgency",
+        children: [
+          { id: "pt-inconvenient-timing", label: "Needs Arise at Inconvenient Times" },
+          { id: "pt-long-wait-times", label: "Too-Long Wait Times" },
+          { id: "pt-tight-windows", label: "Time-Sensitive with Tight Windows" },
+          { id: "pt-results-too-late", label: "Results Come Too Late to Be Useful" },
+          { id: "pt-poor-scheduling", label: "Poor Scheduling / Availability" },
+          { id: "pt-deadline-pressure", label: "Deadline Pressure & Rushing" },
+        ],
+      },
+      // ── Switching & lock-in ──
+      {
+        id: "pt-switching",
+        label: "Switching & Lock-In",
+        children: [
+          { id: "pt-high-switching-costs", label: "High Switching Costs" },
+          { id: "pt-vendor-lock-in", label: "Vendor Lock-In" },
+          { id: "pt-data-not-portable", label: "Data Not Portable" },
+          { id: "pt-no-migration-path", label: "No Easy Migration Path" },
+          { id: "pt-backward-compatibility", label: "Backward Compatibility Issues" },
+          { id: "pt-losing-history", label: "Losing History / Progress When Switching" },
+        ],
+      },
+      // ── Discovery & awareness ──
+      {
+        id: "pt-discovery",
+        label: "Discovery & Awareness",
+        children: [
+          { id: "pt-dont-know-exists", label: "Don't Know a Solution Exists" },
+          { id: "pt-hard-to-find", label: "Hard to Find What You Need" },
+          { id: "pt-not-knowing-where-to-start", label: "Not Knowing Where to Start" },
+          { id: "pt-poor-discoverability", label: "Poor Discoverability" },
+          { id: "pt-overwhelming-options", label: "Overwhelming Number of Options" },
+          { id: "pt-unaware-of-problem", label: "Unaware the Problem Exists" },
+        ],
+      },
+      // ── Support & service gaps ──
+      {
+        id: "pt-support",
+        label: "Support & Service Gaps",
+        children: [
+          { id: "pt-poor-customer-support", label: "Poor Customer Support" },
+          { id: "pt-no-after-sales-help", label: "No After-Sales Help" },
+          { id: "pt-no-community-support", label: "Lack of Peer / Community Support" },
+          { id: "pt-cant-reach-human", label: "Can't Reach a Real Person" },
+          { id: "pt-long-resolution-times", label: "Long Resolution Times" },
+          { id: "pt-no-self-service", label: "No Self-Service Option" },
+        ],
+      },
+      // ── Motivation & behaviour ──
+      {
+        id: "pt-motivation",
+        label: "Motivation & Behaviour",
+        children: [
+          { id: "pt-hard-to-stay-motivated", label: "Hard to Stay Motivated" },
+          { id: "pt-easy-to-procrastinate", label: "Easy to Procrastinate" },
+          { id: "pt-requires-too-much-willpower", label: "Requires Too Much Willpower" },
+          { id: "pt-choice-overload", label: "Cognitive Overload from Too Many Choices" },
+          { id: "pt-bad-defaults", label: "Defaults Work Against You" },
+          { id: "pt-habit-formation", label: "Hard to Build / Break Habits" },
+        ],
+      },
+      // ── Emotional & psychological burden ──
+      {
+        id: "pt-emotional",
+        label: "Emotional & Psychological Burden",
+        children: [
+          { id: "pt-anxiety-inducing", label: "Anxiety-Inducing Processes" },
+          { id: "pt-embarrassing", label: "Embarrassing to Deal With" },
+          { id: "pt-isolating", label: "Isolating / Lonely Experience" },
+          { id: "pt-guilt-inducing", label: "Guilt-Inducing" },
+          { id: "pt-causes-avoidance", label: "So Overwhelming It Causes Avoidance" },
+          { id: "pt-emotionally-draining", label: "Emotionally Draining" },
         ],
       },
     ],

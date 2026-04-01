@@ -293,7 +293,7 @@ export default function BrainstormPage() {
   }, [triggers])
 
   const allColumns = useMemo<BrainstormColumn[]>(
-    () => [selfDiscoveryColumn, ...brainstormColumns],
+    () => [selfDiscoveryColumn, ...brainstormColumns.filter((c) => c.id !== "jobs-to-be-done")],
     [selfDiscoveryColumn]
   )
 
