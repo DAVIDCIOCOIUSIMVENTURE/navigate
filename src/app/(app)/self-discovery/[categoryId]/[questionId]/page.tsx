@@ -1,6 +1,6 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -234,20 +234,40 @@ export default function QuestionPage() {
 
     return (
         <>
-            <Card className="w-full flex-1 h-full flex flex-col">
-                <CardHeader className="px-10 pt-10 pb-0">
+            <Card className="w-full h-full flex flex-col overflow-hidden">
+                <CardHeader className="px-10 pt-10 pb-0 shrink-0">
                     <CardTitle icon={(() => {
                         const CategoryIcon = getSelfDiscoveryCategoryIcon(category.url)
                         return CategoryIcon || Compass
                     })()} className="text-primary">{question.title}</CardTitle>
                 </CardHeader>
-                <CardContent className="flex-1 p-10 pt-6 overflow-y-auto">
-                    <div className="flex flex-col gap-5">
-                        <p className="text-md text-muted-foreground">
+                <CardContent className="flex-1 p-10 pt-6 min-h-0 flex flex-col overflow-y-auto">
+                    <div className="flex flex-col gap-5 flex-1 min-h-0">
+                        <p className="text-md text-foreground shrink-0">
                             {category.description}
                         </p>
-                        <div className="flex flex-col gap-4">
-                            <p className="text-md text-muted-foreground">{question.description}</p>
+                        <div className="flex flex-col gap-4 flex-1 min-h-0">
+                            <p className="text-md text-foreground shrink-0">{question.description}</p>
+                            {questionTriggers.length > 0 && (
+                                <div className="flex flex-wrap gap-2">
+                                    {questionTriggers.map((trigger) => (
+                                        <div
+                                            key={trigger.id}
+                                            className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2 text-sm"
+                                        >
+                                            <span className="flex-1">{trigger.title}</span>
+                                            <Button
+                                                variant="destructive-ghost"
+                                                size="icon"
+                                                onClick={() => setProblemTriggerToDelete(trigger)}
+                                                className="h-4 w-4"
+                                            >
+                                                <Trash2 className="h-3 w-3" />
+                                            </Button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
                             {question.titleId === "sustainability-goals" ? (
                                 <div className="grid grid-cols-6 gap-2">
                                     {Array.from({ length: 17 }, (_, i) => i + 1).map((num) => {
@@ -273,20 +293,8 @@ export default function QuestionPage() {
                                     })}
                                 </div>
                             ) : question.suggestions ? (
-                                <div className="flex flex-col gap-3">
-                                    <ScrollArea className="h-[400px] rounded-lg border p-3">
-                                        <div className="flex flex-col">
-                                            {question.suggestions.map((item) => (
-                                                <SuggestionTreeItem
-                                                    key={item.id}
-                                                    item={item}
-                                                    selectedIds={selectedSuggestionIds}
-                                                    onToggle={handleToggleSuggestion}
-                                                />
-                                            ))}
-                                        </div>
-                                    </ScrollArea>
-                                    <div className="flex gap-2">
+                                <div className="flex flex-col gap-3 flex-1 min-h-0">
+                                    <div className="flex gap-2 shrink-0">
                                         <Input
                                             placeholder="Add your own..."
                                             value={answers[question.url] || ''}
@@ -303,6 +311,18 @@ export default function QuestionPage() {
                                             Add
                                         </Button>
                                     </div>
+                                    <ScrollArea className="flex-1 min-h-[200px] rounded-lg border p-3">
+                                        <div className="flex flex-col">
+                                            {question.suggestions.map((item) => (
+                                                <SuggestionTreeItem
+                                                    key={item.id}
+                                                    item={item}
+                                                    selectedIds={selectedSuggestionIds}
+                                                    onToggle={handleToggleSuggestion}
+                                                />
+                                            ))}
+                                        </div>
+                                    </ScrollArea>
                                 </div>
                             ) : (
                                 <div className="flex gap-2">
@@ -322,31 +342,13 @@ export default function QuestionPage() {
                                     </Button>
                                 </div>
                             )}
-                            <div className="flex flex-wrap gap-2">
-                                {questionTriggers.map((trigger) => (
-                                    <div
-                                        key={trigger.id}
-                                        className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2 text-sm"
-                                    >
-                                        <span className="flex-1">{trigger.title}</span>
-                                        <Button
-                                            variant="destructive-ghost"
-                                            size="icon"
-                                            onClick={() => setProblemTriggerToDelete(trigger)}
-                                            className="h-4 w-4"
-                                        >
-                                            <Trash2 className="h-3 w-3" />
-                                        </Button>
-                                    </div>
-                                ))}
-                            </div>
                         </div>
                     </div>
-                    <div className="flex justify-between mt-2">
-                        <Button variant="outline" onClick={handleBack}>Previous</Button>
-                        <Button onClick={handleNext}>Next</Button>
-                    </div>
                 </CardContent>
+                <CardFooter className="px-10 shrink-0 flex justify-between border-t py-6">
+                    <Button variant="outline" onClick={handleBack}>Previous</Button>
+                    <Button onClick={handleNext}>Next</Button>
+                </CardFooter>
             </Card>
 
             <Dialog open={!!problemTriggerToDelete} onOpenChange={() => setProblemTriggerToDelete(null)}>
