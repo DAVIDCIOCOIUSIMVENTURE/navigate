@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { Separator } from "@/components/ui/separator"
@@ -95,18 +96,18 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             <Breadcrumb >
               <BreadcrumbList>
                 {breadcrumbs.map((crumb) => (
-                  <BreadcrumbItem key={crumb.href} >
-                    {crumb.isLast ? (
-                      <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
-                    ) : (
-                      <>
+                  <React.Fragment key={crumb.href}>
+                    <BreadcrumbItem>
+                      {crumb.isLast ? (
+                        <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
+                      ) : (
                         <BreadcrumbLink href={crumb.href}>
                           {crumb.label}
                         </BreadcrumbLink>
-                        <BreadcrumbSeparator />
-                      </>
-                    )}
-                  </BreadcrumbItem>
+                      )}
+                    </BreadcrumbItem>
+                    {!crumb.isLast && <BreadcrumbSeparator />}
+                  </React.Fragment>
                 ))}
               </BreadcrumbList>
             </Breadcrumb>

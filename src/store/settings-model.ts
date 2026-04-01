@@ -4,12 +4,15 @@ import type { SidebarMode } from "@/components/ui/sidebar"
 
 const STORAGE_KEY = "navigate-settings"
 
+export type BrainstormMode = "canvas" | "builder"
+
 interface SettingsState {
   sidebarMode: SidebarMode
   ideaMode: "guided" | "quickstart"
   hiddenBrainstormColumns: string[]
   fullView: boolean
   brainstormSelected: string[]
+  brainstormMode: BrainstormMode
 }
 
 const defaultState: SettingsState = {
@@ -18,6 +21,7 @@ const defaultState: SettingsState = {
   hiddenBrainstormColumns: [],
   fullView: false,
   brainstormSelected: [],
+  brainstormMode: "builder",
 }
 
 function saveToStorage(state: SettingsState) {
@@ -56,6 +60,11 @@ export const settings = createModel<RootModel>()({
       // Not persisted — resets on reload
       return { ...state, brainstormSelected }
     },
+    setBrainstormMode(state, brainstormMode: BrainstormMode) {
+      const next = { ...state, brainstormMode }
+      saveToStorage(next)
+      return next
+    },
   },
 
   effects: (dispatch) => ({
@@ -77,6 +86,9 @@ export const settings = createModel<RootModel>()({
         }
         if (stored.hiddenBrainstormColumns) {
           dispatch.settings.setHiddenBrainstormColumns(stored.hiddenBrainstormColumns)
+        }
+        if (stored.brainstormMode) {
+          dispatch.settings.setBrainstormMode(stored.brainstormMode)
         }
       } catch {
         // ignore parse errors

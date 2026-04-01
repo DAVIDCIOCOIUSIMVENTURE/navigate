@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useRef, useEffect, useMemo, useDeferredValue, type ReactNode } from "react"
+import { useState, useRef, useEffect, useMemo, useDeferredValue, useCallback, type ReactNode } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
+import type { BrainstormMode } from "@/store/settings-model"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
@@ -33,11 +34,13 @@ import {
 } from "@/components/ui/table"
 import {
   ArrowRight,
+  Check,
   ChevronDown,
   ChevronRight,
   Compass,
   Eye,
   EyeOff,
+  Grid3X3,
   MapPin,
   Maximize2,
   Minimize2,
@@ -50,9 +53,11 @@ import {
   Trash2,
   TriangleAlert,
   Users,
+  Wand2,
   X,
 } from "lucide-react"
 import { Textarea } from "@/components/ui/textarea"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { brainstormColumns, type BrainstormItem, type BrainstormColumn } from "./data"
 import type { Problem } from "@/store/problems-model"
 import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
@@ -259,9 +264,335 @@ function ProblemFormDialog({
   )
 }
 
+/* ─── Problem Builder (guided mode) ─── */
+
+const BUILDER_STEPS = [
+  { id: "pick", label: "Pick an element" },
+  { id: "choose", label: "Choose options" },
+  { id: "more", label: "Add more elements" },
+  { id: "review", label: "Review & save" },
+] as const
+
+type BuilderStepId = (typeof BUILDER_STEPS)[number]["id"]
+
+function ProblemBuilder({
+  columns,
+  onSave,
+}: {
+  columns: BrainstormColumn[]
+  onSave: (selections: Record<string, string[]>, description: string) => void
+}) {
+  const [step, setStep] = useState<BuilderStepId>("pick")
+  const [activeColumnId, setActiveColumnId] = useState<string | null>(null)
+  const [selectedByColumn, setSelectedByColumn] = useState<Record<string, string[]>>({})
+  const [description, setDescription] = useState("")
+
+  const stepIndex = BUILDER_STEPS.findIndex((s) => s.id === step)
+  const usedColumnIds = useMemo(
+    () => new Set(Object.entries(selectedByColumn).filter(([, ids]) => ids.length > 0).map(([id]) => id)),
+    [selectedByColumn]
+  )
+  const availableColumns = useMemo(
+    () => columns.filter((c) => !usedColumnIds.has(c.id)),
+    [columns, usedColumnIds]
+  )
+  const activeColumn = columns.find((c) => c.id === activeColumnId)
+  const totalSelections = Object.values(selectedByColumn).reduce((sum, ids) => sum + ids.length, 0)
+
+  const pickColumn = (columnId: string) => {
+    setActiveColumnId(columnId)
+    setStep("choose")
+  }
+
+  const toggleItem = (columnId: string, itemId: string) => {
+    setSelectedByColumn((prev) => {
+      const current = prev[columnId] ?? []
+      const has = current.includes(itemId)
+      return {
+        ...prev,
+        [columnId]: has ? current.filter((id) => id !== itemId) : [...current, itemId],
+      }
+    })
+  }
+
+  const handleSave = () => {
+    const selections: Record<string, string[]> = {}
+    for (const col of columns) {
+      const ids = selectedByColumn[col.id] ?? []
+      selections[col.id] = ids
+        .map((id) => findLabel(col.items, id))
+        .filter((l): l is string => l !== null)
+    }
+    onSave(selections, description)
+    setSelectedByColumn({})
+    setActiveColumnId(null)
+    setDescription("")
+    setStep("pick")
+  }
+
+  const reset = () => {
+    setSelectedByColumn({})
+    setActiveColumnId(null)
+    setDescription("")
+    setStep("pick")
+  }
+
+  return (
+    <Card className="flex flex-col flex-1 min-h-0">
+      <CardContent className="flex flex-col gap-6 pt-6 flex-1 min-h-0">
+        {/* Stepper */}
+        <div className="flex items-center">
+          {BUILDER_STEPS.map((s, i) => {
+            const isActive = s.id === step
+            const isCompleted = i < stepIndex
+            const isClickable =
+              (s.id === "pick" && totalSelections === 0) ||
+              (s.id === "pick") ||
+              (s.id === "choose" && activeColumnId !== null) ||
+              (s.id === "more" && totalSelections > 0) ||
+              (s.id === "review" && totalSelections > 0)
+            return (
+              <div key={s.id} className="flex items-center flex-1 last:flex-none">
+                <button
+                  disabled={!isClickable}
+                  onClick={() => isClickable && setStep(s.id)}
+                  className="flex items-center gap-2 shrink-0 disabled:opacity-100"
+                >
+                  <span className={cn(
+                    "flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 transition-colors",
+                    isActive
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : isCompleted
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-muted-foreground/30 bg-transparent text-muted-foreground"
+                  )}>
+                    {isCompleted ? <Check className="h-3.5 w-3.5" /> : i + 1}
+                  </span>
+                  <span className={cn(
+                    "text-sm whitespace-nowrap",
+                    isActive ? "font-semibold text-foreground" : "text-muted-foreground"
+                  )}>
+                    {s.label}
+                  </span>
+                </button>
+                {i < BUILDER_STEPS.length - 1 && (
+                  <div className={cn(
+                    "flex-1 h-px mx-3",
+                    i < stepIndex ? "bg-primary" : "bg-border"
+                  )} />
+                )}
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Persistent selection pills — visible on every step */}
+        {totalSelections > 0 && (
+          <div className="flex flex-wrap gap-1.5">
+            {columns.flatMap((col) => {
+              const ids = selectedByColumn[col.id] ?? []
+              if (ids.length === 0) return []
+              const colors = COLUMN_COLORS[col.id]
+              const Icon = COLUMN_ICONS[col.id]
+              return ids.map((id) => {
+                const label = findLabel(col.items, id)
+                return (
+                  <span
+                    key={id}
+                    className={cn("inline-flex items-center gap-1 text-xs rounded-full px-2 py-0.5", colors?.pill || "bg-primary/10 text-primary")}
+                  >
+                    {Icon && <Icon className="h-3 w-3 shrink-0" />}
+                    {label}
+                    <button
+                      onClick={() => toggleItem(col.id, id)}
+                      className="hover:opacity-70 transition-opacity"
+                      aria-label={`Remove ${label}`}
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                )
+              })
+            })}
+          </div>
+        )}
+
+        {/* Step content */}
+        <div className="flex-1 min-h-0 flex flex-col">
+          {step === "pick" && (
+            <div className="flex flex-col gap-4">
+              <p className="text-sm text-muted-foreground">
+                Choose which dimension you want to explore.
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {columns.map((col) => {
+                  const Icon = COLUMN_ICONS[col.id]
+                  const colors = COLUMN_COLORS[col.id]
+                  const explored = usedColumnIds.has(col.id)
+                  const count = (selectedByColumn[col.id] ?? []).length
+                  return (
+                    <button
+                      key={col.id}
+                      onClick={() => pickColumn(col.id)}
+                      className={cn(
+                        "flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all",
+                        explored
+                          ? "border-solid bg-accent/20 hover:bg-accent/40"
+                          : "border-dashed hover:border-solid hover:shadow-sm hover:bg-accent/30",
+                        colors?.border || "border-border",
+                      )}
+                    >
+                      {Icon && <Icon className={cn("h-7 w-7", explored ? "opacity-60" : "", colors?.icon)} />}
+                      <span className={cn("text-sm font-medium", explored && "opacity-70")}>{col.title}</span>
+                      {explored ? (
+                        <span className={cn("inline-flex items-center gap-1 text-xs font-medium", colors?.icon)}>
+                          <Check className="h-3 w-3" />
+                          {count} selected
+                        </span>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">
+                          {collectAllIds(col.items).length} options
+                        </span>
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {step === "choose" && activeColumn && (
+            <div className="flex flex-col gap-3 flex-1 min-h-0">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  {(() => {
+                    const Icon = COLUMN_ICONS[activeColumn.id]
+                    const colors = COLUMN_COLORS[activeColumn.id]
+                    return Icon ? <Icon className={cn("h-5 w-5", colors?.icon)} /> : null
+                  })()}
+                  <h3 className="text-sm font-semibold">{activeColumn.title}</h3>
+                  <span className="text-xs text-muted-foreground">
+                    ({(selectedByColumn[activeColumn.id] ?? []).length} selected)
+                  </span>
+                </div>
+                <Button
+                  size="sm"
+                  onClick={() => setStep(availableColumns.length > 1 ? "more" : "review")}
+                  disabled={(selectedByColumn[activeColumn.id] ?? []).length === 0}
+                  className="gap-1.5"
+                >
+                  Continue
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+              <ScrollArea className="flex-1 min-h-0 max-h-[50vh] border rounded-lg p-3">
+                <div className="flex flex-col gap-0.5 pr-3">
+                  {activeColumn.items.map((item) => (
+                    <BrainstormCheckItem
+                      key={item.id}
+                      item={item}
+                      selected={new Set(selectedByColumn[activeColumn.id] ?? [])}
+                      onToggle={(id) => toggleItem(activeColumn.id, id)}
+                    />
+                  ))}
+                </div>
+              </ScrollArea>
+            </div>
+          )}
+
+          {step === "more" && (
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <p className="text-sm text-muted-foreground">
+                  Pick another dimension to refine your problem, or skip to review.
+                </p>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setStep("review")}
+                  className="gap-1.5 shrink-0"
+                >
+                  Skip to review
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                {columns.map((col) => {
+                  const Icon = COLUMN_ICONS[col.id]
+                  const colors = COLUMN_COLORS[col.id]
+                  const explored = usedColumnIds.has(col.id)
+                  const count = (selectedByColumn[col.id] ?? []).length
+                  return (
+                    <button
+                      key={col.id}
+                      onClick={() => pickColumn(col.id)}
+                      className={cn(
+                        "flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all",
+                        explored
+                          ? "border-solid bg-accent/20 hover:bg-accent/40"
+                          : "border-dashed hover:border-solid hover:shadow-sm hover:bg-accent/30",
+                        colors?.border || "border-border",
+                      )}
+                    >
+                      {Icon && <Icon className={cn("h-7 w-7", explored ? "opacity-60" : "", colors?.icon)} />}
+                      <span className={cn("text-sm font-medium", explored && "opacity-70")}>{col.title}</span>
+                      {explored ? (
+                        <span className={cn("inline-flex items-center gap-1 text-xs font-medium", colors?.icon)}>
+                          <Check className="h-3 w-3" />
+                          {count} selected
+                        </span>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">
+                          {collectAllIds(col.items).length} options
+                        </span>
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          )}
+
+          {step === "review" && (
+            <div className="flex flex-col gap-4">
+              <p className="text-sm text-muted-foreground">
+                Review your selections and save the problem.
+              </p>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-medium">Problem Description</label>
+                <Textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Describe the problem you've discovered..."
+                  rows={3}
+                />
+              </div>
+              <div className="flex items-center gap-2 justify-end">
+                <Button variant="outline" size="sm" onClick={reset}>
+                  <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
+                  Start Over
+                </Button>
+                <Button variant="outline" size="sm" onClick={() => setStep("more")}>
+                  Add More Elements
+                </Button>
+                <Button onClick={handleSave} disabled={totalSelections === 0} className="gap-2">
+                  <Save className="h-3.5 w-3.5" />
+                  Save Problem
+                </Button>
+              </div>
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
 export default function BrainstormPage() {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
   const savedProblems = useSelector((state: RootState) =>
     state.problems.problems.filter((p) => p.source === "brainstorm")
   )
@@ -334,6 +665,18 @@ export default function BrainstormPage() {
   const [lastSavedProblemId, setLastSavedProblemId] = useState<number | null>(null)
   const [tableDrawerOpen, setTableDrawerOpen] = useState(false)
   const fullView = useSelector((state: RootState) => state.settings.fullView)
+  const brainstormMode = useSelector((state: RootState) => state.settings.brainstormMode)
+
+  const handleBuilderSave = useCallback(async (selections: Record<string, string[]>, description: string) => {
+    const patch: Partial<Pick<Problem, "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "selfDiscovery">> = {}
+    for (const column of allColumns) {
+      const field = COLUMN_TO_FIELD[column.id]
+      patch[field] = selections[column.id] ?? []
+    }
+    const newProblem = await dispatch.problems.create({ ...patch, source: "brainstorm", description })
+    setLastSavedProblemId(newProblem.id)
+    setNextStepDialogOpen(true)
+  }, [allColumns, dispatch.problems])
 
   // Exit full view when navigating away from this page
   const pathname = usePathname()
@@ -427,43 +770,75 @@ export default function BrainstormPage() {
     setEditingProblem(problem)
   }
 
+  if (!mounted) {
+    return (
+      <div className="flex flex-col items-center justify-center flex-1 min-h-[50vh] gap-3">
+        <div className="h-8 w-8 animate-spin rounded-full border-4 border-muted border-t-primary" />
+        <p className="text-sm text-muted-foreground">Loading...</p>
+      </div>
+    )
+  }
+
   const content = (
     <div className="flex flex-col gap-6 w-full flex-1 min-h-0">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex flex-col gap-1">
           <h1 className="text-xl font-bold">Discover Problems</h1>
           <p className="text-sm text-muted-foreground">
-            Explore potential areas for innovation by navigating through the options below.
+            {brainstormMode === "canvas"
+              ? "Explore potential areas for innovation by navigating through the options below."
+              : "Build a problem step by step by selecting from each dimension."}
           </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap sm:justify-end">
-          <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 h-8 w-44"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                aria-label="Clear search"
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            )}
-          </div>
-          <Button
-            variant="outline"
+          <ToggleGroup
+            type="single"
+            value={brainstormMode}
+            onValueChange={(value) => {
+              if (value) dispatch.settings.setBrainstormMode(value as BrainstormMode)
+            }}
             size="sm"
-            onClick={() => dispatch.settings.setFullView(!fullView)}
-            className="gap-2"
           >
-            {fullView ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
-            {fullView ? "Exit Full View" : "Full View"}
-          </Button>
+            <ToggleGroupItem value="canvas" aria-label="Canvas mode" className="gap-1.5 px-3">
+              <Grid3X3 className="h-3.5 w-3.5" />
+              Canvas
+            </ToggleGroupItem>
+            <ToggleGroupItem value="builder" aria-label="Problem Builder mode" className="gap-1.5 px-3">
+              <Wand2 className="h-3.5 w-3.5" />
+              Builder
+            </ToggleGroupItem>
+          </ToggleGroup>
+          {brainstormMode === "canvas" && (
+            <>
+              <div className="relative">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 h-8 w-44"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    aria-label="Clear search"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => dispatch.settings.setFullView(!fullView)}
+                className="gap-2"
+              >
+                {fullView ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+                {fullView ? "Exit Full View" : "Full View"}
+              </Button>
+            </>
+          )}
           <Button
             variant="outline"
             size="sm"
@@ -472,28 +847,35 @@ export default function BrainstormPage() {
           >
             Show Saved Problems ({savedProblems.length})
           </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={clearAll}
-            disabled={totalSelected === 0}
-            className="gap-2"
-          >
-            <RotateCcw className="h-3.5 w-3.5" />
-            Reset
-          </Button>
-          <Button
-            size="sm"
-            onClick={openSaveDialog}
-            disabled={totalSelected === 0}
-            className="gap-2"
-          >
-            <Save className="h-3.5 w-3.5" />
-            Save Problem
-          </Button>
+          {brainstormMode === "canvas" && (
+            <>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={clearAll}
+                disabled={totalSelected === 0}
+                className="gap-2"
+              >
+                <RotateCcw className="h-3.5 w-3.5" />
+                Reset
+              </Button>
+              <Button
+                size="sm"
+                onClick={openSaveDialog}
+                disabled={totalSelected === 0}
+                className="gap-2"
+              >
+                <Save className="h-3.5 w-3.5" />
+                Save Problem
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
+      {brainstormMode === "builder" ? (
+        <ProblemBuilder columns={allColumns} onSave={handleBuilderSave} />
+      ) : (<>
       <div className="flex gap-4 flex-1 min-h-0">
         {allColumns.map((column) => {
           const columnSelected = getSelectedForColumn(column.items, selected)
@@ -612,6 +994,7 @@ export default function BrainstormPage() {
           </CardContent>
         </Card>
       )}
+      </>)}
 
       <Drawer open={tableDrawerOpen} onOpenChange={setTableDrawerOpen}>
         <DrawerContent className="max-h-[70vh]">
