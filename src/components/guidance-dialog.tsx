@@ -1,8 +1,11 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useSelector, useDispatch } from "react-redux"
+import type { RootState, AppDispatch } from "@/store"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { ScrollArea } from "@/components/ui/scroll-area"
 
 interface GuidanceItem {
@@ -107,29 +110,69 @@ const guidanceItems: GuidanceItem[] = [
           </div>
 
           <div>
-            <h4 className="font-medium">Brainstorming Tool</h4>
+            <h4 className="font-medium">Two modes</h4>
             <p className="text-sm text-muted-foreground mt-1">
-              The brainstorming tool presents a structured four-column framework designed to help you think
+              The brainstorming tool offers two ways to work, switchable from the toggle in the top-right
+              corner of the page. Choose whichever suits your thinking style; you can switch at any time
+              and your progress is preserved.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-medium">Problem Builder (guided mode)</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              The builder walks you through four steps to construct a problem systematically:
+            </p>
+            <ol className="list-decimal pl-4 space-y-1 text-sm text-muted-foreground mt-2">
+              <li>
+                <span className="font-medium text-foreground">Pick an element</span> — choose which
+                dimension you want to start with (Customer Segment, Context, Job to Be Done, or Problem Type).
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Choose options</span> — browse and tick the
+                items that resonate with you within that dimension.
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Add more elements</span> — optionally pick
+                another dimension to refine the problem further, or skip straight to review. Dimensions
+                you have already explored are shown with a checkmark so you can revisit them.
+              </li>
+              <li>
+                <span className="font-medium text-foreground">Review &amp; save</span> — see all your
+                selections at a glance, add an optional description, and save the problem.
+              </li>
+            </ol>
+            <p className="text-sm text-muted-foreground mt-2">
+              Your selections appear as coloured pills at the top of every step. You can remove any
+              selection by clicking its <span className="font-medium text-foreground">×</span> button.
+              You do not need to fill in all four dimensions; a partial combination is still useful.
+            </p>
+          </div>
+
+          <div>
+            <h4 className="font-medium">Canvas (freeform mode)</h4>
+            <p className="text-sm text-muted-foreground mt-1">
+              The canvas presents a structured four-column framework designed to help you think
               systematically about who experiences a problem, in what situation, what they are trying to do,
               and what kind of friction they face. The four columns are:
             </p>
             <ul className="list-disc pl-4 space-y-1 text-sm text-muted-foreground mt-2">
               <li>
-                <span className="font-medium text-foreground">Customer Segment</span> who you are focusing on
+                <span className="font-medium text-foreground">Customer Segment</span> — who you are focusing on
                 (e.g. early-career professionals, small business owners, parents of young children)
               </li>
               <li>
-                <span className="font-medium text-foreground">Context</span> the situation or environment in
+                <span className="font-medium text-foreground">Context</span> — the situation or environment in
                 which the problem occurs (e.g. daily commute, managing a remote team, a life transition like
                 starting a business)
               </li>
               <li>
-                <span className="font-medium text-foreground">Job to Be Done</span> the underlying goal or
+                <span className="font-medium text-foreground">Job to Be Done</span> — the underlying goal or
                 task the person is trying to accomplish (e.g. stay organised, make a confident decision,
                 build a professional reputation)
               </li>
               <li>
-                <span className="font-medium text-foreground">Problem Type</span> the category of friction
+                <span className="font-medium text-foreground">Problem Type</span> — the category of friction
                 they encounter (e.g. information gaps, access and affordability, trust and safety, coordination
                 overhead)
               </li>
@@ -139,11 +182,6 @@ const guidanceItems: GuidanceItem[] = [
               <span className="font-medium text-foreground">Save Problem</span> to record the combination.
               Each saved row represents one candidate problem. You can save as many as you like and come back
               to edit or remove them.
-            </p>
-            <p className="text-sm text-muted-foreground mt-2">
-              The framework does not require you to fill in all four columns; a partial combination is still
-              useful. The goal is to be as specific as you can so that the problem is grounded in a real
-              person, in a real situation.
             </p>
           </div>
 
@@ -283,6 +321,8 @@ export function GuidanceDialog({
   initialTopic?: string
 }) {
   const [selectedItem, setSelectedItem] = useState(initialTopic ?? guidanceItems[0].id)
+  const dispatch = useDispatch<AppDispatch>()
+  const hideBrainstormGuidance = useSelector((state: RootState) => state.settings.hideBrainstormGuidance)
 
   useEffect(() => {
     if (open && initialTopic) {
@@ -290,14 +330,24 @@ export function GuidanceDialog({
     }
   }, [open, initialTopic])
 
+  // Topics that support "don't show on page load"
+  const topicHasAutoOpen: Record<string, { label: string; hidden: boolean; toggle: () => void }> = {
+    "problem-discovery": {
+      label: "Don't show this when I open the brainstorm page",
+      hidden: hideBrainstormGuidance,
+      toggle: () => dispatch.settings.setHideBrainstormGuidance(!hideBrainstormGuidance),
+    },
+  }
+  const autoOpenConfig = topicHasAutoOpen[selectedItem]
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl h-[80vh] p-0">
-        <div className="flex h-full">
+      <DialogContent className="max-w-4xl h-[80vh] p-0 flex flex-col overflow-hidden">
+        <div className="flex flex-1 min-h-0">
           {/* Left Sidebar */}
-          <div className="w-64 border-r p-4">
-            <h2 className="font-semibold mb-4">Guidance Topics</h2>
-            <ScrollArea className="h-[calc(80vh-5rem)]">
+          <div className="w-64 border-r p-4 flex flex-col">
+            <h2 className="font-semibold mb-4 shrink-0">Guidance Topics</h2>
+            <ScrollArea className="flex-1">
               <div className="space-y-1">
                 {guidanceItems.map((item) => (
                   <Button
@@ -314,10 +364,24 @@ export function GuidanceDialog({
           </div>
 
           {/* Right Content */}
-          <div className="flex-1 p-6">
-            <ScrollArea className="h-[calc(80vh-3rem)]">
-              {guidanceItems.find((item) => item.id === selectedItem)?.content}
-            </ScrollArea>
+          <div className="flex-1 flex flex-col min-h-0 p-6">
+            <div className="flex-1 min-h-0">
+              <ScrollArea className="h-full">
+                {guidanceItems.find((item) => item.id === selectedItem)?.content}
+              </ScrollArea>
+            </div>
+            {autoOpenConfig && (
+              <div className="flex items-center gap-2 pt-4 border-t mt-4 shrink-0">
+                <Checkbox
+                  id="hide-guidance"
+                  checked={autoOpenConfig.hidden}
+                  onCheckedChange={() => autoOpenConfig.toggle()}
+                />
+                <label htmlFor="hide-guidance" className="text-sm text-muted-foreground cursor-pointer select-none">
+                  {autoOpenConfig.label}
+                </label>
+              </div>
+            )}
           </div>
         </div>
       </DialogContent>

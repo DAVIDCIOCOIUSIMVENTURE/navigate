@@ -62,6 +62,7 @@ import { brainstormColumns, type BrainstormItem, type BrainstormColumn } from ".
 import type { Problem } from "@/store/problems-model"
 import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
 import { cn } from "@/lib/utils"
+import { useGuidance } from "@/context/guidance-context"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import {
   DropdownMenu,
@@ -591,8 +592,18 @@ function ProblemBuilder({
 export default function BrainstormPage() {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
+  const { openGuidance } = useGuidance()
   const [mounted, setMounted] = useState(false)
   useEffect(() => { setMounted(true) }, [])
+  const hideBrainstormGuidance = useSelector((state: RootState) => state.settings.hideBrainstormGuidance)
+
+  // Auto-open guidance dialog on first visit
+  useEffect(() => {
+    if (mounted && !hideBrainstormGuidance) {
+      openGuidance("problem-discovery")
+    }
+  }, [mounted]) // eslint-disable-line react-hooks/exhaustive-deps
+
   const savedProblems = useSelector((state: RootState) =>
     state.problems.problems.filter((p) => p.source === "brainstorm")
   )

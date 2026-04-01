@@ -13,6 +13,7 @@ interface SettingsState {
   fullView: boolean
   brainstormSelected: string[]
   brainstormMode: BrainstormMode
+  hideBrainstormGuidance: boolean
 }
 
 const defaultState: SettingsState = {
@@ -22,6 +23,7 @@ const defaultState: SettingsState = {
   fullView: false,
   brainstormSelected: [],
   brainstormMode: "builder",
+  hideBrainstormGuidance: false,
 }
 
 function saveToStorage(state: SettingsState) {
@@ -65,6 +67,11 @@ export const settings = createModel<RootModel>()({
       saveToStorage(next)
       return next
     },
+    setHideBrainstormGuidance(state, hideBrainstormGuidance: boolean) {
+      const next = { ...state, hideBrainstormGuidance }
+      saveToStorage(next)
+      return next
+    },
   },
 
   effects: (dispatch) => ({
@@ -89,6 +96,9 @@ export const settings = createModel<RootModel>()({
         }
         if (stored.brainstormMode) {
           dispatch.settings.setBrainstormMode(stored.brainstormMode)
+        }
+        if (stored.hideBrainstormGuidance) {
+          dispatch.settings.setHideBrainstormGuidance(stored.hideBrainstormGuidance)
         }
       } catch {
         // ignore parse errors
