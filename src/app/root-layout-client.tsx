@@ -22,6 +22,7 @@ import { AppStoreProvider } from "@/store/provider"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import { Toaster } from "@/components/ui/sonner"
+import { TeamAvatars } from "@/components/team-avatars"
 import Link from "next/link"
 function generateBreadcrumbs(pathname: string) {
   const paths = pathname.split('/').filter(Boolean)
@@ -112,6 +113,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             </Breadcrumb>
           </div>
           <div className="flex items-center gap-2">
+            <TeamAvatars />
             <Button variant="outline" className="flex flex-row items-center gap-2 justify-center" onClick={() => openGuidance()}>
               <HelpCircle />
               <span>Guidance</span>
