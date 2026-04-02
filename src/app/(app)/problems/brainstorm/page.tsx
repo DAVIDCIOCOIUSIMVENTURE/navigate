@@ -390,18 +390,20 @@ function GuidancePanel({ title, description, tips, className }: {
   className?: string
 }) {
   return (
-    <div className={cn("flex flex-col gap-3 text-sm min-h-0 overflow-y-auto", className)}>
-      <h3 className="font-semibold text-base">{title}</h3>
-      <p className="text-muted-foreground leading-relaxed">{description}</p>
-      <ul className="flex flex-col gap-1.5 text-muted-foreground">
-        {tips.map((tip, i) => (
-          <li key={i} className="flex gap-2 leading-relaxed">
-            <span className="text-primary mt-0.5 shrink-0">&#8226;</span>
-            <span>{tip}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
+    <ScrollArea className={cn("min-h-0", className)}>
+      <div className="flex flex-col gap-3 text-sm pr-3">
+        <h3 className="font-semibold text-base">{title}</h3>
+        <p className="text-muted-foreground leading-relaxed">{description}</p>
+        <ul className="flex flex-col gap-1.5 text-muted-foreground">
+          {tips.map((tip, i) => (
+            <li key={i} className="flex gap-2 leading-relaxed">
+              <span className="text-primary mt-0.5 shrink-0">&#8226;</span>
+              <span>{tip}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </ScrollArea>
   )
 }
 
@@ -582,30 +584,32 @@ function ProblemBuilder({
 
           {step === "choose" && activeColumn && (
             <div className="flex gap-6 flex-1 min-h-0">
-              <div className="w-1/3 shrink-0 flex flex-col gap-4 min-h-0 overflow-y-auto">
-                <GuidancePanel {...STEP_GUIDANCE.choose} />
-                {DIMENSION_GUIDANCE[activeColumn.id] && (
-                  <div className="flex flex-col gap-2 rounded-lg bg-accent/30 p-3 text-sm">
-                    <div className="flex items-center gap-2">
-                      {(() => {
-                        const Icon = COLUMN_ICONS[activeColumn.id]
-                        const colors = COLUMN_COLORS[activeColumn.id]
-                        return Icon ? <Icon className={cn("h-4 w-4", colors?.icon)} /> : null
-                      })()}
-                      <span className="font-medium">{activeColumn.title}</span>
+              <ScrollArea className="w-1/3 shrink-0 min-h-0">
+                <div className="flex flex-col gap-4 pr-3">
+                  <GuidancePanel {...STEP_GUIDANCE.choose} />
+                  {DIMENSION_GUIDANCE[activeColumn.id] && (
+                    <div className="flex flex-col gap-2 rounded-lg bg-accent/30 p-3 text-sm">
+                      <div className="flex items-center gap-2">
+                        {(() => {
+                          const Icon = COLUMN_ICONS[activeColumn.id]
+                          const colors = COLUMN_COLORS[activeColumn.id]
+                          return Icon ? <Icon className={cn("h-4 w-4", colors?.icon)} /> : null
+                        })()}
+                        <span className="font-medium">{activeColumn.title}</span>
+                      </div>
+                      <p className="text-muted-foreground leading-relaxed">
+                        {DIMENSION_GUIDANCE[activeColumn.id].description}
+                      </p>
+                      <div className="flex flex-col gap-1 mt-1">
+                        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Examples</span>
+                        {DIMENSION_GUIDANCE[activeColumn.id].examples.map((ex, i) => (
+                          <span key={i} className="text-xs text-muted-foreground italic">&ldquo;{ex}&rdquo;</span>
+                        ))}
+                      </div>
                     </div>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {DIMENSION_GUIDANCE[activeColumn.id].description}
-                    </p>
-                    <div className="flex flex-col gap-1 mt-1">
-                      <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Examples</span>
-                      {DIMENSION_GUIDANCE[activeColumn.id].examples.map((ex, i) => (
-                        <span key={i} className="text-xs text-muted-foreground italic">&ldquo;{ex}&rdquo;</span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              </ScrollArea>
               <div className="flex flex-col gap-3 flex-1 min-h-0 min-w-0">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -784,7 +788,6 @@ const V2_STEPS = [
   { id: "pick", label: "Pick a dimension" },
   { id: "category", label: "Pick a category" },
   { id: "choose", label: "Choose options" },
-  { id: "more", label: "Add more" },
   { id: "review", label: "Review & save" },
 ] as const
 
@@ -795,8 +798,8 @@ const CATEGORY_GUIDANCE: { title: string; description: string; tips: string[] } 
   description: "Each dimension is organised into categories. Pick one to focus on — you'll only see a handful of options instead of the full list.",
   tips: [
     "Choose the category that best matches the area you want to explore.",
-    "You can always come back and pick another category from the same dimension.",
-    "Categories you've already explored show a checkmark.",
+    "After selecting items you'll return here to explore more categories.",
+    "When you're done with this dimension, click \"Done with this dimension\" to move on.",
   ],
 }
 
@@ -908,7 +911,6 @@ function ProblemBuilderV2({
               s.id === "pick" ||
               (s.id === "category" && activeColumnId !== null && hasCategories) ||
               (s.id === "choose" && activeColumnId !== null && (activeCategoryId !== null || !hasCategories)) ||
-              (s.id === "more" && totalSelections > 0) ||
               (s.id === "review" && totalSelections > 0)
             return (
               <div key={s.id} className="flex items-center flex-1 last:flex-none">
@@ -947,14 +949,26 @@ function ProblemBuilderV2({
 
         {/* Step content */}
         <div className="flex-1 min-h-0 flex flex-col">
-          {/* Step 1: Pick a dimension */}
+          {/* Step 1: Pick a dimension (also serves as "add more") */}
           {step === "pick" && (
             <div className="flex gap-6 flex-1 min-h-0">
               <GuidancePanel {...STEP_GUIDANCE.pick} className="w-1/3 shrink-0" />
-              <div className="flex-1 min-w-0">
+              <div className="flex flex-col gap-3 flex-1 min-w-0 min-h-0">
+                <div className="flex items-center justify-between shrink-0">
+                  <h3 className="text-sm font-semibold">Dimensions</h3>
+                  {totalSelections > 0 && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setStep("review")}
+                    >
+                      Skip to review
+                    </Button>
+                  )}
+                </div>
                 {!hasAnyItems ? (
                   <NoSearchResults onClear={onClearSearch} />
-                ) : <div className="grid grid-cols-2 gap-3">
+                ) : <ScrollArea className="flex-1 min-h-0"><div className="grid grid-cols-2 gap-3 pr-3">
                   {columns.map((col) => {
                     const Icon = COLUMN_ICONS[col.id]
                     const colors = COLUMN_COLORS[col.id]
@@ -992,7 +1006,7 @@ function ProblemBuilderV2({
                       </button>
                     )
                   })}
-                </div>}
+                </div></ScrollArea>}
               </div>
             </div>
           )}
@@ -1001,8 +1015,8 @@ function ProblemBuilderV2({
           {step === "category" && activeColumn && (
             <div className="flex gap-6 flex-1 min-h-0">
               <GuidancePanel {...CATEGORY_GUIDANCE} className="w-1/3 shrink-0" />
-              <div className="flex flex-col gap-3 flex-1 min-w-0 min-h-0 overflow-y-auto">
-                <div className="flex items-center justify-between">
+              <div className="flex flex-col gap-3 flex-1 min-w-0 min-h-0">
+                <div className="flex items-center justify-between shrink-0">
                   <div className="flex items-center gap-2">
                     {(() => {
                       const Icon = COLUMN_ICONS[activeColumn.id]
@@ -1010,27 +1024,30 @@ function ProblemBuilderV2({
                       return Icon ? <Icon className={cn("h-5 w-5", colors?.icon)} /> : null
                     })()}
                     <h3 className="text-sm font-semibold">{activeColumn.title}</h3>
-                    <span className="text-xs text-muted-foreground">
-                      — pick a category
-                    </span>
+                    {(selectedByColumn[activeColumn.id] ?? []).length > 0 && (
+                      <span className="text-xs text-muted-foreground">
+                        ({(selectedByColumn[activeColumn.id] ?? []).length} selected)
+                      </span>
+                    )}
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setStep("pick")}
-                    className="gap-1.5 text-muted-foreground"
-                  >
-                    <ChevronRight className="h-3.5 w-3.5 rotate-180" />
-                    Back to dimensions
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => { setActiveColumnId(null); setActiveCategoryId(null); setStep("pick") }}
+                    >
+                      Done with this dimension
+                    </Button>
+                  </div>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <ScrollArea className="flex-1 min-h-0"><div className="grid grid-cols-2 gap-3 pr-3">
                   {activeColumn.items.filter((item) => item.children?.length).map((group) => {
                     const childIds = group.children!.map((c) => c.id)
                     const colSelected = selectedByColumn[activeColumn.id] ?? []
                     const selectedInGroup = childIds.filter((id) => colSelected.includes(id)).length
                     const explored = selectedInGroup > 0
                     const colors = COLUMN_COLORS[activeColumn.id]
+                    const previewItems = group.children!.slice(0, 3).map((c) => c.label)
                     return (
                       <button
                         key={group.id}
@@ -1044,8 +1061,8 @@ function ProblemBuilderV2({
                         )}
                       >
                         <span className={cn("text-sm font-medium", explored && "opacity-70")}>{group.label}</span>
-                        <span className="text-xs text-muted-foreground">
-                          {group.children!.length} options
+                        <span className="text-xs text-muted-foreground leading-relaxed">
+                          {previewItems.join(", ")}{group.children!.length > 3 ? `, +${group.children!.length - 3} more` : ""}
                         </span>
                         {explored && (
                           <span className={cn("inline-flex items-center gap-1 text-xs font-medium", colors?.icon)}>
@@ -1056,7 +1073,7 @@ function ProblemBuilderV2({
                       </button>
                     )
                   })}
-                </div>
+                </div></ScrollArea>
               </div>
             </div>
           )}
@@ -1064,30 +1081,32 @@ function ProblemBuilderV2({
           {/* Step 3: Choose options within the selected category */}
           {step === "choose" && activeColumn && (
             <div className="flex gap-6 flex-1 min-h-0">
-              <div className="w-1/3 shrink-0 flex flex-col gap-4 min-h-0 overflow-y-auto">
-                <GuidancePanel {...STEP_GUIDANCE.choose} />
-                {DIMENSION_GUIDANCE[activeColumn.id] && (
-                  <div className="flex flex-col gap-2 rounded-lg bg-accent/30 p-3 text-sm">
-                    <div className="flex items-center gap-2">
-                      {(() => {
-                        const Icon = COLUMN_ICONS[activeColumn.id]
-                        const colors = COLUMN_COLORS[activeColumn.id]
-                        return Icon ? <Icon className={cn("h-4 w-4", colors?.icon)} /> : null
-                      })()}
-                      <span className="font-medium">{activeColumn.title}</span>
+              <ScrollArea className="w-1/3 shrink-0 min-h-0">
+                <div className="flex flex-col gap-4 pr-3">
+                  <GuidancePanel {...STEP_GUIDANCE.choose} />
+                  {DIMENSION_GUIDANCE[activeColumn.id] && (
+                    <div className="flex flex-col gap-2 rounded-lg bg-accent/30 p-3 text-sm">
+                      <div className="flex items-center gap-2">
+                        {(() => {
+                          const Icon = COLUMN_ICONS[activeColumn.id]
+                          const colors = COLUMN_COLORS[activeColumn.id]
+                          return Icon ? <Icon className={cn("h-4 w-4", colors?.icon)} /> : null
+                        })()}
+                        <span className="font-medium">{activeColumn.title}</span>
+                      </div>
+                      <p className="text-muted-foreground leading-relaxed">
+                        {DIMENSION_GUIDANCE[activeColumn.id].description}
+                      </p>
+                      <div className="flex flex-col gap-1 mt-1">
+                        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Examples</span>
+                        {DIMENSION_GUIDANCE[activeColumn.id].examples.map((ex, i) => (
+                          <span key={i} className="text-xs text-muted-foreground italic">&ldquo;{ex}&rdquo;</span>
+                        ))}
+                      </div>
                     </div>
-                    <p className="text-muted-foreground leading-relaxed">
-                      {DIMENSION_GUIDANCE[activeColumn.id].description}
-                    </p>
-                    <div className="flex flex-col gap-1 mt-1">
-                      <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Examples</span>
-                      {DIMENSION_GUIDANCE[activeColumn.id].examples.map((ex, i) => (
-                        <span key={i} className="text-xs text-muted-foreground italic">&ldquo;{ex}&rdquo;</span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
+                  )}
+                </div>
+              </ScrollArea>
               <div className="flex flex-col gap-3 flex-1 min-h-0 min-w-0">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -1109,25 +1128,33 @@ function ProblemBuilderV2({
                   </div>
                   <div className="flex items-center gap-2">
                     {hasCategories && (
+                      <>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => { setActiveColumnId(null); setActiveCategoryId(null); setStep("pick") }}
+                        >
+                          Done with this dimension
+                        </Button>
+                        <Button
+                          size="sm"
+                          onClick={() => { setActiveCategoryId(null); setStep("category") }}
+                        >
+                          More categories
+                        </Button>
+                      </>
+                    )}
+                    {!hasCategories && (
                       <Button
-                        variant="ghost"
                         size="sm"
-                        onClick={() => { setActiveCategoryId(null); setStep("category") }}
-                        className="gap-1.5 text-muted-foreground"
+                        onClick={() => { setActiveColumnId(null); setActiveCategoryId(null); setStep("pick") }}
+                        disabled={(selectedByColumn[activeColumn.id] ?? []).length === 0}
+                        className="gap-1.5"
                       >
-                        <ChevronRight className="h-3.5 w-3.5 rotate-180" />
-                        Other categories
+                        Continue
+                        <ArrowRight className="h-3.5 w-3.5" />
                       </Button>
                     )}
-                    <Button
-                      size="sm"
-                      onClick={() => setStep(totalSelections > 0 ? "more" : "more")}
-                      disabled={(selectedByColumn[activeColumn.id] ?? []).length === 0}
-                      className="gap-1.5"
-                    >
-                      Continue
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </Button>
                   </div>
                 </div>
                 <ScrollArea className="flex-1 min-h-0 max-h-[50vh] border rounded-lg p-3">
@@ -1159,69 +1186,7 @@ function ProblemBuilderV2({
             </div>
           )}
 
-          {/* Step 4: Add more dimensions */}
-          {step === "more" && (
-            <div className="flex gap-6 flex-1 min-h-0">
-              <GuidancePanel {...STEP_GUIDANCE.more} className="w-1/3 shrink-0" />
-              <div className="flex flex-col gap-3 flex-1 min-w-0 min-h-0 overflow-y-auto">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-semibold">Pick a dimension</h3>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setStep("review")}
-                    className="gap-1.5"
-                  >
-                    Skip to review
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-                {!hasAnyItems ? (
-                  <NoSearchResults onClear={onClearSearch} />
-                ) : <div className="grid grid-cols-2 gap-3">
-                  {columns.map((col) => {
-                    const Icon = COLUMN_ICONS[col.id]
-                    const colors = COLUMN_COLORS[col.id]
-                    const explored = usedColumnIds.has(col.id)
-                    const count = (selectedByColumn[col.id] ?? []).length
-                    return (
-                      <button
-                        key={col.id}
-                        onClick={() => pickColumn(col.id)}
-                        className={cn(
-                          "flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all",
-                          explored
-                            ? "border-solid bg-accent/20 hover:bg-accent/40"
-                            : "border-dashed hover:border-solid hover:shadow-sm hover:bg-accent/30",
-                          colors?.border || "border-border",
-                        )}
-                      >
-                        {Icon && <Icon className={cn("h-7 w-7", explored ? "opacity-60" : "", colors?.icon)} />}
-                        <span className={cn("text-sm font-medium", explored && "opacity-70")}>{col.title}</span>
-                        {COLUMN_DESCRIPTIONS[col.id] && (
-                          <span className={cn("text-sm text-muted-foreground text-center leading-snug", explored && "opacity-70")}>
-                            {COLUMN_DESCRIPTIONS[col.id]}
-                          </span>
-                        )}
-                        {explored ? (
-                          <span className={cn("inline-flex items-center gap-1 text-xs font-medium", colors?.icon)}>
-                            <Check className="h-3 w-3" />
-                            {count} selected
-                          </span>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">
-                            {collectAllIds(col.items).length} options
-                          </span>
-                        )}
-                      </button>
-                    )
-                  })}
-                </div>}
-              </div>
-            </div>
-          )}
-
-          {/* Step 5: Review & save */}
+          {/* Step 4: Review & save */}
           {step === "review" && (
             <div className="flex gap-6 flex-1 min-h-0">
               <GuidancePanel {...STEP_GUIDANCE.review} className="w-1/3 shrink-0" />
@@ -1240,7 +1205,7 @@ function ProblemBuilderV2({
                     <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
                     Start Over
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => setStep("more")}>
+                  <Button variant="outline" size="sm" onClick={() => setStep("pick")}>
                     Add More Dimensions
                   </Button>
                   <Button onClick={handleSave} disabled={totalSelections === 0} className="gap-2">
