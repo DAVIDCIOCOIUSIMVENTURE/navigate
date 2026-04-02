@@ -59,11 +59,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     dispatch.settings.init()
     dispatch.problemTriggers.init()
-    dispatch.ideas.init()
     dispatch.problems.init()
     dispatch.accountSettings.init()
     dispatch.solutions.init()
-  }, [dispatch.settings, dispatch.problemTriggers, dispatch.ideas, dispatch.problems, dispatch.accountSettings, dispatch.solutions])
+  }, [dispatch.settings, dispatch.problemTriggers, dispatch.problems, dispatch.accountSettings, dispatch.solutions])
 
   if (fullView) {
     return (

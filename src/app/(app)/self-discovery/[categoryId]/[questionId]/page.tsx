@@ -182,7 +182,7 @@ export default function QuestionPage() {
                     router.push(`/self-discovery/${nextCategory.url}/${nextCategory.questions[0].url}`)
                 }
             } else {
-                router.push('/ideas')
+                router.push('/problems')
             }
         }
     }

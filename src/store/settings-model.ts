@@ -8,7 +8,6 @@ export type BrainstormMode = "canvas" | "builder"
 
 interface SettingsState {
   sidebarMode: SidebarMode
-  ideaMode: "guided" | "quickstart"
   hiddenBrainstormColumns: string[]
   fullView: boolean
   brainstormSelected: string[]
@@ -18,7 +17,6 @@ interface SettingsState {
 
 const defaultState: SettingsState = {
   sidebarMode: "icon",
-  ideaMode: "guided",
   hiddenBrainstormColumns: [],
   fullView: false,
   brainstormSelected: [],
@@ -41,11 +39,6 @@ export const settings = createModel<RootModel>()({
   reducers: {
     setSidebarMode(state, sidebarMode: SidebarMode) {
       const next = { ...state, sidebarMode }
-      saveToStorage(next)
-      return next
-    },
-    setIdeaMode(state, ideaMode: "guided" | "quickstart") {
-      const next = { ...state, ideaMode }
       saveToStorage(next)
       return next
     },
@@ -87,9 +80,6 @@ export const settings = createModel<RootModel>()({
         const stored: Partial<SettingsState> = JSON.parse(raw)
         if (stored.sidebarMode) {
           dispatch.settings.setSidebarMode(stored.sidebarMode)
-        }
-        if (stored.ideaMode) {
-          dispatch.settings.setIdeaMode(stored.ideaMode)
         }
         if (stored.hiddenBrainstormColumns) {
           dispatch.settings.setHiddenBrainstormColumns(stored.hiddenBrainstormColumns)

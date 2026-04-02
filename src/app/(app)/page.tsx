@@ -2,29 +2,28 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ChevronRight, Lightbulb, Target, Trophy, Award, Star, Crown } from "lucide-react"
+import { ChevronRight, Lightbulb, Target, Trophy, Award, Star, Crown, Search } from "lucide-react"
 import { AchievementItem } from "@/components/achievement-item"
 import Image from "next/image"
 import Link from "next/link"
-import { useIdeas } from "@/store/ideas-hooks"
+import { useSelector } from "react-redux"
+import type { RootState } from "@/store"
 
 export default function DashboardPage() {
-  const { ideas } = useIdeas()
+  const problems = useSelector((state: RootState) => state.problems.problems)
 
-  const totalProblems = ideas.reduce(
-    (sum, idea) => sum + idea.jobs.flatMap((j) => j.problems).filter((p) => p.text.trim()).length,
-    0
-  )
-  const validatedProblems = ideas.reduce(
-    (sum, idea) =>
-      sum + idea.jobs.flatMap((j) => j.problems).filter((p) => p.validationStatus === "valid" || p.validationStatus === "invalid").length,
-    0
-  )
+  const totalProblems = problems.length
+  const validatedProblems = problems.filter(
+    (p) => p.validationStatus === "valid" || p.validationStatus === "invalid"
+  ).length
+  const inProgressProblems = problems.filter(
+    (p) => p.validationStatus === "in_progress"
+  ).length
 
   const stats = [
-    { label: "Ideas created", value: ideas.length, description: "Innovation ideas in progress" },
-    { label: "Problems discovered", value: totalProblems, description: "Problems identified across ideas" },
-    { label: "Problems validated", value: validatedProblems, description: "Problems given a verdict" },
+    { label: "Total problems", value: totalProblems, description: "Problems captured", icon: Search },
+    { label: "Problems validated", value: validatedProblems, description: "Problems given a verdict", icon: Target },
+    { label: "In progress", value: inProgressProblems, description: "Validation in progress", icon: Lightbulb },
   ]
 
   return (
@@ -35,7 +34,7 @@ export default function DashboardPage() {
           <h1 className="text-xl font-bold">Dashboard</h1>
         </div>
         <Button asChild className="bg-purple-600 hover:bg-purple-700 text-white">
-          <Link href="/ideas">
+          <Link href="/problems">
             Continue Your Journey
             <ChevronRight className="ml-2 h-4 w-4" />
           </Link>
@@ -58,7 +57,7 @@ export default function DashboardPage() {
               <CardContent className="p-4">
                 <div className="flex items-center gap-4">
                   <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-amber-500">
-                    <Lightbulb className="h-5 w-5 text-white" />
+                    <stat.icon className="h-5 w-5 text-white" />
                   </div>
                   <div className="flex flex-col">
                     <div className="text-lg font-bold">{stat.value}</div>
@@ -81,26 +80,24 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {ideas.length === 0 ? (
+              {problems.length === 0 ? (
                 <p className="text-sm text-muted-foreground">
                   No activity yet.{" "}
-                  <Link href="/ideas/new" className="font-medium text-foreground underline underline-offset-2">
-                    Start your first idea
+                  <Link href="/problems/brainstorm" className="font-medium text-foreground underline underline-offset-2">
+                    Brainstorm your first problem
                   </Link>{" "}
                   to get going.
                 </p>
               ) : (
-                ideas.slice(-3).reverse().map((idea) => (
-                  <div key={idea.id} className="flex items-center gap-4">
+                problems.slice(-3).reverse().map((problem) => (
+                  <div key={problem.id} className="flex items-center gap-4">
                     <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10">
-                      <Lightbulb className="h-4 w-4 text-primary" />
+                      <Search className="h-4 w-4 text-primary" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium">{idea.title}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {new Date(idea.updatedAt).toLocaleDateString("en-GB", {
-                          day: "numeric", month: "short", year: "numeric",
-                        })}
+                      <p className="text-sm font-medium">{problem.description || `Problem #${problem.id}`}</p>
+                      <p className="text-xs text-muted-foreground capitalize">
+                        {problem.validationStatus.replace("_", " ")}
                       </p>
                     </div>
                   </div>
