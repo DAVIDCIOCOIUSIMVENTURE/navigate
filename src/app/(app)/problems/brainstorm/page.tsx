@@ -87,6 +87,14 @@ const COLUMN_COLORS: Record<string, { icon: string; border: string; pill: string
   "self-discovery": { icon: "text-violet-500", border: "border-t-violet-500", pill: "bg-violet-500/10 text-violet-700 dark:text-violet-400" },
 }
 
+const COLUMN_DESCRIPTIONS: Record<string, string> = {
+  "customer-segments": "Who experiences this problem?",
+  "contexts": "In what situation does it occur?",
+  "jobs-to-be-done": "What are they trying to accomplish?",
+  "problem-types": "What kind of friction do they face?",
+  "self-discovery": "Areas surfaced from your self-discovery.",
+}
+
 const COLUMN_TO_FIELD: Record<string, keyof Pick<Problem, "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "selfDiscovery">> = {
   "customer-segments": "customerSegments",
   "contexts": "contexts",
@@ -475,6 +483,11 @@ function ProblemBuilder({
                     >
                       {Icon && <Icon className={cn("h-7 w-7", explored ? "opacity-60" : "", colors?.icon)} />}
                       <span className={cn("text-sm font-medium", explored && "opacity-70")}>{col.title}</span>
+                      {COLUMN_DESCRIPTIONS[col.id] && (
+                        <span className={cn("text-sm text-muted-foreground text-center leading-snug", explored && "opacity-70")}>
+                          {COLUMN_DESCRIPTIONS[col.id]}
+                        </span>
+                      )}
                       {explored ? (
                         <span className={cn("inline-flex items-center gap-1 text-xs font-medium", colors?.icon)}>
                           <Check className="h-3 w-3" />
@@ -571,6 +584,11 @@ function ProblemBuilder({
                     >
                       {Icon && <Icon className={cn("h-7 w-7", explored ? "opacity-60" : "", colors?.icon)} />}
                       <span className={cn("text-sm font-medium", explored && "opacity-70")}>{col.title}</span>
+                      {COLUMN_DESCRIPTIONS[col.id] && (
+                        <span className={cn("text-sm text-muted-foreground text-center leading-snug", explored && "opacity-70")}>
+                          {COLUMN_DESCRIPTIONS[col.id]}
+                        </span>
+                      )}
                       {explored ? (
                         <span className={cn("inline-flex items-center gap-1 text-xs font-medium", colors?.icon)}>
                           <Check className="h-3 w-3" />
