@@ -65,30 +65,15 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     dispatch.solutions.init()
   }, [dispatch.settings, dispatch.problemTriggers, dispatch.problems, dispatch.accountSettings, dispatch.solutions])
 
-  if (fullView) {
-    return (
-      <div className="h-svh flex flex-col bg-gray-100 overflow-hidden">
-        <div className="flex flex-1 flex-col gap-4 px-6 py-6 min-h-0 overflow-y-auto">
-          <div className="flex flex-1 w-full min-h-0">
-            <GuidanceProvider onOpen={openGuidance}>
-              {children}
-            </GuidanceProvider>
-          </div>
-        </div>
-        <GuidanceDialog open={guidanceOpen} onOpenChange={setGuidanceOpen} initialTopic={guidanceTopic} />
-        <Toaster />
-      </div>
-    )
-  }
-
   return (
     <SidebarProvider
       sidebarMode={sidebarMode}
       onSidebarModeChange={(mode) => dispatch.settings.setSidebarMode(mode)}
       className="h-svh !min-h-0 overflow-hidden"
     >
-      <AppSidebar />
+      {!fullView && <AppSidebar />}
       <SidebarInset>
+        {!fullView && (
         <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4 justify-between">
           <div className="flex items-center gap-2">
             <SidebarTrigger className="-ml-1" />
@@ -125,7 +110,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             </Button>
           </div>
         </header>
-        <div className="flex flex-1 flex-col gap-4 px-12 py-10 bg-gray-100 min-h-0 overflow-y-auto">
+        )}
+        <div className={`flex flex-1 flex-col gap-4 bg-gray-100 min-h-0 overflow-y-auto ${fullView ? "px-6 py-6" : "px-12 py-10"}`}>
           <div className="flex flex-1 w-full min-h-0">
             <GuidanceProvider onOpen={openGuidance}>
               {children}

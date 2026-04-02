@@ -292,13 +292,117 @@ function NoSearchResults({ onClear }: { onClear?: () => void }) {
 /* ─── Problem Builder (guided mode) ─── */
 
 const BUILDER_STEPS = [
-  { id: "pick", label: "Pick an element" },
+  { id: "pick", label: "Pick a dimension" },
   { id: "choose", label: "Choose options" },
-  { id: "more", label: "Add more elements" },
+  { id: "more", label: "Add more dimensions" },
   { id: "review", label: "Review & save" },
 ] as const
 
+const STEP_GUIDANCE: Record<string, { title: string; description: string; tips: string[] }> = {
+  pick: {
+    title: "Choose a Dimension",
+    description: "Every problem can be explored from multiple angles. Start by picking one dimension to frame your thinking. You can always come back and add more.",
+    tips: [
+      "Customer Segments: Start here if you have a specific audience in mind (e.g. freelancers, retirees, small business owners).",
+      "Contexts: Good when a problem is tied to a situation, like commuting, working from home, or managing finances.",
+      "Problem Types: Useful when you already sense the kind of friction (e.g. too much complexity, lack of trust, poor timing).",
+      "Self Discovery: Draws from your earlier self-discovery answers to surface personal triggers and themes.",
+    ],
+  },
+  choose: {
+    title: "Select Options",
+    description: "Browse the options below and check any that resonate with the problem you're exploring. Don't overthink it, you can refine later.",
+    tips: [
+      "Select multiple options if the problem spans several areas.",
+      "Use the group headings to narrow your focus.",
+      "You don't need to be exhaustive. Even one or two selections are enough to move forward.",
+    ],
+  },
+  more: {
+    title: "Layer Another Dimension",
+    description: "Great problems sit at the intersection of multiple dimensions. Adding another angle makes your problem definition sharper and more unique.",
+    tips: [
+      "Example: \"Freelancers\" (customer) + \"Invoicing\" (context) + \"Friction\" (problem type) = a focused problem space.",
+      "You can explore the same dimension again to add more selections.",
+      "Skip to review any time you feel you have enough.",
+    ],
+  },
+  review: {
+    title: "Review & Save",
+    description: "Look over what you've assembled. Add a short description to capture the essence of the problem in your own words, then save it.",
+    tips: [
+      "A good description answers: \"What's the core frustration or unmet need?\"",
+      "Keep it to one or two sentences. You'll flesh it out during validation.",
+      "After saving you can continue brainstorming or move straight to Problem Validation.",
+    ],
+  },
+}
+
+const DIMENSION_GUIDANCE: Record<string, { description: string; examples: string[] }> = {
+  "customer-segments": {
+    description: "Think about who experiences this problem. A well-defined customer segment helps you empathise with real people rather than abstract \"users\".",
+    examples: [
+      "Young professionals juggling side projects",
+      "Parents returning to the workforce",
+      "Small business owners with no IT support",
+    ],
+  },
+  "contexts": {
+    description: "Consider the situation or environment where this problem shows up. Context shapes how severe a problem feels and what solutions are viable.",
+    examples: [
+      "During the morning commute",
+      "While onboarding a new employee",
+      "At the point of making a purchase decision",
+    ],
+  },
+  "jobs-to-be-done": {
+    description: "What is the person trying to accomplish when they run into this problem? Framing around a \"job\" keeps you focused on outcomes, not features.",
+    examples: [
+      "Quickly compare options before buying",
+      "Stay on top of personal finances",
+      "Coordinate schedules across a team",
+    ],
+  },
+  "problem-types": {
+    description: "What kind of friction or barrier does the person face? Naming the type of problem helps you spot patterns and prioritise.",
+    examples: [
+      "Too many steps to complete a simple task (friction)",
+      "Can't tell if a provider is trustworthy (trust gap)",
+      "Information is scattered across tools (information gap)",
+    ],
+  },
+  "self-discovery": {
+    description: "These themes surfaced from your own self-discovery responses. They represent areas where you may have personal insight or passion, making them a great foundation for innovation.",
+    examples: [
+      "Themes you rated highly in the questionnaire",
+      "Triggers you flagged during reflection",
+    ],
+  },
+}
+
 type BuilderStepId = (typeof BUILDER_STEPS)[number]["id"]
+
+function GuidancePanel({ title, description, tips, className }: {
+  title: string
+  description: string
+  tips: string[]
+  className?: string
+}) {
+  return (
+    <div className={cn("flex flex-col gap-3 text-sm min-h-0 overflow-y-auto", className)}>
+      <h3 className="font-semibold text-base">{title}</h3>
+      <p className="text-muted-foreground leading-relaxed">{description}</p>
+      <ul className="flex flex-col gap-1.5 text-muted-foreground">
+        {tips.map((tip, i) => (
+          <li key={i} className="flex gap-2 leading-relaxed">
+            <span className="text-primary mt-0.5 shrink-0">&#8226;</span>
+            <span>{tip}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
 
 function ProblemBuilder({
   columns,
@@ -375,6 +479,7 @@ function ProblemBuilder({
   }, [reset, resetRef])
 
   return (
+    <>
     <Card className="flex flex-col flex-1 min-h-0">
       <CardContent className="flex flex-col gap-6 pt-6 flex-1 min-h-0">
         {/* Stepper */}
@@ -423,8 +528,221 @@ function ProblemBuilder({
           })}
         </div>
 
-        {/* Persistent selection pills — visible on every step */}
-        {totalSelections > 0 && (
+        {/* Step content */}
+        <div className="flex-1 min-h-0 flex flex-col">
+          {step === "pick" && (
+            <div className="flex gap-6 flex-1 min-h-0">
+              <GuidancePanel {...STEP_GUIDANCE.pick} className="w-1/3 shrink-0" />
+              <div className="flex-1 min-w-0">
+                {!hasAnyItems ? (
+                  <NoSearchResults onClear={onClearSearch} />
+                ) : <div className="grid grid-cols-2 gap-3">
+                  {columns.map((col) => {
+                    const Icon = COLUMN_ICONS[col.id]
+                    const colors = COLUMN_COLORS[col.id]
+                    const explored = usedColumnIds.has(col.id)
+                    const count = (selectedByColumn[col.id] ?? []).length
+                    return (
+                      <button
+                        key={col.id}
+                        onClick={() => pickColumn(col.id)}
+                        className={cn(
+                          "flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all",
+                          explored
+                            ? "border-solid bg-accent/20 hover:bg-accent/40"
+                            : "border-dashed hover:border-solid hover:shadow-sm hover:bg-accent/30",
+                          colors?.border || "border-border",
+                        )}
+                      >
+                        {Icon && <Icon className={cn("h-7 w-7", explored ? "opacity-60" : "", colors?.icon)} />}
+                        <span className={cn("text-sm font-medium", explored && "opacity-70")}>{col.title}</span>
+                        {COLUMN_DESCRIPTIONS[col.id] && (
+                          <span className={cn("text-sm text-muted-foreground text-center leading-snug", explored && "opacity-70")}>
+                            {COLUMN_DESCRIPTIONS[col.id]}
+                          </span>
+                        )}
+                        {explored ? (
+                          <span className={cn("inline-flex items-center gap-1 text-xs font-medium", colors?.icon)}>
+                            <Check className="h-3 w-3" />
+                            {count} selected
+                          </span>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">
+                            {collectAllIds(col.items).length} options
+                          </span>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>}
+              </div>
+            </div>
+          )}
+
+          {step === "choose" && activeColumn && (
+            <div className="flex gap-6 flex-1 min-h-0">
+              <div className="w-1/3 shrink-0 flex flex-col gap-4 min-h-0 overflow-y-auto">
+                <GuidancePanel {...STEP_GUIDANCE.choose} />
+                {DIMENSION_GUIDANCE[activeColumn.id] && (
+                  <div className="flex flex-col gap-2 rounded-lg bg-accent/30 p-3 text-sm">
+                    <div className="flex items-center gap-2">
+                      {(() => {
+                        const Icon = COLUMN_ICONS[activeColumn.id]
+                        const colors = COLUMN_COLORS[activeColumn.id]
+                        return Icon ? <Icon className={cn("h-4 w-4", colors?.icon)} /> : null
+                      })()}
+                      <span className="font-medium">{activeColumn.title}</span>
+                    </div>
+                    <p className="text-muted-foreground leading-relaxed">
+                      {DIMENSION_GUIDANCE[activeColumn.id].description}
+                    </p>
+                    <div className="flex flex-col gap-1 mt-1">
+                      <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Examples</span>
+                      {DIMENSION_GUIDANCE[activeColumn.id].examples.map((ex, i) => (
+                        <span key={i} className="text-xs text-muted-foreground italic">&ldquo;{ex}&rdquo;</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-col gap-3 flex-1 min-h-0 min-w-0">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {(() => {
+                      const Icon = COLUMN_ICONS[activeColumn.id]
+                      const colors = COLUMN_COLORS[activeColumn.id]
+                      return Icon ? <Icon className={cn("h-5 w-5", colors?.icon)} /> : null
+                    })()}
+                    <h3 className="text-sm font-semibold">{activeColumn.title}</h3>
+                    <span className="text-xs text-muted-foreground">
+                      ({(selectedByColumn[activeColumn.id] ?? []).length} selected)
+                    </span>
+                  </div>
+                  <Button
+                    size="sm"
+                    onClick={() => setStep(availableColumns.length > 1 ? "more" : "review")}
+                    disabled={(selectedByColumn[activeColumn.id] ?? []).length === 0}
+                    className="gap-1.5"
+                  >
+                    Continue
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+                <ScrollArea className="flex-1 min-h-0 max-h-[50vh] border rounded-lg p-3">
+                  <div className="flex flex-col gap-0.5 pr-3">
+                    {activeColumn.items.length === 0 ? (
+                      <NoSearchResults onClear={onClearSearch} />
+                    ) : activeColumn.items.map((item) => (
+                      <BrainstormCheckItem
+                        key={item.id}
+                        item={item}
+                        selected={new Set(selectedByColumn[activeColumn.id] ?? [])}
+                        onToggle={(id) => toggleItem(activeColumn.id, id)}
+                      />
+                    ))}
+                  </div>
+                </ScrollArea>
+              </div>
+            </div>
+          )}
+
+          {step === "more" && (
+            <div className="flex gap-6 flex-1 min-h-0">
+              <GuidancePanel {...STEP_GUIDANCE.more} className="w-1/3 shrink-0" />
+              <div className="flex flex-col gap-3 flex-1 min-w-0 min-h-0 overflow-y-auto">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-semibold">Pick a dimension</h3>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setStep("review")}
+                    className="gap-1.5"
+                  >
+                    Skip to review
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+                {!hasAnyItems ? (
+                  <NoSearchResults onClear={onClearSearch} />
+                ) : <div className="grid grid-cols-2 gap-3">
+                  {columns.map((col) => {
+                    const Icon = COLUMN_ICONS[col.id]
+                    const colors = COLUMN_COLORS[col.id]
+                    const explored = usedColumnIds.has(col.id)
+                    const count = (selectedByColumn[col.id] ?? []).length
+                    return (
+                      <button
+                        key={col.id}
+                        onClick={() => pickColumn(col.id)}
+                        className={cn(
+                          "flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all",
+                          explored
+                            ? "border-solid bg-accent/20 hover:bg-accent/40"
+                            : "border-dashed hover:border-solid hover:shadow-sm hover:bg-accent/30",
+                          colors?.border || "border-border",
+                        )}
+                      >
+                        {Icon && <Icon className={cn("h-7 w-7", explored ? "opacity-60" : "", colors?.icon)} />}
+                        <span className={cn("text-sm font-medium", explored && "opacity-70")}>{col.title}</span>
+                        {COLUMN_DESCRIPTIONS[col.id] && (
+                          <span className={cn("text-sm text-muted-foreground text-center leading-snug", explored && "opacity-70")}>
+                            {COLUMN_DESCRIPTIONS[col.id]}
+                          </span>
+                        )}
+                        {explored ? (
+                          <span className={cn("inline-flex items-center gap-1 text-xs font-medium", colors?.icon)}>
+                            <Check className="h-3 w-3" />
+                            {count} selected
+                          </span>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">
+                            {collectAllIds(col.items).length} options
+                          </span>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>}
+              </div>
+            </div>
+          )}
+
+          {step === "review" && (
+            <div className="flex gap-6 flex-1 min-h-0">
+              <GuidancePanel {...STEP_GUIDANCE.review} className="w-1/3 shrink-0" />
+              <div className="flex flex-col gap-4 flex-1 min-w-0">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-sm font-medium">Problem Description</label>
+                  <Textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Describe the problem you've discovered..."
+                    rows={3}
+                  />
+                </div>
+                <div className="flex items-center gap-2 justify-end">
+                  <Button variant="outline" size="sm" onClick={reset}>
+                    <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
+                    Start Over
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => setStep("more")}>
+                    Add More Dimensions
+                  </Button>
+                  <Button onClick={handleSave} disabled={totalSelections === 0} className="gap-2">
+                    <Save className="h-3.5 w-3.5" />
+                    Save Problem
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+
+    {totalSelections > 0 && (
+      <Card className="shrink-0">
+        <CardContent className="py-3">
           <div className="flex flex-wrap gap-1.5">
             {columns.flatMap((col) => {
               const ids = selectedByColumn[col.id] ?? []
@@ -452,192 +770,10 @@ function ProblemBuilder({
               })
             })}
           </div>
-        )}
-
-        {/* Step content */}
-        <div className="flex-1 min-h-0 flex flex-col">
-          {step === "pick" && (
-            <div className="flex flex-col gap-4">
-              <p className="text-sm text-muted-foreground">
-                Choose which dimension you want to explore.
-              </p>
-              {!hasAnyItems ? (
-                <NoSearchResults onClear={onClearSearch} />
-              ) : <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {columns.map((col) => {
-                  const Icon = COLUMN_ICONS[col.id]
-                  const colors = COLUMN_COLORS[col.id]
-                  const explored = usedColumnIds.has(col.id)
-                  const count = (selectedByColumn[col.id] ?? []).length
-                  return (
-                    <button
-                      key={col.id}
-                      onClick={() => pickColumn(col.id)}
-                      className={cn(
-                        "flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all",
-                        explored
-                          ? "border-solid bg-accent/20 hover:bg-accent/40"
-                          : "border-dashed hover:border-solid hover:shadow-sm hover:bg-accent/30",
-                        colors?.border || "border-border",
-                      )}
-                    >
-                      {Icon && <Icon className={cn("h-7 w-7", explored ? "opacity-60" : "", colors?.icon)} />}
-                      <span className={cn("text-sm font-medium", explored && "opacity-70")}>{col.title}</span>
-                      {COLUMN_DESCRIPTIONS[col.id] && (
-                        <span className={cn("text-sm text-muted-foreground text-center leading-snug", explored && "opacity-70")}>
-                          {COLUMN_DESCRIPTIONS[col.id]}
-                        </span>
-                      )}
-                      {explored ? (
-                        <span className={cn("inline-flex items-center gap-1 text-xs font-medium", colors?.icon)}>
-                          <Check className="h-3 w-3" />
-                          {count} selected
-                        </span>
-                      ) : (
-                        <span className="text-xs text-muted-foreground">
-                          {collectAllIds(col.items).length} options
-                        </span>
-                      )}
-                    </button>
-                  )
-                })}
-              </div>}
-            </div>
-          )}
-
-          {step === "choose" && activeColumn && (
-            <div className="flex flex-col gap-3 flex-1 min-h-0">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  {(() => {
-                    const Icon = COLUMN_ICONS[activeColumn.id]
-                    const colors = COLUMN_COLORS[activeColumn.id]
-                    return Icon ? <Icon className={cn("h-5 w-5", colors?.icon)} /> : null
-                  })()}
-                  <h3 className="text-sm font-semibold">{activeColumn.title}</h3>
-                  <span className="text-xs text-muted-foreground">
-                    ({(selectedByColumn[activeColumn.id] ?? []).length} selected)
-                  </span>
-                </div>
-                <Button
-                  size="sm"
-                  onClick={() => setStep(availableColumns.length > 1 ? "more" : "review")}
-                  disabled={(selectedByColumn[activeColumn.id] ?? []).length === 0}
-                  className="gap-1.5"
-                >
-                  Continue
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Button>
-              </div>
-              <ScrollArea className="flex-1 min-h-0 max-h-[50vh] border rounded-lg p-3">
-                <div className="flex flex-col gap-0.5 pr-3">
-                  {activeColumn.items.length === 0 ? (
-                    <NoSearchResults onClear={onClearSearch} />
-                  ) : activeColumn.items.map((item) => (
-                    <BrainstormCheckItem
-                      key={item.id}
-                      item={item}
-                      selected={new Set(selectedByColumn[activeColumn.id] ?? [])}
-                      onToggle={(id) => toggleItem(activeColumn.id, id)}
-                    />
-                  ))}
-                </div>
-              </ScrollArea>
-            </div>
-          )}
-
-          {step === "more" && (
-            <div className="flex flex-col gap-4">
-              <div className="flex items-center justify-between">
-                <p className="text-sm text-muted-foreground">
-                  Pick another dimension to refine your problem, or skip to review.
-                </p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setStep("review")}
-                  className="gap-1.5 shrink-0"
-                >
-                  Skip to review
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Button>
-              </div>
-              {!hasAnyItems ? (
-                <NoSearchResults onClear={onClearSearch} />
-              ) : <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                {columns.map((col) => {
-                  const Icon = COLUMN_ICONS[col.id]
-                  const colors = COLUMN_COLORS[col.id]
-                  const explored = usedColumnIds.has(col.id)
-                  const count = (selectedByColumn[col.id] ?? []).length
-                  return (
-                    <button
-                      key={col.id}
-                      onClick={() => pickColumn(col.id)}
-                      className={cn(
-                        "flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all",
-                        explored
-                          ? "border-solid bg-accent/20 hover:bg-accent/40"
-                          : "border-dashed hover:border-solid hover:shadow-sm hover:bg-accent/30",
-                        colors?.border || "border-border",
-                      )}
-                    >
-                      {Icon && <Icon className={cn("h-7 w-7", explored ? "opacity-60" : "", colors?.icon)} />}
-                      <span className={cn("text-sm font-medium", explored && "opacity-70")}>{col.title}</span>
-                      {COLUMN_DESCRIPTIONS[col.id] && (
-                        <span className={cn("text-sm text-muted-foreground text-center leading-snug", explored && "opacity-70")}>
-                          {COLUMN_DESCRIPTIONS[col.id]}
-                        </span>
-                      )}
-                      {explored ? (
-                        <span className={cn("inline-flex items-center gap-1 text-xs font-medium", colors?.icon)}>
-                          <Check className="h-3 w-3" />
-                          {count} selected
-                        </span>
-                      ) : (
-                        <span className="text-xs text-muted-foreground">
-                          {collectAllIds(col.items).length} options
-                        </span>
-                      )}
-                    </button>
-                  )
-                })}
-              </div>}
-            </div>
-          )}
-
-          {step === "review" && (
-            <div className="flex flex-col gap-4">
-              <p className="text-sm text-muted-foreground">
-                Review your selections and save the problem.
-              </p>
-              <div className="flex flex-col gap-1.5">
-                <label className="text-sm font-medium">Problem Description</label>
-                <Textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Describe the problem you've discovered..."
-                  rows={3}
-                />
-              </div>
-              <div className="flex items-center gap-2 justify-end">
-                <Button variant="outline" size="sm" onClick={reset}>
-                  <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
-                  Start Over
-                </Button>
-                <Button variant="outline" size="sm" onClick={() => setStep("more")}>
-                  Add More Elements
-                </Button>
-                <Button onClick={handleSave} disabled={totalSelections === 0} className="gap-2">
-                  <Save className="h-3.5 w-3.5" />
-                  Save Problem
-                </Button>
-              </div>
-            </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    )}
+    </>
   )
 }
 
