@@ -1468,7 +1468,7 @@ export default function BrainstormPage() {
   }
 
   const content = (
-    <div className="flex flex-col gap-6 w-full flex-1 min-h-0">
+    <div className="flex flex-col gap-6 w-full flex-1 min-h-0 min-w-0 overflow-x-hidden">
       <div className="flex flex-col gap-2">
       {/* Row 1: Title + mode toggle */}
       <div className="flex items-center justify-between gap-4">
@@ -1497,7 +1497,7 @@ export default function BrainstormPage() {
       </div>
 
       {/* Row 2: Description + action buttons */}
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex items-center justify-between gap-4 min-w-0">
         <p className="text-sm text-muted-foreground hidden lg:block">
           {brainstormMode === "canvas"
             ? "Explore potential areas for innovation by navigating through the options below."
@@ -1576,7 +1576,7 @@ export default function BrainstormPage() {
       ) : brainstormMode === "builder-v2" ? (
         <ProblemBuilderV2 columns={filteredColumns} onSave={handleBuilderSave} resetRef={builderResetRef} onClearSearch={() => setSearchQuery("")} />
       ) : (<>
-      <div className="flex gap-4 flex-1 min-h-0">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 flex-1 min-h-0 overflow-y-auto">
         {allColumns.map((column) => {
           const columnSelected = getSelectedForColumn(column.items, selected)
           const isHidden = hiddenColumns.has(column.id)
@@ -1610,7 +1610,7 @@ export default function BrainstormPage() {
           }
 
           return (
-            <Card key={column.id} className={cn("flex flex-col min-h-0 flex-1 min-w-0 border-t-2", colors?.border)}>
+            <Card key={column.id} className={cn("flex flex-col min-h-[300px] flex-1 min-w-0 border-t-2", colors?.border)}>
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">

@@ -111,7 +111,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           </div>
         </header>
         )}
-        <div className={`flex flex-1 flex-col gap-4 bg-gray-100 min-h-0 overflow-y-auto ${fullView ? "px-6 py-6" : "px-12 py-10"}`}>
+        <div className={`flex flex-1 flex-col gap-4 bg-gray-100 min-h-0 overflow-y-auto ${fullView ? "px-6 py-6" : "px-4 py-6 sm:px-6 lg:px-12 lg:py-10"}`}>
           <div className="flex flex-1 w-full min-h-0">
             <GuidanceProvider onOpen={openGuidance}>
               {children}
