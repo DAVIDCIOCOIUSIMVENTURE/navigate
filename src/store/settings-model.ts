@@ -4,7 +4,7 @@ import type { SidebarMode } from "@/components/ui/sidebar"
 
 const STORAGE_KEY = "navigate-settings"
 
-export type BrainstormMode = "canvas" | "builder"
+export type BrainstormMode = "canvas" | "builder" | "builder-v2"
 
 interface SettingsState {
   sidebarMode: SidebarMode

@@ -41,6 +41,7 @@ import {
   Eye,
   EyeOff,
   Grid3X3,
+  Layers,
   MapPin,
   Maximize2,
   Minimize2,
@@ -777,6 +778,520 @@ function ProblemBuilder({
   )
 }
 
+/* ─── Problem Builder V2 (dimension → category → items) ─── */
+
+const V2_STEPS = [
+  { id: "pick", label: "Pick a dimension" },
+  { id: "category", label: "Pick a category" },
+  { id: "choose", label: "Choose options" },
+  { id: "more", label: "Add more" },
+  { id: "review", label: "Review & save" },
+] as const
+
+type V2StepId = (typeof V2_STEPS)[number]["id"]
+
+const CATEGORY_GUIDANCE: { title: string; description: string; tips: string[] } = {
+  title: "Narrow Your Focus",
+  description: "Each dimension is organised into categories. Pick one to focus on — you'll only see a handful of options instead of the full list.",
+  tips: [
+    "Choose the category that best matches the area you want to explore.",
+    "You can always come back and pick another category from the same dimension.",
+    "Categories you've already explored show a checkmark.",
+  ],
+}
+
+function ProblemBuilderV2({
+  columns,
+  onSave,
+  resetRef,
+  onClearSearch,
+}: {
+  columns: BrainstormColumn[]
+  onSave: (selections: Record<string, string[]>, description: string) => void
+  resetRef?: React.MutableRefObject<(() => void) | null>
+  onClearSearch?: () => void
+}) {
+  const [step, setStep] = useState<V2StepId>("pick")
+  const [activeColumnId, setActiveColumnId] = useState<string | null>(null)
+  const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null)
+  const [selectedByColumn, setSelectedByColumn] = useState<Record<string, string[]>>({})
+  const [description, setDescription] = useState("")
+
+  const stepIndex = V2_STEPS.findIndex((s) => s.id === step)
+  const usedColumnIds = useMemo(
+    () => new Set(Object.entries(selectedByColumn).filter(([, ids]) => ids.length > 0).map(([id]) => id)),
+    [selectedByColumn]
+  )
+  const activeColumn = columns.find((c) => c.id === activeColumnId)
+  const activeCategory = activeColumn?.items.find((item) => item.id === activeCategoryId)
+
+  // For dimensions whose items are all flat (no children / only one group), skip the category step
+  const hasCategories = activeColumn ? activeColumn.items.some((item) => item.children?.length) : false
+
+  const hasAnyItems = useMemo(
+    () => columns.some((c) => c.items.length > 0),
+    [columns]
+  )
+  const totalSelections = Object.values(selectedByColumn).reduce((sum, ids) => sum + ids.length, 0)
+
+  const pickColumn = (columnId: string) => {
+    setActiveColumnId(columnId)
+    setActiveCategoryId(null)
+    const col = columns.find((c) => c.id === columnId)
+    const colHasCategories = col ? col.items.some((item) => item.children?.length) : false
+    setStep(colHasCategories ? "category" : "choose")
+  }
+
+  const pickCategory = (categoryId: string) => {
+    setActiveCategoryId(categoryId)
+    setStep("choose")
+  }
+
+  const toggleItem = (columnId: string, itemId: string) => {
+    setSelectedByColumn((prev) => {
+      const current = prev[columnId] ?? []
+      const has = current.includes(itemId)
+      return {
+        ...prev,
+        [columnId]: has ? current.filter((id) => id !== itemId) : [...current, itemId],
+      }
+    })
+  }
+
+  const handleSave = () => {
+    const selections: Record<string, string[]> = {}
+    for (const col of columns) {
+      const ids = selectedByColumn[col.id] ?? []
+      selections[col.id] = ids
+        .map((id) => findLabel(col.items, id))
+        .filter((l): l is string => l !== null)
+    }
+    onSave(selections, description)
+    setSelectedByColumn({})
+    setActiveColumnId(null)
+    setActiveCategoryId(null)
+    setDescription("")
+    setStep("pick")
+  }
+
+  const reset = useCallback(() => {
+    setSelectedByColumn({})
+    setActiveColumnId(null)
+    setActiveCategoryId(null)
+    setDescription("")
+    setStep("pick")
+  }, [])
+
+  useEffect(() => {
+    if (resetRef) resetRef.current = reset
+  }, [reset, resetRef])
+
+  // Items to show in the "choose" step — either the children of the active category, or all flat items
+  const chooseItems = useMemo<BrainstormItem[]>(() => {
+    if (!activeColumn) return []
+    if (activeCategory?.children) return activeCategory.children
+    // Flat dimension (no categories) — show all items directly
+    if (!hasCategories) return activeColumn.items
+    return []
+  }, [activeColumn, activeCategory, hasCategories])
+
+  return (
+    <>
+    <Card className="flex flex-col flex-1 min-h-0">
+      <CardContent className="flex flex-col gap-6 pt-6 flex-1 min-h-0">
+        {/* Stepper */}
+        <div className="flex items-center">
+          {V2_STEPS.map((s, i) => {
+            const isActive = s.id === step
+            const isCompleted = i < stepIndex
+            const isClickable =
+              s.id === "pick" ||
+              (s.id === "category" && activeColumnId !== null && hasCategories) ||
+              (s.id === "choose" && activeColumnId !== null && (activeCategoryId !== null || !hasCategories)) ||
+              (s.id === "more" && totalSelections > 0) ||
+              (s.id === "review" && totalSelections > 0)
+            return (
+              <div key={s.id} className="flex items-center flex-1 last:flex-none">
+                <button
+                  disabled={!isClickable}
+                  onClick={() => isClickable && setStep(s.id)}
+                  className="flex items-center gap-2 shrink-0 disabled:opacity-100"
+                >
+                  <span className={cn(
+                    "flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 transition-colors",
+                    isActive
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : isCompleted
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-muted-foreground/30 bg-transparent text-muted-foreground"
+                  )}>
+                    {isCompleted ? <Check className="h-3.5 w-3.5" /> : i + 1}
+                  </span>
+                  <span className={cn(
+                    "text-sm whitespace-nowrap",
+                    isActive ? "font-semibold text-foreground" : "text-muted-foreground"
+                  )}>
+                    {s.label}
+                  </span>
+                </button>
+                {i < V2_STEPS.length - 1 && (
+                  <div className={cn(
+                    "flex-1 h-px mx-3",
+                    i < stepIndex ? "bg-primary" : "bg-border"
+                  )} />
+                )}
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Step content */}
+        <div className="flex-1 min-h-0 flex flex-col">
+          {/* Step 1: Pick a dimension */}
+          {step === "pick" && (
+            <div className="flex gap-6 flex-1 min-h-0">
+              <GuidancePanel {...STEP_GUIDANCE.pick} className="w-1/3 shrink-0" />
+              <div className="flex-1 min-w-0">
+                {!hasAnyItems ? (
+                  <NoSearchResults onClear={onClearSearch} />
+                ) : <div className="grid grid-cols-2 gap-3">
+                  {columns.map((col) => {
+                    const Icon = COLUMN_ICONS[col.id]
+                    const colors = COLUMN_COLORS[col.id]
+                    const explored = usedColumnIds.has(col.id)
+                    const count = (selectedByColumn[col.id] ?? []).length
+                    return (
+                      <button
+                        key={col.id}
+                        onClick={() => pickColumn(col.id)}
+                        className={cn(
+                          "flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all",
+                          explored
+                            ? "border-solid bg-accent/20 hover:bg-accent/40"
+                            : "border-dashed hover:border-solid hover:shadow-sm hover:bg-accent/30",
+                          colors?.border || "border-border",
+                        )}
+                      >
+                        {Icon && <Icon className={cn("h-7 w-7", explored ? "opacity-60" : "", colors?.icon)} />}
+                        <span className={cn("text-sm font-medium", explored && "opacity-70")}>{col.title}</span>
+                        {COLUMN_DESCRIPTIONS[col.id] && (
+                          <span className={cn("text-sm text-muted-foreground text-center leading-snug", explored && "opacity-70")}>
+                            {COLUMN_DESCRIPTIONS[col.id]}
+                          </span>
+                        )}
+                        {explored ? (
+                          <span className={cn("inline-flex items-center gap-1 text-xs font-medium", colors?.icon)}>
+                            <Check className="h-3 w-3" />
+                            {count} selected
+                          </span>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">
+                            {collectAllIds(col.items).length} options
+                          </span>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>}
+              </div>
+            </div>
+          )}
+
+          {/* Step 2: Pick a category within the dimension */}
+          {step === "category" && activeColumn && (
+            <div className="flex gap-6 flex-1 min-h-0">
+              <GuidancePanel {...CATEGORY_GUIDANCE} className="w-1/3 shrink-0" />
+              <div className="flex flex-col gap-3 flex-1 min-w-0 min-h-0 overflow-y-auto">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {(() => {
+                      const Icon = COLUMN_ICONS[activeColumn.id]
+                      const colors = COLUMN_COLORS[activeColumn.id]
+                      return Icon ? <Icon className={cn("h-5 w-5", colors?.icon)} /> : null
+                    })()}
+                    <h3 className="text-sm font-semibold">{activeColumn.title}</h3>
+                    <span className="text-xs text-muted-foreground">
+                      — pick a category
+                    </span>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setStep("pick")}
+                    className="gap-1.5 text-muted-foreground"
+                  >
+                    <ChevronRight className="h-3.5 w-3.5 rotate-180" />
+                    Back to dimensions
+                  </Button>
+                </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {activeColumn.items.filter((item) => item.children?.length).map((group) => {
+                    const childIds = group.children!.map((c) => c.id)
+                    const colSelected = selectedByColumn[activeColumn.id] ?? []
+                    const selectedInGroup = childIds.filter((id) => colSelected.includes(id)).length
+                    const explored = selectedInGroup > 0
+                    const colors = COLUMN_COLORS[activeColumn.id]
+                    return (
+                      <button
+                        key={group.id}
+                        onClick={() => pickCategory(group.id)}
+                        className={cn(
+                          "flex flex-col items-start gap-2 p-4 rounded-xl border-2 transition-all text-left",
+                          explored
+                            ? "border-solid bg-accent/20 hover:bg-accent/40"
+                            : "border-dashed hover:border-solid hover:shadow-sm hover:bg-accent/30",
+                          colors?.border || "border-border",
+                        )}
+                      >
+                        <span className={cn("text-sm font-medium", explored && "opacity-70")}>{group.label}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {group.children!.length} options
+                        </span>
+                        {explored && (
+                          <span className={cn("inline-flex items-center gap-1 text-xs font-medium", colors?.icon)}>
+                            <Check className="h-3 w-3" />
+                            {selectedInGroup} selected
+                          </span>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Step 3: Choose options within the selected category */}
+          {step === "choose" && activeColumn && (
+            <div className="flex gap-6 flex-1 min-h-0">
+              <div className="w-1/3 shrink-0 flex flex-col gap-4 min-h-0 overflow-y-auto">
+                <GuidancePanel {...STEP_GUIDANCE.choose} />
+                {DIMENSION_GUIDANCE[activeColumn.id] && (
+                  <div className="flex flex-col gap-2 rounded-lg bg-accent/30 p-3 text-sm">
+                    <div className="flex items-center gap-2">
+                      {(() => {
+                        const Icon = COLUMN_ICONS[activeColumn.id]
+                        const colors = COLUMN_COLORS[activeColumn.id]
+                        return Icon ? <Icon className={cn("h-4 w-4", colors?.icon)} /> : null
+                      })()}
+                      <span className="font-medium">{activeColumn.title}</span>
+                    </div>
+                    <p className="text-muted-foreground leading-relaxed">
+                      {DIMENSION_GUIDANCE[activeColumn.id].description}
+                    </p>
+                    <div className="flex flex-col gap-1 mt-1">
+                      <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Examples</span>
+                      {DIMENSION_GUIDANCE[activeColumn.id].examples.map((ex, i) => (
+                        <span key={i} className="text-xs text-muted-foreground italic">&ldquo;{ex}&rdquo;</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-col gap-3 flex-1 min-h-0 min-w-0">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {(() => {
+                      const Icon = COLUMN_ICONS[activeColumn.id]
+                      const colors = COLUMN_COLORS[activeColumn.id]
+                      return Icon ? <Icon className={cn("h-5 w-5", colors?.icon)} /> : null
+                    })()}
+                    <h3 className="text-sm font-semibold">{activeColumn.title}</h3>
+                    {activeCategory && (
+                      <>
+                        <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
+                        <span className="text-sm text-muted-foreground">{activeCategory.label}</span>
+                      </>
+                    )}
+                    <span className="text-xs text-muted-foreground">
+                      ({(selectedByColumn[activeColumn.id] ?? []).length} selected)
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {hasCategories && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => { setActiveCategoryId(null); setStep("category") }}
+                        className="gap-1.5 text-muted-foreground"
+                      >
+                        <ChevronRight className="h-3.5 w-3.5 rotate-180" />
+                        Other categories
+                      </Button>
+                    )}
+                    <Button
+                      size="sm"
+                      onClick={() => setStep(totalSelections > 0 ? "more" : "more")}
+                      disabled={(selectedByColumn[activeColumn.id] ?? []).length === 0}
+                      className="gap-1.5"
+                    >
+                      Continue
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </div>
+                <ScrollArea className="flex-1 min-h-0 max-h-[50vh] border rounded-lg p-3">
+                  <div className="flex flex-col gap-0.5 pr-3">
+                    {chooseItems.length === 0 ? (
+                      <NoSearchResults onClear={onClearSearch} />
+                    ) : chooseItems.map((item) => (
+                      <label
+                        key={item.id}
+                        className="flex items-center gap-2.5 px-1 py-1.5 cursor-pointer rounded-md hover:bg-accent/50 transition-colors"
+                      >
+                        <Checkbox
+                          checked={(selectedByColumn[activeColumn.id] ?? []).includes(item.id)}
+                          onCheckedChange={() => toggleItem(activeColumn.id, item.id)}
+                        />
+                        <span className={cn(
+                          "text-sm select-none",
+                          (selectedByColumn[activeColumn.id] ?? []).includes(item.id)
+                            ? "font-medium text-foreground"
+                            : "text-muted-foreground"
+                        )}>
+                          {item.label}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </ScrollArea>
+              </div>
+            </div>
+          )}
+
+          {/* Step 4: Add more dimensions */}
+          {step === "more" && (
+            <div className="flex gap-6 flex-1 min-h-0">
+              <GuidancePanel {...STEP_GUIDANCE.more} className="w-1/3 shrink-0" />
+              <div className="flex flex-col gap-3 flex-1 min-w-0 min-h-0 overflow-y-auto">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-semibold">Pick a dimension</h3>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setStep("review")}
+                    className="gap-1.5"
+                  >
+                    Skip to review
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+                {!hasAnyItems ? (
+                  <NoSearchResults onClear={onClearSearch} />
+                ) : <div className="grid grid-cols-2 gap-3">
+                  {columns.map((col) => {
+                    const Icon = COLUMN_ICONS[col.id]
+                    const colors = COLUMN_COLORS[col.id]
+                    const explored = usedColumnIds.has(col.id)
+                    const count = (selectedByColumn[col.id] ?? []).length
+                    return (
+                      <button
+                        key={col.id}
+                        onClick={() => pickColumn(col.id)}
+                        className={cn(
+                          "flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all",
+                          explored
+                            ? "border-solid bg-accent/20 hover:bg-accent/40"
+                            : "border-dashed hover:border-solid hover:shadow-sm hover:bg-accent/30",
+                          colors?.border || "border-border",
+                        )}
+                      >
+                        {Icon && <Icon className={cn("h-7 w-7", explored ? "opacity-60" : "", colors?.icon)} />}
+                        <span className={cn("text-sm font-medium", explored && "opacity-70")}>{col.title}</span>
+                        {COLUMN_DESCRIPTIONS[col.id] && (
+                          <span className={cn("text-sm text-muted-foreground text-center leading-snug", explored && "opacity-70")}>
+                            {COLUMN_DESCRIPTIONS[col.id]}
+                          </span>
+                        )}
+                        {explored ? (
+                          <span className={cn("inline-flex items-center gap-1 text-xs font-medium", colors?.icon)}>
+                            <Check className="h-3 w-3" />
+                            {count} selected
+                          </span>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">
+                            {collectAllIds(col.items).length} options
+                          </span>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>}
+              </div>
+            </div>
+          )}
+
+          {/* Step 5: Review & save */}
+          {step === "review" && (
+            <div className="flex gap-6 flex-1 min-h-0">
+              <GuidancePanel {...STEP_GUIDANCE.review} className="w-1/3 shrink-0" />
+              <div className="flex flex-col gap-4 flex-1 min-w-0">
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-sm font-medium">Problem Description</label>
+                  <Textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Describe the problem you've discovered..."
+                    rows={3}
+                  />
+                </div>
+                <div className="flex items-center gap-2 justify-end">
+                  <Button variant="outline" size="sm" onClick={reset}>
+                    <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
+                    Start Over
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={() => setStep("more")}>
+                    Add More Dimensions
+                  </Button>
+                  <Button onClick={handleSave} disabled={totalSelections === 0} className="gap-2">
+                    <Save className="h-3.5 w-3.5" />
+                    Save Problem
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+
+    {totalSelections > 0 && (
+      <Card className="shrink-0">
+        <CardContent className="py-3">
+          <div className="flex flex-wrap gap-1.5">
+            {columns.flatMap((col) => {
+              const ids = selectedByColumn[col.id] ?? []
+              if (ids.length === 0) return []
+              const colors = COLUMN_COLORS[col.id]
+              const Icon = COLUMN_ICONS[col.id]
+              return ids.map((id) => {
+                const label = findLabel(col.items, id)
+                return (
+                  <span
+                    key={id}
+                    className={cn("inline-flex items-center gap-1 text-xs rounded-full px-2 py-0.5", colors?.pill || "bg-primary/10 text-primary")}
+                  >
+                    {Icon && <Icon className="h-3 w-3 shrink-0" />}
+                    {label}
+                    <button
+                      onClick={() => toggleItem(col.id, id)}
+                      className="hover:opacity-70 transition-opacity"
+                      aria-label={`Remove ${label}`}
+                    >
+                      <X className="h-3 w-3" />
+                    </button>
+                  </span>
+                )
+              })
+            })}
+          </div>
+        </CardContent>
+      </Card>
+    )}
+    </>
+  )
+}
+
 export default function BrainstormPage() {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
@@ -995,7 +1510,9 @@ export default function BrainstormPage() {
           <p className="text-sm text-muted-foreground">
             {brainstormMode === "canvas"
               ? "Explore potential areas for innovation by navigating through the options below."
-              : "Build a problem step by step by selecting from each dimension."}
+              : brainstormMode === "builder-v2"
+                ? "Build a problem by selecting from all dimensions on a single screen."
+                : "Build a problem step by step by selecting from each dimension."}
           </p>
         </div>
         <div className="flex items-center gap-3 flex-wrap sm:justify-end">
@@ -1014,6 +1531,10 @@ export default function BrainstormPage() {
             <ToggleGroupItem value="builder" aria-label="Problem Builder mode" className="gap-1.5 px-3">
               <Wand2 className="h-3.5 w-3.5" />
               Builder
+            </ToggleGroupItem>
+            <ToggleGroupItem value="builder-v2" aria-label="Builder V2 mode" className="gap-1.5 px-3">
+              <Layers className="h-3.5 w-3.5" />
+              Builder V2
             </ToggleGroupItem>
           </ToggleGroup>
           <div className="relative">
@@ -1057,7 +1578,7 @@ export default function BrainstormPage() {
             onClick={() => {
               if (brainstormMode === "canvas") {
                 clearAll()
-              } else {
+              } else if (brainstormMode === "builder" || brainstormMode === "builder-v2") {
                 builderResetRef.current?.()
               }
             }}
@@ -1082,6 +1603,8 @@ export default function BrainstormPage() {
 
       {brainstormMode === "builder" ? (
         <ProblemBuilder columns={filteredColumns} onSave={handleBuilderSave} resetRef={builderResetRef} onClearSearch={() => setSearchQuery("")} />
+      ) : brainstormMode === "builder-v2" ? (
+        <ProblemBuilderV2 columns={filteredColumns} onSave={handleBuilderSave} resetRef={builderResetRef} onClearSearch={() => setSearchQuery("")} />
       ) : (<>
       <div className="flex gap-4 flex-1 min-h-0">
         {allColumns.map((column) => {
