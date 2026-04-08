@@ -7,7 +7,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useSolution, getAdjacentSteps } from "../context"
+import { SCAMPER_CASE_STUDIES } from "./case-studies"
 import type { ScamperResponses, ImprovementResponses, SolutionCandidate } from "@/types/solution"
 import {
   Shuffle, RotateCcw, Globe, TrendingUp, Plus, Trash2, Pencil, Check, X,
@@ -645,6 +647,47 @@ function CandidatesSection() {
   )
 }
 
+/* ── SCAMPER Case Studies ── */
+
+function ScamperCaseStudies() {
+  return (
+    <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
+      <p className="text-md text-white">
+        See how successful companies used SCAMPER thinking to reimagine existing products and create breakthrough solutions by looking at problems from multiple creative angles.
+      </p>
+      {SCAMPER_CASE_STUDIES.map((cs) => (
+        <div
+          key={cs.company}
+          className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-3"
+        >
+          <p className="text-md font-semibold text-white">{cs.company}</p>
+          <div>
+            <span className="text-md font-medium text-white uppercase tracking-wide">Problem</span>
+            <p className="mt-0.5 text-md text-white">{cs.problem}</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-md">
+            {cs.dimensions.map((dim) => (
+              <div key={dim.letter}>
+                <div className="flex items-center gap-1.5">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/20 text-white text-[10px] font-bold">
+                    {dim.letter}
+                  </span>
+                  <span className="text-md font-medium text-white uppercase tracking-wide">{dim.title}</span>
+                </div>
+                <p className="mt-0.5 text-white">{dim.idea}</p>
+              </div>
+            ))}
+          </div>
+          <div className="border-t border-white/10 pt-3 mt-1">
+            <span className="text-md font-medium text-white uppercase tracking-wide">Outcome</span>
+            <p className="mt-0.5 text-md text-white">{cs.outcome}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 /* ── Main Page ── */
 
 type ToolHint = { icon: LucideIcon; title: string; subtitle: string; bg: string }
@@ -734,12 +777,52 @@ export default function DiscoverPage() {
           </div>
         )}
 
-        {discoveryToolType && <hr className="border-border/40" />}
+        {discoveryToolType === "scamper" && (
+          <>
+            <hr className="border-border/40" />
+            <Tabs defaultValue="strategy" className="flex flex-col gap-4">
+              <TabsList className="self-center">
+                <TabsTrigger value="strategy">Your Strategy</TabsTrigger>
+                <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
+              </TabsList>
+              <TabsContent value="strategy">
+                <div className="flex flex-col gap-6">
+                  <ScamperForm />
+                  <hr className="border-border/40" />
+                  <CandidatesSection />
+                </div>
+              </TabsContent>
+              <TabsContent value="case-studies">
+                <ScamperCaseStudies />
+              </TabsContent>
+            </Tabs>
+          </>
+        )}
 
-        {discoveryToolType === "scamper" && <ScamperForm />}
-        {discoveryToolType === "reverse" && <ReverseBrainstormForm />}
-        {discoveryToolType === "analogy" && <AnalogyForm />}
-        {discoveryToolType === "improve" && <ImprovementForm />}
+        {discoveryToolType === "reverse" && (
+          <>
+            <hr className="border-border/40" />
+            <ReverseBrainstormForm />
+            <hr className="border-border/40" />
+            <CandidatesSection />
+          </>
+        )}
+        {discoveryToolType === "analogy" && (
+          <>
+            <hr className="border-border/40" />
+            <AnalogyForm />
+            <hr className="border-border/40" />
+            <CandidatesSection />
+          </>
+        )}
+        {discoveryToolType === "improve" && (
+          <>
+            <hr className="border-border/40" />
+            <ImprovementForm />
+            <hr className="border-border/40" />
+            <CandidatesSection />
+          </>
+        )}
 
         {!discoveryToolType && (
           <div className="flex flex-col items-center justify-center gap-3 py-8 rounded-lg border border-dashed">
@@ -748,13 +831,6 @@ export default function DiscoverPage() {
               <ArrowLeft className="h-4 w-4 mr-2" />Choose a Discovery Technique
             </Button>
           </div>
-        )}
-
-        {discoveryToolType && (
-          <>
-            <hr className="border-border/40" />
-            <CandidatesSection />
-          </>
         )}
 
         <div className="flex justify-between mt-2">
