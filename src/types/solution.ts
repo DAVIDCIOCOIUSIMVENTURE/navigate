@@ -19,7 +19,7 @@ export type SolutionCandidate = {
   id: number
   title: string
   description: string
-  inspirationSource: "" | "scamper" | "reverse" | "analogy" | "freeform"
+  inspirationSource: "" | "scamper" | "reverse" | "analogy" | "improve" | "freeform"
   inspirationDetail: string
   feasibility: number | null // 1-5
   impact: number | null // 1-5
@@ -38,8 +38,26 @@ export type ScamperResponses = {
   reverse: string
 }
 
+export type ImprovementResponses = {
+  coreFunctionality: string
+  easeOfUse: string
+  speedConvenience: string
+  priceValue: string
+  qualityPerception: string
+  customisation: string
+  customerSupport: string
+  trustTransparency: string
+  deliveryFulfilment: string
+  availabilityAccess: string
+  emotionalExperience: string
+  socialEthicalValue: string
+  communication: string
+  riskReduction: string
+  postPurchase: string
+}
+
 export type AnalysisToolType = "" | "root-causes" | "five-whys" | "affected-groups"
-export type DiscoveryToolType = "" | "scamper" | "reverse" | "analogy"
+export type DiscoveryToolType = "" | "scamper" | "reverse" | "analogy" | "improve"
 export type SolutionStatus = "not_started" | "in_progress" | "complete"
 export type SolutionVerdict = "none" | "pursue" | "revisit" | "abandon"
 
@@ -62,11 +80,30 @@ export type Solution = {
   reverseInversion: string
   analogyDomain: string
   analogyInsight: string
+  improvementResponses: ImprovementResponses
   candidates: SolutionCandidate[]
   // Step 3: Solution Analysis
   selectedCandidateId: number | null
   analysisNotes: string
   verdict: SolutionVerdict
+}
+
+export const DEFAULT_IMPROVEMENT: ImprovementResponses = {
+  coreFunctionality: "",
+  easeOfUse: "",
+  speedConvenience: "",
+  priceValue: "",
+  qualityPerception: "",
+  customisation: "",
+  customerSupport: "",
+  trustTransparency: "",
+  deliveryFulfilment: "",
+  availabilityAccess: "",
+  emotionalExperience: "",
+  socialEthicalValue: "",
+  communication: "",
+  riskReduction: "",
+  postPurchase: "",
 }
 
 export const DEFAULT_SCAMPER: ScamperResponses = {
@@ -92,6 +129,7 @@ export const DEFAULT_SOLUTION_FIELDS: Omit<Solution, "id" | "problemId" | "creat
   reverseInversion: "",
   analogyDomain: "",
   analogyInsight: "",
+  improvementResponses: DEFAULT_IMPROVEMENT,
   candidates: [],
   selectedCandidateId: null,
   analysisNotes: "",

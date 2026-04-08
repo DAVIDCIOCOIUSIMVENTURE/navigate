@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { journal } from './journal-model'
 
-// Rematch reducers are pure functions — we can call them directly
+// Rematch reducers are pure functions; we can call them directly
 // without setting up the full Redux store.
 const reducers = journal.reducers
 const initialState = journal.state

@@ -203,7 +203,7 @@ export default function SummaryPage() {
                           {alt.impacts.filter((imp) => imp.category || imp.description).map((imp, k) => (
                             <li key={k} className="text-xs text-foreground/70 flex gap-2 items-baseline">
                               <BarChart2 className="h-3 w-3 shrink-0 text-muted-foreground" />
-                              <span className="font-medium">{imp.category || "—"}</span>
+                              <span className="font-medium">{imp.category || "-"}</span>
                               {imp.description && <span>{imp.description}</span>}
                             </li>
                           ))}
@@ -245,7 +245,7 @@ export default function SummaryPage() {
               )}
             </>
           ) : (
-            <EmptyText text="No validation data yet — complete the validation step first" />
+            <EmptyText text="No validation data yet. Complete the validation step first." />
           )}
 
           {/* Verdict badge */}

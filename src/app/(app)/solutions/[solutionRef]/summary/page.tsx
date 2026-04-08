@@ -201,8 +201,8 @@ export default function SummaryPage() {
                 <p className="text-sm">
                   Consider refining your root cause analysis or exploring more brainstorming techniques.
                 </p>
-                <Button variant="outline" className="self-start mt-2" onClick={() => router.push(`/solutions/${solutionRef}/choose-analysis`)}>
-                  <ArrowLeft className="h-4 w-4 mr-2" />Back to Analysis
+                <Button variant="outline" className="self-start mt-2" onClick={() => router.push(`/solutions/${solutionRef}/choose-refinement`)}>
+                  <ArrowLeft className="h-4 w-4 mr-2" />Back to Refinement
                 </Button>
               </>
             )}

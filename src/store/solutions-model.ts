@@ -1,6 +1,6 @@
 import { createModel } from "@rematch/core"
 import type { RootModel } from "."
-import type { Solution, SolutionStatus, SolutionVerdict, RootCause, FiveWhyChain, AffectedGroup, SolutionCandidate, ScamperResponses } from "@/types/solution"
+import type { Solution, SolutionStatus, SolutionVerdict, RootCause, FiveWhyChain, AffectedGroup, SolutionCandidate, ScamperResponses, ImprovementResponses } from "@/types/solution"
 import { DEFAULT_SOLUTION_FIELDS } from "@/types/solution"
 
 const STORAGE_KEY = "navigate-solutions"
@@ -20,6 +20,7 @@ export type SolutionPatch = Partial<
     | "reverseInversion"
     | "analogyDomain"
     | "analogyInsight"
+    | "improvementResponses"
     | "candidates"
     | "selectedCandidateId"
     | "analysisNotes"
@@ -126,4 +127,4 @@ export const solutions = createModel<RootModel>()({
 })
 
 // Re-export types used by consumers
-export type { Solution, SolutionStatus, SolutionVerdict, RootCause, FiveWhyChain, AffectedGroup, SolutionCandidate, ScamperResponses }
+export type { Solution, SolutionStatus, SolutionVerdict, RootCause, FiveWhyChain, AffectedGroup, SolutionCandidate, ScamperResponses, ImprovementResponses }

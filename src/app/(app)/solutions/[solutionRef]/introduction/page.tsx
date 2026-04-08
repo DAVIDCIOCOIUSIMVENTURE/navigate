@@ -9,15 +9,15 @@ import { BookOpen, Search, Lightbulb, BarChart2 } from "lucide-react"
 const STEPS = [
   {
     icon: Search,
-    title: "Analyse",
-    description: "Choose an analysis technique (Root Causes, 5 Whys, or Affected Groups) to dig deeper into why the problem exists and who it impacts.",
+    title: "Refine",
+    description: "Choose a refinement technique (Root Causes, 5 Whys, or Affected Groups) to dig deeper into why the problem exists and who it impacts.",
     bg: "bg-indigo-100 dark:bg-indigo-950",
     color: "text-indigo-600 dark:text-indigo-400",
   },
   {
     icon: Lightbulb,
     title: "Discover",
-    description: "Pick a creative brainstorming method (SCAMPER, Reverse Brainstorming, or Analogy Thinking) to generate solution candidates.",
+    description: "Pick a creative method (SCAMPER, Reverse Brainstorming, Analogy Thinking, or Improve Existing Solutions) to generate solution candidates.",
     bg: "bg-sky-100 dark:bg-sky-950",
     color: "text-sky-600 dark:text-sky-400",
   },
@@ -57,7 +57,7 @@ export default function IntroductionPage() {
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <p className="text-md leading-relaxed">
-          Now that you&apos;ve validated your problem, it&apos;s time to find a solution. You&apos;ll choose an analysis tool to understand the root causes, then pick a creative technique to brainstorm solution candidates, and finally score and compare them to decide which one is worth pursuing.
+          Now that you&apos;ve validated your problem, it&apos;s time to find a solution. You&apos;ll choose a refinement method to understand the root causes, then pick a creative technique to discover solution candidates, and finally score and compare them to decide which one is worth pursuing.
         </p>
 
         {problem && (

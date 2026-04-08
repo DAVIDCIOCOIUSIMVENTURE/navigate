@@ -11,10 +11,11 @@ import type {
   AffectedGroup,
   SolutionCandidate,
   ScamperResponses,
+  ImprovementResponses,
   SolutionStatus,
   SolutionVerdict,
 } from "@/types/solution"
-import { DEFAULT_SCAMPER } from "@/types/solution"
+import { DEFAULT_SCAMPER, DEFAULT_IMPROVEMENT } from "@/types/solution"
 import type { Problem } from "@/store/problems-model"
 
 type SolutionContextValue = {
@@ -46,6 +47,8 @@ type SolutionContextValue = {
   setAnalogyDomain: (val: string) => void
   analogyInsight: string
   setAnalogyInsight: (val: string) => void
+  improvementResponses: ImprovementResponses
+  setImprovementResponses: (val: ImprovementResponses) => void
   candidates: SolutionCandidate[]
   setCandidates: (val: SolutionCandidate[]) => void
   // Step 3: Solution Analysis
@@ -91,6 +94,7 @@ export function SolutionProvider({
   const reverseInversion = solution?.reverseInversion ?? ""
   const analogyDomain = solution?.analogyDomain ?? ""
   const analogyInsight = solution?.analogyInsight ?? ""
+  const improvementResponses = solution?.improvementResponses ?? DEFAULT_IMPROVEMENT
   const candidates = solution?.candidates ?? []
   const selectedCandidateId = solution?.selectedCandidateId ?? null
   const analysisNotes = solution?.analysisNotes ?? ""
@@ -141,6 +145,10 @@ export function SolutionProvider({
     (val: string) => { dispatch.solutions.update({ id: solutionId, patch: { analogyInsight: val } }) },
     [dispatch, solutionId]
   )
+  const setImprovementResponses = useCallback(
+    (val: ImprovementResponses) => { dispatch.solutions.update({ id: solutionId, patch: { improvementResponses: val } }) },
+    [dispatch, solutionId]
+  )
   const setCandidates = useCallback(
     (val: SolutionCandidate[]) => { dispatch.solutions.update({ id: solutionId, patch: { candidates: val } }) },
     [dispatch, solutionId]
@@ -180,6 +188,7 @@ export function SolutionProvider({
         reverseInversion, setReverseInversion,
         analogyDomain, setAnalogyDomain,
         analogyInsight, setAnalogyInsight,
+        improvementResponses, setImprovementResponses,
         candidates, setCandidates,
         selectedCandidateId, setSelectedCandidateId,
         analysisNotes, setAnalysisNotes,
@@ -202,10 +211,10 @@ export type NavItem = { label: string; path: string; section: string | null }
 
 export const NAV_ITEMS: readonly NavItem[] = [
   { label: "Introduction", path: "introduction", section: null },
-  { label: "Choose Your Analysis", path: "choose-analysis", section: "Analyse" },
-  { label: "Analyse", path: "analyse", section: null },
-  { label: "Choose Your Solution Discovery", path: "choose-discovery", section: "Discover" },
-  { label: "Discover", path: "discover", section: null },
+  { label: "Choose Your Refinement Method", path: "choose-refinement", section: "Refine" },
+  { label: "Refine Your Problem", path: "refine", section: null },
+  { label: "Choose Your Discovery Method", path: "choose-discovery", section: "Discover" },
+  { label: "Discover Your Solution", path: "discover", section: null },
   { label: "Score & Compare", path: "analysis", section: "Evaluate" },
   { label: "Summary & Verdict", path: "summary", section: null },
 ] as const

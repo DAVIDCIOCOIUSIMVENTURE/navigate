@@ -92,7 +92,7 @@ export default function ChooseAnalysisPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={Search}>Choose Your Analysis</CardTitle>
+        <CardTitle icon={Search}>Choose Your Refinement Method</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         {problem?.description && (
@@ -104,7 +104,7 @@ export default function ChooseAnalysisPage() {
 
         <p className="text-md leading-relaxed">
           Before brainstorming solutions, take time to understand <strong>why</strong> the problem exists.
-          Choose an analysis technique below to get started.
+          Choose a refinement technique below to get started.
         </p>
 
         <Tabs value={activeTab} onValueChange={handleTabChange}>

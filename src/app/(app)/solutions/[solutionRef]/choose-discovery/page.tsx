@@ -9,9 +9,9 @@ import { useSolution, getAdjacentSteps } from "../context"
 import type { DiscoveryToolType } from "@/types/solution"
 import { Shuffle, ArrowLeft, ArrowRight } from "lucide-react"
 
-type ToolKey = "scamper" | "reverse" | "analogy"
+type ToolKey = "scamper" | "reverse" | "analogy" | "improve"
 
-const VALID_TOOLS: ToolKey[] = ["scamper", "reverse", "analogy"]
+const VALID_TOOLS: ToolKey[] = ["scamper", "reverse", "analogy", "improve"]
 
 const TOOL_DESCRIPTIONS: Record<ToolKey, { title: string; description: string }> = {
   scamper: {
@@ -25,6 +25,10 @@ const TOOL_DESCRIPTIONS: Record<ToolKey, { title: string; description: string }>
   analogy: {
     title: "Analogy Thinking",
     description: "Look outside your domain for inspiration. How have other industries solved similar problems? Cross-pollinating ideas from different fields often leads to breakthrough solutions that feel fresh and unexpected.",
+  },
+  improve: {
+    title: "Improve Existing Solutions",
+    description: "Rather than inventing something entirely new, systematically improve an existing product or service from the customer's perspective. Work through 15 improvement dimensions covering the entire customer journey: core functionality, ease of use, trust, delivery, and post-purchase experience.",
   },
 }
 
@@ -62,6 +66,18 @@ const ANALOGY_CASES = [
   },
 ]
 
+const IMPROVE_CASE = {
+  title: "Food Delivery App",
+  problem: "Customers are switching to competitors despite decent delivery times",
+  examples: [
+    { dimension: "Core Functionality", idea: "Improve delivery time accuracy from +/-15 min to +/-3 min using real-time GPS" },
+    { dimension: "Ease of Use", idea: "Replace 6-step checkout with one-tap reorder for previous favourites" },
+    { dimension: "Price Value", idea: "Add a loyalty programme (every 10th order free) instead of lowering prices" },
+    { dimension: "Emotional Experience", idea: "Include a handwritten thank-you note from the restaurant in each bag" },
+    { dimension: "Risk Reduction", idea: "Offer a money-back guarantee if delivery is more than 10 minutes late" },
+  ],
+}
+
 export default function ChooseDiscoveryPage() {
   const router = useRouter()
   const pathname = usePathname()
@@ -79,7 +95,7 @@ export default function ChooseDiscoveryPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={Shuffle}>Choose Your Solution Discovery</CardTitle>
+        <CardTitle icon={Shuffle}>Choose Your Discovery Method</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         {problem?.description && (
@@ -99,6 +115,7 @@ export default function ChooseDiscoveryPage() {
             <LineTabsTrigger value="scamper">SCAMPER</LineTabsTrigger>
             <LineTabsTrigger value="reverse">Reverse</LineTabsTrigger>
             <LineTabsTrigger value="analogy">Analogy</LineTabsTrigger>
+            <LineTabsTrigger value="improve">Improve</LineTabsTrigger>
           </LineTabsList>
 
           <TabsContent value="scamper">
@@ -176,6 +193,33 @@ export default function ChooseDiscoveryPage() {
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="improve">
+            <div className="rounded-xl bg-muted/50 p-8 flex flex-col gap-5">
+              <h3 className="text-lg font-semibold text-primary">Improve Existing Solutions</h3>
+              <p className="text-md leading-relaxed">
+                {TOOL_DESCRIPTIONS.improve.description}
+              </p>
+
+              <div className="flex flex-col gap-3">
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Example</p>
+                <div className="rounded-lg border bg-card p-4 flex flex-col gap-2">
+                  <p className="text-md font-semibold">{IMPROVE_CASE.title}</p>
+                  <p className="text-md text-muted-foreground"><strong>Problem:</strong> {IMPROVE_CASE.problem}</p>
+                  <div className="flex flex-col gap-2 mt-1">
+                    {IMPROVE_CASE.examples.map((ex) => (
+                      <div key={ex.dimension} className="flex gap-2 items-start">
+                        <span className="flex h-5 shrink-0 items-center justify-center rounded-full bg-primary/10 px-2 text-[10px] font-bold text-primary">
+                          {ex.dimension}
+                        </span>
+                        <p className="text-md text-muted-foreground">{ex.idea}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             </div>
           </TabsContent>

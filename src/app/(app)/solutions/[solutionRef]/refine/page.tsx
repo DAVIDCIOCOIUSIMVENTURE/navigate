@@ -320,7 +320,7 @@ export default function AnalysePage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={Search}>Analyse: {toolInfo?.title ?? "—"}</CardTitle>
+        <CardTitle icon={Search}>Refine: {toolInfo?.title ?? "-"}</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         {problem?.description && (
@@ -360,8 +360,8 @@ export default function AnalysePage() {
         {!analysisToolType && (
           <div className="flex flex-col items-center justify-center gap-3 py-8 rounded-lg border border-dashed">
             <p className="text-sm text-muted-foreground">No analysis type selected.</p>
-            <Button variant="outline" onClick={() => router.push(`/solutions/${solutionRef}/choose-analysis`)}>
-              <ArrowLeft className="h-4 w-4 mr-2" />Choose an Analysis Type
+            <Button variant="outline" onClick={() => router.push(`/solutions/${solutionRef}/choose-refinement`)}>
+              <ArrowLeft className="h-4 w-4 mr-2" />Choose a Refinement Method
             </Button>
           </div>
         )}

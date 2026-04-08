@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -125,20 +126,20 @@ const guidanceItems: GuidanceItem[] = [
             </p>
             <ol className="list-decimal pl-4 space-y-1 text-sm text-muted-foreground mt-2">
               <li>
-                <span className="font-medium text-foreground">Pick an element</span> — choose which
+                <span className="font-medium text-foreground">Pick an element</span>: choose which
                 dimension you want to start with (Customer Segment, Context, Job to Be Done, or Problem Type).
               </li>
               <li>
-                <span className="font-medium text-foreground">Choose options</span> — browse and tick the
+                <span className="font-medium text-foreground">Choose options</span>: browse and tick the
                 items that resonate with you within that dimension.
               </li>
               <li>
-                <span className="font-medium text-foreground">Add more elements</span> — optionally pick
+                <span className="font-medium text-foreground">Add more elements</span>: optionally pick
                 another dimension to refine the problem further, or skip straight to review. Dimensions
                 you have already explored are shown with a checkmark so you can revisit them.
               </li>
               <li>
-                <span className="font-medium text-foreground">Review &amp; save</span> — see all your
+                <span className="font-medium text-foreground">Review &amp; save</span>: see all your
                 selections at a glance, add an optional description, and save the problem.
               </li>
             </ol>
@@ -158,21 +159,21 @@ const guidanceItems: GuidanceItem[] = [
             </p>
             <ul className="list-disc pl-4 space-y-1 text-sm text-muted-foreground mt-2">
               <li>
-                <span className="font-medium text-foreground">Customer Segment</span> — who you are focusing on
+                <span className="font-medium text-foreground">Customer Segment</span>: who you are focusing on
                 (e.g. early-career professionals, small business owners, parents of young children)
               </li>
               <li>
-                <span className="font-medium text-foreground">Context</span> — the situation or environment in
+                <span className="font-medium text-foreground">Context</span>: the situation or environment in
                 which the problem occurs (e.g. daily commute, managing a remote team, a life transition like
                 starting a business)
               </li>
               <li>
-                <span className="font-medium text-foreground">Job to Be Done</span> — the underlying goal or
+                <span className="font-medium text-foreground">Job to Be Done</span>: the underlying goal or
                 task the person is trying to accomplish (e.g. stay organised, make a confident decision,
                 build a professional reputation)
               </li>
               <li>
-                <span className="font-medium text-foreground">Problem Type</span> — the category of friction
+                <span className="font-medium text-foreground">Problem Type</span>: the category of friction
                 they encounter (e.g. information gaps, access and affordability, trust and safety, coordination
                 overhead)
               </li>
@@ -343,6 +344,9 @@ export function GuidanceDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-4xl h-[80vh] p-0 flex flex-col overflow-hidden">
+        <VisuallyHidden>
+          <DialogTitle>Guidance</DialogTitle>
+        </VisuallyHidden>
         <div className="flex flex-1 min-h-0">
           {/* Left Sidebar */}
           <div className="w-64 border-r p-4 flex flex-col">

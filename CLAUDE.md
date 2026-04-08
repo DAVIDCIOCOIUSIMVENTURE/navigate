@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Writing Style
+
+**Never use em dashes (`—` or `--`).** When writing any user-facing text (UI copy, descriptions, tooltips, comments, placeholder text, etc.), replace em dashes with the most fitting alternative: a colon, comma, semicolon, full stop, or by restructuring the sentence. This applies to all generated content throughout the codebase.
+
 ## Commands
 
 ```Shell

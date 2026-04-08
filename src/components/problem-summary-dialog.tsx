@@ -125,7 +125,7 @@ function AssessmentSection({ assessment }: { assessment: ValidationAssessment })
             <div key={entry.label} className="text-sm">
               <p className="text-muted-foreground">{entry.label}</p>
               <p className="font-medium">
-                {[entry.valueText, entry.levelText].filter(Boolean).join(" — ")}
+                {[entry.valueText, entry.levelText].filter(Boolean).join(", ")}
               </p>
             </div>
           ))}

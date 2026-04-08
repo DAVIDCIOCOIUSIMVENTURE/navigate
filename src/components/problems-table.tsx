@@ -71,7 +71,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                       {problem.description ? (
                         <span className="line-clamp-2">{problem.description}</span>
                       ) : (
-                        <span className="text-muted-foreground">—</span>
+                        <span className="text-muted-foreground">-</span>
                       )}
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground capitalize">

@@ -795,7 +795,7 @@ type V2StepId = (typeof V2_STEPS)[number]["id"]
 
 const CATEGORY_GUIDANCE: { title: string; description: string; tips: string[] } = {
   title: "Narrow Your Focus",
-  description: "Each dimension is organised into categories. Pick one to focus on — you'll only see a handful of options instead of the full list.",
+  description: "Each dimension is organised into categories. Pick one to focus on, and you'll only see a handful of options instead of the full list.",
   tips: [
     "Choose the category that best matches the area you want to explore.",
     "After selecting items you'll return here to explore more categories.",
@@ -889,11 +889,11 @@ function ProblemBuilderV2({
     if (resetRef) resetRef.current = reset
   }, [reset, resetRef])
 
-  // Items to show in the "choose" step — either the children of the active category, or all flat items
+  // Items to show in the "choose" step: either the children of the active category, or all flat items
   const chooseItems = useMemo<BrainstormItem[]>(() => {
     if (!activeColumn) return []
     if (activeCategory?.children) return activeCategory.children
-    // Flat dimension (no categories) — show all items directly
+    // Flat dimension (no categories): show all items directly
     if (!hasCategories) return activeColumn.items
     return []
   }, [activeColumn, activeCategory, hasCategories])
@@ -1734,7 +1734,7 @@ export default function BrainstormPage() {
                         {problem.description ? (
                           <span className="line-clamp-2">{problem.description}</span>
                         ) : (
-                          <span className="text-muted-foreground">—</span>
+                          <span className="text-muted-foreground">-</span>
                         )}
                       </TableCell>
                       {allColumns.map((column) => {
@@ -1745,7 +1745,7 @@ export default function BrainstormPage() {
                             {labels.length > 0 ? (
                               <span className="text-sm">{labels.join(", ")}</span>
                             ) : (
-                              <span className="text-sm text-muted-foreground">—</span>
+                              <span className="text-sm text-muted-foreground">-</span>
                             )}
                           </TableCell>
                         )

@@ -183,10 +183,10 @@ export default function VerdictPage() {
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-md text-muted-foreground">
           <p>
-            Many entrepreneurs fall in love with a problem too early — only to discover later that the market is too small, the pain too infrequent, or the competition too entrenched. Validation is the discipline of stepping back and pressure-testing your assumptions before investing real time and resources.
+            Many entrepreneurs fall in love with a problem too early, only to discover later that the market is too small, the pain too infrequent, or the competition too entrenched. Validation is the discipline of stepping back and pressure-testing your assumptions before investing real time and resources.
           </p>
           <p>
-            The goal here is not to prove yourself right, but to honestly evaluate whether this problem represents a genuine opportunity. A problem worth solving sits at the intersection of large reach, high frequency, meaningful value, and a competitive landscape you can realistically enter. Use the six factors below to build a structured picture of the opportunity — and let the evidence guide your verdict, even if it means moving on to a stronger problem.
+            The goal here is not to prove yourself right, but to honestly evaluate whether this problem represents a genuine opportunity. A problem worth solving sits at the intersection of large reach, high frequency, meaningful value, and a competitive landscape you can realistically enter. Use the six factors below to build a structured picture of the opportunity, and let the evidence guide your verdict, even if it means moving on to a stronger problem.
           </p>
           <h3 className="mt-4 text-xl font-bold text-foreground">Validate your problem in 4 steps</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">

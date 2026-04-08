@@ -8,9 +8,9 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { useSolution, getAdjacentSteps } from "../context"
-import type { ScamperResponses, SolutionCandidate } from "@/types/solution"
+import type { ScamperResponses, ImprovementResponses, SolutionCandidate } from "@/types/solution"
 import {
-  Shuffle, RotateCcw, Globe, Plus, Trash2, Pencil, Check, X,
+  Shuffle, RotateCcw, Globe, TrendingUp, Plus, Trash2, Pencil, Check, X,
   ArrowLeft, ArrowRight, type LucideIcon,
 } from "lucide-react"
 
@@ -191,12 +191,110 @@ function AnalogyForm() {
   )
 }
 
+/* ── Improvement Form ── */
+
+type ImprovementGroup = {
+  group: string
+  items: { key: keyof ImprovementResponses; title: string; prompt: string; example: string }[]
+}
+
+const IMPROVEMENT_GROUPS: ImprovementGroup[] = [
+  {
+    group: "Product & Experience",
+    items: [
+      { key: "coreFunctionality", title: "Core Functionality", prompt: "How could the product solve the problem better? Think about effectiveness, reliability, durability, performance speed, accuracy, and compatibility.", example: "A food delivery app improves delivery time accuracy from +/-15 min to +/-3 min." },
+      { key: "easeOfUse", title: "Ease of Use", prompt: "How could the product be simpler? Consider setup, number of steps, onboarding, navigation, intuitiveness, learning time, and accessibility.", example: "One-click checkout instead of a 6-step checkout process." },
+      { key: "speedConvenience", title: "Speed & Convenience", prompt: "How could customers get value faster? Think about delivery speed, response times, wait times, self-service options, and automation.", example: "Same-day delivery instead of 3-day standard delivery." },
+      { key: "qualityPerception", title: "Quality Perception", prompt: "How could the product feel more premium? Consider materials, packaging, branding, design consistency, certifications, and guarantees.", example: "Apple-style packaging that improves perceived value dramatically." },
+      { key: "customisation", title: "Customisation & Personalisation", prompt: "How could the product fit each customer specifically? Think about recommendations, adjustable settings, modular options, saved preferences, and tailored communication.", example: "Spotify recommending music based on listening history." },
+    ],
+  },
+  {
+    group: "Value & Trust",
+    items: [
+      { key: "priceValue", title: "Price Value", prompt: "How could customers perceive better value? Consider pricing, bundling, flexible payment, subscriptions, loyalty rewards, and transparent pricing.", example: "Free returns included at no extra cost." },
+      { key: "trustTransparency", title: "Trust & Transparency", prompt: "How could customers trust the product more? Think about honest marketing, clear policies, visible reviews, privacy protection, data security, and warranties.", example: "Showing verified customer reviews increases purchase confidence." },
+      { key: "riskReduction", title: "Risk Reduction", prompt: "How could you reduce the risk customers feel? Consider free trials, money-back guarantees, easy cancellation, no long contracts, free returns, and product demos.", example: "30-day no-questions-asked returns." },
+    ],
+  },
+  {
+    group: "Service & Delivery",
+    items: [
+      { key: "customerSupport", title: "Customer Support", prompt: "How could the support experience improve? Think about response speed, 24/7 availability, live chat, knowledge bases, complaint handling, and follow-ups.", example: "Immediate chatbot support before human escalation." },
+      { key: "deliveryFulfilment", title: "Delivery & Fulfilment", prompt: "How could delivery and fulfilment improve? Consider shipping speed, flexible delivery slots, real-time tracking, eco-friendly packaging, returns process, and click-and-collect.", example: "Next-day delivery with real-time tracking instead of standard shipping." },
+      { key: "availabilityAccess", title: "Availability & Access", prompt: "How could customers access the product more easily? Think about purchase channels, international availability, payment methods, offline functionality, and cross-device syncing.", example: "Accepting Apple Pay, PayPal, Klarna, and cards." },
+      { key: "communication", title: "Communication", prompt: "How could communication with customers improve? Consider onboarding emails, status updates, order confirmations, delivery alerts, timelines, and reminders.", example: "SMS updates during service progress." },
+    ],
+  },
+  {
+    group: "Emotional & Social",
+    items: [
+      { key: "emotionalExperience", title: "Emotional Experience", prompt: "How could the product make customers feel better? Think about delight moments, brand personality, community, loyalty recognition, and reducing frustration.", example: "Handwritten thank-you note inside packaging." },
+      { key: "socialEthicalValue", title: "Social & Ethical Value", prompt: "How could the product better align with customer values? Consider sustainable materials, ethical sourcing, carbon-neutral options, inclusive branding, and charity partnerships.", example: "Plastic-free packaging option." },
+      { key: "postPurchase", title: "Post-Purchase Experience", prompt: "How could the experience after purchase improve? Think about setup help, tutorials, loyalty rewards, maintenance reminders, upgrade paths, and customer success check-ins.", example: "Follow-up email explaining advanced features after purchase." },
+    ],
+  },
+]
+
+function ImprovementForm() {
+  const { improvementResponses, setImprovementResponses, candidates, setCandidates } = useSolution()
+
+  const updateField = (key: keyof ImprovementResponses, value: string) => {
+    setImprovementResponses({ ...improvementResponses, [key]: value })
+  }
+
+  const addCandidate = (key: keyof ImprovementResponses, title: string) => {
+    const text = improvementResponses[key].trim()
+    if (!text) return
+    const id = candidates.length > 0 ? Math.max(...candidates.map((c) => c.id)) + 1 : 1
+    const newCandidate: SolutionCandidate = {
+      id, title, description: text,
+      inspirationSource: "improve", inspirationDetail: key,
+      feasibility: null, impact: null, cost: null, timeToImplement: null, notes: "",
+    }
+    setCandidates([...candidates, newCandidate])
+  }
+
+  return (
+    <div className="bg-primary rounded-xl p-8 flex flex-col gap-8">
+      {IMPROVEMENT_GROUPS.map(({ group, items }) => (
+        <div key={group} className="flex flex-col gap-4">
+          <h4 className="text-sm font-bold uppercase tracking-wide text-primary-foreground/70">{group}</h4>
+          {items.map(({ key, title, prompt, example }) => (
+            <div key={key} className="rounded-lg border bg-background p-4 flex flex-col gap-2">
+              <span className="text-sm font-semibold">{title}</span>
+              <p className="text-xs text-muted-foreground">{prompt}</p>
+              <p className="text-xs italic text-muted-foreground/70">Example: {example}</p>
+              <Textarea
+                value={improvementResponses[key]}
+                onChange={(e) => updateField(key, e.target.value)}
+                placeholder="Your improvement ideas..."
+                rows={3}
+              />
+              <Button
+                size="sm"
+                variant="outline"
+                className="self-end gap-1"
+                disabled={!improvementResponses[key].trim()}
+                onClick={() => addCandidate(key, `${title} improvement`)}
+              >
+                <Plus className="h-3.5 w-3.5" />Add as Candidate
+              </Button>
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 /* ── Candidates Section ── */
 
 const SOURCE_LABELS: Record<string, string> = {
   scamper: "SCAMPER",
   reverse: "Reverse",
   analogy: "Analogy",
+  improve: "Improve",
   freeform: "Freeform",
 }
 
@@ -388,6 +486,16 @@ const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo:
       { icon: Plus, title: "Turn insights into candidates", subtitle: "Save analogies that inspire concrete solutions", bg: "bg-emerald-500" },
     ],
   },
+  improve: {
+    title: "Improve Existing Solutions",
+    description: "Systematically improve an existing product or service from the customer's perspective. Work through 15 improvement dimensions covering the entire customer journey: before purchase, during purchase, and after purchase.",
+    whatYouDo: "Work through the <strong>15 improvement dimensions</strong> below, organised into 4 groups. You don't need to fill in every one, just focus on the dimensions most relevant to your problem. When you find a promising improvement, click <strong>Add as Candidate</strong> to save it.",
+    hints: [
+      { icon: TrendingUp, title: "15 improvement dimensions", subtitle: "Core functionality, ease of use, price value, trust, delivery, and more", bg: "bg-blue-500" },
+      { icon: TrendingUp, title: "Customer journey focus", subtitle: "Think before, during, and after the purchase experience", bg: "bg-amber-500" },
+      { icon: Plus, title: "Save the best ideas", subtitle: "Click \"Add as Candidate\" to promote improvements for scoring later", bg: "bg-emerald-500" },
+    ],
+  },
 }
 
 export default function DiscoverPage() {
@@ -401,7 +509,7 @@ export default function DiscoverPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={Shuffle}>Discover: {toolInfo?.title ?? "—"}</CardTitle>
+        <CardTitle icon={Shuffle}>Discover Your Solution: {toolInfo?.title ?? "-"}</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         {problem?.description && (
@@ -437,6 +545,7 @@ export default function DiscoverPage() {
         {discoveryToolType === "scamper" && <ScamperForm />}
         {discoveryToolType === "reverse" && <ReverseBrainstormForm />}
         {discoveryToolType === "analogy" && <AnalogyForm />}
+        {discoveryToolType === "improve" && <ImprovementForm />}
 
         {!discoveryToolType && (
           <div className="flex flex-col items-center justify-center gap-3 py-8 rounded-lg border border-dashed">

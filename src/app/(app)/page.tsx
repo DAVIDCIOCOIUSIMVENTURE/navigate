@@ -91,7 +91,7 @@ export default function DashboardPage() {
         </Button>
       </div>
 
-      {/* Journey Overview — 4 stage cards in a row */}
+      {/* Journey Overview: 4 stage cards in a row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 shrink-0">
         <StageCard
           icon={Compass}

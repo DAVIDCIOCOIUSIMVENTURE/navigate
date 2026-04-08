@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    /* Background & Foreground — dark slate, not pure black */
+    /* Background & Foreground: dark slate, not pure black */
     --background: 0 0% 100%;
     --foreground: 198 22% 27%;
 
@@ -16,19 +16,19 @@
     --popover: 0 0% 100%;
     --popover-foreground: 198 22% 27%;
 
-    /* Primary — Indigo Purple */
+    /* Primary: Indigo Purple */
     --primary: 243 65% 61%;
     --primary-foreground: 0 0% 100%;
 
-    /* Secondary — Subtle purple tint */
+    /* Secondary: Subtle purple tint */
     --secondary: 260 25% 95%;
     --secondary-foreground: 215 20% 30%;
 
-    /* Muted — Neutral with purple undertone */
+    /* Muted: Neutral with purple undertone */
     --muted: 260 15% 95%;
     --muted-foreground: 215 16% 47%;
 
-    /* Accent — Light purple */
+    /* Accent: Light purple */
     --accent: 262 30% 93%;
     --accent-foreground: 215 20% 30%;
 
@@ -41,21 +41,21 @@
     --input: 260 12% 89%;
     --ring: 243 65% 61%;
 
-    /* Chart palette — purple-complementary */
+    /* Chart palette: purple-complementary */
     --chart-1: 262 70% 58%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
     --chart-4: 43 74% 66%;
     --chart-5: 326 70% 55%;
 
-    /* Border Radius — slightly larger for modern feel */
+    /* Border Radius: slightly larger for modern feel */
     --radius: 0.625rem;
 
     /* Primary dark variant */
     --primary-dark: 243 65% 45%;
     --primary-dark-foreground: 0 0% 100%;
 
-    /* Primary light variant — tinted background */
+    /* Primary light variant: tinted background */
     --primary-light: 262 60% 96%;
     --primary-light-foreground: 262 40% 20%;
 
@@ -69,11 +69,11 @@
     --sidebar-border: 243 50% 45%;
     --sidebar-ring: 0 0% 100%;
 
-    /* Brand — keep distinct from primary for marketing/callout use */
+    /* Brand: keep distinct from primary for marketing/callout use */
     --brand: 262 83% 58%;
     --brand-foreground: 0 0% 100%;
 
-    /* Surface — dark blue-grey for case study sections (#37474F) */
+    /* Surface: dark blue-grey for case study sections (#37474F) */
     --surface: 200 16% 27%;
     --surface-foreground: 200 15% 95%;
   }
@@ -89,7 +89,7 @@
     --popover: 260 18% 10%;
     --popover-foreground: 260 10% 95%;
 
-    /* Primary — Lighter purple for dark backgrounds */
+    /* Primary: Lighter purple for dark backgrounds */
     --primary: 262 80% 68%;
     --primary-foreground: 262 80% 10%;
 
@@ -122,7 +122,7 @@
     --input: 260 12% 18%;
     --ring: 262 80% 68%;
 
-    /* Chart palette — brighter for dark mode */
+    /* Chart palette: brighter for dark mode */
     --chart-1: 262 70% 65%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
@@ -143,7 +143,7 @@
     --brand: 262 80% 68%;
     --brand-foreground: 262 80% 10%;
 
-    /* Surface — dark blue-grey for case study sections (#37474F) */
+    /* Surface: dark blue-grey for case study sections (#37474F) */
     --surface: 200 16% 27%;
     --surface-foreground: 200 15% 95%;
   }

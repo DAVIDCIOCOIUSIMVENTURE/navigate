@@ -48,11 +48,11 @@ export const settings = createModel<RootModel>()({
       return next
     },
     setFullView(state, fullView: boolean) {
-      // Not persisted — resets on reload
+      // Not persisted, resets on reload
       return { ...state, fullView }
     },
     setBrainstormSelected(state, brainstormSelected: string[]) {
-      // Not persisted — resets on reload
+      // Not persisted, resets on reload
       return { ...state, brainstormSelected }
     },
     setBrainstormMode(state, brainstormMode: BrainstormMode) {
@@ -73,7 +73,7 @@ export const settings = createModel<RootModel>()({
       try {
         const raw = localStorage.getItem(STORAGE_KEY)
         if (!raw) {
-          // No saved settings — expand sidebar as default first-visit experience
+          // No saved settings: expand sidebar as default first-visit experience
           dispatch.settings.setSidebarMode("expanded")
           return
         }

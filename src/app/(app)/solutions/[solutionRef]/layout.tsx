@@ -17,8 +17,8 @@ import type { LucideIcon } from "lucide-react"
 
 const NAV_ICONS: Record<string, LucideIcon> = {
   introduction: BookOpen,
-  "choose-analysis": Search,
-  analyse: Search,
+  "choose-refinement": Search,
+  refine: Search,
   "choose-discovery": Shuffle,
   discover: Shuffle,
   analysis: BarChart2,
@@ -119,7 +119,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         <div className="flex flex-col gap-1">
           <h1 className="text-xl font-bold">Solution Discovery</h1>
           <p className="text-sm text-muted-foreground">
-            Analyse the root causes of your problem and discover effective solutions.
+            Refine your problem and discover effective solutions.
           </p>
         </div>
       </div>
