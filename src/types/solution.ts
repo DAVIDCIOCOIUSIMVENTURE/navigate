@@ -15,6 +15,11 @@ export type AffectedGroup = {
   description: string
 }
 
+export type ImprovementItem = {
+  id: number
+  text: string
+}
+
 export type SolutionCandidate = {
   id: number
   title: string
@@ -29,31 +34,31 @@ export type SolutionCandidate = {
 }
 
 export type ScamperResponses = {
-  substitute: string
-  combine: string
-  adapt: string
-  modify: string
-  putToOtherUse: string
-  eliminate: string
-  reverse: string
+  substitute: ImprovementItem[]
+  combine: ImprovementItem[]
+  adapt: ImprovementItem[]
+  modify: ImprovementItem[]
+  putToOtherUse: ImprovementItem[]
+  eliminate: ImprovementItem[]
+  reverse: ImprovementItem[]
 }
 
 export type ImprovementResponses = {
-  coreFunctionality: string
-  easeOfUse: string
-  speedConvenience: string
-  priceValue: string
-  qualityPerception: string
-  customisation: string
-  customerSupport: string
-  trustTransparency: string
-  deliveryFulfilment: string
-  availabilityAccess: string
-  emotionalExperience: string
-  socialEthicalValue: string
-  communication: string
-  riskReduction: string
-  postPurchase: string
+  coreFunctionality: ImprovementItem[]
+  easeOfUse: ImprovementItem[]
+  speedConvenience: ImprovementItem[]
+  priceValue: ImprovementItem[]
+  qualityPerception: ImprovementItem[]
+  customisation: ImprovementItem[]
+  customerSupport: ImprovementItem[]
+  trustTransparency: ImprovementItem[]
+  deliveryFulfilment: ImprovementItem[]
+  availabilityAccess: ImprovementItem[]
+  emotionalExperience: ImprovementItem[]
+  socialEthicalValue: ImprovementItem[]
+  communication: ImprovementItem[]
+  riskReduction: ImprovementItem[]
+  postPurchase: ImprovementItem[]
 }
 
 export type AnalysisToolType = "" | "root-causes" | "five-whys" | "affected-groups"
@@ -76,8 +81,8 @@ export type Solution = {
   rootCauseNotes: string
   // Step 2: Solution Discovery
   scamperResponses: ScamperResponses
-  reverseBrainstorm: string
-  reverseInversion: string
+  reverseBrainstorm: ImprovementItem[]
+  reverseInversion: ImprovementItem[]
   analogyDomain: string
   analogyInsight: string
   improvementResponses: ImprovementResponses
@@ -89,31 +94,31 @@ export type Solution = {
 }
 
 export const DEFAULT_IMPROVEMENT: ImprovementResponses = {
-  coreFunctionality: "",
-  easeOfUse: "",
-  speedConvenience: "",
-  priceValue: "",
-  qualityPerception: "",
-  customisation: "",
-  customerSupport: "",
-  trustTransparency: "",
-  deliveryFulfilment: "",
-  availabilityAccess: "",
-  emotionalExperience: "",
-  socialEthicalValue: "",
-  communication: "",
-  riskReduction: "",
-  postPurchase: "",
+  coreFunctionality: [],
+  easeOfUse: [],
+  speedConvenience: [],
+  priceValue: [],
+  qualityPerception: [],
+  customisation: [],
+  customerSupport: [],
+  trustTransparency: [],
+  deliveryFulfilment: [],
+  availabilityAccess: [],
+  emotionalExperience: [],
+  socialEthicalValue: [],
+  communication: [],
+  riskReduction: [],
+  postPurchase: [],
 }
 
 export const DEFAULT_SCAMPER: ScamperResponses = {
-  substitute: "",
-  combine: "",
-  adapt: "",
-  modify: "",
-  putToOtherUse: "",
-  eliminate: "",
-  reverse: "",
+  substitute: [],
+  combine: [],
+  adapt: [],
+  modify: [],
+  putToOtherUse: [],
+  eliminate: [],
+  reverse: [],
 }
 
 export const DEFAULT_SOLUTION_FIELDS: Omit<Solution, "id" | "problemId" | "createdAt" | "editedAt"> = {
@@ -125,8 +130,8 @@ export const DEFAULT_SOLUTION_FIELDS: Omit<Solution, "id" | "problemId" | "creat
   affectedGroups: [],
   rootCauseNotes: "",
   scamperResponses: DEFAULT_SCAMPER,
-  reverseBrainstorm: "",
-  reverseInversion: "",
+  reverseBrainstorm: [],
+  reverseInversion: [],
   analogyDomain: "",
   analogyInsight: "",
   improvementResponses: DEFAULT_IMPROVEMENT,

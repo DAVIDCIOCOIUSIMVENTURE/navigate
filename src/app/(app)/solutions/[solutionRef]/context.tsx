@@ -9,6 +9,7 @@ import type {
   RootCause,
   FiveWhyChain,
   AffectedGroup,
+  ImprovementItem,
   SolutionCandidate,
   ScamperResponses,
   ImprovementResponses,
@@ -39,10 +40,10 @@ type SolutionContextValue = {
   // Step 2: Solution Discovery
   scamperResponses: ScamperResponses
   setScamperResponses: (val: ScamperResponses) => void
-  reverseBrainstorm: string
-  setReverseBrainstorm: (val: string) => void
-  reverseInversion: string
-  setReverseInversion: (val: string) => void
+  reverseBrainstorm: ImprovementItem[]
+  setReverseBrainstorm: (val: ImprovementItem[]) => void
+  reverseInversion: ImprovementItem[]
+  setReverseInversion: (val: ImprovementItem[]) => void
   analogyDomain: string
   setAnalogyDomain: (val: string) => void
   analogyInsight: string
@@ -90,8 +91,8 @@ export function SolutionProvider({
   const affectedGroups = solution?.affectedGroups ?? []
   const rootCauseNotes = solution?.rootCauseNotes ?? ""
   const scamperResponses = solution?.scamperResponses ?? DEFAULT_SCAMPER
-  const reverseBrainstorm = solution?.reverseBrainstorm ?? ""
-  const reverseInversion = solution?.reverseInversion ?? ""
+  const reverseBrainstorm = solution?.reverseBrainstorm ?? []
+  const reverseInversion = solution?.reverseInversion ?? []
   const analogyDomain = solution?.analogyDomain ?? ""
   const analogyInsight = solution?.analogyInsight ?? ""
   const improvementResponses = solution?.improvementResponses ?? DEFAULT_IMPROVEMENT
@@ -130,11 +131,11 @@ export function SolutionProvider({
     [dispatch, solutionId]
   )
   const setReverseBrainstorm = useCallback(
-    (val: string) => { dispatch.solutions.update({ id: solutionId, patch: { reverseBrainstorm: val } }) },
+    (val: ImprovementItem[]) => { dispatch.solutions.update({ id: solutionId, patch: { reverseBrainstorm: val } }) },
     [dispatch, solutionId]
   )
   const setReverseInversion = useCallback(
-    (val: string) => { dispatch.solutions.update({ id: solutionId, patch: { reverseInversion: val } }) },
+    (val: ImprovementItem[]) => { dispatch.solutions.update({ id: solutionId, patch: { reverseInversion: val } }) },
     [dispatch, solutionId]
   )
   const setAnalogyDomain = useCallback(

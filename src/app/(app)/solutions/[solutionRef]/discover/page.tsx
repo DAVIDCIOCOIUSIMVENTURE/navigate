@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -26,52 +26,118 @@ const SCAMPER_PROMPTS: { key: keyof ScamperResponses; letter: string; title: str
   { key: "reverse", letter: "R", title: "Reverse", prompt: "What if you reversed the process? What if you did the opposite of what's expected?" },
 ]
 
-function ScamperForm() {
-  const { scamperResponses, setScamperResponses, candidates, setCandidates } = useSolution()
+function ScamperDimension({
+  dimensionKey,
+  letter,
+  title,
+  prompt,
+}: {
+  dimensionKey: keyof ScamperResponses
+  letter: string
+  title: string
+  prompt: string
+}) {
+  const { scamperResponses, setScamperResponses } = useSolution()
 
-  const updateField = (key: keyof ScamperResponses, value: string) => {
-    setScamperResponses({ ...scamperResponses, [key]: value })
+  const raw = scamperResponses[dimensionKey]
+  const items = Array.isArray(raw) ? raw : []
+  const [adding, setAdding] = useState(false)
+  const [draft, setDraft] = useState("")
+  const inputRef = useRef<HTMLInputElement>(null)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    if (adding) inputRef.current?.focus()
+  }, [adding])
+
+  const saveItems = (nextItems: typeof items) => {
+    setScamperResponses({ ...scamperResponses, [dimensionKey]: nextItems })
   }
 
-  const addCandidate = (key: keyof ScamperResponses, title: string) => {
-    const text = scamperResponses[key].trim()
-    if (!text) return
-    const id = candidates.length > 0 ? Math.max(...candidates.map((c) => c.id)) + 1 : 1
-    const newCandidate: SolutionCandidate = {
-      id, title, description: text,
-      inspirationSource: "scamper", inspirationDetail: key,
-      feasibility: null, impact: null, cost: null, timeToImplement: null, notes: "",
+  const addItem = () => {
+    const text = draft.trim()
+    if (text) {
+      const id = items.length > 0 ? Math.max(...items.map((i) => i.id)) + 1 : 1
+      saveItems([...items, { id, text }])
     }
-    setCandidates([...candidates, newCandidate])
+    setDraft("")
+    setAdding(false)
+  }
+
+  const removeItem = (id: number) => {
+    saveItems(items.filter((i) => i.id !== id))
+  }
+
+  const updateItem = (id: number, text: string) => {
+    const next = items.map((i) => (i.id === id ? { ...i, text } : i))
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => saveItems(next), 500)
+  }
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") { e.preventDefault(); addItem() }
+    if (e.key === "Escape") { setDraft(""); setAdding(false) }
   }
 
   return (
-    <div className="bg-primary rounded-xl p-8 flex flex-col gap-6">
-      {SCAMPER_PROMPTS.map(({ key, letter, title, prompt }) => (
-        <div key={key} className="rounded-lg border bg-background p-4 flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold">
-              {letter}
-            </span>
-            <span className="text-sm font-semibold">{title}</span>
-          </div>
-          <p className="text-xs text-muted-foreground">{prompt}</p>
-          <Textarea
-            value={scamperResponses[key]}
-            onChange={(e) => updateField(key, e.target.value)}
-            placeholder="Your ideas..."
-            rows={3}
+    <div className="rounded-lg border bg-background p-4 flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold">
+          {letter}
+        </span>
+        <span className="text-sm font-semibold">{title}</span>
+      </div>
+      <p className="text-xs text-muted-foreground">{prompt}</p>
+
+      {items.map((item) => (
+        <div key={item.id} className="flex items-center gap-2">
+          <Input
+            defaultValue={item.text}
+            onChange={(e) => updateItem(item.id, e.target.value)}
+            className="flex-1 text-sm"
           />
           <Button
-            size="sm"
-            variant="outline"
-            className="self-end gap-1"
-            disabled={!scamperResponses[key].trim()}
-            onClick={() => addCandidate(key, `${title} idea`)}
+            size="icon"
+            variant="ghost"
+            className="shrink-0 h-8 w-8 text-muted-foreground hover:text-foreground"
+            onClick={() => removeItem(item.id)}
           >
-            <Plus className="h-3.5 w-3.5" />Add as Candidate
+            <Trash2 className="h-3.5 w-3.5" />
           </Button>
         </div>
+      ))}
+
+      {adding ? (
+        <Input
+          ref={inputRef}
+          placeholder="Type an idea and press Enter..."
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={onKeyDown}
+          onBlur={addItem}
+          className="text-sm"
+        />
+      ) : (
+        <Button variant="outline" size="sm" className="w-full" onClick={() => setAdding(true)}>
+          <Plus className="h-3.5 w-3.5" />
+          Add Item
+        </Button>
+      )}
+    </div>
+  )
+}
+
+function ScamperForm() {
+  return (
+    <div className="bg-primary rounded-xl p-8 flex flex-col gap-6">
+      {SCAMPER_PROMPTS.map(({ key, letter, title, prompt }) => (
+        <ScamperDimension
+          key={key}
+          dimensionKey={key}
+          letter={letter}
+          title={title}
+          prompt={prompt}
+        />
       ))}
     </div>
   )
@@ -79,57 +145,118 @@ function ScamperForm() {
 
 /* ── Reverse Brainstorming Form ── */
 
-function ReverseBrainstormForm() {
-  const { reverseBrainstorm, setReverseBrainstorm, reverseInversion, setReverseInversion, candidates, setCandidates } = useSolution()
+function ReverseItemList({
+  items,
+  setItems,
+  label,
+  description,
+  placeholder,
+}: {
+  items: { id: number; text: string }[]
+  setItems: (val: { id: number; text: string }[]) => void
+  label: string
+  description: string
+  placeholder: string
+}) {
+  const [adding, setAdding] = useState(false)
+  const [draft, setDraft] = useState("")
+  const inputRef = useRef<HTMLInputElement>(null)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
-  const addCandidate = () => {
-    const text = reverseInversion.trim()
-    if (!text) return
-    const id = candidates.length > 0 ? Math.max(...candidates.map((c) => c.id)) + 1 : 1
-    const newCandidate: SolutionCandidate = {
-      id, title: "Reverse brainstorm idea", description: text,
-      inspirationSource: "reverse", inspirationDetail: "",
-      feasibility: null, impact: null, cost: null, timeToImplement: null, notes: "",
+  useEffect(() => {
+    if (adding) inputRef.current?.focus()
+  }, [adding])
+
+  const addItem = () => {
+    const text = draft.trim()
+    if (text) {
+      const id = items.length > 0 ? Math.max(...items.map((i) => i.id)) + 1 : 1
+      setItems([...items, { id, text }])
     }
-    setCandidates([...candidates, newCandidate])
+    setDraft("")
+    setAdding(false)
+  }
+
+  const removeItem = (id: number) => {
+    setItems(items.filter((i) => i.id !== id))
+  }
+
+  const updateItem = (id: number, text: string) => {
+    const next = items.map((i) => (i.id === id ? { ...i, text } : i))
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => setItems(next), 500)
+  }
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") { e.preventDefault(); addItem() }
+    if (e.key === "Escape") { setDraft(""); setAdding(false) }
   }
 
   return (
-    <div className="bg-primary rounded-xl p-8 flex flex-col gap-6">
-      <div className="rounded-lg border bg-background p-4 flex flex-col gap-2">
-        <label className="text-sm font-semibold">How could you make this problem worse?</label>
-        <p className="text-xs text-muted-foreground">
-          Think of every way to aggravate the problem. Be creative, the more outlandish the better.
-        </p>
-        <Textarea
-          value={reverseBrainstorm}
-          onChange={(e) => setReverseBrainstorm(e.target.value)}
-          placeholder="List ways to make the problem worse..."
-          rows={5}
-        />
-      </div>
+    <div className="rounded-lg border bg-background p-4 flex flex-col gap-2">
+      <label className="text-sm font-semibold">{label}</label>
+      <p className="text-xs text-muted-foreground">{description}</p>
 
-      <div className="rounded-lg border bg-background p-4 flex flex-col gap-2">
-        <label className="text-sm font-semibold">Now flip each idea</label>
-        <p className="text-xs text-muted-foreground">
-          Take each &quot;make it worse&quot; idea above and write its opposite. These inversions often reveal strong solution ideas.
-        </p>
-        <Textarea
-          value={reverseInversion}
-          onChange={(e) => setReverseInversion(e.target.value)}
-          placeholder="Write the opposite of each idea above..."
-          rows={5}
+      {items.map((item) => (
+        <div key={item.id} className="flex items-center gap-2">
+          <Input
+            defaultValue={item.text}
+            onChange={(e) => updateItem(item.id, e.target.value)}
+            className="flex-1 text-sm"
+          />
+          <Button
+            size="icon"
+            variant="ghost"
+            className="shrink-0 h-8 w-8 text-muted-foreground hover:text-foreground"
+            onClick={() => removeItem(item.id)}
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+      ))}
+
+      {adding ? (
+        <Input
+          ref={inputRef}
+          placeholder={placeholder}
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={onKeyDown}
+          onBlur={addItem}
+          className="text-sm"
         />
-        <Button
-          size="sm"
-          variant="outline"
-          className="self-end gap-1"
-          disabled={!reverseInversion.trim()}
-          onClick={addCandidate}
-        >
-          <Plus className="h-3.5 w-3.5" />Add as Candidate
+      ) : (
+        <Button variant="outline" size="sm" className="w-full" onClick={() => setAdding(true)}>
+          <Plus className="h-3.5 w-3.5" />
+          Add Item
         </Button>
-      </div>
+      )}
+    </div>
+  )
+}
+
+function ReverseBrainstormForm() {
+  const { reverseBrainstorm, setReverseBrainstorm, reverseInversion, setReverseInversion } = useSolution()
+
+  const brainstormItems = Array.isArray(reverseBrainstorm) ? reverseBrainstorm : []
+  const inversionItems = Array.isArray(reverseInversion) ? reverseInversion : []
+
+  return (
+    <div className="bg-primary rounded-xl p-8 flex flex-col gap-6">
+      <ReverseItemList
+        items={brainstormItems}
+        setItems={setReverseBrainstorm}
+        label="How could you make this problem worse?"
+        description="Think of every way to aggravate the problem. Be creative, the more outlandish the better."
+        placeholder="Type a way to make it worse and press Enter..."
+      />
+      <ReverseItemList
+        items={inversionItems}
+        setItems={setReverseInversion}
+        label="Now flip each idea"
+        description={'Take each "make it worse" idea above and write its opposite. These inversions often reveal strong solution ideas.'}
+        placeholder="Type the flipped idea and press Enter..."
+      />
     </div>
   )
 }
@@ -236,51 +363,118 @@ const IMPROVEMENT_GROUPS: ImprovementGroup[] = [
   },
 ]
 
-function ImprovementForm() {
-  const { improvementResponses, setImprovementResponses, candidates, setCandidates } = useSolution()
+function ImprovementDimension({
+  dimensionKey,
+  title,
+  prompt,
+  example,
+}: {
+  dimensionKey: keyof ImprovementResponses
+  title: string
+  prompt: string
+  example: string
+}) {
+  const { improvementResponses, setImprovementResponses } = useSolution()
 
-  const updateField = (key: keyof ImprovementResponses, value: string) => {
-    setImprovementResponses({ ...improvementResponses, [key]: value })
+  const raw = improvementResponses[dimensionKey]
+  const items = Array.isArray(raw) ? raw : []
+  const [adding, setAdding] = useState(false)
+  const [draft, setDraft] = useState("")
+  const inputRef = useRef<HTMLInputElement>(null)
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => {
+    if (adding) inputRef.current?.focus()
+  }, [adding])
+
+  const saveItems = (nextItems: typeof items) => {
+    setImprovementResponses({ ...improvementResponses, [dimensionKey]: nextItems })
   }
 
-  const addCandidate = (key: keyof ImprovementResponses, title: string) => {
-    const text = improvementResponses[key].trim()
-    if (!text) return
-    const id = candidates.length > 0 ? Math.max(...candidates.map((c) => c.id)) + 1 : 1
-    const newCandidate: SolutionCandidate = {
-      id, title, description: text,
-      inspirationSource: "improve", inspirationDetail: key,
-      feasibility: null, impact: null, cost: null, timeToImplement: null, notes: "",
+  const addItem = () => {
+    const text = draft.trim()
+    if (text) {
+      const id = items.length > 0 ? Math.max(...items.map((i) => i.id)) + 1 : 1
+      saveItems([...items, { id, text }])
     }
-    setCandidates([...candidates, newCandidate])
+    setDraft("")
+    setAdding(false)
   }
 
+  const removeItem = (id: number) => {
+    saveItems(items.filter((i) => i.id !== id))
+  }
+
+  const updateItem = (id: number, text: string) => {
+    const next = items.map((i) => (i.id === id ? { ...i, text } : i))
+    // Debounced save
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => saveItems(next), 500)
+  }
+
+  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") { e.preventDefault(); addItem() }
+    if (e.key === "Escape") { setDraft(""); setAdding(false) }
+  }
+
+  return (
+    <div className="rounded-lg border bg-background p-4 flex flex-col gap-2">
+      <span className="text-sm font-semibold">{title}</span>
+      <p className="text-xs text-muted-foreground">{prompt}</p>
+      <p className="text-xs italic text-muted-foreground/70">Example: {example}</p>
+
+      {items.map((item) => (
+        <div key={item.id} className="flex items-center gap-2">
+          <Input
+            defaultValue={item.text}
+            onChange={(e) => updateItem(item.id, e.target.value)}
+            className="flex-1 text-sm"
+          />
+          <Button
+            size="icon"
+            variant="ghost"
+            className="shrink-0 h-8 w-8 text-muted-foreground hover:text-foreground"
+            onClick={() => removeItem(item.id)}
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+      ))}
+
+      {adding ? (
+        <Input
+          ref={inputRef}
+          placeholder="Type an improvement and press Enter..."
+          value={draft}
+          onChange={(e) => setDraft(e.target.value)}
+          onKeyDown={onKeyDown}
+          onBlur={addItem}
+          className="text-sm"
+        />
+      ) : (
+        <Button variant="outline" size="sm" className="w-full" onClick={() => setAdding(true)}>
+          <Plus className="h-3.5 w-3.5" />
+          Add Item
+        </Button>
+      )}
+    </div>
+  )
+}
+
+function ImprovementForm() {
   return (
     <div className="bg-primary rounded-xl p-8 flex flex-col gap-8">
       {IMPROVEMENT_GROUPS.map(({ group, items }) => (
         <div key={group} className="flex flex-col gap-4">
           <h4 className="text-sm font-bold uppercase tracking-wide text-primary-foreground/70">{group}</h4>
           {items.map(({ key, title, prompt, example }) => (
-            <div key={key} className="rounded-lg border bg-background p-4 flex flex-col gap-2">
-              <span className="text-sm font-semibold">{title}</span>
-              <p className="text-xs text-muted-foreground">{prompt}</p>
-              <p className="text-xs italic text-muted-foreground/70">Example: {example}</p>
-              <Textarea
-                value={improvementResponses[key]}
-                onChange={(e) => updateField(key, e.target.value)}
-                placeholder="Your improvement ideas..."
-                rows={3}
-              />
-              <Button
-                size="sm"
-                variant="outline"
-                className="self-end gap-1"
-                disabled={!improvementResponses[key].trim()}
-                onClick={() => addCandidate(key, `${title} improvement`)}
-              >
-                <Plus className="h-3.5 w-3.5" />Add as Candidate
-              </Button>
-            </div>
+            <ImprovementDimension
+              key={key}
+              dimensionKey={key}
+              title={title}
+              prompt={prompt}
+              example={example}
+            />
           ))}
         </div>
       ))}
@@ -489,11 +683,11 @@ const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo:
   improve: {
     title: "Improve Existing Solutions",
     description: "Systematically improve an existing product or service from the customer's perspective. Work through 15 improvement dimensions covering the entire customer journey: before purchase, during purchase, and after purchase.",
-    whatYouDo: "Work through the <strong>15 improvement dimensions</strong> below, organised into 4 groups. You don't need to fill in every one, just focus on the dimensions most relevant to your problem. When you find a promising improvement, click <strong>Add as Candidate</strong> to save it.",
+    whatYouDo: "Work through the <strong>15 improvement dimensions</strong> below, organised into 4 groups. You don't need to fill in every one, just focus on the dimensions most relevant to your problem. Your progress is saved automatically as you type. Use <strong>Add Item</strong> to create your own custom dimensions.",
     hints: [
       { icon: TrendingUp, title: "15 improvement dimensions", subtitle: "Core functionality, ease of use, price value, trust, delivery, and more", bg: "bg-blue-500" },
       { icon: TrendingUp, title: "Customer journey focus", subtitle: "Think before, during, and after the purchase experience", bg: "bg-amber-500" },
-      { icon: Plus, title: "Save the best ideas", subtitle: "Click \"Add as Candidate\" to promote improvements for scoring later", bg: "bg-emerald-500" },
+      { icon: Plus, title: "Add your own", subtitle: "Use \"Add Item\" to create custom improvement dimensions", bg: "bg-emerald-500" },
     ],
   },
 }
