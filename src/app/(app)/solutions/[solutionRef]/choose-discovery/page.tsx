@@ -1,34 +1,43 @@
 "use client"
 
+import { useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent } from "@/components/ui/tabs"
-import { LineTabsList, LineTabsTrigger } from "@/components/ui/tabs-line"
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog"
 import { useSolution, getAdjacentSteps } from "../context"
 import type { DiscoveryToolType } from "@/types/solution"
-import { Shuffle, ArrowLeft, ArrowRight } from "lucide-react"
+import { Shuffle, ArrowLeft, ArrowRight, Lightbulb, RotateCcw, GitCompare, Wrench } from "lucide-react"
 
 type ToolKey = "scamper" | "reverse" | "analogy" | "improve"
 
-const VALID_TOOLS: ToolKey[] = ["scamper", "reverse", "analogy", "improve"]
-
-const TOOL_DESCRIPTIONS: Record<ToolKey, { title: string; description: string }> = {
+const TOOL_CARDS: Record<ToolKey, { title: string; description: string; icon: typeof Lightbulb }> = {
   scamper: {
     title: "SCAMPER Method",
-    description: "SCAMPER is a creative thinking technique that prompts you to look at a problem from seven angles: Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate, and Reverse. Each prompt sparks ideas you wouldn't reach through normal brainstorming.",
+    description: "Look at a problem from seven creative angles: Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate, and Reverse.",
+    icon: Lightbulb,
   },
   reverse: {
     title: "Reverse Brainstorming",
-    description: "Instead of solving the problem directly, first brainstorm how to make it worse. Then flip each \"make it worse\" idea to discover creative solutions you might not have considered. This counterintuitive approach breaks you out of conventional thinking patterns.",
+    description: "Generate ideas by first thinking how to make the problem worse, then flipping each idea into a creative solution.",
+    icon: RotateCcw,
   },
   analogy: {
     title: "Analogy Thinking",
-    description: "Look outside your domain for inspiration. How have other industries solved similar problems? Cross-pollinating ideas from different fields often leads to breakthrough solutions that feel fresh and unexpected.",
+    description: "Look outside your domain for inspiration. Cross-pollinate ideas from other industries solving similar problems.",
+    icon: GitCompare,
   },
   improve: {
     title: "Improve Existing Solutions",
-    description: "Rather than inventing something entirely new, systematically improve an existing product or service from the customer's perspective. Work through 15 improvement dimensions covering the entire customer journey: core functionality, ease of use, trust, delivery, and post-purchase experience.",
+    description: "Systematically improve an existing product or service across 15 customer journey dimensions.",
+    icon: Wrench,
   },
 }
 
@@ -78,166 +87,210 @@ const IMPROVE_CASE = {
   ],
 }
 
+function ScamperDialogContent() {
+  return (
+    <div className="flex flex-col gap-4">
+      <p className="text-sm leading-relaxed">
+        SCAMPER is a creative thinking technique that prompts you to look at a problem from seven angles: Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate, and Reverse. Each prompt sparks ideas you wouldn&apos;t reach through normal brainstorming.
+      </p>
+      <div className="flex flex-col gap-2">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Example</p>
+        <div className="rounded-lg border bg-muted/50 p-4 flex flex-col gap-2">
+          <p className="text-sm font-semibold">{SCAMPER_CASE.title}</p>
+          <p className="text-sm text-muted-foreground"><strong>Problem:</strong> {SCAMPER_CASE.problem}</p>
+          <div className="flex flex-col gap-2 mt-1">
+            {SCAMPER_CASE.examples.map((ex) => (
+              <div key={ex.letter} className="flex gap-2 items-start">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">
+                  {ex.letter}
+                </span>
+                <p className="text-sm text-muted-foreground">{ex.idea}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ReverseDialogContent() {
+  return (
+    <div className="flex flex-col gap-4">
+      <p className="text-sm leading-relaxed">
+        Instead of solving the problem directly, first brainstorm how to make it worse. Then flip each &quot;make it worse&quot; idea to discover creative solutions you might not have considered. This counterintuitive approach breaks you out of conventional thinking patterns.
+      </p>
+      <div className="flex flex-col gap-2">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Example</p>
+        <div className="rounded-lg border bg-muted/50 p-4 flex flex-col gap-3">
+          <p className="text-sm font-semibold">{REVERSE_CASE.title}</p>
+          <p className="text-sm text-muted-foreground"><strong>Problem:</strong> {REVERSE_CASE.problem}</p>
+          <div className="flex flex-col gap-2">
+            <div className="rounded bg-red-50 dark:bg-red-950/30 p-3">
+              <p className="text-sm font-semibold text-red-700 dark:text-red-400 mb-1">Make it worse:</p>
+              <p className="text-sm text-muted-foreground">{REVERSE_CASE.worse}</p>
+            </div>
+            <div className="rounded bg-green-50 dark:bg-green-950/30 p-3">
+              <p className="text-sm font-semibold text-green-700 dark:text-green-400 mb-1">Flip it:</p>
+              <p className="text-sm text-muted-foreground">{REVERSE_CASE.inverted}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function AnalogyDialogContent() {
+  return (
+    <div className="flex flex-col gap-4">
+      <p className="text-sm leading-relaxed">
+        Look outside your domain for inspiration. How have other industries solved similar problems? Cross-pollinating ideas from different fields often leads to breakthrough solutions that feel fresh and unexpected.
+      </p>
+      <div className="flex flex-col gap-2">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Examples</p>
+        {ANALOGY_CASES.map((cs) => (
+          <div key={cs.title} className="rounded-lg border bg-muted/50 p-4 flex flex-col gap-2">
+            <p className="text-sm font-semibold">{cs.title}</p>
+            <p className="text-sm text-muted-foreground"><strong>Problem:</strong> {cs.problem}</p>
+            <div className="rounded bg-blue-50 dark:bg-blue-950/30 p-3 mt-1">
+              <p className="text-sm font-semibold text-blue-700 dark:text-blue-400 mb-1">
+                Analogy from: {cs.domain}
+              </p>
+              <p className="text-sm text-muted-foreground">{cs.insight}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+function ImproveDialogContent() {
+  return (
+    <div className="flex flex-col gap-4">
+      <p className="text-sm leading-relaxed">
+        Rather than inventing something entirely new, systematically improve an existing product or service from the customer&apos;s perspective. Work through 15 improvement dimensions covering the entire customer journey: core functionality, ease of use, trust, delivery, and post-purchase experience.
+      </p>
+      <div className="flex flex-col gap-2">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Example</p>
+        <div className="rounded-lg border bg-muted/50 p-4 flex flex-col gap-2">
+          <p className="text-sm font-semibold">{IMPROVE_CASE.title}</p>
+          <p className="text-sm text-muted-foreground"><strong>Problem:</strong> {IMPROVE_CASE.problem}</p>
+          <div className="flex flex-col gap-2 mt-1">
+            {IMPROVE_CASE.examples.map((ex) => (
+              <div key={ex.dimension} className="flex gap-2 items-start">
+                <span className="flex h-5 shrink-0 items-center justify-center rounded-full bg-primary/10 px-2 text-[10px] font-bold text-primary">
+                  {ex.dimension}
+                </span>
+                <p className="text-sm text-muted-foreground">{ex.idea}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+const DIALOG_CONTENT: Record<ToolKey, () => React.JSX.Element> = {
+  scamper: ScamperDialogContent,
+  reverse: ReverseDialogContent,
+  analogy: AnalogyDialogContent,
+  improve: ImproveDialogContent,
+}
+
+const TOOL_ORDER: ToolKey[] = ["scamper", "reverse", "analogy", "improve"]
+
 export default function ChooseDiscoveryPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { solutionRef, problem, discoveryToolType, setDiscoveryToolType } = useSolution()
+  const { solutionRef, problem, setDiscoveryToolType } = useSolution()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, solutionRef)
+  const [openTool, setOpenTool] = useState<ToolKey | null>(null)
 
-  const activeTab: ToolKey = discoveryToolType && VALID_TOOLS.includes(discoveryToolType as ToolKey)
-    ? (discoveryToolType as ToolKey)
-    : "scamper"
-
-  const handleTabChange = (value: string) => {
-    setDiscoveryToolType(value as DiscoveryToolType)
+  const handleChoose = (tool: ToolKey) => {
+    setDiscoveryToolType(tool as DiscoveryToolType)
+    setOpenTool(null)
+    if (nextPath) router.push(nextPath)
   }
 
+  const DialogBody = openTool ? DIALOG_CONTENT[openTool] : null
+
   return (
-    <Card className="w-full flex-1">
-      <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={Shuffle}>Choose Your Discovery Method</CardTitle>
-      </CardHeader>
-      <CardContent className="p-10 pt-6 flex flex-col gap-6">
-        {problem?.description && (
-          <div className="rounded-lg border-2 border-primary/20 bg-primary/5 px-4 py-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Problem</p>
-            <p className="text-sm font-medium">{problem.description}</p>
-          </div>
-        )}
-
-        <p className="text-md leading-relaxed">
-          Use creative brainstorming techniques to generate solution candidates.
-          Choose a technique below to get started.
-        </p>
-
-        <Tabs value={activeTab} onValueChange={handleTabChange}>
-          <LineTabsList>
-            <LineTabsTrigger value="scamper">SCAMPER</LineTabsTrigger>
-            <LineTabsTrigger value="reverse">Reverse</LineTabsTrigger>
-            <LineTabsTrigger value="analogy">Analogy</LineTabsTrigger>
-            <LineTabsTrigger value="improve">Improve</LineTabsTrigger>
-          </LineTabsList>
-
-          <TabsContent value="scamper">
-            <div className="rounded-xl bg-muted/50 p-8 flex flex-col gap-5">
-              <h3 className="text-lg font-semibold text-primary">SCAMPER Method</h3>
-              <p className="text-md leading-relaxed">
-                {TOOL_DESCRIPTIONS.scamper.description}
-              </p>
-
-              <div className="flex flex-col gap-3">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Example</p>
-                <div className="rounded-lg border bg-card p-4 flex flex-col gap-2">
-                  <p className="text-md font-semibold">{SCAMPER_CASE.title}</p>
-                  <p className="text-md text-muted-foreground"><strong>Problem:</strong> {SCAMPER_CASE.problem}</p>
-                  <div className="flex flex-col gap-2 mt-1">
-                    {SCAMPER_CASE.examples.map((ex) => (
-                      <div key={ex.letter} className="flex gap-2 items-start">
-                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">
-                          {ex.letter}
-                        </span>
-                        <p className="text-md text-muted-foreground">{ex.idea}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+    <>
+      <Card className="w-full flex-1">
+        <CardHeader className="px-10 pt-10 pb-0">
+          <CardTitle icon={Shuffle}>Choose Your Discovery Method</CardTitle>
+        </CardHeader>
+        <CardContent className="p-10 pt-6 flex flex-col gap-6">
+          {problem?.description && (
+            <div className="rounded-lg border-2 border-primary/20 bg-primary/5 px-4 py-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Problem</p>
+              <p className="text-sm font-medium">{problem.description}</p>
             </div>
-          </TabsContent>
-
-          <TabsContent value="reverse">
-            <div className="rounded-xl bg-muted/50 p-8 flex flex-col gap-5">
-              <h3 className="text-lg font-semibold text-primary">Reverse Brainstorming</h3>
-              <p className="text-md leading-relaxed">
-                {TOOL_DESCRIPTIONS.reverse.description}
-              </p>
-
-              <div className="flex flex-col gap-3">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Example</p>
-                <div className="rounded-lg border bg-card p-4 flex flex-col gap-3">
-                  <p className="text-md font-semibold">{REVERSE_CASE.title}</p>
-                  <p className="text-md text-muted-foreground"><strong>Problem:</strong> {REVERSE_CASE.problem}</p>
-                  <div className="flex flex-col gap-2">
-                    <div className="rounded bg-red-50 dark:bg-red-950/30 p-3">
-                      <p className="text-md font-semibold text-red-700 dark:text-red-400 mb-1">Make it worse:</p>
-                      <p className="text-md text-muted-foreground">{REVERSE_CASE.worse}</p>
-                    </div>
-                    <div className="rounded bg-green-50 dark:bg-green-950/30 p-3">
-                      <p className="text-md font-semibold text-green-700 dark:text-green-400 mb-1">Flip it:</p>
-                      <p className="text-md text-muted-foreground">{REVERSE_CASE.inverted}</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="analogy">
-            <div className="rounded-xl bg-muted/50 p-8 flex flex-col gap-5">
-              <h3 className="text-lg font-semibold text-primary">Analogy Thinking</h3>
-              <p className="text-md leading-relaxed">
-                {TOOL_DESCRIPTIONS.analogy.description}
-              </p>
-
-              <div className="flex flex-col gap-3">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Examples</p>
-                {ANALOGY_CASES.map((cs) => (
-                  <div key={cs.title} className="rounded-lg border bg-card p-4 flex flex-col gap-2">
-                    <p className="text-md font-semibold">{cs.title}</p>
-                    <p className="text-md text-muted-foreground"><strong>Problem:</strong> {cs.problem}</p>
-                    <div className="rounded bg-blue-50 dark:bg-blue-950/30 p-3 mt-1">
-                      <p className="text-md font-semibold text-blue-700 dark:text-blue-400 mb-1">
-                        Analogy from: {cs.domain}
-                      </p>
-                      <p className="text-md text-muted-foreground">{cs.insight}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="improve">
-            <div className="rounded-xl bg-muted/50 p-8 flex flex-col gap-5">
-              <h3 className="text-lg font-semibold text-primary">Improve Existing Solutions</h3>
-              <p className="text-md leading-relaxed">
-                {TOOL_DESCRIPTIONS.improve.description}
-              </p>
-
-              <div className="flex flex-col gap-3">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Example</p>
-                <div className="rounded-lg border bg-card p-4 flex flex-col gap-2">
-                  <p className="text-md font-semibold">{IMPROVE_CASE.title}</p>
-                  <p className="text-md text-muted-foreground"><strong>Problem:</strong> {IMPROVE_CASE.problem}</p>
-                  <div className="flex flex-col gap-2 mt-1">
-                    {IMPROVE_CASE.examples.map((ex) => (
-                      <div key={ex.dimension} className="flex gap-2 items-start">
-                        <span className="flex h-5 shrink-0 items-center justify-center rounded-full bg-primary/10 px-2 text-[10px] font-bold text-primary">
-                          {ex.dimension}
-                        </span>
-                        <p className="text-md text-muted-foreground">{ex.idea}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </TabsContent>
-        </Tabs>
-
-        <div className="flex justify-between mt-2">
-          {prevPath ? (
-            <Button variant="outline" onClick={() => router.push(prevPath)}>
-              <ArrowLeft className="h-4 w-4 mr-2" />Previous
-            </Button>
-          ) : <div />}
-          {nextPath && (
-            <Button onClick={() => router.push(nextPath)}>
-              Next<ArrowRight className="h-4 w-4 ml-2" />
-            </Button>
           )}
-        </div>
-      </CardContent>
-    </Card>
+
+          <p className="text-md leading-relaxed">
+            Use creative brainstorming techniques to generate solution candidates.
+            Choose a technique below to get started.
+          </p>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {TOOL_ORDER.map((key) => {
+              const tool = TOOL_CARDS[key]
+              const Icon = tool.icon
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setOpenTool(key)}
+                  className="flex flex-col gap-3 rounded-xl border bg-card p-6 text-left transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                    <Icon className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="text-md font-semibold">{tool.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{tool.description}</p>
+                </button>
+              )
+            })}
+          </div>
+
+          <div className="flex justify-between mt-2">
+            {prevPath ? (
+              <Button variant="outline" onClick={() => router.push(prevPath)}>
+                <ArrowLeft className="h-4 w-4 mr-2" />Previous
+              </Button>
+            ) : <div />}
+            {nextPath && (
+              <Button onClick={() => router.push(nextPath)}>
+                Next<ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Dialog open={openTool !== null} onOpenChange={(open) => { if (!open) setOpenTool(null) }}>
+        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+          {openTool && (
+            <>
+              <DialogHeader>
+                <DialogTitle>{TOOL_CARDS[openTool].title}</DialogTitle>
+                <DialogDescription>
+                  Learn how this method works, then choose it to start discovering solutions.
+                </DialogDescription>
+              </DialogHeader>
+              {DialogBody && <DialogBody />}
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setOpenTool(null)}>Cancel</Button>
+                <Button onClick={() => handleChoose(openTool)}>Choose This Method</Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   )
 }
