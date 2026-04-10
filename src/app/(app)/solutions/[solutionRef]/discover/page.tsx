@@ -12,11 +12,12 @@ import { useSolution, getAdjacentSteps } from "../context"
 import { SCAMPER_CASE_STUDIES } from "./case-studies"
 import { IMPROVE_CASE_STUDIES } from "./improve-case-studies"
 import { REVERSE_CASE_STUDIES } from "./reverse-case-studies"
+import { ANALOGY_CASE_STUDIES } from "./analogy-case-studies"
 import type { ScamperResponses, ImprovementResponses, SolutionCandidate } from "@/types/solution"
 import {
   Shuffle, RotateCcw, Globe, TrendingUp, Plus, Trash2, Pencil, Check, X,
   ArrowLeft, ArrowRight, Wind, Tv, Armchair, Package, Smartphone, Coffee,
-  Home, Pizza, ShoppingBag, type LucideIcon,
+  Home, Pizza, ShoppingBag, Utensils, Flag, Leaf, type LucideIcon,
 } from "lucide-react"
 
 /* ── SCAMPER Form ── */
@@ -306,22 +307,23 @@ function AnalogyForm() {
   }
 
   return (
-    <div className="bg-primary rounded-xl p-8 flex flex-col gap-6">
-      <div className="rounded-lg border bg-background p-4 flex flex-col gap-3">
+    <div className="bg-primary rounded-xl p-8">
+      <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-semibold">Domain / Industry</label>
-          <p className="text-xs text-muted-foreground">
+          <label className="text-sm font-semibold text-white">Domain / Industry</label>
+          <p className="text-sm text-white/80">
             What industry or field did you draw inspiration from?
           </p>
           <Input
             value={analogyDomain}
             onChange={(e) => setAnalogyDomain(e.target.value)}
             placeholder="e.g. Aviation, Healthcare, Hospitality..."
+            className="text-sm bg-white border-white text-foreground"
           />
         </div>
         <div className="flex flex-col gap-2">
-          <label className="text-sm font-semibold">Insight</label>
-          <p className="text-xs text-muted-foreground">
+          <label className="text-sm font-semibold text-white">Insight</label>
+          <p className="text-sm text-white/80">
             How does that domain handle a similar challenge? What could you borrow or adapt?
           </p>
           <Textarea
@@ -329,16 +331,16 @@ function AnalogyForm() {
             onChange={(e) => setAnalogyInsight(e.target.value)}
             placeholder="Describe the analogy and how it could apply to your problem..."
             rows={5}
+            className="text-sm bg-white border-white text-foreground"
           />
         </div>
         <Button
-          size="sm"
-          variant="outline"
+          variant="on-primary"
           className="self-end gap-1"
           disabled={!analogyInsight.trim()}
           onClick={addCandidate}
         >
-          <Plus className="h-3.5 w-3.5" />Add as Candidate
+          <Plus className="h-4 w-4" />Add as Candidate
         </Button>
       </div>
     </div>
@@ -858,6 +860,59 @@ function ReverseCaseStudies() {
   )
 }
 
+/* ── Analogy Case Studies ── */
+
+const ANALOGY_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
+  "McDonald's": Utensils,
+  "Formula 1 Pit Stops → NHS Neonatal Transfers": Flag,
+  "George de Mestral → Velcro": Leaf,
+}
+
+function AnalogyCaseStudies() {
+  return (
+    <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
+      <p className="text-md text-white">
+        See how breakthrough innovators borrowed ideas from unrelated fields: factories, racing, even nature. A good analogy reframes the problem and unlocks solutions you would never reach by thinking inside your own industry.
+      </p>
+      {ANALOGY_CASE_STUDIES.map((cs) => {
+        const Icon = ANALOGY_CASE_STUDY_ICONS[cs.company]
+        return (
+          <div
+            key={cs.company}
+            className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-3"
+          >
+            <div className="flex items-center gap-2">
+              {Icon && (
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/20 text-white">
+                  <Icon className="h-4 w-4" />
+                </span>
+              )}
+              <p className="text-md font-semibold text-white">{cs.company}</p>
+            </div>
+            <div>
+              <span className="text-md font-medium text-white uppercase tracking-wide">Problem</span>
+              <p className="mt-0.5 text-md text-white">{cs.problem}</p>
+            </div>
+            <div className="rounded-md border border-white/10 bg-white/5 p-3">
+              <span className="text-xs font-semibold uppercase tracking-wide text-white/70">Source domain</span>
+              <p className="mt-0.5 text-md font-semibold text-white">{cs.sourceDomain}</p>
+              <p className="mt-1 text-md text-white">{cs.insight}</p>
+            </div>
+            <div className="rounded-md border border-white/10 bg-white/5 p-3">
+              <span className="text-xs font-semibold uppercase tracking-wide text-white/70">How it was applied</span>
+              <p className="mt-1 text-md text-white">{cs.application}</p>
+            </div>
+            <div className="border-t border-white/10 pt-3 mt-1">
+              <span className="text-md font-medium text-white uppercase tracking-wide">Outcome</span>
+              <p className="mt-0.5 text-md text-white">{cs.outcome}</p>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 /* ── Main Page ── */
 
 type ToolHint = { icon: LucideIcon; title: string; subtitle: string; bg: string }
@@ -993,9 +1048,22 @@ export default function DiscoverPage() {
         {discoveryToolType === "analogy" && (
           <>
             <hr className="border-border/40" />
-            <AnalogyForm />
-            <hr className="border-border/40" />
-            <CandidatesSection />
+            <Tabs defaultValue="strategy" className="flex flex-col gap-4">
+              <TabsList className="self-center">
+                <TabsTrigger value="strategy">Your Strategy</TabsTrigger>
+                <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
+              </TabsList>
+              <TabsContent value="strategy">
+                <div className="flex flex-col gap-6">
+                  <AnalogyForm />
+                  <hr className="border-border/40" />
+                  <CandidatesSection />
+                </div>
+              </TabsContent>
+              <TabsContent value="case-studies">
+                <AnalogyCaseStudies />
+              </TabsContent>
+            </Tabs>
           </>
         )}
         {discoveryToolType === "improve" && (
