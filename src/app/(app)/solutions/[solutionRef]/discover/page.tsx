@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { useSolution, getAdjacentSteps } from "../context"
 import { SCAMPER_CASE_STUDIES } from "./case-studies"
 import { IMPROVE_CASE_STUDIES } from "./improve-case-studies"
@@ -42,18 +43,10 @@ const SCAMPER_PROMPTS: { key: keyof ScamperResponses; letter: string; title: str
   { key: "reverse", letter: "R", title: "Reverse", prompt: "What if you reversed the process? What if you did the opposite of what's expected?", color: SCAMPER_LETTER_COLORS.R },
 ]
 
-function ScamperDimension({
+function ScamperDimensionContent({
   dimensionKey,
-  letter,
-  title,
-  prompt,
-  color,
 }: {
   dimensionKey: keyof ScamperResponses
-  letter: string
-  title: string
-  prompt: string
-  color: string
 }) {
   const { scamperResponses, setScamperResponses } = useSolution()
 
@@ -99,14 +92,6 @@ function ScamperDimension({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center gap-2">
-        <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${color} text-white text-xs font-bold`}>
-          {letter}
-        </span>
-        <span className="text-sm font-semibold text-white">{title}</span>
-      </div>
-      <p className="text-sm text-white/80">{prompt}</p>
-
       {items.map((item) => (
         <div key={item.id} className="flex items-center gap-2">
           <Input
@@ -148,19 +133,26 @@ function ScamperDimension({
 function ScamperForm() {
   return (
     <div className="bg-primary rounded-xl p-8">
-      <div className="flex flex-col divide-y divide-white/20">
+      <Accordion type="multiple" className="flex flex-col divide-y divide-white/20">
         {SCAMPER_PROMPTS.map(({ key, letter, title, prompt, color }) => (
-          <div key={key} className="py-5 first:pt-0 last:pb-0">
-            <ScamperDimension
-              dimensionKey={key}
-              letter={letter}
-              title={title}
-              prompt={prompt}
-              color={color}
-            />
-          </div>
+          <AccordionItem key={key} value={key}>
+            <AccordionTrigger className="py-5 hover:no-underline [&>svg]:text-white/80">
+              <div className="flex items-start gap-3 flex-1 min-w-0">
+                <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${color} text-white text-xs font-bold`}>
+                  {letter}
+                </span>
+                <div className="flex flex-col gap-1 min-w-0">
+                  <span className="text-sm font-semibold text-white">{title}</span>
+                  <p className="text-sm text-white/80 font-normal">{prompt}</p>
+                </div>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="pb-5 pl-10">
+              <ScamperDimensionContent dimensionKey={key} />
+            </AccordionContent>
+          </AccordionItem>
         ))}
-      </div>
+      </Accordion>
     </div>
   )
 }
