@@ -49,8 +49,8 @@ function RootCausesForm() {
   return (
     <div className="bg-primary rounded-xl p-8 flex flex-col gap-6">
       <div className="flex flex-col gap-3">
-        <label className="text-sm font-semibold text-primary-foreground">Root Causes</label>
-        <p className="text-xs text-primary-foreground/70">
+        <label className="text-sm font-semibold text-white">Root Causes</label>
+        <p className="text-sm text-white/80">
           List the underlying causes of the problem. Ask yourself: &quot;Why does this happen?&quot;
         </p>
 
@@ -91,13 +91,13 @@ function RootCausesForm() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="text-sm font-semibold text-primary-foreground">Notes</label>
+        <label className="text-sm font-semibold text-white">Notes</label>
         <Textarea
           value={rootCauseNotes}
           onChange={(e) => setRootCauseNotes(e.target.value)}
           placeholder="Any additional observations about the root causes..."
           rows={3}
-          className="text-white placeholder:text-white/50 border-white/30"
+          className="bg-white border-white text-foreground"
         />
       </div>
     </div>
@@ -132,50 +132,54 @@ function FiveWhysForm() {
   }
 
   return (
-    <div className="bg-primary rounded-xl p-8 flex flex-col gap-6">
+    <div className="bg-primary rounded-xl p-8 flex flex-col gap-5">
       {fiveWhyChains.length === 0 && (
-        <p className="text-sm text-primary-foreground/70 text-center py-4">
+        <p className="text-sm text-white/70 text-center py-4">
           No chains yet. Add one to start exploring root causes.
         </p>
       )}
 
-      {fiveWhyChains.map((chain, chainIndex) => (
-        <div key={chain.id} className="rounded-lg border bg-background p-4 flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold">Chain {chainIndex + 1}</p>
-            <Button
-              size="icon"
-              variant="ghost"
-              className="h-8 w-8 text-muted-foreground hover:text-foreground"
-              onClick={() => removeChain(chain.id)}
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-            </Button>
-          </div>
-          <div className="flex flex-col gap-2">
-            {WHY_LABELS.map((label, i) => (
-              <div key={label} className="flex gap-3 items-start">
-                <div className="flex flex-col items-center pt-2.5">
-                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
-                    {i + 1}
-                  </div>
-                  {i < 4 && <div className="w-px h-4 bg-border" />}
-                </div>
-                <div className="flex-1 flex flex-col gap-1">
-                  <label className="text-sm font-medium text-muted-foreground">{label}</label>
-                  <Textarea
-                    value={chain.whys[i] ?? ""}
-                    onChange={(e) => updateWhy(chain.id, i, e.target.value)}
-                    placeholder={i === 0 ? "Why does this problem occur?" : "Why is that?"}
-                    rows={2}
-                    className="text-sm"
-                  />
-                </div>
+      {fiveWhyChains.length > 0 && (
+        <div className="flex flex-col divide-y divide-white/20">
+          {fiveWhyChains.map((chain, chainIndex) => (
+            <div key={chain.id} className="py-5 first:pt-0 last:pb-0 flex flex-col gap-3">
+              <div className="flex items-center justify-between">
+                <p className="text-sm font-semibold text-white">Chain {chainIndex + 1}</p>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
+                  onClick={() => removeChain(chain.id)}
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </Button>
               </div>
-            ))}
-          </div>
+              <div className="flex flex-col">
+                {WHY_LABELS.map((label, i) => (
+                  <div key={label} className="flex gap-3">
+                    <div className="flex flex-col items-center">
+                      <div className="mt-2.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-bold text-primary">
+                        {i + 1}
+                      </div>
+                      {i < 4 && <div className="w-px flex-1 bg-white/30" />}
+                    </div>
+                    <div className="flex-1 flex flex-col gap-1 pb-3 last:pb-0">
+                      <label className="text-sm font-medium text-white/80">{label}</label>
+                      <Textarea
+                        value={chain.whys[i] ?? ""}
+                        onChange={(e) => updateWhy(chain.id, i, e.target.value)}
+                        placeholder={i === 0 ? "Why does this problem occur?" : "Why is that?"}
+                        rows={2}
+                        className="text-sm bg-white border-white text-foreground"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
+      )}
 
       <Button variant="on-primary" onClick={addChain} className="w-full gap-2">
         <Plus className="h-4 w-4" />Add Chain
@@ -210,60 +214,70 @@ function AffectedGroupsForm() {
   }
 
   return (
-    <div className="bg-primary rounded-xl p-8 flex flex-col gap-6">
+    <div className="bg-primary rounded-xl p-8 flex flex-col gap-5">
       {affectedGroups.length === 0 && (
-        <p className="text-sm text-primary-foreground/70 text-center py-4">
+        <p className="text-sm text-white/70 text-center py-4">
           No groups added yet. Add a group to start mapping who is affected.
         </p>
       )}
 
-      {affectedGroups.map((group) => (
-        <div key={group.id} className="rounded-lg border bg-background p-4 flex flex-col gap-3">
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex-1 flex flex-col gap-1">
-              <label className="text-sm font-medium text-muted-foreground">Group Name</label>
-              <Input
-                value={group.name}
-                onChange={(e) => updateGroup(group.id, { name: e.target.value })}
-                placeholder="e.g. 'Working parents'"
-                className="font-medium"
-              />
+      {affectedGroups.length > 0 && (
+        <div className="flex flex-col divide-y divide-white/20">
+          {affectedGroups.map((group, i) => (
+            <div key={group.id} className="py-5 first:pt-0 last:pb-0 flex flex-col gap-3">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-sm font-semibold text-white">Group {i + 1}</p>
+                <Button
+                  size="icon"
+                  variant="ghost"
+                  className="shrink-0 h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
+                  onClick={() => removeGroup(group.id)}
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                </Button>
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-sm font-medium text-white/80">Group Name</label>
+                <Input
+                  value={group.name}
+                  onChange={(e) => updateGroup(group.id, { name: e.target.value })}
+                  placeholder="e.g. 'Working parents'"
+                  className="font-medium bg-white border-white text-foreground"
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-sm font-medium text-white/80">Description</label>
+                <Textarea
+                  value={group.description}
+                  onChange={(e) => updateGroup(group.id, { description: e.target.value })}
+                  placeholder="How are they affected? What makes this group unique?"
+                  rows={2}
+                  className="bg-white border-white text-foreground"
+                />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-sm font-medium text-white/80">Severity</label>
+                <ToggleGroup
+                  type="single"
+                  value={group.severity}
+                  onValueChange={(val) => updateGroup(group.id, { severity: (val || "") as AffectedGroup["severity"] })}
+                  className="justify-start"
+                >
+                  {SEVERITY_OPTIONS.map((opt) => (
+                    <ToggleGroupItem
+                      key={opt.value}
+                      value={opt.value}
+                      className="text-sm rounded-none text-white data-[state=on]:bg-white data-[state=on]:text-primary hover:bg-white/10 hover:text-white"
+                    >
+                      {opt.label}
+                    </ToggleGroupItem>
+                  ))}
+                </ToggleGroup>
+              </div>
             </div>
-            <Button
-              size="icon"
-              variant="ghost"
-              className="shrink-0 h-8 w-8 text-muted-foreground hover:text-foreground mt-5"
-              onClick={() => removeGroup(group.id)}
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-            </Button>
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-muted-foreground">Description</label>
-            <Textarea
-              value={group.description}
-              onChange={(e) => updateGroup(group.id, { description: e.target.value })}
-              placeholder="How are they affected? What makes this group unique?"
-              rows={2}
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-sm font-medium text-muted-foreground">Severity</label>
-            <ToggleGroup
-              type="single"
-              value={group.severity}
-              onValueChange={(val) => updateGroup(group.id, { severity: (val || "") as AffectedGroup["severity"] })}
-              className="justify-start"
-            >
-              {SEVERITY_OPTIONS.map((opt) => (
-                <ToggleGroupItem key={opt.value} value={opt.value} className="text-sm">
-                  {opt.label}
-                </ToggleGroupItem>
-              ))}
-            </ToggleGroup>
-          </div>
+          ))}
         </div>
-      ))}
+      )}
 
       <Button variant="on-primary" onClick={addGroup} className="w-full gap-2">
         <Plus className="h-4 w-4" />Add Group
