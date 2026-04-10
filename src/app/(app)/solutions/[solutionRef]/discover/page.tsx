@@ -13,19 +13,29 @@ import { SCAMPER_CASE_STUDIES } from "./case-studies"
 import type { ScamperResponses, ImprovementResponses, SolutionCandidate } from "@/types/solution"
 import {
   Shuffle, RotateCcw, Globe, TrendingUp, Plus, Trash2, Pencil, Check, X,
-  ArrowLeft, ArrowRight, type LucideIcon,
+  ArrowLeft, ArrowRight, Wind, Tv, Armchair, type LucideIcon,
 } from "lucide-react"
 
 /* ── SCAMPER Form ── */
 
-const SCAMPER_PROMPTS: { key: keyof ScamperResponses; letter: string; title: string; prompt: string }[] = [
-  { key: "substitute", letter: "S", title: "Substitute", prompt: "What components, materials, or processes could you swap out? What if you replaced part of the problem?" },
-  { key: "combine", letter: "C", title: "Combine", prompt: "Can you combine this problem with another? What if you merged two existing solutions?" },
-  { key: "adapt", letter: "A", title: "Adapt", prompt: "What else is like this? What ideas from other industries or domains could you adapt?" },
-  { key: "modify", letter: "M", title: "Modify", prompt: "What if you enlarged, shrunk, or changed the shape of the problem? What can be modified?" },
-  { key: "putToOtherUse", letter: "P", title: "Put to Other Use", prompt: "Can this problem (or its elements) be used for something else? What new purposes could emerge?" },
-  { key: "eliminate", letter: "E", title: "Eliminate", prompt: "What can you remove or simplify? What would happen if you eliminated a step entirely?" },
-  { key: "reverse", letter: "R", title: "Reverse", prompt: "What if you reversed the process? What if you did the opposite of what's expected?" },
+const SCAMPER_LETTER_COLORS: Record<string, string> = {
+  S: "bg-red-500",
+  C: "bg-orange-500",
+  A: "bg-amber-500",
+  M: "bg-emerald-500",
+  P: "bg-cyan-500",
+  E: "bg-pink-500",
+  R: "bg-fuchsia-500",
+}
+
+const SCAMPER_PROMPTS: { key: keyof ScamperResponses; letter: string; title: string; prompt: string; color: string }[] = [
+  { key: "substitute", letter: "S", title: "Substitute", prompt: "What components, materials, or processes could you swap out? What if you replaced part of the problem?", color: SCAMPER_LETTER_COLORS.S },
+  { key: "combine", letter: "C", title: "Combine", prompt: "Can you combine this problem with another? What if you merged two existing solutions?", color: SCAMPER_LETTER_COLORS.C },
+  { key: "adapt", letter: "A", title: "Adapt", prompt: "What else is like this? What ideas from other industries or domains could you adapt?", color: SCAMPER_LETTER_COLORS.A },
+  { key: "modify", letter: "M", title: "Modify", prompt: "What if you enlarged, shrunk, or changed the shape of the problem? What can be modified?", color: SCAMPER_LETTER_COLORS.M },
+  { key: "putToOtherUse", letter: "P", title: "Put to Other Use", prompt: "Can this problem (or its elements) be used for something else? What new purposes could emerge?", color: SCAMPER_LETTER_COLORS.P },
+  { key: "eliminate", letter: "E", title: "Eliminate", prompt: "What can you remove or simplify? What would happen if you eliminated a step entirely?", color: SCAMPER_LETTER_COLORS.E },
+  { key: "reverse", letter: "R", title: "Reverse", prompt: "What if you reversed the process? What if you did the opposite of what's expected?", color: SCAMPER_LETTER_COLORS.R },
 ]
 
 function ScamperDimension({
@@ -33,11 +43,13 @@ function ScamperDimension({
   letter,
   title,
   prompt,
+  color,
 }: {
   dimensionKey: keyof ScamperResponses
   letter: string
   title: string
   prompt: string
+  color: string
 }) {
   const { scamperResponses, setScamperResponses } = useSolution()
 
@@ -82,26 +94,26 @@ function ScamperDimension({
   }
 
   return (
-    <div className="rounded-lg border bg-background p-4 flex flex-col gap-2">
+    <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">
-        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold">
+        <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${color} text-white text-xs font-bold`}>
           {letter}
         </span>
-        <span className="text-sm font-semibold">{title}</span>
+        <span className="text-sm font-semibold text-white">{title}</span>
       </div>
-      <p className="text-xs text-muted-foreground">{prompt}</p>
+      <p className="text-sm text-white/80">{prompt}</p>
 
       {items.map((item) => (
         <div key={item.id} className="flex items-center gap-2">
           <Input
             defaultValue={item.text}
             onChange={(e) => updateItem(item.id, e.target.value)}
-            className="flex-1 text-sm"
+            className="flex-1 text-sm bg-white border-white text-foreground"
           />
           <Button
             size="icon"
             variant="ghost"
-            className="shrink-0 h-8 w-8 text-muted-foreground hover:text-foreground"
+            className="shrink-0 h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
             onClick={() => removeItem(item.id)}
           >
             <Trash2 className="h-3.5 w-3.5" />
@@ -117,11 +129,11 @@ function ScamperDimension({
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={onKeyDown}
           onBlur={addItem}
-          className="text-sm"
+          className="text-sm bg-white border-white text-foreground"
         />
       ) : (
-        <Button variant="outline" size="sm" className="w-full" onClick={() => setAdding(true)}>
-          <Plus className="h-3.5 w-3.5" />
+        <Button variant="on-primary" className="w-full" onClick={() => setAdding(true)}>
+          <Plus className="h-4 w-4" />
           Add Item
         </Button>
       )}
@@ -131,16 +143,20 @@ function ScamperDimension({
 
 function ScamperForm() {
   return (
-    <div className="bg-primary rounded-xl p-8 flex flex-col gap-6">
-      {SCAMPER_PROMPTS.map(({ key, letter, title, prompt }) => (
-        <ScamperDimension
-          key={key}
-          dimensionKey={key}
-          letter={letter}
-          title={title}
-          prompt={prompt}
-        />
-      ))}
+    <div className="bg-primary rounded-xl p-8">
+      <div className="flex flex-col divide-y divide-white/20">
+        {SCAMPER_PROMPTS.map(({ key, letter, title, prompt, color }) => (
+          <div key={key} className="py-5 first:pt-0 last:pb-0">
+            <ScamperDimension
+              dimensionKey={key}
+              letter={letter}
+              title={title}
+              prompt={prompt}
+              color={color}
+            />
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
@@ -649,18 +665,33 @@ function CandidatesSection() {
 
 /* ── SCAMPER Case Studies ── */
 
+const CASE_STUDY_ICONS: Record<string, LucideIcon> = {
+  "Dyson": Wind,
+  "Netflix (DVD to Streaming)": Tv,
+  "IKEA": Armchair,
+}
+
 function ScamperCaseStudies() {
   return (
     <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
       <p className="text-md text-white">
         See how successful companies used SCAMPER thinking to reimagine existing products and create breakthrough solutions by looking at problems from multiple creative angles.
       </p>
-      {SCAMPER_CASE_STUDIES.map((cs) => (
+      {SCAMPER_CASE_STUDIES.map((cs) => {
+        const Icon = CASE_STUDY_ICONS[cs.company]
+        return (
         <div
           key={cs.company}
           className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-3"
         >
-          <p className="text-md font-semibold text-white">{cs.company}</p>
+          <div className="flex items-center gap-2">
+            {Icon && (
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/20 text-white">
+                <Icon className="h-4 w-4" />
+              </span>
+            )}
+            <p className="text-md font-semibold text-white">{cs.company}</p>
+          </div>
           <div>
             <span className="text-md font-medium text-white uppercase tracking-wide">Problem</span>
             <p className="mt-0.5 text-md text-white">{cs.problem}</p>
@@ -669,7 +700,7 @@ function ScamperCaseStudies() {
             {cs.dimensions.map((dim) => (
               <div key={dim.letter}>
                 <div className="flex items-center gap-1.5">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/20 text-white text-[10px] font-bold">
+                  <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${SCAMPER_LETTER_COLORS[dim.letter] ?? "bg-white/20"} text-white text-[10px] font-bold`}>
                     {dim.letter}
                   </span>
                   <span className="text-md font-medium text-white uppercase tracking-wide">{dim.title}</span>
@@ -683,7 +714,8 @@ function ScamperCaseStudies() {
             <p className="mt-0.5 text-md text-white">{cs.outcome}</p>
           </div>
         </div>
-      ))}
+        )
+      })}
     </div>
   )
 }
