@@ -18,7 +18,8 @@ import type { ScamperResponses, ImprovementResponses, SolutionCandidate } from "
 import {
   Shuffle, RotateCcw, Globe, TrendingUp, Plus, Trash2, Pencil, Check, X,
   ArrowLeft, ArrowRight, Wind, Tv, Armchair, Package, Smartphone, Coffee,
-  Home, Pizza, ShoppingBag, Utensils, Flag, Leaf, type LucideIcon,
+  Home, Pizza, ShoppingBag, Utensils, Flag, Leaf, Sparkles, ShieldCheck,
+  Truck, Heart, type LucideIcon,
 } from "lucide-react"
 
 /* ── SCAMPER Form ── */
@@ -343,12 +344,16 @@ function AnalogyForm() {
 
 type ImprovementGroup = {
   group: string
+  icon: LucideIcon
+  color: string
   items: { key: keyof ImprovementResponses; title: string; prompt: string; example: string }[]
 }
 
 const IMPROVEMENT_GROUPS: ImprovementGroup[] = [
   {
     group: "Product & Experience",
+    icon: Sparkles,
+    color: "bg-violet-500",
     items: [
       { key: "coreFunctionality", title: "Core Functionality", prompt: "How could the product solve the problem better? Think about effectiveness, reliability, durability, performance speed, accuracy, and compatibility.", example: "A food delivery app improves delivery time accuracy from +/-15 min to +/-3 min." },
       { key: "easeOfUse", title: "Ease of Use", prompt: "How could the product be simpler? Consider setup, number of steps, onboarding, navigation, intuitiveness, learning time, and accessibility.", example: "One-click checkout instead of a 6-step checkout process." },
@@ -359,6 +364,8 @@ const IMPROVEMENT_GROUPS: ImprovementGroup[] = [
   },
   {
     group: "Value & Trust",
+    icon: ShieldCheck,
+    color: "bg-emerald-500",
     items: [
       { key: "priceValue", title: "Price Value", prompt: "How could customers perceive better value? Consider pricing, bundling, flexible payment, subscriptions, loyalty rewards, and transparent pricing.", example: "Free returns included at no extra cost." },
       { key: "trustTransparency", title: "Trust & Transparency", prompt: "How could customers trust the product more? Think about honest marketing, clear policies, visible reviews, privacy protection, data security, and warranties.", example: "Showing verified customer reviews increases purchase confidence." },
@@ -367,6 +374,8 @@ const IMPROVEMENT_GROUPS: ImprovementGroup[] = [
   },
   {
     group: "Service & Delivery",
+    icon: Truck,
+    color: "bg-sky-500",
     items: [
       { key: "customerSupport", title: "Customer Support", prompt: "How could the support experience improve? Think about response speed, 24/7 availability, live chat, knowledge bases, complaint handling, and follow-ups.", example: "Immediate chatbot support before human escalation." },
       { key: "deliveryFulfilment", title: "Delivery & Fulfilment", prompt: "How could delivery and fulfilment improve? Consider shipping speed, flexible delivery slots, real-time tracking, eco-friendly packaging, returns process, and click-and-collect.", example: "Next-day delivery with real-time tracking instead of standard shipping." },
@@ -376,6 +385,8 @@ const IMPROVEMENT_GROUPS: ImprovementGroup[] = [
   },
   {
     group: "Emotional & Social",
+    icon: Heart,
+    color: "bg-rose-500",
     items: [
       { key: "emotionalExperience", title: "Emotional Experience", prompt: "How could the product make customers feel better? Think about delight moments, brand personality, community, loyalty recognition, and reducing frustration.", example: "Handwritten thank-you note inside packaging." },
       { key: "socialEthicalValue", title: "Social & Ethical Value", prompt: "How could the product better align with customer values? Consider sustainable materials, ethical sourcing, carbon-neutral options, inclusive branding, and charity partnerships.", example: "Plastic-free packaging option." },
@@ -485,25 +496,37 @@ function ImprovementDimension({
 function ImprovementForm() {
   return (
     <div className="bg-primary rounded-xl p-8">
-      <div className="flex flex-col divide-y divide-white/30">
-        {IMPROVEMENT_GROUPS.map(({ group, items }) => (
-          <div key={group} className="py-6 first:pt-0 last:pb-0 flex flex-col gap-4">
-            <h4 className="text-sm font-bold uppercase tracking-wide text-white/70">{group}</h4>
-            <div className="flex flex-col divide-y divide-white/20">
-              {items.map(({ key, title, prompt, example }) => (
-                <div key={key} className="py-5 first:pt-0 last:pb-0">
-                  <ImprovementDimension
-                    dimensionKey={key}
-                    title={title}
-                    prompt={prompt}
-                    example={example}
-                  />
+      <Accordion type="multiple" className="flex flex-col divide-y divide-white/30">
+        {IMPROVEMENT_GROUPS.map(({ group, icon: Icon, color, items }) => (
+          <AccordionItem key={group} value={group}>
+            <AccordionTrigger className="py-5 hover:no-underline [&>svg]:text-white/80">
+              <div className="flex items-center gap-3 text-left flex-1 min-w-0">
+                <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${color} text-white`}>
+                  <Icon className="h-4.5 w-4.5" />
+                </span>
+                <div className="flex flex-col gap-1 min-w-0">
+                  <span className="text-sm font-bold uppercase tracking-wide text-white/90">{group}</span>
+                  <span className="text-xs text-white/60 font-normal">{items.length} dimensions</span>
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+            </AccordionTrigger>
+            <AccordionContent className="pb-5">
+              <div className="flex flex-col divide-y divide-white/20">
+                {items.map(({ key, title, prompt, example }) => (
+                  <div key={key} className="py-5 first:pt-0 last:pb-0">
+                    <ImprovementDimension
+                      dimensionKey={key}
+                      title={title}
+                      prompt={prompt}
+                      example={example}
+                    />
+                  </div>
+                ))}
+              </div>
+            </AccordionContent>
+          </AccordionItem>
         ))}
-      </div>
+      </Accordion>
     </div>
   )
 }
