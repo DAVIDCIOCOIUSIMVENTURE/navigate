@@ -41,6 +41,16 @@ const TOOL_CARDS: Record<ToolKey, { title: string; description: string; icon: ty
   },
 }
 
+const SCAMPER_LETTER_COLORS: Record<string, string> = {
+  S: "bg-red-500",
+  C: "bg-orange-500",
+  A: "bg-amber-500",
+  M: "bg-emerald-500",
+  P: "bg-cyan-500",
+  E: "bg-pink-500",
+  R: "bg-fuchsia-500",
+}
+
 const SCAMPER_CASE = {
   title: "Parking in Busy Cities",
   problem: "Drivers spend 20+ minutes looking for parking",
@@ -48,6 +58,8 @@ const SCAMPER_CASE = {
     { letter: "S", idea: "Substitute car parks with shared drop-off zones (like ride-share pick-up points)" },
     { letter: "C", idea: "Combine parking with public transit: park at hubs, take a shuttle the last mile" },
     { letter: "A", idea: "Adapt hotel valet concepts: app-based valet that parks your car while you shop" },
+    { letter: "M", idea: "Modify parking spaces into stackable, vertical lifts so one spot fits three cars" },
+    { letter: "P", idea: "Put underused spaces to other use: turn driveways and office lots into paid parking on weekends" },
     { letter: "E", idea: "Eliminate the need to park by incentivising remote work or delivery services" },
     { letter: "R", idea: "Reverse: instead of drivers finding parking, parking finds drivers (real-time slot alerts)" },
   ],
@@ -87,28 +99,53 @@ const IMPROVE_CASE = {
   ],
 }
 
+function ExampleHeader({ title, problem }: { title: string; problem: string }) {
+  return (
+    <div className="flex flex-col gap-1">
+      <p className="text-sm font-semibold text-foreground">{title}</p>
+      <p className="text-sm text-foreground/80">
+        <span className="font-semibold text-muted-foreground uppercase tracking-wide text-xs">Problem: </span>
+        {problem}
+      </p>
+    </div>
+  )
+}
+
+function ExampleCard({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="rounded-lg border bg-muted p-4 flex flex-col gap-3">
+      {children}
+    </div>
+  )
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{children}</p>
+  )
+}
+
 function ScamperDialogContent() {
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-sm leading-relaxed">
+      <p className="text-sm leading-relaxed text-foreground">
         SCAMPER is a creative thinking technique that prompts you to look at a problem from seven angles: Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate, and Reverse. Each prompt sparks ideas you wouldn&apos;t reach through normal brainstorming.
       </p>
       <div className="flex flex-col gap-2">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Example</p>
-        <div className="rounded-lg border bg-muted/50 p-4 flex flex-col gap-2">
-          <p className="text-sm font-semibold">{SCAMPER_CASE.title}</p>
-          <p className="text-sm text-muted-foreground"><strong>Problem:</strong> {SCAMPER_CASE.problem}</p>
-          <div className="flex flex-col gap-2 mt-1">
+        <SectionLabel>Example</SectionLabel>
+        <ExampleCard>
+          <ExampleHeader title={SCAMPER_CASE.title} problem={SCAMPER_CASE.problem} />
+          <div className="flex flex-col gap-2 border-t pt-3">
             {SCAMPER_CASE.examples.map((ex) => (
-              <div key={ex.letter} className="flex gap-2 items-start">
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">
+              <div key={ex.letter} className="flex gap-2.5 items-start">
+                <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full ${SCAMPER_LETTER_COLORS[ex.letter] ?? "bg-primary"} text-[11px] font-bold text-white`}>
                   {ex.letter}
                 </span>
-                <p className="text-sm text-muted-foreground">{ex.idea}</p>
+                <p className="text-sm text-foreground leading-relaxed">{ex.idea}</p>
               </div>
             ))}
           </div>
-        </div>
+        </ExampleCard>
       </div>
     </div>
   )
@@ -117,25 +154,24 @@ function ScamperDialogContent() {
 function ReverseDialogContent() {
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-sm leading-relaxed">
+      <p className="text-sm leading-relaxed text-foreground">
         Instead of solving the problem directly, first brainstorm how to make it worse. Then flip each &quot;make it worse&quot; idea to discover creative solutions you might not have considered. This counterintuitive approach breaks you out of conventional thinking patterns.
       </p>
       <div className="flex flex-col gap-2">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Example</p>
-        <div className="rounded-lg border bg-muted/50 p-4 flex flex-col gap-3">
-          <p className="text-sm font-semibold">{REVERSE_CASE.title}</p>
-          <p className="text-sm text-muted-foreground"><strong>Problem:</strong> {REVERSE_CASE.problem}</p>
+        <SectionLabel>Example</SectionLabel>
+        <ExampleCard>
+          <ExampleHeader title={REVERSE_CASE.title} problem={REVERSE_CASE.problem} />
           <div className="flex flex-col gap-2">
-            <div className="rounded bg-red-50 dark:bg-red-950/30 p-3">
-              <p className="text-sm font-semibold text-red-700 dark:text-red-400 mb-1">Make it worse:</p>
-              <p className="text-sm text-muted-foreground">{REVERSE_CASE.worse}</p>
+            <div className="rounded-md border border-red-200 bg-red-100 dark:border-red-900 dark:bg-red-950/60 p-3">
+              <p className="text-xs font-bold uppercase tracking-wide text-red-800 dark:text-red-300 mb-1.5">Make it worse</p>
+              <p className="text-sm text-foreground leading-relaxed">{REVERSE_CASE.worse}</p>
             </div>
-            <div className="rounded bg-green-50 dark:bg-green-950/30 p-3">
-              <p className="text-sm font-semibold text-green-700 dark:text-green-400 mb-1">Flip it:</p>
-              <p className="text-sm text-muted-foreground">{REVERSE_CASE.inverted}</p>
+            <div className="rounded-md border border-emerald-200 bg-emerald-100 dark:border-emerald-900 dark:bg-emerald-950/60 p-3">
+              <p className="text-xs font-bold uppercase tracking-wide text-emerald-800 dark:text-emerald-300 mb-1.5">Flip it into a solution</p>
+              <p className="text-sm text-foreground leading-relaxed">{REVERSE_CASE.inverted}</p>
             </div>
           </div>
-        </div>
+        </ExampleCard>
       </div>
     </div>
   )
@@ -144,23 +180,24 @@ function ReverseDialogContent() {
 function AnalogyDialogContent() {
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-sm leading-relaxed">
+      <p className="text-sm leading-relaxed text-foreground">
         Look outside your domain for inspiration. How have other industries solved similar problems? Cross-pollinating ideas from different fields often leads to breakthrough solutions that feel fresh and unexpected.
       </p>
       <div className="flex flex-col gap-2">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Examples</p>
-        {ANALOGY_CASES.map((cs) => (
-          <div key={cs.title} className="rounded-lg border bg-muted/50 p-4 flex flex-col gap-2">
-            <p className="text-sm font-semibold">{cs.title}</p>
-            <p className="text-sm text-muted-foreground"><strong>Problem:</strong> {cs.problem}</p>
-            <div className="rounded bg-blue-50 dark:bg-blue-950/30 p-3 mt-1">
-              <p className="text-sm font-semibold text-blue-700 dark:text-blue-400 mb-1">
-                Analogy from: {cs.domain}
-              </p>
-              <p className="text-sm text-muted-foreground">{cs.insight}</p>
-            </div>
-          </div>
-        ))}
+        <SectionLabel>Examples</SectionLabel>
+        <div className="flex flex-col gap-3">
+          {ANALOGY_CASES.map((cs) => (
+            <ExampleCard key={cs.title}>
+              <ExampleHeader title={cs.title} problem={cs.problem} />
+              <div className="rounded-md border border-sky-200 bg-sky-100 dark:border-sky-900 dark:bg-sky-950/60 p-3">
+                <p className="text-xs font-bold uppercase tracking-wide text-sky-800 dark:text-sky-300 mb-1.5">
+                  Analogy from: {cs.domain}
+                </p>
+                <p className="text-sm text-foreground leading-relaxed">{cs.insight}</p>
+              </div>
+            </ExampleCard>
+          ))}
+        </div>
       </div>
     </div>
   )
@@ -169,25 +206,24 @@ function AnalogyDialogContent() {
 function ImproveDialogContent() {
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-sm leading-relaxed">
+      <p className="text-sm leading-relaxed text-foreground">
         Rather than inventing something entirely new, systematically improve an existing product or service from the customer&apos;s perspective. Work through 15 improvement dimensions covering the entire customer journey: core functionality, ease of use, trust, delivery, and post-purchase experience.
       </p>
       <div className="flex flex-col gap-2">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Example</p>
-        <div className="rounded-lg border bg-muted/50 p-4 flex flex-col gap-2">
-          <p className="text-sm font-semibold">{IMPROVE_CASE.title}</p>
-          <p className="text-sm text-muted-foreground"><strong>Problem:</strong> {IMPROVE_CASE.problem}</p>
-          <div className="flex flex-col gap-2 mt-1">
+        <SectionLabel>Example</SectionLabel>
+        <ExampleCard>
+          <ExampleHeader title={IMPROVE_CASE.title} problem={IMPROVE_CASE.problem} />
+          <div className="flex flex-col divide-y border-t">
             {IMPROVE_CASE.examples.map((ex) => (
-              <div key={ex.dimension} className="flex gap-2 items-start">
-                <span className="flex h-5 shrink-0 items-center justify-center rounded-full bg-primary/10 px-2 text-[10px] font-bold text-primary">
+              <div key={ex.dimension} className="flex flex-col gap-1 py-2.5 first:pt-3 last:pb-0">
+                <span className="inline-flex self-start rounded-md bg-primary/15 px-2 py-0.5 text-xs font-semibold text-primary">
                   {ex.dimension}
                 </span>
-                <p className="text-sm text-muted-foreground">{ex.idea}</p>
+                <p className="text-sm text-foreground leading-relaxed">{ex.idea}</p>
               </div>
             ))}
           </div>
-        </div>
+        </ExampleCard>
       </div>
     </div>
   )
