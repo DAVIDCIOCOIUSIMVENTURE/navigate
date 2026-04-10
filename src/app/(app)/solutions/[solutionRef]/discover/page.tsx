@@ -11,10 +11,12 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useSolution, getAdjacentSteps } from "../context"
 import { SCAMPER_CASE_STUDIES } from "./case-studies"
 import { IMPROVE_CASE_STUDIES } from "./improve-case-studies"
+import { REVERSE_CASE_STUDIES } from "./reverse-case-studies"
 import type { ScamperResponses, ImprovementResponses, SolutionCandidate } from "@/types/solution"
 import {
   Shuffle, RotateCcw, Globe, TrendingUp, Plus, Trash2, Pencil, Check, X,
-  ArrowLeft, ArrowRight, Wind, Tv, Armchair, Package, Smartphone, Coffee, type LucideIcon,
+  ArrowLeft, ArrowRight, Wind, Tv, Armchair, Package, Smartphone, Coffee,
+  Home, Pizza, ShoppingBag, type LucideIcon,
 } from "lucide-react"
 
 /* ── SCAMPER Form ── */
@@ -212,21 +214,21 @@ function ReverseItemList({
   }
 
   return (
-    <div className="rounded-lg border bg-background p-4 flex flex-col gap-2">
-      <label className="text-sm font-semibold">{label}</label>
-      <p className="text-xs text-muted-foreground">{description}</p>
+    <div className="flex flex-col gap-2">
+      <label className="text-sm font-semibold text-white">{label}</label>
+      <p className="text-sm text-white/80">{description}</p>
 
       {items.map((item) => (
         <div key={item.id} className="flex items-center gap-2">
           <Input
             defaultValue={item.text}
             onChange={(e) => updateItem(item.id, e.target.value)}
-            className="flex-1 text-sm"
+            className="flex-1 text-sm bg-white border-white text-foreground"
           />
           <Button
             size="icon"
             variant="ghost"
-            className="shrink-0 h-8 w-8 text-muted-foreground hover:text-foreground"
+            className="shrink-0 h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
             onClick={() => removeItem(item.id)}
           >
             <Trash2 className="h-3.5 w-3.5" />
@@ -242,11 +244,11 @@ function ReverseItemList({
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={onKeyDown}
           onBlur={addItem}
-          className="text-sm"
+          className="text-sm bg-white border-white text-foreground"
         />
       ) : (
-        <Button variant="outline" size="sm" className="w-full" onClick={() => setAdding(true)}>
-          <Plus className="h-3.5 w-3.5" />
+        <Button variant="on-primary" className="w-full" onClick={() => setAdding(true)}>
+          <Plus className="h-4 w-4" />
           Add Item
         </Button>
       )}
@@ -261,21 +263,27 @@ function ReverseBrainstormForm() {
   const inversionItems = Array.isArray(reverseInversion) ? reverseInversion : []
 
   return (
-    <div className="bg-primary rounded-xl p-8 flex flex-col gap-6">
-      <ReverseItemList
-        items={brainstormItems}
-        setItems={setReverseBrainstorm}
-        label="How could you make this problem worse?"
-        description="Think of every way to aggravate the problem. Be creative, the more outlandish the better."
-        placeholder="Type a way to make it worse and press Enter..."
-      />
-      <ReverseItemList
-        items={inversionItems}
-        setItems={setReverseInversion}
-        label="Now flip each idea"
-        description={'Take each "make it worse" idea above and write its opposite. These inversions often reveal strong solution ideas.'}
-        placeholder="Type the flipped idea and press Enter..."
-      />
+    <div className="bg-primary rounded-xl p-8">
+      <div className="flex flex-col divide-y divide-white/20">
+        <div className="py-5 first:pt-0 last:pb-0">
+          <ReverseItemList
+            items={brainstormItems}
+            setItems={setReverseBrainstorm}
+            label="How could you make this problem worse?"
+            description="Think of every way to aggravate the problem. Be creative, the more outlandish the better."
+            placeholder="Type a way to make it worse and press Enter..."
+          />
+        </div>
+        <div className="py-5 first:pt-0 last:pb-0">
+          <ReverseItemList
+            items={inversionItems}
+            setItems={setReverseInversion}
+            label="Now flip each idea"
+            description={'Take each "make it worse" idea above and write its opposite. These inversions often reveal strong solution ideas.'}
+            placeholder="Type the flipped idea and press Enter..."
+          />
+        </div>
+      </div>
     </div>
   )
 }
@@ -782,6 +790,74 @@ function ImproveCaseStudies() {
   )
 }
 
+/* ── Reverse Brainstorming Case Studies ── */
+
+const REVERSE_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
+  "Airbnb": Home,
+  "Domino's Pizza": Pizza,
+  "Zappos": ShoppingBag,
+}
+
+function ReverseCaseStudies() {
+  return (
+    <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
+      <p className="text-md text-white">
+        See how successful companies flipped every way they were making customers unhappy into a feature that won them loyalty, trust, and market share.
+      </p>
+      {REVERSE_CASE_STUDIES.map((cs) => {
+        const Icon = REVERSE_CASE_STUDY_ICONS[cs.company]
+        return (
+          <div
+            key={cs.company}
+            className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-3"
+          >
+            <div className="flex items-center gap-2">
+              {Icon && (
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/20 text-white">
+                  <Icon className="h-4 w-4" />
+                </span>
+              )}
+              <p className="text-md font-semibold text-white">{cs.company}</p>
+            </div>
+            <div>
+              <span className="text-md font-medium text-white uppercase tracking-wide">Problem</span>
+              <p className="mt-0.5 text-md text-white">{cs.problem}</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="rounded-md border border-white/10 bg-white/5 p-3">
+                <span className="text-xs font-semibold uppercase tracking-wide text-white/70">How to make it worse</span>
+                <ul className="mt-2 flex flex-col gap-1.5">
+                  {cs.worseIdeas.map((idea, i) => (
+                    <li key={i} className="text-md text-white flex gap-1.5">
+                      <span className="text-white/50">•</span>
+                      <span>{idea}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="rounded-md border border-white/10 bg-white/5 p-3">
+                <span className="text-xs font-semibold uppercase tracking-wide text-white/70">Flipped into solutions</span>
+                <ul className="mt-2 flex flex-col gap-1.5">
+                  {cs.flippedIdeas.map((idea, i) => (
+                    <li key={i} className="text-md text-white flex gap-1.5">
+                      <span className="text-white/50">→</span>
+                      <span>{idea}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            <div className="border-t border-white/10 pt-3 mt-1">
+              <span className="text-md font-medium text-white uppercase tracking-wide">Outcome</span>
+              <p className="mt-0.5 text-md text-white">{cs.outcome}</p>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 /* ── Main Page ── */
 
 type ToolHint = { icon: LucideIcon; title: string; subtitle: string; bg: string }
@@ -896,9 +972,22 @@ export default function DiscoverPage() {
         {discoveryToolType === "reverse" && (
           <>
             <hr className="border-border/40" />
-            <ReverseBrainstormForm />
-            <hr className="border-border/40" />
-            <CandidatesSection />
+            <Tabs defaultValue="strategy" className="flex flex-col gap-4">
+              <TabsList className="self-center">
+                <TabsTrigger value="strategy">Your Strategy</TabsTrigger>
+                <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
+              </TabsList>
+              <TabsContent value="strategy">
+                <div className="flex flex-col gap-6">
+                  <ReverseBrainstormForm />
+                  <hr className="border-border/40" />
+                  <CandidatesSection />
+                </div>
+              </TabsContent>
+              <TabsContent value="case-studies">
+                <ReverseCaseStudies />
+              </TabsContent>
+            </Tabs>
           </>
         )}
         {discoveryToolType === "analogy" && (
