@@ -10,10 +10,11 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useSolution, getAdjacentSteps } from "../context"
 import { SCAMPER_CASE_STUDIES } from "./case-studies"
+import { IMPROVE_CASE_STUDIES } from "./improve-case-studies"
 import type { ScamperResponses, ImprovementResponses, SolutionCandidate } from "@/types/solution"
 import {
   Shuffle, RotateCcw, Globe, TrendingUp, Plus, Trash2, Pencil, Check, X,
-  ArrowLeft, ArrowRight, Wind, Tv, Armchair, type LucideIcon,
+  ArrowLeft, ArrowRight, Wind, Tv, Armchair, Package, Smartphone, Coffee, type LucideIcon,
 } from "lucide-react"
 
 /* ── SCAMPER Form ── */
@@ -436,22 +437,22 @@ function ImprovementDimension({
   }
 
   return (
-    <div className="rounded-lg border bg-background p-4 flex flex-col gap-2">
-      <span className="text-sm font-semibold">{title}</span>
-      <p className="text-xs text-muted-foreground">{prompt}</p>
-      <p className="text-xs italic text-muted-foreground/70">Example: {example}</p>
+    <div className="flex flex-col gap-2">
+      <span className="text-sm font-semibold text-white">{title}</span>
+      <p className="text-sm text-white/80">{prompt}</p>
+      <p className="text-xs italic text-white/60">Example: {example}</p>
 
       {items.map((item) => (
         <div key={item.id} className="flex items-center gap-2">
           <Input
             defaultValue={item.text}
             onChange={(e) => updateItem(item.id, e.target.value)}
-            className="flex-1 text-sm"
+            className="flex-1 text-sm bg-white border-white text-foreground"
           />
           <Button
             size="icon"
             variant="ghost"
-            className="shrink-0 h-8 w-8 text-muted-foreground hover:text-foreground"
+            className="shrink-0 h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
             onClick={() => removeItem(item.id)}
           >
             <Trash2 className="h-3.5 w-3.5" />
@@ -467,11 +468,11 @@ function ImprovementDimension({
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={onKeyDown}
           onBlur={addItem}
-          className="text-sm"
+          className="text-sm bg-white border-white text-foreground"
         />
       ) : (
-        <Button variant="outline" size="sm" className="w-full" onClick={() => setAdding(true)}>
-          <Plus className="h-3.5 w-3.5" />
+        <Button variant="on-primary" className="w-full" onClick={() => setAdding(true)}>
+          <Plus className="h-4 w-4" />
           Add Item
         </Button>
       )}
@@ -481,21 +482,26 @@ function ImprovementDimension({
 
 function ImprovementForm() {
   return (
-    <div className="bg-primary rounded-xl p-8 flex flex-col gap-8">
-      {IMPROVEMENT_GROUPS.map(({ group, items }) => (
-        <div key={group} className="flex flex-col gap-4">
-          <h4 className="text-sm font-bold uppercase tracking-wide text-primary-foreground/70">{group}</h4>
-          {items.map(({ key, title, prompt, example }) => (
-            <ImprovementDimension
-              key={key}
-              dimensionKey={key}
-              title={title}
-              prompt={prompt}
-              example={example}
-            />
-          ))}
-        </div>
-      ))}
+    <div className="bg-primary rounded-xl p-8">
+      <div className="flex flex-col divide-y divide-white/30">
+        {IMPROVEMENT_GROUPS.map(({ group, items }) => (
+          <div key={group} className="py-6 first:pt-0 last:pb-0 flex flex-col gap-4">
+            <h4 className="text-sm font-bold uppercase tracking-wide text-white/70">{group}</h4>
+            <div className="flex flex-col divide-y divide-white/20">
+              {items.map(({ key, title, prompt, example }) => (
+                <div key={key} className="py-5 first:pt-0 last:pb-0">
+                  <ImprovementDimension
+                    dimensionKey={key}
+                    title={title}
+                    prompt={prompt}
+                    example={example}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
@@ -720,6 +726,62 @@ function ScamperCaseStudies() {
   )
 }
 
+/* ── Improve Case Studies ── */
+
+const IMPROVE_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
+  "Amazon Prime": Package,
+  "Apple iPhone": Smartphone,
+  "Starbucks": Coffee,
+}
+
+function ImproveCaseStudies() {
+  return (
+    <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
+      <p className="text-md text-white">
+        See how successful companies improved existing solutions along multiple dimensions at once, turning ordinary products into category-defining experiences.
+      </p>
+      {IMPROVE_CASE_STUDIES.map((cs) => {
+        const Icon = IMPROVE_CASE_STUDY_ICONS[cs.company]
+        return (
+          <div
+            key={cs.company}
+            className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-3"
+          >
+            <div className="flex items-center gap-2">
+              {Icon && (
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/20 text-white">
+                  <Icon className="h-4 w-4" />
+                </span>
+              )}
+              <p className="text-md font-semibold text-white">{cs.company}</p>
+            </div>
+            <div>
+              <span className="text-md font-medium text-white uppercase tracking-wide">Problem</span>
+              <p className="mt-0.5 text-md text-white">{cs.problem}</p>
+            </div>
+            <div className="flex flex-col gap-3">
+              {cs.improvements.map((imp, i) => (
+                <div key={i} className="rounded-md border border-white/10 bg-white/5 p-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-xs font-semibold uppercase tracking-wide text-white/70">{imp.group}</span>
+                    <span className="text-white/40">/</span>
+                    <span className="text-sm font-semibold text-white">{imp.dimension}</span>
+                  </div>
+                  <p className="mt-1 text-md text-white">{imp.idea}</p>
+                </div>
+              ))}
+            </div>
+            <div className="border-t border-white/10 pt-3 mt-1">
+              <span className="text-md font-medium text-white uppercase tracking-wide">Outcome</span>
+              <p className="mt-0.5 text-md text-white">{cs.outcome}</p>
+            </div>
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
 /* ── Main Page ── */
 
 type ToolHint = { icon: LucideIcon; title: string; subtitle: string; bg: string }
@@ -850,9 +912,22 @@ export default function DiscoverPage() {
         {discoveryToolType === "improve" && (
           <>
             <hr className="border-border/40" />
-            <ImprovementForm />
-            <hr className="border-border/40" />
-            <CandidatesSection />
+            <Tabs defaultValue="strategy" className="flex flex-col gap-4">
+              <TabsList className="self-center">
+                <TabsTrigger value="strategy">Your Strategy</TabsTrigger>
+                <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
+              </TabsList>
+              <TabsContent value="strategy">
+                <div className="flex flex-col gap-6">
+                  <ImprovementForm />
+                  <hr className="border-border/40" />
+                  <CandidatesSection />
+                </div>
+              </TabsContent>
+              <TabsContent value="case-studies">
+                <ImproveCaseStudies />
+              </TabsContent>
+            </Tabs>
           </>
         )}
 
