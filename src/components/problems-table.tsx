@@ -122,9 +122,8 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                           </>
                         )}
                         <Button
-                          variant="ghost"
                           size="sm"
-                          className="h-7 text-muted-foreground hover:text-foreground"
+                          className="h-7"
                           onClick={() => router.push(`/problems/${problem.id}/introduction`)}
                           aria-label="Validate problem"
                         >
