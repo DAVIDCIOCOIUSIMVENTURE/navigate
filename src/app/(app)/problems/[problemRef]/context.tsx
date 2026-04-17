@@ -230,7 +230,7 @@ export function useProblemValidation() {
 export const NAV_ITEMS = [
   { label: "Introduction", path: "introduction" },
   { label: "Define your customer", path: "customer" },
-  { label: "Explore existing solutions", path: "existing-solutions" },
+  { label: "Explore existing solutions & shortcomings", path: "existing-solutions" },
   { label: "Validate your problem", path: "validate" },
   { label: "Summary & Next Steps", path: "summary" },
 ] as const

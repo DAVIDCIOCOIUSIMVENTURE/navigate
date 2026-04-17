@@ -63,22 +63,7 @@ function loadFromStorage(): ProblemsState | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return null
-    const parsed = JSON.parse(raw) as ProblemsState
-    // Migrate legacy "alternatives" field → "existingSolutions"
-    let migrated = false
-    for (const p of parsed.problems) {
-      if ("alternatives" in p && !("existingSolutions" in p)) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(p as any).existingSolutions = (p as any).alternatives
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        delete (p as any).alternatives
-        migrated = true
-      }
-    }
-    if (migrated) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed))
-    }
-    return parsed
+    return JSON.parse(raw) as ProblemsState
   } catch {
     return null
   }

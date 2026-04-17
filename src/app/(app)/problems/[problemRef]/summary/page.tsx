@@ -184,31 +184,26 @@ export default function SummaryPage() {
                   <li key={alt.id} className="flex flex-col gap-2 bg-white/60 rounded-lg px-3 py-2.5 border border-border">
                     <p className="text-md font-medium text-foreground/90">{alt.text || <EmptyText text="Unnamed" />}</p>
                     {alt.shortcomings.length > 0 && (
-                      <div className="flex flex-col gap-0.5 pl-2">
-                        <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Shortcomings</p>
-                        <ul className="flex flex-col gap-0.5">
-                          {alt.shortcomings.map((sc, j) => (
-                            <li key={j} className="text-xs text-foreground/70 flex gap-1.5">
-                              <span className="text-muted-foreground shrink-0">–</span>
-                              {sc || <EmptyText text="Empty" />}
+                      <ul className="flex flex-col gap-1.5 pl-2">
+                        {alt.shortcomings.map((sc) => {
+                          const hasImpact = sc.impact.category || sc.impact.description
+                          return (
+                            <li key={sc.id} className="flex flex-col gap-0.5">
+                              <div className="text-xs text-foreground/70 flex gap-1.5">
+                                <span className="text-muted-foreground shrink-0">–</span>
+                                {sc.text || <EmptyText text="Empty" />}
+                              </div>
+                              {hasImpact && (
+                                <div className="text-xs text-foreground/70 flex gap-2 items-baseline pl-3.5">
+                                  <BarChart2 className="h-3 w-3 shrink-0 text-muted-foreground" />
+                                  {sc.impact.category && <span className="font-medium">{sc.impact.category}</span>}
+                                  {sc.impact.description && <span>{sc.impact.description}</span>}
+                                </div>
+                              )}
                             </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                    {(alt.impacts ?? []).filter((imp) => imp.category || imp.description).length > 0 && (
-                      <div className="flex flex-col gap-0.5 pl-2">
-                        <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Impacts</p>
-                        <ul className="flex flex-col gap-0.5">
-                          {alt.impacts.filter((imp) => imp.category || imp.description).map((imp, k) => (
-                            <li key={k} className="text-xs text-foreground/70 flex gap-2 items-baseline">
-                              <BarChart2 className="h-3 w-3 shrink-0 text-muted-foreground" />
-                              <span className="font-medium">{imp.category || "-"}</span>
-                              {imp.description && <span>{imp.description}</span>}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                          )
+                        })}
+                      </ul>
                     )}
                   </li>
                 ))}

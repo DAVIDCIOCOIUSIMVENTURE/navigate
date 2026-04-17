@@ -1,6 +1,8 @@
 export type ImpactItem = { category: string; description: string }
 
-export type ExistingSolutionItem = { id: number; text: string; shortcomings: string[]; impacts: ImpactItem[] }
+export type ShortcomingItem = { id: number; text: string; impact: ImpactItem }
+
+export type ExistingSolutionItem = { id: number; text: string; shortcomings: ShortcomingItem[] }
 
 export type ValidationStatus = "unvalidated" | "in_progress" | "valid" | "invalid" | "unsure"
 export type DecisionLevel = "" | "none" | "low" | "medium" | "high" | "prohibitive" | "small" | "large" | "terrible" | "poor" | "average" | "good" | "excellent" | "micro" | "giant"

@@ -203,26 +203,25 @@ export function ProblemSummaryDialog({ open, onOpenChange, data }: ProblemSummar
                     <li key={sol.id} className="text-sm">
                       <p className="font-medium">{sol.text}</p>
                       {sol.shortcomings.length > 0 && (
-                        <div className="mt-1 ml-4">
-                          <p className="text-xs font-medium text-muted-foreground mb-0.5">Shortcomings</p>
-                          <ul className="list-disc list-inside text-muted-foreground space-y-0.5">
-                            {sol.shortcomings.map((s, i) => (
-                              <li key={i}>{s}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                      {sol.impacts.length > 0 && (
-                        <div className="mt-1 ml-4">
-                          <p className="text-xs font-medium text-muted-foreground mb-0.5">Impacts</p>
-                          <ul className="list-disc list-inside text-muted-foreground space-y-0.5">
-                            {sol.impacts.map((impact, i) => (
-                              <li key={i}>
-                                <span className="font-medium">{impact.category}:</span> {impact.description}
+                        <ul className="mt-1 ml-4 space-y-1 text-muted-foreground">
+                          {sol.shortcomings.map((sc) => {
+                            const hasImpact = sc.impact.category || sc.impact.description
+                            return (
+                              <li key={sc.id}>
+                                <div className="flex gap-1.5">
+                                  <span className="shrink-0">&bull;</span>
+                                  <span>{sc.text}</span>
+                                </div>
+                                {hasImpact && (
+                                  <div className="ml-4 text-xs">
+                                    {sc.impact.category && <span className="font-medium">{sc.impact.category}: </span>}
+                                    {sc.impact.description}
+                                  </div>
+                                )}
                               </li>
-                            ))}
-                          </ul>
-                        </div>
+                            )
+                          })}
+                        </ul>
                       )}
                     </li>
                   ))}
