@@ -999,6 +999,57 @@ export default function DiscoverPage() {
         {toolInfo && (
           <div className="flex flex-col gap-3 text-md">
             <p>{toolInfo.description}</p>
+
+            {discoveryToolType === "scamper" && (
+              <>
+                <h3 className="mt-4 text-xl font-bold text-foreground">The 7 SCAMPER Prompts</h3>
+                <p>Each letter invites you to look at your problem from a different creative angle. Work through each prompt to surface ideas you would not reach through ordinary brainstorming.</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-1 mb-4">
+                  {SCAMPER_PROMPTS.map(({ key, letter, title, prompt, color }, i) => {
+                    const isLastOdd = i === SCAMPER_PROMPTS.length - 1 && SCAMPER_PROMPTS.length % 2 === 1
+                    return (
+                      <div key={key} className={`flex items-start gap-3 rounded-lg border bg-muted/30 p-3 ${isLastOdd ? "md:col-span-2" : ""}`}>
+                        <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${color} text-white text-xs font-bold`}>
+                          {letter}
+                        </span>
+                        <div className="flex flex-col gap-1 min-w-0">
+                          <span className="text-sm font-semibold text-foreground">{title}</span>
+                          <p className="text-sm text-muted-foreground">{prompt}</p>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </>
+            )}
+
+            {discoveryToolType === "reverse" && (
+              <>
+                <h3 className="mt-4 text-xl font-bold text-foreground">The 2 Reverse Brainstorming Steps</h3>
+                <p>Reverse brainstorming runs in two passes. First you deliberately generate the worst ideas possible, then you flip them to reveal strong solutions hiding in plain sight.</p>
+                <div className="grid grid-cols-1 gap-5 mt-3 mb-6">
+                  <div className="flex items-start gap-4 rounded-lg border bg-muted/30 p-6">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-rose-500 text-white text-sm font-bold">
+                      1
+                    </span>
+                    <div className="flex flex-col gap-2 min-w-0">
+                      <span className="text-base font-semibold text-foreground">Make it worse</span>
+                      <p className="text-sm text-muted-foreground">Think of every way to aggravate the problem. Be creative, the more outlandish the better.</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-4 rounded-lg border bg-muted/30 p-6">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-500 text-white text-sm font-bold">
+                      2
+                    </span>
+                    <div className="flex flex-col gap-2 min-w-0">
+                      <span className="text-base font-semibold text-foreground">Flip each idea</span>
+                      <p className="text-sm text-muted-foreground">Take each &quot;make it worse&quot; idea and write its opposite. These inversions often reveal strong solution ideas.</p>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+
             <div className="flex flex-col gap-3">
               {toolInfo.hints.map(({ icon: Icon, title, subtitle, bg }) => (
                 <div key={title} className="flex items-start gap-3">
