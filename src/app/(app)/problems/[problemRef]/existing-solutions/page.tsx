@@ -29,8 +29,13 @@ export default function ExistingSolutionsPage() {
   const [draft, setDraft] = useState("")
   const [addingSc, setAddingSc] = useState<Record<number, boolean>>({})
   const [scDrafts, setScDrafts] = useState<Record<number, string>>({})
+  const [mounted, setMounted] = useState(false)
   const solutionInputRef = useRef<HTMLInputElement>(null)
   const scInputRefs = useRef<Record<number, HTMLInputElement | null>>({})
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   useEffect(() => {
     if (addingSolution) solutionInputRef.current?.focus()
@@ -184,7 +189,7 @@ export default function ExistingSolutionsPage() {
           <TabsContent value="strategy">
             <div className="bg-primary rounded-xl p-8">
               <div className="flex flex-col divide-y divide-white/20">
-                {existingSolutions.map((sol, i) => (
+                {mounted && existingSolutions.map((sol, i) => (
                   <div key={sol.id} className="py-5 first:pt-0 last:pb-0">
                     <div className="flex flex-col gap-1.5 mb-3">
                       <div className="flex items-center justify-between">
