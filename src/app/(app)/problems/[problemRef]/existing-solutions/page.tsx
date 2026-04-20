@@ -351,45 +351,43 @@ export default function ExistingSolutionsPage() {
               <p className="text-sm text-white">
                 See how successful companies mapped out the existing solutions their customers were already using, and identified the shortcomings that created the opportunity.
               </p>
-              {EXISTING_SOLUTIONS_CASE_STUDIES.map((cs) => (
+              {EXISTING_SOLUTIONS_CASE_STUDIES.map((cs) => {
+                const Icon = cs.icon
+                return (
                 <div
                   key={cs.company}
                   className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-4"
                 >
-                  <p className="text-sm font-semibold text-white">{cs.company}</p>
+                  <div className="flex items-center gap-2.5">
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-lg shrink-0 ${cs.iconBg}`}>
+                      <Icon className="h-4 w-4 text-white" />
+                    </div>
+                    <p className="text-sm font-semibold text-white">{cs.company}</p>
+                  </div>
                   <div className="flex flex-col gap-3">
                     {cs.solutions.map((sol) => (
-                      <div key={sol.name} className="flex flex-col gap-2 rounded-md border border-white/10 bg-white/5 p-3">
+                      <div key={sol.name} className="flex flex-col gap-3 rounded-md border border-white/10 bg-white/5 p-3">
                         <p className="text-sm font-medium text-white">{sol.name}</p>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-                          <div>
-                            <span className="text-xs font-medium text-white uppercase tracking-wide">Shortcomings</span>
-                            <ul className="mt-1 flex flex-col gap-0.5">
-                              {sol.shortcomings.map((sc, j) => (
-                                <li key={j} className="text-white flex gap-1.5">
-                                  <span className="shrink-0">•</span>
-                                  {sc}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
-                          <div>
-                            <span className="text-xs font-medium text-white uppercase tracking-wide">Impact</span>
-                            <ul className="mt-1 flex flex-col gap-0.5">
-                              {sol.impacts.map((imp, j) => (
-                                <li key={j} className="text-white flex gap-1.5">
-                                  <span className="shrink-0">•</span>
-                                  {imp}
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
+                        <div className="flex flex-col divide-y divide-white/10">
+                          {sol.shortcomings.map((sc, j) => (
+                            <div key={j} className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm py-3 first:pt-0 last:pb-0">
+                              <div>
+                                <span className="text-xs font-medium text-white uppercase tracking-wide">Shortcoming</span>
+                                <p className="mt-1 text-white">{sc.text}</p>
+                              </div>
+                              <div>
+                                <span className="text-xs font-medium text-white uppercase tracking-wide">Impact</span>
+                                <p className="mt-1 text-white">{sc.impact}</p>
+                              </div>
+                            </div>
+                          ))}
                         </div>
                       </div>
                     ))}
                   </div>
                 </div>
-              ))}
+                )
+              })}
             </div>
           </TabsContent>
         </Tabs>
