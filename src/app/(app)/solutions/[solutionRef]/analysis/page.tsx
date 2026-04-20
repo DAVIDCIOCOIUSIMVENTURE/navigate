@@ -104,7 +104,7 @@ export default function AnalysisPage() {
                   )}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {DIMENSIONS.map((dim) => (
-                      <div key={dim.key} className="flex flex-col gap-1.5">
+                      <div key={dim.key} className="flex flex-col gap-2">
                         <div className="flex justify-between items-center">
                           <label className="text-sm font-medium">{dim.label}</label>
                           <span className="text-[10px] text-muted-foreground">{dim.lowLabel} → {dim.highLabel}</span>
@@ -157,7 +157,7 @@ export default function AnalysisPage() {
               )}
 
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-primary-foreground">Analysis Notes</label>
+                <label className="text-sm font-medium text-primary-foreground">Analysis Notes</label>
                 <Textarea
                   value={analysisNotes}
                   onChange={(e) => setAnalysisNotes(e.target.value)}

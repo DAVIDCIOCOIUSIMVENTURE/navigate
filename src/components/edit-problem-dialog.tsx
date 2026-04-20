@@ -82,7 +82,7 @@ export function EditProblemDialog({ problem, onClose, title = "Edit Problem", sh
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-4 py-4">
-          <div className="flex flex-col gap-1.5">
+          <div className="flex flex-col gap-2">
             <label className="text-sm font-medium" htmlFor="edit-description">
               Problem Description
             </label>
@@ -97,7 +97,7 @@ export function EditProblemDialog({ problem, onClose, title = "Edit Problem", sh
             />
           </div>
           {brainstormColumns.map((col) => (
-            <div key={col.id} className="flex flex-col gap-1.5">
+            <div key={col.id} className="flex flex-col gap-2">
               <label className="text-sm font-medium" htmlFor={`edit-${col.id}`}>
                 {col.title}
               </label>

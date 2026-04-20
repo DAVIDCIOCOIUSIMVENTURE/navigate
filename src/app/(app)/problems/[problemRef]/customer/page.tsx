@@ -149,7 +149,7 @@ export default function CustomerSegmentPage() {
           <TabsContent value="strategy">
             <div className="bg-primary rounded-xl p-8">
               <div className="flex flex-col gap-6">
-                <div className="flex flex-col gap-1.5">
+                <div className="flex flex-col gap-2">
                   <label htmlFor="customer-description" className="text-sm font-medium text-white">
                     Describe your customer
                   </label>
@@ -163,7 +163,7 @@ export default function CustomerSegmentPage() {
                   />
                 </div>
 
-                <div className="flex flex-col gap-1.5">
+                <div className="flex flex-col gap-2">
                   <label htmlFor="segment-size" className="text-sm font-medium text-white">
                     Estimated number of people affected
                   </label>

@@ -163,7 +163,7 @@ function FiveWhysForm() {
                       </div>
                       {i < 4 && <div className="w-px flex-1 bg-white/30" />}
                     </div>
-                    <div className="flex-1 flex flex-col gap-1 pb-3 last:pb-0">
+                    <div className="flex-1 flex flex-col gap-2 pb-3 last:pb-0">
                       <label className="text-sm font-medium text-white/80">{label}</label>
                       <Textarea
                         value={chain.whys[i] ?? ""}
@@ -236,7 +236,7 @@ function AffectedGroupsForm() {
                   <Trash2 className="h-3.5 w-3.5" />
                 </Button>
               </div>
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-2">
                 <label className="text-sm font-medium text-white/80">Group Name</label>
                 <Input
                   value={group.name}
@@ -245,7 +245,7 @@ function AffectedGroupsForm() {
                   className="font-medium bg-white border-white text-foreground"
                 />
               </div>
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-2">
                 <label className="text-sm font-medium text-white/80">Description</label>
                 <Textarea
                   value={group.description}
@@ -255,7 +255,7 @@ function AffectedGroupsForm() {
                   className="bg-white border-white text-foreground"
                 />
               </div>
-              <div className="flex flex-col gap-1">
+              <div className="flex flex-col gap-2">
                 <label className="text-sm font-medium text-white/80">Severity</label>
                 <ToggleGroup
                   type="single"

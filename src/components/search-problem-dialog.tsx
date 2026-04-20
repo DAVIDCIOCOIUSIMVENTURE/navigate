@@ -156,7 +156,7 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
 
             <div className="flex flex-col gap-4 mt-2">
               {brainstormColumns.map((col) => (
-                <div key={col.id} className="flex flex-col gap-1.5">
+                <div key={col.id} className="flex flex-col gap-2">
                   <label className="text-sm font-medium" htmlFor={`new-${col.id}`}>
                     {col.title}
                   </label>
