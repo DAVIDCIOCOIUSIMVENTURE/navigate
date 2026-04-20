@@ -138,7 +138,12 @@ export default function CustomerSegmentPage() {
 
         <hr className="border-border/40 my-4" />
 
-        <h3 className="mb-2 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> Who is your customer?</h3>
+        <div className="flex flex-col gap-2 items-center text-center">
+          <h3 className="text-xl font-bold"><span className="text-primary">Your Turn:</span> Who is your customer?</h3>
+          <p className="text-md text-muted-foreground max-w-xl">
+            Complete the two boxes below to describe your customer segment. Be as specific as you can, a clearer picture here makes every later step easier.
+          </p>
+        </div>
 
         <Tabs defaultValue="strategy" className="flex flex-col gap-4">
           <TabsList className="self-center">

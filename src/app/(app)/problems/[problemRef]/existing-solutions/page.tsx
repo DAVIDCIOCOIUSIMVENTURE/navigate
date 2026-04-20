@@ -178,7 +178,12 @@ export default function ExistingSolutionsPage() {
 
         <hr className="border-border/40 my-4" />
 
-        <h3 className="mb-2 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> What existing solutions are there?</h3>
+        <div className="flex flex-col gap-2 items-center text-center">
+          <h3 className="text-xl font-bold"><span className="text-primary">Your Turn:</span> What existing solutions are there?</h3>
+          <p className="text-md text-muted-foreground max-w-xl">
+            Add every existing solution your customer uses today. For each one, capture its shortcomings and the impact those gaps have on them.
+          </p>
+        </div>
 
         <Tabs defaultValue="strategy" className="flex flex-col gap-4">
           <TabsList className="self-center">
