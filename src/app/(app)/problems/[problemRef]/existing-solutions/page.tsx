@@ -188,23 +188,25 @@ export default function ExistingSolutionsPage() {
 
           <TabsContent value="strategy">
             <div className="bg-primary rounded-xl p-8">
-              <div className="flex flex-col divide-y divide-white/20">
+              <div className="flex flex-col gap-4">
                 {mounted && existingSolutions.map((sol, i) => (
-                  <div key={sol.id} className="py-5 first:pt-0 last:pb-0">
-                    <div className="flex flex-col gap-1.5 mb-3">
-                      <div className="flex items-center justify-between">
-                        <label htmlFor={`solution-${sol.id}`} className="text-base font-semibold text-white">Existing Solution {i + 1}</label>
-                        <ConfirmDialog
-                          trigger={
-                            <button className="shrink-0 text-white/50 hover:text-white transition-colors">
-                              <X className="h-3.5 w-3.5" />
-                            </button>
-                          }
-                          title="Remove existing solution?"
-                          description="This will also delete all shortcomings and impacts associated with it."
-                          onConfirm={() => removeSolution(i)}
-                        />
-                      </div>
+                  <div key={sol.id} className="rounded-lg border border-white/15 bg-white/10 p-5">
+                    <div className="flex items-center justify-between mb-4">
+                      <h4 className="text-lg font-bold text-white">Existing Solution {i + 1}</h4>
+                      <ConfirmDialog
+                        trigger={
+                          <button className="shrink-0 text-white/60 hover:text-white transition-colors">
+                            <X className="h-4 w-4" />
+                          </button>
+                        }
+                        title="Remove existing solution?"
+                        description="This will also delete all shortcomings and impacts associated with it."
+                        onConfirm={() => removeSolution(i)}
+                      />
+                    </div>
+
+                    <div className="flex flex-col gap-1.5 mb-4">
+                      <label htmlFor={`solution-${sol.id}`} className="text-xs font-medium text-white/80">Existing solution name</label>
                       <Input
                         id={`solution-${sol.id}`}
                         value={sol.text}
@@ -215,10 +217,11 @@ export default function ExistingSolutionsPage() {
 
                     <div className="flex flex-col gap-3">
                       <p className="text-sm font-medium text-white">Shortcomings &amp; Impacts</p>
+                      <div className="flex flex-col divide-y divide-white/15">
                       {sol.shortcomings.map((sc, j) => (
-                        <div key={sc.id} className="flex flex-col gap-1.5 pb-3">
+                        <div key={sc.id} className="flex flex-col gap-1.5 pb-5 pt-4 first:pt-0 last:pb-0">
                           <div className="flex items-center justify-between">
-                            <label htmlFor={`shortcoming-${sol.id}-${sc.id}`} className="text-xs font-medium text-white/80">Shortcoming {j + 1}</label>
+                            <label htmlFor={`shortcoming-${sol.id}-${sc.id}`} className="text-xs font-medium text-white/80">Shortcoming</label>
                             <ConfirmDialog
                               trigger={
                                 <button className="shrink-0 text-white/50 hover:text-white transition-colors">
@@ -237,10 +240,12 @@ export default function ExistingSolutionsPage() {
                             onChange={(e) => updateShortcomingText(i, j, e.target.value)}
                             className="bg-white border-white text-foreground"
                           />
-                          <label className="text-xs font-medium text-white/80 mt-1 pl-4">Impact</label>
-                          <div className="flex items-start gap-2 pl-4">
-                            <div className="relative w-2/5 shrink-0">
+                          <div className="flex items-start gap-2 pl-4 pt-2">
+                            <div className="w-2/5 shrink-0 flex flex-col gap-1">
+                              <label htmlFor={`impact-cat-${sol.id}-${sc.id}`} className="text-xs font-medium text-white/70">Impact</label>
+                              <div className="relative">
                               <Input
+                                id={`impact-cat-${sol.id}-${sc.id}`}
                                 placeholder="Impact category..."
                                 value={sc.impact.category}
                                 onChange={(e) => updateImpact(i, j, "category", e.target.value)}
@@ -267,36 +272,45 @@ export default function ExistingSolutionsPage() {
                                   ))}
                                 </DropdownMenuContent>
                               </DropdownMenu>
+                              </div>
                             </div>
-                            <AutoTextarea
-                              placeholder="Describe the impact..."
-                              value={sc.impact.description}
-                              onChange={(e) => updateImpact(i, j, "description", e.target.value)}
-                              className="flex-1 bg-white border-white text-foreground"
-                            />
+                            <div className="flex-1 flex flex-col gap-1">
+                              <label htmlFor={`impact-desc-${sol.id}-${sc.id}`} className="text-xs font-medium text-white/70">Description</label>
+                              <AutoTextarea
+                                id={`impact-desc-${sol.id}-${sc.id}`}
+                                placeholder="Describe the impact..."
+                                value={sc.impact.description}
+                                onChange={(e) => updateImpact(i, j, "description", e.target.value)}
+                                className="bg-white border-white text-foreground"
+                              />
+                            </div>
                           </div>
                         </div>
                       ))}
-                      {addingSc[i] ? (
-                        <Input
-                          ref={(el) => { scInputRefs.current[i] = el }}
-                          placeholder="Why does this fall short?"
-                          value={scDrafts[i] ?? ""}
-                          onChange={(e) => setScDrafts((prev) => ({ ...prev, [i]: e.target.value }))}
-                          onKeyDown={(e) => onScKeyDown(i, e)}
-                          onBlur={() => addShortcoming(i)}
-                          className="text-md h-8 bg-white border-white text-foreground"
-                        />
-                      ) : (
-                        <Button
-                          variant="on-primary"
-                          size="sm"
-                          onClick={() => setAddingSc((prev) => ({ ...prev, [i]: true }))}
-                        >
-                          <Plus className="h-3 w-3" />
-                          Add shortcoming
-                        </Button>
-                      )}
+                      </div>
+                      <div className={sol.shortcomings.length > 0 ? "border-t border-white/15 mt-2 pt-4" : ""}>
+                        {addingSc[i] ? (
+                          <Input
+                            ref={(el) => { scInputRefs.current[i] = el }}
+                            placeholder="Why does this fall short?"
+                            value={scDrafts[i] ?? ""}
+                            onChange={(e) => setScDrafts((prev) => ({ ...prev, [i]: e.target.value }))}
+                            onKeyDown={(e) => onScKeyDown(i, e)}
+                            onBlur={() => addShortcoming(i)}
+                            className="text-md h-8 bg-white border-white text-foreground"
+                          />
+                        ) : (
+                          <Button
+                            variant="on-primary"
+                            size="sm"
+                            className="w-full"
+                            onClick={() => setAddingSc((prev) => ({ ...prev, [i]: true }))}
+                          >
+                            <Plus className="h-3 w-3" />
+                            Add Shortcoming
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 ))}
