@@ -28,15 +28,13 @@ export default function DataPrivacySettingsPage() {
   const [clearDialogOpen, setClearDialogOpen] = useState(false)
 
   const handleClearData = () => {
-    const keysToRemove = [
-      "navigate-settings",
-      "navigate-account-settings",
-      "navigate-journal",
-      "navigate-problem-triggers",
-      "navigate-ideas",
-      "navigate-problems",
-      "navigate-standalone-validation",
-    ]
+    const keysToRemove: string[] = []
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i)
+      if (key && key.startsWith("navigate-")) {
+        keysToRemove.push(key)
+      }
+    }
     keysToRemove.forEach((key) => localStorage.removeItem(key))
     toast.success("All application data has been cleared. Refreshing...")
     setTimeout(() => window.location.reload(), 1000)
