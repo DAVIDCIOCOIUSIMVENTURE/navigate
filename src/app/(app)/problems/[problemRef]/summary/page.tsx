@@ -144,7 +144,7 @@ export default function SummaryPage() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
 
           {/* ── Core Problem ── */}
-          <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3">
+          <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3 min-w-0">
             <SectionHeader icon={AlertCircle} label="Core Problem" />
             {problem ? (
               <>
@@ -176,28 +176,28 @@ export default function SummaryPage() {
           </div>
 
           {/* ── Existing Solutions, Shortcomings & Impacts ── */}
-          <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3">
+          <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3 min-w-0">
             <SectionHeader icon={GitFork} label="Existing Solutions, Shortcomings & Impacts" />
             {existingSolutions.length > 0 ? (
               <ul className="flex flex-col gap-3">
                 {existingSolutions.map((alt) => (
-                  <li key={alt.id} className="flex flex-col gap-2 bg-white/60 rounded-lg px-3 py-2.5 border border-border">
-                    <p className="text-md font-medium text-foreground/90">{alt.text || <EmptyText text="Unnamed" />}</p>
+                  <li key={alt.id} className="flex flex-col gap-2 bg-white/60 rounded-lg px-3 py-2.5 border border-border min-w-0">
+                    <p className="text-md font-medium text-foreground/90 break-words">{alt.text || <EmptyText text="Unnamed" />}</p>
                     {alt.shortcomings.length > 0 && (
                       <ul className="flex flex-col gap-1.5 pl-2">
                         {alt.shortcomings.map((sc) => {
                           const hasImpact = sc.impact.category || sc.impact.description
                           return (
-                            <li key={sc.id} className="flex flex-col gap-0.5">
-                              <div className="text-xs text-foreground/70 flex gap-1.5">
+                            <li key={sc.id} className="flex flex-col gap-0.5 min-w-0">
+                              <div className="text-xs text-foreground/70 flex gap-1.5 min-w-0">
                                 <span className="text-muted-foreground shrink-0">–</span>
-                                {sc.text || <EmptyText text="Empty" />}
+                                <span className="break-words min-w-0">{sc.text || <EmptyText text="Empty" />}</span>
                               </div>
                               {hasImpact && (
-                                <div className="text-xs text-foreground/70 flex gap-2 items-baseline pl-3.5">
+                                <div className="text-xs text-foreground/70 flex gap-2 items-baseline pl-3.5 min-w-0">
                                   <BarChart2 className="h-3 w-3 shrink-0 text-muted-foreground" />
-                                  {sc.impact.category && <span className="font-medium">{sc.impact.category}</span>}
-                                  {sc.impact.description && <span>{sc.impact.description}</span>}
+                                  {sc.impact.category && <span className="font-medium break-words">{sc.impact.category}</span>}
+                                  {sc.impact.description && <span className="break-words min-w-0">{sc.impact.description}</span>}
                                 </div>
                               )}
                             </li>
