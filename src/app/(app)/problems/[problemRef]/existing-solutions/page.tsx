@@ -205,8 +205,8 @@ export default function ExistingSolutionsPage() {
                       />
                     </div>
 
-                    <div className="flex flex-col gap-1.5 mb-4">
-                      <label htmlFor={`solution-${sol.id}`} className="text-xs font-medium text-white/80">Existing solution name</label>
+                    <div className="flex flex-col gap-2 mb-4">
+                      <label htmlFor={`solution-${sol.id}`} className="text-sm font-medium leading-none text-white/80">Existing solution name</label>
                       <Input
                         id={`solution-${sol.id}`}
                         value={sol.text}
@@ -216,12 +216,15 @@ export default function ExistingSolutionsPage() {
                     </div>
 
                     <div className="flex flex-col gap-3">
-                      <p className="text-sm font-medium text-white">Shortcomings &amp; Impacts</p>
+                      <div className="flex flex-col gap-0.5">
+                        <p className="text-base font-semibold text-white">Shortcomings &amp; Impacts</p>
+                        <p className="text-sm text-white/70">Where this solution falls short, and how those gaps hurt the customer.</p>
+                      </div>
                       <div className="flex flex-col divide-y divide-white/15">
                       {sol.shortcomings.map((sc, j) => (
-                        <div key={sc.id} className="flex flex-col gap-1.5 pb-5 pt-4 first:pt-0 last:pb-0">
+                        <div key={sc.id} className="flex flex-col gap-2 pb-5 pt-4 first:pt-0 last:pb-0">
                           <div className="flex items-center justify-between">
-                            <label htmlFor={`shortcoming-${sol.id}-${sc.id}`} className="text-xs font-medium text-white/80">Shortcoming</label>
+                            <label htmlFor={`shortcoming-${sol.id}-${sc.id}`} className="text-sm font-medium leading-none text-white/80">Shortcoming</label>
                             <ConfirmDialog
                               trigger={
                                 <button className="shrink-0 text-white/50 hover:text-white transition-colors">
@@ -241,8 +244,8 @@ export default function ExistingSolutionsPage() {
                             className="bg-white border-white text-foreground"
                           />
                           <div className="flex items-start gap-2 pl-4 pt-2">
-                            <div className="w-2/5 shrink-0 flex flex-col gap-1">
-                              <label htmlFor={`impact-cat-${sol.id}-${sc.id}`} className="text-xs font-medium text-white/70">Impact</label>
+                            <div className="w-2/5 shrink-0 flex flex-col gap-2">
+                              <label htmlFor={`impact-cat-${sol.id}-${sc.id}`} className="text-sm font-medium leading-none text-white/70">Impact</label>
                               <div className="relative">
                               <Input
                                 id={`impact-cat-${sol.id}-${sc.id}`}
@@ -274,8 +277,8 @@ export default function ExistingSolutionsPage() {
                               </DropdownMenu>
                               </div>
                             </div>
-                            <div className="flex-1 flex flex-col gap-1">
-                              <label htmlFor={`impact-desc-${sol.id}-${sc.id}`} className="text-xs font-medium text-white/70">Description</label>
+                            <div className="flex-1 flex flex-col gap-2">
+                              <label htmlFor={`impact-desc-${sol.id}-${sc.id}`} className="text-sm font-medium leading-none text-white/70">Description</label>
                               <AutoTextarea
                                 id={`impact-desc-${sol.id}-${sc.id}`}
                                 placeholder="Describe the impact..."
