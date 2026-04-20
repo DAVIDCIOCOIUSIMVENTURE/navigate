@@ -159,6 +159,8 @@ export default function VerdictPage() {
   const { howManyPeople, howOften, worthToThem, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
 
   const [localReason, setLocalReason] = useState(reason)
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
   const statusRef = useRef(status)
   useEffect(() => { statusRef.current = status })
 
@@ -366,18 +368,18 @@ export default function VerdictPage() {
                       onClick={() => handleVerdict(option.value)}
                       className={cn(
                         "flex items-center gap-3 rounded-lg border-2 px-4 py-3 text-left transition-all",
-                        status === option.value
+                        mounted && status === option.value
                           ? option.color
                           : "bg-white/10 border-white/20 text-white hover:bg-white/20"
                       )}
                     >
                       <div className={cn(
                         "flex items-center justify-center w-5 h-5 rounded-full border-2 shrink-0 transition-colors",
-                        status === option.value
+                        mounted && status === option.value
                           ? option.value === "valid" ? "border-green-600 bg-green-600" : option.value === "unsure" ? "border-orange-500 bg-orange-500" : "border-red-500 bg-red-500"
                           : "border-white/50"
                       )}>
-                        {status === option.value && (
+                        {mounted && status === option.value && (
                           <svg className="w-3 h-3 text-white" viewBox="0 0 12 12" fill="none">
                             <path d="M2.5 6L5 8.5L9.5 3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                           </svg>
