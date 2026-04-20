@@ -197,28 +197,52 @@ export default function CustomerSegmentPage() {
               <p className="text-sm text-white">
                 See how successful companies defined their early customer. Notice how specific they were; they didn&apos;t try to serve everyone. Use these examples as inspiration when writing your own strategy.
               </p>
-              {CUSTOMER_CASE_STUDIES.map((cs) => (
-                <div
-                  key={cs.company}
-                  className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-3"
-                >
-                  <p className="text-sm font-semibold text-white">{cs.company}</p>
-                  <div className="grid grid-cols-1 gap-y-3 text-sm">
-                    <div>
-                      <span className="text-xs font-medium text-white uppercase tracking-wide">Customer Description</span>
-                      <p className="mt-0.5 text-white">{cs.customerDescription}</p>
-                    </div>
-                    <div>
-                      <span className="text-xs font-medium text-white uppercase tracking-wide">Estimated Segment Size</span>
-                      <p className="mt-0.5 text-white">{cs.segmentSize}</p>
-                    </div>
-                    <div>
-                      <span className="text-xs font-medium text-white uppercase tracking-wide">Why This Works</span>
-                      <p className="mt-0.5 text-white">{cs.whyThisWorks}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
+              <Tabs defaultValue={CUSTOMER_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
+                <TabsList className="self-center bg-white/10">
+                  {CUSTOMER_CASE_STUDIES.map((cs) => {
+                    const Icon = cs.icon
+                    return (
+                      <TabsTrigger
+                        key={cs.company}
+                        value={cs.company}
+                        className="gap-1.5 text-white/60 hover:text-white data-[state=active]:bg-white data-[state=active]:text-foreground"
+                      >
+                        <Icon className="h-3.5 w-3.5" />
+                        {cs.company}
+                      </TabsTrigger>
+                    )
+                  })}
+                </TabsList>
+                {CUSTOMER_CASE_STUDIES.map((cs) => {
+                  const Icon = cs.icon
+                  return (
+                    <TabsContent key={cs.company} value={cs.company}>
+                      <div className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className={`flex items-center justify-center w-8 h-8 rounded-lg shrink-0 ${cs.iconBg}`}>
+                            <Icon className="h-4 w-4 text-white" />
+                          </div>
+                          <p className="text-sm font-semibold text-white">{cs.company}</p>
+                        </div>
+                        <div className="grid grid-cols-1 gap-y-3 text-sm">
+                          <div>
+                            <span className="text-xs font-medium text-white uppercase tracking-wide">Customer Description</span>
+                            <p className="mt-0.5 text-white">{cs.customerDescription}</p>
+                          </div>
+                          <div>
+                            <span className="text-xs font-medium text-white uppercase tracking-wide">Estimated Segment Size</span>
+                            <p className="mt-0.5 text-white">{cs.segmentSize}</p>
+                          </div>
+                          <div>
+                            <span className="text-xs font-medium text-white uppercase tracking-wide">Why This Works</span>
+                            <p className="mt-0.5 text-white">{cs.whyThisWorks}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </TabsContent>
+                  )
+                })}
+              </Tabs>
             </div>
           </TabsContent>
         </Tabs>

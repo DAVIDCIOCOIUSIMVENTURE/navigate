@@ -399,12 +399,35 @@ export default function VerdictPage() {
               <p className="text-md text-white">
                 See how successful companies quantified the opportunity behind their core problem, estimating reach, frequency, value, and switching cost to decide whether to pursue it.
               </p>
-              {VALIDATE_CASE_STUDIES.map((cs) => (
-                <div
-                  key={cs.company}
-                  className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-3"
-                >
-                  <p className="text-md font-semibold text-white">{cs.company}</p>
+              <Tabs defaultValue={VALIDATE_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
+                <TabsList className="self-center bg-white/10">
+                  {VALIDATE_CASE_STUDIES.map((cs) => {
+                    const Icon = cs.icon
+                    return (
+                      <TabsTrigger
+                        key={cs.company}
+                        value={cs.company}
+                        className="gap-1.5 text-white/60 hover:text-white data-[state=active]:bg-white data-[state=active]:text-foreground"
+                      >
+                        <Icon className="h-3.5 w-3.5" />
+                        {cs.company}
+                      </TabsTrigger>
+                    )
+                  })}
+                </TabsList>
+                {VALIDATE_CASE_STUDIES.map((cs) => {
+                  const Icon = cs.icon
+                  return (
+                  <TabsContent key={cs.company} value={cs.company}>
+                  <div
+                    className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-3"
+                  >
+                  <div className="flex items-center gap-2.5">
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-lg shrink-0 ${cs.iconBg}`}>
+                      <Icon className="h-4 w-4 text-white" />
+                    </div>
+                    <p className="text-md font-semibold text-white">{cs.company}</p>
+                  </div>
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-md">
                     <div>
                       <span className="text-md font-medium text-white uppercase tracking-wide">How Many Customers</span>
@@ -462,8 +485,11 @@ export default function VerdictPage() {
                     <span className="text-md font-medium text-white uppercase tracking-wide">Verdict: {cs.verdict}</span>
                     <p className="mt-0.5 text-md text-white">{cs.reasoning}</p>
                   </div>
-                </div>
-              ))}
+                  </div>
+                  </TabsContent>
+                  )
+                })}
+              </Tabs>
             </div>
           </TabsContent>
         </Tabs>

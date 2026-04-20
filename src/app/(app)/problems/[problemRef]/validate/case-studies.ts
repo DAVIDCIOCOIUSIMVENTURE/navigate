@@ -1,5 +1,9 @@
+import { Mail, Notebook, type LucideIcon } from "lucide-react"
+
 export type ValidateCaseStudy = {
   company: string
+  icon: LucideIcon
+  iconBg: string
   howManyPeople: { value: number; detail: string }
   howOften: { value: number; unit: string; detail: string }
   worthToThem: { value: number; unit: string; detail: string }
@@ -13,6 +17,8 @@ export type ValidateCaseStudy = {
 export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
   {
     company: "Mailchimp (early days)",
+    icon: Mail,
+    iconBg: "bg-yellow-500",
     howManyPeople: {
       value: 30000000,
       detail: "~30 million small businesses in the US alone, most with no email marketing tool at all.",
@@ -45,6 +51,8 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
   },
   {
     company: "Notion (early adopter phase)",
+    icon: Notebook,
+    iconBg: "bg-slate-700",
     howManyPeople: {
       value: 50000000,
       detail: "~50 million knowledge workers globally using 3+ disconnected productivity tools daily.",
