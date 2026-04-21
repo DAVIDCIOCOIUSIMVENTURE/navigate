@@ -1321,6 +1321,7 @@ export default function DiscoverPage() {
               </>
             )}
 
+            <h3 className="mt-4 text-xl font-bold text-foreground">How to approach it</h3>
             <div className="flex flex-col gap-3">
               {toolInfo.hints.map(({ icon: Icon, title, subtitle, bg }) => (
                 <div key={title} className="flex items-start gap-3">
