@@ -13,9 +13,8 @@ import {
 } from "@/components/ui/sidebar"
 import { navigationItems } from "@/config/navigation"
 import { CustomRocket } from "@/components/icons/custom-rocket"
-import { LayoutDashboard } from "lucide-react"
+import { LayoutDashboard, NotebookText } from "lucide-react"
 import Link from "next/link"
-import { JournalDialog } from "./journal-dialog"
 import { usePathname } from "next/navigation"
 
 export function AppSidebar() {
@@ -46,7 +45,14 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <JournalDialog />
+                <SidebarMenuButton asChild tooltip="Notes" isActive={pathname.startsWith("/notes")}>
+                  <Link href="/notes" className="hover:bg-accent/50 transition-colors">
+                    <div className="flex items-center justify-center w-6 h-6 rounded-md">
+                      <NotebookText className="h-4 w-4" />
+                    </div>
+                    <span>Notes</span>
+                  </Link>
+                </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarGroupContent>

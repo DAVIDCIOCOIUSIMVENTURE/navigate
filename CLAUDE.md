@@ -80,7 +80,7 @@ DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
 * `src/lib/` — Core utilities: `prisma.ts` (unused singleton), `config.ts` (app-wide constants)
 * `src/config/navigation.ts` — Centralized top-level nav items (title, url, icon) used by sidebar, dashboard, and breadcrumbs
 * `src/components/ui/` — Shared Radix UI-based primitives
-* `src/store/` — Global Rematch store (models: `settings`, `journal`, `problemTriggers`, `ideas`) — all localStorage-backed
+* `src/store/` — Global Rematch store (models: `settings`, `notes`, `problemTriggers`, `ideas`) — all localStorage-backed
 * `src/data/` — Static data files (e.g. `selfDiscoveryData.ts`)
 * `src/app/(app)/self-discovery/` — Self-discovery questionnaire with `[categoryId]` sub-routing
 * `src/app/(app)/solutions/` — Solutions listing page
@@ -112,7 +112,7 @@ All state is client-side only (no database). Two patterns coexist — choose bas
 
 **Rematch (Redux)** — use for complex state with side effects or localStorage persistence:
 
-* **Global store** (`src/store/`): `settings` (sidebar collapsed/expanded), `journal` (title + text, persisted to localStorage), `problemTriggers` (persisted to localStorage), `ideas` (full CRUD with localStorage persistence — use the `useIdeas()` hook from `src/store/ideas-hooks.ts`), `problems` (global Problem list, persisted to `navigate-problems` in localStorage — CRUD via `dispatch.problems.create/update/delete`), `accountSettings` (display name, email, theme, compact mode, notification preferences)
+* **Global store** (`src/store/`): `settings` (sidebar collapsed/expanded), `notes` (array of notes with id/title/text/createdAt/editedAt, persisted to `navigate-notes` in localStorage), `problemTriggers` (persisted to localStorage), `ideas` (full CRUD with localStorage persistence — use the `useIdeas()` hook from `src/store/ideas-hooks.ts`), `problems` (global Problem list, persisted to `navigate-problems` in localStorage — CRUD via `dispatch.problems.create/update/delete`), `accountSettings` (display name, email, theme, compact mode, notification preferences)
 * Access: `useSelector((state: RootState) => state.modelName.field)` and `useDispatch<AppDispatch>()`
 * All models call `dispatch.modelName.init()` in `root-layout-client.tsx` on mount to hydrate from localStorage
 

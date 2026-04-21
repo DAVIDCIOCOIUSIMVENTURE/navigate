@@ -63,7 +63,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     dispatch.problems.init()
     dispatch.accountSettings.init()
     dispatch.solutions.init()
-  }, [dispatch.settings, dispatch.problemTriggers, dispatch.problems, dispatch.accountSettings, dispatch.solutions])
+    dispatch.notes.init()
+  }, [dispatch.settings, dispatch.problemTriggers, dispatch.problems, dispatch.accountSettings, dispatch.solutions, dispatch.notes])
 
   return (
     <SidebarProvider

@@ -47,7 +47,7 @@ export default function DataPrivacySettingsPage() {
           <div className="flex flex-col gap-1">
             <Label className="text-destructive">Danger Zone</Label>
             <p className="text-sm text-muted-foreground">
-              Permanently delete all locally stored data including ideas, problems, journal entries, and settings.
+              Permanently delete all locally stored data including ideas, problems, notes, and settings.
             </p>
           </div>
           <div>
@@ -59,7 +59,7 @@ export default function DataPrivacySettingsPage() {
                 <AlertDialogHeader>
                   <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
                   <AlertDialogDescription>
-                    This will permanently delete all your ideas, problems, journal entries,
+                    This will permanently delete all your ideas, problems, notes,
                     and settings. This action cannot be undone.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
