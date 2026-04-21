@@ -288,12 +288,12 @@ function ScamperPromptBody({
     <div className="flex flex-col gap-4">
       <div className="rounded-md border border-white/20 bg-white/5 p-4">
         <div className="flex items-center gap-2 mb-2">
-          <Sparkles className="h-3.5 w-3.5 text-white/70" />
-          <p className="text-xs font-semibold text-white/80 uppercase tracking-wide">Spark questions</p>
+          <Sparkles className="h-3.5 w-3.5 text-white" />
+          <p className="text-xs font-semibold text-white uppercase tracking-wide">Spark questions</p>
         </div>
         <ul className="flex flex-col gap-1.5">
           {sparkQuestions.map((q) => (
-            <li key={q} className="text-sm text-white/80 flex items-start gap-2">
+            <li key={q} className="text-sm text-white flex items-start gap-2">
               <span className="text-white/40 mt-0.5">&bull;</span>
               <span>{q}</span>
             </li>
@@ -303,12 +303,12 @@ function ScamperPromptBody({
       {technique && (
         <div className="rounded-md border border-white/20 bg-white/5 p-4">
           <div className="flex items-center gap-2 mb-2">
-            <Wrench className="h-3.5 w-3.5 text-white/70" />
-            <p className="text-xs font-semibold text-white/80 uppercase tracking-wide">
+            <Wrench className="h-3.5 w-3.5 text-white" />
+            <p className="text-xs font-semibold text-white uppercase tracking-wide">
               Try this technique: {technique.name}
             </p>
           </div>
-          <p className="text-sm text-white/80">{technique.description}</p>
+          <p className="text-sm text-white">{technique.description}</p>
         </div>
       )}
       <ScamperDimensionContent dimensionKey={dimensionKey} placeholder={inputPlaceholder} />
@@ -324,7 +324,7 @@ function ScamperForm() {
       <div className="flex items-start justify-between gap-4 mb-4">
         <div className="flex flex-col gap-1 min-w-0">
           <h4 className="text-sm font-semibold text-white">SCAMPER Prompts</h4>
-          <p className="text-sm text-white/70">Switch between accordion and tab layouts to explore the prompts the way you prefer.</p>
+          <p className="text-sm text-white">Switch between accordion and tab layouts to explore the prompts the way you prefer.</p>
         </div>
         <ToggleGroup
           type="single"
@@ -363,7 +363,7 @@ function ScamperForm() {
                   </span>
                   <div className="flex flex-col gap-1 min-w-0">
                     <span className="text-sm font-semibold text-white">{title}</span>
-                    <p className="text-sm text-white/80 font-normal">{prompt}</p>
+                    <p className="text-sm text-white font-normal">{prompt}</p>
                   </div>
                 </div>
               </AccordionTrigger>
@@ -402,7 +402,7 @@ function ScamperForm() {
                 </span>
                 <div className="flex flex-col gap-1 min-w-0">
                   <span className="text-sm font-semibold text-white">{title}</span>
-                  <p className="text-sm text-white/80">{prompt}</p>
+                  <p className="text-sm text-white">{prompt}</p>
                 </div>
               </div>
               <div className="pl-10">
