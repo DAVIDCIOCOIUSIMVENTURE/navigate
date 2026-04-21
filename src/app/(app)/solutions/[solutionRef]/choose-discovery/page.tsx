@@ -113,7 +113,7 @@ function ExampleHeader({ title, problem }: { title: string; problem: string }) {
 
 function ExampleCard({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-lg border bg-muted p-4 flex flex-col gap-3">
+    <div className="rounded-lg border bg-background p-4 flex flex-col gap-3">
       {children}
     </div>
   )
@@ -162,12 +162,12 @@ function ReverseDialogContent() {
         <ExampleCard>
           <ExampleHeader title={REVERSE_CASE.title} problem={REVERSE_CASE.problem} />
           <div className="flex flex-col gap-2">
-            <div className="rounded-md border border-red-200 bg-red-100 dark:border-red-900 dark:bg-red-950/60 p-3">
-              <p className="text-xs font-bold uppercase tracking-wide text-red-800 dark:text-red-300 mb-1.5">Make it worse</p>
+            <div className="rounded-md border border-rose-200/70 bg-rose-50 dark:border-rose-900/60 dark:bg-rose-950/40 p-3">
+              <p className="text-xs font-bold uppercase tracking-wide text-rose-700 dark:text-rose-300 mb-1.5">Make it worse</p>
               <p className="text-sm text-foreground leading-relaxed">{REVERSE_CASE.worse}</p>
             </div>
-            <div className="rounded-md border border-emerald-200 bg-emerald-100 dark:border-emerald-900 dark:bg-emerald-950/60 p-3">
-              <p className="text-xs font-bold uppercase tracking-wide text-emerald-800 dark:text-emerald-300 mb-1.5">Flip it into a solution</p>
+            <div className="rounded-md border border-teal-200/70 bg-teal-50 dark:border-teal-900/60 dark:bg-teal-950/40 p-3">
+              <p className="text-xs font-bold uppercase tracking-wide text-teal-700 dark:text-teal-300 mb-1.5">Flip it into a solution</p>
               <p className="text-sm text-foreground leading-relaxed">{REVERSE_CASE.inverted}</p>
             </div>
           </div>

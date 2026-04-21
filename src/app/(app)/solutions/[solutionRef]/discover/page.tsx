@@ -975,7 +975,7 @@ const CASE_STUDY_ICONS: Record<string, LucideIcon> = {
 
 function ScamperCaseStudies() {
   return (
-    <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
+    <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-8">
       <p className="text-md text-white">
         See how successful companies used SCAMPER thinking to reimagine existing products and create breakthrough solutions by looking at problems from multiple creative angles.
       </p>
@@ -984,7 +984,7 @@ function ScamperCaseStudies() {
         return (
         <div
           key={cs.company}
-          className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-3"
+          className="rounded-lg border border-white/10 bg-white/10 p-6 flex flex-col gap-5"
         >
           <div className="flex items-center gap-2">
             {Icon && (
@@ -996,9 +996,9 @@ function ScamperCaseStudies() {
           </div>
           <div>
             <span className="text-md font-medium text-white uppercase tracking-wide">Problem</span>
-            <p className="mt-0.5 text-md text-white">{cs.problem}</p>
+            <p className="mt-2 text-md text-white">{cs.problem}</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-md">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 text-md">
             {cs.dimensions.map((dim) => (
               <div key={dim.letter}>
                 <div className="flex items-center gap-1.5">
@@ -1007,13 +1007,13 @@ function ScamperCaseStudies() {
                   </span>
                   <span className="text-md font-medium text-white uppercase tracking-wide">{dim.title}</span>
                 </div>
-                <p className="mt-0.5 text-white">{dim.idea}</p>
+                <p className="mt-2 text-white">{dim.idea}</p>
               </div>
             ))}
           </div>
-          <div className="border-t border-white/10 pt-3 mt-1">
+          <div className="border-t border-white/10 pt-5 mt-1">
             <span className="text-md font-medium text-white uppercase tracking-wide">Outcome</span>
-            <p className="mt-0.5 text-md text-white">{cs.outcome}</p>
+            <p className="mt-2 text-md text-white">{cs.outcome}</p>
           </div>
         </div>
         )
