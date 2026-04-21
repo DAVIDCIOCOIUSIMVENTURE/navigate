@@ -669,10 +669,11 @@ function ImprovementDimension({
   prompt: string
   example: string
 }) {
-  const { improvementResponses, setImprovementResponses } = useSolution()
+  const { candidates, setCandidates } = useSolution()
 
-  const raw = improvementResponses[dimensionKey]
-  const items = Array.isArray(raw) ? raw : []
+  const items = candidates.filter(
+    (c) => c.inspirationSource === "improve" && c.inspirationDetail === dimensionKey
+  )
   const [adding, setAdding] = useState(false)
   const [draft, setDraft] = useState("")
   const inputRef = useRef<HTMLInputElement>(null)
@@ -682,29 +683,36 @@ function ImprovementDimension({
     if (adding) inputRef.current?.focus()
   }, [adding])
 
-  const saveItems = (nextItems: typeof items) => {
-    setImprovementResponses({ ...improvementResponses, [dimensionKey]: nextItems })
-  }
-
   const addItem = () => {
     const text = draft.trim()
     if (text) {
-      const id = items.length > 0 ? Math.max(...items.map((i) => i.id)) + 1 : 1
-      saveItems([...items, { id, text }])
+      const id = candidates.length > 0 ? Math.max(...candidates.map((c) => c.id)) + 1 : 1
+      const newCandidate: SolutionCandidate = {
+        id,
+        title: text,
+        description: "",
+        inspirationSource: "improve",
+        inspirationDetail: dimensionKey,
+        feasibility: null,
+        impact: null,
+        cost: null,
+        timeToImplement: null,
+        notes: "",
+      }
+      setCandidates([...candidates, newCandidate])
     }
     setDraft("")
     setAdding(false)
   }
 
   const removeItem = (id: number) => {
-    saveItems(items.filter((i) => i.id !== id))
+    setCandidates(candidates.filter((c) => c.id !== id))
   }
 
   const updateItem = (id: number, text: string) => {
-    const next = items.map((i) => (i.id === id ? { ...i, text } : i))
-    // Debounced save
+    const next = candidates.map((c) => (c.id === id ? { ...c, title: text } : c))
     if (debounceRef.current) clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(() => saveItems(next), 500)
+    debounceRef.current = setTimeout(() => setCandidates(next), 500)
   }
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -721,7 +729,7 @@ function ImprovementDimension({
       {items.map((item) => (
         <div key={item.id} className="flex items-center gap-2">
           <Input
-            defaultValue={item.text}
+            defaultValue={item.title}
             onChange={(e) => updateItem(item.id, e.target.value)}
             className="flex-1 text-sm bg-white border-white text-foreground"
           />
@@ -757,23 +765,91 @@ function ImprovementDimension({
 }
 
 function ImprovementForm() {
+  const [viewMode, setViewMode] = useState<"accordion" | "tabs">("tabs")
+
   return (
     <div className="bg-primary rounded-xl p-8">
-      <Accordion type="multiple" className="flex flex-col divide-y divide-white/30">
-        {IMPROVEMENT_GROUPS.map(({ group, icon: Icon, color, items }) => (
-          <AccordionItem key={group} value={group}>
-            <AccordionTrigger className="py-5 hover:no-underline [&>svg]:text-white/80">
-              <div className="flex items-center gap-3 text-left flex-1 min-w-0">
-                <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${color} text-white`}>
-                  <Icon className="h-4.5 w-4.5" />
-                </span>
-                <div className="flex flex-col gap-1 min-w-0">
-                  <span className="text-sm font-bold uppercase tracking-wide text-white/90">{group}</span>
-                  <span className="text-xs text-white/60 font-normal">{items.length} dimensions</span>
+      <div className="flex items-start justify-between gap-4 mb-4">
+        <div className="flex flex-col gap-1 min-w-0">
+          <h4 className="text-sm font-semibold text-white">Improvement Dimensions</h4>
+          <p className="text-sm text-white">Switch between accordion and tab layouts to explore the dimensions the way you prefer.</p>
+        </div>
+        <ToggleGroup
+          type="single"
+          value={viewMode}
+          onValueChange={(v) => { if (v) setViewMode(v as "accordion" | "tabs") }}
+          size="sm"
+          className="border-white/30 bg-white/10"
+        >
+          <ToggleGroupItem
+            value="tabs"
+            aria-label="Tabs view"
+            className="text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-primary"
+          >
+            <LayoutPanelTop className="h-4 w-4" />
+            <span className="text-xs">Tabs</span>
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="accordion"
+            aria-label="Accordion view"
+            className="text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-primary"
+          >
+            <Rows3 className="h-4 w-4" />
+            <span className="text-xs">Accordion</span>
+          </ToggleGroupItem>
+        </ToggleGroup>
+      </div>
+
+      {viewMode === "accordion" ? (
+        <Accordion type="multiple" className="flex flex-col divide-y divide-white/30">
+          {IMPROVEMENT_GROUPS.map(({ group, icon: Icon, color, items }) => (
+            <AccordionItem key={group} value={group}>
+              <AccordionTrigger className="py-5 hover:no-underline [&>svg]:text-white/80">
+                <div className="flex items-center gap-3 text-left flex-1 min-w-0">
+                  <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${color} text-white`}>
+                    <Icon className="h-4.5 w-4.5" />
+                  </span>
+                  <div className="flex flex-col gap-1 min-w-0">
+                    <span className="text-sm font-bold uppercase tracking-wide text-white/90">{group}</span>
+                    <span className="text-xs text-white/60 font-normal">{items.length} dimensions</span>
+                  </div>
                 </div>
-              </div>
-            </AccordionTrigger>
-            <AccordionContent className="pb-5">
+              </AccordionTrigger>
+              <AccordionContent className="pb-5">
+                <div className="flex flex-col divide-y divide-white/20">
+                  {items.map(({ key, title, prompt, example }) => (
+                    <div key={key} className="py-5 first:pt-0 last:pb-0">
+                      <ImprovementDimension
+                        dimensionKey={key}
+                        title={title}
+                        prompt={prompt}
+                        example={example}
+                      />
+                    </div>
+                  ))}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      ) : (
+        <Tabs defaultValue={IMPROVEMENT_GROUPS[0].group} className="flex flex-col gap-4">
+          <TabsList className="h-auto flex-wrap justify-start bg-white/10 p-1">
+            {IMPROVEMENT_GROUPS.map(({ group, icon: Icon, color }) => (
+              <TabsTrigger
+                key={group}
+                value={group}
+                className="gap-2 text-white/80 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow"
+              >
+                <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${color} text-white`}>
+                  <Icon className="h-3 w-3" />
+                </span>
+                <span className="text-sm font-medium">{group}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          {IMPROVEMENT_GROUPS.map(({ group, items }) => (
+            <TabsContent key={group} value={group} className="mt-0">
               <div className="flex flex-col divide-y divide-white/20">
                 {items.map(({ key, title, prompt, example }) => (
                   <div key={key} className="py-5 first:pt-0 last:pb-0">
@@ -786,10 +862,10 @@ function ImprovementForm() {
                   </div>
                 ))}
               </div>
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
+            </TabsContent>
+          ))}
+        </Tabs>
+      )}
     </div>
   )
 }
