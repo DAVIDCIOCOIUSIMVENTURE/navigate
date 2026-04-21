@@ -289,7 +289,7 @@ export default function ExistingSolutionsPage() {
                                 placeholder="Describe the impact..."
                                 value={sc.impact.description}
                                 onChange={(e) => updateImpact(i, j, "description", e.target.value)}
-                                className="bg-white border-white text-foreground"
+                                className="min-h-12 bg-white border-white text-foreground"
                               />
                             </div>
                           </div>
