@@ -89,6 +89,13 @@ export default function SolutionsPage() {
         </div>
       </div>
 
+      <div className="rounded-lg border bg-white p-4 text-sm text-muted-foreground leading-relaxed">
+        <p>
+          This is your <span className="font-medium text-foreground">solutions workspace</span>, where validated problems become concrete solution concepts.
+          Each problem listed below has passed validation and is ready for solution discovery.
+        </p>
+      </div>
+
       {validProblems.length === 0 ? (
         <Card>
           <CardContent className="flex flex-col items-center justify-center gap-4 py-16">
@@ -108,10 +115,12 @@ export default function SolutionsPage() {
         </Card>
       ) : (
         <Card>
-          <CardHeader>
-            <CardTitle>Discover Solutions</CardTitle>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-sm font-semibold">
+              Discover Solutions ({validProblems.length})
+            </CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-col gap-3">
+          <CardContent className="pt-0 flex flex-col gap-3">
             {validProblems.map((problem) => {
               const solution = allSolutions.find((s) => s.problemId === problem.id)
               return (
