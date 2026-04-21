@@ -19,8 +19,9 @@ import {
   Shuffle, RotateCcw, Globe, TrendingUp, Plus, Trash2, Pencil, Check, X,
   ArrowLeft, ArrowRight, Wind, Tv, Armchair, Package, Smartphone, Coffee,
   Home, Pizza, ShoppingBag, Utensils, Flag, Leaf, Sparkles, ShieldCheck,
-  Truck, Heart, type LucideIcon,
+  Truck, Heart, Rows3, LayoutPanelTop, type LucideIcon,
 } from "lucide-react"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 /* ── SCAMPER Form ── */
 
@@ -132,28 +133,96 @@ function ScamperDimensionContent({
 }
 
 function ScamperForm() {
+  const [viewMode, setViewMode] = useState<"accordion" | "tabs">("tabs")
+
   return (
     <div className="bg-primary rounded-xl p-8">
-      <Accordion type="multiple" className="flex flex-col divide-y divide-white/20">
-        {SCAMPER_PROMPTS.map(({ key, letter, title, prompt, color }) => (
-          <AccordionItem key={key} value={key}>
-            <AccordionTrigger className="py-5 hover:no-underline [&>svg]:text-white/80">
-              <div className="flex items-start gap-3 flex-1 min-w-0">
+      <div className="flex items-start justify-between gap-4 mb-4">
+        <div className="flex flex-col gap-1 min-w-0">
+          <h4 className="text-sm font-semibold text-white">SCAMPER Prompts</h4>
+          <p className="text-sm text-white/70">Switch between accordion and tab layouts to explore the prompts the way you prefer.</p>
+        </div>
+        <ToggleGroup
+          type="single"
+          value={viewMode}
+          onValueChange={(v) => { if (v) setViewMode(v as "accordion" | "tabs") }}
+          size="sm"
+          className="border-white/30 bg-white/10"
+        >
+          <ToggleGroupItem
+            value="tabs"
+            aria-label="Tabs view"
+            className="text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-primary"
+          >
+            <LayoutPanelTop className="h-4 w-4" />
+            <span className="text-xs">Tabs</span>
+          </ToggleGroupItem>
+          <ToggleGroupItem
+            value="accordion"
+            aria-label="Accordion view"
+            className="text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-primary"
+          >
+            <Rows3 className="h-4 w-4" />
+            <span className="text-xs">Accordion</span>
+          </ToggleGroupItem>
+        </ToggleGroup>
+      </div>
+
+      {viewMode === "accordion" ? (
+        <Accordion type="multiple" className="flex flex-col divide-y divide-white/20">
+          {SCAMPER_PROMPTS.map(({ key, letter, title, prompt, color }) => (
+            <AccordionItem key={key} value={key}>
+              <AccordionTrigger className="py-5 hover:no-underline [&>svg]:text-white/80">
+                <div className="flex items-start gap-3 flex-1 min-w-0">
+                  <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${color} text-white text-xs font-bold`}>
+                    {letter}
+                  </span>
+                  <div className="flex flex-col gap-1 min-w-0">
+                    <span className="text-sm font-semibold text-white">{title}</span>
+                    <p className="text-sm text-white/80 font-normal">{prompt}</p>
+                  </div>
+                </div>
+              </AccordionTrigger>
+              <AccordionContent className="pb-5 pl-10">
+                <ScamperDimensionContent dimensionKey={key} />
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      ) : (
+        <Tabs defaultValue={SCAMPER_PROMPTS[0].key} className="flex flex-col gap-4">
+          <TabsList className="h-auto flex-wrap justify-start bg-white/10 p-1">
+            {SCAMPER_PROMPTS.map(({ key, letter, title, color }) => (
+              <TabsTrigger
+                key={key}
+                value={key}
+                className="gap-2 text-white/80 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow"
+              >
+                <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${color} text-white text-[10px] font-bold`}>
+                  {letter}
+                </span>
+                <span className="text-sm font-medium">{title}</span>
+              </TabsTrigger>
+            ))}
+          </TabsList>
+          {SCAMPER_PROMPTS.map(({ key, letter, title, prompt, color }) => (
+            <TabsContent key={key} value={key} className="mt-0">
+              <div className="flex items-start gap-3 mb-4">
                 <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${color} text-white text-xs font-bold`}>
                   {letter}
                 </span>
                 <div className="flex flex-col gap-1 min-w-0">
                   <span className="text-sm font-semibold text-white">{title}</span>
-                  <p className="text-sm text-white/80 font-normal">{prompt}</p>
+                  <p className="text-sm text-white/80">{prompt}</p>
                 </div>
               </div>
-            </AccordionTrigger>
-            <AccordionContent className="pb-5 pl-10">
-              <ScamperDimensionContent dimensionKey={key} />
-            </AccordionContent>
-          </AccordionItem>
-        ))}
-      </Accordion>
+              <div className="pl-10">
+                <ScamperDimensionContent dimensionKey={key} />
+              </div>
+            </TabsContent>
+          ))}
+        </Tabs>
+      )}
     </div>
   )
 }
@@ -1071,6 +1140,12 @@ export default function DiscoverPage() {
         {discoveryToolType === "scamper" && (
           <>
             <hr className="border-border/40" />
+            <div className="flex flex-col gap-2 items-center text-center">
+              <h3 className="text-xl font-bold"><span className="text-primary">Your Turn:</span> Work through the SCAMPER prompts</h3>
+              <p className="text-md text-muted-foreground max-w-xl">
+                Run your problem through each of the seven angles. You don&apos;t need to answer every prompt: jot ideas where they spark, then promote the strongest ones to candidates.
+              </p>
+            </div>
             <Tabs defaultValue="strategy" className="flex flex-col gap-4">
               <TabsList className="self-center">
                 <TabsTrigger value="strategy">Your Strategy</TabsTrigger>
