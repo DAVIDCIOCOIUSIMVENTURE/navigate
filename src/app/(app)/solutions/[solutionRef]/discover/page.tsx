@@ -19,7 +19,7 @@ import {
   Shuffle, RotateCcw, Globe, TrendingUp, Plus, Trash2, Pencil, Check, X,
   ArrowLeft, ArrowRight, Wind, Tv, Armchair, Package, Smartphone, Coffee,
   Home, Pizza, ShoppingBag, Utensils, Flag, Leaf, Sparkles, ShieldCheck,
-  Truck, Heart, Rows3, LayoutPanelTop, type LucideIcon,
+  Truck, Heart, Rows3, LayoutPanelTop, Wrench, type LucideIcon,
 } from "lucide-react"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
@@ -37,14 +37,133 @@ const SCAMPER_LETTER_COLORS: Record<string, string> = {
 
 type ScamperKey = "substitute" | "combine" | "adapt" | "modify" | "putToOtherUse" | "eliminate" | "reverse"
 
-const SCAMPER_PROMPTS: { key: ScamperKey; letter: string; title: string; prompt: string; color: string }[] = [
-  { key: "substitute", letter: "S", title: "Substitute", prompt: "What components, materials, or processes could you swap out? What if you replaced part of the problem?", color: SCAMPER_LETTER_COLORS.S },
-  { key: "combine", letter: "C", title: "Combine", prompt: "Can you combine this problem with another? What if you merged two existing solutions?", color: SCAMPER_LETTER_COLORS.C },
-  { key: "adapt", letter: "A", title: "Adapt", prompt: "What else is like this? What ideas from other industries or domains could you adapt?", color: SCAMPER_LETTER_COLORS.A },
-  { key: "modify", letter: "M", title: "Modify", prompt: "What if you enlarged, shrunk, or changed the shape of the problem? What can be modified?", color: SCAMPER_LETTER_COLORS.M },
-  { key: "putToOtherUse", letter: "P", title: "Put to Other Use", prompt: "Can this problem (or its elements) be used for something else? What new purposes could emerge?", color: SCAMPER_LETTER_COLORS.P },
-  { key: "eliminate", letter: "E", title: "Eliminate", prompt: "What can you remove or simplify? What would happen if you eliminated a step entirely?", color: SCAMPER_LETTER_COLORS.E },
-  { key: "reverse", letter: "R", title: "Reverse", prompt: "What if you reversed the process? What if you did the opposite of what's expected?", color: SCAMPER_LETTER_COLORS.R },
+type ScamperPrompt = {
+  key: ScamperKey
+  letter: string
+  title: string
+  prompt: string
+  color: string
+  sparkQuestions: string[]
+  inputPlaceholder: string
+  technique?: { name: string; description: string }
+}
+
+const SCAMPER_PROMPTS: ScamperPrompt[] = [
+  {
+    key: "substitute",
+    letter: "S",
+    title: "Substitute",
+    prompt: "What components, materials, or processes could you swap out? What if you replaced part of the problem?",
+    color: SCAMPER_LETTER_COLORS.S,
+    sparkQuestions: [
+      "What materials, components, or rules could you swap out?",
+      "Who else could play the role of the customer or provider?",
+      "Which step could be replaced by an entirely different one?",
+    ],
+    inputPlaceholder: "e.g. Replace email signup with passkey login...",
+    technique: {
+      name: "Challenge the assumptions",
+      description: "Write down the unspoken assumptions behind this step: about who, what, or how. Negate each one in turn and ask what a world without it would look like.",
+    },
+  },
+  {
+    key: "combine",
+    letter: "C",
+    title: "Combine",
+    prompt: "Can you combine this problem with another? What if you merged two existing solutions?",
+    color: SCAMPER_LETTER_COLORS.C,
+    sparkQuestions: [
+      "Which two features, products, or workflows could be merged?",
+      "What partner, audience, or platform would amplify this?",
+      "What unrelated services could you bundle together?",
+    ],
+    inputPlaceholder: "e.g. Bundle onboarding with the first invoice...",
+    technique: {
+      name: "Attribute matrix",
+      description: "Choose 2 or 3 attributes of the problem (channel, audience, format). Jot 3 variations under each, then pick unlikely pairs across the columns and see what mashups appear.",
+    },
+  },
+  {
+    key: "adapt",
+    letter: "A",
+    title: "Adapt",
+    prompt: "What else is like this? What ideas from other industries or domains could you adapt?",
+    color: SCAMPER_LETTER_COLORS.A,
+    sparkQuestions: [
+      "What other industry has solved a similar problem?",
+      "What past trend or technique could you borrow?",
+      "What metaphor from another domain fits this situation?",
+    ],
+    inputPlaceholder: "e.g. Apply Spotify-style playlists to lesson plans...",
+    technique: {
+      name: "Borrow an expert's lens",
+      description: "Picture someone from an unrelated craft (a chef, a choreographer, a firefighter) approaching this problem. What would their first instinct be? Apply that move here.",
+    },
+  },
+  {
+    key: "modify",
+    letter: "M",
+    title: "Modify",
+    prompt: "What if you enlarged, shrunk, or changed the shape of the problem? What can be modified?",
+    color: SCAMPER_LETTER_COLORS.M,
+    sparkQuestions: [
+      "What if you made it 10x bigger or 10x smaller?",
+      "What if you changed the frequency, format, or tone?",
+      "Which feature could be exaggerated or stripped back?",
+    ],
+    inputPlaceholder: "e.g. Shrink sessions from 60 to 5 minutes...",
+    technique: {
+      name: "Attribute dialling",
+      description: "List every attribute you can name: size, speed, price, sequence, colour, tone. Crank each one to an extreme, then walk back to the most useful setting.",
+    },
+  },
+  {
+    key: "putToOtherUse",
+    letter: "P",
+    title: "Put to Other Use",
+    prompt: "Can this problem (or its elements) be used for something else? What new purposes could emerge?",
+    color: SCAMPER_LETTER_COLORS.P,
+    sparkQuestions: [
+      "Who outside the current audience might value this?",
+      "What context shifts the use case entirely?",
+      "What byproduct or leftover could become the product?",
+    ],
+    inputPlaceholder: "e.g. Resell idle inventory as gift bundles...",
+    technique: {
+      name: "Random context swap",
+      description: "Drop the thing into an unrelated setting (a library, a campsite, an emergency room). Ask how it would serve there without redesigning it.",
+    },
+  },
+  {
+    key: "eliminate",
+    letter: "E",
+    title: "Eliminate",
+    prompt: "What can you remove or simplify? What would happen if you eliminated a step entirely?",
+    color: SCAMPER_LETTER_COLORS.E,
+    sparkQuestions: [
+      "Which steps, fields, or features add no real value?",
+      "What would happen if the user did less work, or none?",
+      "What constraints could be lifted without losing the point?",
+    ],
+    inputPlaceholder: "e.g. Remove the email field from signup...",
+  },
+  {
+    key: "reverse",
+    letter: "R",
+    title: "Reverse",
+    prompt: "What if you reversed the process? What if you did the opposite of what's expected?",
+    color: SCAMPER_LETTER_COLORS.R,
+    sparkQuestions: [
+      "What is the opposite of how this works today?",
+      "What if the customer initiated the action instead of you?",
+      "What if the order of steps ran backwards?",
+    ],
+    inputPlaceholder: "e.g. Let customers price the product themselves...",
+    technique: {
+      name: "Flip the script",
+      description: "Write the opposite of every assumption you hold about this. Treat the inversions as serious proposals, not jokes, and see which ones you can defend.",
+    },
+  },
 ]
 
 const SCAMPER_LETTER_BY_KEY: Record<ScamperKey, string> = SCAMPER_PROMPTS.reduce(
@@ -58,8 +177,10 @@ const SCAMPER_COLOR_BY_KEY: Record<ScamperKey, string> = SCAMPER_PROMPTS.reduce(
 
 function ScamperDimensionContent({
   dimensionKey,
+  placeholder = "Type an idea and press Enter...",
 }: {
   dimensionKey: ScamperKey
+  placeholder?: string
 }) {
   const { candidates, setCandidates } = useSolution()
 
@@ -135,7 +256,7 @@ function ScamperDimensionContent({
       {adding ? (
         <Input
           ref={inputRef}
-          placeholder="Type an idea and press Enter..."
+          placeholder={placeholder}
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           onKeyDown={onKeyDown}
@@ -148,6 +269,49 @@ function ScamperDimensionContent({
           Add Item
         </Button>
       )}
+    </div>
+  )
+}
+
+function ScamperPromptBody({
+  sparkQuestions,
+  technique,
+  dimensionKey,
+  inputPlaceholder,
+}: {
+  sparkQuestions: string[]
+  technique?: { name: string; description: string }
+  dimensionKey: ScamperKey
+  inputPlaceholder: string
+}) {
+  return (
+    <div className="flex flex-col gap-4">
+      <div className="rounded-md border border-white/20 bg-white/5 p-4">
+        <div className="flex items-center gap-2 mb-2">
+          <Sparkles className="h-3.5 w-3.5 text-white/70" />
+          <p className="text-xs font-semibold text-white/80 uppercase tracking-wide">Spark questions</p>
+        </div>
+        <ul className="flex flex-col gap-1.5">
+          {sparkQuestions.map((q) => (
+            <li key={q} className="text-sm text-white/80 flex items-start gap-2">
+              <span className="text-white/40 mt-0.5">&bull;</span>
+              <span>{q}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+      {technique && (
+        <div className="rounded-md border border-white/20 bg-white/5 p-4">
+          <div className="flex items-center gap-2 mb-2">
+            <Wrench className="h-3.5 w-3.5 text-white/70" />
+            <p className="text-xs font-semibold text-white/80 uppercase tracking-wide">
+              Try this technique: {technique.name}
+            </p>
+          </div>
+          <p className="text-sm text-white/80">{technique.description}</p>
+        </div>
+      )}
+      <ScamperDimensionContent dimensionKey={dimensionKey} placeholder={inputPlaceholder} />
     </div>
   )
 }
@@ -190,7 +354,7 @@ function ScamperForm() {
 
       {viewMode === "accordion" ? (
         <Accordion type="multiple" className="flex flex-col divide-y divide-white/20">
-          {SCAMPER_PROMPTS.map(({ key, letter, title, prompt, color }) => (
+          {SCAMPER_PROMPTS.map(({ key, letter, title, prompt, color, sparkQuestions, inputPlaceholder, technique }) => (
             <AccordionItem key={key} value={key}>
               <AccordionTrigger className="py-5 hover:no-underline [&>svg]:text-white/80">
                 <div className="flex items-start gap-3 flex-1 min-w-0">
@@ -204,7 +368,12 @@ function ScamperForm() {
                 </div>
               </AccordionTrigger>
               <AccordionContent className="pb-5 pl-10">
-                <ScamperDimensionContent dimensionKey={key} />
+                <ScamperPromptBody
+                  sparkQuestions={sparkQuestions}
+                  technique={technique}
+                  dimensionKey={key}
+                  inputPlaceholder={inputPlaceholder}
+                />
               </AccordionContent>
             </AccordionItem>
           ))}
@@ -225,7 +394,7 @@ function ScamperForm() {
               </TabsTrigger>
             ))}
           </TabsList>
-          {SCAMPER_PROMPTS.map(({ key, letter, title, prompt, color }) => (
+          {SCAMPER_PROMPTS.map(({ key, letter, title, prompt, color, sparkQuestions, inputPlaceholder, technique }) => (
             <TabsContent key={key} value={key} className="mt-0">
               <div className="flex items-start gap-3 mb-4">
                 <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${color} text-white text-xs font-bold`}>
@@ -237,7 +406,12 @@ function ScamperForm() {
                 </div>
               </div>
               <div className="pl-10">
-                <ScamperDimensionContent dimensionKey={key} />
+                <ScamperPromptBody
+                  sparkQuestions={sparkQuestions}
+                  technique={technique}
+                  dimensionKey={key}
+                  inputPlaceholder={inputPlaceholder}
+                />
               </div>
             </TabsContent>
           ))}
