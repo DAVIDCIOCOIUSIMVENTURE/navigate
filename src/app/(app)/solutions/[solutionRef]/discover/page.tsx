@@ -14,7 +14,7 @@ import { SCAMPER_CASE_STUDIES } from "./case-studies"
 import { IMPROVE_CASE_STUDIES } from "./improve-case-studies"
 import { REVERSE_CASE_STUDIES } from "./reverse-case-studies"
 import { ANALOGY_CASE_STUDIES } from "./analogy-case-studies"
-import type { ScamperResponses, ImprovementResponses, SolutionCandidate } from "@/types/solution"
+import type { ImprovementResponses, SolutionCandidate } from "@/types/solution"
 import {
   Shuffle, RotateCcw, Globe, TrendingUp, Plus, Trash2, Pencil, Check, X,
   ArrowLeft, ArrowRight, Wind, Tv, Armchair, Package, Smartphone, Coffee,
@@ -35,7 +35,9 @@ const SCAMPER_LETTER_COLORS: Record<string, string> = {
   R: "bg-fuchsia-500",
 }
 
-const SCAMPER_PROMPTS: { key: keyof ScamperResponses; letter: string; title: string; prompt: string; color: string }[] = [
+type ScamperKey = "substitute" | "combine" | "adapt" | "modify" | "putToOtherUse" | "eliminate" | "reverse"
+
+const SCAMPER_PROMPTS: { key: ScamperKey; letter: string; title: string; prompt: string; color: string }[] = [
   { key: "substitute", letter: "S", title: "Substitute", prompt: "What components, materials, or processes could you swap out? What if you replaced part of the problem?", color: SCAMPER_LETTER_COLORS.S },
   { key: "combine", letter: "C", title: "Combine", prompt: "Can you combine this problem with another? What if you merged two existing solutions?", color: SCAMPER_LETTER_COLORS.C },
   { key: "adapt", letter: "A", title: "Adapt", prompt: "What else is like this? What ideas from other industries or domains could you adapt?", color: SCAMPER_LETTER_COLORS.A },
@@ -45,15 +47,25 @@ const SCAMPER_PROMPTS: { key: keyof ScamperResponses; letter: string; title: str
   { key: "reverse", letter: "R", title: "Reverse", prompt: "What if you reversed the process? What if you did the opposite of what's expected?", color: SCAMPER_LETTER_COLORS.R },
 ]
 
+const SCAMPER_LETTER_BY_KEY: Record<ScamperKey, string> = SCAMPER_PROMPTS.reduce(
+  (acc, { key, letter }) => ({ ...acc, [key]: letter }),
+  {} as Record<ScamperKey, string>
+)
+const SCAMPER_COLOR_BY_KEY: Record<ScamperKey, string> = SCAMPER_PROMPTS.reduce(
+  (acc, { key, color }) => ({ ...acc, [key]: color }),
+  {} as Record<ScamperKey, string>
+)
+
 function ScamperDimensionContent({
   dimensionKey,
 }: {
-  dimensionKey: keyof ScamperResponses
+  dimensionKey: ScamperKey
 }) {
-  const { scamperResponses, setScamperResponses } = useSolution()
+  const { candidates, setCandidates } = useSolution()
 
-  const raw = scamperResponses[dimensionKey]
-  const items = Array.isArray(raw) ? raw : []
+  const items = candidates.filter(
+    (c) => c.inspirationSource === "scamper" && c.inspirationDetail === dimensionKey
+  )
   const [adding, setAdding] = useState(false)
   const [draft, setDraft] = useState("")
   const inputRef = useRef<HTMLInputElement>(null)
@@ -63,28 +75,36 @@ function ScamperDimensionContent({
     if (adding) inputRef.current?.focus()
   }, [adding])
 
-  const saveItems = (nextItems: typeof items) => {
-    setScamperResponses({ ...scamperResponses, [dimensionKey]: nextItems })
-  }
-
   const addItem = () => {
     const text = draft.trim()
     if (text) {
-      const id = items.length > 0 ? Math.max(...items.map((i) => i.id)) + 1 : 1
-      saveItems([...items, { id, text }])
+      const id = candidates.length > 0 ? Math.max(...candidates.map((c) => c.id)) + 1 : 1
+      const newCandidate: SolutionCandidate = {
+        id,
+        title: text,
+        description: "",
+        inspirationSource: "scamper",
+        inspirationDetail: dimensionKey,
+        feasibility: null,
+        impact: null,
+        cost: null,
+        timeToImplement: null,
+        notes: "",
+      }
+      setCandidates([...candidates, newCandidate])
     }
     setDraft("")
     setAdding(false)
   }
 
   const removeItem = (id: number) => {
-    saveItems(items.filter((i) => i.id !== id))
+    setCandidates(candidates.filter((c) => c.id !== id))
   }
 
   const updateItem = (id: number, text: string) => {
-    const next = items.map((i) => (i.id === id ? { ...i, text } : i))
+    const next = candidates.map((c) => (c.id === id ? { ...c, title: text } : c))
     if (debounceRef.current) clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(() => saveItems(next), 500)
+    debounceRef.current = setTimeout(() => setCandidates(next), 500)
   }
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -97,7 +117,7 @@ function ScamperDimensionContent({
       {items.map((item) => (
         <div key={item.id} className="flex items-center gap-2">
           <Input
-            defaultValue={item.text}
+            defaultValue={item.title}
             onChange={(e) => updateItem(item.id, e.target.value)}
             className="flex-1 text-sm bg-white border-white text-foreground"
           />
@@ -698,6 +718,14 @@ function CandidatesSection() {
               <div className="flex items-start justify-between gap-2">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
+                    {candidate.inspirationSource === "scamper" && candidate.inspirationDetail in SCAMPER_LETTER_BY_KEY && (
+                      <span
+                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${SCAMPER_COLOR_BY_KEY[candidate.inspirationDetail as ScamperKey]} text-white text-[10px] font-bold`}
+                        title={`SCAMPER: ${candidate.inspirationDetail}`}
+                      >
+                        {SCAMPER_LETTER_BY_KEY[candidate.inspirationDetail as ScamperKey]}
+                      </span>
+                    )}
                     <p className="text-sm font-semibold">{candidate.title}</p>
                     {candidate.inspirationSource && (
                       <Badge variant="outline" className="text-[10px]">

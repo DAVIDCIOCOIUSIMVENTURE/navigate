@@ -11,12 +11,11 @@ import type {
   AffectedGroup,
   ImprovementItem,
   SolutionCandidate,
-  ScamperResponses,
   ImprovementResponses,
   SolutionStatus,
   SolutionVerdict,
 } from "@/types/solution"
-import { DEFAULT_SCAMPER, DEFAULT_IMPROVEMENT } from "@/types/solution"
+import { DEFAULT_IMPROVEMENT } from "@/types/solution"
 import type { Problem } from "@/store/problems-model"
 
 type SolutionContextValue = {
@@ -38,8 +37,6 @@ type SolutionContextValue = {
   rootCauseNotes: string
   setRootCauseNotes: (val: string) => void
   // Step 2: Solution Discovery
-  scamperResponses: ScamperResponses
-  setScamperResponses: (val: ScamperResponses) => void
   reverseBrainstorm: ImprovementItem[]
   setReverseBrainstorm: (val: ImprovementItem[]) => void
   reverseInversion: ImprovementItem[]
@@ -90,7 +87,6 @@ export function SolutionProvider({
   const fiveWhyChains = solution?.fiveWhyChains ?? []
   const affectedGroups = solution?.affectedGroups ?? []
   const rootCauseNotes = solution?.rootCauseNotes ?? ""
-  const scamperResponses = solution?.scamperResponses ?? DEFAULT_SCAMPER
   const reverseBrainstorm = solution?.reverseBrainstorm ?? []
   const reverseInversion = solution?.reverseInversion ?? []
   const analogyDomain = solution?.analogyDomain ?? ""
@@ -124,10 +120,6 @@ export function SolutionProvider({
   )
   const setRootCauseNotes = useCallback(
     (val: string) => { dispatch.solutions.update({ id: solutionId, patch: { rootCauseNotes: val } }) },
-    [dispatch, solutionId]
-  )
-  const setScamperResponses = useCallback(
-    (val: ScamperResponses) => { dispatch.solutions.update({ id: solutionId, patch: { scamperResponses: val } }) },
     [dispatch, solutionId]
   )
   const setReverseBrainstorm = useCallback(
@@ -184,7 +176,6 @@ export function SolutionProvider({
         fiveWhyChains, setFiveWhyChains,
         affectedGroups, setAffectedGroups,
         rootCauseNotes, setRootCauseNotes,
-        scamperResponses, setScamperResponses,
         reverseBrainstorm, setReverseBrainstorm,
         reverseInversion, setReverseInversion,
         analogyDomain, setAnalogyDomain,

@@ -33,16 +33,6 @@ export type SolutionCandidate = {
   notes: string
 }
 
-export type ScamperResponses = {
-  substitute: ImprovementItem[]
-  combine: ImprovementItem[]
-  adapt: ImprovementItem[]
-  modify: ImprovementItem[]
-  putToOtherUse: ImprovementItem[]
-  eliminate: ImprovementItem[]
-  reverse: ImprovementItem[]
-}
-
 export type ImprovementResponses = {
   coreFunctionality: ImprovementItem[]
   easeOfUse: ImprovementItem[]
@@ -80,7 +70,6 @@ export type Solution = {
   affectedGroups: AffectedGroup[]
   rootCauseNotes: string
   // Step 2: Solution Discovery
-  scamperResponses: ScamperResponses
   reverseBrainstorm: ImprovementItem[]
   reverseInversion: ImprovementItem[]
   analogyDomain: string
@@ -111,16 +100,6 @@ export const DEFAULT_IMPROVEMENT: ImprovementResponses = {
   postPurchase: [],
 }
 
-export const DEFAULT_SCAMPER: ScamperResponses = {
-  substitute: [],
-  combine: [],
-  adapt: [],
-  modify: [],
-  putToOtherUse: [],
-  eliminate: [],
-  reverse: [],
-}
-
 export const DEFAULT_SOLUTION_FIELDS: Omit<Solution, "id" | "problemId" | "createdAt" | "editedAt"> = {
   status: "not_started",
   analysisToolType: "",
@@ -129,7 +108,6 @@ export const DEFAULT_SOLUTION_FIELDS: Omit<Solution, "id" | "problemId" | "creat
   fiveWhyChains: [],
   affectedGroups: [],
   rootCauseNotes: "",
-  scamperResponses: DEFAULT_SCAMPER,
   reverseBrainstorm: [],
   reverseInversion: [],
   analogyDomain: "",
