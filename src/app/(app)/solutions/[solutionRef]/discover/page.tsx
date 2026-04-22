@@ -429,12 +429,16 @@ function ReverseItemList({
   label,
   description,
   placeholder,
+  onAddAsCandidate,
+  isItemAdded,
 }: {
   items: { id: number; text: string }[]
   setItems: (val: { id: number; text: string }[]) => void
   label: string
   description: string
   placeholder: string
+  onAddAsCandidate?: (item: { id: number; text: string }) => void
+  isItemAdded?: (id: number) => boolean
 }) {
   const [adding, setAdding] = useState(false)
   const [draft, setDraft] = useState("")
@@ -475,23 +479,45 @@ function ReverseItemList({
       <label className="text-sm font-semibold text-white">{label}</label>
       <p className="text-sm text-white/80">{description}</p>
 
-      {items.map((item) => (
-        <div key={item.id} className="flex items-center gap-2">
-          <Input
-            defaultValue={item.text}
-            onChange={(e) => updateItem(item.id, e.target.value)}
-            className="flex-1 text-sm bg-white border-white text-foreground"
-          />
-          <Button
-            size="icon"
-            variant="ghost"
-            className="shrink-0 h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
-            onClick={() => removeItem(item.id)}
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
-        </div>
-      ))}
+      {items.map((item) => {
+        const added = isItemAdded?.(item.id) ?? false
+        return (
+          <div key={item.id} className="flex items-center gap-2">
+            <Input
+              defaultValue={item.text}
+              onChange={(e) => updateItem(item.id, e.target.value)}
+              className="flex-1 text-sm bg-white border-white text-foreground"
+            />
+            {onAddAsCandidate && (
+              added ? (
+                <Badge variant="outline" className="shrink-0 gap-1 border-white/40 text-white/90">
+                  <Check className="h-3 w-3" />
+                  Candidate
+                </Badge>
+              ) : (
+                <Button
+                  size="sm"
+                  variant="on-primary"
+                  className="shrink-0 h-8 gap-1"
+                  disabled={!item.text.trim()}
+                  onClick={() => onAddAsCandidate(item)}
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  Add as Candidate
+                </Button>
+              )
+            )}
+            <Button
+              size="icon"
+              variant="ghost"
+              className="shrink-0 h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
+              onClick={() => removeItem(item.id)}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+        )
+      })}
 
       {adding ? (
         <Input
@@ -514,10 +540,42 @@ function ReverseItemList({
 }
 
 function ReverseBrainstormForm() {
-  const { reverseBrainstorm, setReverseBrainstorm, reverseInversion, setReverseInversion } = useSolution()
+  const {
+    reverseBrainstorm,
+    setReverseBrainstorm,
+    reverseInversion,
+    setReverseInversion,
+    candidates,
+    setCandidates,
+  } = useSolution()
 
   const brainstormItems = Array.isArray(reverseBrainstorm) ? reverseBrainstorm : []
   const inversionItems = Array.isArray(reverseInversion) ? reverseInversion : []
+
+  const isInversionAdded = (id: number) =>
+    candidates.some(
+      (c) => c.inspirationSource === "reverse" && c.inspirationDetail === String(id)
+    )
+
+  const addInversionAsCandidate = (item: { id: number; text: string }) => {
+    const text = item.text.trim()
+    if (!text) return
+    if (isInversionAdded(item.id)) return
+    const id = candidates.length > 0 ? Math.max(...candidates.map((c) => c.id)) + 1 : 1
+    const newCandidate: SolutionCandidate = {
+      id,
+      title: text,
+      description: "",
+      inspirationSource: "reverse",
+      inspirationDetail: String(item.id),
+      feasibility: null,
+      impact: null,
+      cost: null,
+      timeToImplement: null,
+      notes: "",
+    }
+    setCandidates([...candidates, newCandidate])
+  }
 
   return (
     <div className="bg-primary rounded-xl p-8">
@@ -536,8 +594,10 @@ function ReverseBrainstormForm() {
             items={inversionItems}
             setItems={setReverseInversion}
             label="Now flip each idea"
-            description={'Take each "make it worse" idea above and write its opposite. These inversions often reveal strong solution ideas.'}
+            description={'Take each "make it worse" idea above and write its opposite. Promote the strongest flips to your candidates below.'}
             placeholder="Type the flipped idea and press Enter..."
+            onAddAsCandidate={addInversionAsCandidate}
+            isItemAdded={isInversionAdded}
           />
         </div>
       </div>
