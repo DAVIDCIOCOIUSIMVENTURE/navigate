@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
@@ -200,6 +200,8 @@ export default function QuestionPage() {
     const [answers, setAnswers] = useState<{ [key: string]: string }>({})
     const [problemTriggerToDelete, setProblemTriggerToDelete] = useState<ProblemTrigger | null>(null)
     const [sdgToAdd, setSdgToAdd] = useState<{ questionUrl: string; sdg: string } | null>(null)
+    const [mounted, setMounted] = useState(false)
+    useEffect(() => { setMounted(true) }, [])
 
     const triggers = useSelector((state: RootState) => state.problemTriggers.triggers)
     const dispatch = useDispatch<AppDispatch>()
@@ -299,7 +301,7 @@ export default function QuestionPage() {
         }
     }
 
-    if (!category || !question) {
+    if (!category || !question || !mounted) {
         return <Card className="w-full flex-1">
             <CardContent className="flex p-8 w-full flex-1 flex-col gap-4">Loading...</CardContent>
         </Card>
