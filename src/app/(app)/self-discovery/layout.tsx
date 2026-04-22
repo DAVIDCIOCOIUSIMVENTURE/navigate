@@ -14,6 +14,13 @@ import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
 
+const CATEGORY_ICON_BG: Record<string, string> = {
+    "personal-interests": "bg-yellow-500",
+    "knowledge": "bg-red-500",
+    "skills-expertise": "bg-emerald-500",
+    "social-impact": "bg-sky-500",
+}
+
 export default function SelfDiscoveryLayout({
     children,
 }: {
@@ -46,7 +53,7 @@ export default function SelfDiscoveryLayout({
                                 <div className="pb-3 mb-1 border-b">
                                     <Button variant="outline" className="w-full justify-start gap-2">
                                         <PanelLeftClose className="h-3.5 w-3.5 shrink-0" />
-                                        Show all triggers
+                                        Show all self discovery items
                                     </Button>
                                 </div>
                             </SheetTrigger>
@@ -115,7 +122,12 @@ export default function SelfDiscoveryLayout({
                                             <div className="flex items-center gap-2">
                                                 {(() => {
                                                     const CategoryIcon = getSelfDiscoveryCategoryIcon(category.url)
-                                                    return CategoryIcon && <CategoryIcon className="h-3.5 w-3.5 shrink-0 text-foreground" aria-hidden="true" />
+                                                    const bgClass = CATEGORY_ICON_BG[category.url] ?? "bg-primary"
+                                                    return CategoryIcon && (
+                                                        <span className={cn("flex items-center justify-center w-6 h-6 rounded-md shrink-0", bgClass)}>
+                                                            <CategoryIcon className="h-3.5 w-3.5 text-white" aria-hidden="true" />
+                                                        </span>
+                                                    )
                                                 })()}
                                                 {category.title}
                                             </div>

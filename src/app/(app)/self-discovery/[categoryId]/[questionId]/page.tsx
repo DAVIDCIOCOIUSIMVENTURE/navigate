@@ -239,7 +239,7 @@ export default function QuestionPage() {
                     <CardTitle icon={(() => {
                         const CategoryIcon = getSelfDiscoveryCategoryIcon(category.url)
                         return CategoryIcon || Compass
-                    })()} className="text-primary">{question.title}</CardTitle>
+                    })()} className="text-foreground">{question.title}</CardTitle>
                 </CardHeader>
                 <CardContent className="flex-1 p-10 pt-6 min-h-0 flex flex-col overflow-y-auto">
                     <div className="flex flex-col gap-5 flex-1 min-h-0">
