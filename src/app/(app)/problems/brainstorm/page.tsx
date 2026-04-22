@@ -1510,7 +1510,7 @@ export default function BrainstormPage() {
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 h-8 w-44"
+              className="pl-9 h-8 w-44 bg-white"
             />
             {searchQuery && (
               <button
