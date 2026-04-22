@@ -165,7 +165,7 @@ function BrainstormCheckItem({
             ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
             : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
           }
-          <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide select-none flex-1 text-left">
+          <span className="text-xs font-semibold text-foreground uppercase tracking-wide select-none flex-1 text-left">
             {item.label}
           </span>
           {selectedCount > 0 && (
@@ -200,8 +200,8 @@ function BrainstormCheckItem({
         onCheckedChange={() => onToggle(item.id)}
       />
       <span className={cn(
-        "text-sm select-none",
-        isChecked ? "font-medium text-foreground" : "text-muted-foreground"
+        "text-sm text-foreground select-none",
+        isChecked && "font-medium"
       )}>
         {item.label}
       </span>
@@ -1171,10 +1171,8 @@ function ProblemBuilderV2({
                           onCheckedChange={() => toggleItem(activeColumn.id, item.id)}
                         />
                         <span className={cn(
-                          "text-sm select-none",
-                          (selectedByColumn[activeColumn.id] ?? []).includes(item.id)
-                            ? "font-medium text-foreground"
-                            : "text-muted-foreground"
+                          "text-sm text-foreground select-none",
+                          (selectedByColumn[activeColumn.id] ?? []).includes(item.id) && "font-medium"
                         )}>
                           {item.label}
                         </span>

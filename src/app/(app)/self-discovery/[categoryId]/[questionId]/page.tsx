@@ -54,6 +54,7 @@ import type { ProblemTrigger } from "@/store/problem-triggers-model"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Checkbox } from "@/components/ui/checkbox"
 
 const GROUP_ICON_RULES: ReadonlyArray<readonly [RegExp, LucideIcon]> = [
     [/software|programm|coding/, Code],
@@ -182,31 +183,18 @@ function SuggestionTreeItem({
     const isSelected = selectedIds.has(item.id)
 
     return (
-        <button
-            type="button"
-            onClick={() => onToggle(item.id, item.label)}
-            className={cn(
-                "flex items-center gap-2.5 px-1 py-1.5 cursor-pointer rounded-md hover:bg-accent/50 transition-colors text-left w-full",
-                isSelected && "bg-primary/5"
-            )}
-        >
-            <div className={cn(
-                "h-4 w-4 rounded-sm border flex items-center justify-center shrink-0 transition-colors",
-                isSelected ? "bg-primary border-primary text-primary-foreground" : "border-muted-foreground/30"
-            )}>
-                {isSelected && (
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-                        <path d="M8.5 2.5L3.5 7.5L1.5 5.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                )}
-            </div>
+        <label className="flex items-center gap-2.5 px-1 py-1.5 cursor-pointer rounded-md hover:bg-accent/50 transition-colors">
+            <Checkbox
+                checked={isSelected}
+                onCheckedChange={() => onToggle(item.id, item.label)}
+            />
             <span className={cn(
-                "text-sm select-none text-foreground",
+                "text-sm text-foreground select-none",
                 isSelected && "font-medium"
             )}>
                 {item.label}
             </span>
-        </button>
+        </label>
     )
 }
 
