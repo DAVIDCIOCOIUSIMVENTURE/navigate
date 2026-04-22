@@ -120,7 +120,7 @@ function SuggestionTreeItem({
     onToggle: (id: string, label: string) => void
 }) {
     const isGroup = !!item.children?.length
-    const [open, setOpen] = useState(true)
+    const [open, setOpen] = useState(false)
 
     if (isGroup) {
         const selectedCount = item.children!.filter((c) => selectedIds.has(c.id)).length

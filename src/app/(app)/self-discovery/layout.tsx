@@ -109,7 +109,7 @@ export default function SelfDiscoveryLayout({
                             >
                                 Intro
                             </Button>
-                            <Accordion type="single" collapsible className="w-full flex flex-col gap-1">
+                            <Accordion type="single" collapsible defaultValue="" className="w-full flex flex-col gap-1">
                                 {SELF_DISCOVERY_CATEGORIES.map((category) => (
                                     <AccordionItem key={category.url} value={category.url}>
                                         <AccordionTrigger

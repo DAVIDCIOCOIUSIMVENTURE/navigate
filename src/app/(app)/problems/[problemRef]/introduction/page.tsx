@@ -81,7 +81,7 @@ export default function IntroductionPage() {
                 </div>
                 <div className="flex flex-col gap-0.5 pb-5">
                   <p className="text-md font-medium leading-8">{title}</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed">{description}</p>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{description}</p>
                 </div>
               </div>
             ))}
