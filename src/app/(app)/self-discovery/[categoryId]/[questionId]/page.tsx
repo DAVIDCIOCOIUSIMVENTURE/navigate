@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo, useDeferredValue, useRef } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import {
@@ -10,6 +10,10 @@ import {
     ChevronDown,
     ChevronRight,
     Plus,
+    Search,
+    X,
+    ChevronsUpDown,
+    ChevronsDownUp,
     Palette,
     Dumbbell,
     TreePine,
@@ -110,17 +114,33 @@ const SDGS = [
     "Partnership for the goals"
 ]
 
+function filterSuggestionItems(items: SuggestionItem[], query: string): SuggestionItem[] {
+    if (!query) return items
+    const lower = query.toLowerCase()
+    return items.flatMap((item) => {
+        if (item.children) {
+            const filtered = filterSuggestionItems(item.children, query)
+            if (filtered.length > 0) return [{ ...item, children: filtered }]
+            if (item.label.toLowerCase().includes(lower)) return [item]
+            return []
+        }
+        return item.label.toLowerCase().includes(lower) ? [item] : []
+    })
+}
+
 function SuggestionTreeItem({
     item,
     selectedIds,
     onToggle,
+    defaultOpen = false,
 }: {
     item: SuggestionItem
     selectedIds: Set<string>
     onToggle: (id: string, label: string) => void
+    defaultOpen?: boolean
 }) {
     const isGroup = !!item.children?.length
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(defaultOpen)
 
     if (isGroup) {
         const selectedCount = item.children!.filter((c) => selectedIds.has(c.id)).length
@@ -150,6 +170,7 @@ function SuggestionTreeItem({
                                 item={child}
                                 selectedIds={selectedIds}
                                 onToggle={onToggle}
+                                defaultOpen={defaultOpen}
                             />
                         ))}
                     </div>
@@ -201,7 +222,32 @@ export default function QuestionPage() {
     const [problemTriggerToDelete, setProblemTriggerToDelete] = useState<ProblemTrigger | null>(null)
     const [sdgToAdd, setSdgToAdd] = useState<{ questionUrl: string; sdg: string } | null>(null)
     const [mounted, setMounted] = useState(false)
+    const [searchQuery, setSearchQuery] = useState("")
+    const deferredQuery = useDeferredValue(searchQuery)
+    const [defaultGroupOpen, setDefaultGroupOpen] = useState(false)
+    const [treeResetKey, setTreeResetKey] = useState(0)
+    const prevDeferredQuery = useRef("")
     useEffect(() => { setMounted(true) }, [])
+    useEffect(() => {
+        setSearchQuery("")
+        setDefaultGroupOpen(false)
+        setTreeResetKey(k => k + 1)
+        prevDeferredQuery.current = ""
+    }, [questionId])
+    useEffect(() => {
+        const wasEmpty = !prevDeferredQuery.current
+        const isNonEmpty = !!deferredQuery
+        if (wasEmpty && isNonEmpty) {
+            setDefaultGroupOpen(true)
+            setTreeResetKey(k => k + 1)
+        }
+        prevDeferredQuery.current = deferredQuery
+    }, [deferredQuery])
+
+    const filteredSuggestions = useMemo(() => {
+        if (!question?.suggestions) return []
+        return filterSuggestionItems(question.suggestions, deferredQuery)
+    }, [question?.suggestions, deferredQuery])
 
     const triggers = useSelector((state: RootState) => state.problemTriggers.triggers)
     const dispatch = useDispatch<AppDispatch>()
@@ -388,17 +434,74 @@ export default function QuestionPage() {
                                             Add
                                         </Button>
                                     </div>
-                                    <ScrollArea className="flex-1 min-h-[200px] rounded-lg border p-3">
-                                        <div className="flex flex-col">
-                                            {question.suggestions.map((item) => (
-                                                <SuggestionTreeItem
-                                                    key={item.id}
-                                                    item={item}
-                                                    selectedIds={selectedSuggestionIds}
-                                                    onToggle={handleToggleSuggestion}
-                                                />
-                                            ))}
+                                    <div className="flex items-center gap-2 shrink-0">
+                                        <div className="relative flex-1">
+                                            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                            <Input
+                                                placeholder="Search suggestions..."
+                                                value={searchQuery}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
+                                                className="pl-9 pr-8 h-9"
+                                            />
+                                            {searchQuery && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setSearchQuery("")}
+                                                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                                    aria-label="Clear search"
+                                                >
+                                                    <X className="h-3.5 w-3.5" />
+                                                </button>
+                                            )}
                                         </div>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => {
+                                                setDefaultGroupOpen(true)
+                                                setTreeResetKey(k => k + 1)
+                                            }}
+                                            className="gap-1.5"
+                                        >
+                                            <ChevronsUpDown className="h-3.5 w-3.5" />
+                                            Expand all
+                                        </Button>
+                                        <Button
+                                            variant="outline"
+                                            size="sm"
+                                            onClick={() => {
+                                                setDefaultGroupOpen(false)
+                                                setTreeResetKey(k => k + 1)
+                                            }}
+                                            className="gap-1.5"
+                                        >
+                                            <ChevronsDownUp className="h-3.5 w-3.5" />
+                                            Collapse all
+                                        </Button>
+                                    </div>
+                                    <ScrollArea className="flex-1 min-h-[200px] rounded-lg border p-3">
+                                        {filteredSuggestions.length === 0 ? (
+                                            <div className="flex flex-col items-center justify-center py-8 gap-2 text-center">
+                                                <Search className="h-5 w-5 text-muted-foreground" />
+                                                <p className="text-sm text-muted-foreground">No suggestions match your search.</p>
+                                                <Button variant="outline" size="sm" onClick={() => setSearchQuery("")} className="mt-1 gap-1.5">
+                                                    <X className="h-3.5 w-3.5" />
+                                                    Clear search
+                                                </Button>
+                                            </div>
+                                        ) : (
+                                            <div key={treeResetKey} className="flex flex-col">
+                                                {filteredSuggestions.map((item) => (
+                                                    <SuggestionTreeItem
+                                                        key={item.id}
+                                                        item={item}
+                                                        selectedIds={selectedSuggestionIds}
+                                                        onToggle={handleToggleSuggestion}
+                                                        defaultOpen={defaultGroupOpen}
+                                                    />
+                                                ))}
+                                            </div>
+                                        )}
                                     </ScrollArea>
                                 </div>
                             ) : (
