@@ -1372,25 +1372,25 @@ export default function DiscoverPage() {
 
             {discoveryToolType === "reverse" && (
               <>
-                <h3 className="mt-4 text-xl font-bold text-foreground">The 2 Reverse Brainstorming Steps</h3>
-                <p>Reverse brainstorming runs in two passes. First you deliberately generate the worst ideas possible, then you flip them to reveal strong solutions hiding in plain sight.</p>
-                <div className="grid grid-cols-1 gap-5 mt-3 mb-6">
-                  <div className="flex items-start gap-4 rounded-lg border bg-muted/30 p-6">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-rose-500 text-white text-sm font-bold">
-                      1
-                    </span>
-                    <div className="flex flex-col gap-2 min-w-0">
-                      <span className="text-base font-semibold text-foreground">Make it worse</span>
-                      <p className="text-sm text-muted-foreground">Think of every way to aggravate the problem. Be creative, the more outlandish the better.</p>
+                <h3 className="mt-6 text-xl font-bold text-foreground">The 2 Reverse Brainstorming Steps</h3>
+                <p className="mt-1">Reverse brainstorming runs in two passes. First you deliberately generate the worst ideas possible, then you flip them to reveal strong solutions hiding in plain sight.</p>
+                <div className="flex flex-col gap-3 mt-3 mb-6">
+                  <div className="flex items-start gap-3">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-rose-500 shrink-0 mt-0.5">
+                      <span className="text-sm font-bold text-white">1</span>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-foreground">Make it worse</p>
+                      <p className="text-md">Think of every way to aggravate the problem. Be creative, the more outlandish the better.</p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-4 rounded-lg border bg-muted/30 p-6">
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-blue-500 text-white text-sm font-bold">
-                      2
-                    </span>
-                    <div className="flex flex-col gap-2 min-w-0">
-                      <span className="text-base font-semibold text-foreground">Flip each idea</span>
-                      <p className="text-sm text-muted-foreground">Take each &quot;make it worse&quot; idea and write its opposite. These inversions often reveal strong solution ideas.</p>
+                  <div className="flex items-start gap-3">
+                    <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500 shrink-0 mt-0.5">
+                      <span className="text-sm font-bold text-white">2</span>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-foreground">Flip each idea</p>
+                      <p className="text-md">Take each &quot;make it worse&quot; idea and write its opposite. These inversions often reveal strong solution ideas.</p>
                     </div>
                   </div>
                 </div>
