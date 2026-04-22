@@ -153,7 +153,7 @@ function BrainstormCheckItem({
   forceOpen?: boolean
 }) {
   const isGroup = !!item.children?.length
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
   const effectiveOpen = forceOpen || open
 
   if (isGroup) {
