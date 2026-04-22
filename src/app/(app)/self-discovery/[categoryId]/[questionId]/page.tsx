@@ -4,7 +4,41 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import { Trash2, Compass, ChevronDown, ChevronRight, Plus } from "lucide-react"
+import {
+    Trash2,
+    Compass,
+    ChevronDown,
+    ChevronRight,
+    Plus,
+    Palette,
+    Dumbbell,
+    TreePine,
+    Cpu,
+    Utensils,
+    GraduationCap,
+    Users,
+    Plane,
+    Heart,
+    Briefcase,
+    Trophy,
+    ShieldAlert,
+    User,
+    BookOpen,
+    Scale,
+    Code,
+    BarChart3,
+    Cog,
+    PenLine,
+    MessageSquare,
+    Crown,
+    Brain,
+    Target,
+    TrendingUp,
+    Globe,
+    HeartHandshake,
+    Folder,
+    type LucideIcon,
+} from "lucide-react"
 import { useRouter, useParams } from "next/navigation"
 import Image from "next/image"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
@@ -16,6 +50,45 @@ import type { ProblemTrigger } from "@/store/problem-triggers-model"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
 import { ScrollArea } from "@/components/ui/scroll-area"
+
+const GROUP_ICON_RULES: ReadonlyArray<readonly [RegExp, LucideIcon]> = [
+    [/software|programm|coding/, Code],
+    [/data|analytic/, BarChart3],
+    [/technical|hardware/, Cog],
+    [/tech|science/, Cpu],
+    [/writing/, PenLine],
+    [/media|communicat/, MessageSquare],
+    [/creative|art|design/, Palette],
+    [/leadership|management/, Crown],
+    [/strategy|analysis/, Target],
+    [/thinking|problem/, Brain],
+    [/sport|fitness|physical|hands-on|trade|practical/, Dumbbell],
+    [/outdoor|nature|environment|climate/, TreePine],
+    [/food|drink/, Utensils],
+    [/travel/, Plane],
+    [/education|learning|intellectual|growth/, GraduationCap],
+    [/marketing/, TrendingUp],
+    [/wellness|mindful|wellbeing|health/, Heart],
+    [/family|relationship/, HeartHandshake],
+    [/people|interpersonal/, Users],
+    [/business|entrepreneur|career|work|finance|operations|economic|labour|economy/, Briefcase],
+    [/adversity|challenge/, ShieldAlert],
+    [/achievement|milestone/, Trophy],
+    [/personal|identity|self-management/, User],
+    [/humanities/, BookOpen],
+    [/law|policy|rights|equality|justice|govern|freedom|expression/, Scale],
+    [/global|geopolitical/, Globe],
+    [/access|services|issue/, HeartHandshake],
+    [/social|community/, Users],
+]
+
+function getGroupIcon(label: string): LucideIcon {
+    const l = label.toLowerCase()
+    for (const [re, icon] of GROUP_ICON_RULES) {
+        if (re.test(l)) return icon
+    }
+    return Folder
+}
 
 const SDGS = [
     "No poverty",
@@ -51,6 +124,7 @@ function SuggestionTreeItem({
 
     if (isGroup) {
         const selectedCount = item.children!.filter((c) => selectedIds.has(c.id)).length
+        const GroupIcon = getGroupIcon(item.label)
         return (
             <Collapsible open={open} onOpenChange={setOpen}>
                 <CollapsibleTrigger className="flex w-full items-center gap-1.5 px-1 py-1.5 rounded-md hover:bg-accent/50 transition-colors">
@@ -58,7 +132,8 @@ function SuggestionTreeItem({
                         ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                         : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                     }
-                    <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide select-none flex-1 text-left">
+                    <GroupIcon className="h-3.5 w-3.5 text-foreground shrink-0" aria-hidden="true" />
+                    <span className="text-xs font-semibold text-foreground uppercase tracking-wide select-none flex-1 text-left">
                         {item.label}
                     </span>
                     {selectedCount > 0 && (
@@ -105,8 +180,8 @@ function SuggestionTreeItem({
                 )}
             </div>
             <span className={cn(
-                "text-sm select-none",
-                isSelected ? "font-medium text-foreground" : "text-muted-foreground"
+                "text-sm select-none text-foreground",
+                isSelected && "font-medium"
             )}>
                 {item.label}
             </span>
