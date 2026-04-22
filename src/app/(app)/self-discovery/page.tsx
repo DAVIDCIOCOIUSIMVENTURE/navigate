@@ -26,21 +26,21 @@ export default function SelfDiscoveryPage() {
           <h3 className="text-xl font-bold text-foreground">What you&apos;ll do</h3>
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-3">
-              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">1</span>
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-yellow-500 text-white text-sm font-bold shrink-0">1</span>
               <div>
                 <p className="font-semibold text-foreground">Answer the questions within each category</p>
                 <p className="text-md text-foreground">Reflect on your strengths, interests, and experiences.</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">2</span>
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-red-500 text-white text-sm font-bold shrink-0">2</span>
               <div>
                 <p className="font-semibold text-foreground">Use suggestion exercises to discover more insights</p>
                 <p className="text-md text-foreground">Browse curated suggestions or add your own.</p>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">3</span>
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500 text-white text-sm font-bold shrink-0">3</span>
               <div>
                 <p className="font-semibold text-foreground">Build your problem triggers</p>
                 <p className="text-md text-foreground">Your answers become triggers you can take into the Ideas section.</p>
