@@ -15,10 +15,12 @@ export function StatusSelect({ status, setStatus }: { status: ValidationStatus; 
   const current = STATUS_OPTIONS.find((o) => o.value === status) ?? STATUS_OPTIONS[0]
   const CurrentIcon = current.icon
   return (
-    <div className="flex items-center gap-2">
-      <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide whitespace-nowrap">Validation Status</span>
+    <div className="flex flex-col gap-2">
+      <label className="text-sm font-medium" htmlFor="validation-status">
+        Validation Status
+      </label>
       <Select value={status} onValueChange={(v) => setStatus(v as ValidationStatus)}>
-        <SelectTrigger className="h-8 w-40 bg-white text-xs font-medium">
+        <SelectTrigger id="validation-status" className="bg-white">
           <SelectValue>
             <span className="flex items-center gap-1.5">
               <CurrentIcon className={`h-3.5 w-3.5 shrink-0 ${current.iconClass}`} />
