@@ -168,10 +168,7 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
                   />
                 </div>
               ))}
-              <div className="flex justify-between gap-2 pt-2">
-                <Button variant="ghost" onClick={() => setView("menu")}>
-                  Back
-                </Button>
+              <div className="flex justify-end gap-2 pt-2">
                 <Button onClick={handleManualSubmit} disabled={!hasAnyField}>
                   Add Problem
                 </Button>
