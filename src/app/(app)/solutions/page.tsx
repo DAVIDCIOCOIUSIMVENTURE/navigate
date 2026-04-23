@@ -78,8 +78,8 @@ export default function SolutionsPage() {
   return (
     <div className="flex flex-col gap-6 w-full flex-1">
       <div className="flex items-start gap-4">
-        <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-primary/10 shrink-0">
-          <Lightbulb className="h-6 w-6 text-primary" />
+        <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-primary shrink-0">
+          <Lightbulb className="h-6 w-6 text-primary-foreground" />
         </div>
         <div className="flex flex-col gap-1">
           <h1 className="text-xl font-bold">Solutions</h1>
