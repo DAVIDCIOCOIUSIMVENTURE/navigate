@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useParams, usePathname, useRouter } from "next/navigation"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
@@ -81,6 +81,11 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   ) ?? null
   const [dialogOpen, setDialogOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const summaryData: ProblemSummaryData | null = problem
     ? {
@@ -170,7 +175,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           </Card>
         </nav>
 
-        <div className="flex-1 min-w-0">{children}</div>
+        <div className="flex-1 min-w-0">{mounted ? children : null}</div>
       </div>
 
       <ProblemSummaryDialog open={dialogOpen} onOpenChange={setDialogOpen} data={summaryData} />

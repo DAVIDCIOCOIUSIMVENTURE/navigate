@@ -321,8 +321,8 @@ function ScamperForm() {
 
   return (
     <div className="bg-primary rounded-xl p-8">
-      <div className="flex items-start justify-between gap-4 mb-4">
-        <div className="flex flex-col gap-1 min-w-0">
+      <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
+        <div className="flex flex-col gap-1 min-w-0 flex-1">
           <h4 className="text-sm font-semibold text-white">SCAMPER Prompts</h4>
           <p className="text-sm text-white">Switch between accordion and tab layouts to explore the prompts the way you prefer.</p>
         </div>
@@ -331,12 +331,12 @@ function ScamperForm() {
           value={viewMode}
           onValueChange={(v) => { if (v) setViewMode(v as "accordion" | "tabs") }}
           size="sm"
-          className="border-white/30 bg-white/10"
+          className="shrink-0 border-white/30 bg-white/10"
         >
           <ToggleGroupItem
             value="tabs"
             aria-label="Tabs view"
-            className="text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-primary"
+            className="shrink-0 whitespace-nowrap text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-primary"
           >
             <LayoutPanelTop className="h-4 w-4" />
             <span className="text-xs">Tabs</span>
@@ -344,7 +344,7 @@ function ScamperForm() {
           <ToggleGroupItem
             value="accordion"
             aria-label="Accordion view"
-            className="text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-primary"
+            className="shrink-0 whitespace-nowrap text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-primary"
           >
             <Rows3 className="h-4 w-4" />
             <span className="text-xs">Accordion</span>
@@ -829,8 +829,8 @@ function ImprovementForm() {
 
   return (
     <div className="bg-primary rounded-xl p-8">
-      <div className="flex items-start justify-between gap-4 mb-4">
-        <div className="flex flex-col gap-1 min-w-0">
+      <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
+        <div className="flex flex-col gap-1 min-w-0 flex-1">
           <h4 className="text-sm font-semibold text-white">Improvement Dimensions</h4>
           <p className="text-sm text-white">Switch between accordion and tab layouts to explore the dimensions the way you prefer.</p>
         </div>
@@ -839,12 +839,12 @@ function ImprovementForm() {
           value={viewMode}
           onValueChange={(v) => { if (v) setViewMode(v as "accordion" | "tabs") }}
           size="sm"
-          className="border-white/30 bg-white/10"
+          className="shrink-0 border-white/30 bg-white/10"
         >
           <ToggleGroupItem
             value="tabs"
             aria-label="Tabs view"
-            className="text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-primary"
+            className="shrink-0 whitespace-nowrap text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-primary"
           >
             <LayoutPanelTop className="h-4 w-4" />
             <span className="text-xs">Tabs</span>
@@ -852,7 +852,7 @@ function ImprovementForm() {
           <ToggleGroupItem
             value="accordion"
             aria-label="Accordion view"
-            className="text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-primary"
+            className="shrink-0 whitespace-nowrap text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-primary"
           >
             <Rows3 className="h-4 w-4" />
             <span className="text-xs">Accordion</span>
