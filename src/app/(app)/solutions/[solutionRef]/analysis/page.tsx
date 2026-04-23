@@ -91,23 +91,23 @@ export default function AnalysisPage() {
           <TabsContent value="strategy">
             <div className="bg-primary rounded-xl p-8 flex flex-col gap-6">
               {candidates.length === 0 && (
-                <p className="text-sm text-primary-foreground/70 text-center py-4">
+                <p className="text-sm text-white/70 text-center py-4">
                   No candidates to score. Go back and add some solution candidates first.
                 </p>
               )}
 
               {candidates.map((candidate) => (
-                <div key={candidate.id} className="rounded-lg border bg-background p-4 flex flex-col gap-4">
-                  <p className="text-sm font-semibold">{candidate.title}</p>
+                <div key={candidate.id} className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-4">
+                  <p className="text-sm font-semibold text-white">{candidate.title}</p>
                   {candidate.description && (
-                    <p className="text-xs text-muted-foreground">{candidate.description}</p>
+                    <p className="text-xs text-white/70">{candidate.description}</p>
                   )}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {DIMENSIONS.map((dim) => (
                       <div key={dim.key} className="flex flex-col gap-2">
-                        <div className="flex justify-between items-center">
-                          <label className="text-sm font-medium">{dim.label}</label>
-                          <span className="text-[10px] text-muted-foreground">{dim.lowLabel} → {dim.highLabel}</span>
+                        <div className="flex items-baseline gap-2">
+                          <label className="text-sm font-medium text-white">{dim.label}</label>
+                          <span className="text-[10px] text-white/70">{dim.lowLabel} → {dim.highLabel}</span>
                         </div>
                         <ToggleGroup
                           type="single"
@@ -116,7 +116,11 @@ export default function AnalysisPage() {
                           className="justify-start"
                         >
                           {SCORE_OPTIONS.map((opt) => (
-                            <ToggleGroupItem key={opt.value} value={opt.value} className="text-xs w-8 h-8">
+                            <ToggleGroupItem
+                              key={opt.value}
+                              value={opt.value}
+                              className="text-xs w-8 h-8 text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-primary"
+                            >
                               {opt.label}
                             </ToggleGroupItem>
                           ))}
@@ -129,10 +133,10 @@ export default function AnalysisPage() {
                     onChange={(e) => updateNotes(candidate.id, e.target.value)}
                     placeholder="Notes about this candidate..."
                     rows={2}
-                    className="text-sm"
+                    className="text-sm bg-white border-white text-foreground"
                   />
                   {computeScore(candidate) !== null && (
-                    <div className="text-sm font-medium text-primary">
+                    <div className="text-sm font-medium text-white">
                       Composite Score: {computeScore(candidate)} / 20
                     </div>
                   )}
@@ -140,16 +144,16 @@ export default function AnalysisPage() {
               ))}
 
               {ranked.length > 1 && ranked.some((r) => r.totalScore !== null) && (
-                <div className="rounded-lg border bg-background p-4 flex flex-col gap-2">
-                  <p className="text-sm font-semibold">Ranking</p>
+                <div className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-2">
+                  <p className="text-sm font-semibold text-white">Ranking</p>
                   <div className="flex flex-col gap-1">
                     {ranked.filter((r) => r.totalScore !== null).map((c, i) => (
-                      <div key={c.id} className="flex items-center gap-2 text-sm">
-                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
+                      <div key={c.id} className="flex items-center gap-2 text-sm text-white">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-bold text-primary">
                           {i + 1}
                         </span>
                         <span className="flex-1">{c.title}</span>
-                        <span className="text-sm font-medium text-muted-foreground">{c.totalScore}/20</span>
+                        <span className="text-sm font-medium text-white/70">{c.totalScore}/20</span>
                       </div>
                     ))}
                   </div>
@@ -157,13 +161,13 @@ export default function AnalysisPage() {
               )}
 
               <div className="flex flex-col gap-2">
-                <label className="text-sm font-medium text-primary-foreground">Analysis Notes</label>
+                <label className="text-sm font-medium text-white">Analysis Notes</label>
                 <Textarea
                   value={analysisNotes}
                   onChange={(e) => setAnalysisNotes(e.target.value)}
                   placeholder="Any overall observations about the candidates..."
                   rows={3}
-                  className="text-white placeholder:text-white/50 border-white/30"
+                  className="bg-white border-white text-foreground"
                 />
               </div>
             </div>
