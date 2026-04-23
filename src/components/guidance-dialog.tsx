@@ -15,7 +15,7 @@ import {
   GitFork, Heart, BarChart2, Target,
   Users, MapPin, Briefcase, AlertTriangle,
   Repeat, DollarSign,
-  Lightbulb,
+  Lightbulb, HelpCircle,
 } from "lucide-react"
 
 // ---------- Shared presentation helpers ----------
@@ -394,7 +394,10 @@ export function GuidanceDialog({
         <div className="flex flex-1 min-h-0">
           {/* Left Sidebar */}
           <div className="w-64 border-r p-4 flex flex-col">
-            <h2 className="font-semibold mb-4 shrink-0">Guidance Topics</h2>
+            <h2 className="flex items-center gap-2 font-semibold mb-4 shrink-0">
+              <HelpCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
+              Guidance Topics
+            </h2>
             <ScrollArea className="flex-1">
               <div className="space-y-1">
                 {guidanceItems.map((item) => (
