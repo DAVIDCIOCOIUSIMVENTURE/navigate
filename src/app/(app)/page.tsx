@@ -10,11 +10,12 @@ import {
   Award,
   Star,
   Crown,
-  Search,
   Compass,
   Zap,
   CheckCircle2,
   FlaskConical,
+  BadgeCheck,
+  Crosshair,
 } from "lucide-react"
 import { AchievementItem } from "@/components/achievement-item"
 import Link from "next/link"
@@ -62,8 +63,8 @@ export default function DashboardPage() {
   const achievements = [
     { icon: Compass, title: "Explorer", description: "Add your first self-discovery trigger", unlocked: triggers.length >= 1, iconBgColor: "bg-teal-100", iconColor: "text-teal-600" },
     { icon: Zap, title: "Trigger Happy", description: "Collect 10 problem triggers", unlocked: triggers.length >= 10, iconBgColor: "bg-amber-100", iconColor: "text-amber-600" },
-    { icon: Search, title: "Problem Spotter", description: "Create your first problem", unlocked: problems.length >= 1, iconBgColor: "bg-blue-100", iconColor: "text-blue-600" },
-    { icon: Target, title: "Sharp Shooter", description: "Identify 5 distinct problems", unlocked: problems.length >= 5, iconBgColor: "bg-indigo-100", iconColor: "text-indigo-600" },
+    { icon: Target, title: "Problem Spotter", description: "Create your first problem", unlocked: problems.length >= 1, iconBgColor: "bg-blue-100", iconColor: "text-blue-600" },
+    { icon: Crosshair, title: "Sharp Shooter", description: "Identify 5 distinct problems", unlocked: problems.length >= 5, iconBgColor: "bg-indigo-100", iconColor: "text-indigo-600" },
     { icon: Trophy, title: "Verdict Reached", description: "Validate your first problem", unlocked: validatedProblems.length >= 1, iconBgColor: "bg-green-100", iconColor: "text-green-600" },
     { icon: CheckCircle2, title: "Validated Thinker", description: "Get 3 problems to a verdict", unlocked: validatedProblems.length >= 3, iconBgColor: "bg-emerald-100", iconColor: "text-emerald-600" },
     { icon: FlaskConical, title: "Solution Seeker", description: "Start your first solution exploration", unlocked: solutions.length >= 1, iconBgColor: "bg-purple-100", iconColor: "text-purple-600" },
@@ -73,7 +74,7 @@ export default function DashboardPage() {
   ]
   const unlockedCount = achievements.filter((a) => a.unlocked).length
 
-  const activityIcons = { problem: Search, solution: Lightbulb }
+  const activityIcons = { problem: Target, solution: Lightbulb }
 
   return (
     <div className="flex flex-col gap-4 w-full flex-1 min-h-0">
@@ -101,14 +102,14 @@ export default function DashboardPage() {
           color="teal"
         />
         <StageCard
-          icon={Search}
+          icon={Target}
           title="Problems"
           value={problems.length}
           href="/problems"
           color="blue"
         />
         <StageCard
-          icon={Target}
+          icon={BadgeCheck}
           title="Validated"
           value={validatedProblems.length}
           subtitle={validProblems.length > 0 ? `${validProblems.length} valid` : undefined}

@@ -6,7 +6,7 @@ import type { RootState } from "@/store"
 import { Button } from "@/components/ui/button"
 import { SearchProblemDialog } from "@/components/search-problem-dialog"
 import { ProblemsTable } from "@/components/problems-table"
-import { Plus, Search } from "lucide-react"
+import { Plus, Target } from "lucide-react"
 
 export default function ProblemsPage() {
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -17,7 +17,7 @@ export default function ProblemsPage() {
       <div className="flex items-center justify-between">
         <div className="flex items-start gap-4">
           <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-primary shrink-0">
-            <Search className="h-6 w-6 text-primary-foreground" />
+            <Target className="h-6 w-6 text-primary-foreground" />
           </div>
           <div className="flex flex-col gap-1">
             <h1 className="text-xl font-bold">Problems</h1>
@@ -42,7 +42,7 @@ export default function ProblemsPage() {
       {problems.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center gap-6 py-24">
           <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-primary">
-            <Search className="h-8 w-8 text-primary-foreground" />
+            <Target className="h-8 w-8 text-primary-foreground" />
           </div>
           <div className="text-center flex flex-col gap-2 max-w-sm">
             <h2 className="text-lg font-semibold">No problems yet</h2>

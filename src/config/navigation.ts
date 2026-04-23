@@ -1,4 +1,4 @@
-import { Compass, Heart, Book, Brain, Globe, Search, Lightbulb } from "lucide-react"
+import { Compass, Heart, Book, Brain, Globe, Target, Lightbulb } from "lucide-react"
 
 export const navigationItems = {
   innovation: [
@@ -10,7 +10,7 @@ export const navigationItems = {
     {
       title: "Problems",
       url: "/problems",
-      icon: Search
+      icon: Target
     },
     {
       title: "Solutions",
