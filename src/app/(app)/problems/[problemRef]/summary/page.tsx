@@ -15,10 +15,10 @@ import type { ValidationMetric } from "@/types/idea"
 
 function SectionHeader({ icon: Icon, label }: { icon: React.ElementType; label: string }) {
   return (
-    <div className="flex items-center gap-2">
-      <Icon className="h-4 w-4 shrink-0 text-foreground/70" />
-      <span className="font-semibold text-md">{label}</span>
-    </div>
+    <h3 className="flex items-center gap-2 font-semibold text-md">
+      <Icon className="h-4 w-4 shrink-0 text-foreground/70" aria-hidden="true" />
+      {label}
+    </h3>
   )
 }
 
@@ -39,6 +39,15 @@ function EmptyText({ text = "Not provided" }: { text?: string }) {
   return <span className="text-xs text-muted-foreground/60 italic">{text}</span>
 }
 
+function Field({ label, children, className = "" }: { label: string; children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`flex flex-col gap-1 min-w-0 ${className}`}>
+      <dt className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">{label}</dt>
+      <dd className="min-w-0">{children}</dd>
+    </div>
+  )
+}
+
 function MetricField({ label, metric }: { label: string; metric: ValidationMetric }) {
   const hasValue = metric.value !== null
   const hasLevel = metric.level !== ""
@@ -50,14 +59,13 @@ function MetricField({ label, metric }: { label: string; metric: ValidationMetri
       : null
 
   return (
-    <div className="flex flex-col gap-1">
-      <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">{label}</p>
+    <Field label={label}>
       {display ? (
-        <span className="inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-sm border border-border capitalize self-start">{display}</span>
+        <span className="inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-sm border border-border capitalize">{display}</span>
       ) : (
         <EmptyText />
       )}
-    </div>
+    </Field>
   )
 }
 
@@ -120,24 +128,22 @@ export default function SummaryPage() {
         {/* ── Row 1: Customer ── */}
         <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3">
           <SectionHeader icon={Users} label="Customer" />
-          <div className="flex flex-col sm:flex-row sm:gap-6 gap-3">
-            <div className="flex flex-col gap-1 shrink-0">
-              <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Segment Size</p>
+          <dl className="flex flex-col sm:flex-row sm:gap-6 gap-3">
+            <Field label="Segment Size" className="shrink-0">
               {segmentSize !== null ? (
-                <span className="inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-sm border border-border self-start">{segmentSize.toLocaleString()}</span>
+                <span className="inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-sm border border-border">{segmentSize.toLocaleString()}</span>
               ) : (
                 <EmptyText />
               )}
-            </div>
-            <div className="flex flex-col gap-1 min-w-0">
-              <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Description</p>
+            </Field>
+            <Field label="Description">
               {customerDescription ? (
-                <span className="inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-sm border border-border self-start">{customerDescription}</span>
+                <span className="inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-sm border border-border">{customerDescription}</span>
               ) : (
                 <EmptyText />
               )}
-            </div>
-          </div>
+            </Field>
+          </dl>
         </div>
 
         {/* ── Row 2: Core Problem + Solutions ── */}
@@ -153,22 +159,20 @@ export default function SummaryPage() {
                 ) : (
                   <EmptyText text="No description" />
                 )}
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Customer Segments</p>
-                  <ChipList items={problem.customerSegments} />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Context</p>
-                  <ChipList items={problem.contexts} />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Jobs to Be Done</p>
-                  <ChipList items={problem.jobsToBeDone} />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Problem Types</p>
-                  <ChipList items={problem.problemTypes} />
-                </div>
+                <dl className="flex flex-col gap-3">
+                  <Field label="Customer Segments">
+                    <ChipList items={problem.customerSegments} />
+                  </Field>
+                  <Field label="Context">
+                    <ChipList items={problem.contexts} />
+                  </Field>
+                  <Field label="Jobs to Be Done">
+                    <ChipList items={problem.jobsToBeDone} />
+                  </Field>
+                  <Field label="Problem Types">
+                    <ChipList items={problem.problemTypes} />
+                  </Field>
+                </dl>
               </>
             ) : (
               <EmptyText text="No problem selected" />
@@ -220,23 +224,20 @@ export default function SummaryPage() {
           <SectionHeader icon={Target} label="Validation Assessment" />
           {hasAnyMetric ? (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-3">
-                  <MetricField label="How Many Customers" metric={howManyPeople} />
-                  <MetricField label="How Often" metric={howOften} />
-                  <MetricField label="How Much Is It Worth" metric={worthToThem} />
-                </div>
-                <div className="flex flex-col gap-3">
-                  <MetricField label="Cost of Switching" metric={costOfSwitching} />
-                  <MetricField label="Solution Effectiveness" metric={solutionEffectiveness} />
-                  <MetricField label="Competitor Size" metric={competitorSize} />
-                </div>
-              </div>
+              <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
+                <MetricField label="How Many Customers" metric={howManyPeople} />
+                <MetricField label="Cost of Switching" metric={costOfSwitching} />
+                <MetricField label="How Often" metric={howOften} />
+                <MetricField label="Solution Effectiveness" metric={solutionEffectiveness} />
+                <MetricField label="How Much Is It Worth" metric={worthToThem} />
+                <MetricField label="Competitor Size" metric={competitorSize} />
+              </dl>
               {reason && (
-                <div className="flex flex-col gap-1 border-t pt-3">
-                  <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Notes</p>
-                  <p className="text-md text-foreground/80 leading-relaxed">{reason}</p>
-                </div>
+                <dl className="border-t pt-3">
+                  <Field label="Notes">
+                    <p className="text-md text-foreground/80 leading-relaxed">{reason}</p>
+                  </Field>
+                </dl>
               )}
             </>
           ) : (
@@ -245,24 +246,26 @@ export default function SummaryPage() {
 
           {/* Verdict badge */}
           {(status === "valid" || status === "invalid" || status === "unsure") && (
-            <div className="border-t pt-3 flex items-center gap-2">
-              <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Verdict:</p>
-              {status === "valid" && (
-                <span className="inline-flex items-center gap-1.5 rounded-md bg-green-50 border border-green-200 px-2.5 py-1 text-sm font-medium text-green-700">
-                  <CheckCircle2 className="h-3.5 w-3.5" /> Valid
-                </span>
-              )}
-              {status === "unsure" && (
-                <span className="inline-flex items-center gap-1.5 rounded-md bg-orange-50 border border-orange-200 px-2.5 py-1 text-sm font-medium text-orange-700">
-                  <HelpCircle className="h-3.5 w-3.5" /> Unsure
-                </span>
-              )}
-              {status === "invalid" && (
-                <span className="inline-flex items-center gap-1.5 rounded-md bg-red-50 border border-red-200 px-2.5 py-1 text-sm font-medium text-red-700">
-                  <XCircle className="h-3.5 w-3.5" /> Invalid
-                </span>
-              )}
-            </div>
+            <dl className="border-t pt-3 flex items-center gap-2">
+              <dt className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Verdict:</dt>
+              <dd>
+                {status === "valid" && (
+                  <span className="inline-flex items-center gap-1.5 rounded-md bg-green-50 border border-green-200 px-2.5 py-1 text-sm font-medium text-green-700">
+                    <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" /> Valid
+                  </span>
+                )}
+                {status === "unsure" && (
+                  <span className="inline-flex items-center gap-1.5 rounded-md bg-orange-50 border border-orange-200 px-2.5 py-1 text-sm font-medium text-orange-700">
+                    <HelpCircle className="h-3.5 w-3.5" aria-hidden="true" /> Unsure
+                  </span>
+                )}
+                {status === "invalid" && (
+                  <span className="inline-flex items-center gap-1.5 rounded-md bg-red-50 border border-red-200 px-2.5 py-1 text-sm font-medium text-red-700">
+                    <XCircle className="h-3.5 w-3.5" aria-hidden="true" /> Invalid
+                  </span>
+                )}
+              </dd>
+            </dl>
           )}
         </div>
 
