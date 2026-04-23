@@ -270,16 +270,7 @@ export default function QuestionPage() {
             const previousQuestion = categoryQuestions[currentIndex - 1]
             router.push(`/self-discovery/${category.url}/${previousQuestion.url}`)
         } else {
-            const currentCategoryIndex = SELF_DISCOVERY_CATEGORIES.findIndex(cat => cat.url === category.url)
-            if (currentCategoryIndex > 0) {
-                const previousCategory = SELF_DISCOVERY_CATEGORIES[currentCategoryIndex - 1]
-                const lastQuestion = previousCategory.questions[previousCategory.questions.length - 1]
-                if (lastQuestion) {
-                    router.push(`/self-discovery/${previousCategory.url}/${lastQuestion.url}`)
-                }
-            } else {
-                router.push('/self-discovery')
-            }
+            router.push(`/self-discovery/${category.url}`)
         }
     }
 
@@ -296,9 +287,7 @@ export default function QuestionPage() {
             const currentCategoryIndex = SELF_DISCOVERY_CATEGORIES.findIndex(cat => cat.url === category.url)
             if (currentCategoryIndex < SELF_DISCOVERY_CATEGORIES.length - 1) {
                 const nextCategory = SELF_DISCOVERY_CATEGORIES[currentCategoryIndex + 1]
-                if (nextCategory.questions.length > 0) {
-                    router.push(`/self-discovery/${nextCategory.url}/${nextCategory.questions[0].url}`)
-                }
+                router.push(`/self-discovery/${nextCategory.url}`)
             } else {
                 router.push('/problems')
             }

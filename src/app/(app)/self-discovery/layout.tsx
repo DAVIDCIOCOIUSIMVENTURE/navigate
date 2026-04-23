@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { navigationItems, getSelfDiscoveryCategoryIcon } from "@/config/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { useRouter, usePathname } from "next/navigation"
 import { PanelLeftClose, ChevronDown, Compass, type LucideIcon } from "lucide-react"
@@ -33,6 +33,13 @@ function NavContent({
     const activeCategoryUrl = SELF_DISCOVERY_CATEGORIES.find(c =>
         pathname.startsWith(`/self-discovery/${c.url}`)
     )?.url
+    const [openCategory, setOpenCategory] = useState<string>(activeCategoryUrl ?? "")
+
+    useEffect(() => {
+        if (activeCategoryUrl) {
+            setOpenCategory(activeCategoryUrl)
+        }
+    }, [activeCategoryUrl])
 
     return (
         <div className="flex flex-col gap-1">
@@ -43,15 +50,28 @@ function NavContent({
             >
                 Intro
             </Button>
-            <Accordion type="single" collapsible defaultValue={activeCategoryUrl ?? ""} className="w-full flex flex-col gap-1">
+            <Accordion
+                type="single"
+                collapsible
+                value={openCategory}
+                onValueChange={setOpenCategory}
+                className="w-full flex flex-col gap-1"
+            >
                 {SELF_DISCOVERY_CATEGORIES.map((category) => (
                     <AccordionItem key={category.url} value={category.url}>
                         <AccordionTrigger
-                            className={`w-full h-auto py-1.5 gap-4 justify-between px-3 text-sm text-left whitespace-normal rounded-md hover:no-underline ${pathname.startsWith(`/self-discovery/${category.url}`)
+                            className={`w-full h-auto py-1.5 gap-4 justify-between px-3 text-sm text-left whitespace-normal rounded-md hover:no-underline ${pathname === `/self-discovery/${category.url}`
                                 ? "bg-secondary text-secondary-foreground"
-                                : "hover:bg-accent hover:text-primary"
+                                : pathname.startsWith(`/self-discovery/${category.url}/`)
+                                    ? "text-foreground hover:bg-accent hover:text-primary"
+                                    : "hover:bg-accent hover:text-primary"
                                 }`}
                             aria-label={`${category.title} category`}
+                            onClick={(e) => {
+                                e.preventDefault()
+                                setOpenCategory(category.url)
+                                onNavigate(`/self-discovery/${category.url}`)
+                            }}
                         >
                             <div className="flex items-center gap-2">
                                 {(() => {
