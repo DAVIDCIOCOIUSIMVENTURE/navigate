@@ -13,10 +13,30 @@ import {
 import { useProblemValidation, getAdjacentSteps } from "../context"
 import type { ValidationMetric } from "@/types/idea"
 
-function SectionHeader({ icon: Icon, label }: { icon: React.ElementType; label: string }) {
+const sectionToneClasses = {
+  indigo: "bg-indigo-500",
+  amber: "bg-amber-500",
+  purple: "bg-purple-500",
+  emerald: "bg-emerald-500",
+  primary: "bg-primary",
+} as const
+
+type SectionTone = keyof typeof sectionToneClasses
+
+function IconTile({ icon: Icon, className, size = "md" }: { icon: React.ElementType; className: string; size?: "sm" | "md" | "lg" }) {
+  const dims = size === "sm" ? "h-7 w-7" : size === "lg" ? "h-10 w-10" : "h-9 w-9"
+  const icon = size === "sm" ? "h-3.5 w-3.5" : size === "lg" ? "h-5 w-5" : "h-4 w-4"
   return (
-    <h3 className="flex items-center gap-2 font-semibold text-md">
-      <Icon className="h-4 w-4 shrink-0 text-foreground/70" aria-hidden="true" />
+    <span className={`flex items-center justify-center rounded-lg shrink-0 ${dims} ${className}`} aria-hidden="true">
+      <Icon className={`${icon} text-white`} />
+    </span>
+  )
+}
+
+function SectionHeader({ icon: Icon, label, tone = "primary" }: { icon: React.ElementType; label: string; tone?: SectionTone }) {
+  return (
+    <h3 className="flex items-center gap-2.5 font-semibold text-md">
+      <IconTile icon={Icon} className={sectionToneClasses[tone]} size="sm" />
       {label}
     </h3>
   )
@@ -127,7 +147,7 @@ export default function SummaryPage() {
 
         {/* ── Row 1: Customer ── */}
         <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3">
-          <SectionHeader icon={Users} label="Customer" />
+          <SectionHeader icon={Users} label="Customer" tone="indigo" />
           <dl className="flex flex-col sm:flex-row sm:gap-6 gap-3">
             <Field label="Segment Size" className="shrink-0">
               {segmentSize !== null ? (
@@ -151,7 +171,7 @@ export default function SummaryPage() {
 
           {/* ── Core Problem ── */}
           <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3 min-w-0">
-            <SectionHeader icon={AlertCircle} label="Core Problem" />
+            <SectionHeader icon={AlertCircle} label="Core Problem" tone="amber" />
             {problem ? (
               <>
                 {problem.description ? (
@@ -181,7 +201,7 @@ export default function SummaryPage() {
 
           {/* ── Existing Solutions, Shortcomings & Impacts ── */}
           <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3 min-w-0">
-            <SectionHeader icon={GitFork} label="Existing Solutions, Shortcomings & Impacts" />
+            <SectionHeader icon={GitFork} label="Existing Solutions, Shortcomings & Impacts" tone="purple" />
             {existingSolutions.length > 0 ? (
               <ul className="flex flex-col gap-3">
                 {existingSolutions.map((alt) => (
@@ -221,7 +241,7 @@ export default function SummaryPage() {
 
         {/* ── Row 3: Validation Assessment ── */}
         <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-4">
-          <SectionHeader icon={Target} label="Validation Assessment" />
+          <SectionHeader icon={Target} label="Validation Assessment" tone="emerald" />
           {hasAnyMetric ? (
             <>
               <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
@@ -244,35 +264,29 @@ export default function SummaryPage() {
             <EmptyText text="No validation data yet. Complete the validation step first." />
           )}
 
-          {/* Verdict badge */}
-          {(status === "valid" || status === "invalid" || status === "unsure") && (
-            <dl className="border-t pt-3 flex items-center gap-2">
-              <dt className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Verdict:</dt>
-              <dd>
-                {status === "valid" && (
-                  <span className="inline-flex items-center gap-1.5 rounded-md bg-green-50 border border-green-200 px-2.5 py-1 text-sm font-medium text-green-700">
-                    <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" /> Valid
-                  </span>
-                )}
-                {status === "unsure" && (
-                  <span className="inline-flex items-center gap-1.5 rounded-md bg-orange-50 border border-orange-200 px-2.5 py-1 text-sm font-medium text-orange-700">
-                    <HelpCircle className="h-3.5 w-3.5" aria-hidden="true" /> Unsure
-                  </span>
-                )}
-                {status === "invalid" && (
-                  <span className="inline-flex items-center gap-1.5 rounded-md bg-red-50 border border-red-200 px-2.5 py-1 text-sm font-medium text-red-700">
-                    <XCircle className="h-3.5 w-3.5" aria-hidden="true" /> Invalid
-                  </span>
-                )}
-              </dd>
-            </dl>
-          )}
+          {/* Verdict banner */}
+          {(status === "valid" || status === "invalid" || status === "unsure") && (() => {
+            const config = status === "valid"
+              ? { bg: "bg-green-50", border: "border-green-200", tile: "bg-green-500", text: "text-green-700", icon: CheckCircle2, label: "Valid" }
+              : status === "unsure"
+                ? { bg: "bg-orange-50", border: "border-orange-200", tile: "bg-orange-500", text: "text-orange-700", icon: HelpCircle, label: "Unsure" }
+                : { bg: "bg-red-50", border: "border-red-200", tile: "bg-red-500", text: "text-red-700", icon: XCircle, label: "Invalid" }
+            return (
+              <dl className={`rounded-lg border p-4 flex items-center gap-3 ${config.bg} ${config.border}`}>
+                <IconTile icon={config.icon} className={config.tile} size="lg" />
+                <div className="flex flex-col min-w-0">
+                  <dt className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Verdict</dt>
+                  <dd className={`text-lg font-semibold ${config.text}`}>{config.label}</dd>
+                </div>
+              </dl>
+            )
+          })()}
         </div>
 
         {/* ── Next Steps ── */}
         <div className="border-t pt-6">
-          <h2 className="text-lg font-semibold flex items-center gap-2 mb-2">
-            <ArrowRight className="h-5 w-5" /> Next Steps
+          <h2 className="text-lg font-semibold flex items-center gap-2.5 mb-2">
+            <IconTile icon={ArrowRight} className="bg-primary" size="sm" /> Next Steps
           </h2>
           <p className="text-md text-muted-foreground mb-4">
             Based on your validation verdict, here is what you can do next.
@@ -281,7 +295,7 @@ export default function SummaryPage() {
           {status === "valid" && (
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-3">
-                <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0" />
+                <IconTile icon={CheckCircle2} className="bg-green-500" size="md" />
                 <h3 className="text-lg font-semibold text-foreground">Your problem is valid</h3>
               </div>
               <p className="text-md text-muted-foreground">
@@ -301,7 +315,7 @@ export default function SummaryPage() {
           {status === "unsure" && (
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-3">
-                <HelpCircle className="h-5 w-5 text-orange-500 shrink-0" />
+                <IconTile icon={HelpCircle} className="bg-orange-500" size="md" />
                 <h3 className="text-lg font-semibold text-foreground">You are unsure about this problem</h3>
               </div>
               <p className="text-md text-muted-foreground">
@@ -351,7 +365,7 @@ export default function SummaryPage() {
           {status === "invalid" && (
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-3">
-                <XCircle className="h-5 w-5 text-red-500 shrink-0" />
+                <IconTile icon={XCircle} className="bg-red-500" size="md" />
                 <h3 className="text-lg font-semibold text-foreground">This problem is not valid</h3>
               </div>
               <p className="text-md text-muted-foreground">
@@ -400,7 +414,7 @@ export default function SummaryPage() {
           {(status === "unvalidated" || status === "in_progress") && (
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-3">
-                <HelpCircle className="h-5 w-5 text-muted-foreground shrink-0" />
+                <IconTile icon={HelpCircle} className="bg-muted-foreground/70" size="md" />
                 <h3 className="text-lg font-semibold text-foreground">No verdict yet</h3>
               </div>
               <p className="text-md text-muted-foreground">
