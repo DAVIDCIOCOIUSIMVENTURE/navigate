@@ -22,6 +22,8 @@ import Link from "next/link"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
 import { getProblemLabel } from "@/store/problems-model"
+import { useContainerSize } from "@/context/container-size-context"
+import { cn } from "@/lib/utils"
 
 export default function DashboardPage() {
   const triggers = useSelector((state: RootState) => state.problemTriggers.triggers)
@@ -75,6 +77,7 @@ export default function DashboardPage() {
   const unlockedCount = achievements.filter((a) => a.unlocked).length
 
   const activityIcons = { problem: Target, solution: Lightbulb }
+  const isWide = useContainerSize() === "wide"
 
   return (
     <div className="flex flex-col gap-4 w-full flex-1 min-h-0">
@@ -93,7 +96,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Journey Overview: 4 stage cards in a row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 shrink-0">
+      <div className={cn("grid gap-3 shrink-0", isWide ? "grid-cols-4" : "grid-cols-2")}>
         <StageCard
           icon={Compass}
           title="Triggers"
@@ -127,8 +130,8 @@ export default function DashboardPage() {
       </div>
 
       {/* Recent Activity and Achievements */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 min-h-0">
-        <Card className="flex flex-col min-h-[300px] lg:min-h-0">
+      <div className={cn("grid gap-4 flex-1 min-h-0", isWide ? "grid-cols-2" : "grid-cols-1")}>
+        <Card className={cn("flex flex-col", isWide ? "min-h-0" : "min-h-[300px]")}>
           <CardHeader className="shrink-0">
             <CardTitle className="text-base">Recent Activity</CardTitle>
           </CardHeader>
@@ -165,7 +168,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className="flex flex-col min-h-[300px] lg:min-h-0">
+        <Card className={cn("flex flex-col", isWide ? "min-h-0" : "min-h-[300px]")}>
           <CardHeader className="shrink-0">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base">Achievements</CardTitle>

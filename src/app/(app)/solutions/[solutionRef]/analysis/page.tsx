@@ -9,6 +9,8 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useSolution, getAdjacentSteps } from "../context"
 import type { SolutionCandidate } from "@/types/solution"
 import { BarChart2, ArrowLeft, ArrowRight } from "lucide-react"
+import { useContainerSize } from "@/context/container-size-context"
+import { cn } from "@/lib/utils"
 
 const SCORE_OPTIONS = [
   { value: "1", label: "1" },
@@ -47,6 +49,7 @@ export default function AnalysisPage() {
   const pathname = usePathname()
   const { solutionRef, problem, candidates, setCandidates, analysisNotes, setAnalysisNotes } = useSolution()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, solutionRef)
+  const isNarrow = useContainerSize() === "narrow"
 
   const updateScore = (id: number, key: ScoreKey, value: string) => {
     const numVal = value === "" ? null : Number(value)
@@ -102,7 +105,7 @@ export default function AnalysisPage() {
                   {candidate.description && (
                     <p className="text-xs text-white/70">{candidate.description}</p>
                   )}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className={cn("grid gap-4", isNarrow ? "grid-cols-1" : "grid-cols-2")}>
                     {DIMENSIONS.map((dim) => (
                       <div key={dim.key} className="flex flex-col gap-2">
                         <div className="flex items-baseline gap-2">

@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { navigationItems, getSelfDiscoveryCategoryIcon } from "@/config/navigation"
-import { useRef, useState } from "react"
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { useRouter, usePathname } from "next/navigation"
 import { PanelLeftClose, ChevronDown, Compass, type LucideIcon } from "lucide-react"
@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils"
 import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
-import { ContainerSizeContext, useObserveContainerSize } from "@/context/container-size-context"
+import { useContainerSize } from "@/context/container-size-context"
 
 const CATEGORY_ICON_BG: Record<string, string> = {
     "personal-interests": "bg-yellow-500",
@@ -129,8 +129,7 @@ export default function SelfDiscoveryLayout({
     const [isOpen, setIsOpen] = useState(false)
     const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
-    const containerRef = useRef<HTMLDivElement>(null)
-    const size = useObserveContainerSize(containerRef)
+    const size = useContainerSize()
     const isWide = size === "wide"
 
     const triggers = useSelector((state: RootState) => state.problemTriggers.triggers)
@@ -155,13 +154,11 @@ export default function SelfDiscoveryLayout({
 
     return (
         <div
-            ref={containerRef}
             className={cn(
                 "flex h-full w-full flex-1 min-h-0",
                 isWide ? "flex-row gap-6 overflow-hidden" : "flex-col gap-4",
             )}
         >
-            <ContainerSizeContext.Provider value={size}>
                 {!isWide && (
                     <nav aria-label="Self discovery sections" className="w-full shrink-0">
                         <Collapsible open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
@@ -222,7 +219,6 @@ export default function SelfDiscoveryLayout({
                 <div className="flex-1 min-h-0 min-w-0">
                     {children}
                 </div>
-            </ContainerSizeContext.Provider>
 
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
                 <SheetContent>

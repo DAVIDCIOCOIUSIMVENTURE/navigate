@@ -12,6 +12,8 @@ import {
 } from "lucide-react"
 import { useProblemValidation, getAdjacentSteps } from "../context"
 import type { ValidationMetric } from "@/types/idea"
+import { useContainerSize } from "@/context/container-size-context"
+import { cn } from "@/lib/utils"
 
 const sectionToneClasses = {
   indigo: "bg-indigo-500",
@@ -93,6 +95,7 @@ export default function SummaryPage() {
   const router = useRouter()
   const pathname = usePathname()
   const dispatch = useDispatch<AppDispatch>()
+  const containerSize = useContainerSize()
 
   const {
     problemRef,
@@ -148,7 +151,7 @@ export default function SummaryPage() {
         {/* ── Row 1: Customer ── */}
         <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3">
           <SectionHeader icon={Users} label="Customer" tone="indigo" />
-          <dl className="flex flex-col sm:flex-row sm:gap-6 gap-3">
+          <dl className={cn("flex gap-3", containerSize === "narrow" ? "flex-col" : "flex-row gap-6")}>
             <Field label="Segment Size" className="shrink-0">
               {segmentSize !== null ? (
                 <span className="inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-sm border border-border">{segmentSize.toLocaleString()}</span>
@@ -167,7 +170,7 @@ export default function SummaryPage() {
         </div>
 
         {/* ── Row 2: Core Problem + Solutions ── */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+        <div className={cn("grid gap-4 items-start", containerSize === "narrow" ? "grid-cols-1" : "grid-cols-2")}>
 
           {/* ── Core Problem ── */}
           <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3 min-w-0">
@@ -244,7 +247,7 @@ export default function SummaryPage() {
           <SectionHeader icon={Target} label="Validation Assessment" tone="emerald" />
           {hasAnyMetric ? (
             <>
-              <dl className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-3">
+              <dl className={cn("grid gap-x-4 gap-y-3", containerSize === "narrow" ? "grid-cols-1" : "grid-cols-2")}>
                 <MetricField label="How Many Customers" metric={howManyPeople} />
                 <MetricField label="Cost of Switching" metric={costOfSwitching} />
                 <MetricField label="How Often" metric={howOften} />

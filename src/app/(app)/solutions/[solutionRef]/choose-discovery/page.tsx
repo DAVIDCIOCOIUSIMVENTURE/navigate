@@ -15,6 +15,8 @@ import {
 import { useSolution, getAdjacentSteps } from "../context"
 import type { DiscoveryToolType } from "@/types/solution"
 import { Shuffle, ArrowLeft, ArrowRight, Lightbulb, RotateCcw, GitCompare, Wrench } from "lucide-react"
+import { useContainerSize } from "@/context/container-size-context"
+import { cn } from "@/lib/utils"
 
 type ToolKey = "scamper" | "reverse" | "analogy" | "improve"
 
@@ -244,6 +246,7 @@ export default function ChooseDiscoveryPage() {
   const { solutionRef, problem, setDiscoveryToolType } = useSolution()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, solutionRef)
   const [openTool, setOpenTool] = useState<ToolKey | null>(null)
+  const isNarrow = useContainerSize() === "narrow"
 
   const handleChoose = (tool: ToolKey) => {
     setDiscoveryToolType(tool as DiscoveryToolType)
@@ -272,7 +275,7 @@ export default function ChooseDiscoveryPage() {
             Choose a technique below to get started.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className={cn("grid gap-4", isNarrow ? "grid-cols-1" : "grid-cols-2")}>
             {TOOL_ORDER.map((key) => {
               const tool = TOOL_CARDS[key]
               const Icon = tool.icon

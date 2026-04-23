@@ -17,15 +17,28 @@ import { Settings, HelpCircle, NotebookText } from "lucide-react"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { JournalPanel } from "@/components/journal-panel"
 import { usePathname } from "next/navigation"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { GuidanceDialog } from "@/components/guidance-dialog"
 import { GuidanceProvider } from "@/context/guidance-context"
+import { ContainerSizeContext, useObserveContainerSize } from "@/context/container-size-context"
 import { AppStoreProvider } from "@/store/provider"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import { Toaster } from "@/components/ui/sonner"
 import { TeamAvatars } from "@/components/team-avatars"
 import Link from "next/link"
+
+function ContentArea({ children }: { children: React.ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const size = useObserveContainerSize(ref)
+  return (
+    <div ref={ref} className="flex flex-1 w-full min-h-0">
+      <ContainerSizeContext.Provider value={size}>
+        {children}
+      </ContainerSizeContext.Provider>
+    </div>
+  )
+}
 function generateBreadcrumbs(pathname: string) {
   const paths = pathname.split('/').filter(Boolean)
 
@@ -129,9 +142,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             <ResizablePanelGroup direction="horizontal" className="flex-1 min-h-0">
               <ResizablePanel defaultSize={70} minSize={40}>
                 <div className={`flex h-full flex-col gap-4 bg-gray-100 min-h-0 overflow-y-auto ${fullView ? "px-6 py-6" : "px-4 py-6 sm:px-6 lg:px-12 lg:py-10"}`}>
-                  <div className="flex flex-1 w-full min-h-0">
-                    {children}
-                  </div>
+                  <ContentArea>{children}</ContentArea>
                 </div>
               </ResizablePanel>
               <ResizableHandle withHandle />
@@ -141,9 +152,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             </ResizablePanelGroup>
           ) : (
             <div className={`flex flex-1 flex-col gap-4 bg-gray-100 min-h-0 overflow-y-auto ${fullView ? "px-6 py-6" : "px-4 py-6 sm:px-6 lg:px-12 lg:py-10"}`}>
-              <div className="flex flex-1 w-full min-h-0">
-                {children}
-              </div>
+              <ContentArea>{children}</ContentArea>
             </div>
           )}
         </GuidanceProvider>

@@ -22,6 +22,8 @@ import {
   Truck, Heart, Rows3, LayoutPanelTop, Wrench, type LucideIcon,
 } from "lucide-react"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { useContainerSize } from "@/context/container-size-context"
+import { cn } from "@/lib/utils"
 
 /* ── SCAMPER Form ── */
 
@@ -1110,6 +1112,8 @@ const CASE_STUDY_ICONS: Record<string, LucideIcon> = {
 }
 
 function ScamperCaseStudies() {
+  const containerSize = useContainerSize()
+  const isNarrow = containerSize === "narrow"
   return (
     <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-8">
       <p className="text-md text-white">
@@ -1134,7 +1138,10 @@ function ScamperCaseStudies() {
             <span className="text-md font-medium text-white uppercase tracking-wide">Problem</span>
             <p className="mt-2 text-md text-white">{cs.problem}</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 text-md">
+          <div className={cn(
+            "grid gap-5 text-md",
+            isNarrow ? "grid-cols-1" : containerSize === "medium" ? "grid-cols-2" : "grid-cols-3",
+          )}>
             {cs.dimensions.map((dim) => (
               <div key={dim.letter}>
                 <div className="flex items-center gap-1.5">
@@ -1223,6 +1230,7 @@ const REVERSE_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
 }
 
 function ReverseCaseStudies() {
+  const isNarrow = useContainerSize() === "narrow"
   return (
     <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
       <p className="text-md text-white">
@@ -1247,7 +1255,7 @@ function ReverseCaseStudies() {
               <span className="text-md font-medium text-white uppercase tracking-wide">Problem</span>
               <p className="mt-0.5 text-md text-white">{cs.problem}</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className={cn("grid gap-3", isNarrow ? "grid-cols-1" : "grid-cols-2")}>
               <div className="rounded-md border border-white/10 bg-white/5 p-3">
                 <span className="text-xs font-semibold uppercase tracking-wide text-white/70">How to make it worse</span>
                 <ul className="mt-2 flex flex-col gap-1.5">
@@ -1387,6 +1395,8 @@ export default function DiscoverPage() {
   const pathname = usePathname()
   const { solutionRef, problem, discoveryToolType } = useSolution()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, solutionRef)
+  const containerSize = useContainerSize()
+  const isNarrow = containerSize === "narrow"
 
   const toolInfo = discoveryToolType ? TOOL_INFO[discoveryToolType] : null
 
@@ -1411,11 +1421,11 @@ export default function DiscoverPage() {
               <>
                 <h3 className="mt-4 text-xl font-bold text-foreground">The 7 SCAMPER Prompts</h3>
                 <p>Each letter invites you to look at your problem from a different creative angle. Work through each prompt to surface ideas you would not reach through ordinary brainstorming.</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-1 mb-4">
+                <div className={cn("grid gap-3 mt-1 mb-4", isNarrow ? "grid-cols-1" : "grid-cols-2")}>
                   {SCAMPER_PROMPTS.map(({ key, letter, title, prompt, color }, i) => {
                     const isLastOdd = i === SCAMPER_PROMPTS.length - 1 && SCAMPER_PROMPTS.length % 2 === 1
                     return (
-                      <div key={key} className={`flex items-start gap-3 rounded-lg border bg-muted/30 p-3 ${isLastOdd ? "md:col-span-2" : ""}`}>
+                      <div key={key} className={cn("flex items-start gap-3 rounded-lg border bg-muted/30 p-3", !isNarrow && isLastOdd && "col-span-2")}>
                         <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${color} text-white text-xs font-bold`}>
                           {letter}
                         </span>

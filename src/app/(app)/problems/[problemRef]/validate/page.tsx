@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils"
 import { ShieldCheck, CheckCircle2, XCircle, HelpCircle, Users, RefreshCw, DollarSign, ArrowRightLeft, Target, Building2 } from "lucide-react"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useContainerSize } from "@/context/container-size-context"
 
 function HowManyInput({
   metric,
@@ -155,6 +156,7 @@ export default function VerdictPage() {
   } = useProblemValidation()
 
   const { prevPath, nextPath } = getAdjacentSteps(pathname, problemRef)
+  const containerSize = useContainerSize()
 
   const { howManyPeople, howOften, worthToThem, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
 
@@ -191,7 +193,7 @@ export default function VerdictPage() {
             The goal here is not to prove yourself right, but to honestly evaluate whether this problem represents a genuine opportunity. A problem worth solving sits at the intersection of large reach, high frequency, meaningful value, and a competitive landscape you can realistically enter. Use the six factors below to build a structured picture of the opportunity, and let the evidence guide your verdict, even if it means moving on to a stronger problem.
           </p>
           <h3 className="mt-4 text-xl font-bold text-foreground">Validate your problem in 4 steps</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className={cn("grid gap-3", containerSize === "narrow" ? "grid-cols-1" : "grid-cols-2")}>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-md font-bold shrink-0">1</span>
@@ -430,7 +432,10 @@ export default function VerdictPage() {
                     </div>
                     <p className="text-md font-semibold text-white">{cs.company}</p>
                   </div>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 text-md">
+                  <div className={cn(
+                    "grid gap-3 text-md",
+                    containerSize === "narrow" ? "grid-cols-1" : containerSize === "medium" ? "grid-cols-2" : "grid-cols-3",
+                  )}>
                     <div>
                       <span className="text-md font-medium text-white uppercase tracking-wide">How Many Customers</span>
                       <p className="mt-0.5 text-white">

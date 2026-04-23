@@ -15,6 +15,8 @@ import {
 import { useSolution, getAdjacentSteps } from "../context"
 import type { AnalysisToolType } from "@/types/solution"
 import { Search, ArrowLeft, ArrowRight, TreePine, HelpCircle, Users } from "lucide-react"
+import { useContainerSize } from "@/context/container-size-context"
+import { cn } from "@/lib/utils"
 
 type ToolKey = "root-causes" | "five-whys" | "affected-groups"
 
@@ -178,6 +180,7 @@ export default function ChooseAnalysisPage() {
   const { solutionRef, problem, setAnalysisToolType } = useSolution()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, solutionRef)
   const [openTool, setOpenTool] = useState<ToolKey | null>(null)
+  const isNarrow = useContainerSize() === "narrow"
 
   const handleChoose = (tool: ToolKey) => {
     setAnalysisToolType(tool as AnalysisToolType)
@@ -206,7 +209,7 @@ export default function ChooseAnalysisPage() {
             Choose a refinement technique below to get started.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className={cn("grid gap-4", isNarrow ? "grid-cols-1" : "grid-cols-3")}>
             {TOOL_ORDER.map((key) => {
               const tool = TOOL_CARDS[key]
               const Icon = tool.icon

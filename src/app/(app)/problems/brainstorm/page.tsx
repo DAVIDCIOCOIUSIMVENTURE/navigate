@@ -64,6 +64,7 @@ import type { Problem } from "@/store/problems-model"
 import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
 import { cn } from "@/lib/utils"
 import { useGuidance } from "@/context/guidance-context"
+import { useContainerSize } from "@/context/container-size-context"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import {
   DropdownMenu,
@@ -1352,6 +1353,7 @@ export default function BrainstormPage() {
   const builderResetRef = useRef<(() => void) | null>(null)
   const fullView = useSelector((state: RootState) => state.settings.fullView)
   const brainstormMode = useSelector((state: RootState) => state.settings.brainstormMode)
+  const containerSize = useContainerSize()
 
   const handleBuilderSave = useCallback(async (selections: Record<string, string[]>, description: string) => {
     const patch: Partial<Pick<Problem, "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "selfDiscovery">> = {}
@@ -1496,7 +1498,7 @@ export default function BrainstormPage() {
 
       {/* Row 2: Description + action buttons */}
       <div className="flex items-center justify-between gap-4 min-w-0">
-        <p className="text-sm text-muted-foreground hidden lg:block">
+        <p className={cn("text-sm text-muted-foreground", containerSize === "wide" ? "block" : "hidden")}>
           {brainstormMode === "canvas"
             ? "Explore potential areas for innovation by navigating through the options below."
             : brainstormMode === "builder-v2"
@@ -1574,7 +1576,10 @@ export default function BrainstormPage() {
       ) : brainstormMode === "builder-v2" ? (
         <ProblemBuilderV2 columns={filteredColumns} onSave={handleBuilderSave} resetRef={builderResetRef} onClearSearch={() => setSearchQuery("")} />
       ) : (<>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 flex-1 min-h-0 overflow-y-auto">
+      <div className={cn(
+        "grid gap-4 flex-1 min-h-0 overflow-y-auto",
+        containerSize === "narrow" ? "grid-cols-1" : containerSize === "medium" ? "grid-cols-2" : "grid-cols-4",
+      )}>
         {allColumns.map((column) => {
           const columnSelected = getSelectedForColumn(column.items, selected)
           const isHidden = hiddenColumns.has(column.id)

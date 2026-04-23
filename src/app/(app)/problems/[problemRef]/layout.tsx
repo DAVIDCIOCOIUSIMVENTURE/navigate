@@ -13,6 +13,7 @@ import {
   GitFork, Clock, ShieldCheck, FileText, LayoutTemplate, BookOpen, Users, ChevronDown, Eye,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
+import { useContainerSize } from "@/context/container-size-context"
 
 const NAV_ICONS: Record<string, LucideIcon> = {
   introduction: BookOpen,
@@ -74,6 +75,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   ) ?? null
   const [dialogOpen, setDialogOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
+  const isWide = useContainerSize() === "wide"
 
   const summaryData: ProblemSummaryData | null = problem ? {
     text: problem.description,
@@ -115,8 +117,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         </div>
       </div>
 
-    {/* Mobile: collapsible top bar */}
-    <nav aria-label="Problem validation steps" className="lg:hidden w-full">
+    {!isWide && (
+    <nav aria-label="Problem validation steps" className="w-full">
       <Collapsible open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
         <Card>
           <CardContent className="p-2">
@@ -147,10 +149,11 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         </Card>
       </Collapsible>
     </nav>
+    )}
 
     <div className="flex gap-6 flex-1 w-full items-start">
-      {/* Desktop: sidebar */}
-      <nav aria-label="Problem validation steps" className="hidden lg:flex w-56 flex-col gap-3 shrink-0">
+      {isWide && (
+      <nav aria-label="Problem validation steps" className="flex w-56 flex-col gap-3 shrink-0">
         <Card>
           <CardContent className="p-3">
             <NavItems base={base} pathname={pathname} onNavigate={handleNavigate} />
@@ -160,6 +163,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           </CardContent>
         </Card>
       </nav>
+      )}
 
       <div className="flex-1 min-w-0">{children}</div>
     </div>

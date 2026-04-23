@@ -13,6 +13,8 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { EXISTING_SOLUTIONS_CASE_STUDIES } from "./case-studies"
 import type { ImpactItem, ShortcomingItem } from "@/types/idea"
 import { GitFork, Plus, X, Monitor, Wrench, Users, Ban, ChevronDown } from "lucide-react"
+import { useContainerSize } from "@/context/container-size-context"
+import { cn } from "@/lib/utils"
 
 const IMPACT_CATEGORIES = [
   "Time Lost", "Money Wasted", "Error Rates", "Customer Churn",
@@ -25,6 +27,7 @@ export default function ExistingSolutionsPage() {
   const pathname = usePathname()
   const { problemRef, existingSolutions, setExistingSolutions } = useProblemValidation()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, problemRef)
+  const isNarrow = useContainerSize() === "narrow"
   const [addingSolution, setAddingSolution] = useState(false)
   const [draft, setDraft] = useState("")
   const [addingSc, setAddingSc] = useState<Record<number, boolean>>({})
@@ -384,7 +387,7 @@ export default function ExistingSolutionsPage() {
                               <p className="text-sm font-medium text-white">{sol.name}</p>
                               <div className="flex flex-col divide-y divide-white/10">
                                 {sol.shortcomings.map((sc, j) => (
-                                  <div key={j} className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm py-3 first:pt-0 last:pb-0">
+                                  <div key={j} className={cn("grid gap-3 text-sm py-3 first:pt-0 last:pb-0", isNarrow ? "grid-cols-1" : "grid-cols-2")}>
                                     <div>
                                       <span className="text-xs font-medium text-white uppercase tracking-wide">Shortcoming</span>
                                       <p className="mt-1 text-white">{sc.text}</p>
