@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
 import { Brain, Clock, PenLine, ArrowRight, Search } from "lucide-react"
 import { useDispatch } from "react-redux"
 import type { AppDispatch } from "@/store"
@@ -34,6 +35,7 @@ type View = "menu" | "manual"
 export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogProps) {
   const [view, setView] = useState<View>("menu")
   const [fields, setFields] = useState<Record<string, string>>({})
+  const [description, setDescription] = useState("")
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
 
@@ -41,6 +43,7 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
     onOpenChange(false)
     setView("menu")
     setFields({})
+    setDescription("")
   }
 
   function handleManualSubmit() {
@@ -52,12 +55,17 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
         ;(patch as Record<string, string[]>)[field] = value.split(",").map((s) => s.trim()).filter(Boolean)
       }
     }
-    if (Object.values(patch).every((v) => !v || (Array.isArray(v) && v.length === 0))) return
+    const trimmedDescription = description.trim()
+    if (trimmedDescription) {
+      patch.description = trimmedDescription
+    }
+    const hasColumnField = Object.entries(patch).some(([key, v]) => key !== "description" && Array.isArray(v) && v.length > 0)
+    if (!hasColumnField && !trimmedDescription) return
     dispatch.problems.create({ ...patch, source: "manual" })
     handleClose()
   }
 
-  const hasAnyField = brainstormColumns.some((col) => fields[col.id]?.trim())
+  const hasAnyField = brainstormColumns.some((col) => fields[col.id]?.trim()) || description.trim().length > 0
 
   function handleBrainstorm() {
     handleClose()
@@ -155,6 +163,18 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
             </DialogHeader>
 
             <div className="flex flex-col gap-4 mt-2">
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium" htmlFor="new-description">
+                  Problem Description
+                </label>
+                <Textarea
+                  id="new-description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Briefly describe the problem."
+                  rows={3}
+                />
+              </div>
               {brainstormColumns.map((col) => (
                 <div key={col.id} className="flex flex-col gap-2">
                   <label className="text-sm font-medium" htmlFor={`new-${col.id}`}>
