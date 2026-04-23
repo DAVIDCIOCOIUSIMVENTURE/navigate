@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog"
 import { useSolution, getAdjacentSteps } from "../context"
 import type { AnalysisToolType } from "@/types/solution"
-import { Search, ArrowLeft, ArrowRight, TreePine, HelpCircle, Users } from "lucide-react"
+import { Search, ArrowLeft, ArrowRight, TreePine, HelpCircle, Users, CheckCircle2 } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 
@@ -177,15 +177,27 @@ const TOOL_ORDER: ToolKey[] = ["root-causes", "five-whys", "affected-groups"]
 export default function ChooseAnalysisPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { solutionRef, problem, setAnalysisToolType } = useSolution()
+  const { solutionRef, problem, analysisToolType, setAnalysisToolType } = useSolution()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, solutionRef)
   const [openTool, setOpenTool] = useState<ToolKey | null>(null)
+  const [confirmOpen, setConfirmOpen] = useState(false)
   const isNarrow = useContainerSize() === "narrow"
+
+  const selectedTool = (analysisToolType || null) as ToolKey | null
 
   const handleChoose = (tool: ToolKey) => {
     setAnalysisToolType(tool as AnalysisToolType)
     setOpenTool(null)
     if (nextPath) router.push(nextPath)
+  }
+
+  const handleNext = () => {
+    if (!nextPath) return
+    if (!selectedTool) {
+      setConfirmOpen(true)
+      return
+    }
+    router.push(nextPath)
   }
 
   const DialogBody = openTool ? DIALOG_CONTENT[openTool] : null
@@ -213,17 +225,33 @@ export default function ChooseAnalysisPage() {
             {TOOL_ORDER.map((key) => {
               const tool = TOOL_CARDS[key]
               const Icon = tool.icon
+              const isSelected = selectedTool === key
               return (
                 <button
                   key={key}
                   type="button"
                   onClick={() => setOpenTool(key)}
-                  className="flex flex-col gap-3 rounded-xl border bg-card p-6 text-left transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  aria-pressed={isSelected}
+                  className={cn(
+                    "relative flex flex-col gap-3 rounded-xl border-2 p-6 pr-8 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    isSelected
+                      ? "border-primary bg-primary/10 shadow-md ring-2 ring-primary/40 ring-offset-2"
+                      : "border-border bg-card hover:border-primary/40 hover:bg-primary/5"
+                  )}
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                    <Icon className="h-5 w-5 text-primary" />
+                  {isSelected && (
+                    <span className="absolute -top-3 right-4 flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground shadow-sm">
+                      <CheckCircle2 className="h-3 w-3" />
+                      Selected
+                    </span>
+                  )}
+                  <div className={cn(
+                    "flex h-10 w-10 items-center justify-center rounded-lg",
+                    isSelected ? "bg-primary text-primary-foreground" : "bg-primary/10"
+                  )}>
+                    <Icon className={cn("h-5 w-5", isSelected ? "text-primary-foreground" : "text-primary")} />
                   </div>
-                  <h3 className="text-md font-semibold">{tool.title}</h3>
+                  <h3 className={cn("text-md font-semibold", isSelected && "text-primary")}>{tool.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{tool.description}</p>
                 </button>
               )
@@ -237,7 +265,7 @@ export default function ChooseAnalysisPage() {
               </Button>
             ) : <div />}
             {nextPath && (
-              <Button onClick={() => router.push(nextPath)}>
+              <Button onClick={handleNext}>
                 Next<ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             )}
@@ -262,6 +290,28 @@ export default function ChooseAnalysisPage() {
               </DialogFooter>
             </>
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Continue without a refinement method?</DialogTitle>
+            <DialogDescription>
+              You haven&apos;t chosen a refinement method yet. Picking one helps you uncover why the problem exists before moving on. Are you sure you want to continue?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmOpen(false)}>Go Back</Button>
+            <Button
+              onClick={() => {
+                setConfirmOpen(false)
+                if (nextPath) router.push(nextPath)
+              }}
+            >
+              Continue Anyway
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>
