@@ -361,11 +361,18 @@ export default function QuestionPage() {
                 </CardHeader>
                 <CardContent className={cn("flex-1 min-h-0 flex flex-col overflow-y-auto", roomy ? "p-10 pt-6" : "p-6 pt-4")}>
                     <div className="flex flex-col gap-5 flex-1 min-h-0">
-                        <p className="text-md text-foreground shrink-0">
-                            {category.description}
-                        </p>
                         <div className="flex flex-col gap-4 flex-1 min-h-0">
-                            <p className="text-md text-foreground shrink-0">{question.description}</p>
+                            <div className="shrink-0">
+                                <p className="text-md text-foreground">{category.description}</p>
+                                <p className="text-md text-foreground">{question.description}</p>
+                                <p className="text-md text-foreground">
+                                    {question.titleId === "sustainability-goals"
+                                        ? "Select up to 3 goals below that matter most to you."
+                                        : question.suggestions
+                                            ? "Select the items below that apply to you, or add your own."
+                                            : "Type your answer below and click Add."}
+                                </p>
+                            </div>
                             {questionTriggers.length > 0 && (
                                 <div className="flex flex-wrap gap-2">
                                     {questionTriggers.map((trigger) => (
