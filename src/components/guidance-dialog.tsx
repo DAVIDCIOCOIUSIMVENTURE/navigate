@@ -282,6 +282,78 @@ const guidanceItems: GuidanceItem[] = [
       </div>
     ),
   },
+  {
+    id: "solutions",
+    title: "Solutions",
+    icon: Lightbulb,
+    iconBg: "bg-sky-500",
+    content: (
+      <div className="flex flex-col gap-5">
+        <GuidanceHero
+          icon={Lightbulb}
+          tone="bg-sky-500"
+          title="Solutions"
+          subtitle="Turn a validated problem into concrete solution candidates. Refine your understanding, discover ideas using creative techniques, then evaluate candidates to decide what to pursue."
+        />
+        <GuidanceSection icon={Play} iconBg="bg-sky-500" title="How it works">
+          <p>Every validated problem appears in your solutions workspace. Start a solution journey for any of them and work through three connected steps.</p>
+          <div className="flex flex-col gap-3 pt-1">
+            <NumberedStep n={1} title="Refine" accent="bg-indigo-500">
+              Understand the problem more deeply before trying to solve it.
+            </NumberedStep>
+            <NumberedStep n={2} title="Discover" accent="bg-sky-500">
+              Generate solution candidates with a creative technique.
+            </NumberedStep>
+            <NumberedStep n={3} title="Evaluate" accent="bg-emerald-500">
+              Score and compare candidates to pick the one worth pursuing.
+            </NumberedStep>
+          </div>
+        </GuidanceSection>
+
+        <GuidanceSection icon={Search} iconBg="bg-indigo-500" title="Refine">
+          <p>Refinement helps you see the problem from a new angle before jumping to solutions. Pick the technique that matches the kind of clarity you need:</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+            <ConceptCard icon={GitFork} label="Root Causes" description="Map the underlying factors that give rise to the problem." tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
+            <ConceptCard icon={Repeat} label="5 Whys" description="Ask 'why' five times to drill from a surface symptom to the real cause." tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
+            <ConceptCard icon={Users} label="Affected Groups" description="Map who is impacted, how severely, and in what way." tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
+          </div>
+        </GuidanceSection>
+
+        <GuidanceSection icon={Lightbulb} iconBg="bg-sky-500" title="Discover">
+          <p>Pick a creative method to generate solution ideas. Each approach produces a different flavour of candidate, so choose the one that matches your problem:</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+            <ConceptCard icon={Blocks} label="SCAMPER" description="Substitute, Combine, Adapt, Modify, Put to other use, Eliminate, Reverse. Generate ideas by transforming existing concepts." tile="bg-sky-500" border="border-sky-100 bg-sky-50/40" />
+            <ConceptCard icon={Repeat} label="Reverse Brainstorming" description="Instead of asking how to solve it, ask how to make it worse, then invert the answers." tile="bg-sky-500" border="border-sky-100 bg-sky-50/40" />
+            <ConceptCard icon={Compass} label="Analogy Thinking" description="Look at how other fields have solved similar problems and adapt their approach." tile="bg-sky-500" border="border-sky-100 bg-sky-50/40" />
+            <ConceptCard icon={ArrowRight} label="Improve Existing Solutions" description="Start from what already exists and sharpen it, removing shortcomings surfaced during validation." tile="bg-sky-500" border="border-sky-100 bg-sky-50/40" />
+          </div>
+          <p className="pt-1">Each technique includes <Keyword>case studies</Keyword> to spark ideas. Use them as prompts, not templates. Capture as many candidates as you can think of; pruning comes next.</p>
+        </GuidanceSection>
+
+        <GuidanceSection icon={BarChart2} iconBg="bg-emerald-500" title="Evaluate">
+          <p>Score each candidate across four dimensions, then compare them side by side to see which one represents the best opportunity:</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+            <ConceptCard icon={Target} label="Feasibility" description="Can you actually build it?" tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
+            <ConceptCard icon={Heart} label="Impact" description="How much will it help?" tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
+            <ConceptCard icon={DollarSign} label="Cost" description="What will it take to deliver?" tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
+            <ConceptCard icon={Repeat} label="Time" description="How quickly can you ship?" tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
+          </div>
+          <p className="pt-1">The scores are not a verdict; they are a lens. Use them to spot candidates that are clearly stronger or weaker than the rest.</p>
+        </GuidanceSection>
+
+        <GuidanceSection icon={FileText} iconBg="bg-sky-500" title="Summary">
+          <p>The summary consolidates everything: the validated problem, your refinement insights, the candidates you generated, and their evaluation scores. This is the artefact you carry forward when you decide to build.</p>
+        </GuidanceSection>
+
+        <TipCallout items={[
+          "Refinement is where most of the hidden value lives; do not skip it",
+          "Quantity beats quality at the discover step; judge later",
+          "A weak candidate is still useful as a comparison baseline",
+          "You can come back and add more candidates at any time",
+        ]} />
+      </div>
+    ),
+  },
 ]
 
 export function GuidanceDialog({
