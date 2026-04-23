@@ -7,9 +7,19 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { cn } from "@/lib/utils"
 import { useSolution, getAdjacentSteps } from "../context"
 import type { AffectedGroup } from "@/types/solution"
-import { Search, Plus, Trash2, ArrowLeft, ArrowRight, type LucideIcon } from "lucide-react"
+import { ROOT_CAUSES_CASE_STUDIES } from "./root-causes-case-studies"
+import { FIVE_WHYS_CASE_STUDIES } from "./five-whys-case-studies"
+import { AFFECTED_GROUPS_CASE_STUDIES } from "./affected-groups-case-studies"
+import {
+  Search, Plus, Trash2, ArrowLeft, ArrowRight,
+  Car, MessageSquare, Stethoscope, Wrench, Landmark, Cloud,
+  GraduationCap, CreditCard,
+  type LucideIcon,
+} from "lucide-react"
 
 /* ── Root Causes Form ── */
 
@@ -286,6 +296,257 @@ function AffectedGroupsForm() {
   )
 }
 
+/* ── Root Causes Case Studies ── */
+
+const ROOT_CAUSES_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
+  "Toyota (post-war production)": Car,
+  "Slack (early enterprise rollout)": MessageSquare,
+  "NHS A&E waiting times": Stethoscope,
+}
+
+function RootCausesCaseStudies() {
+  return (
+    <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
+      <p className="text-md text-white">
+        See how successful organisations dug past surface-level symptoms to identify the underlying causes that, once fixed, prevented entire categories of failure.
+      </p>
+      <Tabs defaultValue={ROOT_CAUSES_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
+        <TabsList className="self-center bg-white/10 h-auto flex-wrap">
+          {ROOT_CAUSES_CASE_STUDIES.map((cs) => {
+            const Icon = ROOT_CAUSES_CASE_STUDY_ICONS[cs.company]
+            return (
+              <TabsTrigger
+                key={cs.company}
+                value={cs.company}
+                className="gap-1.5 text-white/60 hover:text-white data-[state=active]:bg-white data-[state=active]:text-foreground"
+              >
+                {Icon && <Icon className="h-3.5 w-3.5" />}
+                {cs.company}
+              </TabsTrigger>
+            )
+          })}
+        </TabsList>
+        {ROOT_CAUSES_CASE_STUDIES.map((cs) => {
+          const Icon = ROOT_CAUSES_CASE_STUDY_ICONS[cs.company]
+          return (
+            <TabsContent key={cs.company} value={cs.company}>
+              <div className="rounded-lg border border-white/10 bg-white/10 p-6 flex flex-col gap-5">
+                <div className="flex items-center gap-2.5">
+                  {Icon && (
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/20 text-white">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                  )}
+                  <p className="text-md font-semibold text-white">{cs.company}</p>
+                </div>
+                <div>
+                  <span className="text-md font-medium text-white uppercase tracking-wide">Problem</span>
+                  <p className="mt-1 text-md text-white">{cs.problem}</p>
+                </div>
+                <div>
+                  <span className="text-md font-medium text-white uppercase tracking-wide">Root Causes</span>
+                  <div className="mt-2 flex flex-col gap-2">
+                    {cs.causes.map((cause, i) => (
+                      <div key={i} className="rounded-md border border-white/10 bg-white/5 p-3">
+                        <p className="text-md font-semibold text-white">{cause.title}</p>
+                        <p className="mt-1 text-md text-white">{cause.detail}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="rounded-md border border-white/10 bg-white/5 p-3">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-white/70">Notes</span>
+                  <p className="mt-1 text-md text-white">{cs.notes}</p>
+                </div>
+                <div className="border-t border-white/10 pt-3 mt-1">
+                  <span className="text-md font-medium text-white uppercase tracking-wide">Outcome</span>
+                  <p className="mt-1 text-md text-white">{cs.outcome}</p>
+                </div>
+              </div>
+            </TabsContent>
+          )
+        })}
+      </Tabs>
+    </div>
+  )
+}
+
+/* ── Five Whys Case Studies ── */
+
+const FIVE_WHYS_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
+  "Toyota (the original 5 Whys)": Wrench,
+  "NASA Jefferson Memorial": Landmark,
+  "Amazon (S3 outage, 2017)": Cloud,
+}
+
+function FiveWhysCaseStudies() {
+  return (
+    <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
+      <p className="text-md text-white">
+        See how teams used the 5 Whys to push past the first plausible answer and reach a fundamental cause that, once addressed, prevented the problem from recurring.
+      </p>
+      <Tabs defaultValue={FIVE_WHYS_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
+        <TabsList className="self-center bg-white/10 h-auto flex-wrap">
+          {FIVE_WHYS_CASE_STUDIES.map((cs) => {
+            const Icon = FIVE_WHYS_CASE_STUDY_ICONS[cs.company]
+            return (
+              <TabsTrigger
+                key={cs.company}
+                value={cs.company}
+                className="gap-1.5 text-white/60 hover:text-white data-[state=active]:bg-white data-[state=active]:text-foreground"
+              >
+                {Icon && <Icon className="h-3.5 w-3.5" />}
+                {cs.company}
+              </TabsTrigger>
+            )
+          })}
+        </TabsList>
+        {FIVE_WHYS_CASE_STUDIES.map((cs) => {
+          const Icon = FIVE_WHYS_CASE_STUDY_ICONS[cs.company]
+          return (
+            <TabsContent key={cs.company} value={cs.company}>
+              <div className="rounded-lg border border-white/10 bg-white/10 p-6 flex flex-col gap-5">
+                <div className="flex items-center gap-2.5">
+                  {Icon && (
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/20 text-white">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                  )}
+                  <p className="text-md font-semibold text-white">{cs.company}</p>
+                </div>
+                <div>
+                  <span className="text-md font-medium text-white uppercase tracking-wide">Problem</span>
+                  <p className="mt-1 text-md text-white">{cs.problem}</p>
+                </div>
+                {cs.chains.map((chain, ci) => (
+                  <div key={ci} className="flex flex-col gap-3">
+                    {cs.chains.length > 1 && (
+                      <span className="text-xs font-semibold uppercase tracking-wide text-white/70">Chain {ci + 1}</span>
+                    )}
+                    <div className="rounded-md border border-white/10 bg-white/5 p-3">
+                      <span className="text-xs font-semibold uppercase tracking-wide text-white/70">Starting problem</span>
+                      <p className="mt-1 text-md font-semibold text-white">{chain.startingProblem}</p>
+                    </div>
+                    <div className="flex flex-col">
+                      {chain.whys.map((why, i) => (
+                        <div key={i} className="flex gap-3">
+                          <div className="flex flex-col items-center">
+                            <div className="mt-2 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-bold text-primary">
+                              {i + 1}
+                            </div>
+                            {i < chain.whys.length - 1 && <div className="w-px flex-1 bg-white/30" />}
+                          </div>
+                          <div className="flex-1 pb-3 last:pb-0">
+                            <p className="text-md text-white">{why}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="rounded-md border border-white/10 bg-white/5 p-3">
+                      <span className="text-xs font-semibold uppercase tracking-wide text-white/70">Root cause</span>
+                      <p className="mt-1 text-md text-white">{chain.rootCause}</p>
+                    </div>
+                  </div>
+                ))}
+                <div className="border-t border-white/10 pt-3 mt-1">
+                  <span className="text-md font-medium text-white uppercase tracking-wide">Outcome</span>
+                  <p className="mt-1 text-md text-white">{cs.outcome}</p>
+                </div>
+              </div>
+            </TabsContent>
+          )
+        })}
+      </Tabs>
+    </div>
+  )
+}
+
+/* ── Affected Groups Case Studies ── */
+
+const AFFECTED_GROUPS_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
+  "Uber (early ride-hail launch)": Car,
+  "Khan Academy (early years)": GraduationCap,
+  "Stripe (developer-first payments)": CreditCard,
+}
+
+const SEVERITY_BADGE: Record<"low" | "medium" | "high" | "critical", string> = {
+  low: "bg-emerald-500/30",
+  medium: "bg-amber-500/30",
+  high: "bg-red-500/30",
+  critical: "bg-red-700/40",
+}
+
+function AffectedGroupsCaseStudies() {
+  return (
+    <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
+      <p className="text-md text-white">
+        See how successful companies mapped who was affected by the problem and how severely, then prioritised the most acute groups to design a focused first version.
+      </p>
+      <Tabs defaultValue={AFFECTED_GROUPS_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
+        <TabsList className="self-center bg-white/10 h-auto flex-wrap">
+          {AFFECTED_GROUPS_CASE_STUDIES.map((cs) => {
+            const Icon = AFFECTED_GROUPS_CASE_STUDY_ICONS[cs.company]
+            return (
+              <TabsTrigger
+                key={cs.company}
+                value={cs.company}
+                className="gap-1.5 text-white/60 hover:text-white data-[state=active]:bg-white data-[state=active]:text-foreground"
+              >
+                {Icon && <Icon className="h-3.5 w-3.5" />}
+                {cs.company}
+              </TabsTrigger>
+            )
+          })}
+        </TabsList>
+        {AFFECTED_GROUPS_CASE_STUDIES.map((cs) => {
+          const Icon = AFFECTED_GROUPS_CASE_STUDY_ICONS[cs.company]
+          return (
+            <TabsContent key={cs.company} value={cs.company}>
+              <div className="rounded-lg border border-white/10 bg-white/10 p-6 flex flex-col gap-5">
+                <div className="flex items-center gap-2.5">
+                  {Icon && (
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/20 text-white">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                  )}
+                  <p className="text-md font-semibold text-white">{cs.company}</p>
+                </div>
+                <div>
+                  <span className="text-md font-medium text-white uppercase tracking-wide">Problem</span>
+                  <p className="mt-1 text-md text-white">{cs.problem}</p>
+                </div>
+                <div>
+                  <span className="text-md font-medium text-white uppercase tracking-wide">Affected Groups</span>
+                  <div className="mt-2 flex flex-col gap-2">
+                    {cs.groups.map((group, i) => (
+                      <div key={i} className="rounded-md border border-white/10 bg-white/5 p-3">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="text-md font-semibold text-white">{group.name}</p>
+                          <span className={cn(
+                            "inline-block rounded px-1.5 py-0.5 text-xs font-semibold text-white capitalize",
+                            SEVERITY_BADGE[group.severity]
+                          )}>
+                            {group.severity}
+                          </span>
+                        </div>
+                        <p className="mt-1 text-md text-white">{group.description}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="border-t border-white/10 pt-3 mt-1">
+                  <span className="text-md font-medium text-white uppercase tracking-wide">Outcome</span>
+                  <p className="mt-1 text-md text-white">{cs.outcome}</p>
+                </div>
+              </div>
+            </TabsContent>
+          )
+        })}
+      </Tabs>
+    </div>
+  )
+}
+
 /* ── Main Page ── */
 
 type ToolHint = { icon: LucideIcon; title: string; subtitle: string; bg: string }
@@ -367,9 +628,50 @@ export default function AnalysePage() {
 
         {analysisToolType && <hr className="border-border/40" />}
 
-        {analysisToolType === "root-causes" && <RootCausesForm />}
-        {analysisToolType === "five-whys" && <FiveWhysForm />}
-        {analysisToolType === "affected-groups" && <AffectedGroupsForm />}
+        {analysisToolType === "root-causes" && (
+          <Tabs defaultValue="strategy" className="flex flex-col gap-4">
+            <TabsList className="self-center">
+              <TabsTrigger value="strategy">Your Strategy</TabsTrigger>
+              <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
+            </TabsList>
+            <TabsContent value="strategy">
+              <RootCausesForm />
+            </TabsContent>
+            <TabsContent value="case-studies">
+              <RootCausesCaseStudies />
+            </TabsContent>
+          </Tabs>
+        )}
+
+        {analysisToolType === "five-whys" && (
+          <Tabs defaultValue="strategy" className="flex flex-col gap-4">
+            <TabsList className="self-center">
+              <TabsTrigger value="strategy">Your Strategy</TabsTrigger>
+              <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
+            </TabsList>
+            <TabsContent value="strategy">
+              <FiveWhysForm />
+            </TabsContent>
+            <TabsContent value="case-studies">
+              <FiveWhysCaseStudies />
+            </TabsContent>
+          </Tabs>
+        )}
+
+        {analysisToolType === "affected-groups" && (
+          <Tabs defaultValue="strategy" className="flex flex-col gap-4">
+            <TabsList className="self-center">
+              <TabsTrigger value="strategy">Your Strategy</TabsTrigger>
+              <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
+            </TabsList>
+            <TabsContent value="strategy">
+              <AffectedGroupsForm />
+            </TabsContent>
+            <TabsContent value="case-studies">
+              <AffectedGroupsCaseStudies />
+            </TabsContent>
+          </Tabs>
+        )}
 
         {!analysisToolType && (
           <div className="flex flex-col items-center justify-center gap-3 py-8 rounded-lg border border-dashed">
