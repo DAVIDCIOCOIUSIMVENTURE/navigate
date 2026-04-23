@@ -8,10 +8,105 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import {
+  Rocket, Compass, Search, ClipboardCheck,
+  FileQuestion, Pencil, Package,
+  Play, ToggleRight, Blocks, LayoutGrid, FileText, ArrowRight,
+  GitFork, Heart, BarChart2, Target,
+  Users, MapPin, Briefcase, AlertTriangle,
+  Repeat, DollarSign,
+  Lightbulb,
+} from "lucide-react"
+
+// ---------- Shared presentation helpers ----------
+
+function IconTile({ icon: Icon, className, size = "md" }: { icon: React.ElementType; className: string; size?: "sm" | "md" | "lg" }) {
+  const dims = size === "sm" ? "h-7 w-7" : size === "lg" ? "h-12 w-12" : "h-9 w-9"
+  const iconSize = size === "sm" ? "h-3.5 w-3.5" : size === "lg" ? "h-6 w-6" : "h-4 w-4"
+  return (
+    <span className={`flex items-center justify-center rounded-lg shrink-0 ${dims} ${className}`} aria-hidden="true">
+      <Icon className={`${iconSize} text-white`} />
+    </span>
+  )
+}
+
+function GuidanceHero({ icon, tone, title, subtitle }: { icon: React.ElementType; tone: string; title: string; subtitle: string }) {
+  return (
+    <header className="flex items-start gap-4">
+      <IconTile icon={icon} className={tone} size="lg" />
+      <div className="flex flex-col gap-1 min-w-0">
+        <h3 className="text-xl font-bold leading-tight">{title}</h3>
+        <p className="text-sm text-muted-foreground leading-relaxed">{subtitle}</p>
+      </div>
+    </header>
+  )
+}
+
+function GuidanceSection({ icon, iconBg, title, children }: { icon: React.ElementType; iconBg: string; title: string; children: React.ReactNode }) {
+  return (
+    <section className="rounded-lg border bg-muted/30 p-4 flex flex-col gap-2">
+      <h4 className="flex items-center gap-2.5 font-semibold">
+        <IconTile icon={icon} className={iconBg} size="sm" />
+        {title}
+      </h4>
+      <div className="text-sm text-muted-foreground leading-relaxed flex flex-col gap-2 pl-[38px]">
+        {children}
+      </div>
+    </section>
+  )
+}
+
+function NumberedStep({ n, title, accent = "bg-primary", children }: { n: number; title: string; accent?: string; children: React.ReactNode }) {
+  return (
+    <div className="flex gap-3">
+      <span className={`flex items-center justify-center h-7 w-7 rounded-full shrink-0 ${accent} text-white text-sm font-semibold`} aria-hidden="true">
+        {n}
+      </span>
+      <div className="flex flex-col gap-1 min-w-0">
+        <h5 className="font-semibold text-foreground text-sm">{title}</h5>
+        <div className="text-sm text-muted-foreground leading-relaxed">{children}</div>
+      </div>
+    </div>
+  )
+}
+
+function ConceptCard({ icon: Icon, label, description, tile, border }: { icon: React.ElementType; label: string; description: string; tile: string; border: string }) {
+  return (
+    <div className={`rounded-lg border p-3 flex items-start gap-3 ${border}`}>
+      <IconTile icon={Icon} className={tile} size="sm" />
+      <div className="flex flex-col gap-0.5 min-w-0">
+        <span className="font-semibold text-sm text-foreground">{label}</span>
+        <span className="text-xs text-muted-foreground leading-relaxed">{description}</span>
+      </div>
+    </div>
+  )
+}
+
+function TipCallout({ items }: { items: React.ReactNode[] }) {
+  return (
+    <aside className="rounded-lg border border-amber-200 bg-amber-50 p-4 flex gap-3">
+      <IconTile icon={Lightbulb} className="bg-amber-500" size="sm" />
+      <div className="flex flex-col gap-1.5 min-w-0">
+        <h5 className="font-semibold text-amber-900 text-sm">Tips</h5>
+        <ul className="flex flex-col gap-1 text-sm text-amber-900/90 leading-relaxed list-disc pl-4">
+          {items.map((item, i) => <li key={i}>{item}</li>)}
+        </ul>
+      </div>
+    </aside>
+  )
+}
+
+function Keyword({ children }: { children: React.ReactNode }) {
+  return <span className="font-medium text-foreground">{children}</span>
+}
+
+// ---------- Topic content ----------
 
 interface GuidanceItem {
   id: string
   title: string
+  icon: React.ElementType
+  iconBg: string
   content: React.ReactNode
 }
 
@@ -19,297 +114,174 @@ const guidanceItems: GuidanceItem[] = [
   {
     id: "getting-started",
     title: "Getting Started",
+    icon: Rocket,
+    iconBg: "bg-primary",
     content: (
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold">Welcome to Navigate</h3>
-        <p>This guide will help you get started with using Navigate effectively.</p>
-        <div className="space-y-2">
-          <h4 className="font-medium">Key Features:</h4>
-          <ul className="list-disc pl-4 space-y-1">
-            <li>Self Discovery - Explore your personal journey</li>
-            <li>Problem Discovery - Identify and analyze challenges</li>
-            <li>Problem Trigger Buckets - Capture and organize your ideas</li>
-          </ul>
-        </div>
+      <div className="flex flex-col gap-5">
+        <GuidanceHero
+          icon={Rocket}
+          tone="bg-primary"
+          title="Welcome to Navigate"
+          subtitle="Navigate is your guide through the innovation journey, from surfacing areas of personal interest to validating problems worth solving."
+        />
+        <GuidanceSection icon={Compass} iconBg="bg-primary" title="The journey">
+          <p>Navigate breaks the process into four connected stages. Work through them in order; later stages build on earlier ones.</p>
+          <div className="flex flex-col gap-3 pt-1">
+            <NumberedStep n={1} title="Self Discovery">
+              Explore your background, interests, and frustrations to surface <Keyword>problem triggers</Keyword>: seeds worth investigating.
+            </NumberedStep>
+            <NumberedStep n={2} title="Problem Discovery">
+              Turn those triggers into concrete, well-framed candidate problems using guided or freeform tools.
+            </NumberedStep>
+            <NumberedStep n={3} title="Problem Validation">
+              Stress-test each candidate against alternatives, impact, and opportunity to decide if it is worth pursuing.
+            </NumberedStep>
+            <NumberedStep n={4} title="Solutions">
+              Once a problem is validated, brainstorm and evaluate potential solutions.
+            </NumberedStep>
+          </div>
+        </GuidanceSection>
+        <TipCallout items={[
+          "You can move between stages freely; earlier work is never locked",
+          "The sidebar on the left is your map and all progress auto-saves",
+          "Open this guidance at any time from the Guidance button in the header",
+        ]} />
       </div>
-    )
+    ),
   },
   {
     id: "self-discovery",
     title: "Self Discovery",
+    icon: Compass,
+    iconBg: "bg-indigo-500",
     content: (
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold">Self Discovery</h3>
-        <p className="text-sm text-muted-foreground">
-          Self Discovery is the starting point of the innovation journey. Its purpose is to help you surface
-          areas of personal resonance, problems or domains worth exploring, before committing to a specific
-          direction. Rather than jumping straight to a solution, you first look inward: your background,
-          experiences, frustrations, and goals.
-        </p>
-        <div className="space-y-3">
-          <div>
-            <h4 className="font-medium">What you are presented with</h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              A series of guided questions organised into categories, for example, your professional background,
-              areas of daily frustration, causes you care about, or markets you are familiar with. Each category
-              focuses on a different lens through which to view potential opportunities.
-            </p>
-          </div>
-          <div>
-            <h4 className="font-medium">What to do</h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              Work through each question at your own pace. For each one, enter short, honest answers; these
-              become <span className="font-medium text-foreground">problem triggers</span>: seeds of areas that
-              might be worth investigating further. You can add multiple answers per question and return to update
-              them as your thinking evolves.
-            </p>
-            <p className="text-sm text-muted-foreground mt-2">
-              Some questions include suggestion exercises to help you generate ideas if you are unsure where to start.
-              Use them as prompts, not constraints.
-            </p>
-          </div>
-          <div>
-            <h4 className="font-medium">The output</h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              At the end of the Self Discovery section you will have a collection of problem triggers visible in the
-              left sidebar. These are not problems yet; they are areas of interest. You carry them into
-              Problem Discovery, where you use dedicated tools to sharpen them into concrete, well-framed problems
-              worth validating.
-            </p>
-          </div>
-          <div>
-            <h4 className="font-medium">Tips</h4>
-            <ul className="list-disc pl-4 space-y-1 text-sm text-muted-foreground mt-1">
-              <li>Be specific: &quot;healthcare admin is slow&quot; is more useful than &quot;healthcare&quot;</li>
-              <li>Quantity matters at this stage; capture everything, filter later</li>
-              <li>Return and update your answers as you learn more through the process</li>
-            </ul>
-          </div>
-        </div>
+      <div className="flex flex-col gap-5">
+        <GuidanceHero
+          icon={Compass}
+          tone="bg-indigo-500"
+          title="Self Discovery"
+          subtitle="The starting point of the innovation journey. Surface areas of personal resonance, problems, or domains worth exploring before committing to a direction."
+        />
+        <GuidanceSection icon={FileQuestion} iconBg="bg-indigo-500" title="What you are presented with">
+          <p>A series of guided questions organised into categories: your professional background, areas of daily frustration, causes you care about, or markets you are familiar with. Each category focuses on a different lens through which to view potential opportunities.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={Pencil} iconBg="bg-indigo-500" title="What to do">
+          <p>Work through each question at your own pace. For each one, enter short, honest answers. These become <Keyword>problem triggers</Keyword>: seeds of areas that might be worth investigating further. You can add multiple answers per question and return to update them as your thinking evolves.</p>
+          <p>Some questions include suggestion exercises to help you generate ideas if you are unsure where to start. Use them as prompts, not constraints.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={Package} iconBg="bg-indigo-500" title="The output">
+          <p>At the end of Self Discovery you will have a collection of problem triggers visible in the left sidebar. These are not problems yet; they are areas of interest. You carry them into Problem Discovery, where dedicated tools sharpen them into concrete, well-framed problems worth validating.</p>
+        </GuidanceSection>
+        <TipCallout items={[
+          <>Be specific: <Keyword>&ldquo;healthcare admin is slow&rdquo;</Keyword> is more useful than <Keyword>&ldquo;healthcare&rdquo;</Keyword></>,
+          "Quantity matters at this stage; capture everything, filter later",
+          "Return and update your answers as you learn more through the process",
+        ]} />
       </div>
-    )
+    ),
   },
   {
     id: "problem-discovery",
     title: "Problem Discovery",
+    icon: Search,
+    iconBg: "bg-amber-500",
     content: (
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold">Problem Discovery</h3>
-        <p className="text-sm text-muted-foreground">
-          Problem Discovery is where you turn the rough areas identified in Self Discovery into concrete,
-          well-framed problems worth investigating. The goal is to build a list of candidates before committing
-          to validating any one of them.
-        </p>
-        <div className="space-y-3">
-          <div>
-            <h4 className="font-medium">How it works</h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              Click <span className="font-medium text-foreground">Search for new problem</span> to open the
-              tool selector. You can use one of the discovery tools to help you surface a problem, or define
-              one directly if you already know what you want to explore.
-            </p>
+      <div className="flex flex-col gap-5">
+        <GuidanceHero
+          icon={Search}
+          tone="bg-amber-500"
+          title="Problem Discovery"
+          subtitle="Turn the rough areas identified in Self Discovery into concrete, well-framed problems worth investigating. Build a list of candidates before committing to validating any one of them."
+        />
+        <GuidanceSection icon={Play} iconBg="bg-amber-500" title="How it works">
+          <p>Click <Keyword>Search for new problem</Keyword> to open the tool selector. Use one of the discovery tools to surface a problem, or define one directly if you already know what you want to explore.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={ToggleRight} iconBg="bg-amber-500" title="Two modes">
+          <p>The brainstorming tool offers two ways to work, switchable from the toggle in the top-right corner. Choose whichever suits your thinking style; you can switch at any time and your progress is preserved.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={Blocks} iconBg="bg-amber-500" title="Problem Builder (guided mode)">
+          <p>The builder walks you through four steps to construct a problem systematically:</p>
+          <div className="flex flex-col gap-3 pt-1">
+            <NumberedStep n={1} title="Pick an element" accent="bg-amber-500">
+              Choose which dimension you want to start with: Customer Segment, Context, Job to Be Done, or Problem Type.
+            </NumberedStep>
+            <NumberedStep n={2} title="Choose options" accent="bg-amber-500">
+              Browse and tick the items that resonate with you within that dimension.
+            </NumberedStep>
+            <NumberedStep n={3} title="Add more elements" accent="bg-amber-500">
+              Optionally pick another dimension to refine the problem, or skip straight to review. Dimensions you have already explored are shown with a checkmark.
+            </NumberedStep>
+            <NumberedStep n={4} title="Review & save" accent="bg-amber-500">
+              See all selections at a glance, add an optional description, and save the problem.
+            </NumberedStep>
           </div>
-
-          <div>
-            <h4 className="font-medium">Two modes</h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              The brainstorming tool offers two ways to work, switchable from the toggle in the top-right
-              corner of the page. Choose whichever suits your thinking style; you can switch at any time
-              and your progress is preserved.
-            </p>
+          <p className="pt-1">Your selections appear as coloured pills at the top of every step. Remove any selection with its <Keyword>×</Keyword> button. You do not need to fill in all four dimensions; a partial combination is still useful.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={LayoutGrid} iconBg="bg-amber-500" title="Canvas (freeform mode)">
+          <p>The canvas presents a four-column framework for thinking systematically about who experiences a problem, in what situation, what they are trying to do, and what friction they face.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+            <ConceptCard icon={Users} label="Customer Segment" description="Who you are focusing on (e.g. early-career professionals, small business owners)" tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
+            <ConceptCard icon={MapPin} label="Context" description="The situation or environment where the problem occurs (e.g. daily commute, remote team)" tile="bg-sky-500" border="border-sky-100 bg-sky-50/40" />
+            <ConceptCard icon={Briefcase} label="Job to Be Done" description="The underlying goal or task (e.g. stay organised, make a confident decision)" tile="bg-amber-500" border="border-amber-100 bg-amber-50/40" />
+            <ConceptCard icon={AlertTriangle} label="Problem Type" description="The category of friction (e.g. information gaps, coordination overhead)" tile="bg-rose-500" border="border-rose-100 bg-rose-50/40" />
           </div>
-
-          <div>
-            <h4 className="font-medium">Problem Builder (guided mode)</h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              The builder walks you through four steps to construct a problem systematically:
-            </p>
-            <ol className="list-decimal pl-4 space-y-1 text-sm text-muted-foreground mt-2">
-              <li>
-                <span className="font-medium text-foreground">Pick an element</span>: choose which
-                dimension you want to start with (Customer Segment, Context, Job to Be Done, or Problem Type).
-              </li>
-              <li>
-                <span className="font-medium text-foreground">Choose options</span>: browse and tick the
-                items that resonate with you within that dimension.
-              </li>
-              <li>
-                <span className="font-medium text-foreground">Add more elements</span>: optionally pick
-                another dimension to refine the problem further, or skip straight to review. Dimensions
-                you have already explored are shown with a checkmark so you can revisit them.
-              </li>
-              <li>
-                <span className="font-medium text-foreground">Review &amp; save</span>: see all your
-                selections at a glance, add an optional description, and save the problem.
-              </li>
-            </ol>
-            <p className="text-sm text-muted-foreground mt-2">
-              Your selections appear as coloured pills at the top of every step. You can remove any
-              selection by clicking its <span className="font-medium text-foreground">×</span> button.
-              You do not need to fill in all four dimensions; a partial combination is still useful.
-            </p>
-          </div>
-
-          <div>
-            <h4 className="font-medium">Canvas (freeform mode)</h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              The canvas presents a structured four-column framework designed to help you think
-              systematically about who experiences a problem, in what situation, what they are trying to do,
-              and what kind of friction they face. The four columns are:
-            </p>
-            <ul className="list-disc pl-4 space-y-1 text-sm text-muted-foreground mt-2">
-              <li>
-                <span className="font-medium text-foreground">Customer Segment</span>: who you are focusing on
-                (e.g. early-career professionals, small business owners, parents of young children)
-              </li>
-              <li>
-                <span className="font-medium text-foreground">Context</span>: the situation or environment in
-                which the problem occurs (e.g. daily commute, managing a remote team, a life transition like
-                starting a business)
-              </li>
-              <li>
-                <span className="font-medium text-foreground">Job to Be Done</span>: the underlying goal or
-                task the person is trying to accomplish (e.g. stay organised, make a confident decision,
-                build a professional reputation)
-              </li>
-              <li>
-                <span className="font-medium text-foreground">Problem Type</span>: the category of friction
-                they encounter (e.g. information gaps, access and affordability, trust and safety, coordination
-                overhead)
-              </li>
-            </ul>
-            <p className="text-sm text-muted-foreground mt-2">
-              Browse each column, tick the items that resonate with you, and click{" "}
-              <span className="font-medium text-foreground">Save Problem</span> to record the combination.
-              Each saved row represents one candidate problem. You can save as many as you like and come back
-              to edit or remove them.
-            </p>
-          </div>
-
-          <div>
-            <h4 className="font-medium">Define a Problem Statement</h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              If you already have a clear problem in mind, skip the exploration tools and write it directly.
-              This is useful when you have prior knowledge of a domain or have already spoken to potential customers.
-            </p>
-          </div>
-
-          <div>
-            <h4 className="font-medium">What comes next</h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              Once you have a list of candidate problems, move on to Problem Validation to choose one and
-              analyse it in depth, examining alternatives, shortcomings, emotional and quantifiable impact,
-              and ultimately producing a validated problem statement.
-            </p>
-          </div>
-        </div>
+          <p className="pt-1">Browse each column, tick items that resonate, and click <Keyword>Save Problem</Keyword> to record the combination. Each saved row is one candidate problem. Save as many as you like.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={FileText} iconBg="bg-amber-500" title="Define a Problem Statement">
+          <p>If you already have a clear problem in mind, skip the exploration tools and write it directly. Useful when you have prior knowledge of a domain or have already spoken to potential customers.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={ArrowRight} iconBg="bg-amber-500" title="What comes next">
+          <p>Once you have a list of candidate problems, move on to Problem Validation to choose one and analyse it in depth: alternatives, shortcomings, emotional and quantifiable impact, and ultimately a validated problem statement.</p>
+        </GuidanceSection>
       </div>
-    )
+    ),
   },
   {
     id: "problem-validation",
     title: "Problem Validation",
+    icon: ClipboardCheck,
+    iconBg: "bg-emerald-500",
     content: (
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold">Problem Validation</h3>
-        <p className="text-sm text-muted-foreground">
-          Problem Validation is where you stress-test a candidate problem before investing in building a
-          solution. The goal is not to prove the problem is valid; it is to gather enough evidence to make
-          an honest, informed decision about whether it is worth pursuing.
-        </p>
-        <div className="space-y-3">
-          <div>
-            <h4 className="font-medium">How it works</h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              Each problem goes through a structured sequence of steps. Work through them in order; each
-              step builds on the last, but you can return and update any step as your thinking develops.
-            </p>
+      <div className="flex flex-col gap-5">
+        <GuidanceHero
+          icon={ClipboardCheck}
+          tone="bg-emerald-500"
+          title="Problem Validation"
+          subtitle="Stress-test a candidate problem before investing in a solution. The goal is not to prove the problem is valid; it is to gather enough evidence to make an honest, informed decision."
+        />
+        <GuidanceSection icon={Play} iconBg="bg-emerald-500" title="How it works">
+          <p>Each problem goes through a structured sequence of steps. Work through them in order; each step builds on the last, but you can return and update any step as your thinking develops.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={GitFork} iconBg="bg-purple-500" title="Alternatives & Shortcomings">
+          <p>Start by listing how people currently deal with this problem: the tools, workarounds, or habits they already use. Then, for each alternative, note its shortcomings: what it fails to do well, what it costs, or what friction it introduces. This step grounds the problem in reality and reveals the gap your solution would need to fill.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={Heart} iconBg="bg-rose-500" title="Emotional Impact">
+          <p>Capture how the problem makes people feel. Emotional weight is a strong signal of whether a problem is genuinely painful. Frustration, anxiety, embarrassment, or helplessness all indicate that people care enough to want a better solution. Add as many emotional impacts as apply; even one strong emotion is significant.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={BarChart2} iconBg="bg-sky-500" title="Quantifiable Impact">
+          <p>Document measurable evidence of the problem&apos;s cost. Choose a category: time lost, money wasted, error rates, or customer churn, and describe the scale in concrete terms. Numbers and specifics matter: <Keyword>&ldquo;two hours per week per employee&rdquo;</Keyword> is more compelling than <Keyword>&ldquo;wastes a lot of time&rdquo;</Keyword>.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={Target} iconBg="bg-emerald-500" title="Verdict">
+          <p>The verdict step asks you to rate three decision factors that determine whether the problem represents a real opportunity:</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+            <ConceptCard icon={Users} label="How many people" description="How large is the audience experiencing this problem?" tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
+            <ConceptCard icon={Repeat} label="How often" description="How frequently do they encounter the problem?" tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
+            <ConceptCard icon={DollarSign} label="How much is it worth" description="How much would they pay or benefit from a solution?" tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
           </div>
-
-          <div>
-            <h4 className="font-medium">Alternatives &amp; Shortcomings</h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              Start by listing how people currently deal with this problem: the tools, workarounds,
-              or habits they already use. Then, for each alternative, note its shortcomings: what it
-              fails to do well, what it costs, or what friction it introduces. This step grounds the
-              problem in reality and reveals the gap your solution would need to fill.
-            </p>
-          </div>
-
-          <div>
-            <h4 className="font-medium">Emotional Impact</h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              Capture how the problem makes people feel. Emotional weight is a strong signal of whether
-              a problem is genuinely painful. Frustration, anxiety, embarrassment, or helplessness all
-              indicate that people care enough to want a better solution. Add as many emotional impacts
-              as apply; even one strong emotion is significant.
-            </p>
-          </div>
-
-          <div>
-            <h4 className="font-medium">Quantifiable Impact</h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              Document measurable evidence of the problem&apos;s cost. Choose a category, such as time
-              lost, money wasted, error rates, or customer churn, and describe the scale of the impact
-              in concrete terms. Numbers and specifics matter here: &quot;two hours per week per
-              employee&quot; is more compelling than &quot;wastes a lot of time&quot;.
-            </p>
-          </div>
-
-          <div>
-            <h4 className="font-medium">Verdict</h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              The verdict step asks you to rate three decision factors that determine whether
-              the problem represents a real opportunity:
-            </p>
-            <ul className="list-disc pl-4 space-y-1 text-sm text-muted-foreground mt-2">
-              <li>
-                <span className="font-medium text-foreground">How many people</span> how large is
-                the audience experiencing this problem?
-              </li>
-              <li>
-                <span className="font-medium text-foreground">How often</span> how frequently do
-                they encounter the problem?
-              </li>
-              <li>
-                <span className="font-medium text-foreground">How much is it worth</span> how much
-                would they pay or benefit from a solution?
-              </li>
-            </ul>
-            <p className="text-sm text-muted-foreground mt-2">
-              Set each factor to Low, Medium, or High and optionally enter a numeric estimate. A
-              validation signal is calculated from these factors to guide your thinking. Then record
-              your verdict: <span className="font-medium text-foreground">Valid</span>,{" "}
-              <span className="font-medium text-foreground">Unsure</span>, or{" "}
-              <span className="font-medium text-foreground">Invalid</span>. There is no right answer;
-              the verdict is your judgement call based on the evidence in front of you.
-            </p>
-          </div>
-
-          <div>
-            <h4 className="font-medium">Problem Statement</h4>
-            <p className="text-sm text-muted-foreground mt-1">
-              The final step produces a consolidated summary of everything you have discovered. Review
-              the core problem definition, including customer segment, context, job to be done, and
-              problem type, alongside all the evidence you collected. You can edit any field directly
-              from this view. This statement becomes the artefact you carry forward if you decide to
-              pursue the problem.
-            </p>
-          </div>
-
-          <div>
-            <h4 className="font-medium">Tips</h4>
-            <ul className="list-disc pl-4 space-y-1 text-sm text-muted-foreground mt-1">
-              <li>Be honest about the evidence: weak validation data is a signal, not a failure</li>
-              <li>Alternatives with many shortcomings suggest a genuine gap in the market</li>
-              <li>If you struggle to name emotional or quantifiable impacts, the problem may not be painful enough</li>
-              <li>You can validate multiple problems and compare verdicts before committing to one</li>
-            </ul>
-          </div>
-        </div>
+          <p className="pt-1">Set each factor to Low, Medium, or High and optionally enter a numeric estimate. A validation signal is calculated to guide your thinking. Then record your verdict: <Keyword>Valid</Keyword>, <Keyword>Unsure</Keyword>, or <Keyword>Invalid</Keyword>. The verdict is your judgement call based on the evidence in front of you.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={FileText} iconBg="bg-emerald-500" title="Problem Statement">
+          <p>The final step produces a consolidated summary of everything you have discovered. Review the core problem, customer segment, context, job to be done, and problem type, alongside all the evidence you collected. Edit any field directly. This statement is the artefact you carry forward if you decide to pursue the problem.</p>
+        </GuidanceSection>
+        <TipCallout items={[
+          "Be honest about the evidence: weak validation data is a signal, not a failure",
+          "Alternatives with many shortcomings suggest a genuine gap in the market",
+          "If you struggle to name emotional or quantifiable impacts, the problem may not be painful enough",
+          "You can validate multiple problems and compare verdicts before committing to one",
+        ]} />
       </div>
-    )
-  }
+    ),
+  },
 ]
 
 export function GuidanceDialog({
@@ -357,9 +329,10 @@ export function GuidanceDialog({
                   <Button
                     key={item.id}
                     variant={selectedItem === item.id ? "secondary" : "ghost"}
-                    className="w-full justify-start"
+                    className="w-full justify-start gap-2.5 h-auto py-2"
                     onClick={() => setSelectedItem(item.id)}
                   >
+                    <IconTile icon={item.icon} className={item.iconBg} size="sm" />
                     {item.title}
                   </Button>
                 ))}
@@ -370,7 +343,7 @@ export function GuidanceDialog({
           {/* Right Content */}
           <div className="flex-1 flex flex-col min-h-0 p-6">
             <div className="flex-1 min-h-0">
-              <ScrollArea className="h-full">
+              <ScrollArea className="h-full pr-3">
                 {guidanceItems.find((item) => item.id === selectedItem)?.content}
               </ScrollArea>
             </div>
@@ -391,4 +364,4 @@ export function GuidanceDialog({
       </DialogContent>
     </Dialog>
   )
-} 
+}
