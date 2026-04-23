@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
 import { Button } from "@/components/ui/button"
@@ -10,7 +10,12 @@ import { Plus, Target } from "lucide-react"
 
 export default function ProblemsPage() {
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const problems = useSelector((state: RootState) => state.problems.problems)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   return (
     <div className="flex flex-col gap-6 w-full flex-1">
@@ -39,7 +44,7 @@ export default function ProblemsPage() {
         </p>
       </div>
 
-      {problems.length === 0 ? (
+      {!mounted || problems.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center gap-6 py-24">
           <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-primary">
             <Target className="h-8 w-8 text-primary-foreground" />
