@@ -7,9 +7,8 @@ import type { Note } from "@/store/notes-model"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent } from "@/components/ui/card"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
-import { NotebookText, Plus, Trash2 } from "lucide-react"
+import { ArrowLeft, NotebookText, Plus, Trash2, X } from "lucide-react"
 
 function formatEditedAt(iso: string) {
   try {
@@ -32,20 +31,16 @@ function notePreview(note: Note) {
 
 function NoteRow({
   note,
-  selected,
   onSelect,
   onDelete,
 }: {
   note: Note
-  selected: boolean
   onSelect: () => void
   onDelete: () => void
 }) {
   return (
     <div
-      className={`group flex items-start gap-2 rounded-md border p-3 cursor-pointer transition-colors ${
-        selected ? "bg-accent border-accent-foreground/20" : "bg-card hover:bg-accent/50"
-      }`}
+      className="group flex items-start gap-2 rounded-md border bg-card p-3 cursor-pointer transition-colors hover:bg-accent/50"
       onClick={onSelect}
     >
       <div className="flex-1 min-w-0">
@@ -94,7 +89,7 @@ function NoteEditor({ note }: { note: Note }) {
   }, [title, text, note.id, note.title, note.text, dispatch.notes])
 
   return (
-    <div className="flex flex-col gap-3 h-full">
+    <div className="flex flex-col gap-3 h-full min-h-0">
       <Input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
@@ -105,13 +100,13 @@ function NoteEditor({ note }: { note: Note }) {
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="Write your thoughts here..."
-        className="flex-1 min-h-[200px] resize-none"
+        className="flex-1 min-h-0 resize-none"
       />
     </div>
   )
 }
 
-export default function NotesPage() {
+export function JournalPanel({ onClose }: { onClose: () => void }) {
   const allNotes = useSelector((state: RootState) => state.notes.notes)
   const dispatch = useDispatch<AppDispatch>()
   const [selectedId, setSelectedId] = useState<number | null>(null)
@@ -120,16 +115,6 @@ export default function NotesPage() {
     () => [...allNotes].sort((a, b) => b.editedAt.localeCompare(a.editedAt)),
     [allNotes]
   )
-
-  useEffect(() => {
-    if (sortedNotes.length === 0) {
-      if (selectedId !== null) setSelectedId(null)
-      return
-    }
-    if (selectedId === null || !sortedNotes.some((n) => n.id === selectedId)) {
-      setSelectedId(sortedNotes[0].id)
-    }
-  }, [sortedNotes, selectedId])
 
   const selectedNote = sortedNotes.find((n) => n.id === selectedId) ?? null
 
@@ -140,75 +125,85 @@ export default function NotesPage() {
 
   const handleDelete = (id: number) => {
     dispatch.notes.delete(id)
+    if (selectedId === id) setSelectedId(null)
   }
 
   return (
-    <div className="flex flex-col gap-6 w-full flex-1 min-h-0">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-start gap-4">
-          <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-primary/10 shrink-0">
-            <NotebookText className="h-6 w-6 text-primary" />
-          </div>
-          <div className="flex flex-col gap-1">
-            <h1 className="text-xl font-bold">Notes</h1>
-            <p className="text-sm text-muted-foreground">
-              Capture thoughts, observations, and ideas across your innovation process.
-            </p>
-          </div>
+    <div className="flex h-full flex-col bg-background">
+      <div className="flex items-center justify-between gap-2 border-b px-4 py-3">
+        <div className="flex items-center gap-2 min-w-0">
+          {selectedNote ? (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 shrink-0"
+              onClick={() => setSelectedId(null)}
+              aria-label="Back to notes"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+          ) : (
+            <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary/10 shrink-0">
+              <NotebookText className="h-4 w-4 text-primary" />
+            </div>
+          )}
+          <h2 className="text-sm font-semibold truncate">
+            {selectedNote ? "Edit note" : "Journal"}
+          </h2>
         </div>
-        <Button onClick={handleCreate} className="gap-1.5 shrink-0">
-          <Plus className="h-4 w-4" />
-          New note
-        </Button>
+        <div className="flex items-center gap-1 shrink-0">
+          {!selectedNote && (
+            <Button onClick={handleCreate} size="sm" className="gap-1.5">
+              <Plus className="h-3.5 w-3.5" />
+              New
+            </Button>
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={onClose}
+            aria-label="Close journal"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
-      {sortedNotes.length === 0 ? (
-        <Card>
-          <CardContent className="flex flex-col items-center justify-center gap-4 py-16">
-            <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10">
-              <NotebookText className="h-8 w-8 text-primary" />
+      <div className="flex-1 min-h-0 overflow-hidden">
+        {selectedNote ? (
+          <div className="h-full p-4">
+            <NoteEditor key={selectedNote.id} note={selectedNote} />
+          </div>
+        ) : sortedNotes.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-4 h-full px-6 text-center">
+            <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-primary/10">
+              <NotebookText className="h-7 w-7 text-primary" />
             </div>
-            <div className="text-center flex flex-col gap-2 max-w-sm">
-              <h2 className="text-lg font-semibold">No notes yet</h2>
-              <p className="text-sm text-muted-foreground">
-                Create your first note to start capturing your thoughts.
+            <div className="flex flex-col gap-1">
+              <h3 className="text-sm font-semibold">No entries yet</h3>
+              <p className="text-xs text-muted-foreground">
+                Capture thoughts as you work through each step.
               </p>
             </div>
-            <Button onClick={handleCreate} className="gap-1.5">
-              <Plus className="h-4 w-4" />
-              New note
+            <Button onClick={handleCreate} size="sm" className="gap-1.5">
+              <Plus className="h-3.5 w-3.5" />
+              New entry
             </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-[280px_1fr] gap-4 flex-1 min-h-0">
-          <Card className="flex flex-col min-h-0">
-            <CardContent className="flex flex-col gap-2 p-3 overflow-y-auto">
-              {sortedNotes.map((note) => (
-                <NoteRow
-                  key={note.id}
-                  note={note}
-                  selected={note.id === selectedId}
-                  onSelect={() => setSelectedId(note.id)}
-                  onDelete={() => handleDelete(note.id)}
-                />
-              ))}
-            </CardContent>
-          </Card>
-
-          <Card className="flex flex-col min-h-0">
-            <CardContent className="flex-1 p-4 min-h-0">
-              {selectedNote ? (
-                <NoteEditor key={selectedNote.id} note={selectedNote} />
-              ) : (
-                <div className="flex items-center justify-center h-full text-sm text-muted-foreground">
-                  Select a note to edit
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        </div>
-      )}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2 h-full overflow-y-auto p-3">
+            {sortedNotes.map((note) => (
+              <NoteRow
+                key={note.id}
+                note={note}
+                onSelect={() => setSelectedId(note.id)}
+                onDelete={() => handleDelete(note.id)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }

@@ -13,6 +13,7 @@ interface SettingsState {
   brainstormSelected: string[]
   brainstormMode: BrainstormMode
   hideBrainstormGuidance: boolean
+  journalOpen: boolean
 }
 
 const defaultState: SettingsState = {
@@ -22,6 +23,7 @@ const defaultState: SettingsState = {
   brainstormSelected: [],
   brainstormMode: "builder",
   hideBrainstormGuidance: false,
+  journalOpen: false,
 }
 
 function saveToStorage(state: SettingsState) {
@@ -65,6 +67,11 @@ export const settings = createModel<RootModel>()({
       saveToStorage(next)
       return next
     },
+    setJournalOpen(state, journalOpen: boolean) {
+      const next = { ...state, journalOpen }
+      saveToStorage(next)
+      return next
+    },
   },
 
   effects: (dispatch) => ({
@@ -89,6 +96,9 @@ export const settings = createModel<RootModel>()({
         }
         if (stored.hideBrainstormGuidance) {
           dispatch.settings.setHideBrainstormGuidance(stored.hideBrainstormGuidance)
+        }
+        if (typeof stored.journalOpen === "boolean") {
+          dispatch.settings.setJournalOpen(stored.journalOpen)
         }
       } catch {
         // ignore parse errors

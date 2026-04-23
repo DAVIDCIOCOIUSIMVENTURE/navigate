@@ -55,6 +55,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { cn } from "@/lib/utils"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Checkbox } from "@/components/ui/checkbox"
+import { useContainerSize } from "@/context/container-size-context"
 
 const GROUP_ICON_RULES: ReadonlyArray<readonly [RegExp, LucideIcon]> = [
     [/software|programm|coding/, Code],
@@ -203,6 +204,12 @@ export default function QuestionPage() {
     const params = useParams()
     const categoryId = params.categoryId as string
     const questionId = params.questionId as string
+    const size = useContainerSize()
+    const roomy = size !== "narrow"
+    const sdgCols =
+        size === "narrow" ? "grid-cols-3"
+        : size === "medium" ? "grid-cols-4"
+        : "grid-cols-6"
 
     const category = SELF_DISCOVERY_CATEGORIES.find(c => c.url === categoryId) ?? null
     const question = category?.questions.find(q => q.url === questionId) ?? null
@@ -346,13 +353,13 @@ export default function QuestionPage() {
     return (
         <>
             <Card className="w-full h-full flex flex-col overflow-hidden">
-                <CardHeader className="px-10 pt-10 pb-0 shrink-0">
+                <CardHeader className={cn("pb-0 shrink-0", roomy ? "px-10 pt-10" : "px-6 pt-6")}>
                     <CardTitle icon={(() => {
                         const CategoryIcon = getSelfDiscoveryCategoryIcon(category.url)
                         return CategoryIcon || Compass
                     })()} className="text-foreground">{question.title}</CardTitle>
                 </CardHeader>
-                <CardContent className="flex-1 p-10 pt-6 min-h-0 flex flex-col overflow-y-auto">
+                <CardContent className={cn("flex-1 min-h-0 flex flex-col overflow-y-auto", roomy ? "p-10 pt-6" : "p-6 pt-4")}>
                     <div className="flex flex-col gap-5 flex-1 min-h-0">
                         <p className="text-md text-foreground shrink-0">
                             {category.description}
@@ -380,7 +387,7 @@ export default function QuestionPage() {
                                 </div>
                             )}
                             {question.titleId === "sustainability-goals" ? (
-                                <div className="grid grid-cols-6 gap-2">
+                                <div className={cn("grid gap-2", sdgCols)}>
                                     {Array.from({ length: 17 }, (_, i) => i + 1).map((num) => {
                                         const sdg = SDGS[num - 1]
                                         const isSelected = questionTriggers.some(trigger => trigger.title === sdg)
@@ -422,7 +429,7 @@ export default function QuestionPage() {
                                             Add
                                         </Button>
                                     </div>
-                                    <div className="flex items-center gap-2 shrink-0">
+                                    <div className={cn("flex gap-2 shrink-0", roomy ? "flex-row items-center" : "flex-col")}>
                                         <div className="relative flex-1">
                                             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                             <Input
@@ -442,30 +449,32 @@ export default function QuestionPage() {
                                                 </button>
                                             )}
                                         </div>
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => {
-                                                setDefaultGroupOpen(true)
-                                                setTreeResetKey(k => k + 1)
-                                            }}
-                                            className="gap-1.5"
-                                        >
-                                            <ChevronsUpDown className="h-3.5 w-3.5" />
-                                            Expand all
-                                        </Button>
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => {
-                                                setDefaultGroupOpen(false)
-                                                setTreeResetKey(k => k + 1)
-                                            }}
-                                            className="gap-1.5"
-                                        >
-                                            <ChevronsDownUp className="h-3.5 w-3.5" />
-                                            Collapse all
-                                        </Button>
+                                        <div className="flex gap-2">
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => {
+                                                    setDefaultGroupOpen(true)
+                                                    setTreeResetKey(k => k + 1)
+                                                }}
+                                                className={cn("gap-1.5", roomy ? "flex-none" : "flex-1")}
+                                            >
+                                                <ChevronsUpDown className="h-3.5 w-3.5" />
+                                                Expand all
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                size="sm"
+                                                onClick={() => {
+                                                    setDefaultGroupOpen(false)
+                                                    setTreeResetKey(k => k + 1)
+                                                }}
+                                                className={cn("gap-1.5", roomy ? "flex-none" : "flex-1")}
+                                            >
+                                                <ChevronsDownUp className="h-3.5 w-3.5" />
+                                                Collapse all
+                                            </Button>
+                                        </div>
                                     </div>
                                     <ScrollArea className="flex-1 min-h-[200px] rounded-lg border p-3">
                                         {filteredSuggestions.length === 0 ? (
@@ -513,7 +522,7 @@ export default function QuestionPage() {
                         </div>
                     </div>
                 </CardContent>
-                <CardFooter className="px-10 shrink-0 flex justify-between border-t py-6">
+                <CardFooter className={cn("shrink-0 flex justify-between border-t", roomy ? "px-10 py-6" : "px-6 py-4")}>
                     <Button variant="outline" onClick={handleBack}>Previous</Button>
                     <Button onClick={handleNext}>Next</Button>
                 </CardFooter>

@@ -13,7 +13,9 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
-import { Settings, HelpCircle } from "lucide-react"
+import { Settings, HelpCircle, NotebookText } from "lucide-react"
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
+import { JournalPanel } from "@/components/journal-panel"
 import { usePathname } from "next/navigation"
 import { useState, useEffect } from "react"
 import { GuidanceDialog } from "@/components/guidance-dialog"
@@ -54,6 +56,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   const sidebarMode = useSelector((state: RootState) => state.settings.sidebarMode)
   const fullView = useSelector((state: RootState) => state.settings.fullView)
+  const journalOpen = useSelector((state: RootState) => state.settings.journalOpen)
   const dispatch = useDispatch<AppDispatch>()
 
   // Load persisted settings from localStorage on mount
@@ -100,6 +103,15 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           </div>
           <div className="flex items-center gap-2">
             <TeamAvatars />
+            <Button
+              variant={journalOpen ? "default" : "outline"}
+              className="flex flex-row items-center gap-2 justify-center"
+              onClick={() => dispatch.settings.setJournalOpen(!journalOpen)}
+              aria-pressed={journalOpen}
+            >
+              <NotebookText />
+              <span>Journal</span>
+            </Button>
             <Button variant="outline" className="flex flex-row items-center gap-2 justify-center" onClick={() => openGuidance()}>
               <HelpCircle />
               <span>Guidance</span>
@@ -112,13 +124,29 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           </div>
         </header>
         )}
-        <div className={`flex flex-1 flex-col gap-4 bg-gray-100 min-h-0 overflow-y-auto ${fullView ? "px-6 py-6" : "px-4 py-6 sm:px-6 lg:px-12 lg:py-10"}`}>
-          <div className="flex flex-1 w-full min-h-0">
-            <GuidanceProvider onOpen={openGuidance}>
-              {children}
-            </GuidanceProvider>
-          </div>
-        </div>
+        <GuidanceProvider onOpen={openGuidance}>
+          {journalOpen ? (
+            <ResizablePanelGroup direction="horizontal" className="flex-1 min-h-0">
+              <ResizablePanel defaultSize={70} minSize={40}>
+                <div className={`flex h-full flex-col gap-4 bg-gray-100 min-h-0 overflow-y-auto ${fullView ? "px-6 py-6" : "px-4 py-6 sm:px-6 lg:px-12 lg:py-10"}`}>
+                  <div className="flex flex-1 w-full min-h-0">
+                    {children}
+                  </div>
+                </div>
+              </ResizablePanel>
+              <ResizableHandle withHandle />
+              <ResizablePanel defaultSize={30} minSize={20} maxSize={60}>
+                <JournalPanel onClose={() => dispatch.settings.setJournalOpen(false)} />
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          ) : (
+            <div className={`flex flex-1 flex-col gap-4 bg-gray-100 min-h-0 overflow-y-auto ${fullView ? "px-6 py-6" : "px-4 py-6 sm:px-6 lg:px-12 lg:py-10"}`}>
+              <div className="flex flex-1 w-full min-h-0">
+                {children}
+              </div>
+            </div>
+          )}
+        </GuidanceProvider>
       </SidebarInset>
       <GuidanceDialog open={guidanceOpen} onOpenChange={setGuidanceOpen} initialTopic={guidanceTopic} />
       <Toaster />
