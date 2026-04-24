@@ -578,6 +578,91 @@ export const SELF_DISCOVERY_CATEGORIES: SelfDiscoveryCategory[] = [
         ],
       },
       {
+        url: "academic-skills",
+        titleId: "academic-skills",
+        title: "What academic skills have you developed?",
+        description: "Think about research, writing, analysis, and study habits built through formal or self-directed learning.",
+        suggestions: [
+          {
+            id: "as-research",
+            label: "Research & Methodology",
+            children: [
+              { id: "as-literature-review", label: "Literature Reviews" },
+              { id: "as-qualitative", label: "Qualitative Research" },
+              { id: "as-quantitative", label: "Quantitative Research" },
+              { id: "as-experimental-design", label: "Experimental Design" },
+              { id: "as-fieldwork", label: "Fieldwork & Case Studies" },
+              { id: "as-systematic-review", label: "Systematic Reviews" },
+              { id: "as-research-ethics", label: "Research Ethics" },
+            ],
+          },
+          {
+            id: "as-writing",
+            label: "Academic Writing & Publishing",
+            children: [
+              { id: "as-essay-writing", label: "Essay & Dissertation Writing" },
+              { id: "as-academic-style", label: "Academic Writing & Style" },
+              { id: "as-citation", label: "Citation & Referencing" },
+              { id: "as-peer-review", label: "Peer Review" },
+              { id: "as-journal-submission", label: "Journal Submission" },
+              { id: "as-grant-writing", label: "Grant & Proposal Writing" },
+            ],
+          },
+          {
+            id: "as-reading",
+            label: "Reading & Comprehension",
+            children: [
+              { id: "as-close-reading", label: "Close Reading" },
+              { id: "as-text-analysis", label: "Text Analysis" },
+              { id: "as-source-appraisal", label: "Critical Appraisal of Sources" },
+              { id: "as-synthesis", label: "Synthesising Ideas Across Sources" },
+            ],
+          },
+          {
+            id: "as-analysis",
+            label: "Analysis & Reasoning",
+            children: [
+              { id: "as-critical-thinking", label: "Critical Thinking" },
+              { id: "as-logical-reasoning", label: "Logical Reasoning" },
+              { id: "as-argument-construction", label: "Argument Construction" },
+              { id: "as-statistical-analysis", label: "Statistical Analysis" },
+              { id: "as-data-interpretation", label: "Data Interpretation" },
+            ],
+          },
+          {
+            id: "as-study",
+            label: "Study & Learning",
+            children: [
+              { id: "as-note-taking", label: "Note-Taking" },
+              { id: "as-exam-prep", label: "Exam Preparation" },
+              { id: "as-independent-study", label: "Independent Study" },
+              { id: "as-active-recall", label: "Active Recall & Spaced Repetition" },
+              { id: "as-study-planning", label: "Study Planning & Time Management" },
+            ],
+          },
+          {
+            id: "as-teaching",
+            label: "Teaching & Presenting",
+            children: [
+              { id: "as-tutoring", label: "Tutoring & Lecturing" },
+              { id: "as-seminar-facilitation", label: "Facilitating Seminars" },
+              { id: "as-academic-presenting", label: "Academic Presenting" },
+              { id: "as-curriculum-design", label: "Curriculum Design" },
+            ],
+          },
+          {
+            id: "as-collaboration",
+            label: "Collaboration & Academic Practice",
+            children: [
+              { id: "as-group-projects", label: "Group Projects" },
+              { id: "as-research-collaboration", label: "Research Collaboration" },
+              { id: "as-interdisciplinary", label: "Interdisciplinary Work" },
+              { id: "as-academic-networking", label: "Academic Networking" },
+            ],
+          },
+        ],
+      },
+      {
         url: "enjoyable-skills",
         titleId: "enjoyable-skills",
         title: "What skills do you enjoy developing the most?",
