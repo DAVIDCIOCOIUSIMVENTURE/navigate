@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
-import { useSolution, getAdjacentSteps } from "../context"
+import { useDiscovery, getAdjacentSteps } from "../context"
 import type { AffectedGroup } from "@/types/solution"
 import { ROOT_CAUSES_CASE_STUDIES } from "./root-causes-case-studies"
 import { FIVE_WHYS_CASE_STUDIES } from "./five-whys-case-studies"
@@ -21,10 +21,10 @@ import {
   type LucideIcon,
 } from "lucide-react"
 
-/* ── Root Causes Form ── */
+/* -- Root Causes Form -- */
 
 function RootCausesForm() {
-  const { rootCauses, setRootCauses, rootCauseNotes, setRootCauseNotes } = useSolution()
+  const { rootCauses, setRootCauses, rootCauseNotes, setRootCauseNotes } = useDiscovery()
   const [adding, setAdding] = useState(false)
   const [draft, setDraft] = useState("")
   const inputRef = useRef<HTMLInputElement>(null)
@@ -114,12 +114,12 @@ function RootCausesForm() {
   )
 }
 
-/* ── Five Whys Form ── */
+/* -- Five Whys Form -- */
 
 const WHY_LABELS = ["Why 1", "Why 2", "Why 3", "Why 4", "Why 5"]
 
 function FiveWhysForm() {
-  const { fiveWhyChains, setFiveWhyChains } = useSolution()
+  const { fiveWhyChains, setFiveWhyChains } = useDiscovery()
 
   const addChain = () => {
     const id = fiveWhyChains.length > 0 ? Math.max(...fiveWhyChains.map((c) => c.id)) + 1 : 1
@@ -198,7 +198,7 @@ function FiveWhysForm() {
   )
 }
 
-/* ── Affected Groups Form ── */
+/* -- Affected Groups Form -- */
 
 const SEVERITY_OPTIONS = [
   { value: "low", label: "Low" },
@@ -208,7 +208,7 @@ const SEVERITY_OPTIONS = [
 ] as const
 
 function AffectedGroupsForm() {
-  const { affectedGroups, setAffectedGroups } = useSolution()
+  const { affectedGroups, setAffectedGroups } = useDiscovery()
 
   const addGroup = () => {
     const id = affectedGroups.length > 0 ? Math.max(...affectedGroups.map((g) => g.id)) + 1 : 1
@@ -296,7 +296,7 @@ function AffectedGroupsForm() {
   )
 }
 
-/* ── Root Causes Case Studies ── */
+/* -- Root Causes Case Studies -- */
 
 const ROOT_CAUSES_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
   "Toyota (post-war production)": Car,
@@ -371,7 +371,7 @@ function RootCausesCaseStudies() {
   )
 }
 
-/* ── Five Whys Case Studies ── */
+/* -- Five Whys Case Studies -- */
 
 const FIVE_WHYS_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
   "Toyota (the original 5 Whys)": Wrench,
@@ -461,7 +461,7 @@ function FiveWhysCaseStudies() {
   )
 }
 
-/* ── Affected Groups Case Studies ── */
+/* -- Affected Groups Case Studies -- */
 
 const AFFECTED_GROUPS_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
   "Uber (early ride-hail launch)": Car,
@@ -547,7 +547,7 @@ function AffectedGroupsCaseStudies() {
   )
 }
 
-/* ── Main Page ── */
+/* -- Main Page -- */
 
 type ToolHint = { icon: LucideIcon; title: string; subtitle: string; bg: string }
 
@@ -584,11 +584,20 @@ const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo:
   },
 }
 
-export default function AnalysePage() {
+export default function RefinePage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { solutionRef, problem, analysisToolType } = useSolution()
-  const { prevPath, nextPath } = getAdjacentSteps(pathname, solutionRef)
+  const { problemId, problem, analysisToolType } = useDiscovery()
+  const { prevPath, nextPath } = getAdjacentSteps(pathname)
+
+  // Bounce if no problem selected
+  useEffect(() => {
+    if (problemId == null) {
+      router.replace("/solutions/discover/select-problem")
+    }
+  }, [problemId, router])
+
+  if (problemId == null) return null
 
   const toolInfo = analysisToolType ? TOOL_INFO[analysisToolType] : null
 
@@ -676,7 +685,7 @@ export default function AnalysePage() {
         {!analysisToolType && (
           <div className="flex flex-col items-center justify-center gap-3 py-8 rounded-lg border border-dashed">
             <p className="text-sm text-muted-foreground">No analysis type selected.</p>
-            <Button variant="outline" onClick={() => router.push(`/solutions/${solutionRef}/choose-refinement`)}>
+            <Button variant="outline" onClick={() => router.push(`/solutions/discover/choose-refinement`)}>
               <ArrowLeft className="h-4 w-4 mr-2" />Choose a Refinement Method
             </Button>
           </div>

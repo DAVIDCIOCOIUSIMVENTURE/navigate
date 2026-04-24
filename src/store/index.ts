@@ -5,6 +5,7 @@ import { problemTriggers } from "./problem-triggers-model"
 import { problems } from "./problems-model"
 import { accountSettings } from "./account-settings-model"
 import { solutions } from "./solutions-model"
+import { solutionWorkspaces } from "./solution-workspaces-model"
 export interface RootModel extends Models<RootModel> {
   notes: typeof notes
   settings: typeof settings
@@ -12,9 +13,10 @@ export interface RootModel extends Models<RootModel> {
   problems: typeof problems
   accountSettings: typeof accountSettings
   solutions: typeof solutions
+  solutionWorkspaces: typeof solutionWorkspaces
 }
 
-const models: RootModel = { notes, settings, problemTriggers, problems, accountSettings, solutions }
+const models: RootModel = { notes, settings, problemTriggers, problems, accountSettings, solutions, solutionWorkspaces }
 
 export function createStore() {
   return init<RootModel>({ models })

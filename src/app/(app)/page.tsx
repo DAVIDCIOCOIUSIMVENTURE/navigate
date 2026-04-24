@@ -35,7 +35,7 @@ export default function DashboardPage() {
   const validatedProblems = problems.filter(
     (p) => p.validationStatus === "valid" || p.validationStatus === "invalid"
   )
-  const completeSolutions = solutions.filter((s) => s.verdict === "pursue")
+  const completeSolutions = solutions.filter((s) => s.validationStatus === "valid")
   // Build recent activity feed sorted by date
   const recentActivity: { id: string; label: string; detail: string; date: string; href: string; type: "problem" | "solution" }[] = []
 
@@ -51,12 +51,13 @@ export default function DashboardPage() {
   }
   for (const s of solutions) {
     const linked = problems.find((p) => p.id === s.problemId)
+    const solutionLabel = s.title || (linked ? (getProblemLabel(linked) || linked.description || `Problem #${linked.id}`) : `Solution #${s.id}`)
     recentActivity.push({
       id: `s-${s.id}`,
-      label: linked ? (getProblemLabel(linked) || linked.description || `Problem #${linked.id}`) : `Solution #${s.id}`,
-      detail: s.verdict === "none" ? (s.status === "not_started" ? "not started" : s.status.replace("_", " ")) : s.verdict,
+      label: solutionLabel,
+      detail: s.validationStatus.replace("_", " "),
       date: s.editedAt || s.createdAt,
-      href: `/solutions/${s.id}`,
+      href: `/solutions/${s.id}/validate/introduction`,
       type: "solution",
     })
   }
@@ -71,9 +72,9 @@ export default function DashboardPage() {
     { icon: Trophy, title: "Verdict Reached", description: "Validate your first problem", unlocked: validatedProblems.length >= 1, iconBgColor: "bg-green-100", iconColor: "text-green-600" },
     { icon: CheckCircle2, title: "Validated Thinker", description: "Get 3 problems to a verdict", unlocked: validatedProblems.length >= 3, iconBgColor: "bg-emerald-100", iconColor: "text-emerald-600" },
     { icon: FlaskConical, title: "Solution Seeker", description: "Start your first solution exploration", unlocked: solutions.length >= 1, iconBgColor: "bg-purple-100", iconColor: "text-purple-600" },
-    { icon: Award, title: "Innovator", description: "Complete a solution with a pursue verdict", unlocked: completeSolutions.length >= 1, iconBgColor: "bg-rose-100", iconColor: "text-rose-600" },
+    { icon: Award, title: "Innovator", description: "Validate a solution as valid", unlocked: completeSolutions.length >= 1, iconBgColor: "bg-rose-100", iconColor: "text-rose-600" },
     { icon: Star, title: "Full Cycle", description: "Trigger, problem, validation, and solution", unlocked: triggers.length >= 1 && validProblems.length >= 1 && completeSolutions.length >= 1, iconBgColor: "bg-yellow-100", iconColor: "text-yellow-600" },
-    { icon: Crown, title: "Innovation Master", description: "Pursue 3 or more solutions", unlocked: completeSolutions.length >= 3, iconBgColor: "bg-red-100", iconColor: "text-red-600" },
+    { icon: Crown, title: "Innovation Master", description: "Validate 3 or more solutions as valid", unlocked: completeSolutions.length >= 3, iconBgColor: "bg-red-100", iconColor: "text-red-600" },
   ]
   const unlockedCount = achievements.filter((a) => a.unlocked).length
 
@@ -140,7 +141,7 @@ export default function DashboardPage() {
           icon={Lightbulb}
           title="Solutions"
           value={solutions.length}
-          subtitle={completeSolutions.length > 0 ? `${completeSolutions.length} pursuing` : undefined}
+          subtitle={completeSolutions.length > 0 ? `${completeSolutions.length} valid` : undefined}
           href="/solutions"
           color="purple"
         />

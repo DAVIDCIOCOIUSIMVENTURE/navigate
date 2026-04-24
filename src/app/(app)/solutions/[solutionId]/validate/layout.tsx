@@ -2,15 +2,13 @@
 
 import { useEffect, useState } from "react"
 import { useParams, usePathname, useRouter } from "next/navigation"
-import { useSelector } from "react-redux"
-import type { RootState } from "@/store"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
 import { ProblemSummaryDialog, type ProblemSummaryData } from "@/components/problem-summary-dialog"
-import { SolutionProvider, useSolution, NAV_ITEMS } from "./context"
+import { SolutionValidationProvider, useSolutionValidation, NAV_ITEMS } from "./context"
 import {
-  Lightbulb, BookOpen, Search, Shuffle, BarChart2, LayoutTemplate,
+  ShieldCheck, BookOpen, Gauge, Target, Coins, Clock, CheckCircle2,
   FileText, ChevronDown, Eye,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
@@ -18,12 +16,11 @@ import { useContainerSize } from "@/context/container-size-context"
 
 const NAV_ICONS: Record<string, LucideIcon> = {
   introduction: BookOpen,
-  "choose-refinement": Search,
-  refine: Search,
-  "choose-discovery": Shuffle,
-  discover: Shuffle,
-  analysis: BarChart2,
-  summary: LayoutTemplate,
+  feasibility: Gauge,
+  impact: Target,
+  cost: Coins,
+  "time-to-implement": Clock,
+  verdict: CheckCircle2,
 }
 
 function NavItems({
@@ -76,10 +73,7 @@ function ViewProblemButton({ onClick }: { onClick: () => void }) {
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
-  const { solutionRef, problemId } = useSolution()
-  const problem = useSelector((state: RootState) =>
-    state.problems.problems.find((p) => p.id === problemId)
-  ) ?? null
+  const { solutionId, problem } = useSolutionValidation()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
@@ -106,7 +100,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       }
     : null
 
-  const base = `/solutions/${solutionRef}`
+  const base = `/solutions/${solutionId}/validate`
 
   const activeItem = NAV_ITEMS.find((item) => pathname === `${base}/${item.path}`)
   const ActiveIcon = activeItem ? (NAV_ICONS[activeItem.path] ?? FileText) : BookOpen
@@ -120,18 +114,18 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     <div className="flex flex-col gap-6 flex-1 w-full">
       <div className="flex items-start gap-4">
         <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-primary shrink-0">
-          <Lightbulb className="h-6 w-6 text-primary-foreground" />
+          <ShieldCheck className="h-6 w-6 text-primary-foreground" />
         </div>
         <div className="flex flex-col gap-1">
-          <h1 className="text-xl font-bold">Solution Discovery</h1>
+          <h1 className="text-xl font-bold">Solution Validation</h1>
           <p className="text-sm text-muted-foreground">
-            Refine your problem and discover effective solutions.
+            Evaluate a candidate across feasibility, impact, cost, and time.
           </p>
         </div>
       </div>
 
       {!isWide && (
-      <nav aria-label="Solution discovery steps" className="w-full">
+      <nav aria-label="Solution validation steps" className="w-full">
         <Collapsible open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
           <Card>
             <CardContent className="p-2">
@@ -166,7 +160,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
       <div className="flex gap-6 flex-1 w-full items-start">
         {isWide && (
-        <nav aria-label="Solution discovery steps" className="flex w-56 flex-col gap-3 shrink-0">
+        <nav aria-label="Solution validation steps" className="flex w-56 flex-col gap-3 shrink-0">
           <Card>
             <CardContent className="p-3">
               <NavItems base={base} pathname={pathname} onNavigate={handleNavigate} />
@@ -186,13 +180,13 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   )
 }
 
-export default function SolutionRefLayout({ children }: { children: React.ReactNode }) {
+export default function ValidateLayout({ children }: { children: React.ReactNode }) {
   const params = useParams()
-  const solutionRef = params.solutionRef as string
+  const solutionId = Number(params.solutionId)
 
   return (
-    <SolutionProvider solutionRef={solutionRef}>
+    <SolutionValidationProvider solutionId={solutionId}>
       <LayoutContent>{children}</LayoutContent>
-    </SolutionProvider>
+    </SolutionValidationProvider>
   )
 }

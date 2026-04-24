@@ -12,7 +12,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog"
-import { useSolution, getAdjacentSteps } from "../context"
+import { useDiscovery, getAdjacentSteps } from "../context"
 import type { AnalysisToolType } from "@/types/solution"
 import { Search, ArrowLeft, ArrowRight, TreePine, HelpCircle, Users, CheckCircle2 } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
@@ -174,11 +174,11 @@ const DIALOG_CONTENT: Record<ToolKey, () => React.JSX.Element> = {
 
 const TOOL_ORDER: ToolKey[] = ["root-causes", "five-whys", "affected-groups"]
 
-export default function ChooseAnalysisPage() {
+export default function ChooseRefinementPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { solutionRef, problem, analysisToolType, setAnalysisToolType } = useSolution()
-  const { prevPath, nextPath } = getAdjacentSteps(pathname, solutionRef)
+  const { problem, analysisToolType, setAnalysisToolType } = useDiscovery()
+  const { prevPath, nextPath } = getAdjacentSteps(pathname)
   const [openTool, setOpenTool] = useState<ToolKey | null>(null)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const isNarrow = useContainerSize() === "narrow"

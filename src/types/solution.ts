@@ -1,3 +1,5 @@
+import type { ValidationStatus } from "@/types/idea"
+
 export type RootCause = {
   id: number
   description: string
@@ -20,19 +22,6 @@ export type ImprovementItem = {
   text: string
 }
 
-export type SolutionCandidate = {
-  id: number
-  title: string
-  description: string
-  inspirationSource: "" | "scamper" | "reverse" | "analogy" | "improve" | "freeform"
-  inspirationDetail: string
-  feasibility: number | null // 1-5
-  impact: number | null // 1-5
-  cost: number | null // 1-5 (1=cheap, 5=expensive)
-  timeToImplement: number | null // 1-5 (1=fast, 5=slow)
-  notes: string
-}
-
 export type ImprovementResponses = {
   coreFunctionality: ImprovementItem[]
   easeOfUse: ImprovementItem[]
@@ -53,33 +42,51 @@ export type ImprovementResponses = {
 
 export type AnalysisToolType = "" | "root-causes" | "five-whys" | "affected-groups"
 export type DiscoveryToolType = "" | "scamper" | "reverse" | "analogy" | "improve"
-export type SolutionStatus = "not_started" | "in_progress" | "complete"
-export type SolutionVerdict = "none" | "pursue" | "revisit" | "abandon"
+export type InspirationSource = "" | "scamper" | "reverse" | "analogy" | "improve" | "freeform"
 
-export type Solution = {
+/**
+ * Per-problem refinement and discovery scratchpad. One workspace per problem.
+ * Holds the tool choices and intermediate data generated during the discovery wizard.
+ */
+export type SolutionWorkspace = {
   id: number
   problemId: number
   createdAt: string
   editedAt: string
-  status: SolutionStatus
   analysisToolType: AnalysisToolType
   discoveryToolType: DiscoveryToolType
-  // Step 1: Root Cause Analysis
   rootCauses: RootCause[]
   fiveWhyChains: FiveWhyChain[]
   affectedGroups: AffectedGroup[]
   rootCauseNotes: string
-  // Step 2: Solution Discovery
   reverseBrainstorm: ImprovementItem[]
   reverseInversion: ImprovementItem[]
   analogyDomain: string
   analogyInsight: string
   improvementResponses: ImprovementResponses
-  candidates: SolutionCandidate[]
-  // Step 3: Solution Analysis
-  selectedCandidateId: number | null
-  analysisNotes: string
-  verdict: SolutionVerdict
+}
+
+/**
+ * A single proposed solution. Rows in the Solution Bank are instances of this type.
+ * Each solution is tied to a problem and can be independently validated.
+ */
+export type Solution = {
+  id: number
+  problemId: number
+  workspaceId: number | null
+  createdAt: string
+  editedAt: string
+  title: string
+  description: string
+  inspirationSource: InspirationSource
+  inspirationDetail: string
+  feasibility: number | null // 1-5
+  impact: number | null // 1-5
+  cost: number | null // 1-5 (1=cheap, 5=expensive)
+  timeToImplement: number | null // 1-5 (1=fast, 5=slow)
+  validationNotes: string
+  validationStatus: ValidationStatus
+  validationReason: string
 }
 
 export const DEFAULT_IMPROVEMENT: ImprovementResponses = {
@@ -100,8 +107,7 @@ export const DEFAULT_IMPROVEMENT: ImprovementResponses = {
   postPurchase: [],
 }
 
-export const DEFAULT_SOLUTION_FIELDS: Omit<Solution, "id" | "problemId" | "createdAt" | "editedAt"> = {
-  status: "not_started",
+export const DEFAULT_WORKSPACE_FIELDS: Omit<SolutionWorkspace, "id" | "problemId" | "createdAt" | "editedAt"> = {
   analysisToolType: "",
   discoveryToolType: "",
   rootCauses: [],
@@ -113,8 +119,18 @@ export const DEFAULT_SOLUTION_FIELDS: Omit<Solution, "id" | "problemId" | "creat
   analogyDomain: "",
   analogyInsight: "",
   improvementResponses: DEFAULT_IMPROVEMENT,
-  candidates: [],
-  selectedCandidateId: null,
-  analysisNotes: "",
-  verdict: "none",
+}
+
+export const DEFAULT_SOLUTION_FIELDS: Omit<Solution, "id" | "problemId" | "workspaceId" | "createdAt" | "editedAt"> = {
+  title: "",
+  description: "",
+  inspirationSource: "",
+  inspirationDetail: "",
+  feasibility: null,
+  impact: null,
+  cost: null,
+  timeToImplement: null,
+  validationNotes: "",
+  validationStatus: "unvalidated",
+  validationReason: "",
 }

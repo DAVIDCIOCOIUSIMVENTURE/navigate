@@ -9,12 +9,12 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
-import { useSolution, getAdjacentSteps } from "../context"
+import { useDiscovery, getAdjacentSteps } from "../context"
 import { SCAMPER_CASE_STUDIES } from "./case-studies"
 import { IMPROVE_CASE_STUDIES } from "./improve-case-studies"
 import { REVERSE_CASE_STUDIES } from "./reverse-case-studies"
 import { ANALOGY_CASE_STUDIES } from "./analogy-case-studies"
-import type { ImprovementResponses, SolutionCandidate } from "@/types/solution"
+import type { ImprovementResponses, Solution } from "@/types/solution"
 import {
   Shuffle, RotateCcw, Globe, TrendingUp, Plus, Trash2, Pencil, Check, X,
   ArrowLeft, ArrowRight, Wind, Tv, Armchair, Package, Smartphone, Coffee,
@@ -25,7 +25,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 
-/* ── SCAMPER Form ── */
+/* -- SCAMPER Form -- */
 
 const SCAMPER_LETTER_COLORS: Record<string, string> = {
   S: "bg-red-500",
@@ -52,9 +52,7 @@ type ScamperPrompt = {
 
 const SCAMPER_PROMPTS: ScamperPrompt[] = [
   {
-    key: "substitute",
-    letter: "S",
-    title: "Substitute",
+    key: "substitute", letter: "S", title: "Substitute",
     prompt: "What components, materials, or processes could you swap out? What if you replaced part of the problem?",
     color: SCAMPER_LETTER_COLORS.S,
     sparkQuestions: [
@@ -69,9 +67,7 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
     },
   },
   {
-    key: "combine",
-    letter: "C",
-    title: "Combine",
+    key: "combine", letter: "C", title: "Combine",
     prompt: "Can you combine this problem with another? What if you merged two existing solutions?",
     color: SCAMPER_LETTER_COLORS.C,
     sparkQuestions: [
@@ -86,9 +82,7 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
     },
   },
   {
-    key: "adapt",
-    letter: "A",
-    title: "Adapt",
+    key: "adapt", letter: "A", title: "Adapt",
     prompt: "What else is like this? What ideas from other industries or domains could you adapt?",
     color: SCAMPER_LETTER_COLORS.A,
     sparkQuestions: [
@@ -103,9 +97,7 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
     },
   },
   {
-    key: "modify",
-    letter: "M",
-    title: "Modify",
+    key: "modify", letter: "M", title: "Modify",
     prompt: "What if you enlarged, shrunk, or changed the shape of the problem? What can be modified?",
     color: SCAMPER_LETTER_COLORS.M,
     sparkQuestions: [
@@ -120,9 +112,7 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
     },
   },
   {
-    key: "putToOtherUse",
-    letter: "P",
-    title: "Put to Other Use",
+    key: "putToOtherUse", letter: "P", title: "Put to Other Use",
     prompt: "Can this problem (or its elements) be used for something else? What new purposes could emerge?",
     color: SCAMPER_LETTER_COLORS.P,
     sparkQuestions: [
@@ -137,9 +127,7 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
     },
   },
   {
-    key: "eliminate",
-    letter: "E",
-    title: "Eliminate",
+    key: "eliminate", letter: "E", title: "Eliminate",
     prompt: "What can you remove or simplify? What would happen if you eliminated a step entirely?",
     color: SCAMPER_LETTER_COLORS.E,
     sparkQuestions: [
@@ -150,9 +138,7 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
     inputPlaceholder: "e.g. Remove the email field from signup...",
   },
   {
-    key: "reverse",
-    letter: "R",
-    title: "Reverse",
+    key: "reverse", letter: "R", title: "Reverse",
     prompt: "What if you reversed the process? What if you did the opposite of what's expected?",
     color: SCAMPER_LETTER_COLORS.R,
     sparkQuestions: [
@@ -184,7 +170,7 @@ function ScamperDimensionContent({
   dimensionKey: ScamperKey
   placeholder?: string
 }) {
-  const { candidates, setCandidates } = useSolution()
+  const { candidates, addCandidate, updateCandidate, removeCandidate } = useDiscovery()
 
   const items = candidates.filter(
     (c) => c.inspirationSource === "scamper" && c.inspirationDetail === dimensionKey
@@ -201,33 +187,15 @@ function ScamperDimensionContent({
   const addItem = () => {
     const text = draft.trim()
     if (text) {
-      const id = candidates.length > 0 ? Math.max(...candidates.map((c) => c.id)) + 1 : 1
-      const newCandidate: SolutionCandidate = {
-        id,
-        title: text,
-        description: "",
-        inspirationSource: "scamper",
-        inspirationDetail: dimensionKey,
-        feasibility: null,
-        impact: null,
-        cost: null,
-        timeToImplement: null,
-        notes: "",
-      }
-      setCandidates([...candidates, newCandidate])
+      addCandidate({ title: text, inspirationSource: "scamper", inspirationDetail: dimensionKey })
     }
     setDraft("")
     setAdding(false)
   }
 
-  const removeItem = (id: number) => {
-    setCandidates(candidates.filter((c) => c.id !== id))
-  }
-
   const updateItem = (id: number, text: string) => {
-    const next = candidates.map((c) => (c.id === id ? { ...c, title: text } : c))
     if (debounceRef.current) clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(() => setCandidates(next), 500)
+    debounceRef.current = setTimeout(() => updateCandidate(id, { title: text }), 500)
   }
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -248,7 +216,7 @@ function ScamperDimensionContent({
             size="icon"
             variant="ghost"
             className="shrink-0 h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
-            onClick={() => removeItem(item.id)}
+            onClick={() => removeCandidate(item.id)}
           >
             <Trash2 className="h-3.5 w-3.5" />
           </Button>
@@ -423,7 +391,7 @@ function ScamperForm() {
   )
 }
 
-/* ── Reverse Brainstorming Form ── */
+/* -- Reverse Brainstorming Form -- */
 
 function ReverseItemList({
   items,
@@ -548,8 +516,8 @@ function ReverseBrainstormForm() {
     reverseInversion,
     setReverseInversion,
     candidates,
-    setCandidates,
-  } = useSolution()
+    addCandidate,
+  } = useDiscovery()
 
   const brainstormItems = Array.isArray(reverseBrainstorm) ? reverseBrainstorm : []
   const inversionItems = Array.isArray(reverseInversion) ? reverseInversion : []
@@ -563,20 +531,7 @@ function ReverseBrainstormForm() {
     const text = item.text.trim()
     if (!text) return
     if (isInversionAdded(item.id)) return
-    const id = candidates.length > 0 ? Math.max(...candidates.map((c) => c.id)) + 1 : 1
-    const newCandidate: SolutionCandidate = {
-      id,
-      title: text,
-      description: "",
-      inspirationSource: "reverse",
-      inspirationDetail: String(item.id),
-      feasibility: null,
-      impact: null,
-      cost: null,
-      timeToImplement: null,
-      notes: "",
-    }
-    setCandidates([...candidates, newCandidate])
+    addCandidate({ title: text, inspirationSource: "reverse", inspirationDetail: String(item.id) })
   }
 
   return (
@@ -607,21 +562,19 @@ function ReverseBrainstormForm() {
   )
 }
 
-/* ── Analogy Form ── */
+/* -- Analogy Form -- */
 
 function AnalogyForm() {
-  const { analogyDomain, setAnalogyDomain, analogyInsight, setAnalogyInsight, candidates, setCandidates } = useSolution()
+  const { analogyDomain, setAnalogyDomain, analogyInsight, setAnalogyInsight, addCandidate } = useDiscovery()
 
-  const addCandidate = () => {
+  const handleAddCandidate = () => {
     const text = analogyInsight.trim()
     if (!text) return
-    const id = candidates.length > 0 ? Math.max(...candidates.map((c) => c.id)) + 1 : 1
-    const newCandidate: SolutionCandidate = {
-      id, title: `Analogy from ${analogyDomain || "another domain"}`, description: text,
-      inspirationSource: "analogy", inspirationDetail: analogyDomain,
-      feasibility: null, impact: null, cost: null, timeToImplement: null, notes: "",
-    }
-    setCandidates([...candidates, newCandidate])
+    addCandidate({
+      title: `Analogy from ${analogyDomain || "another domain"}`,
+      inspirationSource: "analogy",
+      inspirationDetail: analogyDomain,
+    })
   }
 
   return (
@@ -656,7 +609,7 @@ function AnalogyForm() {
           variant="on-primary"
           className="self-end gap-1"
           disabled={!analogyInsight.trim()}
-          onClick={addCandidate}
+          onClick={handleAddCandidate}
         >
           <Plus className="h-4 w-4" />Add as Candidate
         </Button>
@@ -665,7 +618,7 @@ function AnalogyForm() {
   )
 }
 
-/* ── Improvement Form ── */
+/* -- Improvement Form -- */
 
 type ImprovementGroup = {
   group: string
@@ -731,7 +684,7 @@ function ImprovementDimension({
   prompt: string
   example: string
 }) {
-  const { candidates, setCandidates } = useSolution()
+  const { candidates, addCandidate, updateCandidate, removeCandidate } = useDiscovery()
 
   const items = candidates.filter(
     (c) => c.inspirationSource === "improve" && c.inspirationDetail === dimensionKey
@@ -748,33 +701,15 @@ function ImprovementDimension({
   const addItem = () => {
     const text = draft.trim()
     if (text) {
-      const id = candidates.length > 0 ? Math.max(...candidates.map((c) => c.id)) + 1 : 1
-      const newCandidate: SolutionCandidate = {
-        id,
-        title: text,
-        description: "",
-        inspirationSource: "improve",
-        inspirationDetail: dimensionKey,
-        feasibility: null,
-        impact: null,
-        cost: null,
-        timeToImplement: null,
-        notes: "",
-      }
-      setCandidates([...candidates, newCandidate])
+      addCandidate({ title: text, inspirationSource: "improve", inspirationDetail: dimensionKey })
     }
     setDraft("")
     setAdding(false)
   }
 
-  const removeItem = (id: number) => {
-    setCandidates(candidates.filter((c) => c.id !== id))
-  }
-
   const updateItem = (id: number, text: string) => {
-    const next = candidates.map((c) => (c.id === id ? { ...c, title: text } : c))
     if (debounceRef.current) clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(() => setCandidates(next), 500)
+    debounceRef.current = setTimeout(() => updateCandidate(id, { title: text }), 500)
   }
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -799,7 +734,7 @@ function ImprovementDimension({
             size="icon"
             variant="ghost"
             className="shrink-0 h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
-            onClick={() => removeItem(item.id)}
+            onClick={() => removeCandidate(item.id)}
           >
             <Trash2 className="h-3.5 w-3.5" />
           </Button>
@@ -932,7 +867,7 @@ function ImprovementForm() {
   )
 }
 
-/* ── Candidates Section ── */
+/* -- Candidates Section -- */
 
 const SOURCE_LABELS: Record<string, string> = {
   scamper: "SCAMPER",
@@ -943,7 +878,7 @@ const SOURCE_LABELS: Record<string, string> = {
 }
 
 function CandidatesSection() {
-  const { candidates, setCandidates } = useSolution()
+  const { candidates, addCandidate, updateCandidate, removeCandidate } = useDiscovery()
 
   const [addingNew, setAddingNew] = useState(false)
   const [editingId, setEditingId] = useState<number | null>(null)
@@ -957,18 +892,16 @@ function CandidatesSection() {
   }
 
   const confirmAdd = () => {
-    if (!draftTitle.trim()) return
-    const id = candidates.length > 0 ? Math.max(...candidates.map((c) => c.id)) + 1 : 1
-    const newCandidate: SolutionCandidate = {
-      id, title: draftTitle.trim(), description: draftDesc.trim(),
-      inspirationSource: "freeform", inspirationDetail: "",
-      feasibility: null, impact: null, cost: null, timeToImplement: null, notes: "",
+    const title = draftTitle.trim()
+    if (!title) return
+    const created = addCandidate({ title, inspirationSource: "freeform", inspirationDetail: "" })
+    if (created && draftDesc.trim()) {
+      updateCandidate(created.id, { description: draftDesc.trim() })
     }
-    setCandidates([...candidates, newCandidate])
     setAddingNew(false)
   }
 
-  const startEdit = (c: SolutionCandidate) => {
+  const startEdit = (c: Solution) => {
     setEditingId(c.id)
     setDraftTitle(c.title)
     setDraftDesc(c.description)
@@ -976,16 +909,8 @@ function CandidatesSection() {
 
   const confirmEdit = () => {
     if (editingId === null) return
-    setCandidates(
-      candidates.map((c) =>
-        c.id === editingId ? { ...c, title: draftTitle.trim(), description: draftDesc.trim() } : c
-      )
-    )
+    updateCandidate(editingId, { title: draftTitle.trim(), description: draftDesc.trim() })
     setEditingId(null)
-  }
-
-  const removeCandidate = (id: number) => {
-    setCandidates(candidates.filter((c) => c.id !== id))
   }
 
   return (
@@ -1103,7 +1028,7 @@ function CandidatesSection() {
   )
 }
 
-/* ── SCAMPER Case Studies ── */
+/* -- SCAMPER Case Studies -- */
 
 const CASE_STUDY_ICONS: Record<string, LucideIcon> = {
   "Dyson": Wind,
@@ -1165,7 +1090,7 @@ function ScamperCaseStudies() {
   )
 }
 
-/* ── Improve Case Studies ── */
+/* -- Improve Case Studies -- */
 
 const IMPROVE_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
   "Amazon Prime": Package,
@@ -1221,7 +1146,7 @@ function ImproveCaseStudies() {
   )
 }
 
-/* ── Reverse Brainstorming Case Studies ── */
+/* -- Reverse Brainstorming Case Studies -- */
 
 const REVERSE_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
   "Airbnb": Home,
@@ -1272,7 +1197,7 @@ function ReverseCaseStudies() {
                 <ul className="mt-2 flex flex-col gap-1.5">
                   {cs.flippedIdeas.map((idea, i) => (
                     <li key={i} className="text-md text-white flex gap-1.5">
-                      <span className="text-white/50">→</span>
+                      <span className="text-white/50">&rarr;</span>
                       <span>{idea}</span>
                     </li>
                   ))}
@@ -1290,12 +1215,12 @@ function ReverseCaseStudies() {
   )
 }
 
-/* ── Analogy Case Studies ── */
+/* -- Analogy Case Studies -- */
 
 const ANALOGY_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
   "McDonald's": Utensils,
-  "Formula 1 Pit Stops → NHS Neonatal Transfers": Flag,
-  "George de Mestral → Velcro": Leaf,
+  "Formula 1 Pit Stops > NHS Neonatal Transfers": Flag,
+  "George de Mestral > Velcro": Leaf,
 }
 
 function AnalogyCaseStudies() {
@@ -1343,7 +1268,7 @@ function AnalogyCaseStudies() {
   )
 }
 
-/* ── Main Page ── */
+/* -- Main Page -- */
 
 type ToolHint = { icon: LucideIcon; title: string; subtitle: string; bg: string }
 
@@ -1351,10 +1276,10 @@ const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo:
   scamper: {
     title: "SCAMPER Method",
     description: "SCAMPER is a creative thinking technique that prompts you to look at a problem from seven angles: Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate, and Reverse. Each prompt sparks ideas you wouldn't reach through normal brainstorming.",
-    whatYouDo: "Work through each of the <strong>7 SCAMPER prompts</strong> below. You don't need to fill in every one, but try at least 3–4. When you find a promising idea, click <strong>Add as Candidate</strong> to save it.",
+    whatYouDo: "Work through each of the <strong>7 SCAMPER prompts</strong> below. You don't need to fill in every one, but try at least 3-4. When you find a promising idea, click <strong>Add as Candidate</strong> to save it.",
     hints: [
       { icon: Shuffle, title: "7 creative angles", subtitle: "Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate, Reverse", bg: "bg-blue-500" },
-      { icon: Plus, title: "Save the best ideas", subtitle: "Click \"Add as Candidate\" to promote ideas for scoring later", bg: "bg-amber-500" },
+      { icon: Plus, title: "Save the best ideas", subtitle: "Click \"Add as Candidate\" to promote ideas to your Solution Bank", bg: "bg-amber-500" },
       { icon: Shuffle, title: "Quantity over quality", subtitle: "Generate lots of ideas first. You'll refine them later", bg: "bg-emerald-500" },
     ],
   },
@@ -1393,10 +1318,18 @@ const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo:
 export default function DiscoverPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { solutionRef, problem, discoveryToolType } = useSolution()
-  const { prevPath, nextPath } = getAdjacentSteps(pathname, solutionRef)
+  const { problemId, problem, discoveryToolType } = useDiscovery()
+  const { prevPath } = getAdjacentSteps(pathname)
   const containerSize = useContainerSize()
   const isNarrow = containerSize === "narrow"
+
+  useEffect(() => {
+    if (problemId == null) {
+      router.replace("/solutions/discover/select-problem")
+    }
+  }, [problemId, router])
+
+  if (problemId == null) return null
 
   const toolInfo = discoveryToolType ? TOOL_INFO[discoveryToolType] : null
 
@@ -1581,7 +1514,7 @@ export default function DiscoverPage() {
         {!discoveryToolType && (
           <div className="flex flex-col items-center justify-center gap-3 py-8 rounded-lg border border-dashed">
             <p className="text-sm text-muted-foreground">No discovery technique selected.</p>
-            <Button variant="outline" onClick={() => router.push(`/solutions/${solutionRef}/choose-discovery`)}>
+            <Button variant="outline" onClick={() => router.push("/solutions/discover/choose-discovery")}>
               <ArrowLeft className="h-4 w-4 mr-2" />Choose a Discovery Technique
             </Button>
           </div>
@@ -1593,11 +1526,9 @@ export default function DiscoverPage() {
               <ArrowLeft className="h-4 w-4 mr-2" />Previous
             </Button>
           ) : <div />}
-          {nextPath && (
-            <Button onClick={() => router.push(nextPath)}>
-              Next<ArrowRight className="h-4 w-4 ml-2" />
-            </Button>
-          )}
+          <Button onClick={() => router.push("/solutions")}>
+            Finish<ArrowRight className="h-4 w-4 ml-2" />
+          </Button>
         </div>
       </CardContent>
     </Card>

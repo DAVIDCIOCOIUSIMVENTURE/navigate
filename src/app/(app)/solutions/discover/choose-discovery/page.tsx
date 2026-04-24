@@ -12,7 +12,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog"
-import { useSolution, getAdjacentSteps } from "../context"
+import { useDiscovery, getAdjacentSteps } from "../context"
 import type { DiscoveryToolType } from "@/types/solution"
 import { Shuffle, ArrowLeft, ArrowRight, Lightbulb, RotateCcw, GitCompare, Wrench } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
@@ -85,7 +85,7 @@ const ANALOGY_CASES = [
     title: "Software Deployment Risk",
     problem: "Releases frequently cause outages",
     domain: "Aviation",
-    insight: "Airlines use pre-flight checklists and staged procedures (taxi, hold, clear for takeoff). Teams adopted deployment checklists with staged rollouts (canary → 10% → 50% → 100%) with automatic rollback triggers.",
+    insight: "Airlines use pre-flight checklists and staged procedures (taxi, hold, clear for takeoff). Teams adopted deployment checklists with staged rollouts (canary, 10%, 50%, 100%) with automatic rollback triggers.",
   },
 ]
 
@@ -243,8 +243,8 @@ const TOOL_ORDER: ToolKey[] = ["scamper", "reverse", "analogy", "improve"]
 export default function ChooseDiscoveryPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { solutionRef, problem, setDiscoveryToolType } = useSolution()
-  const { prevPath, nextPath } = getAdjacentSteps(pathname, solutionRef)
+  const { problem, setDiscoveryToolType } = useDiscovery()
+  const { prevPath, nextPath } = getAdjacentSteps(pathname)
   const [openTool, setOpenTool] = useState<ToolKey | null>(null)
   const isNarrow = useContainerSize() === "narrow"
 

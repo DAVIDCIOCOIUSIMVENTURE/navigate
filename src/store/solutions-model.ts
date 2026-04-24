@@ -1,6 +1,6 @@
 import { createModel } from "@rematch/core"
 import type { RootModel } from "."
-import type { Solution, SolutionStatus, SolutionVerdict, RootCause, FiveWhyChain, AffectedGroup, SolutionCandidate, ImprovementResponses } from "@/types/solution"
+import type { Solution, InspirationSource } from "@/types/solution"
 import { DEFAULT_SOLUTION_FIELDS } from "@/types/solution"
 
 const STORAGE_KEY = "navigate-solutions"
@@ -8,24 +8,29 @@ const STORAGE_KEY = "navigate-solutions"
 export type SolutionPatch = Partial<
   Pick<
     Solution,
-    | "status"
-    | "analysisToolType"
-    | "discoveryToolType"
-    | "rootCauses"
-    | "fiveWhyChains"
-    | "affectedGroups"
-    | "rootCauseNotes"
-    | "reverseBrainstorm"
-    | "reverseInversion"
-    | "analogyDomain"
-    | "analogyInsight"
-    | "improvementResponses"
-    | "candidates"
-    | "selectedCandidateId"
-    | "analysisNotes"
-    | "verdict"
+    | "title"
+    | "description"
+    | "inspirationSource"
+    | "inspirationDetail"
+    | "feasibility"
+    | "impact"
+    | "cost"
+    | "timeToImplement"
+    | "validationNotes"
+    | "validationStatus"
+    | "validationReason"
+    | "workspaceId"
   >
 >
+
+export type SolutionCreateInput = {
+  problemId: number
+  workspaceId?: number | null
+  title?: string
+  description?: string
+  inspirationSource?: InspirationSource
+  inspirationDetail?: string
+}
 
 interface SolutionsState {
   solutions: Solution[]
@@ -98,15 +103,20 @@ export const solutions = createModel<RootModel>()({
       saveToStorage({ solutions: updated, nextId: rootState.solutions.nextId })
     },
 
-    create(problemId: number, rootState): Solution {
+    create(payload: SolutionCreateInput, rootState): Solution {
       const state = rootState.solutions
       const now = new Date().toISOString()
       const newSolution: Solution = {
         id: state.nextId,
-        problemId,
+        problemId: payload.problemId,
+        workspaceId: payload.workspaceId ?? null,
         createdAt: now,
         editedAt: now,
         ...DEFAULT_SOLUTION_FIELDS,
+        title: payload.title ?? DEFAULT_SOLUTION_FIELDS.title,
+        description: payload.description ?? DEFAULT_SOLUTION_FIELDS.description,
+        inspirationSource: payload.inspirationSource ?? DEFAULT_SOLUTION_FIELDS.inspirationSource,
+        inspirationDetail: payload.inspirationDetail ?? DEFAULT_SOLUTION_FIELDS.inspirationDetail,
       }
       dispatch.solutions.addSolution(newSolution)
       const nextState: SolutionsState = {
@@ -125,5 +135,4 @@ export const solutions = createModel<RootModel>()({
   }),
 })
 
-// Re-export types used by consumers
-export type { Solution, SolutionStatus, SolutionVerdict, RootCause, FiveWhyChain, AffectedGroup, SolutionCandidate, ImprovementResponses }
+export type { Solution }
