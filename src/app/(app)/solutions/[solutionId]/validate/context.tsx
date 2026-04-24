@@ -100,6 +100,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { label: "Cost", path: "cost", section: null },
   { label: "Time to Implement", path: "time-to-implement", section: null },
   { label: "Verdict", path: "verdict", section: "Decide" },
+  { label: "Summary", path: "summary", section: null },
 ] as const
 
 const STEP_PATHS = NAV_ITEMS.map((item) => item.path)

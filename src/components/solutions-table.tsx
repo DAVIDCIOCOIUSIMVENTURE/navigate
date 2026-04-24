@@ -24,6 +24,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import {
+  Pencil,
   Trash2,
   ArrowRight,
   CheckCircle2,
@@ -37,6 +38,7 @@ import {
   ArrowUpDown,
 } from "lucide-react"
 import type { Solution } from "@/store/solutions-model"
+import { EditSolutionDialog } from "@/components/edit-solution-dialog"
 import { cn } from "@/lib/utils"
 import type { ValidationStatus } from "@/types/idea"
 
@@ -71,13 +73,14 @@ const STATUS_ORDER: Record<ValidationStatus, number> = {
 interface SolutionsTableProps {
   solutions: Solution[]
   showStatus?: boolean
-  showDelete?: boolean
+  showEditDelete?: boolean
 }
 
-export function SolutionsTable({ solutions, showStatus = true, showDelete = true }: SolutionsTableProps) {
+export function SolutionsTable({ solutions, showStatus = true, showEditDelete = true }: SolutionsTableProps) {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const problems = useSelector((state: RootState) => state.problems.problems)
+  const [editingSolution, setEditingSolution] = useState<Solution | null>(null)
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<"all" | ValidationStatus>("all")
   const [sortKey, setSortKey] = useState<SortKey>("index")
@@ -290,22 +293,34 @@ export function SolutionsTable({ solutions, showStatus = true, showDelete = true
                     )}
                     <TableCell>
                       <div className="flex items-center gap-1">
-                        {showDelete && (
-                          <ConfirmDialog
-                            trigger={
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-7 text-muted-foreground hover:text-destructive"
-                                aria-label="Delete solution"
-                              >
-                                <Trash2 className="h-3.5 w-3.5" />
-                                <span className="hidden md:inline ml-1">Delete</span>
-                              </Button>
-                            }
-                            description="This will permanently delete this solution and any associated validation data."
-                            onConfirm={() => dispatch.solutions.delete(solution.id)}
-                          />
+                        {showEditDelete && (
+                          <>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 text-muted-foreground"
+                              onClick={() => setEditingSolution(solution)}
+                              aria-label="Edit solution"
+                            >
+                              <Pencil className="h-3.5 w-3.5" />
+                              <span className="hidden md:inline ml-1">Edit</span>
+                            </Button>
+                            <ConfirmDialog
+                              trigger={
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-7 text-muted-foreground hover:text-destructive"
+                                  aria-label="Delete solution"
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                  <span className="hidden md:inline ml-1">Delete</span>
+                                </Button>
+                              }
+                              description="This will permanently delete this solution and any associated validation data."
+                              onConfirm={() => dispatch.solutions.delete(solution.id)}
+                            />
+                          </>
                         )}
                         <Button
                           size="sm"
@@ -325,6 +340,12 @@ export function SolutionsTable({ solutions, showStatus = true, showDelete = true
           </TableBody>
         </Table>
       </CardContent>
+      {showEditDelete && (
+        <EditSolutionDialog
+          solution={editingSolution}
+          onClose={() => setEditingSolution(null)}
+        />
+      )}
     </Card>
   )
 }

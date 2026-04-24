@@ -8,7 +8,7 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/component
 import { ProblemSummaryDialog, type ProblemSummaryData } from "@/components/problem-summary-dialog"
 import { SolutionValidationProvider, useSolutionValidation, NAV_ITEMS } from "./context"
 import {
-  ShieldCheck, BookOpen, Gauge, Target, Coins, Clock, CheckCircle2,
+  ShieldCheck, BookOpen, Gauge, Target, Coins, Clock, CheckCircle2, LayoutTemplate,
   FileText, ChevronDown, Eye,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
@@ -21,6 +21,7 @@ const NAV_ICONS: Record<string, LucideIcon> = {
   cost: Coins,
   "time-to-implement": Clock,
   verdict: CheckCircle2,
+  summary: LayoutTemplate,
 }
 
 function NavItems({

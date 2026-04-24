@@ -8,7 +8,7 @@ const IMPACT_CONTENT: MetricContent = {
   icon: Target,
   title: "Impact",
   summary: "Impact is about how much value the solution delivers: to the customer, to the business, or to both. A solution that solves a real pain for many people, or a big pain for a smaller group, is high impact. A nice-to-have is not.",
-  accent: "bg-emerald-600",
+  accent: "bg-primary",
   guidance: [
     "Picture the customer after adopting the solution: what changes in their day, week, or month?",
     "Count who benefits. A solution that helps every customer is usually higher impact than one that helps a niche.",

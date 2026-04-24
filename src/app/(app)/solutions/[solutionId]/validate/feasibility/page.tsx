@@ -8,7 +8,7 @@ const FEASIBILITY_CONTENT: MetricContent = {
   icon: Gauge,
   title: "Feasibility",
   summary: "Feasibility is about whether you can actually build this solution with the resources, skills, and technology available to you. It's not about whether the idea is good; it's about whether you can realistically ship it.",
-  accent: "bg-blue-600",
+  accent: "bg-primary",
   guidance: [
     "Audit what you already have: team skills, existing tech, available tooling, partnerships.",
     "List the biggest unknowns. The more fundamental unknowns you have, the lower the score.",

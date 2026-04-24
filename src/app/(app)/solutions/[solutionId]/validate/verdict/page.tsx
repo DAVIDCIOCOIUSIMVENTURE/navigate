@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import {
-  ArrowLeft, CheckCircle2, XCircle, HelpCircle, Gauge, Target, Coins, Clock,
+  ArrowLeft, ArrowRight, CheckCircle2, XCircle, HelpCircle, Gauge, Target, Coins, Clock,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -61,7 +61,7 @@ export default function VerdictPage() {
     validationStatus, setValidationStatus,
     validationReason, setValidationReason,
   } = useSolutionValidation()
-  const { prevPath } = getAdjacentSteps(pathname, solutionId)
+  const { prevPath, nextPath } = getAdjacentSteps(pathname, solutionId)
 
   const currentKey = (["valid", "unsure", "invalid"] as const).includes(validationStatus as VerdictKey)
     ? (validationStatus as VerdictKey)
@@ -156,7 +156,13 @@ export default function VerdictPage() {
               <ArrowLeft className="h-4 w-4 mr-2" />Previous
             </Button>
           ) : <div />}
-          <Button onClick={() => router.push("/solutions")}>Finish</Button>
+          {nextPath ? (
+            <Button onClick={() => router.push(nextPath)}>
+              Next<ArrowRight className="h-4 w-4 ml-2" />
+            </Button>
+          ) : (
+            <Button onClick={() => router.push("/solutions")}>Finish</Button>
+          )}
         </div>
       </CardContent>
     </Card>

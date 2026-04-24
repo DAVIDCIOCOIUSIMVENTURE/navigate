@@ -1319,7 +1319,7 @@ export default function DiscoverPage() {
   const router = useRouter()
   const pathname = usePathname()
   const { problemId, problem, discoveryToolType } = useDiscovery()
-  const { prevPath } = getAdjacentSteps(pathname)
+  const { prevPath, nextPath } = getAdjacentSteps(pathname)
   const containerSize = useContainerSize()
   const isNarrow = containerSize === "narrow"
 
@@ -1526,9 +1526,15 @@ export default function DiscoverPage() {
               <ArrowLeft className="h-4 w-4 mr-2" />Previous
             </Button>
           ) : <div />}
-          <Button onClick={() => router.push("/solutions")}>
-            Finish<ArrowRight className="h-4 w-4 ml-2" />
-          </Button>
+          {nextPath ? (
+            <Button onClick={() => router.push(nextPath)}>
+              Next<ArrowRight className="h-4 w-4 ml-2" />
+            </Button>
+          ) : (
+            <Button onClick={() => router.push("/solutions")}>
+              Finish<ArrowRight className="h-4 w-4 ml-2" />
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>

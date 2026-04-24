@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
 import { DiscoveryProvider, useDiscovery, NAV_ITEMS } from "./context"
 import {
-  Lightbulb, BookOpen, Target, Search, Shuffle,
+  Lightbulb, BookOpen, Target, Search, Shuffle, LayoutTemplate,
   FileText, ChevronDown, Lock,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
@@ -20,6 +20,7 @@ const NAV_ICONS: Record<string, LucideIcon> = {
   refine: Search,
   "choose-discovery": Shuffle,
   discover: Lightbulb,
+  summary: LayoutTemplate,
 }
 
 const LOCKED_PATHS = new Set([
@@ -27,6 +28,7 @@ const LOCKED_PATHS = new Set([
   "refine",
   "choose-discovery",
   "discover",
+  "summary",
 ])
 
 function NavItems({

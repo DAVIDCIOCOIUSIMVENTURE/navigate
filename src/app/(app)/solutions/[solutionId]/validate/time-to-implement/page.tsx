@@ -8,7 +8,7 @@ const TIME_CONTENT: MetricContent = {
   icon: Clock,
   title: "Time to Implement",
   summary: "Time to implement is how long it will take to get this solution from decision to delivery, including design, build, test, and launch. A higher score means it takes longer. Think about calendar time, not just effort time.",
-  accent: "bg-purple-600",
+  accent: "bg-primary",
   guidance: [
     "Break the work into phases: design, build, test, launch. Estimate calendar time for each.",
     "Account for dependencies: other teams, vendors, approvals, or data that must come together.",

@@ -216,6 +216,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { label: "Refine Your Problem", path: "refine", section: null },
   { label: "Choose Your Discovery Method", path: "choose-discovery", section: "Discover" },
   { label: "Discover Your Solution", path: "discover", section: null },
+  { label: "Summary", path: "summary", section: "Review" },
 ] as const
 
 const STEP_PATHS = NAV_ITEMS.map((item) => item.path)
@@ -235,4 +236,5 @@ export const STEPS_REQUIRING_PROBLEM = new Set([
   "refine",
   "choose-discovery",
   "discover",
+  "summary",
 ])

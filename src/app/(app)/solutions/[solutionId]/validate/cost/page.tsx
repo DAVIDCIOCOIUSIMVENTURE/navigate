@@ -8,7 +8,7 @@ const COST_CONTENT: MetricContent = {
   icon: Coins,
   title: "Cost",
   summary: "Cost captures what it will take to build, operate, and maintain the solution in money and equivalent resources. A higher score means higher cost, so a 1 is cheap and a 5 is expensive. Include engineering time, infrastructure, licensing, support, and ongoing maintenance.",
-  accent: "bg-amber-600",
+  accent: "bg-primary",
   guidance: [
     "Estimate build cost: engineering time, design, research, and any third-party tooling.",
     "Estimate run cost: infrastructure, support staff, licensing, and customer operations over the first year.",
