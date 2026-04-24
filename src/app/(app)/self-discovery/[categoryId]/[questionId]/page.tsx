@@ -44,7 +44,6 @@ import {
     type LucideIcon,
 } from "lucide-react"
 import { useRouter, useParams } from "next/navigation"
-import Image from "next/image"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { getSelfDiscoveryCategoryIcon } from "@/config/navigation"
 import { SELF_DISCOVERY_CATEGORIES, type SuggestionItem } from "@/data/selfDiscoveryData"
@@ -95,26 +94,6 @@ function getGroupIcon(label: string): LucideIcon {
     }
     return Folder
 }
-
-const SDGS = [
-    "No poverty",
-    "Zero hunger",
-    "Good health and well-being",
-    "Quality Education",
-    "Gender equality",
-    "Clean water and sanitation",
-    "Affordable and clean energy",
-    "Decent work and economic growth",
-    "Industry, innovation and infrastructure",
-    "Reduced inequalities",
-    "Sustainable cities and economies",
-    "Responsible consumption and production",
-    "Climate action",
-    "Life below water",
-    "Life on land",
-    "Peace, justice and strong institutions",
-    "Partnership for the goals"
-]
 
 function filterSuggestionItems(items: SuggestionItem[], query: string): SuggestionItem[] {
     if (!query) return items
@@ -206,16 +185,11 @@ export default function QuestionPage() {
     const questionId = params.questionId as string
     const size = useContainerSize()
     const roomy = size !== "narrow"
-    const sdgCols =
-        size === "narrow" ? "grid-cols-3"
-        : size === "medium" ? "grid-cols-4"
-        : "grid-cols-6"
 
     const category = SELF_DISCOVERY_CATEGORIES.find(c => c.url === categoryId) ?? null
     const question = category?.questions.find(q => q.url === questionId) ?? null
     const [answers, setAnswers] = useState<{ [key: string]: string }>({})
     const [problemTriggerToDelete, setProblemTriggerToDelete] = useState<ProblemTrigger | null>(null)
-    const [sdgToAdd, setSdgToAdd] = useState<{ questionUrl: string; sdg: string } | null>(null)
     const [mounted, setMounted] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")
     const deferredQuery = useDeferredValue(searchQuery)
@@ -294,31 +268,6 @@ export default function QuestionPage() {
         }
     }
 
-    const handleToggleSDG = (sdg: string) => {
-        if (!question) return
-
-        const existingTrigger = triggers.find(
-            trigger => trigger.questionUrl === question.url && trigger.title === sdg
-        )
-
-        if (existingTrigger) {
-            dispatch.problemTriggers.removeTrigger(existingTrigger.id)
-        } else {
-            const existingSDGs = triggers.filter(trigger => trigger.questionUrl === question.url)
-            if (existingSDGs.length >= 3) {
-                setSdgToAdd({ questionUrl: question.url, sdg })
-            } else {
-                dispatch.problemTriggers.addTrigger({ title: sdg, questionUrl: question.url })
-            }
-        }
-    }
-
-    const addSDG = (sdg: string) => {
-        if (!question) return
-        dispatch.problemTriggers.addTrigger({ title: sdg, questionUrl: question.url })
-        setSdgToAdd(null)
-    }
-
     const selectedSuggestionIds = new Set(triggers.filter(t => t.questionUrl === question?.url && t.suggestionId).map(t => t.suggestionId!))
 
     const handleToggleSuggestion = (suggestionId: string, label: string) => {
@@ -355,11 +304,9 @@ export default function QuestionPage() {
                                 <p className="text-md text-foreground">{category.description}</p>
                                 <p className="text-md text-foreground">{question.description}</p>
                                 <p className="text-md text-foreground">
-                                    {question.titleId === "sustainability-goals"
-                                        ? "Select up to 3 goals below that matter most to you."
-                                        : question.suggestions
-                                            ? "Select the items below that apply to you, or add your own."
-                                            : "Type your answer below and click Add."}
+                                    {question.suggestions
+                                        ? "Select the items below that apply to you, or add your own."
+                                        : "Type your answer below and click Add."}
                                 </p>
                             </div>
                             {questionTriggers.length > 0 && (
@@ -382,31 +329,7 @@ export default function QuestionPage() {
                                     ))}
                                 </div>
                             )}
-                            {question.titleId === "sustainability-goals" ? (
-                                <div className={cn("grid gap-2", sdgCols)}>
-                                    {Array.from({ length: 17 }, (_, i) => i + 1).map((num) => {
-                                        const sdg = SDGS[num - 1]
-                                        const isSelected = questionTriggers.some(trigger => trigger.title === sdg)
-                                        return (
-                                            <Button
-                                                key={num}
-                                                variant={isSelected ? "primary-outline" : "outline"}
-                                                className="relative aspect-square p-0 overflow-hidden h-auto"
-                                                onClick={() => handleToggleSDG(sdg)}
-                                            >
-                                                <Image
-                                                    src={`/sdgs/${num}.jpg`}
-                                                    alt={`Sustainable Development Goal ${num}: ${sdg}`}
-                                                    fill
-                                                    className={`rounded-lg object-cover transition-opacity ${isSelected ? 'opacity-100' : 'opacity-70'}`}
-                                                />
-                                                <div className={`absolute inset-0 flex items-center justify-center transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0'}`}>
-                                                </div>
-                                            </Button>
-                                        )
-                                    })}
-                                </div>
-                            ) : question.suggestions ? (
+                            {question.suggestions ? (
                                 <div className="flex flex-col gap-3 flex-1 min-h-0">
                                     <div className="flex gap-2 shrink-0">
                                         <Input
@@ -544,24 +467,6 @@ export default function QuestionPage() {
                 </DialogContent>
             </Dialog>
 
-            <Dialog open={!!sdgToAdd} onOpenChange={() => setSdgToAdd(null)}>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Add Another Goal?</DialogTitle>
-                        <DialogDescription>
-                            We recommend selecting up to 3 sustainability goals to focus your efforts. Are you sure you want to add another goal?
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        <Button variant="outline" onClick={() => setSdgToAdd(null)}>Cancel</Button>
-                        <Button
-                            onClick={() => sdgToAdd && addSDG(sdgToAdd.sdg)}
-                        >
-                            Add Goal
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
         </>
     )
 }

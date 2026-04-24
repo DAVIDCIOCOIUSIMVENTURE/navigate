@@ -863,6 +863,55 @@ export const SELF_DISCOVERY_CATEGORIES: SelfDiscoveryCategory[] = [
         titleId: "sustainability-goals",
         title: "What sustainability goals interest you?",
         description: "Select the UN Sustainable Development Goals that resonate with you.",
+        suggestions: [
+          {
+            id: "sg-people",
+            label: "People",
+            children: [
+              { id: "sg-no-poverty", label: "No Poverty" },
+              { id: "sg-zero-hunger", label: "Zero Hunger" },
+              { id: "sg-good-health", label: "Good Health & Well-Being" },
+              { id: "sg-quality-education", label: "Quality Education" },
+              { id: "sg-gender-equality", label: "Gender Equality" },
+            ],
+          },
+          {
+            id: "sg-planet",
+            label: "Planet",
+            children: [
+              { id: "sg-clean-water", label: "Clean Water & Sanitation" },
+              { id: "sg-responsible-consumption", label: "Responsible Consumption & Production" },
+              { id: "sg-climate-action", label: "Climate Action" },
+              { id: "sg-life-below-water", label: "Life Below Water" },
+              { id: "sg-life-on-land", label: "Life on Land" },
+            ],
+          },
+          {
+            id: "sg-prosperity",
+            label: "Prosperity",
+            children: [
+              { id: "sg-clean-energy", label: "Affordable & Clean Energy" },
+              { id: "sg-decent-work", label: "Decent Work & Economic Growth" },
+              { id: "sg-industry-innovation", label: "Industry, Innovation & Infrastructure" },
+              { id: "sg-reduced-inequalities", label: "Reduced Inequalities" },
+              { id: "sg-sustainable-cities", label: "Sustainable Cities & Communities" },
+            ],
+          },
+          {
+            id: "sg-peace",
+            label: "Peace",
+            children: [
+              { id: "sg-peace-justice", label: "Peace, Justice & Strong Institutions" },
+            ],
+          },
+          {
+            id: "sg-partnership",
+            label: "Partnership",
+            children: [
+              { id: "sg-partnerships", label: "Partnerships for the Goals" },
+            ],
+          },
+        ],
       },
       {
         url: "social-political-concerns",
