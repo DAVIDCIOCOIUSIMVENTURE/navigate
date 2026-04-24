@@ -192,6 +192,13 @@ export const FOUNDATIONS_SECTIONS: FoundationsSection[] = [
           "An extreme example: the technology was never validated, and product demos were staged. Everything downstream (funding, partnerships, regulatory risk) compounded on an unvalidated base, ending in criminal charges.",
         outcome: "went-wrong",
       },
+      {
+        id: "wework",
+        title: "WeWork",
+        summary:
+          "Scaled to a $47B valuation on the framing of a 'tech company' without validating the underlying unit economics of long-term real-estate leases funded by short-term member contracts. The 2019 IPO attempt exposed the numbers; the valuation collapsed by around $39B within weeks, and the CEO was removed.",
+        outcome: "went-wrong",
+      },
     ],
   },
   {
