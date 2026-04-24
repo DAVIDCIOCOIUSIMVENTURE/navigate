@@ -148,8 +148,8 @@ export const FOUNDATIONS_SECTIONS: FoundationsSection[] = [
         outcome: "went-wrong",
       },
       {
-        id: "new-coke",
-        title: "New Coke",
+        id: "new-coca-cola",
+        title: "New Coca Cola",
         summary:
           "Coca-Cola validated in blind taste tests that people preferred the new formula. They did not validate that customers wanted Coca-Cola to change. Withdrawn within 79 days.",
         outcome: "went-wrong",
