@@ -16,6 +16,7 @@ import {
   Users, MapPin, AlertTriangle,
   Repeat, DollarSign,
   Lightbulb, HelpCircle,
+  BookOpen, FlaskConical, Clock, Trophy, Sparkles,
 } from "lucide-react"
 
 // ---------- Shared presentation helpers ----------
@@ -125,8 +126,11 @@ const guidanceItems: GuidanceItem[] = [
           subtitle="Navigate is your guide through the innovation journey, from surfacing areas of personal interest to validating problems worth solving."
         />
         <GuidanceSection icon={Compass} iconBg="bg-primary" title="The journey">
-          <p>Navigate breaks the process into four connected stages. Work through them in order; later stages build on earlier ones.</p>
+          <p>Navigate breaks the process into four connected stages. Work through them in order; later stages build on earlier ones. An optional <Keyword>Why It Matters</Keyword> section sits before everything else for those who want the grounding before they start.</p>
           <div className="flex flex-col gap-3 pt-1">
+            <NumberedStep n={0} title="Why It Matters (optional)" accent="bg-muted-foreground">
+              Short pages, videos, and case studies on why each stage exists and what happens when founders skip them.
+            </NumberedStep>
             <NumberedStep n={1} title="Self Discovery">
               Explore your background, interests, and frustrations to surface <Keyword>problem triggers</Keyword>: seeds worth investigating.
             </NumberedStep>
@@ -145,6 +149,44 @@ const guidanceItems: GuidanceItem[] = [
           "You can move between stages freely; earlier work is never locked",
           "The sidebar on the left is your map and all progress auto-saves",
           "Open this guidance at any time from the Guidance button in the header",
+        ]} />
+      </div>
+    ),
+  },
+  {
+    id: "foundations",
+    title: "Why It Matters",
+    icon: BookOpen,
+    iconBg: "bg-primary",
+    content: (
+      <div className="flex flex-col gap-5">
+        <GuidanceHero
+          icon={BookOpen}
+          tone="bg-primary"
+          title="Why It Matters"
+          subtitle="An optional preamble to the rest of the app. Short pages, videos, and case studies on why finding the right idea, validating the problem, and validating the solution all matter, and what happens when founders skip these stages."
+        />
+        <GuidanceSection icon={Sparkles} iconBg="bg-primary" title="When to read this">
+          <p>You don&apos;t have to go through this section. The rest of the app works fine without it. But if you&apos;re new to the problem-first approach, or you&apos;ve been tempted to skip straight to building, the reading here is designed to change that instinct before it costs you time.</p>
+          <p>It covers the <Keyword>whys</Keyword> and the <Keyword>whats</Keyword> (what went wrong, what went well). It does <Keyword>not</Keyword> cover <Keyword>how</Keyword> to solve things; the Problems and Solutions sections have the tools for that.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={LayoutGrid} iconBg="bg-primary" title="What&apos;s inside">
+          <p>Five short sections, each with a tagline, key points, videos, and real case studies:</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+            <ConceptCard icon={Compass} label="Why the right idea matters" description="Survivorship bias, passion as a false filter, and what actually separates ideas that work." tile="bg-amber-500" border="border-amber-100 bg-amber-50/40" />
+            <ConceptCard icon={Search} label="Why validate the problem" description="Polite enthusiasm is not validation. What a real problem looks like in user behaviour." tile="bg-sky-500" border="border-sky-100 bg-sky-50/40" />
+            <ConceptCard icon={FlaskConical} label="Why validate the solution" description="A real problem doesn't mean your solution is the one people want. Landing pages, concierge tests, willingness to pay." tile="bg-violet-500" border="border-violet-100 bg-violet-50/40" />
+            <ConceptCard icon={Clock} label="The cost of skipping" description="Runway, team morale, sunk-cost bias, and opportunity cost: what it actually costs to build the wrong thing." tile="bg-rose-500" border="border-rose-100 bg-rose-50/40" />
+            <ConceptCard icon={Trophy} label="When it goes right" description="Airbnb, Dropbox, Buffer: founders who did the slow, unglamorous validation work before scaling." tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
+          </div>
+        </GuidanceSection>
+        <GuidanceSection icon={ArrowRight} iconBg="bg-primary" title="What comes next">
+          <p>Once you&apos;ve read as much as you want (or skipped straight past), move on to Self Discovery to start surfacing your own problem triggers.</p>
+        </GuidanceSection>
+        <TipCallout items={[
+          "Pick the sections that match what you're unsure about; you don't have to read all five",
+          "Case studies are grouped as 'what went wrong' or 'what went right'; both are worth reading",
+          "You can return at any time from the sidebar",
         ]} />
       </div>
     ),

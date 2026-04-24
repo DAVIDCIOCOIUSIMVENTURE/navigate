@@ -16,6 +16,7 @@ import {
   FlaskConical,
   BadgeCheck,
   Crosshair,
+  BookOpen,
 } from "lucide-react"
 import { AchievementItem } from "@/components/achievement-item"
 import Link from "next/link"
@@ -94,6 +95,22 @@ export default function DashboardPage() {
           </Link>
         </Button>
       </div>
+
+      {/* Optional foundations prompt */}
+      <Link href="/foundations" className="shrink-0">
+        <Card className="hover:shadow-md transition-shadow border-dashed">
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 shrink-0">
+              <BookOpen className="h-4 w-4 text-primary" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="text-sm font-semibold">New here? Start with Why It Matters</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Optional reading on why validating ideas, problems, and solutions is worth the time.</p>
+            </div>
+            <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+          </CardContent>
+        </Card>
+      </Link>
 
       {/* Journey Overview: 4 stage cards in a row */}
       <div className={cn("grid gap-3 shrink-0", isWide ? "grid-cols-4" : "grid-cols-2")}>

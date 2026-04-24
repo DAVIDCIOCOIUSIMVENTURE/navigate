@@ -1,7 +1,12 @@
-import { Compass, Heart, Book, Brain, Globe, Target, Lightbulb } from "lucide-react"
+import { BookOpen, Compass, Heart, Book, Brain, Globe, Target, Lightbulb, Search, FlaskConical, Clock, Trophy, type LucideIcon } from "lucide-react"
 
 export const navigationItems = {
   innovation: [
+    {
+      title: "Why It Matters",
+      url: "/foundations",
+      icon: BookOpen
+    },
     {
       title: "Self Discovery",
       url: "/self-discovery",
@@ -18,6 +23,18 @@ export const navigationItems = {
       icon: Lightbulb
     },
   ],
+}
+
+export const foundationsSectionIcons: Record<string, LucideIcon> = {
+  compass: Compass,
+  search: Search,
+  flask: FlaskConical,
+  clock: Clock,
+  trophy: Trophy,
+}
+
+export function getFoundationsSectionIcon(iconKey: string): LucideIcon {
+  return foundationsSectionIcons[iconKey] ?? BookOpen
 }
 
 export const selfDiscoveryCategoryIcons = {
