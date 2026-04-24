@@ -13,7 +13,7 @@ import {
   FileQuestion, Pencil, Package,
   Play, ToggleRight, Blocks, LayoutGrid, FileText, ArrowRight,
   GitFork, Heart, BarChart2, Target,
-  Users, MapPin, Briefcase, AlertTriangle,
+  Users, MapPin, AlertTriangle,
   Repeat, DollarSign,
   Lightbulb, HelpCircle,
 } from "lucide-react"
@@ -203,7 +203,7 @@ const guidanceItems: GuidanceItem[] = [
           <p>The builder walks you through four steps to construct a problem systematically:</p>
           <div className="flex flex-col gap-3 pt-1">
             <NumberedStep n={1} title="Pick an element" accent="bg-amber-500">
-              Choose which dimension you want to start with: Customer Segment, Context, Job to Be Done, or Problem Type.
+              Choose which dimension you want to start with: Customer Segment, Context, or Problem Type.
             </NumberedStep>
             <NumberedStep n={2} title="Choose options" accent="bg-amber-500">
               Browse and tick the items that resonate with you within that dimension.
@@ -215,14 +215,13 @@ const guidanceItems: GuidanceItem[] = [
               See all selections at a glance, add an optional description, and save the problem.
             </NumberedStep>
           </div>
-          <p className="pt-1">Your selections appear as coloured pills at the top of every step. Remove any selection with its <Keyword>×</Keyword> button. You do not need to fill in all four dimensions; a partial combination is still useful.</p>
+          <p className="pt-1">Your selections appear as coloured pills at the top of every step. Remove any selection with its <Keyword>×</Keyword> button. You do not need to fill in all three dimensions; a partial combination is still useful.</p>
         </GuidanceSection>
         <GuidanceSection icon={LayoutGrid} iconBg="bg-amber-500" title="Canvas (freeform mode)">
-          <p>The canvas presents a four-column framework for thinking systematically about who experiences a problem, in what situation, what they are trying to do, and what friction they face.</p>
+          <p>The canvas presents a three-column framework for thinking systematically about who experiences a problem, in what situation, and what friction they face.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
             <ConceptCard icon={Users} label="Customer Segment" description="Who you are focusing on (e.g. early-career professionals, small business owners)" tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
             <ConceptCard icon={MapPin} label="Context" description="The situation or environment where the problem occurs (e.g. daily commute, remote team)" tile="bg-sky-500" border="border-sky-100 bg-sky-50/40" />
-            <ConceptCard icon={Briefcase} label="Job to Be Done" description="The underlying goal or task (e.g. stay organised, make a confident decision)" tile="bg-amber-500" border="border-amber-100 bg-amber-50/40" />
             <ConceptCard icon={AlertTriangle} label="Problem Type" description="The category of friction (e.g. information gaps, coordination overhead)" tile="bg-rose-500" border="border-rose-100 bg-rose-50/40" />
           </div>
           <p className="pt-1">Browse each column, tick items that resonate, and click <Keyword>Save Problem</Keyword> to record the combination. Each saved row is one candidate problem. Save as many as you like.</p>
@@ -271,7 +270,7 @@ const guidanceItems: GuidanceItem[] = [
           <p className="pt-1">Set each factor to Low, Medium, or High and optionally enter a numeric estimate. A validation signal is calculated to guide your thinking. Then record your verdict: <Keyword>Valid</Keyword>, <Keyword>Unsure</Keyword>, or <Keyword>Invalid</Keyword>. The verdict is your judgement call based on the evidence in front of you.</p>
         </GuidanceSection>
         <GuidanceSection icon={FileText} iconBg="bg-emerald-500" title="Problem Statement">
-          <p>The final step produces a consolidated summary of everything you have discovered. Review the core problem, customer segment, context, job to be done, and problem type, alongside all the evidence you collected. Edit any field directly. This statement is the artefact you carry forward if you decide to pursue the problem.</p>
+          <p>The final step produces a consolidated summary of everything you have discovered. Review the core problem, customer segment, context, and problem type, alongside all the evidence you collected. Edit any field directly. This statement is the artefact you carry forward if you decide to pursue the problem.</p>
         </GuidanceSection>
         <TipCallout items={[
           "Be honest about the evidence: weak validation data is a signal, not a failure",

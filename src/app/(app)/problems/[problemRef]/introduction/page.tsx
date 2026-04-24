@@ -61,7 +61,6 @@ export default function IntroductionPage() {
             )}
             <FieldRow label="Customer Segments" values={problem.customerSegments} />
             <FieldRow label="Context" values={problem.contexts} />
-            <FieldRow label="Jobs to Be Done" values={problem.jobsToBeDone} />
             <FieldRow label="Problem Types" values={problem.problemTypes} />
           </div>
         )}

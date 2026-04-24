@@ -14,7 +14,6 @@ export type Problem = {
   description: string
   customerSegments: string[]
   contexts: string[]
-  jobsToBeDone: string[]
   problemTypes: string[]
   selfDiscovery: string[]
   source: ProblemSource
@@ -28,13 +27,12 @@ export type Problem = {
   customerDescription: string
 }
 
-export type ProblemPatch = Partial<Pick<Problem, "description" | "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "selfDiscovery" | "existingSolutions" | "emotionalImpact" | "validationAssessment" | "validationStatus" | "validationReason" | "contextWhen" | "segmentSize" | "customerDescription">>
+export type ProblemPatch = Partial<Pick<Problem, "description" | "customerSegments" | "contexts" | "problemTypes" | "selfDiscovery" | "existingSolutions" | "emotionalImpact" | "validationAssessment" | "validationStatus" | "validationReason" | "contextWhen" | "segmentSize" | "customerDescription">>
 
 export function getProblemLabel(problem: Problem): string {
   return [
     problem.customerSegments.join(", "),
     problem.contexts.join(", "),
-    problem.jobsToBeDone.join(", "),
     problem.problemTypes.join(", "),
   ].filter((s) => s.length > 0).join(" / ")
 }
@@ -123,7 +121,6 @@ export const problems = createModel<RootModel>()({
         description: payload.description ?? "",
         customerSegments: payload.customerSegments ?? [],
         contexts: payload.contexts ?? [],
-        jobsToBeDone: payload.jobsToBeDone ?? [],
         problemTypes: payload.problemTypes ?? [],
         selfDiscovery: payload.selfDiscovery ?? [],
         source: payload.source,

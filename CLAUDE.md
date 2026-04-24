@@ -84,7 +84,7 @@ DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
 * `src/data/` — Static data files (e.g. `selfDiscoveryData.ts`)
 * `src/app/(app)/self-discovery/` — Self-discovery questionnaire with `[categoryId]` sub-routing
 * `src/app/(app)/solutions/` — Solutions listing page
-* `src/app/(app)/problems/brainstorm/` — Interactive brainstorm canvas for generating problem ideas across columns (Customer Segments, Contexts, Jobs-to-Be-Done, Problem Types)
+* `src/app/(app)/problems/brainstorm/` — Interactive brainstorm canvas for generating problem ideas across columns (Customer Segments, Contexts, Problem Types)
 * `src/context/` — React Context providers (`innovation-context.tsx`, `guidance-context.tsx`; ideas was migrated to Rematch)
 * `prisma/schema.prisma` — Database schema (kept for reference; not actively used)
 * `locales/` — i18n translations (en, es, fr) via `next-i18next`; infrastructure exists but not heavily used

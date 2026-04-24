@@ -129,7 +129,6 @@ export default function SummaryPage() {
       description: original.description,
       customerSegments: [...original.customerSegments],
       contexts: [...original.contexts],
-      jobsToBeDone: [...original.jobsToBeDone],
       problemTypes: [...original.problemTypes],
       segmentSize: original.segmentSize ?? null,
       customerDescription: original.customerDescription ?? "",
@@ -188,9 +187,6 @@ export default function SummaryPage() {
                   </Field>
                   <Field label="Context">
                     <ChipList items={problem.contexts} />
-                  </Field>
-                  <Field label="Jobs to Be Done">
-                    <ChipList items={problem.jobsToBeDone} />
                   </Field>
                   <Field label="Problem Types">
                     <ChipList items={problem.problemTypes} />

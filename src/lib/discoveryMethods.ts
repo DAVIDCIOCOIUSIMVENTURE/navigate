@@ -27,7 +27,7 @@ export const DISCOVERY_METHODS: DiscoveryMethod[] = [
     id: "finding-my-customers",
     title: "Start From Finding My Customers",
     description:
-      "Begin by identifying and describing the specific people you want to serve. By anchoring discovery in real customers, you can uncover their jobs to be done, explore existing solutions they use, and reveal the problems those solutions leave unsolved.",
+      "Begin by identifying and describing the specific people you want to serve. By anchoring discovery in real customers, you can explore existing solutions they use and reveal the problems those solutions leave unsolved.",
     examples: [
       "Freelance designers struggling to get clear, consolidated feedback from clients",
       "New parents returning to work who can't find flexible childcare that fits their hours",

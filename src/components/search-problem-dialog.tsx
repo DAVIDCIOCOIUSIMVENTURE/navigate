@@ -21,7 +21,6 @@ import type { ProblemPatch } from "@/store/problems-model"
 const COLUMN_TO_FIELD: Record<string, keyof ProblemPatch> = {
   "customer-segments": "customerSegments",
   "contexts": "contexts",
-  "jobs-to-be-done": "jobsToBeDone",
   "problem-types": "problemTypes",
 }
 

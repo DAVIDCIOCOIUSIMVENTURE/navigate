@@ -95,7 +95,6 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         tags: [
           { label: "Customer Segments", values: problem.customerSegments },
           { label: "Contexts", values: problem.contexts },
-          { label: "Jobs to be Done", values: problem.jobsToBeDone },
           { label: "Problem Types", values: problem.problemTypes },
         ],
         context: problem.contextWhen,

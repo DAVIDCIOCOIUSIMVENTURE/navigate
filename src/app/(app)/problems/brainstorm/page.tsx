@@ -50,7 +50,6 @@ import {
   Save,
   Search,
   Settings,
-  Target,
   Trash2,
   TriangleAlert,
   Users,
@@ -76,7 +75,6 @@ import {
 const COLUMN_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   "customer-segments": Users,
   "contexts": MapPin,
-  "jobs-to-be-done": Target,
   "problem-types": TriangleAlert,
   "self-discovery": Compass,
 }
@@ -84,7 +82,6 @@ const COLUMN_ICONS: Record<string, React.ComponentType<{ className?: string }>> 
 const COLUMN_COLORS: Record<string, { icon: string; border: string; pill: string }> = {
   "customer-segments": { icon: "text-blue-500", border: "border-t-blue-500", pill: "bg-blue-500/10 text-blue-700 dark:text-blue-400" },
   "contexts": { icon: "text-amber-500", border: "border-t-amber-500", pill: "bg-amber-500/10 text-amber-700 dark:text-amber-400" },
-  "jobs-to-be-done": { icon: "text-emerald-500", border: "border-t-emerald-500", pill: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400" },
   "problem-types": { icon: "text-rose-500", border: "border-t-rose-500", pill: "bg-rose-500/10 text-rose-700 dark:text-rose-400" },
   "self-discovery": { icon: "text-violet-500", border: "border-t-violet-500", pill: "bg-violet-500/10 text-violet-700 dark:text-violet-400" },
 }
@@ -92,15 +89,13 @@ const COLUMN_COLORS: Record<string, { icon: string; border: string; pill: string
 const COLUMN_DESCRIPTIONS: Record<string, string> = {
   "customer-segments": "Who experiences this problem?",
   "contexts": "In what situation does it occur?",
-  "jobs-to-be-done": "What are they trying to accomplish?",
   "problem-types": "What kind of friction do they face?",
   "self-discovery": "Areas surfaced from your self-discovery.",
 }
 
-const COLUMN_TO_FIELD: Record<string, keyof Pick<Problem, "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "selfDiscovery">> = {
+const COLUMN_TO_FIELD: Record<string, keyof Pick<Problem, "customerSegments" | "contexts" | "problemTypes" | "selfDiscovery">> = {
   "customer-segments": "customerSegments",
   "contexts": "contexts",
-  "jobs-to-be-done": "jobsToBeDone",
   "problem-types": "problemTypes",
   "self-discovery": "selfDiscovery",
 }
@@ -355,14 +350,6 @@ const DIMENSION_GUIDANCE: Record<string, { description: string; examples: string
       "During the morning commute",
       "While onboarding a new employee",
       "At the point of making a purchase decision",
-    ],
-  },
-  "jobs-to-be-done": {
-    description: "What is the person trying to accomplish when they run into this problem? Framing around a \"job\" keeps you focused on outcomes, not features.",
-    examples: [
-      "Quickly compare options before buying",
-      "Stay on top of personal finances",
-      "Coordinate schedules across a team",
     ],
   },
   "problem-types": {
@@ -1302,7 +1289,7 @@ export default function BrainstormPage() {
   }, [triggers])
 
   const allColumns = useMemo<BrainstormColumn[]>(
-    () => [selfDiscoveryColumn, ...brainstormColumns.filter((c) => c.id !== "jobs-to-be-done")],
+    () => [selfDiscoveryColumn, ...brainstormColumns],
     [selfDiscoveryColumn]
   )
 
@@ -1356,7 +1343,7 @@ export default function BrainstormPage() {
   const containerSize = useContainerSize()
 
   const handleBuilderSave = useCallback(async (selections: Record<string, string[]>, description: string) => {
-    const patch: Partial<Pick<Problem, "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "selfDiscovery">> = {}
+    const patch: Partial<Pick<Problem, "customerSegments" | "contexts" | "problemTypes" | "selfDiscovery">> = {}
     for (const column of allColumns) {
       const field = COLUMN_TO_FIELD[column.id]
       patch[field] = selections[column.id] ?? []
@@ -1386,7 +1373,7 @@ export default function BrainstormPage() {
 
   const saveDebounced = useDebouncedCallback((fields: Record<string, string>) => {
     if (!editingProblem) return
-    const patch: Partial<Pick<Problem, "description" | "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "selfDiscovery">> = {
+    const patch: Partial<Pick<Problem, "description" | "customerSegments" | "contexts" | "problemTypes" | "selfDiscovery">> = {
       description: fields["description"] ?? "",
     }
     for (const column of allColumns) {
@@ -1434,7 +1421,7 @@ export default function BrainstormPage() {
   }
 
   const saveCombination = async () => {
-    const patch: Partial<Pick<Problem, "customerSegments" | "contexts" | "jobsToBeDone" | "problemTypes" | "selfDiscovery">> = {}
+    const patch: Partial<Pick<Problem, "customerSegments" | "contexts" | "problemTypes" | "selfDiscovery">> = {}
     for (const column of allColumns) {
       const field = COLUMN_TO_FIELD[column.id]
       const value = saveFields[column.id]?.trim()
