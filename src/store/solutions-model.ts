@@ -20,6 +20,12 @@ export type SolutionPatch = Partial<
     | "validationStatus"
     | "validationReason"
     | "workspaceId"
+    | "analogyDomain"
+    | "analogyInsight"
+    | "scamperIdeas"
+    | "improveIdeas"
+    | "reverseWorseIdeas"
+    | "reverseInversions"
   >
 >
 
@@ -30,6 +36,12 @@ export type SolutionCreateInput = {
   description?: string
   inspirationSource?: InspirationSource
   inspirationDetail?: string
+  analogyDomain?: string
+  analogyInsight?: string
+  scamperIdeas?: Record<string, string>
+  improveIdeas?: Record<string, string>
+  reverseWorseIdeas?: string[]
+  reverseInversions?: string[]
 }
 
 interface SolutionsState {
@@ -117,6 +129,12 @@ export const solutions = createModel<RootModel>()({
         description: payload.description ?? DEFAULT_SOLUTION_FIELDS.description,
         inspirationSource: payload.inspirationSource ?? DEFAULT_SOLUTION_FIELDS.inspirationSource,
         inspirationDetail: payload.inspirationDetail ?? DEFAULT_SOLUTION_FIELDS.inspirationDetail,
+        analogyDomain: payload.analogyDomain,
+        analogyInsight: payload.analogyInsight,
+        scamperIdeas: payload.scamperIdeas,
+        improveIdeas: payload.improveIdeas,
+        reverseWorseIdeas: payload.reverseWorseIdeas,
+        reverseInversions: payload.reverseInversions,
       }
       dispatch.solutions.addSolution(newSolution)
       const nextState: SolutionsState = {

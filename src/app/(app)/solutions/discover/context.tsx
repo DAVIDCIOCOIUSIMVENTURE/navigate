@@ -17,6 +17,16 @@ import type {
 } from "@/types/solution"
 type ScamperIdeasMap = Record<string, ImprovementItem[]>
 import { DEFAULT_IMPROVEMENT } from "@/types/solution"
+
+type CandidateExtras = {
+  description?: string
+  analogyDomain?: string
+  analogyInsight?: string
+  scamperIdeas?: Record<string, string>
+  improveIdeas?: Record<string, string>
+  reverseWorseIdeas?: string[]
+  reverseInversions?: string[]
+}
 import type { Problem } from "@/store/problems-model"
 
 const ACTIVE_PROBLEM_KEY = "navigate-active-discovery-problem"
@@ -52,9 +62,14 @@ type DiscoveryContextValue = {
   setScamperIdeas: (val: ScamperIdeasMap) => void
   // Solution bank entries scoped to this workspace
   candidates: Solution[]
-  addCandidate: (input: { title: string; inspirationSource: InspirationSource; inspirationDetail: string }) => Solution | null
+  addCandidate: (
+    input: { title: string; inspirationSource: InspirationSource; inspirationDetail: string } & CandidateExtras
+  ) => Solution | null
   updateCandidate: (id: number, patch: { title?: string; description?: string }) => void
   removeCandidate: (id: number) => void
+  // Wipe the discovery scratch for the active tool so the user can start fresh
+  // after saving a solution. Saved candidates are preserved.
+  wipeDiscoveryScratch: () => void
 }
 
 const DiscoveryContext = createContext<DiscoveryContextValue | null>(null)
@@ -154,7 +169,9 @@ export function DiscoveryProvider({ children }: { children: ReactNode }) {
     : []
 
   const addCandidate = useCallback(
-    (input: { title: string; inspirationSource: InspirationSource; inspirationDetail: string }): Solution | null => {
+    (
+      input: { title: string; inspirationSource: InspirationSource; inspirationDetail: string } & CandidateExtras
+    ): Solution | null => {
       if (problemId == null || workspaceId == null) return null
       const title = input.title.trim()
       if (!title) return null
@@ -162,12 +179,34 @@ export function DiscoveryProvider({ children }: { children: ReactNode }) {
         problemId,
         workspaceId,
         title,
+        description: input.description,
         inspirationSource: input.inspirationSource,
         inspirationDetail: input.inspirationDetail,
+        analogyDomain: input.analogyDomain,
+        analogyInsight: input.analogyInsight,
+        scamperIdeas: input.scamperIdeas,
+        improveIdeas: input.improveIdeas,
+        reverseWorseIdeas: input.reverseWorseIdeas,
+        reverseInversions: input.reverseInversions,
       })
     },
     [problemId, workspaceId, dispatch]
   )
+
+  const wipeDiscoveryScratch = useCallback(() => {
+    if (workspaceId == null) return
+    dispatch.solutionWorkspaces.update({
+      id: workspaceId,
+      patch: {
+        scamperIdeas: {},
+        improvementResponses: DEFAULT_IMPROVEMENT,
+        reverseBrainstorm: [],
+        reverseInversion: [],
+        analogyDomain: "",
+        analogyInsight: "",
+      },
+    })
+  }, [workspaceId, dispatch])
 
   const updateCandidate = useCallback(
     (id: number, p: { title?: string; description?: string }) => {
@@ -200,6 +239,7 @@ export function DiscoveryProvider({ children }: { children: ReactNode }) {
         improvementResponses, setImprovementResponses,
         scamperIdeas, setScamperIdeas,
         candidates, addCandidate, updateCandidate, removeCandidate,
+        wipeDiscoveryScratch,
       }}
     >
       {children}

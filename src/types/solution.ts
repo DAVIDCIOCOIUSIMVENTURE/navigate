@@ -90,6 +90,14 @@ export type Solution = {
   validationNotes: string
   validationStatus: ValidationStatus
   validationReason: string
+  // Method-specific snapshots captured at save time, so each solution can be
+  // re-edited later in a dialog tailored to its inspiration source.
+  analogyDomain?: string
+  analogyInsight?: string
+  scamperIdeas?: Record<string, string>
+  improveIdeas?: Record<string, string>
+  reverseWorseIdeas?: string[]
+  reverseInversions?: string[]
 }
 
 export const DEFAULT_IMPROVEMENT: ImprovementResponses = {
@@ -137,4 +145,10 @@ export const DEFAULT_SOLUTION_FIELDS: Omit<Solution, "id" | "problemId" | "works
   validationNotes: "",
   validationStatus: "unvalidated",
   validationReason: "",
+  analogyDomain: undefined,
+  analogyInsight: undefined,
+  scamperIdeas: undefined,
+  improveIdeas: undefined,
+  reverseWorseIdeas: undefined,
+  reverseInversions: undefined,
 }

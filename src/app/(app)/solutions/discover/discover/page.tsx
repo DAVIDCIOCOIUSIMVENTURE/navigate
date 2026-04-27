@@ -6,7 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Badge } from "@/components/ui/badge"
+import {
+  Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
+} from "@/components/ui/dialog"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { useDiscovery, getAdjacentSteps } from "../context"
@@ -14,9 +16,9 @@ import { SCAMPER_CASE_STUDIES } from "./case-studies"
 import { IMPROVE_CASE_STUDIES } from "./improve-case-studies"
 import { REVERSE_CASE_STUDIES } from "./reverse-case-studies"
 import { ANALOGY_CASE_STUDIES } from "./analogy-case-studies"
-import type { ImprovementItem, ImprovementResponses } from "@/types/solution"
+import type { ImprovementItem, ImprovementResponses, DiscoveryToolType } from "@/types/solution"
 import {
-  Shuffle, RotateCcw, Globe, TrendingUp, Plus, Trash2, Check,
+  Shuffle, RotateCcw, Globe, TrendingUp, Plus, Trash2, Save,
   ArrowLeft, ArrowRight, Wind, Tv, Armchair, Package, Smartphone, Coffee,
   Home, Pizza, ShoppingBag, Utensils, Flag, Leaf, Sparkles, ShieldCheck,
   Truck, Heart, Rows3, LayoutPanelTop, Wrench, type LucideIcon,
@@ -24,6 +26,31 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
+
+type SaveDialogTool = Exclude<DiscoveryToolType, "">
+type SaveDialogFields = {
+  title: string
+  description: string
+  domain: string
+  insight: string
+  scamperItems: Record<string, string>
+  improveItems: Record<string, string>
+  reverseWorse: string[]
+  reverseInversions: string[]
+}
+
+function emptyFields(): SaveDialogFields {
+  return {
+    title: "",
+    description: "",
+    domain: "",
+    insight: "",
+    scamperItems: {},
+    improveItems: {},
+    reverseWorse: [],
+    reverseInversions: [],
+  }
+}
 
 /* -- SCAMPER Form -- */
 
@@ -156,124 +183,39 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
 
 function ScamperDimensionContent({
   dimensionKey,
-  placeholder = "Type an idea and press Enter...",
+  placeholder = "Type your idea here...",
 }: {
   dimensionKey: ScamperKey
   placeholder?: string
 }) {
-  const { candidates, addCandidate, scamperIdeas, setScamperIdeas } = useDiscovery()
+  const { scamperIdeas, setScamperIdeas } = useDiscovery()
 
   const items = scamperIdeas[dimensionKey] ?? []
-  const [adding, setAdding] = useState(false)
-  const [draft, setDraft] = useState("")
-  const inputRef = useRef<HTMLInputElement>(null)
+  const externalText = items[0]?.text ?? ""
+  const [text, setText] = useState(externalText)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    if (adding) inputRef.current?.focus()
-  }, [adding])
+    setText(externalText)
+  }, [externalText])
 
-  const updateDimension = (next: ImprovementItem[]) => {
-    setScamperIdeas({ ...scamperIdeas, [dimensionKey]: next })
-  }
-
-  const addItem = () => {
-    const text = draft.trim()
-    if (text) {
-      const id = items.length > 0 ? Math.max(...items.map((i) => i.id)) + 1 : 1
-      updateDimension([...items, { id, text }])
-    }
-    setDraft("")
-    setAdding(false)
-  }
-
-  const updateItem = (id: number, text: string) => {
+  const updateText = (newText: string) => {
+    setText(newText)
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => {
-      updateDimension(items.map((i) => (i.id === id ? { ...i, text } : i)))
-    }, 500)
-  }
-
-  const removeItem = (id: number) => {
-    updateDimension(items.filter((i) => i.id !== id))
-  }
-
-  const detailKey = (id: number) => `${dimensionKey}:${id}`
-
-  const isAdded = (id: number) =>
-    candidates.some(
-      (c) => c.inspirationSource === "scamper" && c.inspirationDetail === detailKey(id)
-    )
-
-  const handleAddAsSolution = (item: ImprovementItem) => {
-    const text = item.text.trim()
-    if (!text) return
-    if (isAdded(item.id)) return
-    addCandidate({ title: text, inspirationSource: "scamper", inspirationDetail: detailKey(item.id) })
-  }
-
-  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") { e.preventDefault(); addItem() }
-    if (e.key === "Escape") { setDraft(""); setAdding(false) }
+      const trimmed = newText.trim()
+      const next: ImprovementItem[] = trimmed ? [{ id: 1, text: newText }] : []
+      setScamperIdeas({ ...scamperIdeas, [dimensionKey]: next })
+    }, 300)
   }
 
   return (
-    <div className="flex flex-col gap-2">
-      {items.map((item) => {
-        const added = isAdded(item.id)
-        return (
-          <div key={item.id} className="flex items-center gap-2">
-            <Input
-              defaultValue={item.text}
-              onChange={(e) => updateItem(item.id, e.target.value)}
-              className="flex-1 text-sm bg-white border-white text-foreground"
-            />
-            {added ? (
-              <Badge variant="outline" className="shrink-0 gap-1 border-white/40 text-white/90">
-                <Check className="h-3 w-3" />
-                Solution
-              </Badge>
-            ) : (
-              <Button
-                size="sm"
-                variant="on-primary"
-                className="shrink-0 h-8 gap-1"
-                disabled={!item.text.trim()}
-                onClick={() => handleAddAsSolution(item)}
-              >
-                <Plus className="h-3.5 w-3.5" />
-                Add as Solution
-              </Button>
-            )}
-            <Button
-              size="icon"
-              variant="ghost"
-              className="shrink-0 h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
-              onClick={() => removeItem(item.id)}
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-            </Button>
-          </div>
-        )
-      })}
-
-      {adding ? (
-        <Input
-          ref={inputRef}
-          placeholder={placeholder}
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={onKeyDown}
-          onBlur={addItem}
-          className="text-sm bg-white border-white text-foreground"
-        />
-      ) : (
-        <Button variant="on-primary" className="w-full" onClick={() => setAdding(true)}>
-          <Plus className="h-4 w-4" />
-          Add Item
-        </Button>
-      )}
-    </div>
+    <Input
+      placeholder={placeholder}
+      value={text}
+      onChange={(e) => updateText(e.target.value)}
+      className="text-sm bg-white border-white text-foreground"
+    />
   )
 }
 
@@ -433,16 +375,12 @@ function ReverseItemList({
   label,
   description,
   placeholder,
-  onAddAsCandidate,
-  isItemAdded,
 }: {
   items: { id: number; text: string }[]
   setItems: (val: { id: number; text: string }[]) => void
   label: string
   description: string
   placeholder: string
-  onAddAsCandidate?: (item: { id: number; text: string }) => void
-  isItemAdded?: (id: number) => boolean
 }) {
   const [adding, setAdding] = useState(false)
   const [draft, setDraft] = useState("")
@@ -483,45 +421,23 @@ function ReverseItemList({
       <label className="text-sm font-semibold text-white">{label}</label>
       <p className="text-sm text-white/80">{description}</p>
 
-      {items.map((item) => {
-        const added = isItemAdded?.(item.id) ?? false
-        return (
-          <div key={item.id} className="flex items-center gap-2">
-            <Input
-              defaultValue={item.text}
-              onChange={(e) => updateItem(item.id, e.target.value)}
-              className="flex-1 text-sm bg-white border-white text-foreground"
-            />
-            {onAddAsCandidate && (
-              added ? (
-                <Badge variant="outline" className="shrink-0 gap-1 border-white/40 text-white/90">
-                  <Check className="h-3 w-3" />
-                  Candidate
-                </Badge>
-              ) : (
-                <Button
-                  size="sm"
-                  variant="on-primary"
-                  className="shrink-0 h-8 gap-1"
-                  disabled={!item.text.trim()}
-                  onClick={() => onAddAsCandidate(item)}
-                >
-                  <Plus className="h-3.5 w-3.5" />
-                  Add as Candidate
-                </Button>
-              )
-            )}
-            <Button
-              size="icon"
-              variant="ghost"
-              className="shrink-0 h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
-              onClick={() => removeItem(item.id)}
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-            </Button>
-          </div>
-        )
-      })}
+      {items.map((item) => (
+        <div key={item.id} className="flex items-center gap-2">
+          <Input
+            defaultValue={item.text}
+            onChange={(e) => updateItem(item.id, e.target.value)}
+            className="flex-1 text-sm bg-white border-white text-foreground"
+          />
+          <Button
+            size="icon"
+            variant="ghost"
+            className="shrink-0 h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
+            onClick={() => removeItem(item.id)}
+          >
+            <Trash2 className="h-3.5 w-3.5" />
+          </Button>
+        </div>
+      ))}
 
       {adding ? (
         <Input
@@ -549,24 +465,10 @@ function ReverseBrainstormForm() {
     setReverseBrainstorm,
     reverseInversion,
     setReverseInversion,
-    candidates,
-    addCandidate,
   } = useDiscovery()
 
   const brainstormItems = Array.isArray(reverseBrainstorm) ? reverseBrainstorm : []
   const inversionItems = Array.isArray(reverseInversion) ? reverseInversion : []
-
-  const isInversionAdded = (id: number) =>
-    candidates.some(
-      (c) => c.inspirationSource === "reverse" && c.inspirationDetail === String(id)
-    )
-
-  const addInversionAsCandidate = (item: { id: number; text: string }) => {
-    const text = item.text.trim()
-    if (!text) return
-    if (isInversionAdded(item.id)) return
-    addCandidate({ title: text, inspirationSource: "reverse", inspirationDetail: String(item.id) })
-  }
 
   return (
     <div className="bg-primary rounded-xl p-8">
@@ -585,10 +487,8 @@ function ReverseBrainstormForm() {
             items={inversionItems}
             setItems={setReverseInversion}
             label="Now flip each idea"
-            description={'Take each "make it worse" idea above and write its opposite. Promote the strongest flips to your candidates below.'}
+            description={'Take each "make it worse" idea above and write its opposite. The strongest flips become the seed for your saved solution.'}
             placeholder="Type the flipped idea and press Enter..."
-            onAddAsCandidate={addInversionAsCandidate}
-            isItemAdded={isInversionAdded}
           />
         </div>
       </div>
@@ -599,17 +499,7 @@ function ReverseBrainstormForm() {
 /* -- Analogy Form -- */
 
 function AnalogyForm() {
-  const { analogyDomain, setAnalogyDomain, analogyInsight, setAnalogyInsight, addCandidate } = useDiscovery()
-
-  const handleAddCandidate = () => {
-    const text = analogyInsight.trim()
-    if (!text) return
-    addCandidate({
-      title: `Analogy from ${analogyDomain || "another domain"}`,
-      inspirationSource: "analogy",
-      inspirationDetail: analogyDomain,
-    })
-  }
+  const { analogyDomain, setAnalogyDomain, analogyInsight, setAnalogyInsight } = useDiscovery()
 
   return (
     <div className="bg-primary rounded-xl p-8">
@@ -639,14 +529,6 @@ function AnalogyForm() {
             className="text-sm bg-white border-white text-foreground"
           />
         </div>
-        <Button
-          variant="on-primary"
-          className="self-end gap-1"
-          disabled={!analogyInsight.trim()}
-          onClick={handleAddCandidate}
-        >
-          <Plus className="h-4 w-4" />Add as Candidate
-        </Button>
       </div>
     </div>
   )
@@ -718,60 +600,25 @@ function ImprovementDimension({
   prompt: string
   example: string
 }) {
-  const { candidates, addCandidate, improvementResponses, setImprovementResponses } = useDiscovery()
+  const { improvementResponses, setImprovementResponses } = useDiscovery()
 
   const items = improvementResponses[dimensionKey] ?? []
-  const [adding, setAdding] = useState(false)
-  const [draft, setDraft] = useState("")
-  const inputRef = useRef<HTMLInputElement>(null)
+  const externalText = items[0]?.text ?? ""
+  const [text, setText] = useState(externalText)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
-    if (adding) inputRef.current?.focus()
-  }, [adding])
+    setText(externalText)
+  }, [externalText])
 
-  const updateDimension = (next: ImprovementItem[]) => {
-    setImprovementResponses({ ...improvementResponses, [dimensionKey]: next })
-  }
-
-  const addItem = () => {
-    const text = draft.trim()
-    if (text) {
-      const id = items.length > 0 ? Math.max(...items.map((i) => i.id)) + 1 : 1
-      updateDimension([...items, { id, text }])
-    }
-    setDraft("")
-    setAdding(false)
-  }
-
-  const updateItem = (id: number, text: string) => {
+  const updateText = (newText: string) => {
+    setText(newText)
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => {
-      updateDimension(items.map((i) => (i.id === id ? { ...i, text } : i)))
-    }, 500)
-  }
-
-  const removeItem = (id: number) => {
-    updateDimension(items.filter((i) => i.id !== id))
-  }
-
-  const detailKey = (id: number) => `${dimensionKey}:${id}`
-
-  const isAdded = (id: number) =>
-    candidates.some(
-      (c) => c.inspirationSource === "improve" && c.inspirationDetail === detailKey(id)
-    )
-
-  const handleAddAsSolution = (item: ImprovementItem) => {
-    const text = item.text.trim()
-    if (!text) return
-    if (isAdded(item.id)) return
-    addCandidate({ title: text, inspirationSource: "improve", inspirationDetail: detailKey(item.id) })
-  }
-
-  const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") { e.preventDefault(); addItem() }
-    if (e.key === "Escape") { setDraft(""); setAdding(false) }
+      const trimmed = newText.trim()
+      const next: ImprovementItem[] = trimmed ? [{ id: 1, text: newText }] : []
+      setImprovementResponses({ ...improvementResponses, [dimensionKey]: next })
+    }, 300)
   }
 
   return (
@@ -779,61 +626,12 @@ function ImprovementDimension({
       <span className="text-sm font-semibold text-white">{title}</span>
       <p className="text-sm text-white/80">{prompt}</p>
       <p className="text-xs italic text-white/60">Example: {example}</p>
-
-      {items.map((item) => {
-        const added = isAdded(item.id)
-        return (
-          <div key={item.id} className="flex items-center gap-2">
-            <Input
-              defaultValue={item.text}
-              onChange={(e) => updateItem(item.id, e.target.value)}
-              className="flex-1 text-sm bg-white border-white text-foreground"
-            />
-            {added ? (
-              <Badge variant="outline" className="shrink-0 gap-1 border-white/40 text-white/90">
-                <Check className="h-3 w-3" />
-                Solution
-              </Badge>
-            ) : (
-              <Button
-                size="sm"
-                variant="on-primary"
-                className="shrink-0 h-8 gap-1"
-                disabled={!item.text.trim()}
-                onClick={() => handleAddAsSolution(item)}
-              >
-                <Plus className="h-3.5 w-3.5" />
-                Add as Solution
-              </Button>
-            )}
-            <Button
-              size="icon"
-              variant="ghost"
-              className="shrink-0 h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
-              onClick={() => removeItem(item.id)}
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-            </Button>
-          </div>
-        )
-      })}
-
-      {adding ? (
-        <Input
-          ref={inputRef}
-          placeholder="Type an improvement and press Enter..."
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={onKeyDown}
-          onBlur={addItem}
-          className="text-sm bg-white border-white text-foreground"
-        />
-      ) : (
-        <Button variant="on-primary" className="w-full" onClick={() => setAdding(true)}>
-          <Plus className="h-4 w-4" />
-          Add Item
-        </Button>
-      )}
+      <Input
+        placeholder="Type your improvement here..."
+        value={text}
+        onChange={(e) => updateText(e.target.value)}
+        className="text-sm bg-white border-white text-foreground"
+      />
     </div>
   )
 }
@@ -1184,6 +982,405 @@ function AnalogyCaseStudies() {
   )
 }
 
+/* -- Save Solution Flow -- */
+
+const TOOL_META: Record<SaveDialogTool, { label: string; titleHint: string }> = {
+  scamper: { label: "SCAMPER", titleHint: "Name your SCAMPER solution" },
+  reverse: { label: "Reverse Brainstorming", titleHint: "Name your reverse brainstorming solution" },
+  analogy: { label: "Analogy Thinking", titleHint: "Name your analogy solution" },
+  improve: { label: "Improve Existing Solutions", titleHint: "Name your improvement solution" },
+}
+
+const IMPROVE_DIMENSION_LABELS: Record<string, string> = (() => {
+  const map: Record<string, string> = {}
+  for (const group of IMPROVEMENT_GROUPS) {
+    for (const item of group.items) map[item.key] = item.title
+  }
+  return map
+})()
+
+const SCAMPER_DIMENSION_LABELS: Record<string, string> = (() => {
+  const map: Record<string, string> = {}
+  for (const p of SCAMPER_PROMPTS) map[p.key] = p.title
+  return map
+})()
+
+function ListField({
+  label,
+  helper,
+  values,
+  onChange,
+  placeholder,
+}: {
+  label: string
+  helper: string
+  values: string[]
+  onChange: (next: string[]) => void
+  placeholder: string
+}) {
+  const setAt = (index: number, value: string) => {
+    const next = [...values]
+    next[index] = value
+    onChange(next)
+  }
+  const remove = (index: number) => onChange(values.filter((_, i) => i !== index))
+  const add = () => onChange([...values, ""])
+
+  return (
+    <div className="flex flex-col gap-1.5">
+      <label className="text-sm font-medium">{label}</label>
+      <p className="text-xs text-muted-foreground">{helper}</p>
+      {values.length === 0 ? (
+        <p className="text-xs italic text-muted-foreground">No items yet.</p>
+      ) : (
+        <div className="flex flex-col gap-1.5">
+          {values.map((v, i) => (
+            <div key={i} className="flex items-center gap-2">
+              <Input
+                value={v}
+                onChange={(e) => setAt(i, e.target.value)}
+                placeholder={placeholder}
+                className="flex-1 text-sm"
+              />
+              <Button
+                size="icon"
+                variant="ghost"
+                className="shrink-0 h-8 w-8 text-muted-foreground hover:text-destructive"
+                onClick={() => remove(i)}
+                aria-label="Remove item"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
+      <Button variant="outline" size="sm" className="self-start gap-1.5" onClick={add}>
+        <Plus className="h-3.5 w-3.5" />
+        Add Item
+      </Button>
+    </div>
+  )
+}
+
+function SaveSolutionDialog({
+  open,
+  onOpenChange,
+  toolType,
+  fields,
+  setFields,
+  onSave,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  toolType: SaveDialogTool
+  fields: SaveDialogFields
+  setFields: (next: SaveDialogFields) => void
+  onSave: () => void
+}) {
+  const meta = TOOL_META[toolType]
+
+  const setScamperEntry = (key: string, value: string) => {
+    const next = { ...fields.scamperItems }
+    if (value.trim()) next[key] = value
+    else delete next[key]
+    setFields({ ...fields, scamperItems: next })
+  }
+
+  const setImproveEntry = (key: string, value: string) => {
+    const next = { ...fields.improveItems }
+    if (value.trim()) next[key] = value
+    else delete next[key]
+    setFields({ ...fields, improveItems: next })
+  }
+
+  const scamperKeys = SCAMPER_PROMPTS.map((p) => p.key as string).filter(
+    (k) => fields.scamperItems[k] !== undefined
+  )
+  const improveKeys = Object.keys(IMPROVE_DIMENSION_LABELS).filter(
+    (k) => fields.improveItems[k] !== undefined
+  )
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="max-w-xl">
+        <DialogHeader>
+          <DialogTitle>Save Solution</DialogTitle>
+          <DialogDescription>
+            Refine the solution before adding it to your bank. You can edit it again later from the Solutions page.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex flex-col gap-4 py-4 max-h-[60vh] overflow-y-auto pr-1">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium" htmlFor="save-solution-title">Title</label>
+            <Input
+              id="save-solution-title"
+              value={fields.title}
+              onChange={(e) => setFields({ ...fields, title: e.target.value })}
+              placeholder={meta.titleHint}
+            />
+          </div>
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-medium" htmlFor="save-solution-description">Solution Description</label>
+            <Textarea
+              id="save-solution-description"
+              value={fields.description}
+              onChange={(e) => setFields({ ...fields, description: e.target.value })}
+              placeholder="Describe the solution in your own words..."
+              rows={4}
+            />
+          </div>
+
+          {toolType === "scamper" && scamperKeys.length > 0 && (
+            <div className="flex flex-col gap-2">
+              <p className="text-sm font-medium">Your SCAMPER ideas</p>
+              <p className="text-xs text-muted-foreground">Tweak the entries you captured before saving.</p>
+              {scamperKeys.map((key) => (
+                <div key={key} className="flex flex-col gap-1">
+                  <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground" htmlFor={`save-scamper-${key}`}>
+                    {SCAMPER_DIMENSION_LABELS[key] ?? key}
+                  </label>
+                  <Input
+                    id={`save-scamper-${key}`}
+                    value={fields.scamperItems[key] ?? ""}
+                    onChange={(e) => setScamperEntry(key, e.target.value)}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {toolType === "improve" && improveKeys.length > 0 && (
+            <div className="flex flex-col gap-2">
+              <p className="text-sm font-medium">Your improvement ideas</p>
+              <p className="text-xs text-muted-foreground">Tweak the entries you captured before saving.</p>
+              {improveKeys.map((key) => (
+                <div key={key} className="flex flex-col gap-1">
+                  <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground" htmlFor={`save-improve-${key}`}>
+                    {IMPROVE_DIMENSION_LABELS[key] ?? key}
+                  </label>
+                  <Input
+                    id={`save-improve-${key}`}
+                    value={fields.improveItems[key] ?? ""}
+                    onChange={(e) => setImproveEntry(key, e.target.value)}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {toolType === "reverse" && (
+            <>
+              <ListField
+                label="Make it worse"
+                helper="The aggravating ideas that seeded your flips."
+                values={fields.reverseWorse}
+                onChange={(next) => setFields({ ...fields, reverseWorse: next })}
+                placeholder="A way to make the problem worse..."
+              />
+              <ListField
+                label="Flipped ideas"
+                helper="The inversions you want to keep with this solution."
+                values={fields.reverseInversions}
+                onChange={(next) => setFields({ ...fields, reverseInversions: next })}
+                placeholder="A flipped solution idea..."
+              />
+            </>
+          )}
+
+          {toolType === "analogy" && (
+            <>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-medium" htmlFor="save-solution-domain">Domain / Industry</label>
+                <Input
+                  id="save-solution-domain"
+                  value={fields.domain}
+                  onChange={(e) => setFields({ ...fields, domain: e.target.value })}
+                  placeholder="e.g. Aviation, Healthcare, Hospitality..."
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <label className="text-sm font-medium" htmlFor="save-solution-insight">Insight</label>
+                <Textarea
+                  id="save-solution-insight"
+                  value={fields.insight}
+                  onChange={(e) => setFields({ ...fields, insight: e.target.value })}
+                  placeholder="What did that domain do that you can borrow?"
+                  rows={3}
+                />
+              </div>
+            </>
+          )}
+        </div>
+        <div className="flex justify-end gap-2">
+          <Button variant="outline" onClick={() => onOpenChange(false)}>Cancel</Button>
+          <Button onClick={onSave} disabled={!fields.title.trim()}>Save Solution</Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+function SolutionSavedDialog({
+  open,
+  onOpenChange,
+  onContinue,
+  onKeepBrainstorming,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  onContinue: () => void
+  onKeepBrainstorming: () => void
+}) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Solution Saved</DialogTitle>
+          <DialogDescription>
+            Your solution has been added to the bank. What would you like to do next?
+          </DialogDescription>
+        </DialogHeader>
+        <div className="flex flex-col gap-3 pt-4">
+          <Button onClick={onContinue} className="gap-2">
+            <ArrowRight className="h-4 w-4" />
+            Continue to Solution Validation
+          </Button>
+          <Button variant="outline" onClick={onKeepBrainstorming}>
+            Keep Brainstorming
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+function SaveSolutionPanel({ toolType }: { toolType: SaveDialogTool }) {
+  const router = useRouter()
+  const {
+    addCandidate,
+    wipeDiscoveryScratch,
+    scamperIdeas,
+    improvementResponses,
+    analogyDomain,
+    analogyInsight,
+    reverseBrainstorm,
+    reverseInversion,
+  } = useDiscovery()
+
+  const [saveOpen, setSaveOpen] = useState(false)
+  const [savedOpen, setSavedOpen] = useState(false)
+  const [savedSolutionId, setSavedSolutionId] = useState<number | null>(null)
+  const [fields, setFields] = useState<SaveDialogFields>(emptyFields())
+
+  const openSaveDialog = () => {
+    const seed = emptyFields()
+    if (toolType === "analogy") {
+      seed.title = analogyDomain ? `Analogy from ${analogyDomain}` : ""
+      seed.domain = analogyDomain
+      seed.insight = analogyInsight
+    } else if (toolType === "scamper") {
+      const items: Record<string, string> = {}
+      for (const k of Object.keys(scamperIdeas)) {
+        const value = scamperIdeas[k]?.[0]?.text?.trim()
+        if (value) items[k] = value
+      }
+      seed.scamperItems = items
+    } else if (toolType === "improve") {
+      const items: Record<string, string> = {}
+      const keys = Object.keys(improvementResponses) as (keyof ImprovementResponses)[]
+      for (const k of keys) {
+        const value = improvementResponses[k]?.[0]?.text?.trim()
+        if (value) items[k as string] = value
+      }
+      seed.improveItems = items
+    } else if (toolType === "reverse") {
+      seed.reverseWorse = reverseBrainstorm
+        .map((i) => i.text.trim())
+        .filter((t): t is string => Boolean(t))
+      seed.reverseInversions = reverseInversion
+        .map((i) => i.text.trim())
+        .filter((t): t is string => Boolean(t))
+    }
+    setFields(seed)
+    setSaveOpen(true)
+  }
+
+  const handleSave = () => {
+    const sanitiseMap = (map: Record<string, string>) => {
+      const out: Record<string, string> = {}
+      for (const [k, v] of Object.entries(map)) {
+        const t = v.trim()
+        if (t) out[k] = t
+      }
+      return out
+    }
+    const sanitiseList = (list: string[]) =>
+      list.map((s) => s.trim()).filter((s): s is string => Boolean(s))
+
+    const solution = addCandidate({
+      title: fields.title,
+      description: fields.description,
+      inspirationSource: toolType,
+      inspirationDetail: toolType === "analogy" ? fields.domain : "",
+      analogyDomain: toolType === "analogy" ? fields.domain : undefined,
+      analogyInsight: toolType === "analogy" ? fields.insight : undefined,
+      scamperIdeas: toolType === "scamper" ? sanitiseMap(fields.scamperItems) : undefined,
+      improveIdeas: toolType === "improve" ? sanitiseMap(fields.improveItems) : undefined,
+      reverseWorseIdeas: toolType === "reverse" ? sanitiseList(fields.reverseWorse) : undefined,
+      reverseInversions: toolType === "reverse" ? sanitiseList(fields.reverseInversions) : undefined,
+    })
+
+    if (solution) {
+      setSavedSolutionId(solution.id)
+      setSaveOpen(false)
+      setSavedOpen(true)
+    }
+  }
+
+  const handleContinue = () => {
+    setSavedOpen(false)
+    if (savedSolutionId !== null) {
+      router.push(`/solutions/${savedSolutionId}/validate/introduction`)
+    }
+  }
+
+  const handleKeepBrainstorming = () => {
+    setSavedOpen(false)
+    wipeDiscoveryScratch()
+  }
+
+  return (
+    <>
+      <div className="flex justify-end">
+        <Button
+          onClick={openSaveDialog}
+          className="gap-2 bg-emerald-600 text-white shadow hover:bg-emerald-700 focus-visible:ring-emerald-600"
+        >
+          <Save className="h-4 w-4" />
+          Save Solution
+        </Button>
+      </div>
+
+      <SaveSolutionDialog
+        open={saveOpen}
+        onOpenChange={setSaveOpen}
+        toolType={toolType}
+        fields={fields}
+        setFields={setFields}
+        onSave={handleSave}
+      />
+
+      <SolutionSavedDialog
+        open={savedOpen}
+        onOpenChange={setSavedOpen}
+        onContinue={handleContinue}
+        onKeepBrainstorming={handleKeepBrainstorming}
+      />
+    </>
+  )
+}
+
 /* -- Main Page -- */
 
 type ToolHint = { icon: LucideIcon; title: string; subtitle: string; bg: string }
@@ -1341,7 +1538,7 @@ export default function DiscoverPage() {
             <div className="flex flex-col gap-2 items-center text-center">
               <h3 className="text-xl font-bold"><span className="text-primary">Your Turn:</span> Work through the SCAMPER prompts</h3>
               <p className="text-md text-muted-foreground max-w-xl">
-                Run your problem through each of the seven angles. You don&apos;t need to answer every prompt: jot ideas where they spark, then promote the strongest ones to candidates.
+                Run your problem through each of the seven angles. You don&apos;t need to answer every prompt: jot ideas where they spark, then click <strong>Save Solution</strong> when you have one worth keeping.
               </p>
             </div>
             <Tabs defaultValue="strategy" className="flex flex-col gap-4">
@@ -1358,6 +1555,7 @@ export default function DiscoverPage() {
                 <ScamperCaseStudies />
               </TabsContent>
             </Tabs>
+            <SaveSolutionPanel toolType="scamper" />
           </>
         )}
 
@@ -1378,6 +1576,7 @@ export default function DiscoverPage() {
                 <ReverseCaseStudies />
               </TabsContent>
             </Tabs>
+            <SaveSolutionPanel toolType="reverse" />
           </>
         )}
         {discoveryToolType === "analogy" && (
@@ -1397,6 +1596,7 @@ export default function DiscoverPage() {
                 <AnalogyCaseStudies />
               </TabsContent>
             </Tabs>
+            <SaveSolutionPanel toolType="analogy" />
           </>
         )}
         {discoveryToolType === "improve" && (
@@ -1416,6 +1616,7 @@ export default function DiscoverPage() {
                 <ImproveCaseStudies />
               </TabsContent>
             </Tabs>
+            <SaveSolutionPanel toolType="improve" />
           </>
         )}
 
