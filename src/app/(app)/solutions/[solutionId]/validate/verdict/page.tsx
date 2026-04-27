@@ -1,11 +1,14 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import {
   ArrowLeft, ArrowRight, CheckCircle2, XCircle, HelpCircle, Gauge, Target, Coins, Clock,
+  Rocket, Glasses, Film,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -14,27 +17,83 @@ import type { ValidationStatus } from "@/types/idea"
 
 type VerdictKey = "valid" | "unsure" | "invalid"
 
-const VERDICTS: { key: VerdictKey; label: string; description: string; icon: LucideIcon; accent: string }[] = [
+const VERDICT_OPTIONS: { value: VerdictKey; label: string; icon: LucideIcon; color: string; dotColor: string }[] = [
   {
-    key: "valid",
-    label: "Valid: worth pursuing",
-    description: "The metrics support moving forward. Promote this solution into a build plan.",
+    value: "valid",
+    label: "Valid: Worth Pursuing",
     icon: CheckCircle2,
-    accent: "border-green-500 bg-green-50 text-green-700",
+    color: "text-green-700 border-green-300 bg-green-50",
+    dotColor: "border-green-600 bg-green-600",
   },
   {
-    key: "unsure",
-    label: "Unsure: needs more evidence",
-    description: "Promising but with open questions. Capture what you would need to learn next.",
+    value: "unsure",
+    label: "Unsure: Needs More Evidence",
     icon: HelpCircle,
-    accent: "border-orange-500 bg-orange-50 text-orange-700",
+    color: "text-orange-700 border-orange-300 bg-orange-50",
+    dotColor: "border-orange-500 bg-orange-500",
   },
   {
-    key: "invalid",
-    label: "Invalid: not worth pursuing",
-    description: "The metrics don't support it. Park the solution and focus effort elsewhere.",
+    value: "invalid",
+    label: "Invalid: Not Worth Pursuing",
     icon: XCircle,
-    accent: "border-red-500 bg-red-50 text-red-700",
+    color: "text-red-700 border-red-300 bg-red-50",
+    dotColor: "border-red-500 bg-red-500",
+  },
+]
+
+const VERDICT_GUIDANCE: string[] = [
+  "Look at the spread of scores, not just the average. A single very low score on impact or feasibility can sink an otherwise promising solution.",
+  "Strong valids tend to combine high impact with achievable feasibility, manageable cost, and reasonable time. Strong invalids fail on impact or stack two or more weak metrics.",
+  "If the scores are mixed and you can name what would tip the decision, you're in \"unsure\" territory. Capture the open question rather than forcing a verdict.",
+  "Pressure-test extremes. Optimism bias inflates impact; pessimism inflates cost. Ask what evidence each score is built on.",
+  "A slow or expensive solution can still be valid when the impact is large and the alternatives are worse. Don't reject big bets just because they're hard.",
+]
+
+type VerdictCaseStudy = {
+  company: string
+  icon: LucideIcon
+  context: string
+  verdict: VerdictKey
+  reasoning: string
+  outcome: string
+}
+
+const VERDICT_LABELS: Record<VerdictKey, string> = {
+  valid: "Valid",
+  unsure: "Unsure",
+  invalid: "Invalid",
+}
+
+const VERDICT_BADGES: Record<VerdictKey, string> = {
+  valid: "bg-green-500 text-white",
+  unsure: "bg-orange-500 text-white",
+  invalid: "bg-red-500 text-white",
+}
+
+const VERDICT_CASE_STUDIES: VerdictCaseStudy[] = [
+  {
+    company: "Netflix (DVD to streaming, 2007)",
+    icon: Rocket,
+    context: "Netflix had a profitable DVD-by-mail business when leadership had to decide whether to commit to streaming as the next core business. The metrics: high impact, mid-feasibility, high cost, multi-year time.",
+    verdict: "valid",
+    reasoning: "Impact was clearly high; streaming would redefine the category. Feasibility was reasonable since bandwidth and licensing were tractable. Cost was heavy but bearable, and the time investment was justified by being early.",
+    outcome: "Streaming became the core business and Netflix became one of the most valuable media companies in the world. The honest verdict justified the heavy investment.",
+  },
+  {
+    company: "Google Glass (consumer launch, 2013)",
+    icon: Glasses,
+    context: "Google had a working AR headset prototype with strong hardware. The team had to decide whether to launch a consumer product or keep iterating privately. Impact was high in theory but customer acceptance, social norms, and privacy laws were all open questions.",
+    verdict: "unsure",
+    reasoning: "Hardware feasibility was high; social product-market fit was unproven. Mixed scores plus high uncertainty meant the right verdict was \"unsure, run more learning experiments\" rather than \"valid, scale it\".",
+    outcome: "The consumer launch was premature, drew public mockery, and was shelved. An honest \"unsure\" verdict would have led to more private testing before staking the brand on it.",
+  },
+  {
+    company: "Quibi (2018-2020)",
+    icon: Film,
+    context: "A $1.75B-funded short-form premium mobile video service. The team had to decide whether to spend heavily on original content for an unproven format.",
+    verdict: "invalid",
+    reasoning: "Impact looked high on paper (huge mobile audience) but rested on an untested assumption that people wanted premium short-form video on phones. Cost was enormous and the format was easy to copy. The verdict treated potential impact as proven.",
+    outcome: "Shut down six months after launch. A more honest verdict, demanding evidence for the impact assumption first, would have saved the investment or scoped it down to a much smaller bet.",
   },
 ]
 
@@ -66,6 +125,9 @@ export default function VerdictPage() {
   const currentKey = (["valid", "unsure", "invalid"] as const).includes(validationStatus as VerdictKey)
     ? (validationStatus as VerdictKey)
     : null
+
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => { setMounted(true) }, [])
 
   const handleChoose = (key: VerdictKey) => {
     setValidationStatus(key as ValidationStatus)
@@ -108,47 +170,122 @@ export default function VerdictPage() {
           </div>
         </div>
 
-        <div className="flex flex-col gap-3">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Decision</h3>
-          <div className="grid gap-3 md:grid-cols-3">
-            {VERDICTS.map(({ key, label, description, icon: Icon, accent }) => {
-              const selected = currentKey === key
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => handleChoose(key)}
-                  aria-pressed={selected}
-                  className={cn(
-                    "relative flex flex-col gap-2 rounded-xl border-2 p-5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                    selected
-                      ? accent + " shadow-md"
-                      : "border-border bg-card hover:border-primary/40 hover:bg-primary/5"
-                  )}
-                >
-                  <Icon className={cn("h-5 w-5", selected ? "" : "text-muted-foreground")} />
-                  <span className="text-md font-semibold">{label}</span>
-                  <span className={cn("text-sm leading-relaxed", selected ? "" : "text-muted-foreground")}>
-                    {description}
-                  </span>
-                </button>
-              )
-            })}
-          </div>
-        </div>
+        <Tabs defaultValue="guidance" className="flex flex-col gap-4">
+          <TabsList className="self-center">
+            <TabsTrigger value="guidance">Your Strategy</TabsTrigger>
+            <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
+          </TabsList>
 
-        <div className="flex flex-col gap-2">
-          <label className="text-sm font-semibold uppercase tracking-wide text-muted-foreground" htmlFor="verdict-reason">
-            Reasoning (optional)
-          </label>
-          <Textarea
-            id="verdict-reason"
-            value={validationReason}
-            onChange={(e) => setValidationReason(e.target.value)}
-            placeholder="Capture the thinking behind your verdict. What clinched it? What would change your mind?"
-            rows={4}
-          />
-        </div>
+          <TabsContent value="guidance">
+            <div className="rounded-xl bg-primary p-8 flex flex-col gap-5">
+              <div className="flex flex-col gap-3">
+                <p className="text-md font-medium text-white">How to weigh your scores</p>
+                <ul className="flex flex-col gap-2">
+                  {VERDICT_GUIDANCE.map((g) => (
+                    <li key={g} className="text-sm text-white flex items-start gap-2">
+                      <span className="text-white/50 mt-0.5">&bull;</span>
+                      <span>{g}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="flex flex-col gap-2 pt-2 border-t border-white/20">
+                <p className="text-md font-medium text-white">Reasoning (optional)</p>
+                <Textarea
+                  rows={3}
+                  placeholder="Capture the thinking behind your verdict. What clinched it? What would change your mind?"
+                  value={validationReason}
+                  onChange={(e) => setValidationReason(e.target.value)}
+                  className="resize-none text-md focus-visible:ring-1 bg-white border-white text-foreground"
+                />
+              </div>
+
+              <div className="flex flex-col gap-3 pt-2 border-t border-white/20">
+                <p className="text-md font-medium text-white">Your verdict</p>
+                {VERDICT_OPTIONS.map((option) => {
+                  const Icon = option.icon
+                  const selected = mounted && currentKey === option.value
+                  return (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => handleChoose(option.value)}
+                      aria-pressed={selected}
+                      className={cn(
+                        "flex items-center gap-3 rounded-lg border-2 px-4 py-3 text-left transition-all",
+                        selected
+                          ? option.color
+                          : "bg-white/10 border-white/20 text-white hover:bg-white/20",
+                      )}
+                    >
+                      <div className={cn(
+                        "flex items-center justify-center w-5 h-5 rounded-full border-2 shrink-0 transition-colors",
+                        selected ? option.dotColor : "border-white/50",
+                      )}>
+                        {selected && (
+                          <svg className="w-3 h-3 text-white" viewBox="0 0 12 12" fill="none">
+                            <path d="M2.5 6L5 8.5L9.5 3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Icon className="h-4 w-4" />
+                        <span className="text-md font-medium">{option.label}</span>
+                      </div>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          </TabsContent>
+
+          <TabsContent value="case-studies">
+            <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-4">
+              <p className="text-md text-white">
+                See how teams have weighed their metrics into a verdict. Each example shows the call they made, the reasoning behind it, and what happened next.
+              </p>
+              <div className="flex flex-col gap-4">
+                {VERDICT_CASE_STUDIES.map((cs) => {
+                  const Icon = cs.icon
+                  return (
+                    <div
+                      key={cs.company}
+                      className="rounded-lg border border-white/10 bg-white/10 p-5 flex flex-col gap-3"
+                    >
+                      <div className="flex items-center gap-2.5">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/20 text-white">
+                          <Icon className="h-4 w-4" />
+                        </span>
+                        <p className="text-md font-semibold text-white">{cs.company}</p>
+                        <span className={cn(
+                          "ml-auto rounded-full px-3 py-0.5 text-sm font-semibold",
+                          VERDICT_BADGES[cs.verdict],
+                        )}>
+                          {VERDICT_LABELS[cs.verdict]}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-xs font-semibold uppercase tracking-wide text-white/70">Context</span>
+                        <p className="mt-0.5 text-md text-white">{cs.context}</p>
+                      </div>
+                      <div className="rounded-md border border-white/10 bg-white/5 p-3">
+                        <span className="text-xs font-semibold uppercase tracking-wide text-white/70">
+                          Reasoning ({VERDICT_LABELS[cs.verdict]})
+                        </span>
+                        <p className="mt-1 text-md text-white">{cs.reasoning}</p>
+                      </div>
+                      <div className="border-t border-white/10 pt-3 mt-1">
+                        <span className="text-xs font-semibold uppercase tracking-wide text-white/70">Outcome</span>
+                        <p className="mt-0.5 text-md text-white">{cs.outcome}</p>
+                      </div>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </TabsContent>
+        </Tabs>
 
         <div className="flex justify-between mt-2">
           {prevPath ? (
