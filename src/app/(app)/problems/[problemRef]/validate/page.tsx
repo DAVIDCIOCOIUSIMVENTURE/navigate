@@ -196,14 +196,14 @@ export default function VerdictPage() {
           <div className={cn("grid gap-3", containerSize === "narrow" ? "grid-cols-1" : "grid-cols-2")}>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-md font-bold shrink-0">1</span>
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white text-md font-bold shrink-0">1</span>
                 <div>
                   <p className="font-semibold text-foreground">How many customers &amp; how often</p>
                   <p className="text-md">Estimate the size of the audience and how frequently they encounter this problem.</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-md font-bold shrink-0">2</span>
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500 text-white text-md font-bold shrink-0">2</span>
                 <div>
                   <p className="font-semibold text-foreground">How much is it worth</p>
                   <p className="text-md">Quantify how much customers would pay or benefit from a solution.</p>
@@ -212,14 +212,14 @@ export default function VerdictPage() {
             </div>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-md font-bold shrink-0">3</span>
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-amber-500 text-white text-md font-bold shrink-0">3</span>
                 <div>
                   <p className="font-semibold text-foreground">Competitive landscape</p>
                   <p className="text-md">Assess the cost of switching, how effective existing solutions are, and how big the competitors are.</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-md font-bold shrink-0">4</span>
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-rose-500 text-white text-md font-bold shrink-0">4</span>
                 <div>
                   <p className="font-semibold text-foreground">Record your verdict</p>
                   <p className="text-md">Decide whether the problem is <strong className="text-foreground">Valid</strong>, <strong className="text-foreground">Unsure</strong>, or <strong className="text-foreground">Invalid</strong>.</p>

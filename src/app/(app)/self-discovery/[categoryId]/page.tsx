@@ -10,6 +10,15 @@ import { Compass } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 
+const QUESTION_COLORS = [
+    "bg-indigo-500",
+    "bg-emerald-500",
+    "bg-amber-500",
+    "bg-rose-500",
+    "bg-sky-500",
+    "bg-fuchsia-500",
+]
+
 export default function CategoryPage({
     params,
 }: {
@@ -74,7 +83,10 @@ export default function CategoryPage({
                                     onClick={() => router.push(`/self-discovery/${category.url}/${question.url}`)}
                                     className="flex items-start gap-3 w-full text-left p-3 rounded-md border hover:bg-accent hover:text-primary transition-colors"
                                 >
-                                    <span className="flex items-center justify-center w-7 h-7 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">
+                                    <span className={cn(
+                                        "flex items-center justify-center w-7 h-7 rounded-full text-white text-sm font-bold shrink-0",
+                                        QUESTION_COLORS[index % QUESTION_COLORS.length],
+                                    )}>
                                         {index + 1}
                                     </span>
                                     <span className="flex flex-col gap-0.5">

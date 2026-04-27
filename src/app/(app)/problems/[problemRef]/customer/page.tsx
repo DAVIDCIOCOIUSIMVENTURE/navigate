@@ -121,14 +121,14 @@ export default function CustomerSegmentPage() {
         <h3 className="mt-4 text-xl font-bold text-foreground">What you&apos;ll do</h3>
         <div className="flex flex-col gap-3 text-md text-muted-foreground">
           <div className="flex items-center gap-3">
-            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">1</span>
+            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white text-sm font-bold shrink-0">1</span>
             <div>
               <p className="font-semibold text-foreground">Describe your customer</p>
               <p className="text-md">Paint a clear picture of who experiences this problem, using the filters above to be as specific as possible.</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground text-sm font-bold shrink-0">2</span>
+            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500 text-white text-sm font-bold shrink-0">2</span>
             <div>
               <p className="font-semibold text-foreground">Estimate the segment size</p>
               <p className="text-md">How many people fit this description? An order-of-magnitude is fine.</p>
