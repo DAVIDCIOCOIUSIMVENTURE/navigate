@@ -296,16 +296,6 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                       <div className="flex items-center gap-1">
                         {showEditDelete && (
                           <>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 text-muted-foreground"
-                              onClick={() => setEditingSolution(solution)}
-                              aria-label="Edit solution"
-                            >
-                              <Pencil className="h-3.5 w-3.5" />
-                              <span className="hidden md:inline ml-1">Edit</span>
-                            </Button>
                             <ConfirmDialog
                               trigger={
                                 <Button
@@ -321,6 +311,16 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                               description="This will permanently delete this solution and any associated validation data."
                               onConfirm={() => dispatch.solutions.delete(solution.id)}
                             />
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 text-muted-foreground"
+                              onClick={() => setEditingSolution(solution)}
+                              aria-label="Edit solution"
+                            >
+                              <Pencil className="h-3.5 w-3.5" />
+                              <span className="hidden md:inline ml-1">Edit</span>
+                            </Button>
                           </>
                         )}
                         <Button
