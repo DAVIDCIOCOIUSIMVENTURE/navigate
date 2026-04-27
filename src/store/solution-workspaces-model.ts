@@ -19,6 +19,7 @@ export type WorkspacePatch = Partial<
     | "analogyDomain"
     | "analogyInsight"
     | "improvementResponses"
+    | "scamperIdeas"
   >
 >
 

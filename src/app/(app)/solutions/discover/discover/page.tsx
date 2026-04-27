@@ -14,9 +14,9 @@ import { SCAMPER_CASE_STUDIES } from "./case-studies"
 import { IMPROVE_CASE_STUDIES } from "./improve-case-studies"
 import { REVERSE_CASE_STUDIES } from "./reverse-case-studies"
 import { ANALOGY_CASE_STUDIES } from "./analogy-case-studies"
-import type { ImprovementResponses, Solution } from "@/types/solution"
+import type { ImprovementItem, ImprovementResponses } from "@/types/solution"
 import {
-  Shuffle, RotateCcw, Globe, TrendingUp, Plus, Trash2, Pencil, Check, X,
+  Shuffle, RotateCcw, Globe, TrendingUp, Plus, Trash2, Check,
   ArrowLeft, ArrowRight, Wind, Tv, Armchair, Package, Smartphone, Coffee,
   Home, Pizza, ShoppingBag, Utensils, Flag, Leaf, Sparkles, ShieldCheck,
   Truck, Heart, Rows3, LayoutPanelTop, Wrench, type LucideIcon,
@@ -154,15 +154,6 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
   },
 ]
 
-const SCAMPER_LETTER_BY_KEY: Record<ScamperKey, string> = SCAMPER_PROMPTS.reduce(
-  (acc, { key, letter }) => ({ ...acc, [key]: letter }),
-  {} as Record<ScamperKey, string>
-)
-const SCAMPER_COLOR_BY_KEY: Record<ScamperKey, string> = SCAMPER_PROMPTS.reduce(
-  (acc, { key, color }) => ({ ...acc, [key]: color }),
-  {} as Record<ScamperKey, string>
-)
-
 function ScamperDimensionContent({
   dimensionKey,
   placeholder = "Type an idea and press Enter...",
@@ -170,11 +161,9 @@ function ScamperDimensionContent({
   dimensionKey: ScamperKey
   placeholder?: string
 }) {
-  const { candidates, addCandidate, updateCandidate, removeCandidate } = useDiscovery()
+  const { candidates, addCandidate, scamperIdeas, setScamperIdeas } = useDiscovery()
 
-  const items = candidates.filter(
-    (c) => c.inspirationSource === "scamper" && c.inspirationDetail === dimensionKey
-  )
+  const items = scamperIdeas[dimensionKey] ?? []
   const [adding, setAdding] = useState(false)
   const [draft, setDraft] = useState("")
   const inputRef = useRef<HTMLInputElement>(null)
@@ -184,10 +173,15 @@ function ScamperDimensionContent({
     if (adding) inputRef.current?.focus()
   }, [adding])
 
+  const updateDimension = (next: ImprovementItem[]) => {
+    setScamperIdeas({ ...scamperIdeas, [dimensionKey]: next })
+  }
+
   const addItem = () => {
     const text = draft.trim()
     if (text) {
-      addCandidate({ title: text, inspirationSource: "scamper", inspirationDetail: dimensionKey })
+      const id = items.length > 0 ? Math.max(...items.map((i) => i.id)) + 1 : 1
+      updateDimension([...items, { id, text }])
     }
     setDraft("")
     setAdding(false)
@@ -195,7 +189,27 @@ function ScamperDimensionContent({
 
   const updateItem = (id: number, text: string) => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(() => updateCandidate(id, { title: text }), 500)
+    debounceRef.current = setTimeout(() => {
+      updateDimension(items.map((i) => (i.id === id ? { ...i, text } : i)))
+    }, 500)
+  }
+
+  const removeItem = (id: number) => {
+    updateDimension(items.filter((i) => i.id !== id))
+  }
+
+  const detailKey = (id: number) => `${dimensionKey}:${id}`
+
+  const isAdded = (id: number) =>
+    candidates.some(
+      (c) => c.inspirationSource === "scamper" && c.inspirationDetail === detailKey(id)
+    )
+
+  const handleAddAsSolution = (item: ImprovementItem) => {
+    const text = item.text.trim()
+    if (!text) return
+    if (isAdded(item.id)) return
+    addCandidate({ title: text, inspirationSource: "scamper", inspirationDetail: detailKey(item.id) })
   }
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -205,23 +219,43 @@ function ScamperDimensionContent({
 
   return (
     <div className="flex flex-col gap-2">
-      {items.map((item) => (
-        <div key={item.id} className="flex items-center gap-2">
-          <Input
-            defaultValue={item.title}
-            onChange={(e) => updateItem(item.id, e.target.value)}
-            className="flex-1 text-sm bg-white border-white text-foreground"
-          />
-          <Button
-            size="icon"
-            variant="ghost"
-            className="shrink-0 h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
-            onClick={() => removeCandidate(item.id)}
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
-        </div>
-      ))}
+      {items.map((item) => {
+        const added = isAdded(item.id)
+        return (
+          <div key={item.id} className="flex items-center gap-2">
+            <Input
+              defaultValue={item.text}
+              onChange={(e) => updateItem(item.id, e.target.value)}
+              className="flex-1 text-sm bg-white border-white text-foreground"
+            />
+            {added ? (
+              <Badge variant="outline" className="shrink-0 gap-1 border-white/40 text-white/90">
+                <Check className="h-3 w-3" />
+                Solution
+              </Badge>
+            ) : (
+              <Button
+                size="sm"
+                variant="on-primary"
+                className="shrink-0 h-8 gap-1"
+                disabled={!item.text.trim()}
+                onClick={() => handleAddAsSolution(item)}
+              >
+                <Plus className="h-3.5 w-3.5" />
+                Add as Solution
+              </Button>
+            )}
+            <Button
+              size="icon"
+              variant="ghost"
+              className="shrink-0 h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
+              onClick={() => removeItem(item.id)}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+        )
+      })}
 
       {adding ? (
         <Input
@@ -684,11 +718,9 @@ function ImprovementDimension({
   prompt: string
   example: string
 }) {
-  const { candidates, addCandidate, updateCandidate, removeCandidate } = useDiscovery()
+  const { candidates, addCandidate, improvementResponses, setImprovementResponses } = useDiscovery()
 
-  const items = candidates.filter(
-    (c) => c.inspirationSource === "improve" && c.inspirationDetail === dimensionKey
-  )
+  const items = improvementResponses[dimensionKey] ?? []
   const [adding, setAdding] = useState(false)
   const [draft, setDraft] = useState("")
   const inputRef = useRef<HTMLInputElement>(null)
@@ -698,10 +730,15 @@ function ImprovementDimension({
     if (adding) inputRef.current?.focus()
   }, [adding])
 
+  const updateDimension = (next: ImprovementItem[]) => {
+    setImprovementResponses({ ...improvementResponses, [dimensionKey]: next })
+  }
+
   const addItem = () => {
     const text = draft.trim()
     if (text) {
-      addCandidate({ title: text, inspirationSource: "improve", inspirationDetail: dimensionKey })
+      const id = items.length > 0 ? Math.max(...items.map((i) => i.id)) + 1 : 1
+      updateDimension([...items, { id, text }])
     }
     setDraft("")
     setAdding(false)
@@ -709,7 +746,27 @@ function ImprovementDimension({
 
   const updateItem = (id: number, text: string) => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
-    debounceRef.current = setTimeout(() => updateCandidate(id, { title: text }), 500)
+    debounceRef.current = setTimeout(() => {
+      updateDimension(items.map((i) => (i.id === id ? { ...i, text } : i)))
+    }, 500)
+  }
+
+  const removeItem = (id: number) => {
+    updateDimension(items.filter((i) => i.id !== id))
+  }
+
+  const detailKey = (id: number) => `${dimensionKey}:${id}`
+
+  const isAdded = (id: number) =>
+    candidates.some(
+      (c) => c.inspirationSource === "improve" && c.inspirationDetail === detailKey(id)
+    )
+
+  const handleAddAsSolution = (item: ImprovementItem) => {
+    const text = item.text.trim()
+    if (!text) return
+    if (isAdded(item.id)) return
+    addCandidate({ title: text, inspirationSource: "improve", inspirationDetail: detailKey(item.id) })
   }
 
   const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -723,23 +780,43 @@ function ImprovementDimension({
       <p className="text-sm text-white/80">{prompt}</p>
       <p className="text-xs italic text-white/60">Example: {example}</p>
 
-      {items.map((item) => (
-        <div key={item.id} className="flex items-center gap-2">
-          <Input
-            defaultValue={item.title}
-            onChange={(e) => updateItem(item.id, e.target.value)}
-            className="flex-1 text-sm bg-white border-white text-foreground"
-          />
-          <Button
-            size="icon"
-            variant="ghost"
-            className="shrink-0 h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
-            onClick={() => removeCandidate(item.id)}
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
-        </div>
-      ))}
+      {items.map((item) => {
+        const added = isAdded(item.id)
+        return (
+          <div key={item.id} className="flex items-center gap-2">
+            <Input
+              defaultValue={item.text}
+              onChange={(e) => updateItem(item.id, e.target.value)}
+              className="flex-1 text-sm bg-white border-white text-foreground"
+            />
+            {added ? (
+              <Badge variant="outline" className="shrink-0 gap-1 border-white/40 text-white/90">
+                <Check className="h-3 w-3" />
+                Solution
+              </Badge>
+            ) : (
+              <Button
+                size="sm"
+                variant="on-primary"
+                className="shrink-0 h-8 gap-1"
+                disabled={!item.text.trim()}
+                onClick={() => handleAddAsSolution(item)}
+              >
+                <Plus className="h-3.5 w-3.5" />
+                Add as Solution
+              </Button>
+            )}
+            <Button
+              size="icon"
+              variant="ghost"
+              className="shrink-0 h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
+              onClick={() => removeItem(item.id)}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+        )
+      })}
 
       {adding ? (
         <Input
@@ -864,167 +941,6 @@ function ImprovementForm() {
         </Tabs>
       )}
     </div>
-  )
-}
-
-/* -- Candidates Section -- */
-
-const SOURCE_LABELS: Record<string, string> = {
-  scamper: "SCAMPER",
-  reverse: "Reverse",
-  analogy: "Analogy",
-  improve: "Improve",
-  freeform: "Freeform",
-}
-
-function CandidatesSection() {
-  const { candidates, addCandidate, updateCandidate, removeCandidate } = useDiscovery()
-
-  const [addingNew, setAddingNew] = useState(false)
-  const [editingId, setEditingId] = useState<number | null>(null)
-  const [draftTitle, setDraftTitle] = useState("")
-  const [draftDesc, setDraftDesc] = useState("")
-
-  const startAdd = () => {
-    setAddingNew(true)
-    setDraftTitle("")
-    setDraftDesc("")
-  }
-
-  const confirmAdd = () => {
-    const title = draftTitle.trim()
-    if (!title) return
-    const created = addCandidate({ title, inspirationSource: "freeform", inspirationDetail: "" })
-    if (created && draftDesc.trim()) {
-      updateCandidate(created.id, { description: draftDesc.trim() })
-    }
-    setAddingNew(false)
-  }
-
-  const startEdit = (c: Solution) => {
-    setEditingId(c.id)
-    setDraftTitle(c.title)
-    setDraftDesc(c.description)
-  }
-
-  const confirmEdit = () => {
-    if (editingId === null) return
-    updateCandidate(editingId, { title: draftTitle.trim(), description: draftDesc.trim() })
-    setEditingId(null)
-  }
-
-  return (
-    <>
-      <h3 className="text-lg font-semibold">Your Candidates</h3>
-
-      {candidates.length === 0 && !addingNew && (
-        <div className="flex flex-col items-center justify-center gap-3 py-8 rounded-lg border border-dashed">
-          <p className="text-sm text-muted-foreground">No candidates yet.</p>
-          <p className="text-xs text-muted-foreground">Use the brainstorming tool above to generate ideas, or add one manually.</p>
-        </div>
-      )}
-
-      <div className="flex flex-col gap-3">
-        {candidates.map((candidate) => (
-          <div key={candidate.id} className="rounded-lg border bg-card p-4 flex flex-col gap-2">
-            {editingId === candidate.id ? (
-              <>
-                <Input
-                  value={draftTitle}
-                  onChange={(e) => setDraftTitle(e.target.value)}
-                  placeholder="Title"
-                  className="font-medium"
-                  autoFocus
-                />
-                <Textarea
-                  value={draftDesc}
-                  onChange={(e) => setDraftDesc(e.target.value)}
-                  placeholder="Description"
-                  rows={3}
-                />
-                <div className="flex gap-2 justify-end">
-                  <Button size="sm" variant="ghost" onClick={() => setEditingId(null)}>
-                    <X className="h-3.5 w-3.5 mr-1" />Cancel
-                  </Button>
-                  <Button size="sm" onClick={confirmEdit} disabled={!draftTitle.trim()}>
-                    <Check className="h-3.5 w-3.5 mr-1" />Save
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2">
-                    {candidate.inspirationSource === "scamper" && candidate.inspirationDetail in SCAMPER_LETTER_BY_KEY && (
-                      <span
-                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${SCAMPER_COLOR_BY_KEY[candidate.inspirationDetail as ScamperKey]} text-white text-[10px] font-bold`}
-                        title={`SCAMPER: ${candidate.inspirationDetail}`}
-                      >
-                        {SCAMPER_LETTER_BY_KEY[candidate.inspirationDetail as ScamperKey]}
-                      </span>
-                    )}
-                    <p className="text-sm font-semibold">{candidate.title}</p>
-                    {candidate.inspirationSource && (
-                      <Badge variant="outline" className="text-[10px]">
-                        {SOURCE_LABELS[candidate.inspirationSource] ?? candidate.inspirationSource}
-                      </Badge>
-                    )}
-                  </div>
-                  {candidate.description && (
-                    <p className="text-xs text-muted-foreground mt-1">{candidate.description}</p>
-                  )}
-                </div>
-                <div className="flex gap-1 shrink-0">
-                  <Button size="icon" variant="ghost" className="h-8 w-8" onClick={() => startEdit(candidate)}>
-                    <Pencil className="h-3.5 w-3.5" />
-                  </Button>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="h-8 w-8 text-muted-foreground hover:text-foreground"
-                    onClick={() => removeCandidate(candidate.id)}
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-              </div>
-            )}
-          </div>
-        ))}
-
-        {addingNew && (
-          <div className="rounded-lg border-2 border-dashed border-primary/30 bg-primary/5 p-4 flex flex-col gap-2">
-            <Input
-              value={draftTitle}
-              onChange={(e) => setDraftTitle(e.target.value)}
-              placeholder="Solution title"
-              className="font-medium"
-              autoFocus
-            />
-            <Textarea
-              value={draftDesc}
-              onChange={(e) => setDraftDesc(e.target.value)}
-              placeholder="Describe the solution idea..."
-              rows={3}
-            />
-            <div className="flex gap-2 justify-end">
-              <Button size="sm" variant="ghost" onClick={() => setAddingNew(false)}>
-                <X className="h-3.5 w-3.5 mr-1" />Cancel
-              </Button>
-              <Button size="sm" onClick={confirmAdd} disabled={!draftTitle.trim()}>
-                <Check className="h-3.5 w-3.5 mr-1" />Add
-              </Button>
-            </div>
-          </div>
-        )}
-      </div>
-
-      {!addingNew && (
-        <Button variant="dashed" onClick={startAdd} className="gap-2 self-start">
-          <Plus className="h-4 w-4" />Add Candidate
-        </Button>
-      )}
-    </>
   )
 }
 
@@ -1436,8 +1352,6 @@ export default function DiscoverPage() {
               <TabsContent value="strategy">
                 <div className="flex flex-col gap-6">
                   <ScamperForm />
-                  <hr className="border-border/40" />
-                  <CandidatesSection />
                 </div>
               </TabsContent>
               <TabsContent value="case-studies">
@@ -1458,8 +1372,6 @@ export default function DiscoverPage() {
               <TabsContent value="strategy">
                 <div className="flex flex-col gap-6">
                   <ReverseBrainstormForm />
-                  <hr className="border-border/40" />
-                  <CandidatesSection />
                 </div>
               </TabsContent>
               <TabsContent value="case-studies">
@@ -1479,8 +1391,6 @@ export default function DiscoverPage() {
               <TabsContent value="strategy">
                 <div className="flex flex-col gap-6">
                   <AnalogyForm />
-                  <hr className="border-border/40" />
-                  <CandidatesSection />
                 </div>
               </TabsContent>
               <TabsContent value="case-studies">
@@ -1500,8 +1410,6 @@ export default function DiscoverPage() {
               <TabsContent value="strategy">
                 <div className="flex flex-col gap-6">
                   <ImprovementForm />
-                  <hr className="border-border/40" />
-                  <CandidatesSection />
                 </div>
               </TabsContent>
               <TabsContent value="case-studies">

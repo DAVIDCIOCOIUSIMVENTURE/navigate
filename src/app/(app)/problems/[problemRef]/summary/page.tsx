@@ -419,7 +419,7 @@ export default function SummaryPage() {
                   try {
                     localStorage.setItem("navigate-active-discovery-problem", String(problemRef))
                   } catch { /* ignore */ }
-                  router.push("/solutions/discover/introduction")
+                  router.push("/solutions/discover/choose-discovery")
                 }}
               >
                 <Lightbulb className="h-4 w-4 mr-2" />
@@ -453,7 +453,7 @@ export default function SummaryPage() {
                       try {
                         localStorage.setItem("navigate-active-discovery-problem", String(problemRef))
                       } catch { /* ignore */ }
-                      router.push("/solutions/discover/introduction")
+                      router.push("/solutions/discover/choose-discovery")
                     }}
                   >
                     <Lightbulb className="h-4 w-4 mr-2" />

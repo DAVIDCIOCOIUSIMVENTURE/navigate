@@ -24,7 +24,11 @@ export function SearchSolutionDialog({ open, onOpenChange }: SearchSolutionDialo
 
   function handleDiscover() {
     handleClose()
-    router.push("/solutions/discover/introduction")
+    // Clear any previously-active problem so the user lands on Select a Problem.
+    try {
+      localStorage.removeItem("navigate-active-discovery-problem")
+    } catch { /* ignore */ }
+    router.push("/solutions/discover/select-problem")
   }
 
   return (

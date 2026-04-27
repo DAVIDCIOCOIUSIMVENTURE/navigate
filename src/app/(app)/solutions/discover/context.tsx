@@ -15,6 +15,7 @@ import type {
   InspirationSource,
   Solution,
 } from "@/types/solution"
+type ScamperIdeasMap = Record<string, ImprovementItem[]>
 import { DEFAULT_IMPROVEMENT } from "@/types/solution"
 import type { Problem } from "@/store/problems-model"
 
@@ -47,6 +48,8 @@ type DiscoveryContextValue = {
   setAnalogyInsight: (val: string) => void
   improvementResponses: ImprovementResponses
   setImprovementResponses: (val: ImprovementResponses) => void
+  scamperIdeas: ScamperIdeasMap
+  setScamperIdeas: (val: ScamperIdeasMap) => void
   // Solution bank entries scoped to this workspace
   candidates: Solution[]
   addCandidate: (input: { title: string; inspirationSource: InspirationSource; inspirationDetail: string }) => Solution | null
@@ -131,6 +134,7 @@ export function DiscoveryProvider({ children }: { children: ReactNode }) {
   const analogyDomain = workspace?.analogyDomain ?? ""
   const analogyInsight = workspace?.analogyInsight ?? ""
   const improvementResponses = workspace?.improvementResponses ?? DEFAULT_IMPROVEMENT
+  const scamperIdeas = (workspace?.scamperIdeas ?? {}) as ScamperIdeasMap
 
   const setAnalysisToolType = useCallback((val: AnalysisToolType) => patch("analysisToolType", val), [patch])
   const setDiscoveryToolType = useCallback((val: DiscoveryToolType) => patch("discoveryToolType", val), [patch])
@@ -143,6 +147,7 @@ export function DiscoveryProvider({ children }: { children: ReactNode }) {
   const setAnalogyDomain = useCallback((val: string) => patch("analogyDomain", val), [patch])
   const setAnalogyInsight = useCallback((val: string) => patch("analogyInsight", val), [patch])
   const setImprovementResponses = useCallback((val: ImprovementResponses) => patch("improvementResponses", val), [patch])
+  const setScamperIdeas = useCallback((val: ScamperIdeasMap) => patch("scamperIdeas", val), [patch])
 
   const candidates = workspaceId != null
     ? allSolutions.filter((s) => s.workspaceId === workspaceId)
@@ -193,6 +198,7 @@ export function DiscoveryProvider({ children }: { children: ReactNode }) {
         analogyDomain, setAnalogyDomain,
         analogyInsight, setAnalogyInsight,
         improvementResponses, setImprovementResponses,
+        scamperIdeas, setScamperIdeas,
         candidates, addCandidate, updateCandidate, removeCandidate,
       }}
     >
@@ -207,14 +213,13 @@ export function useDiscovery() {
   return ctx
 }
 
-export type NavItem = { label: string; path: string; section: string | null }
+export type NavItem = { label: string; path: string }
 
 export const NAV_ITEMS: readonly NavItem[] = [
-  { label: "Introduction", path: "introduction", section: null },
-  { label: "Select a Problem", path: "select-problem", section: null },
-  { label: "Choose Your Discovery Method", path: "choose-discovery", section: "Discover" },
-  { label: "Discover Your Solution", path: "discover", section: null },
-  { label: "Summary", path: "summary", section: "Review" },
+  { label: "Select a Problem", path: "select-problem" },
+  { label: "Choose Discovery Method", path: "choose-discovery" },
+  { label: "Discover", path: "discover" },
+  { label: "Review", path: "summary" },
 ] as const
 
 const STEP_PATHS = NAV_ITEMS.map((item) => item.path)

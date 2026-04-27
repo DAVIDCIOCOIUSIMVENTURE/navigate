@@ -34,7 +34,11 @@ export default function SelectProblemPage() {
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <p className="text-md leading-relaxed">
-          Choose a problem to anchor your solution discovery. You can continue to the next step once a problem is selected.
+          Solution discovery helps you move from a validated problem to concrete solution candidates. You&apos;ll pick a problem, then use creative techniques to generate ideas. Each candidate you capture is added to your Solution Bank, where you can validate it later.
+        </p>
+
+        <p className="text-md leading-relaxed">
+          Choose a problem below to anchor your solution discovery. You can continue to the next step once a problem is selected.
         </p>
 
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 flex items-start gap-3">
