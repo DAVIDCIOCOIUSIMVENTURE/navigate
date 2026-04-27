@@ -36,6 +36,7 @@ import {
   ArrowUp,
   ArrowDown,
   ArrowUpDown,
+  Lightbulb,
 } from "lucide-react"
 import type { Solution } from "@/store/solutions-model"
 import { EditSolutionDialog } from "@/components/edit-solution-dialog"
@@ -322,6 +323,21 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                             />
                           </>
                         )}
+                        <Button
+                          variant="primary-outline"
+                          size="sm"
+                          className="h-7"
+                          onClick={() => {
+                            try {
+                              localStorage.setItem("navigate-active-discovery-problem", String(solution.problemId))
+                            } catch { /* ignore */ }
+                            router.push("/solutions/discover/summary")
+                          }}
+                          aria-label="Back to discovery"
+                        >
+                          <Lightbulb className="h-3.5 w-3.5" />
+                          <span className="hidden md:inline ml-1">Discovery</span>
+                        </Button>
                         <Button
                           size="sm"
                           className="h-7"

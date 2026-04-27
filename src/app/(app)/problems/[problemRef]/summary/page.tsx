@@ -303,10 +303,15 @@ export default function SummaryPage() {
               </p>
               <Button
                 className="self-start"
-                onClick={() => router.push("/solutions")}
+                onClick={() => {
+                  try {
+                    localStorage.setItem("navigate-active-discovery-problem", String(problemRef))
+                  } catch { /* ignore */ }
+                  router.push("/solutions/discover/introduction")
+                }}
               >
                 <Lightbulb className="h-4 w-4 mr-2" />
-                Continue to Solutions
+                Continue to Solution Discovery
               </Button>
             </div>
           )}
@@ -319,9 +324,30 @@ export default function SummaryPage() {
               </div>
               <p className="text-md text-muted-foreground">
                 Uncertainty is normal at this stage. It usually means you need more information
-                before you can confidently commit to solving this problem. You have two options:
+                before you can confidently commit to solving this problem. You have a few options:
               </p>
               <div className="flex flex-col gap-4 mt-1">
+                <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-2">
+                  <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
+                    <Lightbulb className="h-3.5 w-3.5 text-muted-foreground" /> Continue to solution discovery
+                  </h4>
+                  <p className="text-sm text-muted-foreground">
+                    Exploring possible solutions can sometimes sharpen your view of the problem itself. You can always come back and revisit your validation later if your thinking changes.
+                  </p>
+                  <Button
+                    size="sm"
+                    className="self-start mt-1"
+                    onClick={() => {
+                      try {
+                        localStorage.setItem("navigate-active-discovery-problem", String(problemRef))
+                      } catch { /* ignore */ }
+                      router.push("/solutions/discover/introduction")
+                    }}
+                  >
+                    <Lightbulb className="h-4 w-4 mr-2" />
+                    Continue to Solution Discovery
+                  </Button>
+                </div>
                 <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-2">
                   <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
                     <Copy className="h-3.5 w-3.5 text-muted-foreground" /> Duplicate and start again
