@@ -24,7 +24,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader className="px-6 py-6 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:py-4">
         <Link href="/" className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
-          <div className="flex items-center justify-center w-8 h-8 rounded-lg shrink-0">
+          <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary text-primary-foreground shrink-0">
             <CustomRocket className="h-5 w-5" />
           </div>
           <h1 className="text-lg font-semibold group-data-[collapsible=icon]:hidden">Navigate</h1>
@@ -36,7 +36,7 @@ export function AppSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton asChild tooltip="Dashboard" isActive={pathname === "/"}>
-                  <Link href="/" className="hover:bg-accent/50 transition-colors">
+                  <Link href="/" className="transition-colors">
                     <div className="flex items-center justify-center w-6 h-6 rounded-md">
                       <LayoutDashboard className="h-4 w-4" />
                     </div>
@@ -55,7 +55,7 @@ export function AppSidebar() {
               {navigationItems.innovation.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild tooltip={item.title} isActive={pathname.startsWith(item.url)}>
-                    <Link href={item.url} className="hover:bg-accent/50 transition-colors">
+                    <Link href={item.url} className="transition-colors">
                       <div className="flex items-center justify-center w-6 h-6 rounded-md">
                         <item.icon className="h-4 w-4" />
                       </div>

@@ -16,8 +16,8 @@
     --popover: 0 0% 100%;
     --popover-foreground: 198 22% 27%;
 
-    /* Primary: Indigo Purple */
-    --primary: 243 65% 61%;
+    /* Primary: Indigo Purple (rgb(73, 66, 207)) */
+    --primary: 243 70% 58%;
     --primary-foreground: 0 0% 100%;
 
     /* Secondary: Subtle purple tint */
@@ -39,7 +39,7 @@
     /* Borders & Inputs */
     --border: 260 12% 89%;
     --input: 260 12% 89%;
-    --ring: 243 65% 61%;
+    --ring: 243 70% 58%;
 
     /* Chart palette: purple-complementary */
     --chart-1: 262 70% 58%;
@@ -52,7 +52,7 @@
     --radius: 0.625rem;
 
     /* Primary dark variant */
-    --primary-dark: 243 65% 45%;
+    --primary-dark: 243 70% 44%;
     --primary-dark-foreground: 0 0% 100%;
 
     /* Primary light variant: tinted background */
@@ -60,13 +60,13 @@
     --primary-light-foreground: 262 40% 20%;
 
     /* Sidebar */
-    --sidebar-background: 243 50% 52%;
+    --sidebar-background: 0 0% 0%;
     --sidebar-foreground: 0 0% 100%;
     --sidebar-primary: 0 0% 100%;
-    --sidebar-primary-foreground: 243 65% 61%;
-    --sidebar-accent: 243 50% 45%;
+    --sidebar-primary-foreground: 243 70% 58%;
+    --sidebar-accent: 243 70% 58%;
     --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 243 50% 45%;
+    --sidebar-border: 0 0% 15%;
     --sidebar-ring: 0 0% 100%;
 
     /* Brand: keep distinct from primary for marketing/callout use */
@@ -130,13 +130,13 @@
     --chart-5: 326 70% 60%;
 
     /* Sidebar */
-    --sidebar-background: 243 50% 30%;
-    --sidebar-foreground: 260 20% 85%;
+    --sidebar-background: 0 0% 0%;
+    --sidebar-foreground: 0 0% 100%;
     --sidebar-primary: 260 10% 95%;
     --sidebar-primary-foreground: 262 60% 14%;
-    --sidebar-accent: 262 40% 22%;
-    --sidebar-accent-foreground: 260 10% 95%;
-    --sidebar-border: 262 30% 20%;
+    --sidebar-accent: 262 80% 68%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 0 0% 15%;
     --sidebar-ring: 262 80% 68%;
 
     /* Brand */
