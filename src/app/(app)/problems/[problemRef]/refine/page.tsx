@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
-import { useDiscovery, getAdjacentSteps } from "../context"
+import { useProblemValidation, getAdjacentSteps } from "../context"
 import type { AffectedGroup } from "@/types/solution"
 import { ROOT_CAUSES_CASE_STUDIES } from "./root-causes-case-studies"
 import { FIVE_WHYS_CASE_STUDIES } from "./five-whys-case-studies"
@@ -24,7 +24,7 @@ import {
 /* -- Root Causes Form -- */
 
 function RootCausesForm() {
-  const { rootCauses, setRootCauses, rootCauseNotes, setRootCauseNotes } = useDiscovery()
+  const { rootCauses, setRootCauses, rootCauseNotes, setRootCauseNotes } = useProblemValidation()
   const [adding, setAdding] = useState(false)
   const [draft, setDraft] = useState("")
   const inputRef = useRef<HTMLInputElement>(null)
@@ -119,7 +119,7 @@ function RootCausesForm() {
 const WHY_LABELS = ["Why 1", "Why 2", "Why 3", "Why 4", "Why 5"]
 
 function FiveWhysForm() {
-  const { fiveWhyChains, setFiveWhyChains } = useDiscovery()
+  const { fiveWhyChains, setFiveWhyChains } = useProblemValidation()
 
   const addChain = () => {
     const id = fiveWhyChains.length > 0 ? Math.max(...fiveWhyChains.map((c) => c.id)) + 1 : 1
@@ -208,7 +208,7 @@ const SEVERITY_OPTIONS = [
 ] as const
 
 function AffectedGroupsForm() {
-  const { affectedGroups, setAffectedGroups } = useDiscovery()
+  const { affectedGroups, setAffectedGroups } = useProblemValidation()
 
   const addGroup = () => {
     const id = affectedGroups.length > 0 ? Math.max(...affectedGroups.map((g) => g.id)) + 1 : 1
@@ -587,17 +587,8 @@ const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo:
 export default function RefinePage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { problemId, problem, analysisToolType } = useDiscovery()
-  const { prevPath, nextPath } = getAdjacentSteps(pathname)
-
-  // Bounce if no problem selected
-  useEffect(() => {
-    if (problemId == null) {
-      router.replace("/solutions/discover/select-problem")
-    }
-  }, [problemId, router])
-
-  if (problemId == null) return null
+  const { problemRef, problem, analysisToolType } = useProblemValidation()
+  const { prevPath, nextPath } = getAdjacentSteps(pathname, problemRef)
 
   const toolInfo = analysisToolType ? TOOL_INFO[analysisToolType] : null
 
@@ -685,7 +676,7 @@ export default function RefinePage() {
         {!analysisToolType && (
           <div className="flex flex-col items-center justify-center gap-3 py-8 rounded-lg border border-dashed">
             <p className="text-sm text-muted-foreground">No analysis type selected.</p>
-            <Button variant="outline" onClick={() => router.push(`/solutions/discover/choose-refinement`)}>
+            <Button variant="outline" onClick={() => router.push(`/problems/${problemRef}/choose-refinement`)}>
               <ArrowLeft className="h-4 w-4 mr-2" />Choose a Refinement Method
             </Button>
           </div>

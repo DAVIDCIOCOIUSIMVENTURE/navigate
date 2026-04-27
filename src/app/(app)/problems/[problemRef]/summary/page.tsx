@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   AlertCircle, GitFork, Users, LayoutTemplate,
   ArrowRight, CheckCircle2, HelpCircle, XCircle, Copy, RotateCcw, Lightbulb,
-  Target, BarChart2,
+  Target, BarChart2, Search, Repeat,
 } from "lucide-react"
 import { useProblemValidation, getAdjacentSteps } from "../context"
 import type { ValidationMetric } from "@/types/idea"
@@ -21,6 +21,12 @@ const sectionToneClasses = {
   purple: "bg-purple-500",
   emerald: "bg-emerald-500",
   primary: "bg-primary",
+} as const
+
+const ANALYSIS_TOOL_LABELS = {
+  "root-causes": { label: "Root Causes", icon: Search },
+  "five-whys": { label: "5 Whys", icon: Repeat },
+  "affected-groups": { label: "Affected Groups", icon: Users },
 } as const
 
 type SectionTone = keyof typeof sectionToneClasses
@@ -106,6 +112,11 @@ export default function SummaryPage() {
     status,
     reason,
     validationAssessment,
+    analysisToolType,
+    rootCauses,
+    rootCauseNotes,
+    fiveWhyChains,
+    affectedGroups,
   } = useProblemValidation()
 
   const { prevPath } = getAdjacentSteps(pathname, problemRef)
@@ -118,6 +129,14 @@ export default function SummaryPage() {
 
   const hasAnyMetric = [howManyPeople, howOften, worthToThem, costOfSwitching, solutionEffectiveness, competitorSize]
     .some((m) => m.value !== null || m.level !== "")
+
+  const refinementTool = analysisToolType ? ANALYSIS_TOOL_LABELS[analysisToolType] : null
+  const hasRefinementData =
+    !!analysisToolType ||
+    rootCauses.length > 0 ||
+    rootCauseNotes.trim().length > 0 ||
+    fiveWhyChains.length > 0 ||
+    affectedGroups.length > 0
 
   const handleDuplicate = () => {
     const problems = JSON.parse(localStorage.getItem("navigate-problems") || '{"problems":[]}')
@@ -168,7 +187,100 @@ export default function SummaryPage() {
           </dl>
         </div>
 
-        {/* ── Row 2: Core Problem + Solutions ── */}
+        {/* ── Row 2: Refinement ── */}
+        <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-3">
+          <SectionHeader
+            icon={refinementTool?.icon ?? Search}
+            label={`Refinement${refinementTool ? `: ${refinementTool.label}` : ""}`}
+            tone="purple"
+          />
+          {!hasRefinementData ? (
+            <EmptyText text="No refinement captured. Use the Refine step to dig into why this problem exists." />
+          ) : analysisToolType === "root-causes" ? (
+            <div className="flex flex-col gap-2">
+              {rootCauses.length > 0 ? (
+                <ul className="flex flex-col gap-1.5">
+                  {rootCauses.map((rc) => (
+                    <li key={rc.id} className="flex gap-2 text-sm bg-white/60 rounded-md px-3 py-2 border border-border">
+                      <span className="text-muted-foreground shrink-0">–</span>
+                      <span className="break-words min-w-0">
+                        {rc.description || <EmptyText text="Empty cause" />}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <EmptyText text="No root causes captured" />
+              )}
+              {rootCauseNotes.trim() && (
+                <Field label="Notes">
+                  <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-wrap">{rootCauseNotes}</p>
+                </Field>
+              )}
+            </div>
+          ) : analysisToolType === "five-whys" ? (
+            <div className="flex flex-col gap-3">
+              {fiveWhyChains.length > 0 ? (
+                fiveWhyChains.map((chain, i) => {
+                  const filled = chain.whys.filter((w) => w.trim())
+                  return (
+                    <div key={chain.id} className="rounded-md border border-border bg-white/60 p-3 flex flex-col gap-1.5">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                        Chain {i + 1} ({filled.length}/5 filled)
+                      </p>
+                      {filled.length === 0 ? (
+                        <EmptyText text="No whys captured in this chain" />
+                      ) : (
+                        <ol className="flex flex-col gap-1">
+                          {chain.whys.map((w, idx) =>
+                            w.trim() ? (
+                              <li key={idx} className="flex gap-2 text-sm">
+                                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-purple-500/15 text-[10px] font-bold text-purple-700">
+                                  {idx + 1}
+                                </span>
+                                <span className="break-words min-w-0">{w}</span>
+                              </li>
+                            ) : null
+                          )}
+                        </ol>
+                      )}
+                    </div>
+                  )
+                })
+              ) : (
+                <EmptyText text="No chains captured" />
+              )}
+            </div>
+          ) : analysisToolType === "affected-groups" ? (
+            <div className="flex flex-col gap-2">
+              {affectedGroups.length > 0 ? (
+                affectedGroups.map((g) => (
+                  <div key={g.id} className="rounded-md border border-border bg-white/60 p-3 flex flex-col gap-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-sm font-semibold">
+                        {g.name || <EmptyText text="Unnamed group" />}
+                      </span>
+                      {g.severity && (
+                        <span className="inline-flex items-center rounded-md bg-purple-500/10 text-purple-700 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide">
+                          {g.severity}
+                        </span>
+                      )}
+                    </div>
+                    {g.description && (
+                      <p className="text-sm text-foreground/80 break-words">{g.description}</p>
+                    )}
+                  </div>
+                ))
+              ) : (
+                <EmptyText text="No affected groups captured" />
+              )}
+            </div>
+          ) : (
+            <EmptyText text="No refinement method chosen yet" />
+          )}
+        </div>
+
+        {/* ── Row 3: Core Problem + Solutions ── */}
         <div className={cn("grid gap-4 items-start", containerSize === "narrow" ? "grid-cols-1" : "grid-cols-2")}>
 
           {/* ── Core Problem ── */}
@@ -238,7 +350,7 @@ export default function SummaryPage() {
 
         </div>
 
-        {/* ── Row 3: Validation Assessment ── */}
+        {/* ── Row 4: Validation Assessment ── */}
         <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-4">
           <SectionHeader icon={Target} label="Validation Assessment" tone="emerald" />
           {hasAnyMetric ? (

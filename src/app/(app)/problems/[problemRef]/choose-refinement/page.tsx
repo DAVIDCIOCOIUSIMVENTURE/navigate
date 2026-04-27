@@ -12,7 +12,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog"
-import { useDiscovery, getAdjacentSteps } from "../context"
+import { useProblemValidation, getAdjacentSteps } from "../context"
 import type { AnalysisToolType } from "@/types/solution"
 import { Search, ArrowLeft, ArrowRight, TreePine, HelpCircle, Users, CheckCircle2 } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
@@ -177,8 +177,8 @@ const TOOL_ORDER: ToolKey[] = ["root-causes", "five-whys", "affected-groups"]
 export default function ChooseRefinementPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { problem, analysisToolType, setAnalysisToolType } = useDiscovery()
-  const { prevPath, nextPath } = getAdjacentSteps(pathname)
+  const { problem, problemRef, analysisToolType, setAnalysisToolType } = useProblemValidation()
+  const { prevPath, nextPath } = getAdjacentSteps(pathname, problemRef)
   const [openTool, setOpenTool] = useState<ToolKey | null>(null)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const isNarrow = useContainerSize() === "narrow"
@@ -217,7 +217,7 @@ export default function ChooseRefinementPage() {
           )}
 
           <p className="text-md leading-relaxed">
-            Before brainstorming solutions, take time to understand <strong>why</strong> the problem exists.
+            Take time to understand <strong>why</strong> this problem exists and <strong>who</strong> it affects.
             Choose a refinement technique below to get started.
           </p>
 

@@ -1,14 +1,22 @@
 "use client"
 
-import { createContext, useContext, useCallback, type ReactNode } from "react"
+import { createContext, useContext, useCallback, useEffect, type ReactNode } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import type { ExistingSolutionItem, ValidationStatus, ValidationMetric, ValidationAssessment } from "@/types/idea"
 import { DEFAULT_VALIDATION_ASSESSMENT } from "@/types/idea"
+import type { Problem } from "@/store/problems-model"
+import type {
+  AnalysisToolType,
+  RootCause,
+  FiveWhyChain,
+  AffectedGroup,
+} from "@/types/solution"
 
 type ProblemValidationContextValue = {
   problemRef: string
   problemId: number
+  problem: Problem | undefined
   segmentSize: number | null
   setSegmentSize: (val: number | null) => void
   customerDescription: string
@@ -30,6 +38,18 @@ type ProblemValidationContextValue = {
   setCostOfSwitching: (patch: Partial<ValidationMetric>) => void
   setSolutionEffectiveness: (patch: Partial<ValidationMetric>) => void
   setCompetitorSize: (patch: Partial<ValidationMetric>) => void
+  // Refinement workspace fields (shared with the solution discovery flow via
+  // the per-problem solution workspace).
+  analysisToolType: AnalysisToolType
+  setAnalysisToolType: (val: AnalysisToolType) => void
+  rootCauses: RootCause[]
+  setRootCauses: (val: RootCause[]) => void
+  rootCauseNotes: string
+  setRootCauseNotes: (val: string) => void
+  fiveWhyChains: FiveWhyChain[]
+  setFiveWhyChains: (val: FiveWhyChain[]) => void
+  affectedGroups: AffectedGroup[]
+  setAffectedGroups: (val: AffectedGroup[]) => void
 }
 
 const ProblemValidationContext = createContext<ProblemValidationContextValue | null>(null)
@@ -46,6 +66,18 @@ export function ProblemValidationProvider({
   const problem = useSelector((state: RootState) =>
     state.problems.problems.find((p) => p.id === problemId)
   )
+  const workspace = useSelector((state: RootState) =>
+    state.solutionWorkspaces.workspaces.find((w) => w.problemId === problemId)
+  )
+
+  // Lazily ensure a solution workspace exists for this problem so refinement
+  // data is captured here and surfaces later in solution discovery.
+  useEffect(() => {
+    if (!Number.isFinite(problemId)) return
+    if (!workspace) {
+      dispatch.solutionWorkspaces.ensureForProblem(problemId)
+    }
+  }, [problemId, workspace, dispatch])
 
   const segmentSize = problem?.segmentSize ?? null
   const customerDescription = problem?.customerDescription ?? ""
@@ -195,11 +227,61 @@ export function ProblemValidationProvider({
     [dispatch, problemId, validationAssessment]
   )
 
+  // Refinement workspace fields (shared with solution discovery via solutionWorkspaces).
+  const analysisToolType: AnalysisToolType = workspace?.analysisToolType ?? ""
+  const rootCauses = workspace?.rootCauses ?? []
+  const rootCauseNotes = workspace?.rootCauseNotes ?? ""
+  const fiveWhyChains = workspace?.fiveWhyChains ?? []
+  const affectedGroups = workspace?.affectedGroups ?? []
+
+  const workspaceId = workspace?.id ?? null
+
+  const setAnalysisToolType = useCallback(
+    (val: AnalysisToolType) => {
+      if (workspaceId == null) return
+      dispatch.solutionWorkspaces.update({ id: workspaceId, patch: { analysisToolType: val } })
+    },
+    [workspaceId, dispatch]
+  )
+
+  const setRootCauses = useCallback(
+    (val: RootCause[]) => {
+      if (workspaceId == null) return
+      dispatch.solutionWorkspaces.update({ id: workspaceId, patch: { rootCauses: val } })
+    },
+    [workspaceId, dispatch]
+  )
+
+  const setRootCauseNotes = useCallback(
+    (val: string) => {
+      if (workspaceId == null) return
+      dispatch.solutionWorkspaces.update({ id: workspaceId, patch: { rootCauseNotes: val } })
+    },
+    [workspaceId, dispatch]
+  )
+
+  const setFiveWhyChains = useCallback(
+    (val: FiveWhyChain[]) => {
+      if (workspaceId == null) return
+      dispatch.solutionWorkspaces.update({ id: workspaceId, patch: { fiveWhyChains: val } })
+    },
+    [workspaceId, dispatch]
+  )
+
+  const setAffectedGroups = useCallback(
+    (val: AffectedGroup[]) => {
+      if (workspaceId == null) return
+      dispatch.solutionWorkspaces.update({ id: workspaceId, patch: { affectedGroups: val } })
+    },
+    [workspaceId, dispatch]
+  )
+
   return (
     <ProblemValidationContext.Provider
       value={{
         problemRef,
         problemId,
+        problem,
         segmentSize, setSegmentSize,
         customerDescription, setCustomerDescription,
         existingSolutions, setExistingSolutions,
@@ -214,6 +296,11 @@ export function ProblemValidationProvider({
         setCostOfSwitching,
         setSolutionEffectiveness,
         setCompetitorSize,
+        analysisToolType, setAnalysisToolType,
+        rootCauses, setRootCauses,
+        rootCauseNotes, setRootCauseNotes,
+        fiveWhyChains, setFiveWhyChains,
+        affectedGroups, setAffectedGroups,
       }}
     >
       {children}
@@ -230,6 +317,8 @@ export function useProblemValidation() {
 export const NAV_ITEMS = [
   { label: "Introduction", path: "introduction" },
   { label: "Define your customer", path: "customer" },
+  { label: "Choose your refinement method", path: "choose-refinement" },
+  { label: "Refine your problem", path: "refine" },
   { label: "Explore existing solutions & shortcomings", path: "existing-solutions" },
   { label: "Validate your problem", path: "validate" },
   { label: "Summary & Next Steps", path: "summary" },

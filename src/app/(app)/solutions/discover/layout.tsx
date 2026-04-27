@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
 import { DiscoveryProvider, useDiscovery, NAV_ITEMS } from "./context"
 import {
-  Lightbulb, BookOpen, Target, Search, Shuffle, LayoutTemplate,
+  Lightbulb, BookOpen, Target, Shuffle, LayoutTemplate,
   FileText, ChevronDown, Lock,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
@@ -16,16 +16,12 @@ import { useContainerSize } from "@/context/container-size-context"
 const NAV_ICONS: Record<string, LucideIcon> = {
   introduction: BookOpen,
   "select-problem": Target,
-  "choose-refinement": Search,
-  refine: Search,
   "choose-discovery": Shuffle,
   discover: Lightbulb,
   summary: LayoutTemplate,
 }
 
 const LOCKED_PATHS = new Set([
-  "choose-refinement",
-  "refine",
   "choose-discovery",
   "discover",
   "summary",
@@ -103,7 +99,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         <div className="flex flex-col gap-1">
           <h1 className="text-xl font-bold">Solution Discovery</h1>
           <p className="text-sm text-muted-foreground">
-            Pick a problem, refine it, and discover solution candidates.
+            Pick a validated problem and discover solution candidates.
           </p>
         </div>
       </div>

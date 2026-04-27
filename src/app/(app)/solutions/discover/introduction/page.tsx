@@ -4,22 +4,15 @@ import { usePathname, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { getAdjacentSteps } from "../context"
-import { BookOpen, Target, Search, Lightbulb } from "lucide-react"
+import { BookOpen, Target, Lightbulb } from "lucide-react"
 
 const STEPS = [
   {
     icon: Target,
     title: "Select a Problem",
-    description: "Pick a validated problem from your Problem Bank to anchor the discovery process.",
+    description: "Pick a validated problem from your Problem Bank to anchor the discovery process. Refinement work you did during problem validation (root causes, 5 whys, affected groups) carries through automatically.",
     bg: "bg-primary/10",
     color: "text-primary",
-  },
-  {
-    icon: Search,
-    title: "Refine",
-    description: "Choose a refinement technique (Root Causes, 5 Whys, or Affected Groups) to dig deeper into why the problem exists and who it impacts.",
-    bg: "bg-indigo-100",
-    color: "text-indigo-600",
   },
   {
     icon: Lightbulb,

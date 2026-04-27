@@ -272,7 +272,7 @@ const guidanceItems: GuidanceItem[] = [
           <p>If you already have a clear problem in mind, skip the exploration tools and write it directly. Useful when you have prior knowledge of a domain or have already spoken to potential customers.</p>
         </GuidanceSection>
         <GuidanceSection icon={ArrowRight} iconBg="bg-amber-500" title="What comes next">
-          <p>Once you have a list of candidate problems, move on to Problem Validation to choose one and analyse it in depth: alternatives, shortcomings, emotional and quantifiable impact, and ultimately a validated problem statement.</p>
+          <p>Once you have a list of candidate problems, move on to Problem Validation to choose one and analyse it in depth: alternatives, shortcomings, refinement (root causes, 5 whys, affected groups), emotional and quantifiable impact, and ultimately a validated problem statement.</p>
         </GuidanceSection>
       </div>
     ),
@@ -293,8 +293,16 @@ const guidanceItems: GuidanceItem[] = [
         <GuidanceSection icon={Play} iconBg="bg-emerald-500" title="How it works">
           <p>Each problem goes through a structured sequence of steps. Work through them in order; each step builds on the last, but you can return and update any step as your thinking develops.</p>
         </GuidanceSection>
+        <GuidanceSection icon={Search} iconBg="bg-indigo-500" title="Refine the Problem">
+          <p>Before exploring alternatives, dig into <Keyword>why</Keyword> the problem exists and <Keyword>who</Keyword> it affects. Pick the technique that matches the kind of clarity you need, then capture what you find.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+            <ConceptCard icon={GitFork} label="Root Causes" description="Map the underlying factors that give rise to the problem." tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
+            <ConceptCard icon={Repeat} label="5 Whys" description="Ask 'why' five times to drill from a surface symptom to the real cause." tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
+            <ConceptCard icon={Users} label="Affected Groups" description="Map who is impacted, how severely, and in what way." tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
+          </div>
+        </GuidanceSection>
         <GuidanceSection icon={GitFork} iconBg="bg-purple-500" title="Alternatives & Shortcomings">
-          <p>Start by listing how people currently deal with this problem: the tools, workarounds, or habits they already use. Then, for each alternative, note its shortcomings: what it fails to do well, what it costs, or what friction it introduces. This step grounds the problem in reality and reveals the gap your solution would need to fill.</p>
+          <p>With a sharper view of the problem, list how people currently deal with it: the tools, workarounds, or habits they already use. Then, for each alternative, note its shortcomings: what it fails to do well, what it costs, or what friction it introduces. This step grounds the problem in reality and reveals the gap a future solution would need to fill.</p>
         </GuidanceSection>
         <GuidanceSection icon={Heart} iconBg="bg-rose-500" title="Emotional Impact">
           <p>Capture how the problem makes people feel. Emotional weight is a strong signal of whether a problem is genuinely painful. Frustration, anxiety, embarrassment, or helplessness all indicate that people care enough to want a better solution. Add as many emotional impacts as apply; even one strong emotion is significant.</p>
@@ -340,20 +348,11 @@ const guidanceItems: GuidanceItem[] = [
           <p>The Solutions workspace has two connected flows: a discovery wizard that generates candidates, and a validation wizard that evaluates each candidate on its own.</p>
           <div className="flex flex-col gap-3 pt-1">
             <NumberedStep n={1} title="Discover" accent="bg-sky-500">
-              Pick a validated problem, refine it, then use a creative technique to generate candidate solutions. Each candidate lands in your Solution Bank.
+              Pick a validated problem and use a creative technique to generate candidate solutions. Each candidate lands in your Solution Bank. Refinement work (root causes, 5 whys, affected groups) now happens earlier inside Problem Validation; the output flows through automatically.
             </NumberedStep>
             <NumberedStep n={2} title="Validate" accent="bg-emerald-500">
               For each candidate in the bank, work through the four validation metrics and reach a verdict: valid, unsure, or invalid.
             </NumberedStep>
-          </div>
-        </GuidanceSection>
-
-        <GuidanceSection icon={Search} iconBg="bg-indigo-500" title="Refine (inside Discover)">
-          <p>Before generating ideas, the discovery wizard asks you to refine the problem. Pick the technique that matches the kind of clarity you need:</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-            <ConceptCard icon={GitFork} label="Root Causes" description="Map the underlying factors that give rise to the problem." tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
-            <ConceptCard icon={Repeat} label="5 Whys" description="Ask 'why' five times to drill from a surface symptom to the real cause." tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
-            <ConceptCard icon={Users} label="Affected Groups" description="Map who is impacted, how severely, and in what way." tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
           </div>
         </GuidanceSection>
 
@@ -380,7 +379,7 @@ const guidanceItems: GuidanceItem[] = [
         </GuidanceSection>
 
         <TipCallout items={[
-          "Refinement is where most of the hidden value lives; do not skip it",
+          "Refinement now lives inside Problem Validation; the work you do there shapes everything in this section",
           "Quantity beats quality at the discover step; validation prunes later",
           "A weak candidate is still useful as a comparison baseline",
           "You can come back and add more candidates at any time",

@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
@@ -7,11 +8,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { getAdjacentSteps, useProblemValidation } from "../context"
 import {
-  BookOpen, GitFork, ShieldCheck, LayoutTemplate, Users,
+  BookOpen, GitFork, ShieldCheck, LayoutTemplate, Users, Search,
 } from "lucide-react"
 
 const STEPS = [
   { icon: Users, title: "Define your customer", description: "Estimate how large the affected customer segment is, the market opportunity behind this problem.", bg: "bg-indigo-100 dark:bg-indigo-950", color: "text-indigo-600 dark:text-indigo-400" },
+  { icon: Search, title: "Refine your problem", description: "Dig into why this problem exists and who it affects using Root Causes, 5 Whys, or Affected Groups.", bg: "bg-purple-100 dark:bg-purple-950", color: "text-purple-600 dark:text-purple-400" },
   { icon: GitFork, title: "Explore existing solutions", description: "Identify how customers currently deal with this problem, capture shortcomings, and measure the quantifiable impact of each solution.", bg: "bg-sky-100 dark:bg-sky-950", color: "text-sky-600 dark:text-sky-400" },
   { icon: ShieldCheck, title: "Validate your problem", description: "Weigh the economics of solving this problem and decide whether it's worth pursuing.", bg: "bg-orange-100 dark:bg-orange-950", color: "text-orange-600 dark:text-orange-400" },
   { icon: LayoutTemplate, title: "Summary", description: "Review the problem statement assembled from your discovery and validation work.", bg: "bg-green-100 dark:bg-green-950", color: "text-green-600 dark:text-green-400" },
@@ -40,6 +42,13 @@ export default function IntroductionPage() {
     state.problems.problems.find((p) => p.id === problemId)
   )
 
+  // Avoid SSR/client mismatch: localStorage-backed Redux data only resolves
+  // after mount, so defer rendering the problem block until then.
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
@@ -51,7 +60,7 @@ export default function IntroductionPage() {
           It&apos;s time to validate whether this problem is truly worth solving. You&apos;ll stress-test it by examining the alternatives, context, emotional weight, and real-world impact, so you can make a confident, evidence-based decision before committing to a solution.
         </p>
 
-        {problem && (
+        {mounted && problem && (
           <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4 flex flex-col gap-3">
             {problem.description && (
               <div className="flex flex-col gap-1">

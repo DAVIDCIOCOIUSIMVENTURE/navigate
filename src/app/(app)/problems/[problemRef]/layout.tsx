@@ -10,7 +10,7 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/component
 import { ProblemSummaryDialog, type ProblemSummaryData } from "@/components/problem-summary-dialog"
 import { ProblemValidationProvider, useProblemValidation, NAV_ITEMS } from "./context"
 import {
-  GitFork, Clock, ShieldCheck, FileText, LayoutTemplate, BookOpen, Users, ChevronDown, Eye,
+  GitFork, Clock, ShieldCheck, FileText, LayoutTemplate, BookOpen, Users, ChevronDown, Eye, Search,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
@@ -20,6 +20,8 @@ const NAV_ICONS: Record<string, LucideIcon> = {
   "customer": Users,
   "existing-solutions": GitFork,
   "context-step": Clock,
+  "choose-refinement": Search,
+  refine: Search,
   validate: ShieldCheck,
   summary: LayoutTemplate,
 }

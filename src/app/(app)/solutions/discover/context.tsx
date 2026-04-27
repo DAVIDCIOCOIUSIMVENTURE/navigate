@@ -212,8 +212,6 @@ export type NavItem = { label: string; path: string; section: string | null }
 export const NAV_ITEMS: readonly NavItem[] = [
   { label: "Introduction", path: "introduction", section: null },
   { label: "Select a Problem", path: "select-problem", section: null },
-  { label: "Choose Your Refinement Method", path: "choose-refinement", section: "Refine" },
-  { label: "Refine Your Problem", path: "refine", section: null },
   { label: "Choose Your Discovery Method", path: "choose-discovery", section: "Discover" },
   { label: "Discover Your Solution", path: "discover", section: null },
   { label: "Summary", path: "summary", section: "Review" },
@@ -232,8 +230,6 @@ export function getAdjacentSteps(pathname: string) {
 }
 
 export const STEPS_REQUIRING_PROBLEM = new Set([
-  "choose-refinement",
-  "refine",
   "choose-discovery",
   "discover",
   "summary",
