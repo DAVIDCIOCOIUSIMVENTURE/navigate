@@ -63,7 +63,6 @@ import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
 import { cn } from "@/lib/utils"
 import { useGuidance } from "@/context/guidance-context"
 import { useContainerSize } from "@/context/container-size-context"
-import { useUnsavedChanges } from "@/context/navigation-guard-context"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import {
   DropdownMenu,
@@ -409,11 +408,19 @@ function ProblemBuilder({
   resetRef?: React.MutableRefObject<(() => void) | null>
   onClearSearch?: () => void
 }) {
-  const [step, setStep] = useState<BuilderStepId>("pick")
-  const [activeColumnId, setActiveColumnId] = useState<string | null>(null)
-  const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null)
-  const [selectedByColumn, setSelectedByColumn] = useState<Record<string, string[]>>({})
-  const [description, setDescription] = useState("")
+  const dispatch = useDispatch<AppDispatch>()
+  const step = useSelector((state: RootState) => state.settings.brainstormBuilderStep)
+  const activeColumnId = useSelector((state: RootState) => state.settings.brainstormBuilderActiveColumnId)
+  const activeCategoryId = useSelector((state: RootState) => state.settings.brainstormBuilderActiveCategoryId)
+  const selectedByColumn = useSelector((state: RootState) => state.settings.brainstormBuilderSelectedByColumn)
+  const description = useSelector((state: RootState) => state.settings.brainstormBuilderDescription)
+
+  const setStep = (next: BuilderStepId) => dispatch.settings.setBrainstormBuilderStep(next)
+  const setActiveColumnId = (id: string | null) => dispatch.settings.setBrainstormBuilderActiveColumnId(id)
+  const setActiveCategoryId = (id: string | null) => dispatch.settings.setBrainstormBuilderActiveCategoryId(id)
+  const setSelectedByColumn = (next: Record<string, string[]>) =>
+    dispatch.settings.setBrainstormBuilderSelectedByColumn(next)
+  const setDescription = (next: string) => dispatch.settings.setBrainstormBuilderDescription(next)
 
   const stepIndex = BUILDER_STEPS.findIndex((s) => s.id === step)
   const usedColumnIds = useMemo(
@@ -432,11 +439,6 @@ function ProblemBuilder({
   )
   const totalSelections = Object.values(selectedByColumn).reduce((sum, ids) => sum + ids.length, 0)
 
-  useUnsavedChanges({
-    when: totalSelections > 0 || description.trim() !== "",
-    message: "You have unsaved problem brainstorming progress. If you leave this page your work will be lost. Save your problem first to keep it.",
-  })
-
   const pickColumn = (columnId: string) => {
     setActiveColumnId(columnId)
     setActiveCategoryId(null)
@@ -451,13 +453,11 @@ function ProblemBuilder({
   }
 
   const toggleItem = (columnId: string, itemId: string) => {
-    setSelectedByColumn((prev) => {
-      const current = prev[columnId] ?? []
-      const has = current.includes(itemId)
-      return {
-        ...prev,
-        [columnId]: has ? current.filter((id) => id !== itemId) : [...current, itemId],
-      }
+    const current = selectedByColumn[columnId] ?? []
+    const has = current.includes(itemId)
+    setSelectedByColumn({
+      ...selectedByColumn,
+      [columnId]: has ? current.filter((id) => id !== itemId) : [...current, itemId],
     })
   }
 
@@ -470,20 +470,12 @@ function ProblemBuilder({
         .filter((l): l is string => l !== null)
     }
     onSave(selections, description)
-    setSelectedByColumn({})
-    setActiveColumnId(null)
-    setActiveCategoryId(null)
-    setDescription("")
-    setStep("pick")
+    dispatch.settings.resetBrainstormBuilder()
   }
 
   const reset = useCallback(() => {
-    setSelectedByColumn({})
-    setActiveColumnId(null)
-    setActiveCategoryId(null)
-    setDescription("")
-    setStep("pick")
-  }, [])
+    dispatch.settings.resetBrainstormBuilder()
+  }, [dispatch])
 
   useEffect(() => {
     if (resetRef) resetRef.current = reset
@@ -953,11 +945,6 @@ export default function BrainstormPage() {
   const fullView = useSelector((state: RootState) => state.settings.fullView)
   const brainstormMode = useSelector((state: RootState) => state.settings.brainstormMode)
   const containerSize = useContainerSize()
-
-  useUnsavedChanges({
-    when: brainstormMode === "canvas" && selected.size > 0,
-    message: "You have unsaved problem brainstorming progress. If you leave this page your work will be lost. Save your problem first to keep it.",
-  })
 
   const handleBuilderSave = useCallback(async (selections: Record<string, string[]>, description: string) => {
     const patch: Partial<Pick<Problem, "customerSegments" | "contexts" | "problemTypes" | "selfDiscovery">> = {}

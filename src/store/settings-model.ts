@@ -5,6 +5,7 @@ import type { SidebarMode } from "@/components/ui/sidebar"
 const STORAGE_KEY = "navigate-settings"
 
 export type BrainstormMode = "canvas" | "builder"
+export type BrainstormBuilderStep = "pick" | "category" | "choose" | "review"
 
 interface SettingsState {
   sidebarMode: SidebarMode
@@ -14,6 +15,11 @@ interface SettingsState {
   brainstormMode: BrainstormMode
   hideBrainstormGuidance: boolean
   journalOpen: boolean
+  brainstormBuilderStep: BrainstormBuilderStep
+  brainstormBuilderActiveColumnId: string | null
+  brainstormBuilderActiveCategoryId: string | null
+  brainstormBuilderSelectedByColumn: Record<string, string[]>
+  brainstormBuilderDescription: string
 }
 
 const defaultState: SettingsState = {
@@ -24,6 +30,11 @@ const defaultState: SettingsState = {
   brainstormMode: "builder",
   hideBrainstormGuidance: false,
   journalOpen: false,
+  brainstormBuilderStep: "pick",
+  brainstormBuilderActiveColumnId: null,
+  brainstormBuilderActiveCategoryId: null,
+  brainstormBuilderSelectedByColumn: {},
+  brainstormBuilderDescription: "",
 }
 
 function saveToStorage(state: SettingsState) {
@@ -54,8 +65,9 @@ export const settings = createModel<RootModel>()({
       return { ...state, fullView }
     },
     setBrainstormSelected(state, brainstormSelected: string[]) {
-      // Not persisted, resets on reload
-      return { ...state, brainstormSelected }
+      const next = { ...state, brainstormSelected }
+      saveToStorage(next)
+      return next
     },
     setBrainstormMode(state, brainstormMode: BrainstormMode) {
       const next = { ...state, brainstormMode }
@@ -69,6 +81,43 @@ export const settings = createModel<RootModel>()({
     },
     setJournalOpen(state, journalOpen: boolean) {
       const next = { ...state, journalOpen }
+      saveToStorage(next)
+      return next
+    },
+    setBrainstormBuilderStep(state, brainstormBuilderStep: BrainstormBuilderStep) {
+      const next = { ...state, brainstormBuilderStep }
+      saveToStorage(next)
+      return next
+    },
+    setBrainstormBuilderActiveColumnId(state, brainstormBuilderActiveColumnId: string | null) {
+      const next = { ...state, brainstormBuilderActiveColumnId }
+      saveToStorage(next)
+      return next
+    },
+    setBrainstormBuilderActiveCategoryId(state, brainstormBuilderActiveCategoryId: string | null) {
+      const next = { ...state, brainstormBuilderActiveCategoryId }
+      saveToStorage(next)
+      return next
+    },
+    setBrainstormBuilderSelectedByColumn(state, brainstormBuilderSelectedByColumn: Record<string, string[]>) {
+      const next = { ...state, brainstormBuilderSelectedByColumn }
+      saveToStorage(next)
+      return next
+    },
+    setBrainstormBuilderDescription(state, brainstormBuilderDescription: string) {
+      const next = { ...state, brainstormBuilderDescription }
+      saveToStorage(next)
+      return next
+    },
+    resetBrainstormBuilder(state) {
+      const next: SettingsState = {
+        ...state,
+        brainstormBuilderStep: "pick",
+        brainstormBuilderActiveColumnId: null,
+        brainstormBuilderActiveCategoryId: null,
+        brainstormBuilderSelectedByColumn: {},
+        brainstormBuilderDescription: "",
+      }
       saveToStorage(next)
       return next
     },
@@ -91,6 +140,9 @@ export const settings = createModel<RootModel>()({
         if (stored.hiddenBrainstormColumns) {
           dispatch.settings.setHiddenBrainstormColumns(stored.hiddenBrainstormColumns)
         }
+        if (stored.brainstormSelected) {
+          dispatch.settings.setBrainstormSelected(stored.brainstormSelected)
+        }
         if (stored.brainstormMode) {
           // Migrate legacy "builder-v2" value to the unified "builder" mode
           const mode = (stored.brainstormMode as string) === "builder-v2"
@@ -103,6 +155,21 @@ export const settings = createModel<RootModel>()({
         }
         if (typeof stored.journalOpen === "boolean") {
           dispatch.settings.setJournalOpen(stored.journalOpen)
+        }
+        if (stored.brainstormBuilderStep) {
+          dispatch.settings.setBrainstormBuilderStep(stored.brainstormBuilderStep)
+        }
+        if (stored.brainstormBuilderActiveColumnId !== undefined) {
+          dispatch.settings.setBrainstormBuilderActiveColumnId(stored.brainstormBuilderActiveColumnId)
+        }
+        if (stored.brainstormBuilderActiveCategoryId !== undefined) {
+          dispatch.settings.setBrainstormBuilderActiveCategoryId(stored.brainstormBuilderActiveCategoryId)
+        }
+        if (stored.brainstormBuilderSelectedByColumn) {
+          dispatch.settings.setBrainstormBuilderSelectedByColumn(stored.brainstormBuilderSelectedByColumn)
+        }
+        if (typeof stored.brainstormBuilderDescription === "string") {
+          dispatch.settings.setBrainstormBuilderDescription(stored.brainstormBuilderDescription)
         }
       } catch {
         // ignore parse errors
