@@ -1336,12 +1336,12 @@ function SaveSolutionPanel({ toolType }: { toolType: SaveDialogTool }) {
       setSavedSolutionId(solution.id)
       setSaveOpen(false)
       setSavedOpen(true)
+      wipeDiscoveryScratch()
     }
   }
 
   const handleContinue = () => {
     setSavedOpen(false)
-    wipeDiscoveryScratch()
     if (savedSolutionId !== null) {
       router.push(`/solutions/${savedSolutionId}/validate/introduction`)
     }
@@ -1349,7 +1349,6 @@ function SaveSolutionPanel({ toolType }: { toolType: SaveDialogTool }) {
 
   const handleKeepBrainstorming = () => {
     setSavedOpen(false)
-    wipeDiscoveryScratch()
   }
 
   return (
