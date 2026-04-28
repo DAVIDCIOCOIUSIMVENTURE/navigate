@@ -20,6 +20,7 @@ import { usePathname } from "next/navigation"
 import { useState, useEffect, useRef } from "react"
 import { GuidanceDialog } from "@/components/guidance-dialog"
 import { GuidanceProvider } from "@/context/guidance-context"
+import { NavigationGuardProvider } from "@/context/navigation-guard-context"
 import { ContainerSizeContext, useObserveContainerSize } from "@/context/container-size-context"
 import { AppStoreProvider } from "@/store/provider"
 import { useSelector, useDispatch } from "react-redux"
@@ -171,7 +172,9 @@ export default function RootLayoutClient({
 }) {
   return (
     <AppStoreProvider>
-      <LayoutContent>{children}</LayoutContent>
+      <NavigationGuardProvider>
+        <LayoutContent>{children}</LayoutContent>
+      </NavigationGuardProvider>
     </AppStoreProvider>
   )
 }

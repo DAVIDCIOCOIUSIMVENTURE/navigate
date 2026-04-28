@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo } from "react"
 import { usePathname, useRouter } from "next/navigation"
+import { useUnsavedChanges, useGuardedRouter } from "@/context/navigation-guard-context"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -1340,6 +1341,7 @@ function SaveSolutionPanel({ toolType }: { toolType: SaveDialogTool }) {
 
   const handleContinue = () => {
     setSavedOpen(false)
+    wipeDiscoveryScratch()
     if (savedSolutionId !== null) {
       router.push(`/solutions/${savedSolutionId}/validate/introduction`)
     }
@@ -1430,8 +1432,19 @@ const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo:
 
 export default function DiscoverPage() {
   const router = useRouter()
+  const guardedRouter = useGuardedRouter()
   const pathname = usePathname()
-  const { problemId, problem, discoveryToolType } = useDiscovery()
+  const {
+    problemId,
+    problem,
+    discoveryToolType,
+    scamperIdeas,
+    improvementResponses,
+    analogyDomain,
+    analogyInsight,
+    reverseBrainstorm,
+    reverseInversion,
+  } = useDiscovery()
   const { prevPath, nextPath } = getAdjacentSteps(pathname)
   const containerSize = useContainerSize()
   const isNarrow = containerSize === "narrow"
@@ -1441,6 +1454,22 @@ export default function DiscoverPage() {
       router.replace("/solutions/discover/select-problem")
     }
   }, [problemId, router])
+
+  const isDirty = useMemo(() => {
+    const scamperHasText = Object.values(scamperIdeas).some(
+      (arr) => arr?.[0]?.text?.trim()
+    )
+    const improveHasText = Object.values(improvementResponses).some(
+      (arr) => arr?.[0]?.text?.trim()
+    )
+    const analogyHasText = analogyDomain.trim() !== "" || analogyInsight.trim() !== ""
+    const reverseHasText =
+      reverseBrainstorm.some((i) => i.text.trim()) ||
+      reverseInversion.some((i) => i.text.trim())
+    return scamperHasText || improveHasText || analogyHasText || reverseHasText
+  }, [scamperIdeas, improvementResponses, analogyDomain, analogyInsight, reverseBrainstorm, reverseInversion])
+
+  useUnsavedChanges({ when: isDirty })
 
   if (problemId == null) return null
 
@@ -1623,7 +1652,7 @@ export default function DiscoverPage() {
         {!discoveryToolType && (
           <div className="flex flex-col items-center justify-center gap-3 py-8 rounded-lg border border-dashed">
             <p className="text-sm text-muted-foreground">No discovery technique selected.</p>
-            <Button variant="outline" onClick={() => router.push("/solutions/discover/choose-discovery")}>
+            <Button variant="outline" onClick={() => guardedRouter.push("/solutions/discover/choose-discovery")}>
               <ArrowLeft className="h-4 w-4 mr-2" />Choose a Discovery Technique
             </Button>
           </div>
@@ -1631,16 +1660,16 @@ export default function DiscoverPage() {
 
         <div className="flex justify-between mt-2">
           {prevPath ? (
-            <Button variant="outline" onClick={() => router.push(prevPath)}>
+            <Button variant="outline" onClick={() => guardedRouter.push(prevPath)}>
               <ArrowLeft className="h-4 w-4 mr-2" />Previous
             </Button>
           ) : <div />}
           {nextPath ? (
-            <Button onClick={() => router.push(nextPath)}>
+            <Button onClick={() => guardedRouter.push(nextPath)}>
               Next<ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           ) : (
-            <Button onClick={() => router.push("/solutions")}>
+            <Button onClick={() => guardedRouter.push("/solutions")}>
               Finish<ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           )}
