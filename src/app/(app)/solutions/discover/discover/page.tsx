@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useRef, useEffect, useMemo } from "react"
+import { useState, useRef, useEffect } from "react"
 import { usePathname, useRouter } from "next/navigation"
-import { useUnsavedChanges, useGuardedRouter } from "@/context/navigation-guard-context"
+import { useGuardedRouter } from "@/context/navigation-guard-context"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -1433,17 +1433,7 @@ export default function DiscoverPage() {
   const router = useRouter()
   const guardedRouter = useGuardedRouter()
   const pathname = usePathname()
-  const {
-    problemId,
-    problem,
-    discoveryToolType,
-    scamperIdeas,
-    improvementResponses,
-    analogyDomain,
-    analogyInsight,
-    reverseBrainstorm,
-    reverseInversion,
-  } = useDiscovery()
+  const { problemId, problem, discoveryToolType } = useDiscovery()
   const { prevPath, nextPath } = getAdjacentSteps(pathname)
   const containerSize = useContainerSize()
   const isNarrow = containerSize === "narrow"
@@ -1453,22 +1443,6 @@ export default function DiscoverPage() {
       router.replace("/solutions/discover/select-problem")
     }
   }, [problemId, router])
-
-  const isDirty = useMemo(() => {
-    const scamperHasText = Object.values(scamperIdeas).some(
-      (arr) => arr?.[0]?.text?.trim()
-    )
-    const improveHasText = Object.values(improvementResponses).some(
-      (arr) => arr?.[0]?.text?.trim()
-    )
-    const analogyHasText = analogyDomain.trim() !== "" || analogyInsight.trim() !== ""
-    const reverseHasText =
-      reverseBrainstorm.some((i) => i.text.trim()) ||
-      reverseInversion.some((i) => i.text.trim())
-    return scamperHasText || improveHasText || analogyHasText || reverseHasText
-  }, [scamperIdeas, improvementResponses, analogyDomain, analogyInsight, reverseBrainstorm, reverseInversion])
-
-  useUnsavedChanges({ when: isDirty })
 
   if (problemId == null) return null
 
