@@ -4,7 +4,7 @@ import type { SidebarMode } from "@/components/ui/sidebar"
 
 const STORAGE_KEY = "navigate-settings"
 
-export type BrainstormMode = "canvas" | "builder" | "builder-v2"
+export type BrainstormMode = "canvas" | "builder"
 
 interface SettingsState {
   sidebarMode: SidebarMode
@@ -92,7 +92,11 @@ export const settings = createModel<RootModel>()({
           dispatch.settings.setHiddenBrainstormColumns(stored.hiddenBrainstormColumns)
         }
         if (stored.brainstormMode) {
-          dispatch.settings.setBrainstormMode(stored.brainstormMode)
+          // Migrate legacy "builder-v2" value to the unified "builder" mode
+          const mode = (stored.brainstormMode as string) === "builder-v2"
+            ? "builder"
+            : stored.brainstormMode
+          dispatch.settings.setBrainstormMode(mode)
         }
         if (stored.hideBrainstormGuidance) {
           dispatch.settings.setHideBrainstormGuidance(stored.hideBrainstormGuidance)

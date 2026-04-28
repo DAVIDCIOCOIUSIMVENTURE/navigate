@@ -53,7 +53,6 @@ import {
   Trash2,
   TriangleAlert,
   Users,
-  Wand2,
   X,
 } from "lucide-react"
 import { Textarea } from "@/components/ui/textarea"
@@ -289,13 +288,6 @@ function NoSearchResults({ onClear }: { onClear?: () => void }) {
 
 /* ─── Problem Builder (guided mode) ─── */
 
-const BUILDER_STEPS = [
-  { id: "pick", label: "Pick a dimension" },
-  { id: "choose", label: "Choose options" },
-  { id: "more", label: "Add more dimensions" },
-  { id: "review", label: "Review & save" },
-] as const
-
 const STEP_GUIDANCE: Record<string, { title: string; description: string; tips: string[] }> = {
   pick: {
     title: "Choose a Dimension",
@@ -314,15 +306,6 @@ const STEP_GUIDANCE: Record<string, { title: string; description: string; tips: 
       "Select multiple options if the problem spans several areas.",
       "Use the group headings to narrow your focus.",
       "You don't need to be exhaustive. Even one or two selections are enough to move forward.",
-    ],
-  },
-  more: {
-    title: "Layer Another Dimension",
-    description: "Great problems sit at the intersection of multiple dimensions. Adding another angle makes your problem definition sharper and more unique.",
-    tips: [
-      "Example: \"Freelancers\" (customer) + \"Invoicing\" (context) + \"Friction\" (problem type) = a focused problem space.",
-      "You can explore the same dimension again to add more selections.",
-      "Skip to review any time you feel you have enough.",
     ],
   },
   review: {
@@ -370,8 +353,6 @@ const DIMENSION_GUIDANCE: Record<string, { description: string; examples: string
   },
 }
 
-type BuilderStepId = (typeof BUILDER_STEPS)[number]["id"]
-
 function GuidancePanel({ title, description, tips, className }: {
   title: string
   description: string
@@ -396,6 +377,27 @@ function GuidancePanel({ title, description, tips, className }: {
   )
 }
 
+/* ─── Problem Builder (dimension → category → items) ─── */
+
+const BUILDER_STEPS = [
+  { id: "pick", label: "Pick a dimension" },
+  { id: "category", label: "Pick a category" },
+  { id: "choose", label: "Choose options" },
+  { id: "review", label: "Review & save" },
+] as const
+
+type BuilderStepId = (typeof BUILDER_STEPS)[number]["id"]
+
+const CATEGORY_GUIDANCE: { title: string; description: string; tips: string[] } = {
+  title: "Narrow Your Focus",
+  description: "Each dimension is organised into categories. Pick one to focus on, and you'll only see a handful of options instead of the full list.",
+  tips: [
+    "Choose the category that best matches the area you want to explore.",
+    "After selecting items you'll return here to explore more categories.",
+    "When you're done with this dimension, click \"Done with this dimension\" to move on.",
+  ],
+}
+
 function ProblemBuilder({
   columns,
   onSave,
@@ -409,412 +411,11 @@ function ProblemBuilder({
 }) {
   const [step, setStep] = useState<BuilderStepId>("pick")
   const [activeColumnId, setActiveColumnId] = useState<string | null>(null)
-  const [selectedByColumn, setSelectedByColumn] = useState<Record<string, string[]>>({})
-  const [description, setDescription] = useState("")
-
-  const stepIndex = BUILDER_STEPS.findIndex((s) => s.id === step)
-  const usedColumnIds = useMemo(
-    () => new Set(Object.entries(selectedByColumn).filter(([, ids]) => ids.length > 0).map(([id]) => id)),
-    [selectedByColumn]
-  )
-  const availableColumns = useMemo(
-    () => columns.filter((c) => !usedColumnIds.has(c.id)),
-    [columns, usedColumnIds]
-  )
-  const activeColumn = columns.find((c) => c.id === activeColumnId)
-  const hasAnyItems = useMemo(
-    () => columns.some((c) => c.items.length > 0),
-    [columns]
-  )
-  const totalSelections = Object.values(selectedByColumn).reduce((sum, ids) => sum + ids.length, 0)
-
-  useUnsavedChanges({
-    when: totalSelections > 0 || description.trim() !== "",
-    message: "You have unsaved problem brainstorming progress. If you leave this page your work will be lost. Save your problem first to keep it.",
-  })
-
-  const pickColumn = (columnId: string) => {
-    setActiveColumnId(columnId)
-    setStep("choose")
-  }
-
-  const toggleItem = (columnId: string, itemId: string) => {
-    setSelectedByColumn((prev) => {
-      const current = prev[columnId] ?? []
-      const has = current.includes(itemId)
-      return {
-        ...prev,
-        [columnId]: has ? current.filter((id) => id !== itemId) : [...current, itemId],
-      }
-    })
-  }
-
-  const handleSave = () => {
-    const selections: Record<string, string[]> = {}
-    for (const col of columns) {
-      const ids = selectedByColumn[col.id] ?? []
-      selections[col.id] = ids
-        .map((id) => findLabel(col.items, id))
-        .filter((l): l is string => l !== null)
-    }
-    onSave(selections, description)
-    setSelectedByColumn({})
-    setActiveColumnId(null)
-    setDescription("")
-    setStep("pick")
-  }
-
-  const reset = useCallback(() => {
-    setSelectedByColumn({})
-    setActiveColumnId(null)
-    setDescription("")
-    setStep("pick")
-  }, [])
-
-  useEffect(() => {
-    if (resetRef) resetRef.current = reset
-  }, [reset, resetRef])
-
-  return (
-    <>
-    <Card className="flex flex-col flex-1 min-h-0">
-      <CardContent className="flex flex-col gap-6 pt-6 flex-1 min-h-0">
-        {/* Stepper */}
-        <div className="flex items-center">
-          {BUILDER_STEPS.map((s, i) => {
-            const isActive = s.id === step
-            const isCompleted = i < stepIndex
-            const isClickable =
-              (s.id === "pick" && totalSelections === 0) ||
-              (s.id === "pick") ||
-              (s.id === "choose" && activeColumnId !== null) ||
-              (s.id === "more" && totalSelections > 0) ||
-              (s.id === "review" && totalSelections > 0)
-            return (
-              <div key={s.id} className="flex items-center flex-1 last:flex-none">
-                <button
-                  disabled={!isClickable}
-                  onClick={() => isClickable && setStep(s.id)}
-                  className="flex items-center gap-2 shrink-0 disabled:opacity-100"
-                >
-                  <span className={cn(
-                    "flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 transition-colors",
-                    isActive
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : isCompleted
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-muted-foreground/30 bg-transparent text-muted-foreground"
-                  )}>
-                    {isCompleted ? <Check className="h-3.5 w-3.5" /> : i + 1}
-                  </span>
-                  <span className={cn(
-                    "text-sm whitespace-nowrap",
-                    isActive ? "font-semibold text-foreground" : "text-muted-foreground"
-                  )}>
-                    {s.label}
-                  </span>
-                </button>
-                {i < BUILDER_STEPS.length - 1 && (
-                  <div className={cn(
-                    "flex-1 h-px mx-3",
-                    i < stepIndex ? "bg-primary" : "bg-border"
-                  )} />
-                )}
-              </div>
-            )
-          })}
-        </div>
-
-        {/* Step content */}
-        <div className="flex-1 min-h-0 flex flex-col">
-          {step === "pick" && (
-            <div className="flex gap-6 flex-1 min-h-0">
-              <GuidancePanel {...STEP_GUIDANCE.pick} className="w-1/3 shrink-0" />
-              <div className="flex-1 min-w-0">
-                {!hasAnyItems ? (
-                  <NoSearchResults onClear={onClearSearch} />
-                ) : <div className="grid grid-cols-2 gap-3">
-                  {columns.map((col) => {
-                    const Icon = COLUMN_ICONS[col.id]
-                    const colors = COLUMN_COLORS[col.id]
-                    const explored = usedColumnIds.has(col.id)
-                    const count = (selectedByColumn[col.id] ?? []).length
-                    return (
-                      <button
-                        key={col.id}
-                        onClick={() => pickColumn(col.id)}
-                        className={cn(
-                          "flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all",
-                          explored
-                            ? "border-solid bg-accent/20 hover:bg-accent/40"
-                            : "border-dashed hover:border-solid hover:shadow-sm hover:bg-accent/30",
-                          colors?.border || "border-border",
-                        )}
-                      >
-                        {Icon && <Icon className={cn("h-7 w-7", explored ? "opacity-60" : "", colors?.icon)} />}
-                        <span className={cn("text-sm font-medium", explored && "opacity-70")}>{col.title}</span>
-                        {COLUMN_DESCRIPTIONS[col.id] && (
-                          <span className={cn("text-sm text-muted-foreground text-center leading-snug", explored && "opacity-70")}>
-                            {COLUMN_DESCRIPTIONS[col.id]}
-                          </span>
-                        )}
-                        {explored ? (
-                          <span className={cn("inline-flex items-center gap-1 text-xs font-medium", colors?.icon)}>
-                            <Check className="h-3 w-3" />
-                            {count} selected
-                          </span>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">
-                            {collectAllIds(col.items).length} options
-                          </span>
-                        )}
-                      </button>
-                    )
-                  })}
-                </div>}
-              </div>
-            </div>
-          )}
-
-          {step === "choose" && activeColumn && (
-            <div className="flex gap-6 flex-1 min-h-0">
-              <ScrollArea className="w-1/3 shrink-0 min-h-0">
-                <div className="flex flex-col gap-4 pr-3">
-                  <GuidancePanel {...STEP_GUIDANCE.choose} />
-                  {DIMENSION_GUIDANCE[activeColumn.id] && (
-                    <div className="flex flex-col gap-2 rounded-lg bg-accent/30 p-3 text-sm">
-                      <div className="flex items-center gap-2">
-                        {(() => {
-                          const Icon = COLUMN_ICONS[activeColumn.id]
-                          const colors = COLUMN_COLORS[activeColumn.id]
-                          return Icon ? <Icon className={cn("h-4 w-4", colors?.icon)} /> : null
-                        })()}
-                        <span className="font-medium">{activeColumn.title}</span>
-                      </div>
-                      <p className="text-muted-foreground leading-relaxed">
-                        {DIMENSION_GUIDANCE[activeColumn.id].description}
-                      </p>
-                      <div className="flex flex-col gap-1 mt-1">
-                        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Examples</span>
-                        {DIMENSION_GUIDANCE[activeColumn.id].examples.map((ex, i) => (
-                          <span key={i} className="text-xs text-muted-foreground italic">&ldquo;{ex}&rdquo;</span>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </ScrollArea>
-              <div className="flex flex-col gap-3 flex-1 min-h-0 min-w-0">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    {(() => {
-                      const Icon = COLUMN_ICONS[activeColumn.id]
-                      const colors = COLUMN_COLORS[activeColumn.id]
-                      return Icon ? <Icon className={cn("h-5 w-5", colors?.icon)} /> : null
-                    })()}
-                    <h3 className="text-sm font-semibold">{activeColumn.title}</h3>
-                    <span className="text-xs text-muted-foreground">
-                      ({(selectedByColumn[activeColumn.id] ?? []).length} selected)
-                    </span>
-                  </div>
-                  <Button
-                    size="sm"
-                    onClick={() => setStep(availableColumns.length > 1 ? "more" : "review")}
-                    disabled={(selectedByColumn[activeColumn.id] ?? []).length === 0}
-                    className="gap-1.5"
-                  >
-                    Continue
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-                <ScrollArea className="flex-1 min-h-0 max-h-[50vh] border rounded-lg p-3">
-                  <div className="flex flex-col gap-0.5 pr-3">
-                    {activeColumn.items.length === 0 ? (
-                      <NoSearchResults onClear={onClearSearch} />
-                    ) : activeColumn.items.map((item) => (
-                      <BrainstormCheckItem
-                        key={item.id}
-                        item={item}
-                        selected={new Set(selectedByColumn[activeColumn.id] ?? [])}
-                        onToggle={(id) => toggleItem(activeColumn.id, id)}
-                      />
-                    ))}
-                  </div>
-                </ScrollArea>
-              </div>
-            </div>
-          )}
-
-          {step === "more" && (
-            <div className="flex gap-6 flex-1 min-h-0">
-              <GuidancePanel {...STEP_GUIDANCE.more} className="w-1/3 shrink-0" />
-              <div className="flex flex-col gap-3 flex-1 min-w-0 min-h-0 overflow-y-auto">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-semibold">Pick a dimension</h3>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setStep("review")}
-                    className="gap-1.5"
-                  >
-                    Skip to review
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-                {!hasAnyItems ? (
-                  <NoSearchResults onClear={onClearSearch} />
-                ) : <div className="grid grid-cols-2 gap-3">
-                  {columns.map((col) => {
-                    const Icon = COLUMN_ICONS[col.id]
-                    const colors = COLUMN_COLORS[col.id]
-                    const explored = usedColumnIds.has(col.id)
-                    const count = (selectedByColumn[col.id] ?? []).length
-                    return (
-                      <button
-                        key={col.id}
-                        onClick={() => pickColumn(col.id)}
-                        className={cn(
-                          "flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all",
-                          explored
-                            ? "border-solid bg-accent/20 hover:bg-accent/40"
-                            : "border-dashed hover:border-solid hover:shadow-sm hover:bg-accent/30",
-                          colors?.border || "border-border",
-                        )}
-                      >
-                        {Icon && <Icon className={cn("h-7 w-7", explored ? "opacity-60" : "", colors?.icon)} />}
-                        <span className={cn("text-sm font-medium", explored && "opacity-70")}>{col.title}</span>
-                        {COLUMN_DESCRIPTIONS[col.id] && (
-                          <span className={cn("text-sm text-muted-foreground text-center leading-snug", explored && "opacity-70")}>
-                            {COLUMN_DESCRIPTIONS[col.id]}
-                          </span>
-                        )}
-                        {explored ? (
-                          <span className={cn("inline-flex items-center gap-1 text-xs font-medium", colors?.icon)}>
-                            <Check className="h-3 w-3" />
-                            {count} selected
-                          </span>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">
-                            {collectAllIds(col.items).length} options
-                          </span>
-                        )}
-                      </button>
-                    )
-                  })}
-                </div>}
-              </div>
-            </div>
-          )}
-
-          {step === "review" && (
-            <div className="flex gap-6 flex-1 min-h-0">
-              <GuidancePanel {...STEP_GUIDANCE.review} className="w-1/3 shrink-0" />
-              <div className="flex flex-col gap-4 flex-1 min-w-0">
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-medium">Problem Description</label>
-                  <Textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Describe the problem you've discovered..."
-                    rows={3}
-                  />
-                </div>
-                <div className="flex items-center gap-2 justify-end">
-                  <Button variant="outline" size="sm" onClick={reset}>
-                    <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
-                    Start Over
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={() => setStep("more")}>
-                    Add More Dimensions
-                  </Button>
-                  <Button onClick={handleSave} disabled={totalSelections === 0} className="gap-2">
-                    <Save className="h-3.5 w-3.5" />
-                    Save Problem
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </CardContent>
-    </Card>
-
-    {totalSelections > 0 && (
-      <Card className="shrink-0">
-        <CardContent className="py-3">
-          <div className="flex flex-wrap gap-1.5">
-            {columns.flatMap((col) => {
-              const ids = selectedByColumn[col.id] ?? []
-              if (ids.length === 0) return []
-              const colors = COLUMN_COLORS[col.id]
-              const Icon = COLUMN_ICONS[col.id]
-              return ids.map((id) => {
-                const label = findLabel(col.items, id)
-                return (
-                  <span
-                    key={id}
-                    className={cn("inline-flex items-center gap-1 text-xs rounded-full px-2 py-0.5", colors?.pill || "bg-primary/10 text-primary")}
-                  >
-                    {Icon && <Icon className="h-3 w-3 shrink-0" />}
-                    {label}
-                    <button
-                      onClick={() => toggleItem(col.id, id)}
-                      className="hover:opacity-70 transition-opacity"
-                      aria-label={`Remove ${label}`}
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </span>
-                )
-              })
-            })}
-          </div>
-        </CardContent>
-      </Card>
-    )}
-    </>
-  )
-}
-
-/* ─── Problem Builder V2 (dimension → category → items) ─── */
-
-const V2_STEPS = [
-  { id: "pick", label: "Pick a dimension" },
-  { id: "category", label: "Pick a category" },
-  { id: "choose", label: "Choose options" },
-  { id: "review", label: "Review & save" },
-] as const
-
-type V2StepId = (typeof V2_STEPS)[number]["id"]
-
-const CATEGORY_GUIDANCE: { title: string; description: string; tips: string[] } = {
-  title: "Narrow Your Focus",
-  description: "Each dimension is organised into categories. Pick one to focus on, and you'll only see a handful of options instead of the full list.",
-  tips: [
-    "Choose the category that best matches the area you want to explore.",
-    "After selecting items you'll return here to explore more categories.",
-    "When you're done with this dimension, click \"Done with this dimension\" to move on.",
-  ],
-}
-
-function ProblemBuilderV2({
-  columns,
-  onSave,
-  resetRef,
-  onClearSearch,
-}: {
-  columns: BrainstormColumn[]
-  onSave: (selections: Record<string, string[]>, description: string) => void
-  resetRef?: React.MutableRefObject<(() => void) | null>
-  onClearSearch?: () => void
-}) {
-  const [step, setStep] = useState<V2StepId>("pick")
-  const [activeColumnId, setActiveColumnId] = useState<string | null>(null)
   const [activeCategoryId, setActiveCategoryId] = useState<string | null>(null)
   const [selectedByColumn, setSelectedByColumn] = useState<Record<string, string[]>>({})
   const [description, setDescription] = useState("")
 
-  const stepIndex = V2_STEPS.findIndex((s) => s.id === step)
+  const stepIndex = BUILDER_STEPS.findIndex((s) => s.id === step)
   const usedColumnIds = useMemo(
     () => new Set(Object.entries(selectedByColumn).filter(([, ids]) => ids.length > 0).map(([id]) => id)),
     [selectedByColumn]
@@ -903,7 +504,7 @@ function ProblemBuilderV2({
       <CardContent className="flex flex-col gap-6 pt-6 flex-1 min-h-0">
         {/* Stepper */}
         <div className="flex items-center">
-          {V2_STEPS.map((s, i) => {
+          {BUILDER_STEPS.map((s, i) => {
             const isActive = s.id === step
             const isCompleted = i < stepIndex
             const isClickable =
@@ -935,7 +536,7 @@ function ProblemBuilderV2({
                     {s.label}
                   </span>
                 </button>
-                {i < V2_STEPS.length - 1 && (
+                {i < BUILDER_STEPS.length - 1 && (
                   <div className={cn(
                     "flex-1 h-px mx-3",
                     i < stepIndex ? "bg-primary" : "bg-border"
@@ -1489,12 +1090,8 @@ export default function BrainstormPage() {
             Canvas
           </ToggleGroupItem>
           <ToggleGroupItem value="builder" aria-label="Problem Builder mode" className="gap-1.5 px-3">
-            <Wand2 className="h-3.5 w-3.5" />
-            Builder
-          </ToggleGroupItem>
-          <ToggleGroupItem value="builder-v2" aria-label="Builder V2 mode" className="gap-1.5 px-3">
             <Layers className="h-3.5 w-3.5" />
-            Builder V2
+            Builder
           </ToggleGroupItem>
         </ToggleGroup>
       </div>
@@ -1504,9 +1101,7 @@ export default function BrainstormPage() {
         <p className={cn("text-sm text-muted-foreground", containerSize === "wide" ? "block" : "hidden")}>
           {brainstormMode === "canvas"
             ? "Explore potential areas for innovation by navigating through the options below."
-            : brainstormMode === "builder-v2"
-              ? "Build a problem by selecting from all dimensions on a single screen."
-              : "Build a problem step by step by selecting from each dimension."}
+            : "Build a problem step by step by selecting from each dimension."}
         </p>
         <div className="flex items-center gap-3 flex-wrap ml-auto">
           <div className="relative">
@@ -1550,7 +1145,7 @@ export default function BrainstormPage() {
             onClick={() => {
               if (brainstormMode === "canvas") {
                 clearAll()
-              } else if (brainstormMode === "builder" || brainstormMode === "builder-v2") {
+              } else if (brainstormMode === "builder") {
                 builderResetRef.current?.()
               }
             }}
@@ -1576,8 +1171,6 @@ export default function BrainstormPage() {
 
       {brainstormMode === "builder" ? (
         <ProblemBuilder columns={filteredColumns} onSave={handleBuilderSave} resetRef={builderResetRef} onClearSearch={() => setSearchQuery("")} />
-      ) : brainstormMode === "builder-v2" ? (
-        <ProblemBuilderV2 columns={filteredColumns} onSave={handleBuilderSave} resetRef={builderResetRef} onClearSearch={() => setSearchQuery("")} />
       ) : (<>
       <div className={cn(
         "grid gap-4 flex-1 min-h-0 overflow-y-auto",
