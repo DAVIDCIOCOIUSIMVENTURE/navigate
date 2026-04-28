@@ -64,6 +64,7 @@ import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
 import { cn } from "@/lib/utils"
 import { useGuidance } from "@/context/guidance-context"
 import { useContainerSize } from "@/context/container-size-context"
+import { useUnsavedChanges } from "@/context/navigation-guard-context"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import {
   DropdownMenu,
@@ -426,6 +427,11 @@ function ProblemBuilder({
     [columns]
   )
   const totalSelections = Object.values(selectedByColumn).reduce((sum, ids) => sum + ids.length, 0)
+
+  useUnsavedChanges({
+    when: totalSelections > 0 || description.trim() !== "",
+    message: "You have unsaved problem brainstorming progress. If you leave this page your work will be lost. Save your problem first to keep it.",
+  })
 
   const pickColumn = (columnId: string) => {
     setActiveColumnId(columnId)
@@ -824,6 +830,11 @@ function ProblemBuilderV2({
     [columns]
   )
   const totalSelections = Object.values(selectedByColumn).reduce((sum, ids) => sum + ids.length, 0)
+
+  useUnsavedChanges({
+    when: totalSelections > 0 || description.trim() !== "",
+    message: "You have unsaved problem brainstorming progress. If you leave this page your work will be lost. Save your problem first to keep it.",
+  })
 
   const pickColumn = (columnId: string) => {
     setActiveColumnId(columnId)
@@ -1341,6 +1352,11 @@ export default function BrainstormPage() {
   const fullView = useSelector((state: RootState) => state.settings.fullView)
   const brainstormMode = useSelector((state: RootState) => state.settings.brainstormMode)
   const containerSize = useContainerSize()
+
+  useUnsavedChanges({
+    when: brainstormMode === "canvas" && selected.size > 0,
+    message: "You have unsaved problem brainstorming progress. If you leave this page your work will be lost. Save your problem first to keep it.",
+  })
 
   const handleBuilderSave = useCallback(async (selections: Record<string, string[]>, description: string) => {
     const patch: Partial<Pick<Problem, "customerSegments" | "contexts" | "problemTypes" | "selfDiscovery">> = {}
