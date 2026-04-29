@@ -1,7 +1,7 @@
 "use client"
 
 import { Card, CardContent } from "@/components/ui/card"
-import { navigationItems, getSelfDiscoveryCategoryIcon } from "@/config/navigation"
+import { getSelfDiscoveryCategoryIcon } from "@/config/navigation"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { useRouter, usePathname } from "next/navigation"
@@ -144,8 +144,6 @@ export default function SelfDiscoveryLayout({
 }) {
     const router = useRouter()
     const pathname = usePathname()
-    const navItem = navigationItems.innovation[0]
-    const Icon = navItem?.icon
     const [isOpen, setIsOpen] = useState(false)
     const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
@@ -218,14 +216,6 @@ export default function SelfDiscoveryLayout({
                 {isWide && (
                     <Card className="w-72 overflow-y-auto shrink-0">
                         <CardContent className="p-3">
-                            <div className="flex items-center gap-3 px-1 pb-3">
-                                {navItem && Icon && (
-                                    <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary shrink-0">
-                                        <Icon className="h-5 w-5 text-primary-foreground" />
-                                    </div>
-                                )}
-                                <h1 className="text-lg font-bold">Self Discovery</h1>
-                            </div>
                             <div className="flex flex-col gap-1">
                                 <div className="pb-3 mb-1 border-b">
                                     {showAllButton}

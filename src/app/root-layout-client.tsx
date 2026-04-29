@@ -5,7 +5,7 @@ import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/s
 import { AppSidebar } from "@/components/app-sidebar"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import { Settings, HelpCircle, NotebookText } from "lucide-react"
+import { Settings, HelpCircle, NotebookText, LayoutDashboard, Target, Lightbulb, Search, ClipboardCheck, BookOpen, Compass, type LucideIcon } from "lucide-react"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { JournalPanel } from "@/components/journal-panel"
 import { usePathname } from "next/navigation"
@@ -32,22 +32,26 @@ function ContentArea({ children }: { children: React.ReactNode }) {
     </div>
   )
 }
-function getSectionTitle(pathname: string): string | null {
-  if (pathname === "/") return "Dashboard"
+function getSection(pathname: string): { title: string; Icon: LucideIcon } | null {
+  if (pathname === "/") return { title: "Dashboard", Icon: LayoutDashboard }
 
   const segments = pathname.split("/").filter(Boolean)
   const [first, second, third] = segments
 
+  if (first === "foundations") return { title: "Why It Matters", Icon: BookOpen }
+
+  if (first === "self-discovery") return { title: "Self Discovery", Icon: Compass }
+
   if (first === "problems") {
-    if (segments.length === 1) return "Problems"
-    if (second === "brainstorm") return "Discover Problems"
-    return "Problem Validation"
+    if (segments.length === 1) return { title: "Problems", Icon: Target }
+    if (second === "brainstorm") return { title: "Discover Problems", Icon: Search }
+    return { title: "Problem Validation", Icon: ClipboardCheck }
   }
 
   if (first === "solutions") {
-    if (segments.length === 1) return "Solutions"
-    if (second === "discover") return "Solution Discovery"
-    if (third === "validate") return "Solution Validation"
+    if (segments.length === 1) return { title: "Solutions", Icon: Lightbulb }
+    if (second === "discover") return { title: "Solution Discovery", Icon: Search }
+    if (third === "validate") return { title: "Solution Validation", Icon: ClipboardCheck }
   }
 
   return null
@@ -55,7 +59,7 @@ function getSectionTitle(pathname: string): string | null {
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const sectionTitle = getSectionTitle(pathname)
+  const section = getSection(pathname)
   const [guidanceOpen, setGuidanceOpen] = useState(false)
   const [guidanceTopic, setGuidanceTopic] = useState<string | undefined>(undefined)
 
@@ -93,8 +97,13 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-2">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="h-4" />
-            {sectionTitle && (
-              <h1 className="text-base font-semibold">{sectionTitle}</h1>
+            {section && (
+              <h1 className="flex items-center gap-2 ml-2 text-xl font-bold">
+                <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary shrink-0" aria-hidden="true">
+                  <section.Icon className="h-4 w-4 text-primary-foreground" />
+                </span>
+                {section.title}
+              </h1>
             )}
           </div>
           <div className="flex items-center gap-2">
