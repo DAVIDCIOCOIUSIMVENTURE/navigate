@@ -245,7 +245,7 @@ const guidanceItems: GuidanceItem[] = [
           <p>The builder walks you through four steps to construct a problem systematically:</p>
           <div className="flex flex-col gap-3 pt-1">
             <NumberedStep n={1} title="Pick an element" accent="bg-amber-500">
-              Choose which dimension you want to start with: You, Customers, Contexts, or Problems.
+              Choose which dimension you want to start with: You, Customer, Context, or Problem.
             </NumberedStep>
             <NumberedStep n={2} title="Choose options" accent="bg-amber-500">
               Browse and tick the items that resonate with you within that dimension.
@@ -263,9 +263,9 @@ const guidanceItems: GuidanceItem[] = [
           <p>The canvas presents a multi-column framework for thinking systematically about who experiences a problem, in what situation, and what friction they face.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
             <ConceptCard icon={Compass} label="You" description="Areas surfaced from your own self-discovery answers" tile="bg-violet-500" border="border-violet-100 bg-violet-50/40" />
-            <ConceptCard icon={Users} label="Customers" description="Who you are focusing on (e.g. early-career professionals, small business owners)" tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
-            <ConceptCard icon={MapPin} label="Contexts" description="The situation or environment where the problem occurs (e.g. daily commute, remote team)" tile="bg-sky-500" border="border-sky-100 bg-sky-50/40" />
-            <ConceptCard icon={AlertTriangle} label="Problems" description="The category of friction (e.g. information gaps, coordination overhead)" tile="bg-rose-500" border="border-rose-100 bg-rose-50/40" />
+            <ConceptCard icon={Users} label="Customer" description="Who you are focusing on (e.g. early-career professionals, small business owners)" tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
+            <ConceptCard icon={MapPin} label="Context" description="The situation or environment where the problem occurs (e.g. daily commute, remote team)" tile="bg-sky-500" border="border-sky-100 bg-sky-50/40" />
+            <ConceptCard icon={AlertTriangle} label="Problem" description="The category of friction (e.g. information gaps, coordination overhead)" tile="bg-rose-500" border="border-rose-100 bg-rose-50/40" />
           </div>
           <p className="pt-1">Browse each column, tick items that resonate, and click <Keyword>Save Problem</Keyword> to record the combination. Each saved row is one candidate problem. Save as many as you like.</p>
         </GuidanceSection>
@@ -321,7 +321,7 @@ const guidanceItems: GuidanceItem[] = [
           <p className="pt-1">Set each factor to Low, Medium, or High and optionally enter a numeric estimate. A validation signal is calculated to guide your thinking. Then record your verdict: <Keyword>Valid</Keyword>, <Keyword>Unsure</Keyword>, or <Keyword>Invalid</Keyword>. The verdict is your judgement call based on the evidence in front of you.</p>
         </GuidanceSection>
         <GuidanceSection icon={FileText} iconBg="bg-emerald-500" title="Problem Statement">
-          <p>The final step produces a consolidated summary of everything you have discovered. Review the core problem along with the customers, contexts, and problems dimensions, alongside all the evidence you collected. Edit any field directly. This statement is the artefact you carry forward if you decide to pursue the problem.</p>
+          <p>The final step produces a consolidated summary of everything you have discovered. Review the core problem along with the customer, context, and problem dimensions, alongside all the evidence you collected. Edit any field directly. This statement is the artefact you carry forward if you decide to pursue the problem.</p>
         </GuidanceSection>
         <TipCallout items={[
           "Be honest about the evidence: weak validation data is a signal, not a failure",

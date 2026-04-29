@@ -3,7 +3,7 @@ import type { BrainstormColumn } from "@/app/(app)/problems/brainstorm/data"
 export const brainstormColumns: BrainstormColumn[] = [
   {
     id: "customers",
-    title: "Customers",
+    title: "Customer",
     items: [
       // ── By life stage ──
       {
@@ -100,7 +100,7 @@ export const brainstormColumns: BrainstormColumn[] = [
   },
   {
     id: "contexts",
-    title: "Contexts",
+    title: "Context",
     items: [
       // ── Daily routines ──
       {
@@ -272,7 +272,7 @@ export const brainstormColumns: BrainstormColumn[] = [
   },
   {
     id: "problems",
-    title: "Problems",
+    title: "Problem",
     items: [
       // ── Friction & usability ──
       {

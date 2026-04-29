@@ -294,13 +294,13 @@ export default function SummaryPage() {
                   <EmptyText text="No description" />
                 )}
                 <dl className="flex flex-col gap-3">
-                  <Field label="Customers">
+                  <Field label="Customer">
                     <ChipList items={problem.customers} />
                   </Field>
-                  <Field label="Contexts">
+                  <Field label="Context">
                     <ChipList items={problem.contexts} />
                   </Field>
-                  <Field label="Problems">
+                  <Field label="Problem">
                     <ChipList items={problem.problems} />
                   </Field>
                 </dl>

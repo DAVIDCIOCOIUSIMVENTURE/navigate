@@ -68,9 +68,9 @@ export default function IntroductionPage() {
                 <p className="text-md font-medium">{problem.description}</p>
               </div>
             )}
-            <FieldRow label="Customers" values={problem.customers} />
-            <FieldRow label="Contexts" values={problem.contexts} />
-            <FieldRow label="Problems" values={problem.problems} />
+            <FieldRow label="Customer" values={problem.customers} />
+            <FieldRow label="Context" values={problem.contexts} />
+            <FieldRow label="Problem" values={problem.problems} />
           </div>
         )}
 

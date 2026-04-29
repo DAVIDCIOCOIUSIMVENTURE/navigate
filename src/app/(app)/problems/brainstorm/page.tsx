@@ -292,9 +292,9 @@ const STEP_GUIDANCE: Record<string, { title: string; description: string; tips: 
     title: "Choose a Dimension",
     description: "Every problem can be explored from multiple angles. Start by picking one dimension to frame your thinking. You can always come back and add more.",
     tips: [
-      "Customers: Start here if you have a specific audience in mind (e.g. freelancers, retirees, small business owners).",
-      "Contexts: Good when a problem is tied to a situation, like commuting, working from home, or managing finances.",
-      "Problems: Useful when you already sense the kind of friction (e.g. too much complexity, lack of trust, poor timing).",
+      "Customer: Start here if you have a specific audience in mind (e.g. freelancers, retirees, small business owners).",
+      "Context: Good when a problem is tied to a situation, like commuting, working from home, or managing finances.",
+      "Problem: Useful when you already sense the kind of friction (e.g. too much complexity, lack of trust, poor timing).",
       "You: Draws from your earlier self-discovery answers to surface personal triggers and themes.",
     ],
   },

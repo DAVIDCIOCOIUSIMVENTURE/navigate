@@ -88,9 +88,9 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     ? {
         text: problem.description,
         tags: [
-          { label: "Customers", values: problem.customers },
-          { label: "Contexts", values: problem.contexts },
-          { label: "Problems", values: problem.problems },
+          { label: "Customer", values: problem.customers },
+          { label: "Context", values: problem.contexts },
+          { label: "Problem", values: problem.problems },
         ],
         context: problem.contextWhen,
         emotionalImpact: problem.emotionalImpact,
