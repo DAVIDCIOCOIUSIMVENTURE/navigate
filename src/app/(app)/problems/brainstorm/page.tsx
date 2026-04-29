@@ -1060,98 +1060,100 @@ export default function BrainstormPage() {
 
   const content = (
     <div className="flex flex-col gap-6 w-full flex-1 min-h-0 min-w-0 overflow-x-hidden">
-      <div className="flex flex-col gap-2">
-      {/* Mode toggle + description + action buttons */}
-      <div className="flex items-center justify-between gap-4 min-w-0">
-        <div className="flex items-center gap-3 min-w-0">
-          <ToggleGroup
-            type="single"
-            value={brainstormMode}
-            onValueChange={(value) => {
-              if (value) dispatch.settings.setBrainstormMode(value as BrainstormMode)
-            }}
-            size="sm"
-          >
-            <ToggleGroupItem value="canvas" aria-label="Canvas mode" className="gap-1.5 px-3">
-              <Grid3X3 className="h-3.5 w-3.5" />
-              Canvas
-            </ToggleGroupItem>
-            <ToggleGroupItem value="builder" aria-label="Problem Builder mode" className="gap-1.5 px-3">
-              <Layers className="h-3.5 w-3.5" />
-              Builder
-            </ToggleGroupItem>
-          </ToggleGroup>
-          <p className={cn("text-sm text-muted-foreground", containerSize === "wide" ? "block" : "hidden")}>
-            {brainstormMode === "canvas"
-              ? "Explore potential areas for innovation by navigating through the options below."
-              : "Build a problem step by step by selecting from each dimension."}
-          </p>
-        </div>
-        <div className="flex items-center gap-3 flex-wrap ml-auto">
-          <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 h-8 w-44 bg-white"
-            />
-            {searchQuery && (
-              <button
-                onClick={() => setSearchQuery("")}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                aria-label="Clear search"
+      <Card className="shrink-0">
+        <CardContent className="py-3">
+          {/* Mode toggle + description + action buttons */}
+          <div className="flex items-center justify-between gap-4 min-w-0">
+            <div className="flex flex-col items-start gap-2 min-w-0">
+              <ToggleGroup
+                type="single"
+                value={brainstormMode}
+                onValueChange={(value) => {
+                  if (value) dispatch.settings.setBrainstormMode(value as BrainstormMode)
+                }}
+                size="sm"
               >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            )}
+                <ToggleGroupItem value="canvas" aria-label="Canvas mode" className="gap-1.5 px-3 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
+                  <Grid3X3 className="h-3.5 w-3.5" />
+                  Canvas
+                </ToggleGroupItem>
+                <ToggleGroupItem value="builder" aria-label="Problem Builder mode" className="gap-1.5 px-3 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
+                  <Layers className="h-3.5 w-3.5" />
+                  Builder
+                </ToggleGroupItem>
+              </ToggleGroup>
+              <p className={cn("text-sm text-muted-foreground", containerSize === "wide" ? "block" : "hidden")}>
+                {brainstormMode === "canvas"
+                  ? "Explore potential areas for innovation by navigating through the options below."
+                  : "Build a problem step by step by selecting from each dimension."}
+              </p>
+            </div>
+            <div className="flex items-center gap-3 flex-wrap ml-auto">
+              <div className="relative">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 h-8 w-44 bg-white"
+                />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    aria-label="Clear search"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                )}
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => dispatch.settings.setFullView(!fullView)}
+                className="gap-2"
+              >
+                {fullView ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+                {fullView ? "Exit Full View" : "Full View"}
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setTableDrawerOpen(true)}
+                className="gap-2"
+              >
+                Show Saved Problems ({savedProblems.length})
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  if (brainstormMode === "canvas") {
+                    clearAll()
+                  } else if (brainstormMode === "builder") {
+                    builderResetRef.current?.()
+                  }
+                }}
+                className="gap-2"
+              >
+                <RotateCcw className="h-3.5 w-3.5" />
+                Reset
+              </Button>
+              {brainstormMode === "canvas" && (
+                <Button
+                  size="sm"
+                  onClick={openSaveDialog}
+                  disabled={totalSelected === 0}
+                  className="gap-2"
+                >
+                  <Save className="h-3.5 w-3.5" />
+                  Save Problem
+                </Button>
+              )}
+            </div>
           </div>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => dispatch.settings.setFullView(!fullView)}
-            className="gap-2"
-          >
-            {fullView ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
-            {fullView ? "Exit Full View" : "Full View"}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setTableDrawerOpen(true)}
-            className="gap-2"
-          >
-            Show Saved Problems ({savedProblems.length})
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              if (brainstormMode === "canvas") {
-                clearAll()
-              } else if (brainstormMode === "builder") {
-                builderResetRef.current?.()
-              }
-            }}
-            className="gap-2"
-          >
-            <RotateCcw className="h-3.5 w-3.5" />
-            Reset
-          </Button>
-          {brainstormMode === "canvas" && (
-            <Button
-              size="sm"
-              onClick={openSaveDialog}
-              disabled={totalSelected === 0}
-              className="gap-2"
-            >
-              <Save className="h-3.5 w-3.5" />
-              Save Problem
-            </Button>
-          )}
-        </div>
-      </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {brainstormMode === "builder" ? (
         <ProblemBuilder columns={filteredColumns} onSave={handleBuilderSave} resetRef={builderResetRef} onClearSearch={() => setSearchQuery("")} />
