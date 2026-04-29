@@ -2,7 +2,7 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { toast } from "sonner"
 import { useState } from "react"
@@ -129,15 +129,15 @@ export default function DataPrivacySettingsPage() {
 
   return (
     <div className="flex flex-col gap-6 w-full">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Data & Privacy</h1>
-        <p className="text-muted-foreground mt-1">
-          Control how your data is stored and used. Everything is kept locally on this device; clearing it removes it for good.
-        </p>
-      </div>
-
       <Card>
         <CardContent className="pt-6 flex flex-col gap-4">
+          <div className="flex flex-col gap-1">
+            <h1 className="text-2xl font-bold tracking-tight">Data & Privacy</h1>
+            <p className="text-muted-foreground">
+              Control how your data is stored and used. Everything is kept locally on this device; clearing it removes it for good.
+            </p>
+          </div>
+          <Separator />
           <div className="flex flex-col gap-1">
             <Label>Clear data by category</Label>
             <p className="text-sm text-muted-foreground">
@@ -195,7 +195,12 @@ export default function DataPrivacySettingsPage() {
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction onClick={handleConfirm}>{confirmLabel}</AlertDialogAction>
+            <AlertDialogAction
+              onClick={handleConfirm}
+              className={buttonVariants({ variant: "destructive" })}
+            >
+              {confirmLabel}
+            </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

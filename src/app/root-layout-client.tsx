@@ -42,6 +42,8 @@ function getSection(pathname: string): { title: string; Icon: LucideIcon } | nul
 
   if (first === "self-discovery") return { title: "Self Discovery", Icon: Compass }
 
+  if (first === "settings") return { title: "Settings", Icon: Settings }
+
   if (first === "problems") {
     if (segments.length === 1) return { title: "Problems", Icon: Target }
     if (second === "brainstorm") return { title: "Discover Problems", Icon: Search }
