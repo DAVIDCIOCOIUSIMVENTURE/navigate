@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { BookOpen, Gauge, Target, Coins, Clock } from "lucide-react"
+import { ClipboardCheck, Gauge, Target, Coins, Clock } from "lucide-react"
 import { getAdjacentSteps, useSolutionValidation } from "../context"
 
 const METRICS = [
@@ -22,7 +22,7 @@ export default function IntroductionPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={BookOpen}>Introduction</CardTitle>
+        <CardTitle icon={ClipboardCheck}>Introduction</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <p className="text-md leading-relaxed">

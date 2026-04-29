@@ -33,7 +33,10 @@ function NavContent({
                 className="w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2"
                 onClick={() => onNavigate("/foundations")}
             >
-                Intro
+                <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-primary">
+                    <BookOpen className="h-3.5 w-3.5 text-primary-foreground" aria-hidden="true" />
+                </span>
+                <span className="flex-1 text-left">Introduction</span>
             </Button>
             {FOUNDATIONS_SECTIONS.map((section) => {
                 const isActive = pathname === `/foundations/${section.url}`
@@ -59,7 +62,7 @@ function NavContent({
 
 function getActiveInfo(pathname: string): { label: string; Icon: LucideIcon; bgClass: string } {
     if (pathname === "/foundations") {
-        return { label: "Intro", Icon: BookOpen, bgClass: "bg-primary" }
+        return { label: "Introduction", Icon: BookOpen, bgClass: "bg-primary" }
     }
     for (const section of FOUNDATIONS_SECTIONS) {
         if (pathname === `/foundations/${section.url}`) {

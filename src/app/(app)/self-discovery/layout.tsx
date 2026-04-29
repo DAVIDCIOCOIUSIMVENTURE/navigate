@@ -17,10 +17,10 @@ import type { RootState } from "@/store"
 import { useContainerSize } from "@/context/container-size-context"
 
 const CATEGORY_ICON_BG: Record<string, string> = {
-    "personal-interests": "bg-yellow-500",
-    "knowledge": "bg-red-500",
-    "skills-expertise": "bg-emerald-500",
-    "social-impact": "bg-sky-500",
+    "personal-interests": "bg-primary",
+    "knowledge": "bg-primary",
+    "skills-expertise": "bg-primary",
+    "social-impact": "bg-primary",
 }
 
 function NavContent({
@@ -45,10 +45,14 @@ function NavContent({
         <div className="flex flex-col gap-1">
             <Button
                 variant={pathname === "/self-discovery" ? "secondary" : "ghost"}
-                className="w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2"
+                className="w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2"
                 onClick={() => onNavigate("/self-discovery")}
             >
-                Intro
+                <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-primary">
+                    <Compass className="h-3.5 w-3.5 text-primary-foreground" aria-hidden="true" />
+                </span>
+                <span className="flex-1 text-left">Introduction</span>
+                <ChevronDown className="h-4 w-4 shrink-0 opacity-0" aria-hidden="true" />
             </Button>
             <Accordion
                 type="single"
@@ -79,7 +83,7 @@ function NavContent({
                                     const bgClass = CATEGORY_ICON_BG[category.url] ?? "bg-primary"
                                     return CategoryIcon && (
                                         <span className={cn("flex items-center justify-center w-6 h-6 rounded-md shrink-0", bgClass)}>
-                                            <CategoryIcon className="h-3.5 w-3.5 text-white" aria-hidden="true" />
+                                            <CategoryIcon className="h-3.5 w-3.5 text-primary-foreground" aria-hidden="true" />
                                         </span>
                                     )
                                 })()}
@@ -118,7 +122,7 @@ function NavContent({
 
 function getActiveInfo(pathname: string): { label: string; Icon: LucideIcon; bgClass: string } {
     if (pathname === "/self-discovery") {
-        return { label: "Intro", Icon: Compass, bgClass: "bg-primary" }
+        return { label: "Introduction", Icon: Compass, bgClass: "bg-primary" }
     }
     for (const category of SELF_DISCOVERY_CATEGORIES) {
         if (pathname.startsWith(`/self-discovery/${category.url}`)) {
@@ -189,7 +193,7 @@ export default function SelfDiscoveryLayout({
                                         >
                                             <span className="flex items-center gap-2 text-sm font-medium min-w-0">
                                                 <span className={cn("flex items-center justify-center w-6 h-6 rounded-md shrink-0", activeBgClass)}>
-                                                    <ActiveIcon className="h-3.5 w-3.5 text-white" aria-hidden="true" />
+                                                    <ActiveIcon className="h-3.5 w-3.5 text-primary-foreground" aria-hidden="true" />
                                                 </span>
                                                 <span className="truncate">{activeLabel}</span>
                                             </span>

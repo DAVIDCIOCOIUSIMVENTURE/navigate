@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { getAdjacentSteps, useProblemValidation } from "../context"
 import {
-  BookOpen, GitFork, ShieldCheck, LayoutTemplate, Users, Search,
+  ClipboardCheck, GitFork, ShieldCheck, LayoutTemplate, Users, Search,
 } from "lucide-react"
 
 const STEPS = [
@@ -52,7 +52,7 @@ export default function IntroductionPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={BookOpen}>Introduction</CardTitle>
+        <CardTitle icon={ClipboardCheck}>Introduction</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
 

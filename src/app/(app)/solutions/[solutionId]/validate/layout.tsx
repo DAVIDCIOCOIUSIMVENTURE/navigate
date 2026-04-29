@@ -8,14 +8,14 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/component
 import { ProblemSummaryDialog, type ProblemSummaryData } from "@/components/problem-summary-dialog"
 import { SolutionValidationProvider, useSolutionValidation, NAV_ITEMS } from "./context"
 import {
-  BookOpen, Gauge, Target, Coins, Clock, CheckCircle2, LayoutTemplate,
+  ClipboardCheck, Gauge, Target, Coins, Clock, CheckCircle2, LayoutTemplate,
   FileText, ChevronDown, Eye,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
 
 const NAV_ICONS: Record<string, LucideIcon> = {
-  introduction: BookOpen,
+  introduction: ClipboardCheck,
   feasibility: Gauge,
   impact: Target,
   cost: Coins,
@@ -104,7 +104,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const base = `/solutions/${solutionId}/validate`
 
   const activeItem = NAV_ITEMS.find((item) => pathname === `${base}/${item.path}`)
-  const ActiveIcon = activeItem ? (NAV_ICONS[activeItem.path] ?? FileText) : BookOpen
+  const ActiveIcon = activeItem ? (NAV_ICONS[activeItem.path] ?? FileText) : ClipboardCheck
 
   const handleNavigate = (href: string) => {
     setMobileNavOpen(false)

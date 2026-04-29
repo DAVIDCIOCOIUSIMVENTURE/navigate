@@ -102,7 +102,7 @@ export default function FoundationsSectionPage() {
         ) : (
           <Button variant="ghost" onClick={() => router.push("/foundations")}>
             <ChevronLeft className="mr-2 h-4 w-4" />
-            Intro
+            Introduction
           </Button>
         )}
         {next ? (
