@@ -1146,7 +1146,12 @@ export default function BrainstormPage() {
         <CardContent className="py-3">
           {/* Mode toggle + description + action buttons */}
           <div className={cn("flex gap-4 min-w-0", containerSize === "wide" ? "items-center justify-between" : "flex-col items-stretch")}>
-            <div className="flex flex-col items-start gap-2 min-w-0">
+            <div className={cn(
+              "flex min-w-0",
+              containerSize === "medium"
+                ? "flex-row items-center gap-3"
+                : "flex-col items-start gap-2"
+            )}>
               <ToggleGroup
                 type="single"
                 value={brainstormMode}
@@ -1154,6 +1159,7 @@ export default function BrainstormPage() {
                   if (value) dispatch.settings.setBrainstormMode(value as BrainstormMode)
                 }}
                 size="sm"
+                className="shrink-0"
               >
                 <ToggleGroupItem value="canvas" aria-label="Canvas mode" className="gap-1.5 px-3 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
                   <Grid3X3 className="h-3.5 w-3.5" />
@@ -1164,20 +1170,20 @@ export default function BrainstormPage() {
                   Builder
                 </ToggleGroupItem>
               </ToggleGroup>
-              <p className={cn("text-sm text-muted-foreground", containerSize === "wide" ? "block" : "hidden")}>
+              <p className={cn("text-sm text-muted-foreground", containerSize === "narrow" ? "hidden" : "block")}>
                 {brainstormMode === "canvas"
                   ? "Explore potential areas for innovation by navigating through the options below."
                   : "Build a problem step by step by selecting from each dimension."}
               </p>
             </div>
             <div className={cn("flex items-center gap-2 flex-wrap", containerSize === "wide" && "ml-auto gap-3")}>
-              <div className="relative">
+              <div className={cn("relative", containerSize === "narrow" && "w-full")}>
                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="pl-9 h-8 w-44 bg-white"
+                  className={cn("pl-9 h-8 bg-white", containerSize === "narrow" ? "w-full" : "w-44")}
                 />
                 {searchQuery && (
                   <button
