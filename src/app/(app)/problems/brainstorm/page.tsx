@@ -653,7 +653,7 @@ function ProblemBuilder({
                         key={col.id}
                         onClick={() => pickColumn(col.id)}
                         className={cn(
-                          "flex flex-col items-center gap-3 p-5 rounded-xl border-2 transition-all",
+                          "flex flex-col items-center gap-3 p-5 rounded-xl border-2 border-t-[3px] transition-all",
                           explored
                             ? "border-solid bg-accent/20 hover:bg-accent/40"
                             : "border-dashed hover:border-solid hover:shadow-sm hover:bg-accent/30",
@@ -661,7 +661,7 @@ function ProblemBuilder({
                         )}
                       >
                         {Icon && <Icon className={cn("h-5 w-5", explored ? "opacity-60" : "", colors?.icon)} />}
-                        <span className={cn("text-base font-bold", colors?.icon, explored && "opacity-70")}>{col.title}</span>
+                        <span className={cn("text-[15px] font-bold", colors?.icon, explored && "opacity-70")}>{col.title}</span>
                         {COLUMN_DESCRIPTIONS[col.id] && (
                           <span className={cn("text-sm text-muted-foreground text-center leading-snug", explored && "opacity-70")}>
                             {COLUMN_DESCRIPTIONS[col.id]}
@@ -697,7 +697,7 @@ function ProblemBuilder({
                       const colors = COLUMN_COLORS[activeColumn.id]
                       return Icon ? <Icon className={cn("h-5 w-5", colors?.icon)} /> : null
                     })()}
-                    <h3 className={cn("text-base font-bold", COLUMN_COLORS[activeColumn.id]?.icon)}>{activeColumn.title}</h3>
+                    <h3 className={cn("text-[15px] font-bold", COLUMN_COLORS[activeColumn.id]?.icon)}>{activeColumn.title}</h3>
                     {(selectedByColumn[activeColumn.id] ?? []).length > 0 && (
                       <span className="text-xs text-muted-foreground">
                         ({(selectedByColumn[activeColumn.id] ?? []).length} selected)
@@ -727,7 +727,7 @@ function ProblemBuilder({
                         key={group.id}
                         onClick={() => pickCategory(group.id)}
                         className={cn(
-                          "flex flex-col items-start gap-2 p-4 rounded-xl border-2 transition-all text-left",
+                          "flex flex-col items-start gap-2 p-4 rounded-xl border-2 border-t-[3px] transition-all text-left",
                           explored
                             ? "border-solid bg-accent/20 hover:bg-accent/40"
                             : "border-dashed hover:border-solid hover:shadow-sm hover:bg-accent/30",
@@ -766,7 +766,7 @@ function ProblemBuilder({
                           const colors = COLUMN_COLORS[activeColumn.id]
                           return Icon ? <Icon className={cn("h-4 w-4", colors?.icon)} /> : null
                         })()}
-                        <span className={cn("text-base font-bold", COLUMN_COLORS[activeColumn.id]?.icon)}>{activeColumn.title}</span>
+                        <span className={cn("text-[15px] font-bold", COLUMN_COLORS[activeColumn.id]?.icon)}>{activeColumn.title}</span>
                       </div>
                       <p className="text-muted-foreground leading-relaxed">
                         {DIMENSION_GUIDANCE[activeColumn.id].description}
@@ -789,7 +789,7 @@ function ProblemBuilder({
                       const colors = COLUMN_COLORS[activeColumn.id]
                       return Icon ? <Icon className={cn("h-5 w-5", colors?.icon)} /> : null
                     })()}
-                    <h3 className={cn("text-base font-bold", COLUMN_COLORS[activeColumn.id]?.icon)}>{activeColumn.title}</h3>
+                    <h3 className={cn("text-[15px] font-bold", COLUMN_COLORS[activeColumn.id]?.icon)}>{activeColumn.title}</h3>
                     {activeCategory && (
                       <>
                         <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
@@ -1259,7 +1259,7 @@ export default function BrainstormPage() {
 
           if (isHidden) {
             return (
-              <Card key={column.id} className={cn("flex flex-col items-center pt-3 pb-4 min-h-0 w-12 shrink-0 border-t-2", colors?.border)}>
+              <Card key={column.id} className={cn("flex flex-col items-center pt-3 pb-4 min-h-0 w-12 shrink-0 border-t-[3px]", colors?.border)}>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0">
@@ -1283,12 +1283,12 @@ export default function BrainstormPage() {
           }
 
           return (
-            <Card key={column.id} className={cn("flex flex-col min-h-[300px] flex-1 min-w-0 border-t-2", colors?.border)}>
+            <Card key={column.id} className={cn("flex flex-col min-h-[300px] flex-1 min-w-0 border-t-[3px]", colors?.border)}>
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {Icon && <Icon className={cn("h-4 w-4", colors?.icon || "text-muted-foreground")} />}
-                    <CardTitle className={cn("text-base font-bold", colors?.icon)}>
+                    <CardTitle className={cn("text-[15px] font-bold", colors?.icon)}>
                       {column.title}
                     </CardTitle>
                   </div>
