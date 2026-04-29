@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
 import { SearchProblemDialog } from "@/components/search-problem-dialog"
 import { ProblemsTable } from "@/components/problems-table"
 import { Plus, Target } from "lucide-react"
@@ -19,18 +20,18 @@ export default function ProblemsPage() {
 
   return (
     <div className="flex flex-col gap-6 w-full flex-1">
-      <div className="flex items-center gap-4">
-        <div className="flex-1 rounded-lg border bg-white p-4 text-sm text-muted-foreground leading-relaxed">
-          <p>
+      <Card>
+        <CardContent className="py-4 flex items-center gap-4">
+          <p className="flex-1 text-sm text-muted-foreground leading-relaxed">
             This is your <span className="font-medium text-foreground">problem library</span>, a central place to collect, refine, and track the problems you&apos;ve identified.
             Use the <span className="font-medium text-foreground">Search for new problem</span> button to brainstorm and discover problems worth solving, then validate each one to determine whether it&apos;s a real pain point with a viable opportunity behind it.
           </p>
-        </div>
-        <Button onClick={() => setDialogOpen(true)} className="gap-2 shrink-0">
-          <Plus className="h-4 w-4" />
-          Search for new problem
-        </Button>
-      </div>
+          <Button onClick={() => setDialogOpen(true)} className="gap-2 shrink-0">
+            <Plus className="h-4 w-4" />
+            Search for new problem
+          </Button>
+        </CardContent>
+      </Card>
 
       {!mounted || problems.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center gap-6 py-24">

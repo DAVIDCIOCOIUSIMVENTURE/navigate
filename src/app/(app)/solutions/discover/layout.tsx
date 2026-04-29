@@ -275,18 +275,18 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-6 flex-1 w-full min-h-0">
       {isWide ? (
-        <div className="flex items-center gap-4">
-          <Card className="flex-1">
-            <CardContent className="px-6 py-4">
+        <Card>
+          <CardContent className="px-6 py-4 flex items-center gap-4">
+            <div className="flex-1 min-w-0">
               <Stepper
                 pathname={pathname}
                 problemSelected={problemSelected}
                 onNavigate={(path) => router.push(path)}
               />
-            </CardContent>
-          </Card>
-          {actionButtons}
-        </div>
+            </div>
+            {actionButtons}
+          </CardContent>
+        </Card>
       ) : (
         <div className="flex flex-col gap-3">
           <MobileStepper
