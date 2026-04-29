@@ -622,12 +622,12 @@ function ProblemBuilder({
         })()}
 
         {/* Step content */}
-        <div className="flex-1 min-h-0 flex flex-col">
+        <div className={cn("flex-1 min-h-0 flex flex-col", !isWide && "overflow-y-auto")}>
           {/* Step 1: Pick a dimension (also serves as "add more") */}
           {step === "pick" && (
-            <div className={cn("flex flex-1 min-h-0", isWide ? "flex-row gap-6" : "flex-col gap-4")}>
+            <div className={cn("flex", isWide ? "flex-row gap-6 flex-1 min-h-0" : "flex-col gap-4")}>
               <GuidancePanel {...STEP_GUIDANCE.pick} className={isWide ? "w-1/3 shrink-0" : "w-full shrink-0"} />
-              <div className="flex flex-col gap-3 flex-1 min-w-0 min-h-0">
+              <div className={cn("flex flex-col gap-3 min-w-0", isWide && "flex-1 min-h-0")}>
                 <div className="flex items-center justify-between shrink-0">
                   <h3 className="text-sm font-semibold">Dimensions</h3>
                   {totalSelections > 0 && (
@@ -687,9 +687,9 @@ function ProblemBuilder({
 
           {/* Step 2: Pick a category within the dimension */}
           {step === "category" && activeColumn && (
-            <div className={cn("flex flex-1 min-h-0", isWide ? "flex-row gap-6" : "flex-col gap-4")}>
+            <div className={cn("flex", isWide ? "flex-row gap-6 flex-1 min-h-0" : "flex-col gap-4")}>
               <GuidancePanel {...CATEGORY_GUIDANCE} className={isWide ? "w-1/3 shrink-0" : "w-full shrink-0"} />
-              <div className="flex flex-col gap-3 flex-1 min-w-0 min-h-0">
+              <div className={cn("flex flex-col gap-3 min-w-0", isWide && "flex-1 min-h-0")}>
                 <div className="flex items-center justify-between shrink-0">
                   <div className="flex items-center gap-2">
                     {(() => {
@@ -754,7 +754,7 @@ function ProblemBuilder({
 
           {/* Step 3: Choose options within the selected category */}
           {step === "choose" && activeColumn && (
-            <div className={cn("flex flex-1 min-h-0", isWide ? "flex-row gap-6" : "flex-col gap-4")}>
+            <div className={cn("flex", isWide ? "flex-row gap-6 flex-1 min-h-0" : "flex-col gap-4")}>
               <ScrollArea className={cn("min-h-0", isWide ? "w-1/3 shrink-0" : "w-full shrink-0")}>
                 <div className="flex flex-col gap-4 pr-3">
                   <GuidancePanel {...STEP_GUIDANCE.choose} />
@@ -781,7 +781,7 @@ function ProblemBuilder({
                   )}
                 </div>
               </ScrollArea>
-              <div className="flex flex-col gap-3 flex-1 min-h-0 min-w-0">
+              <div className={cn("flex flex-col gap-3 min-w-0", isWide && "flex-1 min-h-0")}>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {(() => {
@@ -860,9 +860,9 @@ function ProblemBuilder({
 
           {/* Step 4: Review & save */}
           {step === "review" && (
-            <div className={cn("flex flex-1 min-h-0", isWide ? "flex-row gap-6" : "flex-col gap-4")}>
+            <div className={cn("flex", isWide ? "flex-row gap-6 flex-1 min-h-0" : "flex-col gap-4")}>
               <GuidancePanel {...STEP_GUIDANCE.review} className={isWide ? "w-1/3 shrink-0" : "w-full shrink-0"} />
-              <div className="flex flex-col gap-4 flex-1 min-w-0">
+              <div className={cn("flex flex-col gap-4 min-w-0", isWide && "flex-1")}>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-sm font-medium">Problem Description</label>
                   <Textarea
@@ -1145,7 +1145,7 @@ export default function BrainstormPage() {
       <Card className="shrink-0">
         <CardContent className="py-3">
           {/* Mode toggle + description + action buttons */}
-          <div className="flex items-center justify-between gap-4 min-w-0">
+          <div className={cn("flex gap-4 min-w-0", containerSize === "wide" ? "items-center justify-between" : "flex-col items-stretch")}>
             <div className="flex flex-col items-start gap-2 min-w-0">
               <ToggleGroup
                 type="single"
@@ -1170,7 +1170,7 @@ export default function BrainstormPage() {
                   : "Build a problem step by step by selecting from each dimension."}
               </p>
             </div>
-            <div className="flex items-center gap-3 flex-wrap ml-auto">
+            <div className={cn("flex items-center gap-2 flex-wrap", containerSize === "wide" && "ml-auto gap-3")}>
               <div className="relative">
                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
