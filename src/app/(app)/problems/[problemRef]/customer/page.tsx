@@ -21,7 +21,7 @@ export default function CustomerSegmentPage() {
   const problem = useSelector((state: RootState) =>
     state.problems.problems.find((p) => p.id === problemId)
   )
-  const customerSegments = problem?.customerSegments ?? []
+  const customerSegments = problem?.customers ?? []
 
   return (
     <Card className="w-full flex-1">

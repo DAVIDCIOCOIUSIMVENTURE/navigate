@@ -2,8 +2,8 @@ import type { BrainstormColumn } from "@/app/(app)/problems/brainstorm/data"
 
 export const brainstormColumns: BrainstormColumn[] = [
   {
-    id: "customer-segments",
-    title: "Customer Segments",
+    id: "customers",
+    title: "Customers",
     items: [
       // ── By life stage ──
       {
@@ -271,8 +271,8 @@ export const brainstormColumns: BrainstormColumn[] = [
     ],
   },
   {
-    id: "problem-types",
-    title: "Problem Types",
+    id: "problems",
+    title: "Problems",
     items: [
       // ── Friction & usability ──
       {

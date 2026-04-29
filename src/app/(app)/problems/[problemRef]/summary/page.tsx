@@ -146,9 +146,9 @@ export default function SummaryPage() {
     const newProblem = dispatch.problems.create({
       source: original.source,
       description: original.description,
-      customerSegments: [...original.customerSegments],
+      customers: [...original.customers],
       contexts: [...original.contexts],
-      problemTypes: [...original.problemTypes],
+      problems: [...original.problems],
       segmentSize: original.segmentSize ?? null,
       customerDescription: original.customerDescription ?? "",
     })
@@ -294,14 +294,14 @@ export default function SummaryPage() {
                   <EmptyText text="No description" />
                 )}
                 <dl className="flex flex-col gap-3">
-                  <Field label="Customer Segments">
-                    <ChipList items={problem.customerSegments} />
+                  <Field label="Customers">
+                    <ChipList items={problem.customers} />
                   </Field>
-                  <Field label="Context">
+                  <Field label="Contexts">
                     <ChipList items={problem.contexts} />
                   </Field>
-                  <Field label="Problem Types">
-                    <ChipList items={problem.problemTypes} />
+                  <Field label="Problems">
+                    <ChipList items={problem.problems} />
                   </Field>
                 </dl>
               </>

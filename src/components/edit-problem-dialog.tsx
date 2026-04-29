@@ -18,9 +18,9 @@ import type { Problem, ProblemPatch } from "@/store/problems-model"
 import type { ValidationStatus } from "@/types/idea"
 
 const COLUMN_TO_FIELD: Record<string, keyof ProblemPatch> = {
-  "customer-segments": "customerSegments",
+  "customers": "customers",
   "contexts": "contexts",
-  "problem-types": "problemTypes",
+  "problems": "problems",
 }
 
 function useDebouncedCallback<T>(callback: (value: T) => void, delay: number) {

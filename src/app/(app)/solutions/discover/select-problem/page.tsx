@@ -94,9 +94,9 @@ export default function SelectProblemPage() {
                         {badge.label}
                       </Badge>
                     </div>
-                    {(problem.customerSegments.length > 0 || problem.contexts.length > 0) && (
+                    {(problem.customers.length > 0 || problem.contexts.length > 0) && (
                       <div className="flex flex-wrap gap-1.5 mt-1">
-                        {problem.customerSegments.slice(0, 3).map((s) => (
+                        {problem.customers.slice(0, 3).map((s) => (
                           <span key={`cs-${s}`} className="rounded-md bg-background px-2 py-0.5 text-xs border">{s}</span>
                         ))}
                         {problem.contexts.slice(0, 3).map((c) => (

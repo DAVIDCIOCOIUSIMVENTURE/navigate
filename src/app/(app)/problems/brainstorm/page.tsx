@@ -72,31 +72,31 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 const COLUMN_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
-  "customer-segments": Users,
+  "customers": Users,
   "contexts": MapPin,
-  "problem-types": TriangleAlert,
-  "self-discovery": Compass,
+  "problems": TriangleAlert,
+  "you": Compass,
 }
 
 const COLUMN_COLORS: Record<string, { icon: string; border: string; pill: string }> = {
-  "customer-segments": { icon: "text-blue-500", border: "border-t-blue-500", pill: "bg-blue-500/10 text-blue-700 dark:text-blue-400" },
+  "customers": { icon: "text-blue-500", border: "border-t-blue-500", pill: "bg-blue-500/10 text-blue-700 dark:text-blue-400" },
   "contexts": { icon: "text-amber-500", border: "border-t-amber-500", pill: "bg-amber-500/10 text-amber-700 dark:text-amber-400" },
-  "problem-types": { icon: "text-rose-500", border: "border-t-rose-500", pill: "bg-rose-500/10 text-rose-700 dark:text-rose-400" },
-  "self-discovery": { icon: "text-violet-500", border: "border-t-violet-500", pill: "bg-violet-500/10 text-violet-700 dark:text-violet-400" },
+  "problems": { icon: "text-rose-500", border: "border-t-rose-500", pill: "bg-rose-500/10 text-rose-700 dark:text-rose-400" },
+  "you": { icon: "text-violet-500", border: "border-t-violet-500", pill: "bg-violet-500/10 text-violet-700 dark:text-violet-400" },
 }
 
 const COLUMN_DESCRIPTIONS: Record<string, string> = {
-  "customer-segments": "Who experiences this problem?",
+  "customers": "Who experiences this problem?",
   "contexts": "In what situation does it occur?",
-  "problem-types": "What kind of friction do they face?",
-  "self-discovery": "Areas surfaced from your self-discovery.",
+  "problems": "What kind of friction do they face?",
+  "you": "Areas surfaced from your self-discovery.",
 }
 
-const COLUMN_TO_FIELD: Record<string, keyof Pick<Problem, "customerSegments" | "contexts" | "problemTypes" | "selfDiscovery">> = {
-  "customer-segments": "customerSegments",
+const COLUMN_TO_FIELD: Record<string, keyof Pick<Problem, "customers" | "contexts" | "problems" | "you">> = {
+  "customers": "customers",
   "contexts": "contexts",
-  "problem-types": "problemTypes",
-  "self-discovery": "selfDiscovery",
+  "problems": "problems",
+  "you": "you",
 }
 
 function collectAllIds(items: BrainstormItem[]): string[] {
@@ -292,10 +292,10 @@ const STEP_GUIDANCE: Record<string, { title: string; description: string; tips: 
     title: "Choose a Dimension",
     description: "Every problem can be explored from multiple angles. Start by picking one dimension to frame your thinking. You can always come back and add more.",
     tips: [
-      "Customer Segments: Start here if you have a specific audience in mind (e.g. freelancers, retirees, small business owners).",
+      "Customers: Start here if you have a specific audience in mind (e.g. freelancers, retirees, small business owners).",
       "Contexts: Good when a problem is tied to a situation, like commuting, working from home, or managing finances.",
-      "Problem Types: Useful when you already sense the kind of friction (e.g. too much complexity, lack of trust, poor timing).",
-      "Self Discovery: Draws from your earlier self-discovery answers to surface personal triggers and themes.",
+      "Problems: Useful when you already sense the kind of friction (e.g. too much complexity, lack of trust, poor timing).",
+      "You: Draws from your earlier self-discovery answers to surface personal triggers and themes.",
     ],
   },
   choose: {
@@ -319,8 +319,8 @@ const STEP_GUIDANCE: Record<string, { title: string; description: string; tips: 
 }
 
 const DIMENSION_GUIDANCE: Record<string, { description: string; examples: string[] }> = {
-  "customer-segments": {
-    description: "Think about who experiences this problem. A well-defined customer segment helps you empathise with real people rather than abstract \"users\".",
+  "customers": {
+    description: "Think about who experiences this problem. A well-defined customer helps you empathise with real people rather than abstract \"users\".",
     examples: [
       "Young professionals juggling side projects",
       "Parents returning to the workforce",
@@ -335,7 +335,7 @@ const DIMENSION_GUIDANCE: Record<string, { description: string; examples: string
       "At the point of making a purchase decision",
     ],
   },
-  "problem-types": {
+  "problems": {
     description: "What kind of friction or barrier does the person face? Naming the type of problem helps you spot patterns and prioritise.",
     examples: [
       "Too many steps to complete a simple task (friction)",
@@ -343,7 +343,7 @@ const DIMENSION_GUIDANCE: Record<string, { description: string; examples: string
       "Information is scattered across tools (information gap)",
     ],
   },
-  "self-discovery": {
+  "you": {
     description: "These themes surfaced from your own self-discovery responses. They represent areas where you may have personal insight or passion, making them a great foundation for innovation.",
     examples: [
       "Themes you rated highly in the questionnaire",
@@ -867,7 +867,7 @@ export default function BrainstormPage() {
   )
   const triggers = useSelector((state: RootState) => state.problemTriggers.triggers)
 
-  const selfDiscoveryColumn = useMemo<BrainstormColumn>(() => {
+  const youColumn = useMemo<BrainstormColumn>(() => {
     // Map each question URL to its parent category
     const questionToCat = new Map<string, { url: string; title: string }>()
     for (const cat of SELF_DISCOVERY_CATEGORIES) {
@@ -889,12 +889,12 @@ export default function BrainstormPage() {
       label: title,
       children,
     }))
-    return { id: "self-discovery", title: "Self Discovery", items }
+    return { id: "you", title: "You", items }
   }, [triggers])
 
   const allColumns = useMemo<BrainstormColumn[]>(
-    () => [selfDiscoveryColumn, ...brainstormColumns],
-    [selfDiscoveryColumn]
+    () => [youColumn, ...brainstormColumns],
+    [youColumn]
   )
 
   const hiddenColumnsArray = useSelector((state: RootState) => state.settings.hiddenBrainstormColumns)
@@ -947,7 +947,7 @@ export default function BrainstormPage() {
   const containerSize = useContainerSize()
 
   const handleBuilderSave = useCallback(async (selections: Record<string, string[]>, description: string) => {
-    const patch: Partial<Pick<Problem, "customerSegments" | "contexts" | "problemTypes" | "selfDiscovery">> = {}
+    const patch: Partial<Pick<Problem, "customers" | "contexts" | "problems" | "you">> = {}
     for (const column of allColumns) {
       const field = COLUMN_TO_FIELD[column.id]
       patch[field] = selections[column.id] ?? []
@@ -977,7 +977,7 @@ export default function BrainstormPage() {
 
   const saveDebounced = useDebouncedCallback((fields: Record<string, string>) => {
     if (!editingProblem) return
-    const patch: Partial<Pick<Problem, "description" | "customerSegments" | "contexts" | "problemTypes" | "selfDiscovery">> = {
+    const patch: Partial<Pick<Problem, "description" | "customers" | "contexts" | "problems" | "you">> = {
       description: fields["description"] ?? "",
     }
     for (const column of allColumns) {
@@ -1025,7 +1025,7 @@ export default function BrainstormPage() {
   }
 
   const saveCombination = async () => {
-    const patch: Partial<Pick<Problem, "customerSegments" | "contexts" | "problemTypes" | "selfDiscovery">> = {}
+    const patch: Partial<Pick<Problem, "customers" | "contexts" | "problems" | "you">> = {}
     for (const column of allColumns) {
       const field = COLUMN_TO_FIELD[column.id]
       const value = saveFields[column.id]?.trim()

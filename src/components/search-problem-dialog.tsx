@@ -19,9 +19,9 @@ import { brainstormColumns } from "@/data/brainstormData"
 import type { ProblemPatch } from "@/store/problems-model"
 
 const COLUMN_TO_FIELD: Record<string, keyof ProblemPatch> = {
-  "customer-segments": "customerSegments",
+  "customers": "customers",
   "contexts": "contexts",
-  "problem-types": "problemTypes",
+  "problems": "problems",
 }
 
 interface SearchProblemDialogProps {
