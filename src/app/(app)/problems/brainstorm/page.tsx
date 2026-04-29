@@ -79,8 +79,8 @@ const COLUMN_ICONS: Record<string, React.ComponentType<{ className?: string }>> 
 }
 
 const COLUMN_COLORS: Record<string, { icon: string; border: string; pill: string }> = {
-  "customers": { icon: "text-blue-500", border: "border-t-blue-500", pill: "bg-blue-500/10 text-blue-700 dark:text-blue-400" },
-  "contexts": { icon: "text-amber-500", border: "border-t-amber-500", pill: "bg-amber-500/10 text-amber-700 dark:text-amber-400" },
+  "customers": { icon: "text-emerald-500", border: "border-t-emerald-500", pill: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400" },
+  "contexts": { icon: "text-blue-500", border: "border-t-blue-500", pill: "bg-blue-500/10 text-blue-700 dark:text-blue-400" },
   "problems": { icon: "text-rose-500", border: "border-t-rose-500", pill: "bg-rose-500/10 text-rose-700 dark:text-rose-400" },
   "you": { icon: "text-violet-500", border: "border-t-violet-500", pill: "bg-violet-500/10 text-violet-700 dark:text-violet-400" },
 }
@@ -660,8 +660,8 @@ function ProblemBuilder({
                           colors?.border || "border-border",
                         )}
                       >
-                        {Icon && <Icon className={cn("h-7 w-7", explored ? "opacity-60" : "", colors?.icon)} />}
-                        <span className={cn("text-sm font-medium", explored && "opacity-70")}>{col.title}</span>
+                        {Icon && <Icon className={cn("h-5 w-5", explored ? "opacity-60" : "", colors?.icon)} />}
+                        <span className={cn("text-base font-bold", colors?.icon, explored && "opacity-70")}>{col.title}</span>
                         {COLUMN_DESCRIPTIONS[col.id] && (
                           <span className={cn("text-sm text-muted-foreground text-center leading-snug", explored && "opacity-70")}>
                             {COLUMN_DESCRIPTIONS[col.id]}
@@ -697,7 +697,7 @@ function ProblemBuilder({
                       const colors = COLUMN_COLORS[activeColumn.id]
                       return Icon ? <Icon className={cn("h-5 w-5", colors?.icon)} /> : null
                     })()}
-                    <h3 className="text-sm font-semibold">{activeColumn.title}</h3>
+                    <h3 className={cn("text-base font-bold", COLUMN_COLORS[activeColumn.id]?.icon)}>{activeColumn.title}</h3>
                     {(selectedByColumn[activeColumn.id] ?? []).length > 0 && (
                       <span className="text-xs text-muted-foreground">
                         ({(selectedByColumn[activeColumn.id] ?? []).length} selected)
@@ -766,7 +766,7 @@ function ProblemBuilder({
                           const colors = COLUMN_COLORS[activeColumn.id]
                           return Icon ? <Icon className={cn("h-4 w-4", colors?.icon)} /> : null
                         })()}
-                        <span className="font-medium">{activeColumn.title}</span>
+                        <span className={cn("text-base font-bold", COLUMN_COLORS[activeColumn.id]?.icon)}>{activeColumn.title}</span>
                       </div>
                       <p className="text-muted-foreground leading-relaxed">
                         {DIMENSION_GUIDANCE[activeColumn.id].description}
@@ -789,7 +789,7 @@ function ProblemBuilder({
                       const colors = COLUMN_COLORS[activeColumn.id]
                       return Icon ? <Icon className={cn("h-5 w-5", colors?.icon)} /> : null
                     })()}
-                    <h3 className="text-sm font-semibold">{activeColumn.title}</h3>
+                    <h3 className={cn("text-base font-bold", COLUMN_COLORS[activeColumn.id]?.icon)}>{activeColumn.title}</h3>
                     {activeCategory && (
                       <>
                         <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
@@ -1288,7 +1288,7 @@ export default function BrainstormPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {Icon && <Icon className={cn("h-4 w-4", colors?.icon || "text-muted-foreground")} />}
-                    <CardTitle className={cn("text-sm font-semibold", colors?.icon)}>
+                    <CardTitle className={cn("text-base font-bold", colors?.icon)}>
                       {column.title}
                     </CardTitle>
                   </div>
