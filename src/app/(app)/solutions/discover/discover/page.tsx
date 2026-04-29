@@ -22,7 +22,7 @@ import {
   Shuffle, RotateCcw, Globe, TrendingUp, Plus, Trash2, Save,
   ArrowLeft, ArrowRight, Wind, Tv, Armchair, Package, Smartphone, Coffee,
   Home, Pizza, ShoppingBag, Utensils, Flag, Leaf, Sparkles, ShieldCheck,
-  Truck, Heart, Rows3, LayoutPanelTop, Wrench, type LucideIcon,
+  Truck, Heart, Rows3, LayoutPanelTop, Wrench, Lightbulb, type LucideIcon,
 } from "lucide-react"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useContainerSize } from "@/context/container-size-context"
@@ -76,6 +76,7 @@ type ScamperPrompt = {
   sparkQuestions: string[]
   inputPlaceholder: string
   technique?: { name: string; description: string }
+  example: { company: string; idea: string }
 }
 
 const SCAMPER_PROMPTS: ScamperPrompt[] = [
@@ -93,6 +94,10 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
       name: "Challenge the assumptions",
       description: "Write down the unspoken assumptions behind this step: about who, what, or how. Negate each one in turn and ask what a world without it would look like.",
     },
+    example: {
+      company: "Dyson",
+      idea: "Replaced the vacuum dust bag with cyclonic air separation, using centrifugal force instead of filtration to capture dust.",
+    },
   },
   {
     key: "combine", letter: "C", title: "Combine",
@@ -107,6 +112,10 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
     technique: {
       name: "Attribute matrix",
       description: "Choose 2 or 3 attributes of the problem (channel, audience, format). Jot 3 variations under each, then pick unlikely pairs across the columns and see what mashups appear.",
+    },
+    example: {
+      company: "IKEA",
+      idea: "Combined a furniture store with a restaurant, play area, and lifestyle showroom to create a full-day destination experience.",
     },
   },
   {
@@ -123,6 +132,10 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
       name: "Borrow an expert's lens",
       description: "Picture someone from an unrelated craft (a chef, a choreographer, a firefighter) approaching this problem. What would their first instinct be? Apply that move here.",
     },
+    example: {
+      company: "Netflix",
+      idea: "Adapted the subscription model from magazines and gyms, applying unlimited access for a flat monthly fee to movie rentals.",
+    },
   },
   {
     key: "modify", letter: "M", title: "Modify",
@@ -137,6 +150,10 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
     technique: {
       name: "Attribute dialling",
       description: "List every attribute you can name: size, speed, price, sequence, colour, tone. Crank each one to an extreme, then walk back to the most useful setting.",
+    },
+    example: {
+      company: "IKEA",
+      idea: "Compressed furniture into flat-pack boxes that fit in a standard car, eliminating the need for delivery trucks.",
     },
   },
   {
@@ -153,6 +170,10 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
       name: "Random context swap",
       description: "Drop the thing into an unrelated setting (a library, a campsite, an emergency room). Ask how it would serve there without redesigning it.",
     },
+    example: {
+      company: "Netflix",
+      idea: "Used viewing data (originally just logistics info) to power personalised recommendations and later to greenlight original content.",
+    },
   },
   {
     key: "eliminate", letter: "E", title: "Eliminate",
@@ -164,6 +185,10 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
       "What constraints could be lifted without losing the point?",
     ],
     inputPlaceholder: "e.g. Remove the email field from signup...",
+    example: {
+      company: "Netflix",
+      idea: "Eliminated late fees entirely, removing the most hated aspect of traditional video rental.",
+    },
   },
   {
     key: "reverse", letter: "R", title: "Reverse",
@@ -178,6 +203,10 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
     technique: {
       name: "Flip the script",
       description: "Write the opposite of every assumption you hold about this. Treat the inversions as serious proposals, not jokes, and see which ones you can defend.",
+    },
+    example: {
+      company: "IKEA",
+      idea: "Reversed the flow: instead of a shop assistant helping you, customers navigate a self-guided path and pick items from the warehouse themselves.",
     },
   },
 ]
@@ -223,11 +252,13 @@ function ScamperDimensionContent({
 function ScamperPromptBody({
   sparkQuestions,
   technique,
+  example,
   dimensionKey,
   inputPlaceholder,
 }: {
   sparkQuestions: string[]
   technique?: { name: string; description: string }
+  example: { company: string; idea: string }
   dimensionKey: ScamperKey
   inputPlaceholder: string
 }) {
@@ -258,6 +289,15 @@ function ScamperPromptBody({
           <p className="text-sm text-white">{technique.description}</p>
         </div>
       )}
+      <div className="rounded-md border border-white/20 bg-white/5 p-4">
+        <div className="flex items-center gap-2 mb-2">
+          <Lightbulb className="h-3.5 w-3.5 text-white" />
+          <p className="text-xs font-semibold text-white uppercase tracking-wide">
+            Example: {example.company}
+          </p>
+        </div>
+        <p className="text-sm text-white">{example.idea}</p>
+      </div>
       <ScamperDimensionContent dimensionKey={dimensionKey} placeholder={inputPlaceholder} />
     </div>
   )
@@ -301,7 +341,7 @@ function ScamperForm() {
 
       {viewMode === "accordion" ? (
         <Accordion type="multiple" className="flex flex-col divide-y divide-white/20">
-          {SCAMPER_PROMPTS.map(({ key, letter, title, prompt, color, sparkQuestions, inputPlaceholder, technique }) => (
+          {SCAMPER_PROMPTS.map(({ key, letter, title, prompt, color, sparkQuestions, inputPlaceholder, technique, example }) => (
             <AccordionItem key={key} value={key}>
               <AccordionTrigger className="py-5 hover:no-underline [&>svg]:text-white/80">
                 <div className="flex items-start gap-3 flex-1 min-w-0">
@@ -318,6 +358,7 @@ function ScamperForm() {
                 <ScamperPromptBody
                   sparkQuestions={sparkQuestions}
                   technique={technique}
+                  example={example}
                   dimensionKey={key}
                   inputPlaceholder={inputPlaceholder}
                 />
@@ -341,7 +382,7 @@ function ScamperForm() {
               </TabsTrigger>
             ))}
           </TabsList>
-          {SCAMPER_PROMPTS.map(({ key, letter, title, prompt, color, sparkQuestions, inputPlaceholder, technique }) => (
+          {SCAMPER_PROMPTS.map(({ key, letter, title, prompt, color, sparkQuestions, inputPlaceholder, technique, example }) => (
             <TabsContent key={key} value={key} className="mt-0">
               <div className="flex items-start gap-3 mb-4">
                 <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full ${color} text-white text-xs font-bold`}>
@@ -356,6 +397,7 @@ function ScamperForm() {
                 <ScamperPromptBody
                   sparkQuestions={sparkQuestions}
                   technique={technique}
+                  example={example}
                   dimensionKey={key}
                   inputPlaceholder={inputPlaceholder}
                 />
