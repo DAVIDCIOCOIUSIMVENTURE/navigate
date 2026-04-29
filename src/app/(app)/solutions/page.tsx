@@ -19,29 +19,17 @@ export default function SolutionsPage() {
 
   return (
     <div className="flex flex-col gap-6 w-full flex-1">
-      <div className="flex items-center justify-between">
-        <div className="flex items-start gap-4">
-          <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-primary shrink-0">
-            <Lightbulb className="h-6 w-6 text-primary-foreground" />
-          </div>
-          <div className="flex flex-col gap-1">
-            <h1 className="text-xl font-bold">Solutions</h1>
-            <p className="text-sm text-muted-foreground">
-              Discover and validate solutions worth pursuing.
-            </p>
-          </div>
+      <div className="flex items-center gap-4">
+        <div className="flex-1 rounded-lg border bg-white p-4 text-sm text-muted-foreground leading-relaxed">
+          <p>
+            This is your <span className="font-medium text-foreground">solution library</span>, a central place to collect, refine, and track the solutions you&apos;ve identified.
+            Use the <span className="font-medium text-foreground">Search for new solution</span> button to pick a validated problem and generate candidates through a guided discovery wizard, then validate each one to decide whether it&apos;s worth pursuing.
+          </p>
         </div>
-        <Button onClick={() => setDialogOpen(true)} className="gap-2">
+        <Button onClick={() => setDialogOpen(true)} className="gap-2 shrink-0">
           <Plus className="h-4 w-4" />
           Search for new solution
         </Button>
-      </div>
-
-      <div className="rounded-lg border bg-white p-4 text-sm text-muted-foreground leading-relaxed">
-        <p>
-          This is your <span className="font-medium text-foreground">solution library</span>, a central place to collect, refine, and track the solutions you&apos;ve identified.
-          Use the <span className="font-medium text-foreground">Search for new solution</span> button to pick a validated problem and generate candidates through a guided discovery wizard, then validate each one to decide whether it&apos;s worth pursuing.
-        </p>
       </div>
 
       {!mounted || solutions.length === 0 ? (

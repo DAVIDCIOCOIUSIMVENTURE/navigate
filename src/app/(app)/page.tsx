@@ -84,11 +84,7 @@ export default function DashboardPage() {
   return (
     <div className="flex flex-col gap-4 w-full flex-1 min-h-0">
       {/* Header */}
-      <div className="flex items-center justify-between shrink-0">
-        <div className="flex flex-col gap-1">
-          <h1 className="text-xl font-bold">Dashboard</h1>
-          <p className="text-sm text-muted-foreground">Your innovation journey at a glance</p>
-        </div>
+      <div className="flex justify-end shrink-0">
         <Button asChild>
           <Link href="/problems">
             {problems.length === 0 ? "Start Your Journey" : "Continue Your Journey"}

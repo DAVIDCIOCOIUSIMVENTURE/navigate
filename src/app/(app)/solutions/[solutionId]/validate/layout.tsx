@@ -8,7 +8,7 @@ import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/component
 import { ProblemSummaryDialog, type ProblemSummaryData } from "@/components/problem-summary-dialog"
 import { SolutionValidationProvider, useSolutionValidation, NAV_ITEMS } from "./context"
 import {
-  ShieldCheck, BookOpen, Gauge, Target, Coins, Clock, CheckCircle2, LayoutTemplate,
+  BookOpen, Gauge, Target, Coins, Clock, CheckCircle2, LayoutTemplate,
   FileText, ChevronDown, Eye,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
@@ -113,18 +113,6 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex flex-col gap-6 flex-1 w-full">
-      <div className="flex items-start gap-4">
-        <div className="flex items-center justify-center w-14 h-14 rounded-lg bg-primary shrink-0">
-          <ShieldCheck className="h-6 w-6 text-primary-foreground" />
-        </div>
-        <div className="flex flex-col gap-1">
-          <h1 className="text-xl font-bold">Solution Validation</h1>
-          <p className="text-sm text-muted-foreground">
-            Evaluate a candidate across feasibility, impact, cost, and time.
-          </p>
-        </div>
-      </div>
-
       {!isWide && (
       <nav aria-label="Solution validation steps" className="w-full">
         <Collapsible open={mobileNavOpen} onOpenChange={setMobileNavOpen}>

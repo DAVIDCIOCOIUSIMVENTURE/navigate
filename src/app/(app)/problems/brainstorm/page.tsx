@@ -1061,35 +1061,32 @@ export default function BrainstormPage() {
   const content = (
     <div className="flex flex-col gap-6 w-full flex-1 min-h-0 min-w-0 overflow-x-hidden">
       <div className="flex flex-col gap-2">
-      {/* Row 1: Title + mode toggle */}
-      <div className="flex items-center justify-between gap-4">
-        <h1 className="text-xl font-bold shrink-0">Discover Problems</h1>
-        <ToggleGroup
-          type="single"
-          value={brainstormMode}
-          onValueChange={(value) => {
-            if (value) dispatch.settings.setBrainstormMode(value as BrainstormMode)
-          }}
-          size="sm"
-        >
-          <ToggleGroupItem value="canvas" aria-label="Canvas mode" className="gap-1.5 px-3">
-            <Grid3X3 className="h-3.5 w-3.5" />
-            Canvas
-          </ToggleGroupItem>
-          <ToggleGroupItem value="builder" aria-label="Problem Builder mode" className="gap-1.5 px-3">
-            <Layers className="h-3.5 w-3.5" />
-            Builder
-          </ToggleGroupItem>
-        </ToggleGroup>
-      </div>
-
-      {/* Row 2: Description + action buttons */}
+      {/* Mode toggle + description + action buttons */}
       <div className="flex items-center justify-between gap-4 min-w-0">
-        <p className={cn("text-sm text-muted-foreground", containerSize === "wide" ? "block" : "hidden")}>
-          {brainstormMode === "canvas"
-            ? "Explore potential areas for innovation by navigating through the options below."
-            : "Build a problem step by step by selecting from each dimension."}
-        </p>
+        <div className="flex items-center gap-3 min-w-0">
+          <ToggleGroup
+            type="single"
+            value={brainstormMode}
+            onValueChange={(value) => {
+              if (value) dispatch.settings.setBrainstormMode(value as BrainstormMode)
+            }}
+            size="sm"
+          >
+            <ToggleGroupItem value="canvas" aria-label="Canvas mode" className="gap-1.5 px-3">
+              <Grid3X3 className="h-3.5 w-3.5" />
+              Canvas
+            </ToggleGroupItem>
+            <ToggleGroupItem value="builder" aria-label="Problem Builder mode" className="gap-1.5 px-3">
+              <Layers className="h-3.5 w-3.5" />
+              Builder
+            </ToggleGroupItem>
+          </ToggleGroup>
+          <p className={cn("text-sm text-muted-foreground", containerSize === "wide" ? "block" : "hidden")}>
+            {brainstormMode === "canvas"
+              ? "Explore potential areas for innovation by navigating through the options below."
+              : "Build a problem step by step by selecting from each dimension."}
+          </p>
+        </div>
         <div className="flex items-center gap-3 flex-wrap ml-auto">
           <div className="relative">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />

@@ -4,14 +4,6 @@ import React from "react"
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/app-sidebar"
 import { Separator } from "@/components/ui/separator"
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
 import { Button } from "@/components/ui/button"
 import { Settings, HelpCircle, NotebookText } from "lucide-react"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
@@ -40,26 +32,30 @@ function ContentArea({ children }: { children: React.ReactNode }) {
     </div>
   )
 }
-function generateBreadcrumbs(pathname: string) {
-  const paths = pathname.split('/').filter(Boolean)
+function getSectionTitle(pathname: string): string | null {
+  if (pathname === "/") return "Dashboard"
 
-  return paths.map((path, index) => {
-    const href = `/${paths.slice(0, index + 1).join('/')}`
-    const label = path.split('-').map(word =>
-      word.charAt(0).toUpperCase() + word.slice(1)
-    ).join(' ')
+  const segments = pathname.split("/").filter(Boolean)
+  const [first, second, third] = segments
 
-    return {
-      href,
-      label,
-      isLast: index === paths.length - 1,
-    }
-  })
+  if (first === "problems") {
+    if (segments.length === 1) return "Problems"
+    if (second === "brainstorm") return "Discover Problems"
+    return "Problem Validation"
+  }
+
+  if (first === "solutions") {
+    if (segments.length === 1) return "Solutions"
+    if (second === "discover") return "Solution Discovery"
+    if (third === "validate") return "Solution Validation"
+  }
+
+  return null
 }
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const breadcrumbs = generateBreadcrumbs(pathname)
+  const sectionTitle = getSectionTitle(pathname)
   const [guidanceOpen, setGuidanceOpen] = useState(false)
   const [guidanceTopic, setGuidanceTopic] = useState<string | undefined>(undefined)
 
@@ -97,24 +93,9 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-2">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="h-4" />
-            <Breadcrumb >
-              <BreadcrumbList>
-                {breadcrumbs.map((crumb) => (
-                  <React.Fragment key={crumb.href}>
-                    <BreadcrumbItem>
-                      {crumb.isLast ? (
-                        <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
-                      ) : (
-                        <BreadcrumbLink href={crumb.href}>
-                          {crumb.label}
-                        </BreadcrumbLink>
-                      )}
-                    </BreadcrumbItem>
-                    {!crumb.isLast && <BreadcrumbSeparator />}
-                  </React.Fragment>
-                ))}
-              </BreadcrumbList>
-            </Breadcrumb>
+            {sectionTitle && (
+              <h1 className="text-base font-semibold">{sectionTitle}</h1>
+            )}
           </div>
           <div className="flex items-center gap-2">
             <TeamAvatars />
