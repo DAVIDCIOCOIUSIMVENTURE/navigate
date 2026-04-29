@@ -414,6 +414,8 @@ function ProblemBuilder({
   const activeCategoryId = useSelector((state: RootState) => state.settings.brainstormBuilderActiveCategoryId)
   const selectedByColumn = useSelector((state: RootState) => state.settings.brainstormBuilderSelectedByColumn)
   const description = useSelector((state: RootState) => state.settings.brainstormBuilderDescription)
+  const isWide = useContainerSize() === "wide"
+  const [stepperOpen, setStepperOpen] = useState(false)
 
   const setStep = (next: BuilderStepId) => dispatch.settings.setBrainstormBuilderStep(next)
   const setActiveColumnId = (id: string | null) => dispatch.settings.setBrainstormBuilderActiveColumnId(id)
@@ -495,56 +497,136 @@ function ProblemBuilder({
     <Card className="flex flex-col flex-1 min-h-0">
       <CardContent className="flex flex-col gap-6 pt-6 flex-1 min-h-0">
         {/* Stepper */}
-        <div className="flex items-center">
-          {BUILDER_STEPS.map((s, i) => {
-            const isActive = s.id === step
-            const isCompleted = i < stepIndex
-            const isClickable =
-              s.id === "pick" ||
-              (s.id === "category" && activeColumnId !== null && hasCategories) ||
-              (s.id === "choose" && activeColumnId !== null && (activeCategoryId !== null || !hasCategories)) ||
-              (s.id === "review" && totalSelections > 0)
+        {(() => {
+          const isStepClickable = (id: BuilderStepId) =>
+            id === "pick" ||
+            (id === "category" && activeColumnId !== null && hasCategories) ||
+            (id === "choose" && activeColumnId !== null && (activeCategoryId !== null || !hasCategories)) ||
+            (id === "review" && totalSelections > 0)
+          const activeStep = BUILDER_STEPS[stepIndex] ?? BUILDER_STEPS[0]
+
+          if (isWide) {
             return (
-              <div key={s.id} className="flex items-center flex-1 last:flex-none">
-                <button
-                  disabled={!isClickable}
-                  onClick={() => isClickable && setStep(s.id)}
-                  className="flex items-center gap-2 shrink-0 disabled:opacity-100"
-                >
-                  <span className={cn(
-                    "flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 transition-colors",
-                    isActive
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : isCompleted
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-muted-foreground/30 bg-transparent text-muted-foreground"
-                  )}>
-                    {isCompleted ? <Check className="h-3.5 w-3.5" /> : i + 1}
-                  </span>
-                  <span className={cn(
-                    "text-sm whitespace-nowrap",
-                    isActive ? "font-semibold text-foreground" : "text-muted-foreground"
-                  )}>
-                    {s.label}
-                  </span>
-                </button>
-                {i < BUILDER_STEPS.length - 1 && (
-                  <div className={cn(
-                    "flex-1 h-px mx-3",
-                    i < stepIndex ? "bg-primary" : "bg-border"
-                  )} />
-                )}
+              <div className="flex items-center">
+                {BUILDER_STEPS.map((s, i) => {
+                  const isActive = s.id === step
+                  const isCompleted = i < stepIndex
+                  const isClickable = isStepClickable(s.id)
+                  return (
+                    <div key={s.id} className="flex items-center flex-1 last:flex-none">
+                      <button
+                        disabled={!isClickable}
+                        onClick={() => isClickable && setStep(s.id)}
+                        className="flex items-center gap-2 shrink-0 disabled:opacity-100"
+                      >
+                        <span className={cn(
+                          "flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 transition-colors",
+                          isActive
+                            ? "border-primary bg-primary text-primary-foreground"
+                            : isCompleted
+                              ? "border-primary bg-primary/10 text-primary"
+                              : "border-muted-foreground/30 bg-transparent text-muted-foreground"
+                        )}>
+                          {isCompleted ? <Check className="h-3.5 w-3.5" /> : i + 1}
+                        </span>
+                        <span className={cn(
+                          "text-sm whitespace-nowrap",
+                          isActive ? "font-semibold text-foreground" : "text-muted-foreground"
+                        )}>
+                          {s.label}
+                        </span>
+                      </button>
+                      {i < BUILDER_STEPS.length - 1 && (
+                        <div className={cn(
+                          "flex-1 h-px mx-3",
+                          i < stepIndex ? "bg-primary" : "bg-border"
+                        )} />
+                      )}
+                    </div>
+                  )
+                })}
               </div>
             )
-          })}
-        </div>
+          }
+
+          return (
+            <Collapsible open={stepperOpen} onOpenChange={setStepperOpen}>
+              <div className="rounded-lg border">
+                <CollapsibleTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-between h-auto py-2 px-3"
+                  >
+                    <span className="flex items-center gap-2 text-sm font-medium min-w-0">
+                      <span className="flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 border-primary bg-primary text-primary-foreground shrink-0">
+                        {stepIndex + 1}
+                      </span>
+                      <span className="truncate font-semibold text-foreground">
+                        Step {stepIndex + 1} of {BUILDER_STEPS.length}: {activeStep.label}
+                      </span>
+                    </span>
+                    <ChevronDown
+                      className={cn(
+                        "h-4 w-4 text-muted-foreground transition-transform shrink-0",
+                        stepperOpen && "rotate-180"
+                      )}
+                      aria-hidden="true"
+                    />
+                  </Button>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <ul className="flex flex-col gap-0.5 list-none m-0 p-2 pt-0" role="list">
+                    {BUILDER_STEPS.map((s, i) => {
+                      const isActive = s.id === step
+                      const isCompleted = i < stepIndex
+                      const isClickable = isStepClickable(s.id)
+                      return (
+                        <li key={s.id}>
+                          <Button
+                            type="button"
+                            variant={isActive ? "secondary" : "ghost"}
+                            disabled={!isClickable}
+                            onClick={() => {
+                              if (!isClickable) return
+                              setStepperOpen(false)
+                              setStep(s.id)
+                            }}
+                            aria-current={isActive ? "step" : undefined}
+                            className="w-full justify-start h-auto py-2 px-3 gap-2.5"
+                          >
+                            <span className={cn(
+                              "flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 transition-colors shrink-0",
+                              isActive
+                                ? "border-primary bg-primary text-primary-foreground"
+                                : isCompleted
+                                  ? "border-primary bg-primary/10 text-primary"
+                                  : "border-muted-foreground/30 bg-transparent text-muted-foreground"
+                            )}>
+                              {isCompleted ? <Check className="h-3.5 w-3.5" /> : i + 1}
+                            </span>
+                            <span className={cn(
+                              "text-sm whitespace-normal text-left",
+                              isActive ? "font-semibold text-foreground" : "text-muted-foreground"
+                            )}>
+                              {s.label}
+                            </span>
+                          </Button>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </CollapsibleContent>
+              </div>
+            </Collapsible>
+          )
+        })()}
 
         {/* Step content */}
         <div className="flex-1 min-h-0 flex flex-col">
           {/* Step 1: Pick a dimension (also serves as "add more") */}
           {step === "pick" && (
-            <div className="flex gap-6 flex-1 min-h-0">
-              <GuidancePanel {...STEP_GUIDANCE.pick} className="w-1/3 shrink-0" />
+            <div className={cn("flex flex-1 min-h-0", isWide ? "flex-row gap-6" : "flex-col gap-4")}>
+              <GuidancePanel {...STEP_GUIDANCE.pick} className={isWide ? "w-1/3 shrink-0" : "w-full shrink-0"} />
               <div className="flex flex-col gap-3 flex-1 min-w-0 min-h-0">
                 <div className="flex items-center justify-between shrink-0">
                   <h3 className="text-sm font-semibold">Dimensions</h3>
@@ -605,8 +687,8 @@ function ProblemBuilder({
 
           {/* Step 2: Pick a category within the dimension */}
           {step === "category" && activeColumn && (
-            <div className="flex gap-6 flex-1 min-h-0">
-              <GuidancePanel {...CATEGORY_GUIDANCE} className="w-1/3 shrink-0" />
+            <div className={cn("flex flex-1 min-h-0", isWide ? "flex-row gap-6" : "flex-col gap-4")}>
+              <GuidancePanel {...CATEGORY_GUIDANCE} className={isWide ? "w-1/3 shrink-0" : "w-full shrink-0"} />
               <div className="flex flex-col gap-3 flex-1 min-w-0 min-h-0">
                 <div className="flex items-center justify-between shrink-0">
                   <div className="flex items-center gap-2">
@@ -672,8 +754,8 @@ function ProblemBuilder({
 
           {/* Step 3: Choose options within the selected category */}
           {step === "choose" && activeColumn && (
-            <div className="flex gap-6 flex-1 min-h-0">
-              <ScrollArea className="w-1/3 shrink-0 min-h-0">
+            <div className={cn("flex flex-1 min-h-0", isWide ? "flex-row gap-6" : "flex-col gap-4")}>
+              <ScrollArea className={cn("min-h-0", isWide ? "w-1/3 shrink-0" : "w-full shrink-0")}>
                 <div className="flex flex-col gap-4 pr-3">
                   <GuidancePanel {...STEP_GUIDANCE.choose} />
                   {DIMENSION_GUIDANCE[activeColumn.id] && (
@@ -778,8 +860,8 @@ function ProblemBuilder({
 
           {/* Step 4: Review & save */}
           {step === "review" && (
-            <div className="flex gap-6 flex-1 min-h-0">
-              <GuidancePanel {...STEP_GUIDANCE.review} className="w-1/3 shrink-0" />
+            <div className={cn("flex flex-1 min-h-0", isWide ? "flex-row gap-6" : "flex-col gap-4")}>
+              <GuidancePanel {...STEP_GUIDANCE.review} className={isWide ? "w-1/3 shrink-0" : "w-full shrink-0"} />
               <div className="flex flex-col gap-4 flex-1 min-w-0">
                 <div className="flex flex-col gap-1.5">
                   <label className="text-sm font-medium">Problem Description</label>
