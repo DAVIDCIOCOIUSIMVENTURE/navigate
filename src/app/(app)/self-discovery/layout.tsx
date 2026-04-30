@@ -178,7 +178,7 @@ export default function SelfDiscoveryLayout({
         <div
             className={cn(
                 "flex h-full w-full flex-1 min-h-0",
-                isWide ? "flex-row gap-6 overflow-hidden" : "flex-col gap-4",
+                isWide ? "flex-row gap-3 overflow-hidden" : "flex-col gap-3",
             )}
         >
                 {!isWide && (

@@ -19,7 +19,7 @@ export default function SolutionsPage() {
   }, [])
 
   return (
-    <div className="flex flex-col gap-6 w-full flex-1">
+    <div className="flex flex-col gap-3 w-full flex-1">
       <Card>
         <CardContent className="py-4 flex items-center gap-4">
           <p className="flex-1 text-sm text-muted-foreground leading-relaxed">

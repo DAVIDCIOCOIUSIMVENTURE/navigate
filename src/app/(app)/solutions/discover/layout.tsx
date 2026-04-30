@@ -273,7 +273,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   )
 
   return (
-    <div className="flex flex-col gap-6 flex-1 w-full min-h-0">
+    <div className="flex flex-col gap-3 flex-1 w-full min-h-0">
       {isWide ? (
         <Card>
           <CardContent className="px-6 py-4 flex items-center gap-4">

@@ -112,7 +112,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex flex-col gap-6 flex-1 w-full">
+    <div className="flex flex-col gap-3 flex-1 w-full">
       {!isWide && (
       <nav aria-label="Solution validation steps" className="w-full">
         <Collapsible open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
