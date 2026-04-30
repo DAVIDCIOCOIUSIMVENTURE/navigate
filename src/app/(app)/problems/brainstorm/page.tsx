@@ -436,10 +436,6 @@ function ProblemBuilder({
     }
     return map
   }, [columns, selectedSet])
-  const usedColumnIds = useMemo(
-    () => new Set(Object.keys(selectedByColumn)),
-    [selectedByColumn]
-  )
   const activeColumn = columns.find((c) => c.id === activeColumnId)
   const activeCategory = activeColumn?.items.find((item) => item.id === activeCategoryId)
 
@@ -655,8 +651,6 @@ function ProblemBuilder({
                   {columns.map((col) => {
                     const Icon = COLUMN_ICONS[col.id]
                     const colors = COLUMN_COLORS[col.id]
-                    const explored = usedColumnIds.has(col.id)
-                    const count = (selectedByColumn[col.id] ?? []).length
                     return (
                       <button
                         key={col.id}
@@ -681,16 +675,6 @@ function ProblemBuilder({
                         {COLUMN_DESCRIPTIONS[col.id] && (
                           <span className="text-sm text-foreground text-center leading-snug">
                             {COLUMN_DESCRIPTIONS[col.id]}
-                          </span>
-                        )}
-                        {explored ? (
-                          <span className={cn("inline-flex items-center gap-1 text-xs font-medium", colors?.icon)}>
-                            <Check className="h-3 w-3" />
-                            {count} selected
-                          </span>
-                        ) : (
-                          <span className="text-xs text-foreground">
-                            {collectAllIds(col.items).length} options
                           </span>
                         )}
                       </button>
@@ -1167,7 +1151,7 @@ export default function BrainstormPage() {
   }
 
   const content = (
-    <div className="flex flex-col gap-6 w-full flex-1 min-h-0 min-w-0 overflow-x-hidden">
+    <div className="flex flex-col gap-3 w-full flex-1 min-h-0 min-w-0 overflow-x-hidden">
       <Card className="shrink-0">
         <CardContent className="py-3">
           {/* Mode toggle + description + action buttons */}
