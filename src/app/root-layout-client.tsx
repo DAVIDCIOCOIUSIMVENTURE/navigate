@@ -7,11 +7,14 @@ import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { Settings, HelpCircle, NotebookText, LayoutDashboard, Target, Lightbulb, Search, ClipboardCheck, BookOpen, Compass, type LucideIcon } from "lucide-react"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { JournalPanel } from "@/components/journal-panel"
 import { usePathname } from "next/navigation"
 import { useState, useEffect, useRef } from "react"
-import { GuidanceDialog } from "@/components/guidance-dialog"
+import { GuidancePanel } from "@/components/guidance-panel"
 import { GuidanceProvider } from "@/context/guidance-context"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { NavigationGuardProvider } from "@/context/navigation-guard-context"
 import { ContainerSizeContext, useObserveContainerSize } from "@/context/container-size-context"
 import { AppStoreProvider } from "@/store/provider"
@@ -64,16 +67,38 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const section = getSection(pathname)
   const [guidanceOpen, setGuidanceOpen] = useState(false)
   const [guidanceTopic, setGuidanceTopic] = useState<string | undefined>(undefined)
-
-  const openGuidance = (topic?: string) => {
-    setGuidanceTopic(topic)
-    setGuidanceOpen(true)
-  }
+  const isMobile = useIsMobile()
 
   const sidebarMode = useSelector((state: RootState) => state.settings.sidebarMode)
   const fullView = useSelector((state: RootState) => state.settings.fullView)
   const journalOpen = useSelector((state: RootState) => state.settings.journalOpen)
   const dispatch = useDispatch<AppDispatch>()
+
+  const openGuidance = (topic?: string) => {
+    setGuidanceTopic(topic)
+    setGuidanceOpen(true)
+    dispatch.settings.setJournalOpen(false)
+  }
+
+  const closeGuidance = () => setGuidanceOpen(false)
+
+  const toggleGuidance = () => {
+    if (guidanceOpen) closeGuidance()
+    else openGuidance()
+  }
+
+  const toggleJournal = () => {
+    if (journalOpen) {
+      dispatch.settings.setJournalOpen(false)
+    } else {
+      dispatch.settings.setJournalOpen(true)
+      setGuidanceOpen(false)
+    }
+  }
+
+  const closeJournal = () => dispatch.settings.setJournalOpen(false)
+
+  const sidePanelOpen = !isMobile && (guidanceOpen || journalOpen)
 
   // Load persisted settings from localStorage on mount
   useEffect(() => {
@@ -113,13 +138,18 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             <Button
               variant={journalOpen ? "default" : "outline"}
               className="flex flex-row items-center gap-2 justify-center"
-              onClick={() => dispatch.settings.setJournalOpen(!journalOpen)}
+              onClick={toggleJournal}
               aria-pressed={journalOpen}
             >
               <NotebookText />
               <span>Journal</span>
             </Button>
-            <Button variant="outline" className="flex flex-row items-center gap-2 justify-center" onClick={() => openGuidance()}>
+            <Button
+              variant={guidanceOpen ? "default" : "outline"}
+              className="flex flex-row items-center gap-2 justify-center"
+              onClick={toggleGuidance}
+              aria-pressed={guidanceOpen}
+            >
               <HelpCircle />
               <span>Guidance</span>
             </Button>
@@ -132,7 +162,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         </header>
         )}
         <GuidanceProvider onOpen={openGuidance}>
-          {journalOpen ? (
+          {sidePanelOpen ? (
             <ResizablePanelGroup direction="horizontal" className="flex-1 min-h-0">
               <ResizablePanel defaultSize={70} minSize={40}>
                 <div className={`flex h-full flex-col gap-4 bg-gray-100 min-h-0 overflow-y-auto ${fullView ? "px-6 py-6" : "px-4 py-6 sm:px-6 lg:px-12 lg:py-10"}`}>
@@ -141,7 +171,11 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               </ResizablePanel>
               <ResizableHandle withHandle />
               <ResizablePanel defaultSize={30} minSize={20} maxSize={60}>
-                <JournalPanel onClose={() => dispatch.settings.setJournalOpen(false)} />
+                {guidanceOpen ? (
+                  <GuidancePanel onClose={closeGuidance} initialTopic={guidanceTopic} />
+                ) : (
+                  <JournalPanel onClose={closeJournal} />
+                )}
               </ResizablePanel>
             </ResizablePanelGroup>
           ) : (
@@ -151,7 +185,26 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           )}
         </GuidanceProvider>
       </SidebarInset>
-      <GuidanceDialog open={guidanceOpen} onOpenChange={setGuidanceOpen} initialTopic={guidanceTopic} />
+      {isMobile && (
+        <Sheet open={guidanceOpen} onOpenChange={setGuidanceOpen}>
+          <SheetContent side="right" className="w-full sm:max-w-xl p-0" hideClose>
+            <VisuallyHidden>
+              <SheetTitle>Guidance</SheetTitle>
+            </VisuallyHidden>
+            <GuidancePanel onClose={closeGuidance} initialTopic={guidanceTopic} />
+          </SheetContent>
+        </Sheet>
+      )}
+      {isMobile && (
+        <Sheet open={journalOpen} onOpenChange={(o) => dispatch.settings.setJournalOpen(o)}>
+          <SheetContent side="right" className="w-full sm:max-w-md p-0" hideClose>
+            <VisuallyHidden>
+              <SheetTitle>Journal</SheetTitle>
+            </VisuallyHidden>
+            <JournalPanel onClose={closeJournal} />
+          </SheetContent>
+        </Sheet>
+      )}
       <Toaster />
     </SidebarProvider>
   )

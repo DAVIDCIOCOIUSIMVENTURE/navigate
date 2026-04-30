@@ -3,11 +3,10 @@
 import { useState, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import {
   Rocket, Compass, Search, ClipboardCheck,
   FileQuestion, Pencil, Package,
@@ -17,6 +16,7 @@ import {
   Repeat, DollarSign,
   Lightbulb, HelpCircle,
   BookOpen, FlaskConical, Clock, Trophy, Sparkles,
+  X,
 } from "lucide-react"
 
 // ---------- Shared presentation helpers ----------
@@ -390,24 +390,22 @@ const guidanceItems: GuidanceItem[] = [
   },
 ]
 
-export function GuidanceDialog({
-  open,
-  onOpenChange,
+export function GuidancePanel({
+  onClose,
   initialTopic,
 }: {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  onClose: () => void
   initialTopic?: string
 }) {
-  const [selectedItem, setSelectedItem] = useState(initialTopic ?? guidanceItems[0].id)
+  const [openItem, setOpenItem] = useState(initialTopic ?? guidanceItems[0].id)
   const dispatch = useDispatch<AppDispatch>()
   const hideBrainstormGuidance = useSelector((state: RootState) => state.settings.hideBrainstormGuidance)
 
   useEffect(() => {
-    if (open && initialTopic) {
-      setSelectedItem(initialTopic)
+    if (initialTopic) {
+      setOpenItem(initialTopic)
     }
-  }, [open, initialTopic])
+  }, [initialTopic])
 
   // Topics that support "don't show on page load"
   const topicHasAutoOpen: Record<string, { label: string; hidden: boolean; toggle: () => void }> = {
@@ -417,60 +415,71 @@ export function GuidanceDialog({
       toggle: () => dispatch.settings.setHideBrainstormGuidance(!hideBrainstormGuidance),
     },
   }
-  const autoOpenConfig = topicHasAutoOpen[selectedItem]
+  const autoOpenConfig = topicHasAutoOpen[openItem]
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl h-[80vh] p-0 flex flex-col overflow-hidden">
-        <VisuallyHidden>
-          <DialogTitle>Guidance</DialogTitle>
-        </VisuallyHidden>
-        <div className="flex flex-1 min-h-0">
-          {/* Left Sidebar */}
-          <div className="w-64 border-r p-4 flex flex-col">
-            <h2 className="flex items-center gap-2 font-semibold mb-4 shrink-0">
-              <HelpCircle className="h-4 w-4 shrink-0" aria-hidden="true" />
-              Guidance Topics
-            </h2>
-            <ScrollArea className="flex-1">
-              <div className="space-y-1">
-                {guidanceItems.map((item) => (
-                  <Button
-                    key={item.id}
-                    variant={selectedItem === item.id ? "secondary" : "ghost"}
-                    className="w-full justify-start gap-2.5 h-auto py-2"
-                    onClick={() => setSelectedItem(item.id)}
-                  >
-                    <IconTile icon={item.icon} className={item.iconBg} size="sm" />
-                    {item.title}
-                  </Button>
-                ))}
-              </div>
-            </ScrollArea>
+    <div className="flex h-full flex-col bg-background">
+      <div className="flex items-center justify-between gap-2 border-b px-4 py-3 shrink-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary/10 shrink-0">
+            <HelpCircle className="h-4 w-4 text-primary" />
           </div>
-
-          {/* Right Content */}
-          <div className="flex-1 flex flex-col min-h-0 p-6">
-            <div className="flex-1 min-h-0">
-              <ScrollArea className="h-full pr-3">
-                {guidanceItems.find((item) => item.id === selectedItem)?.content}
-              </ScrollArea>
-            </div>
-            {autoOpenConfig && (
-              <div className="flex items-center gap-2 pt-4 border-t mt-4 shrink-0">
-                <Checkbox
-                  id="hide-guidance"
-                  checked={autoOpenConfig.hidden}
-                  onCheckedChange={() => autoOpenConfig.toggle()}
-                />
-                <label htmlFor="hide-guidance" className="text-sm text-muted-foreground cursor-pointer select-none">
-                  {autoOpenConfig.label}
-                </label>
-              </div>
-            )}
-          </div>
+          <h2 className="text-sm font-semibold truncate">Guidance</h2>
         </div>
-      </DialogContent>
-    </Dialog>
+        <Button
+          variant="ghost"
+          size="icon"
+          className="h-8 w-8 shrink-0"
+          onClick={onClose}
+          aria-label="Close guidance"
+        >
+          <X className="h-4 w-4" />
+        </Button>
+      </div>
+
+      <div className="flex flex-1 min-h-0 flex-col">
+        <div className="flex-1 min-h-0">
+          <ScrollArea className="h-full">
+            <Accordion
+              type="single"
+              collapsible
+              value={openItem}
+              onValueChange={(v) => setOpenItem(v)}
+              className="px-4"
+            >
+              {guidanceItems.map((item) => (
+                <AccordionItem
+                  key={item.id}
+                  value={item.id}
+                  className="border-b last:border-b-0"
+                >
+                  <AccordionTrigger className="gap-3 hover:no-underline">
+                    <span className="flex items-center gap-3 min-w-0">
+                      <IconTile icon={item.icon} className={item.iconBg} size="sm" />
+                      <span className="font-semibold text-sm truncate">{item.title}</span>
+                    </span>
+                  </AccordionTrigger>
+                  <AccordionContent className="pt-2 pb-6">
+                    {item.content}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </ScrollArea>
+        </div>
+        {autoOpenConfig && (
+          <div className="flex items-center gap-2 px-4 py-3 border-t shrink-0">
+            <Checkbox
+              id="hide-guidance"
+              checked={autoOpenConfig.hidden}
+              onCheckedChange={() => autoOpenConfig.toggle()}
+            />
+            <label htmlFor="hide-guidance" className="text-sm text-muted-foreground cursor-pointer select-none">
+              {autoOpenConfig.label}
+            </label>
+          </div>
+        )}
+      </div>
+    </div>
   )
 }
