@@ -78,8 +78,8 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
           <>
             <DialogHeader>
               <DialogTitle className="flex items-center gap-3">
-                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 shrink-0">
-                  <Target className="h-5 w-5 text-primary" />
+                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary shrink-0">
+                  <Target className="h-5 w-5 text-primary-foreground" />
                 </div>
                 Search for a New Problem
               </DialogTitle>
@@ -91,25 +91,43 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
             <div className="flex flex-col gap-3 mt-2">
               <button
                 onClick={handleBrainstorm}
-                className="flex items-start gap-4 rounded-lg border p-4 text-left hover:bg-accent/50 transition-colors"
+                className="flex items-start gap-4 rounded-lg border bg-card p-4 text-left transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
-                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 shrink-0">
-                  <Brain className="h-5 w-5 text-primary" />
+                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-amber-500 shrink-0">
+                  <Brain className="h-5 w-5 text-white" />
                 </div>
                 <div className="flex flex-col gap-1 flex-1">
                   <div className="flex items-center justify-between">
                     <span className="font-semibold text-sm">Brainstorming Tool</span>
                     <ArrowRight className="h-4 w-4 text-muted-foreground" />
                   </div>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-sm text-muted-foreground leading-relaxed">
                     Guided prompts to help you uncover problems from your own experience and observations.
                   </span>
                 </div>
               </button>
 
               <button
+                onClick={() => setView("manual")}
+                className="flex items-start gap-4 rounded-lg border bg-card p-4 text-left transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-sky-500 shrink-0">
+                  <PenLine className="h-5 w-5 text-white" />
+                </div>
+                <div className="flex flex-col gap-1 flex-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-sm">Define a Problem Statement</span>
+                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                  <span className="text-sm text-muted-foreground leading-relaxed">
+                    Already know what you want to explore? Write it directly.
+                  </span>
+                </div>
+              </button>
+
+              <button
                 disabled
-                className="flex items-start gap-4 rounded-lg border p-4 text-left opacity-50 cursor-not-allowed"
+                className="flex items-start gap-4 rounded-lg border bg-card p-4 text-left opacity-60 cursor-not-allowed"
               >
                 <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-muted shrink-0">
                   <Clock className="h-5 w-5 text-muted-foreground" />
@@ -119,32 +137,8 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
                     <span className="font-semibold text-sm">Changes in the Environment</span>
                     <span className="text-xs text-muted-foreground font-medium bg-muted px-2 py-0.5 rounded-full">Coming soon</span>
                   </div>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-sm text-muted-foreground leading-relaxed">
                     Spot problems emerging from market shifts, technology changes, or regulatory updates.
-                  </span>
-                </div>
-              </button>
-
-              <div className="relative flex items-center gap-3 my-1">
-                <div className="flex-1 border-t" />
-                <span className="text-xs text-muted-foreground">or</span>
-                <div className="flex-1 border-t" />
-              </div>
-
-              <button
-                onClick={() => setView("manual")}
-                className="flex items-start gap-4 rounded-lg border border-dashed p-4 text-left hover:bg-accent/50 transition-colors"
-              >
-                <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-muted shrink-0">
-                  <PenLine className="h-5 w-5 text-muted-foreground" />
-                </div>
-                <div className="flex flex-col gap-1 flex-1">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-sm">Define a Problem Statement</span>
-                    <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                  <span className="text-sm text-muted-foreground">
-                    Already know what you want to explore? Write it directly.
                   </span>
                 </div>
               </button>
