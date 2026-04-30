@@ -78,11 +78,11 @@ const COLUMN_ICONS: Record<string, React.ComponentType<{ className?: string }>> 
   "you": Compass,
 }
 
-const COLUMN_COLORS: Record<string, { icon: string; border: string; pill: string }> = {
-  "customers": { icon: "text-emerald-500", border: "border-t-emerald-500", pill: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400" },
-  "contexts": { icon: "text-blue-500", border: "border-t-blue-500", pill: "bg-blue-500/10 text-blue-700 dark:text-blue-400" },
-  "problems": { icon: "text-rose-500", border: "border-t-rose-500", pill: "bg-rose-500/10 text-rose-700 dark:text-rose-400" },
-  "you": { icon: "text-violet-500", border: "border-t-violet-500", pill: "bg-violet-500/10 text-violet-700 dark:text-violet-400" },
+const COLUMN_COLORS: Record<string, { icon: string; border: string; bg: string; bgIdle: string; bgExplored: string; iconBg: string; pill: string }> = {
+  "customers": { icon: "text-emerald-500", border: "border-t-emerald-500", bg: "bg-emerald-500/5", bgIdle: "bg-emerald-500/5 hover:bg-emerald-500/10", bgExplored: "bg-emerald-500/10 hover:bg-emerald-500/20", iconBg: "bg-emerald-500", pill: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400" },
+  "contexts": { icon: "text-blue-500", border: "border-t-blue-500", bg: "bg-blue-500/5", bgIdle: "bg-blue-500/5 hover:bg-blue-500/10", bgExplored: "bg-blue-500/10 hover:bg-blue-500/20", iconBg: "bg-blue-500", pill: "bg-blue-500/10 text-blue-700 dark:text-blue-400" },
+  "problems": { icon: "text-rose-500", border: "border-t-rose-500", bg: "bg-rose-500/5", bgIdle: "bg-rose-500/5 hover:bg-rose-500/10", bgExplored: "bg-rose-500/10 hover:bg-rose-500/20", iconBg: "bg-rose-500", pill: "bg-rose-500/10 text-rose-700 dark:text-rose-400" },
+  "you": { icon: "text-amber-500", border: "border-t-amber-500", bg: "bg-amber-500/5", bgIdle: "bg-amber-500/5 hover:bg-amber-500/10", bgExplored: "bg-amber-500/10 hover:bg-amber-500/20", iconBg: "bg-amber-500", pill: "bg-amber-500/10 text-amber-700 dark:text-amber-400" },
 }
 
 const COLUMN_DESCRIPTIONS: Record<string, string> = {
@@ -662,17 +662,24 @@ function ProblemBuilder({
                         key={col.id}
                         onClick={() => pickColumn(col.id)}
                         className={cn(
-                          "flex flex-col items-center gap-3 p-5 rounded-xl border-2 border-t-[3px] transition-all",
-                          explored
-                            ? "border-solid bg-accent/20 hover:bg-accent/40"
-                            : "border-dashed hover:border-solid hover:shadow-sm hover:bg-accent/30",
+                          "flex flex-col items-center gap-3 p-5 rounded-xl border border-t-4 transition-all",
+                          cn(colors?.bgIdle, "hover:shadow-sm"),
                           colors?.border || "border-border",
                         )}
                       >
-                        {Icon && <Icon className={cn("h-5 w-5", explored ? "opacity-60" : "", colors?.icon)} />}
-                        <span className={cn("text-[15px] font-bold", colors?.icon, explored && "opacity-70")}>{col.title}</span>
+                        <div className="flex items-center gap-2">
+                          {Icon && (
+                            <span className={cn(
+                              "inline-flex items-center justify-center h-6 w-6 rounded",
+                              colors?.iconBg || "bg-muted",
+                            )}>
+                              <Icon className="h-3.5 w-3.5 text-white" />
+                            </span>
+                          )}
+                          <span className={cn("text-base font-bold", colors?.icon)}>{col.title}</span>
+                        </div>
                         {COLUMN_DESCRIPTIONS[col.id] && (
-                          <span className={cn("text-sm text-muted-foreground text-center leading-snug", explored && "opacity-70")}>
+                          <span className="text-sm text-foreground text-center leading-snug">
                             {COLUMN_DESCRIPTIONS[col.id]}
                           </span>
                         )}
@@ -682,7 +689,7 @@ function ProblemBuilder({
                             {count} selected
                           </span>
                         ) : (
-                          <span className="text-xs text-muted-foreground">
+                          <span className="text-xs text-foreground">
                             {collectAllIds(col.items).length} options
                           </span>
                         )}
@@ -704,9 +711,13 @@ function ProblemBuilder({
                     {(() => {
                       const Icon = COLUMN_ICONS[activeColumn.id]
                       const colors = COLUMN_COLORS[activeColumn.id]
-                      return Icon ? <Icon className={cn("h-5 w-5", colors?.icon)} /> : null
+                      return Icon ? (
+                        <span className={cn("inline-flex items-center justify-center h-6 w-6 rounded", colors?.iconBg || "bg-muted")}>
+                          <Icon className="h-3.5 w-3.5 text-white" />
+                        </span>
+                      ) : null
                     })()}
-                    <h3 className={cn("text-[15px] font-bold", COLUMN_COLORS[activeColumn.id]?.icon)}>{activeColumn.title}</h3>
+                    <h3 className={cn("text-base font-bold", COLUMN_COLORS[activeColumn.id]?.icon)}>{activeColumn.title}</h3>
                     {(selectedByColumn[activeColumn.id] ?? []).length > 0 && (
                       <span className="text-xs text-muted-foreground">
                         ({(selectedByColumn[activeColumn.id] ?? []).length} selected)
@@ -736,15 +747,13 @@ function ProblemBuilder({
                         key={group.id}
                         onClick={() => pickCategory(group.id)}
                         className={cn(
-                          "flex flex-col items-start gap-2 p-4 rounded-xl border-2 border-t-[3px] transition-all text-left",
-                          explored
-                            ? "border-solid bg-accent/20 hover:bg-accent/40"
-                            : "border-dashed hover:border-solid hover:shadow-sm hover:bg-accent/30",
+                          "flex flex-col items-start gap-2 p-4 rounded-xl border border-t-4 transition-all text-left",
+                          cn(colors?.bgIdle, "hover:shadow-sm"),
                           colors?.border || "border-border",
                         )}
                       >
-                        <span className={cn("text-sm font-medium", explored && "opacity-70")}>{group.label}</span>
-                        <span className="text-xs text-muted-foreground leading-relaxed">
+                        <span className="text-sm font-medium">{group.label}</span>
+                        <span className="text-xs text-foreground leading-relaxed">
                           {previewItems.join(", ")}{group.children!.length > 3 ? `, +${group.children!.length - 3} more` : ""}
                         </span>
                         {explored && (
@@ -773,9 +782,13 @@ function ProblemBuilder({
                         {(() => {
                           const Icon = COLUMN_ICONS[activeColumn.id]
                           const colors = COLUMN_COLORS[activeColumn.id]
-                          return Icon ? <Icon className={cn("h-4 w-4", colors?.icon)} /> : null
+                          return Icon ? (
+                            <span className={cn("inline-flex items-center justify-center h-6 w-6 rounded", colors?.iconBg || "bg-muted")}>
+                              <Icon className="h-3.5 w-3.5 text-white" />
+                            </span>
+                          ) : null
                         })()}
-                        <span className={cn("text-[15px] font-bold", COLUMN_COLORS[activeColumn.id]?.icon)}>{activeColumn.title}</span>
+                        <span className={cn("text-base font-bold", COLUMN_COLORS[activeColumn.id]?.icon)}>{activeColumn.title}</span>
                       </div>
                       <p className="text-muted-foreground leading-relaxed">
                         {DIMENSION_GUIDANCE[activeColumn.id].description}
@@ -796,9 +809,13 @@ function ProblemBuilder({
                     {(() => {
                       const Icon = COLUMN_ICONS[activeColumn.id]
                       const colors = COLUMN_COLORS[activeColumn.id]
-                      return Icon ? <Icon className={cn("h-5 w-5", colors?.icon)} /> : null
+                      return Icon ? (
+                        <span className={cn("inline-flex items-center justify-center h-6 w-6 rounded", colors?.iconBg || "bg-muted")}>
+                          <Icon className="h-3.5 w-3.5 text-white" />
+                        </span>
+                      ) : null
                     })()}
-                    <h3 className={cn("text-[15px] font-bold", COLUMN_COLORS[activeColumn.id]?.icon)}>{activeColumn.title}</h3>
+                    <h3 className={cn("text-base font-bold", COLUMN_COLORS[activeColumn.id]?.icon)}>{activeColumn.title}</h3>
                     {activeCategory && (
                       <>
                         <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
@@ -1268,7 +1285,7 @@ export default function BrainstormPage() {
 
           if (isHidden) {
             return (
-              <Card key={column.id} className={cn("flex flex-col items-center pt-3 pb-4 min-h-0 w-12 shrink-0 border-t-[3px]", colors?.border)}>
+              <Card key={column.id} className={cn("flex flex-col items-center pt-3 pb-4 min-h-0 w-12 shrink-0 border-t-4", colors?.border, colors?.bg)}>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0">
@@ -1292,12 +1309,16 @@ export default function BrainstormPage() {
           }
 
           return (
-            <Card key={column.id} className={cn("flex flex-col min-h-[300px] flex-1 min-w-0 border-t-[3px]", colors?.border)}>
+            <Card key={column.id} className={cn("flex flex-col min-h-[300px] flex-1 min-w-0 border-t-4", colors?.border, colors?.bg)}>
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    {Icon && <Icon className={cn("h-4 w-4", colors?.icon || "text-muted-foreground")} />}
-                    <CardTitle className={cn("text-[15px] font-bold", colors?.icon)}>
+                    {Icon && (
+                      <span className={cn("inline-flex items-center justify-center h-6 w-6 rounded", colors?.iconBg || "bg-muted")}>
+                        <Icon className="h-3.5 w-3.5 text-white" />
+                      </span>
+                    )}
+                    <CardTitle className="text-base font-bold">
                       {column.title}
                     </CardTitle>
                   </div>
