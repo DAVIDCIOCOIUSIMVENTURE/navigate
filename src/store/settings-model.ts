@@ -18,7 +18,6 @@ interface SettingsState {
   brainstormBuilderStep: BrainstormBuilderStep
   brainstormBuilderActiveColumnId: string | null
   brainstormBuilderActiveCategoryId: string | null
-  brainstormBuilderSelectedByColumn: Record<string, string[]>
   brainstormBuilderDescription: string
 }
 
@@ -33,7 +32,6 @@ const defaultState: SettingsState = {
   brainstormBuilderStep: "pick",
   brainstormBuilderActiveColumnId: null,
   brainstormBuilderActiveCategoryId: null,
-  brainstormBuilderSelectedByColumn: {},
   brainstormBuilderDescription: "",
 }
 
@@ -99,11 +97,6 @@ export const settings = createModel<RootModel>()({
       saveToStorage(next)
       return next
     },
-    setBrainstormBuilderSelectedByColumn(state, brainstormBuilderSelectedByColumn: Record<string, string[]>) {
-      const next = { ...state, brainstormBuilderSelectedByColumn }
-      saveToStorage(next)
-      return next
-    },
     setBrainstormBuilderDescription(state, brainstormBuilderDescription: string) {
       const next = { ...state, brainstormBuilderDescription }
       saveToStorage(next)
@@ -115,8 +108,9 @@ export const settings = createModel<RootModel>()({
         brainstormBuilderStep: "pick",
         brainstormBuilderActiveColumnId: null,
         brainstormBuilderActiveCategoryId: null,
-        brainstormBuilderSelectedByColumn: {},
         brainstormBuilderDescription: "",
+        // Selections are shared between canvas and builder; reset clears both.
+        brainstormSelected: [],
       }
       saveToStorage(next)
       return next
@@ -164,9 +158,6 @@ export const settings = createModel<RootModel>()({
         }
         if (stored.brainstormBuilderActiveCategoryId !== undefined) {
           dispatch.settings.setBrainstormBuilderActiveCategoryId(stored.brainstormBuilderActiveCategoryId)
-        }
-        if (stored.brainstormBuilderSelectedByColumn) {
-          dispatch.settings.setBrainstormBuilderSelectedByColumn(stored.brainstormBuilderSelectedByColumn)
         }
         if (typeof stored.brainstormBuilderDescription === "string") {
           dispatch.settings.setBrainstormBuilderDescription(stored.brainstormBuilderDescription)

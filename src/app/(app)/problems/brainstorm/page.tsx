@@ -412,7 +412,10 @@ function ProblemBuilder({
   const step = useSelector((state: RootState) => state.settings.brainstormBuilderStep)
   const activeColumnId = useSelector((state: RootState) => state.settings.brainstormBuilderActiveColumnId)
   const activeCategoryId = useSelector((state: RootState) => state.settings.brainstormBuilderActiveCategoryId)
-  const selectedByColumn = useSelector((state: RootState) => state.settings.brainstormBuilderSelectedByColumn)
+  // Selections are shared with the canvas mode via state.settings.brainstormSelected
+  // so toggling an item in either mode is reflected in the other.
+  const brainstormSelectedArray = useSelector((state: RootState) => state.settings.brainstormSelected)
+  const selectedSet = useMemo(() => new Set(brainstormSelectedArray), [brainstormSelectedArray])
   const description = useSelector((state: RootState) => state.settings.brainstormBuilderDescription)
   const isWide = useContainerSize() === "wide"
   const [stepperOpen, setStepperOpen] = useState(false)
@@ -420,13 +423,21 @@ function ProblemBuilder({
   const setStep = (next: BuilderStepId) => dispatch.settings.setBrainstormBuilderStep(next)
   const setActiveColumnId = (id: string | null) => dispatch.settings.setBrainstormBuilderActiveColumnId(id)
   const setActiveCategoryId = (id: string | null) => dispatch.settings.setBrainstormBuilderActiveCategoryId(id)
-  const setSelectedByColumn = (next: Record<string, string[]>) =>
-    dispatch.settings.setBrainstormBuilderSelectedByColumn(next)
   const setDescription = (next: string) => dispatch.settings.setBrainstormBuilderDescription(next)
 
   const stepIndex = BUILDER_STEPS.findIndex((s) => s.id === step)
+  // Group the flat selection by column so the builder UI can show per-column
+  // counts, pills, and check states.
+  const selectedByColumn = useMemo<Record<string, string[]>>(() => {
+    const map: Record<string, string[]> = {}
+    for (const col of columns) {
+      const ids = collectAllIds(col.items).filter((id) => selectedSet.has(id))
+      if (ids.length > 0) map[col.id] = ids
+    }
+    return map
+  }, [columns, selectedSet])
   const usedColumnIds = useMemo(
-    () => new Set(Object.entries(selectedByColumn).filter(([, ids]) => ids.length > 0).map(([id]) => id)),
+    () => new Set(Object.keys(selectedByColumn)),
     [selectedByColumn]
   )
   const activeColumn = columns.find((c) => c.id === activeColumnId)
@@ -439,7 +450,7 @@ function ProblemBuilder({
     () => columns.some((c) => c.items.length > 0),
     [columns]
   )
-  const totalSelections = Object.values(selectedByColumn).reduce((sum, ids) => sum + ids.length, 0)
+  const totalSelections = selectedSet.size
 
   const pickColumn = (columnId: string) => {
     setActiveColumnId(columnId)
@@ -454,13 +465,11 @@ function ProblemBuilder({
     setStep("choose")
   }
 
-  const toggleItem = (columnId: string, itemId: string) => {
-    const current = selectedByColumn[columnId] ?? []
-    const has = current.includes(itemId)
-    setSelectedByColumn({
-      ...selectedByColumn,
-      [columnId]: has ? current.filter((id) => id !== itemId) : [...current, itemId],
-    })
+  const toggleItem = (_columnId: string, itemId: string) => {
+    const next = new Set(selectedSet)
+    if (next.has(itemId)) next.delete(itemId)
+    else next.add(itemId)
+    dispatch.settings.setBrainstormSelected(Array.from(next))
   }
 
   const handleSave = () => {
