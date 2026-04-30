@@ -79,10 +79,10 @@ const COLUMN_ICONS: Record<string, React.ComponentType<{ className?: string }>> 
 }
 
 const COLUMN_COLORS: Record<string, { icon: string; border: string; bg: string; bgIdle: string; bgExplored: string; iconBg: string; pill: string }> = {
-  "customers": { icon: "text-emerald-500", border: "border-t-emerald-500", bg: "bg-emerald-500/5", bgIdle: "bg-emerald-500/5 hover:bg-emerald-500/10", bgExplored: "bg-emerald-500/10 hover:bg-emerald-500/20", iconBg: "bg-emerald-500", pill: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400" },
-  "contexts": { icon: "text-blue-500", border: "border-t-blue-500", bg: "bg-blue-500/5", bgIdle: "bg-blue-500/5 hover:bg-blue-500/10", bgExplored: "bg-blue-500/10 hover:bg-blue-500/20", iconBg: "bg-blue-500", pill: "bg-blue-500/10 text-blue-700 dark:text-blue-400" },
-  "problems": { icon: "text-rose-500", border: "border-t-rose-500", bg: "bg-rose-500/5", bgIdle: "bg-rose-500/5 hover:bg-rose-500/10", bgExplored: "bg-rose-500/10 hover:bg-rose-500/20", iconBg: "bg-rose-500", pill: "bg-rose-500/10 text-rose-700 dark:text-rose-400" },
-  "you": { icon: "text-amber-500", border: "border-t-amber-500", bg: "bg-amber-500/5", bgIdle: "bg-amber-500/5 hover:bg-amber-500/10", bgExplored: "bg-amber-500/10 hover:bg-amber-500/20", iconBg: "bg-amber-500", pill: "bg-amber-500/10 text-amber-700 dark:text-amber-400" },
+  "customers": { icon: "text-emerald-500", border: "border-t-emerald-500", bg: "bg-emerald-500/10", bgIdle: "bg-emerald-500/5 hover:bg-emerald-500/10", bgExplored: "bg-emerald-500/10 hover:bg-emerald-500/20", iconBg: "bg-emerald-500", pill: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400" },
+  "contexts": { icon: "text-blue-500", border: "border-t-blue-500", bg: "bg-blue-500/10", bgIdle: "bg-blue-500/5 hover:bg-blue-500/10", bgExplored: "bg-blue-500/10 hover:bg-blue-500/20", iconBg: "bg-blue-500", pill: "bg-blue-500/10 text-blue-700 dark:text-blue-400" },
+  "problems": { icon: "text-rose-500", border: "border-t-rose-500", bg: "bg-rose-500/10", bgIdle: "bg-rose-500/5 hover:bg-rose-500/10", bgExplored: "bg-rose-500/10 hover:bg-rose-500/20", iconBg: "bg-rose-500", pill: "bg-rose-500/10 text-rose-700 dark:text-rose-400" },
+  "you": { icon: "text-amber-500", border: "border-t-amber-500", bg: "bg-amber-500/10", bgIdle: "bg-amber-500/5 hover:bg-amber-500/10", bgExplored: "bg-amber-500/10 hover:bg-amber-500/20", iconBg: "bg-amber-500", pill: "bg-amber-500/10 text-amber-700 dark:text-amber-400" },
 }
 
 const COLUMN_DESCRIPTIONS: Record<string, string> = {
@@ -1269,7 +1269,7 @@ export default function BrainstormPage() {
 
           if (isHidden) {
             return (
-              <Card key={column.id} className={cn("flex flex-col items-center pt-3 pb-4 min-h-0 w-12 shrink-0 border-t-4", colors?.border, colors?.bg)}>
+              <Card key={column.id} className="flex flex-col items-center pt-3 pb-4 min-h-0 w-12 shrink-0">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0">
@@ -1293,9 +1293,9 @@ export default function BrainstormPage() {
           }
 
           return (
-            <Card key={column.id} className={cn("flex flex-col min-h-[300px] flex-1 min-w-0 border-t-4", colors?.border, colors?.bg)}>
+            <Card key={column.id} className="flex flex-col min-h-[300px] flex-1 min-w-0">
               <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
+                <div className={cn("flex items-center justify-between px-2 py-1 rounded-md", colors?.bg)}>
                   <div className="flex items-center gap-2">
                     {Icon && (
                       <span className={cn("inline-flex items-center justify-center h-6 w-6 rounded", colors?.iconBg || "bg-muted")}>
