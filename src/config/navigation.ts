@@ -1,4 +1,4 @@
-import { BookOpen, Compass, Heart, Book, Brain, Globe, Target, Lightbulb, Search, FlaskConical, Clock, Trophy, type LucideIcon } from "lucide-react"
+import { BookOpen, Compass, Heart, Book, Brain, Globe, Target, Lightbulb, Search, FlaskConical, Clock, Trophy, Milestone, Hammer, Route, Users, RotateCcw, type LucideIcon } from "lucide-react"
 
 export const navigationItems = {
   innovation: [
@@ -21,6 +21,11 @@ export const navigationItems = {
       title: "Solutions",
       url: "/solutions",
       icon: Lightbulb
+    },
+    {
+      title: "Next Steps",
+      url: "/next-steps",
+      icon: Milestone
     },
   ],
 }
@@ -46,4 +51,16 @@ export const selfDiscoveryCategoryIcons = {
 
 export function getSelfDiscoveryCategoryIcon(categoryId: string) {
   return selfDiscoveryCategoryIcons[categoryId as keyof typeof selfDiscoveryCategoryIcons]
+}
+
+export const nextStepsTopicIcons: Record<string, LucideIcon> = {
+  hammer: Hammer,
+  flask: FlaskConical,
+  route: Route,
+  users: Users,
+  "rotate-ccw": RotateCcw,
+}
+
+export function getNextStepsTopicIcon(iconKey: string): LucideIcon {
+  return nextStepsTopicIcons[iconKey] ?? Milestone
 }

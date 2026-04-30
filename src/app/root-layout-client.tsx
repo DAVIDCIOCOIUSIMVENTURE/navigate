@@ -5,7 +5,7 @@ import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/s
 import { AppSidebar } from "@/components/app-sidebar"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import { Settings, HelpCircle, NotebookText, LayoutDashboard, Target, Lightbulb, Search, ClipboardCheck, BookOpen, Compass, type LucideIcon } from "lucide-react"
+import { Settings, HelpCircle, NotebookText, LayoutDashboard, Target, Lightbulb, Search, ClipboardCheck, BookOpen, Compass, Milestone, type LucideIcon } from "lucide-react"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
@@ -58,6 +58,8 @@ function getSection(pathname: string): { title: string; Icon: LucideIcon } | nul
     if (second === "discover") return { title: "Solution Discovery", Icon: Search }
     if (third === "validate") return { title: "Solution Validation", Icon: ClipboardCheck }
   }
+
+  if (first === "next-steps") return { title: "Next Steps", Icon: Milestone }
 
   return null
 }
