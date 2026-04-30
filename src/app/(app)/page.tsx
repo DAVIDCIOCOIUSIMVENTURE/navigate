@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import {
   ChevronRight,
+  ChevronDown,
   Lightbulb,
   Target,
   Trophy,
@@ -14,12 +15,12 @@ import {
   Zap,
   CheckCircle2,
   FlaskConical,
-  BadgeCheck,
   Crosshair,
   BookOpen,
 } from "lucide-react"
 import { AchievementItem } from "@/components/achievement-item"
 import Link from "next/link"
+import { useState } from "react"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
 import { getProblemLabel } from "@/store/problems-model"
@@ -30,38 +31,31 @@ export default function DashboardPage() {
   const triggers = useSelector((state: RootState) => state.problemTriggers.triggers)
   const problems = useSelector((state: RootState) => state.problems.problems)
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
+  const [expandedProblemIds, setExpandedProblemIds] = useState<Set<number>>(new Set())
 
   const validProblems = problems.filter((p) => p.validationStatus === "valid")
   const validatedProblems = problems.filter(
     (p) => p.validationStatus === "valid" || p.validationStatus === "invalid"
   )
   const completeSolutions = solutions.filter((s) => s.validationStatus === "valid")
-  // Build recent activity feed sorted by date
-  const recentActivity: { id: string; label: string; detail: string; date: string; href: string; type: "problem" | "solution" }[] = []
+  const validatedSolutions = solutions.filter(
+    (s) => s.validationStatus === "valid" || s.validationStatus === "invalid"
+  )
 
-  for (const p of problems) {
-    recentActivity.push({
-      id: `p-${p.id}`,
-      label: getProblemLabel(p) || p.description || `Problem #${p.id}`,
-      detail: p.validationStatus.replace("_", " "),
-      date: p.editedAt || p.createdAt,
-      href: `/problems/${p.id}`,
-      type: "problem",
+  const sortedProblems = [...problems].sort(
+    (a, b) =>
+      new Date(b.editedAt || b.createdAt).getTime() -
+      new Date(a.editedAt || a.createdAt).getTime()
+  )
+
+  const toggleProblemExpanded = (id: number) => {
+    setExpandedProblemIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
     })
   }
-  for (const s of solutions) {
-    const linked = problems.find((p) => p.id === s.problemId)
-    const solutionLabel = s.title || (linked ? (getProblemLabel(linked) || linked.description || `Problem #${linked.id}`) : `Solution #${s.id}`)
-    recentActivity.push({
-      id: `s-${s.id}`,
-      label: solutionLabel,
-      detail: s.validationStatus.replace("_", " "),
-      date: s.editedAt || s.createdAt,
-      href: `/solutions/${s.id}/validate/introduction`,
-      type: "solution",
-    })
-  }
-  recentActivity.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 
   // Dynamic achievements
   const achievements = [
@@ -78,14 +72,27 @@ export default function DashboardPage() {
   ]
   const unlockedCount = achievements.filter((a) => a.unlocked).length
 
-  const activityIcons = { problem: Target, solution: Lightbulb }
   const isWide = useContainerSize() === "wide"
 
   return (
     <div className="flex flex-col gap-4 w-full flex-1 min-h-0">
-      {/* Header */}
-      <div className="flex justify-end shrink-0">
-        <Button asChild>
+      {/* Foundations prompt + journey CTA */}
+      <div className="flex items-center gap-3 shrink-0">
+        <Link href="/foundations" className="flex-1 min-w-0">
+          <Card className="hover:shadow-md transition-shadow border-dashed h-full">
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 shrink-0">
+                <BookOpen className="h-4 w-4 text-primary" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold">New here? Start with Why It Matters</p>
+                <p className="text-xs text-muted-foreground mt-0.5">Optional reading on why validating ideas, problems, and solutions is worth the time.</p>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+            </CardContent>
+          </Card>
+        </Link>
+        <Button asChild className="shrink-0">
           <Link href="/problems">
             {problems.length === 0 ? "Start Your Journey" : "Continue Your Journey"}
             <ChevronRight className="ml-2 h-4 w-4" />
@@ -93,92 +100,115 @@ export default function DashboardPage() {
         </Button>
       </div>
 
-      {/* Optional foundations prompt */}
-      <Link href="/foundations" className="shrink-0">
-        <Card className="hover:shadow-md transition-shadow border-dashed">
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 shrink-0">
-              <BookOpen className="h-4 w-4 text-primary" />
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold">New here? Start with Why It Matters</p>
-              <p className="text-xs text-muted-foreground mt-0.5">Optional reading on why validating ideas, problems, and solutions is worth the time.</p>
-            </div>
-            <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
-          </CardContent>
-        </Card>
-      </Link>
-
-      {/* Journey Overview: 4 stage cards in a row */}
-      <div className={cn("grid gap-3 shrink-0", isWide ? "grid-cols-4" : "grid-cols-2")}>
-        <StageCard
-          icon={Compass}
-          title="Triggers"
-          value={triggers.length}
-          href="/self-discovery"
-          color="teal"
-        />
+      {/* Journey Overview: Problems and Solutions */}
+      <div className={cn("grid gap-3 shrink-0", isWide ? "grid-cols-2" : "grid-cols-1")}>
         <StageCard
           icon={Target}
           title="Problems"
           value={problems.length}
+          subtitle={
+            validatedProblems.length > 0
+              ? `${validatedProblems.length} validated`
+              : undefined
+          }
           href="/problems"
           color="blue"
-        />
-        <StageCard
-          icon={BadgeCheck}
-          title="Validated"
-          value={validatedProblems.length}
-          subtitle={validProblems.length > 0 ? `${validProblems.length} valid` : undefined}
-          href="/problems"
-          color="indigo"
         />
         <StageCard
           icon={Lightbulb}
           title="Solutions"
           value={solutions.length}
-          subtitle={completeSolutions.length > 0 ? `${completeSolutions.length} valid` : undefined}
+          subtitle={
+            validatedSolutions.length > 0
+              ? `${validatedSolutions.length} validated`
+              : undefined
+          }
           href="/solutions"
           color="purple"
         />
       </div>
 
-      {/* Recent Activity and Achievements */}
-      <div className={cn("grid gap-4 flex-1 min-h-0", isWide ? "grid-cols-2" : "grid-cols-1")}>
-        <Card className={cn("flex flex-col", isWide ? "min-h-0" : "min-h-[300px]")}>
+      {/* Problems list (expandable) and Achievements */}
+      <div className={cn("grid gap-4 flex-1 min-h-0", isWide ? "grid-cols-3" : "grid-cols-1")}>
+        <Card className={cn("flex flex-col", isWide ? "min-h-0 col-span-2" : "min-h-[300px]")}>
           <CardHeader className="shrink-0">
-            <CardTitle className="text-base">Recent Activity</CardTitle>
+            <CardTitle className="text-base">Problems &amp; Solutions</CardTitle>
           </CardHeader>
           <CardContent className="flex-1 min-h-0 overflow-y-auto">
-            <div className="space-y-3">
-              {recentActivity.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  No activity yet.{" "}
-                  <Link href="/self-discovery" className="font-medium text-foreground underline underline-offset-2">
-                    Start with self discovery
-                  </Link>{" "}
-                  to get going.
-                </p>
-              ) : (
-                recentActivity.slice(0, 6).map((item) => {
-                  const Icon = activityIcons[item.type]
+            {sortedProblems.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                No problems yet.{" "}
+                <Link href="/problems" className="font-medium text-foreground underline underline-offset-2">
+                  Add a problem
+                </Link>{" "}
+                to get going.
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {sortedProblems.map((p) => {
+                  const linkedSolutions = solutions.filter((s) => s.problemId === p.id)
+                  const hasSolutions = linkedSolutions.length > 0
+                  const expanded = expandedProblemIds.has(p.id)
+                  const label = p.description || getProblemLabel(p) || `Problem #${p.id}`
                   return (
-                    <Link key={item.id} href={item.href} className="flex items-center gap-3 group">
-                      <div className="flex items-center justify-center w-7 h-7 rounded-full bg-primary/10 shrink-0">
-                        <Icon className="h-3.5 w-3.5 text-primary" />
+                    <div key={p.id} className="rounded-md border border-border">
+                      <div className="flex items-center gap-2 px-3 py-2">
+                        {hasSolutions ? (
+                          <button
+                            type="button"
+                            onClick={() => toggleProblemExpanded(p.id)}
+                            className="shrink-0 flex items-center justify-center w-5 h-5 rounded hover:bg-muted text-muted-foreground"
+                            aria-label={expanded ? "Collapse solutions" : "Expand solutions"}
+                            aria-expanded={expanded}
+                          >
+                            {expanded ? (
+                              <ChevronDown className="h-3.5 w-3.5" />
+                            ) : (
+                              <ChevronRight className="h-3.5 w-3.5" />
+                            )}
+                          </button>
+                        ) : (
+                          <div className="w-5 h-5 shrink-0" />
+                        )}
+                        <Target className="h-4 w-4 text-primary shrink-0" />
+                        <Link
+                          href={`/problems/${p.id}`}
+                          className="flex-1 min-w-0 text-sm truncate hover:underline"
+                        >
+                          {label}
+                        </Link>
+                        {hasSolutions && (
+                          <span className="text-xs text-muted-foreground shrink-0">
+                            {linkedSolutions.length} solution{linkedSolutions.length === 1 ? "" : "s"}
+                          </span>
+                        )}
+                        <StatusBadge status={p.validationStatus.replace("_", " ")} />
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm truncate group-hover:underline">{item.label}</p>
-                      </div>
-                      <StatusBadge status={item.detail} />
-                      <span className="text-xs text-muted-foreground shrink-0">
-                        {new Date(item.date).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}
-                      </span>
-                    </Link>
+                      {hasSolutions && expanded && (
+                        <div className="border-t border-border bg-muted/30 px-3 py-2 space-y-1.5">
+                          {linkedSolutions.map((s) => {
+                            const solutionLabel = s.title || `Solution #${s.id}`
+                            return (
+                              <Link
+                                key={s.id}
+                                href={`/solutions/${s.id}/validate/introduction`}
+                                className="flex items-center gap-2 group pl-7"
+                              >
+                                <Lightbulb className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                                <span className="flex-1 min-w-0 text-sm truncate group-hover:underline">
+                                  {solutionLabel}
+                                </span>
+                                <StatusBadge status={s.validationStatus.replace("_", " ")} />
+                              </Link>
+                            )
+                          })}
+                        </div>
+                      )}
+                    </div>
                   )
-                })
-              )}
-            </div>
+                })}
+              </div>
+            )}
           </CardContent>
         </Card>
 
