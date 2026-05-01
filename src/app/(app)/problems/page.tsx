@@ -21,8 +21,8 @@ export default function ProblemsPage() {
   return (
     <div className="flex flex-col gap-3 w-full flex-1">
       <Card>
-        <CardContent className="py-4 flex items-center gap-4">
-          <p className="flex-1 text-sm text-muted-foreground leading-relaxed">
+        <CardContent className="py-4 flex flex-wrap items-center gap-4">
+          <p className="flex-1 min-w-[16rem] text-sm text-muted-foreground leading-relaxed">
             This is your <span className="font-medium text-foreground">problem library</span>, a central place to collect, refine, and track the problems you&apos;ve identified.
             Use the <span className="font-medium text-foreground">Identify problems</span> button to brainstorm and discover problems worth solving, then validate each one to determine whether it&apos;s a real pain point with a viable opportunity behind it.
           </p>

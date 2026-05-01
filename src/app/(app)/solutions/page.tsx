@@ -21,8 +21,8 @@ export default function SolutionsPage() {
   return (
     <div className="flex flex-col gap-3 w-full flex-1">
       <Card>
-        <CardContent className="py-4 flex items-center gap-4">
-          <p className="flex-1 text-sm text-muted-foreground leading-relaxed">
+        <CardContent className="py-4 flex flex-wrap items-center gap-4">
+          <p className="flex-1 min-w-[16rem] text-sm text-muted-foreground leading-relaxed">
             This is your <span className="font-medium text-foreground">solution library</span>, a central place to collect, refine, and track the solutions you&apos;ve identified.
             Use the <span className="font-medium text-foreground">Identify solutions</span> button to pick a validated problem and generate candidates through a guided discovery wizard, then validate each one to decide whether it&apos;s worth pursuing.
           </p>

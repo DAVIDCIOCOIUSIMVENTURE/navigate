@@ -124,23 +124,35 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       <SidebarInset>
         {!fullView && (
         <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4 justify-between">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 min-w-0">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="h-4" />
             {section && (
-              <h1 className="flex items-center gap-2 ml-2 text-xl font-bold">
+              <h1 className="flex items-center gap-2 ml-2 text-xl font-bold min-w-0">
                 <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary shrink-0" aria-hidden="true">
                   <section.Icon className="h-4 w-4 text-primary-foreground" />
                 </span>
-                {section.title}
+                <span className="truncate">{section.title}</span>
               </h1>
             )}
           </div>
-          <div className="flex items-center gap-2">
-            <TeamAvatars />
+          <div className="flex items-center gap-2 shrink-0">
+            <div className="hidden md:block">
+              <TeamAvatars />
+            </div>
             <Button
               variant={journalOpen ? "default" : "outline"}
-              className="flex flex-row items-center gap-2 justify-center"
+              size="icon"
+              className="lg:hidden"
+              onClick={toggleJournal}
+              aria-pressed={journalOpen}
+              aria-label="Toggle journal"
+            >
+              <NotebookText />
+            </Button>
+            <Button
+              variant={journalOpen ? "default" : "outline"}
+              className="hidden lg:flex flex-row items-center gap-2 justify-center"
               onClick={toggleJournal}
               aria-pressed={journalOpen}
             >
@@ -149,7 +161,17 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             </Button>
             <Button
               variant={guidanceOpen ? "default" : "outline"}
-              className="flex flex-row items-center gap-2 justify-center"
+              size="icon"
+              className="lg:hidden"
+              onClick={toggleGuidance}
+              aria-pressed={guidanceOpen}
+              aria-label="Toggle guidance"
+            >
+              <HelpCircle />
+            </Button>
+            <Button
+              variant={guidanceOpen ? "default" : "outline"}
+              className="hidden lg:flex flex-row items-center gap-2 justify-center"
               onClick={toggleGuidance}
               aria-pressed={guidanceOpen}
             >
