@@ -236,7 +236,7 @@ const guidanceItems: GuidanceItem[] = [
           subtitle="Turn the rough areas identified in Self Discovery into concrete, well-framed problems worth investigating. Build a list of candidates before committing to validating any one of them."
         />
         <GuidanceSection icon={Play} iconBg="bg-amber-500" title="How it works">
-          <p>Click <Keyword>Search for new problem</Keyword> to open the tool selector. Use one of the discovery tools to surface a problem, or define one directly if you already know what you want to explore.</p>
+          <p>Click <Keyword>Identify problems</Keyword> to open the tool selector. Use one of the discovery tools to surface a problem, or define one directly if you already know what you want to explore.</p>
         </GuidanceSection>
         <GuidanceSection icon={ToggleRight} iconBg="bg-amber-500" title="Two modes">
           <p>The brainstorming tool offers two ways to work, switchable from the toggle in the top-right corner. Choose whichever suits your thinking style; you can switch at any time and your progress is preserved.</p>

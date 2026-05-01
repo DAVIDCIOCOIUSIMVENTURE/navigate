@@ -24,11 +24,11 @@ export default function SolutionsPage() {
         <CardContent className="py-4 flex items-center gap-4">
           <p className="flex-1 text-sm text-muted-foreground leading-relaxed">
             This is your <span className="font-medium text-foreground">solution library</span>, a central place to collect, refine, and track the solutions you&apos;ve identified.
-            Use the <span className="font-medium text-foreground">Search for new solution</span> button to pick a validated problem and generate candidates through a guided discovery wizard, then validate each one to decide whether it&apos;s worth pursuing.
+            Use the <span className="font-medium text-foreground">Identify solutions</span> button to pick a validated problem and generate candidates through a guided discovery wizard, then validate each one to decide whether it&apos;s worth pursuing.
           </p>
           <Button onClick={() => setDialogOpen(true)} className="gap-2 shrink-0">
             <Plus className="h-4 w-4" />
-            Search for new solution
+            Identify solutions
           </Button>
         </CardContent>
       </Card>
@@ -46,7 +46,7 @@ export default function SolutionsPage() {
           </div>
           <Button onClick={() => setDialogOpen(true)} size="lg" className="gap-2">
             <Plus className="h-4 w-4" />
-            Search for new solution
+            Identify solutions
           </Button>
         </div>
       ) : (

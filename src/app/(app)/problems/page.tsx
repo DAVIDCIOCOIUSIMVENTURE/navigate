@@ -24,11 +24,11 @@ export default function ProblemsPage() {
         <CardContent className="py-4 flex items-center gap-4">
           <p className="flex-1 text-sm text-muted-foreground leading-relaxed">
             This is your <span className="font-medium text-foreground">problem library</span>, a central place to collect, refine, and track the problems you&apos;ve identified.
-            Use the <span className="font-medium text-foreground">Search for new problem</span> button to brainstorm and discover problems worth solving, then validate each one to determine whether it&apos;s a real pain point with a viable opportunity behind it.
+            Use the <span className="font-medium text-foreground">Identify problems</span> button to brainstorm and discover problems worth solving, then validate each one to determine whether it&apos;s a real pain point with a viable opportunity behind it.
           </p>
           <Button onClick={() => setDialogOpen(true)} className="gap-2 shrink-0">
             <Plus className="h-4 w-4" />
-            Search for new problem
+            Identify problems
           </Button>
         </CardContent>
       </Card>
@@ -46,7 +46,7 @@ export default function ProblemsPage() {
           </div>
           <Button onClick={() => setDialogOpen(true)} size="lg" className="gap-2">
             <Plus className="h-4 w-4" />
-            Search for new problem
+            Identify problems
           </Button>
         </div>
       ) : (

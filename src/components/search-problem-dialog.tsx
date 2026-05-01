@@ -81,7 +81,7 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
                 <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary shrink-0">
                   <Target className="h-5 w-5 text-primary-foreground" />
                 </div>
-                Search for a New Problem
+                Identify Problems
               </DialogTitle>
               <DialogDescription>
                 Choose how you&apos;d like to identify a problem worth solving.

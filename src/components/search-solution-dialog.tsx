@@ -39,7 +39,7 @@ export function SearchSolutionDialog({ open, onOpenChange }: SearchSolutionDialo
             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary shrink-0">
               <Lightbulb className="h-5 w-5 text-primary-foreground" />
             </div>
-            Search for a New Solution
+            Identify Solutions
           </DialogTitle>
           <DialogDescription>
             Choose how you&apos;d like to discover a new solution.

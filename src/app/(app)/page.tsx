@@ -17,8 +17,11 @@ import {
   FlaskConical,
   Crosshair,
   BookOpen,
+  Plus,
 } from "lucide-react"
 import { AchievementItem } from "@/components/achievement-item"
+import { SearchProblemDialog } from "@/components/search-problem-dialog"
+import { SearchSolutionDialog } from "@/components/search-solution-dialog"
 import Link from "next/link"
 import { useState } from "react"
 import { useSelector } from "react-redux"
@@ -32,6 +35,8 @@ export default function DashboardPage() {
   const problems = useSelector((state: RootState) => state.problems.problems)
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
   const [expandedProblemIds, setExpandedProblemIds] = useState<Set<number>>(new Set())
+  const [problemDialogOpen, setProblemDialogOpen] = useState(false)
+  const [solutionDialogOpen, setSolutionDialogOpen] = useState(false)
 
   const validProblems = problems.filter((p) => p.validationStatus === "valid")
   const validatedProblems = problems.filter(
@@ -76,11 +81,11 @@ export default function DashboardPage() {
 
   return (
     <div className="flex flex-col gap-4 w-full flex-1 min-h-0">
-      {/* Foundations prompt + journey CTA */}
-      <div className="flex items-center gap-3 shrink-0">
-        <Link href="/foundations" className="flex-1 min-w-0">
-          <Card className="hover:shadow-md transition-shadow border-dashed h-full">
-            <CardContent className="p-4 flex items-center gap-3">
+      {/* Foundations prompt + action buttons */}
+      <div className="flex items-stretch gap-3 shrink-0">
+        <Link href="/foundations" className="flex-1 min-w-0 flex">
+          <Card className="hover:shadow-md transition-shadow w-full">
+            <CardContent className="p-4 h-full flex items-center gap-3">
               <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 shrink-0">
                 <BookOpen className="h-4 w-4 text-primary" />
               </div>
@@ -92,12 +97,16 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </Link>
-        <Button asChild className="shrink-0">
-          <Link href="/problems">
-            {problems.length === 0 ? "Start Your Journey" : "Continue Your Journey"}
-            <ChevronRight className="ml-2 h-4 w-4" />
-          </Link>
-        </Button>
+        <div className="flex flex-col gap-2 shrink-0">
+          <Button onClick={() => setProblemDialogOpen(true)} className="gap-2">
+            <Plus className="h-4 w-4" />
+            Identify problems
+          </Button>
+          <Button onClick={() => setSolutionDialogOpen(true)} className="gap-2">
+            <Plus className="h-4 w-4" />
+            Identify solutions
+          </Button>
+        </div>
       </div>
 
       {/* Journey Overview: Problems and Solutions */}
@@ -236,6 +245,9 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      <SearchProblemDialog open={problemDialogOpen} onOpenChange={setProblemDialogOpen} />
+      <SearchSolutionDialog open={solutionDialogOpen} onOpenChange={setSolutionDialogOpen} />
     </div>
   )
 }
