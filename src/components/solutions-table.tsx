@@ -36,6 +36,8 @@ import {
   ArrowUp,
   ArrowDown,
   ArrowUpDown,
+  Lightbulb,
+  Target,
 } from "lucide-react"
 import type { Solution } from "@/store/solutions-model"
 import { EditSolutionDialog } from "@/components/edit-solution-dialog"
@@ -265,18 +267,24 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                   <TableRow key={solution.id}>
                     <TableCell className="text-muted-foreground">{originalIndex + 1}</TableCell>
                     <TableCell className="text-sm">
-                      {solution.title ? (
-                        <span className="line-clamp-2 font-medium">{solution.title}</span>
-                      ) : (
-                        <span className="text-muted-foreground italic">Untitled solution</span>
-                      )}
+                      <div className="flex items-center gap-2">
+                        <Lightbulb className="h-3.5 w-3.5 text-primary shrink-0" />
+                        {solution.title ? (
+                          <span className="line-clamp-2 font-medium">{solution.title}</span>
+                        ) : (
+                          <span className="text-muted-foreground italic">Untitled solution</span>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
-                      {problemDescription ? (
-                        <span className="line-clamp-2">{problemDescription}</span>
-                      ) : (
-                        <span>-</span>
-                      )}
+                      <div className="flex items-center gap-2">
+                        <Target className="h-3.5 w-3.5 text-primary shrink-0" />
+                        {problemDescription ? (
+                          <span className="line-clamp-2">{problemDescription}</span>
+                        ) : (
+                          <span>-</span>
+                        )}
+                      </div>
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
                       {new Date(solution.createdAt).toLocaleDateString("en-GB", {

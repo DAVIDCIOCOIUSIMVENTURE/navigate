@@ -1,8 +1,8 @@
 "use client"
 
-import { useMemo, useState } from "react"
-import { useDispatch } from "react-redux"
-import type { AppDispatch } from "@/store"
+import { Fragment, useMemo, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import type { AppDispatch, RootState } from "@/store"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
@@ -36,6 +36,10 @@ import {
   ArrowUp,
   ArrowDown,
   ArrowUpDown,
+  ChevronRight,
+  ChevronDown,
+  Lightbulb,
+  Target,
 } from "lucide-react"
 import type { Problem } from "@/store/problems-model"
 import { EditProblemDialog } from "@/components/edit-problem-dialog"
@@ -80,11 +84,32 @@ interface ProblemsTableProps {
 export function ProblemsTable({ problems, showStatus = false, showEditDelete = false }: ProblemsTableProps) {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
+  const solutions = useSelector((state: RootState) => state.solutions.solutions)
   const [editingProblem, setEditingProblem] = useState<Problem | null>(null)
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<"all" | ValidationStatus>("all")
   const [sortKey, setSortKey] = useState<SortKey>("index")
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc")
+  const [expandedIds, setExpandedIds] = useState<Set<number>>(new Set())
+
+  const solutionsByProblemId = useMemo(() => {
+    const map = new Map<number, typeof solutions>()
+    for (const s of solutions) {
+      const list = map.get(s.problemId) ?? []
+      list.push(s)
+      map.set(s.problemId, list)
+    }
+    return map
+  }, [solutions])
+
+  const toggleExpanded = (id: number) => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }
 
   const indexedProblems = useMemo(
     () => problems.map((problem, index) => ({ problem, originalIndex: index })),
@@ -192,6 +217,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
           <Table>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-8" />
                 <TableHead className="w-10">
                   <button
                     type="button"
@@ -246,7 +272,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
               {sortedProblems.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={showStatus ? 6 : 5}
+                    colSpan={showStatus ? 7 : 6}
                     className="text-center text-sm text-muted-foreground py-8"
                   >
                     No problems match the current filters.
@@ -256,15 +282,46 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                 sortedProblems.map(({ problem, originalIndex }) => {
                   const status = showStatus ? (problem.validationStatus ?? "unvalidated") : null
                   const statusConfig = status ? STATUS_CONFIG[status] : null
+                  const linkedSolutions = solutionsByProblemId.get(problem.id) ?? []
+                  const hasSolutions = linkedSolutions.length > 0
+                  const expanded = expandedIds.has(problem.id)
                   return (
-                    <TableRow key={problem.id}>
+                    <Fragment key={problem.id}>
+                    <TableRow className={cn(expanded && hasSolutions && "border-b-0")}>
+                      <TableCell className="pr-0">
+                        {hasSolutions ? (
+                          <button
+                            type="button"
+                            onClick={() => toggleExpanded(problem.id)}
+                            className="flex items-center justify-center w-6 h-6 rounded hover:bg-muted text-muted-foreground"
+                            aria-label={expanded ? "Collapse solutions" : "Expand solutions"}
+                            aria-expanded={expanded}
+                          >
+                            {expanded ? (
+                              <ChevronDown className="h-3.5 w-3.5" />
+                            ) : (
+                              <ChevronRight className="h-3.5 w-3.5" />
+                            )}
+                          </button>
+                        ) : (
+                          <div className="w-6 h-6" />
+                        )}
+                      </TableCell>
                       <TableCell className="text-muted-foreground">{originalIndex + 1}</TableCell>
                       <TableCell className="text-sm">
-                        {problem.description ? (
-                          <span className="line-clamp-2">{problem.description}</span>
-                        ) : (
-                          <span className="text-muted-foreground">-</span>
-                        )}
+                        <div className="flex items-center gap-2">
+                          <Target className="h-3.5 w-3.5 text-primary shrink-0" />
+                          {problem.description ? (
+                            <span className="line-clamp-2">{problem.description}</span>
+                          ) : (
+                            <span className="text-muted-foreground">-</span>
+                          )}
+                          {hasSolutions && (
+                            <span className="ml-1 text-xs text-muted-foreground whitespace-nowrap">
+                              {linkedSolutions.length} solution{linkedSolutions.length === 1 ? "" : "s"}
+                            </span>
+                          )}
+                        </div>
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground capitalize">
                         {problem.source}
@@ -325,6 +382,41 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                         </div>
                       </TableCell>
                     </TableRow>
+                    {hasSolutions && expanded && (
+                      <TableRow className="bg-muted/30 hover:bg-muted/30">
+                        <TableCell />
+                        <TableCell colSpan={showStatus ? 6 : 5} className="py-2">
+                          <div className="flex flex-col gap-1.5">
+                            {linkedSolutions.map((s) => {
+                              const sStatus = s.validationStatus ?? "unvalidated"
+                              const sStatusConfig = STATUS_CONFIG[sStatus]
+                              const solutionLabel = s.title || `Solution #${s.id}`
+                              return (
+                                <div key={s.id} className="flex items-center gap-2 text-sm">
+                                  <Lightbulb className="h-3.5 w-3.5 text-primary shrink-0" />
+                                  <span className="flex-1 min-w-0 truncate">{solutionLabel}</span>
+                                  <div className={`flex items-center gap-1.5 text-xs font-medium ${sStatusConfig.className}`}>
+                                    <sStatusConfig.icon className="h-3.5 w-3.5" />
+                                    {sStatusConfig.label}
+                                  </div>
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-7"
+                                    onClick={() => router.push(`/solutions/${s.id}/validate/introduction`)}
+                                    aria-label="Open solution"
+                                  >
+                                    <ArrowRight className="h-3.5 w-3.5" />
+                                    <span className="hidden md:inline ml-1">Open</span>
+                                  </Button>
+                                </div>
+                              )
+                            })}
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                    </Fragment>
                   )
                 })
               )}
