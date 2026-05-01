@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -127,9 +126,6 @@ function GuidanceBody({
   onChange: (val: number | null) => void
   accent: string
 }) {
-  const [hovered, setHovered] = useState<number | null>(null)
-  const shown = hovered ?? value
-
   return (
     <div className={cn("rounded-xl p-8 flex flex-col gap-6", accent)}>
       <div className="flex flex-col gap-3">
@@ -146,9 +142,9 @@ function GuidanceBody({
 
       <div className="flex flex-col gap-3">
         <h3 className="text-sm font-semibold uppercase tracking-wide text-white/80">Your score (1 to 5)</h3>
-        <p className="text-sm text-white/80">Click a score below. You can change it any time.</p>
+        <p className="text-sm text-white/80">Pick the row that best matches your situation. You can change it any time.</p>
 
-        <div className="flex gap-2 flex-wrap">
+        <div className="flex flex-col gap-2">
           {scale.map((stop) => {
             const selected = value === stop.score
             return (
@@ -156,32 +152,33 @@ function GuidanceBody({
                 key={stop.score}
                 type="button"
                 onClick={() => onChange(selected ? null : stop.score)}
-                onMouseEnter={() => setHovered(stop.score)}
-                onMouseLeave={() => setHovered(null)}
                 className={cn(
-                  "flex-1 min-w-[80px] rounded-lg border-2 px-3 py-3 text-center transition-all",
+                  "rounded-lg border-2 px-4 py-3 text-left flex items-start gap-4 transition-colors",
                   selected
-                    ? "bg-white text-foreground border-white shadow-md"
-                    : "bg-white/5 text-white border-white/30 hover:bg-white/10 hover:border-white/60"
+                    ? "bg-white border-white shadow-md"
+                    : "bg-white/5 border-white/30 hover:bg-white/10 hover:border-white/60"
                 )}
               >
-                <div className={cn("text-2xl font-bold", selected ? "text-primary" : "text-white")}>{stop.score}</div>
-                <div className={cn("text-xs mt-0.5", selected ? "text-muted-foreground" : "text-white/70")}>
-                  {stop.label}
+                <div
+                  className={cn(
+                    "flex h-10 w-10 shrink-0 items-center justify-center rounded-md text-xl font-bold",
+                    selected ? "bg-primary/10 text-primary" : "bg-white/10 text-white"
+                  )}
+                >
+                  {stop.score}
+                </div>
+                <div className="flex flex-col gap-0.5">
+                  <p className={cn("text-sm font-semibold", selected ? "text-foreground" : "text-white")}>
+                    {stop.label}
+                  </p>
+                  <p className={cn("text-sm", selected ? "text-muted-foreground" : "text-white/70")}>
+                    {stop.description}
+                  </p>
                 </div>
               </button>
             )
           })}
         </div>
-
-        {shown != null && (
-          <div className="rounded-md border border-white/20 bg-white/5 p-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-white/70 mb-1">
-              Score {shown}: {scale.find((s) => s.score === shown)?.label}
-            </p>
-            <p className="text-sm text-white">{scale.find((s) => s.score === shown)?.description}</p>
-          </div>
-        )}
       </div>
     </div>
   )
