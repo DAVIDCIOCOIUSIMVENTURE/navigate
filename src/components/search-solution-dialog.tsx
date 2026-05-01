@@ -36,8 +36,8 @@ export function SearchSolutionDialog({ open, onOpenChange }: SearchSolutionDialo
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 shrink-0">
-              <Lightbulb className="h-5 w-5 text-primary" />
+            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary shrink-0">
+              <Lightbulb className="h-5 w-5 text-primary-foreground" />
             </div>
             Search for a New Solution
           </DialogTitle>
@@ -49,17 +49,17 @@ export function SearchSolutionDialog({ open, onOpenChange }: SearchSolutionDialo
         <div className="flex flex-col gap-3 mt-2">
           <button
             onClick={handleDiscover}
-            className="flex items-start gap-4 rounded-lg border p-4 text-left hover:bg-accent/50 transition-colors"
+            className="flex items-start gap-4 rounded-lg border bg-card p-4 text-left transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 shrink-0">
-              <Lightbulb className="h-5 w-5 text-primary" />
+            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-violet-500 shrink-0">
+              <Lightbulb className="h-5 w-5 text-white" />
             </div>
             <div className="flex flex-col gap-1 flex-1">
               <div className="flex items-center justify-between">
                 <span className="font-semibold text-sm">Solution Discovery</span>
                 <ArrowRight className="h-4 w-4 text-muted-foreground" />
               </div>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-sm text-muted-foreground leading-relaxed">
                 Pick a validated problem, refine your understanding, and generate solution candidates using creative techniques.
               </span>
             </div>
@@ -67,7 +67,7 @@ export function SearchSolutionDialog({ open, onOpenChange }: SearchSolutionDialo
 
           <button
             disabled
-            className="flex items-start gap-4 rounded-lg border p-4 text-left opacity-50 cursor-not-allowed"
+            className="flex items-start gap-4 rounded-lg border bg-card p-4 text-left opacity-60 cursor-not-allowed"
           >
             <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-muted shrink-0">
               <Clock className="h-5 w-5 text-muted-foreground" />
@@ -77,7 +77,7 @@ export function SearchSolutionDialog({ open, onOpenChange }: SearchSolutionDialo
                 <span className="font-semibold text-sm">Quick Capture</span>
                 <span className="text-xs text-muted-foreground font-medium bg-muted px-2 py-0.5 rounded-full">Coming soon</span>
               </div>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-sm text-muted-foreground leading-relaxed">
                 Already have an idea? Add it directly to the bank without going through the full discovery wizard.
               </span>
             </div>
