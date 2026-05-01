@@ -64,6 +64,7 @@ import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
 import { resolveDimensionLabel, useResolveOrCreate } from "@/lib/dimension-labels"
 import { AddCustomItemDialog } from "@/components/add-custom-item-dialog"
 import { ManageCustomItemsDialog } from "@/components/manage-custom-items-dialog"
+import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { cn } from "@/lib/utils"
 import { useGuidance } from "@/context/guidance-context"
 import { useContainerSize } from "@/context/container-size-context"
@@ -1269,21 +1270,28 @@ export default function BrainstormPage() {
               >
                 Show Saved Problems ({savedProblems.length})
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
+              <ConfirmDialog
+                trigger={
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <RotateCcw className="h-3.5 w-3.5" />
+                    Reset
+                  </Button>
+                }
+                title="Reset brainstorm?"
+                description={
+                  brainstormMode === "canvas"
+                    ? "This will clear your current selection across all dimensions. Saved problems are not affected."
+                    : "This will clear your in-progress problem builder. Saved problems are not affected."
+                }
+                confirmLabel="Reset"
+                onConfirm={() => {
                   if (brainstormMode === "canvas") {
                     clearAll()
                   } else if (brainstormMode === "builder") {
                     builderResetRef.current?.()
                   }
                 }}
-                className="gap-2"
-              >
-                <RotateCcw className="h-3.5 w-3.5" />
-                Reset
-              </Button>
+              />
               {brainstormMode === "canvas" && (
                 <Button
                   size="sm"

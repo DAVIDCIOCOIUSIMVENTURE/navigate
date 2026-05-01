@@ -16,7 +16,7 @@ import type {
   Solution,
 } from "@/types/solution"
 type ScamperIdeasMap = Record<string, ImprovementItem[]>
-import { DEFAULT_IMPROVEMENT } from "@/types/solution"
+import { DEFAULT_IMPROVEMENT, DEFAULT_WORKSPACE_FIELDS } from "@/types/solution"
 
 type CandidateExtras = {
   description?: string
@@ -70,6 +70,9 @@ type DiscoveryContextValue = {
   // Wipe the discovery scratch for the active tool so the user can start fresh
   // after saving a solution. Saved candidates are preserved.
   wipeDiscoveryScratch: () => void
+  // Reset the entire workspace (tool choices, root-cause work, all idea fields)
+  // back to defaults. Saved candidate solutions are preserved.
+  resetWorkspace: () => void
 }
 
 const DiscoveryContext = createContext<DiscoveryContextValue | null>(null)
@@ -208,6 +211,14 @@ export function DiscoveryProvider({ children }: { children: ReactNode }) {
     })
   }, [workspaceId, dispatch])
 
+  const resetWorkspace = useCallback(() => {
+    if (workspaceId == null) return
+    dispatch.solutionWorkspaces.update({
+      id: workspaceId,
+      patch: { ...DEFAULT_WORKSPACE_FIELDS },
+    })
+  }, [workspaceId, dispatch])
+
   const updateCandidate = useCallback(
     (id: number, p: { title?: string; description?: string }) => {
       dispatch.solutions.update({ id, patch: p })
@@ -240,6 +251,7 @@ export function DiscoveryProvider({ children }: { children: ReactNode }) {
         scamperIdeas, setScamperIdeas,
         candidates, addCandidate, updateCandidate, removeCandidate,
         wipeDiscoveryScratch,
+        resetWorkspace,
       }}
     >
       {children}

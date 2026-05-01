@@ -9,9 +9,10 @@ import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { DiscoveryProvider, useDiscovery, NAV_ITEMS, STEPS_REQUIRING_PROBLEM } from "./context"
 import { SolutionsDrawer } from "./solutions-drawer"
-import { Lightbulb, Lock, Check, Maximize2, Minimize2, ChevronDown } from "lucide-react"
+import { Lightbulb, Lock, Check, Maximize2, Minimize2, ChevronDown, RotateCcw } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
+import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 
 function Stepper({
   pathname,
@@ -219,7 +220,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
   const dispatch = useDispatch<AppDispatch>()
-  const { problemId, candidates } = useDiscovery()
+  const { problemId, candidates, resetWorkspace } = useDiscovery()
   const [mounted, setMounted] = useState(false)
   const [solutionsDrawerOpen, setSolutionsDrawerOpen] = useState(false)
   const problemSelected = problemId != null
@@ -268,6 +269,20 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           <Lightbulb className="h-3.5 w-3.5" />
           Show All Solutions ({candidates.length})
         </Button>
+      )}
+      {problemSelected && (
+        <ConfirmDialog
+          trigger={
+            <Button variant="outline" size="sm" className="gap-2 shrink-0">
+              <RotateCcw className="h-3.5 w-3.5" />
+              Reset
+            </Button>
+          }
+          title="Reset solution discovery?"
+          description="This will clear your analysis tool choice, discovery method, root-cause work, and all in-progress ideas for this problem. Saved solutions are not affected."
+          confirmLabel="Reset"
+          onConfirm={resetWorkspace}
+        />
       )}
     </>
   )
