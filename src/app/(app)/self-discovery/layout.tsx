@@ -154,7 +154,7 @@ export default function SelfDiscoveryLayout({
     const size = useContainerSize()
     const isWide = size === "wide"
 
-    const triggers = useSelector((state: RootState) => state.problemTriggers.triggers)
+    const triggers = useSelector((state: RootState) => state.selfDiscoveryItems.items)
 
     const handleNavigate = (path: string) => {
         setMobileNavOpen(false)

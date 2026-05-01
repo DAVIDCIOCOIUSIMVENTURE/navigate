@@ -105,13 +105,14 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   // Load persisted settings from localStorage on mount
   useEffect(() => {
     dispatch.settings.init()
-    dispatch.problemTriggers.init()
+    dispatch.selfDiscoveryItems.init()
+    dispatch.customBrainstormItems.init()
     dispatch.problems.init()
     dispatch.accountSettings.init()
     dispatch.solutions.init()
     dispatch.solutionWorkspaces.init()
     dispatch.notes.init()
-  }, [dispatch.settings, dispatch.problemTriggers, dispatch.problems, dispatch.accountSettings, dispatch.solutions, dispatch.solutionWorkspaces, dispatch.notes])
+  }, [dispatch.settings, dispatch.selfDiscoveryItems, dispatch.customBrainstormItems, dispatch.problems, dispatch.accountSettings, dispatch.solutions, dispatch.solutionWorkspaces, dispatch.notes])
 
   return (
     <SidebarProvider

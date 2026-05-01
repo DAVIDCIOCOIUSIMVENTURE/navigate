@@ -82,9 +82,9 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const summaryData: ProblemSummaryData | null = problem ? {
     text: problem.description,
     tags: [
-      { label: "Customer", values: problem.customers },
-      { label: "Context", values: problem.contexts },
-      { label: "Problem", values: problem.problems },
+      { label: "Customer", columnId: "customers", ids: problem.customers },
+      { label: "Context", columnId: "contexts", ids: problem.contexts },
+      { label: "Problem", columnId: "problems", ids: problem.problems },
     ],
     context: problem.contextWhen,
     emotionalImpact: problem.emotionalImpact,

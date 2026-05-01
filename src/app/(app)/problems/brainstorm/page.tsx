@@ -46,6 +46,7 @@ import {
   Maximize2,
   Minimize2,
   Pencil,
+  Plus,
   RotateCcw,
   Save,
   Search,
@@ -60,6 +61,9 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { brainstormColumns, type BrainstormItem, type BrainstormColumn } from "./data"
 import type { Problem } from "@/store/problems-model"
 import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
+import { resolveDimensionLabel, useResolveOrCreate } from "@/lib/dimension-labels"
+import { AddCustomItemDialog } from "@/components/add-custom-item-dialog"
+import { ManageCustomItemsDialog } from "@/components/manage-custom-items-dialog"
 import { cn } from "@/lib/utils"
 import { useGuidance } from "@/context/guidance-context"
 import { useContainerSize } from "@/context/container-size-context"
@@ -471,10 +475,8 @@ function ProblemBuilder({
   const handleSave = () => {
     const selections: Record<string, string[]> = {}
     for (const col of columns) {
-      const ids = selectedByColumn[col.id] ?? []
-      selections[col.id] = ids
-        .map((id) => findLabel(col.items, id))
-        .filter((l): l is string => l !== null)
+      // Save ids, not labels. selectedByColumn already groups ids by column.
+      selections[col.id] = selectedByColumn[col.id] ?? []
     }
     onSave(selections, description)
     dispatch.settings.resetBrainstormBuilder()
@@ -957,7 +959,8 @@ export default function BrainstormPage() {
   const savedProblems = useSelector((state: RootState) =>
     state.problems.problems.filter((p) => p.source === "brainstorm")
   )
-  const triggers = useSelector((state: RootState) => state.problemTriggers.triggers)
+  const triggers = useSelector((state: RootState) => state.selfDiscoveryItems.items)
+  const customByColumn = useSelector((s: RootState) => s.customBrainstormItems.byColumn)
 
   const youColumn = useMemo<BrainstormColumn>(() => {
     // Map each question URL to its parent category
@@ -984,9 +987,25 @@ export default function BrainstormPage() {
     return { id: "you", title: "You", items }
   }, [triggers])
 
+  // Inject a synthetic "Your items" group into each Customer/Context/Problem
+  // column whenever the user has authored at least one custom item there. The
+  // group is only present at render time; nothing is persisted on the column tree.
+  const columnsWithCustomItems = useMemo<BrainstormColumn[]>(() => {
+    return brainstormColumns.map((col) => {
+      const custom = customByColumn[col.id] ?? []
+      if (custom.length === 0) return col
+      const yourGroup: BrainstormItem = {
+        id: `${col.id}-user-group`,
+        label: "Your items",
+        children: custom.map((i) => ({ id: i.id, label: i.label })),
+      }
+      return { ...col, items: [...col.items, yourGroup] }
+    })
+  }, [customByColumn])
+
   const allColumns = useMemo<BrainstormColumn[]>(
-    () => [youColumn, ...brainstormColumns],
-    [youColumn]
+    () => [youColumn, ...columnsWithCustomItems],
+    [youColumn, columnsWithCustomItems]
   )
 
   const hiddenColumnsArray = useSelector((state: RootState) => state.settings.hiddenBrainstormColumns)
@@ -1033,10 +1052,19 @@ export default function BrainstormPage() {
   const [nextStepDialogOpen, setNextStepDialogOpen] = useState(false)
   const [lastSavedProblemId, setLastSavedProblemId] = useState<number | null>(null)
   const [tableDrawerOpen, setTableDrawerOpen] = useState(false)
+  const [addCustomDialogOpen, setAddCustomDialogOpen] = useState(false)
+  const [managingColumnId, setManagingColumnId] = useState<string | null>(null)
   const builderResetRef = useRef<(() => void) | null>(null)
   const fullView = useSelector((state: RootState) => state.settings.fullView)
   const brainstormMode = useSelector((state: RootState) => state.settings.brainstormMode)
   const containerSize = useContainerSize()
+  const resolveOrCreate = useResolveOrCreate()
+  // Columns the user can edit via free-text dialogs (excludes "you", which is
+  // populated only from self-discovery selections).
+  const editableColumns = useMemo<BrainstormColumn[]>(
+    () => allColumns.filter((c) => c.id !== "you"),
+    [allColumns]
+  )
 
   const handleBuilderSave = useCallback(async (selections: Record<string, string[]>, description: string) => {
     const patch: Partial<Pick<Problem, "customers" | "contexts" | "problems" | "you">> = {}
@@ -1069,13 +1097,15 @@ export default function BrainstormPage() {
 
   const saveDebounced = useDebouncedCallback((fields: Record<string, string>) => {
     if (!editingProblem) return
-    const patch: Partial<Pick<Problem, "description" | "customers" | "contexts" | "problems" | "you">> = {
+    const patch: Partial<Pick<Problem, "description" | "customers" | "contexts" | "problems">> = {
       description: fields["description"] ?? "",
     }
-    for (const column of allColumns) {
-      const field = COLUMN_TO_FIELD[column.id]
+    // Only Customer/Context/Problem are editable here; "you" is preserved on the existing problem.
+    for (const column of editableColumns) {
+      const field = COLUMN_TO_FIELD[column.id] as "customers" | "contexts" | "problems"
       const value = fields[column.id]?.trim()
-      patch[field] = value ? value.split(",").map((s) => s.trim()).filter(Boolean) : []
+      const tokens = value ? value.split(",").map((s) => s.trim()).filter(Boolean) : []
+      patch[field] = tokens.map((token) => resolveOrCreate(column.id, token)).filter(Boolean)
     }
     dispatch.problems.update({ id: editingProblem.id, patch })
   }, 500)
@@ -1104,12 +1134,11 @@ export default function BrainstormPage() {
 
   const openSaveDialog = () => {
     const fields: Record<string, string> = { description: "" }
-    for (const column of allColumns) {
+    for (const column of editableColumns) {
       const allIds = collectAllIds(column.items)
       const selectedLabels = allIds
         .filter((id) => selected.has(id))
-        .map((id) => findLabel(column.items, id))
-        .filter((label): label is string => label !== null)
+        .map((id) => resolveDimensionLabel(column.id, id, customByColumn, triggers))
       fields[column.id] = selectedLabels.join(", ")
     }
     setSaveFields(fields)
@@ -1118,10 +1147,17 @@ export default function BrainstormPage() {
 
   const saveCombination = async () => {
     const patch: Partial<Pick<Problem, "customers" | "contexts" | "problems" | "you">> = {}
-    for (const column of allColumns) {
-      const field = COLUMN_TO_FIELD[column.id]
+    for (const column of editableColumns) {
+      const field = COLUMN_TO_FIELD[column.id] as "customers" | "contexts" | "problems"
       const value = saveFields[column.id]?.trim()
-      patch[field] = value ? value.split(",").map((s) => s.trim()).filter(Boolean) : []
+      const tokens = value ? value.split(",").map((s) => s.trim()).filter(Boolean) : []
+      patch[field] = tokens.map((token) => resolveOrCreate(column.id, token)).filter(Boolean)
+    }
+    // Carry the live "you" selection straight through as ids: it never goes through the dialog.
+    const youColumnDef = allColumns.find((c) => c.id === "you")
+    if (youColumnDef) {
+      const youIds = collectAllIds(youColumnDef.items).filter((id) => selected.has(id))
+      patch.you = youIds
     }
     const newProblem = await dispatch.problems.create({ ...patch, source: "brainstorm", description: saveFields["description"]?.trim() ?? "" })
     clearAll()
@@ -1133,9 +1169,11 @@ export default function BrainstormPage() {
   const openEditDialog = (problem: Problem) => {
     initRef.current = false
     const fields: Record<string, string> = { description: problem.description ?? "" }
-    for (const column of allColumns) {
+    for (const column of editableColumns) {
       const field = COLUMN_TO_FIELD[column.id]
-      fields[column.id] = problem[field].join(", ")
+      fields[column.id] = problem[field]
+        .map((id) => resolveDimensionLabel(column.id, id, customByColumn, triggers))
+        .join(", ")
     }
     setEditFields(fields)
     setEditingProblem(problem)
@@ -1205,6 +1243,15 @@ export default function BrainstormPage() {
                   </button>
                 )}
               </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setAddCustomDialogOpen(true)}
+                className="gap-2"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                Add your own item
+              </Button>
               <Button
                 variant="outline"
                 size="sm"
@@ -1321,6 +1368,12 @@ export default function BrainstormPage() {
                           <EyeOff className="h-4 w-4 mr-2" />
                           Hide column
                         </DropdownMenuItem>
+                        {column.id !== "you" && (
+                          <DropdownMenuItem onClick={() => setManagingColumnId(column.id)}>
+                            <Pencil className="h-4 w-4 mr-2" />
+                            Manage your items
+                          </DropdownMenuItem>
+                        )}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
@@ -1426,11 +1479,13 @@ export default function BrainstormPage() {
                       </TableCell>
                       {allColumns.map((column) => {
                         const field = COLUMN_TO_FIELD[column.id]
-                        const labels = problem[field]
+                        const ids = problem[field]
                         return (
                           <TableCell key={column.id}>
-                            {labels.length > 0 ? (
-                              <span className="text-sm">{labels.join(", ")}</span>
+                            {ids.length > 0 ? (
+                              <span className="text-sm">
+                                {ids.map((id) => resolveDimensionLabel(column.id, id, customByColumn, triggers)).join(", ")}
+                              </span>
                             ) : (
                               <span className="text-sm text-muted-foreground">-</span>
                             )}
@@ -1484,7 +1539,7 @@ export default function BrainstormPage() {
         title="Save Problem"
         fields={saveFields}
         onFieldsChange={setSaveFields}
-        columns={allColumns}
+        columns={editableColumns}
         actions={
           <>
             <Button variant="outline" onClick={() => setSaveDialogOpen(false)}>Cancel</Button>
@@ -1499,8 +1554,26 @@ export default function BrainstormPage() {
         title="Edit Problem"
         fields={editFields}
         onFieldsChange={setEditFields}
-        columns={allColumns}
+        columns={editableColumns}
       />
+
+      <AddCustomItemDialog
+        open={addCustomDialogOpen}
+        onOpenChange={setAddCustomDialogOpen}
+        onCreated={(_columnId, id) => {
+          // Auto-tick the new item.
+          dispatch.settings.setBrainstormSelected([...brainstormSelectedArray, id])
+        }}
+      />
+
+      {managingColumnId && (
+        <ManageCustomItemsDialog
+          open={managingColumnId !== null}
+          onOpenChange={(open) => { if (!open) setManagingColumnId(null) }}
+          columnId={managingColumnId}
+          columnTitle={allColumns.find((c) => c.id === managingColumnId)?.title ?? ""}
+        />
+      )}
 
       <Dialog open={nextStepDialogOpen} onOpenChange={setNextStepDialogOpen}>
         <DialogContent>

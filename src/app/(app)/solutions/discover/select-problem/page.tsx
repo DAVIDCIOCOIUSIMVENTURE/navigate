@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Target, ArrowLeft, ArrowRight, CheckCircle2, HelpCircle, Info } from "lucide-react"
 import { getAdjacentSteps, useDiscovery } from "../context"
+import { DimensionChips } from "@/components/dimension-chips"
 import type { ValidationStatus } from "@/types/idea"
 
 const STATUS_BADGE: Record<"valid" | "unsure", { label: string; icon: typeof CheckCircle2; className: string }> = {
@@ -96,12 +97,8 @@ export default function SelectProblemPage() {
                     </div>
                     {(problem.customers.length > 0 || problem.contexts.length > 0) && (
                       <div className="flex flex-wrap gap-1.5 mt-1">
-                        {problem.customers.slice(0, 3).map((s) => (
-                          <span key={`cs-${s}`} className="rounded-md bg-background px-2 py-0.5 text-xs border">{s}</span>
-                        ))}
-                        {problem.contexts.slice(0, 3).map((c) => (
-                          <span key={`ctx-${c}`} className="rounded-md bg-background px-2 py-0.5 text-xs border">{c}</span>
-                        ))}
+                        <DimensionChips columnId="customers" ids={problem.customers.slice(0, 3)} />
+                        <DimensionChips columnId="contexts" ids={problem.contexts.slice(0, 3)} />
                       </div>
                     )}
                   </div>

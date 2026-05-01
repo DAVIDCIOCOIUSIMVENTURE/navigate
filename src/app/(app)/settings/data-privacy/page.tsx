@@ -34,10 +34,16 @@ const STORAGE_GROUPS: StorageGroup[] = [
     keys: ["navigate-problems"],
   },
   {
-    id: "problem-triggers",
-    label: "Problem triggers",
-    description: "Triggers captured during self-discovery.",
-    keys: ["navigate-problem-triggers"],
+    id: "self-discovery-items",
+    label: "Self-discovery items",
+    description: "Items captured during self-discovery; these power the You dimension in problem brainstorming.",
+    keys: ["navigate-self-discovery-items"],
+  },
+  {
+    id: "custom-brainstorm-items",
+    label: "Custom dimension items",
+    description: "Customer / Context / Problem items you've added yourself in the brainstorm.",
+    keys: ["navigate-custom-brainstorm-items"],
   },
   {
     id: "solutions",

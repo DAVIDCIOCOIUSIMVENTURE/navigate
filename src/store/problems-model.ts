@@ -2,6 +2,9 @@ import { createModel } from "@rematch/core"
 import type { RootModel } from "."
 import type { ExistingSolutionItem, ValidationAssessment, ValidationStatus } from "@/types/idea"
 import { DEFAULT_VALIDATION_ASSESSMENT } from "@/types/idea"
+import type { CustomBrainstormItem } from "./custom-brainstorm-items-model"
+import type { SelfDiscoveryItem } from "./self-discovery-items-model"
+import { resolveDimensionLabel } from "@/lib/dimension-labels"
 
 const STORAGE_KEY = "navigate-problems"
 
@@ -29,11 +32,23 @@ export type Problem = {
 
 export type ProblemPatch = Partial<Pick<Problem, "description" | "customers" | "contexts" | "problems" | "you" | "existingSolutions" | "emotionalImpact" | "validationAssessment" | "validationStatus" | "validationReason" | "contextWhen" | "segmentSize" | "customerDescription">>
 
-export function getProblemLabel(problem: Problem): string {
+/**
+ * Build a short summary label for a Problem. Field values are ids, so the
+ * resolver hands them off through the (built-in -> custom catalog -> self-
+ * discovery item) lookup chain. Pass the relevant slices in to keep this
+ * function pure and callable outside React.
+ */
+export function getProblemLabel(
+  problem: Problem,
+  customByColumn: Record<string, CustomBrainstormItem[]> = {},
+  selfDiscoveryItems: SelfDiscoveryItem[] = []
+): string {
+  const resolve = (columnId: string, ids: string[]) =>
+    ids.map((id) => resolveDimensionLabel(columnId, id, customByColumn, selfDiscoveryItems)).join(", ")
   return [
-    problem.customers.join(", "),
-    problem.contexts.join(", "),
-    problem.problems.join(", "),
+    resolve("customers", problem.customers),
+    resolve("contexts", problem.contexts),
+    resolve("problems", problem.problems),
   ].filter((s) => s.length > 0).join(" / ")
 }
 

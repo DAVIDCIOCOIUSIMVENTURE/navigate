@@ -7,6 +7,7 @@ import type { RootState } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { getAdjacentSteps, useProblemValidation } from "../context"
+import { DimensionChips } from "@/components/dimension-chips"
 import {
   ClipboardCheck, GitFork, ShieldCheck, LayoutTemplate, Users, Search,
 } from "lucide-react"
@@ -19,16 +20,12 @@ const STEPS = [
   { icon: LayoutTemplate, title: "Summary", description: "Review the problem statement assembled from your discovery and validation work.", bg: "bg-green-100 dark:bg-green-950", color: "text-green-600 dark:text-green-400" },
 ]
 
-function FieldRow({ label, values }: { label: string; values: string[] }) {
-  if (values.length === 0) return null
+function FieldRow({ label, columnId, ids }: { label: string; columnId: string; ids: string[] }) {
+  if (ids.length === 0) return null
   return (
     <div className="flex flex-col gap-1">
       <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{label}</p>
-      <div className="flex flex-wrap gap-1.5">
-        {values.map((v) => (
-          <span key={v} className="rounded-md bg-background px-2 py-0.5 text-xs border">{v}</span>
-        ))}
-      </div>
+      <DimensionChips columnId={columnId} ids={ids} />
     </div>
   )
 }
@@ -68,9 +65,9 @@ export default function IntroductionPage() {
                 <p className="text-md font-medium">{problem.description}</p>
               </div>
             )}
-            <FieldRow label="Customer" values={problem.customers} />
-            <FieldRow label="Context" values={problem.contexts} />
-            <FieldRow label="Problem" values={problem.problems} />
+            <FieldRow label="Customer" columnId="customers" ids={problem.customers} />
+            <FieldRow label="Context" columnId="contexts" ids={problem.contexts} />
+            <FieldRow label="Problem" columnId="problems" ids={problem.problems} />
           </div>
         )}
 

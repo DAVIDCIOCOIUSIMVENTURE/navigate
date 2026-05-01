@@ -1,8 +1,8 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { useDispatch } from "react-redux"
-import type { AppDispatch } from "@/store"
+import { useDispatch, useSelector } from "react-redux"
+import type { AppDispatch, RootState } from "@/store"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import {
@@ -16,6 +16,7 @@ import { brainstormColumns } from "@/data/brainstormData"
 import { StatusSelect } from "@/components/ui/status-select"
 import type { Problem, ProblemPatch } from "@/store/problems-model"
 import type { ValidationStatus } from "@/types/idea"
+import { resolveDimensionLabel, useResolveOrCreate } from "@/lib/dimension-labels"
 
 const COLUMN_TO_FIELD: Record<string, keyof ProblemPatch> = {
   "customers": "customers",
@@ -40,6 +41,9 @@ interface EditProblemDialogProps {
 
 export function EditProblemDialog({ problem, onClose, title = "Edit Problem", showStatus = true }: EditProblemDialogProps) {
   const dispatch = useDispatch<AppDispatch>()
+  const customByColumn = useSelector((s: RootState) => s.customBrainstormItems.byColumn)
+  const selfDiscoveryItems = useSelector((s: RootState) => s.selfDiscoveryItems.items)
+  const resolveOrCreate = useResolveOrCreate()
   const [editFields, setEditFields] = useState<Record<string, string>>({})
   const initRef = useRef(false)
 
@@ -49,9 +53,12 @@ export function EditProblemDialog({ problem, onClose, title = "Edit Problem", sh
     const fields: Record<string, string> = { description: problem.description ?? "", validationStatus: problem.validationStatus ?? "unvalidated" }
     for (const col of brainstormColumns) {
       const field = COLUMN_TO_FIELD[col.id]
-      fields[col.id] = (problem[field] as string[]).join(", ")
+      fields[col.id] = (problem[field] as string[])
+        .map((id) => resolveDimensionLabel(col.id, id, customByColumn, selfDiscoveryItems))
+        .join(", ")
     }
     setEditFields(fields)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [problem])
 
   const saveDebounced = useDebouncedCallback((fields: Record<string, string>) => {
@@ -60,7 +67,10 @@ export function EditProblemDialog({ problem, onClose, title = "Edit Problem", sh
     for (const col of brainstormColumns) {
       const field = COLUMN_TO_FIELD[col.id]
       const value = fields[col.id]?.trim()
-      ;(patch as Record<string, unknown>)[field] = value ? value.split(",").map((s) => s.trim()).filter(Boolean) : []
+      const tokens = value ? value.split(",").map((s) => s.trim()).filter(Boolean) : []
+      ;(patch as Record<string, unknown>)[field] = tokens
+        .map((token) => resolveOrCreate(col.id, token))
+        .filter(Boolean)
     }
     dispatch.problems.update({ id: problem.id, patch })
   }, 500)

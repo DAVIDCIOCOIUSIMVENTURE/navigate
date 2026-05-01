@@ -17,6 +17,7 @@ import type { AppDispatch } from "@/store"
 import { useRouter } from "next/navigation"
 import { brainstormColumns } from "@/data/brainstormData"
 import type { ProblemPatch } from "@/store/problems-model"
+import { useResolveOrCreate } from "@/lib/dimension-labels"
 
 const COLUMN_TO_FIELD: Record<string, keyof ProblemPatch> = {
   "customers": "customers",
@@ -37,6 +38,7 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
   const [description, setDescription] = useState("")
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
+  const resolveOrCreate = useResolveOrCreate()
 
   function handleClose() {
     onOpenChange(false)
@@ -51,7 +53,11 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
       const field = COLUMN_TO_FIELD[col.id]
       const value = fields[col.id]?.trim()
       if (value) {
-        ;(patch as Record<string, string[]>)[field] = value.split(",").map((s) => s.trim()).filter(Boolean)
+        const tokens = value.split(",").map((s) => s.trim()).filter(Boolean)
+        const ids = tokens.map((token) => resolveOrCreate(col.id, token)).filter(Boolean)
+        if (ids.length > 0) {
+          ;(patch as Record<string, string[]>)[field] = ids
+        }
       }
     }
     const trimmedDescription = description.trim()

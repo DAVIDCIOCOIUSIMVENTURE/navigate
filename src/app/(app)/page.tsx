@@ -31,9 +31,10 @@ import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 
 export default function DashboardPage() {
-  const triggers = useSelector((state: RootState) => state.problemTriggers.triggers)
+  const triggers = useSelector((state: RootState) => state.selfDiscoveryItems.items)
   const problems = useSelector((state: RootState) => state.problems.problems)
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
+  const customByColumn = useSelector((state: RootState) => state.customBrainstormItems.byColumn)
   const [expandedProblemIds, setExpandedProblemIds] = useState<Set<number>>(new Set())
   const [problemDialogOpen, setProblemDialogOpen] = useState(false)
   const [solutionDialogOpen, setSolutionDialogOpen] = useState(false)
@@ -158,7 +159,7 @@ export default function DashboardPage() {
                   const linkedSolutions = solutions.filter((s) => s.problemId === p.id)
                   const hasSolutions = linkedSolutions.length > 0
                   const expanded = expandedProblemIds.has(p.id)
-                  const label = p.description || getProblemLabel(p) || `Problem #${p.id}`
+                  const label = p.description || getProblemLabel(p, customByColumn, triggers) || `Problem #${p.id}`
                   return (
                     <div key={p.id} className="rounded-md border border-border">
                       <div className="flex items-center gap-2 px-3 py-2">

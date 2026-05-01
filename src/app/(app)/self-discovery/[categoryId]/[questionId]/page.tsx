@@ -49,7 +49,7 @@ import { getSelfDiscoveryCategoryIcon } from "@/config/navigation"
 import { SELF_DISCOVERY_CATEGORIES, type SuggestionItem } from "@/data/selfDiscoveryData"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
-import type { ProblemTrigger } from "@/store/problem-triggers-model"
+import type { SelfDiscoveryItem } from "@/store/self-discovery-items-model"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -189,7 +189,7 @@ export default function QuestionPage() {
     const category = SELF_DISCOVERY_CATEGORIES.find(c => c.url === categoryId) ?? null
     const question = category?.questions.find(q => q.url === questionId) ?? null
     const [answers, setAnswers] = useState<{ [key: string]: string }>({})
-    const [problemTriggerToDelete, setProblemTriggerToDelete] = useState<ProblemTrigger | null>(null)
+    const [problemTriggerToDelete, setProblemTriggerToDelete] = useState<SelfDiscoveryItem | null>(null)
     const [mounted, setMounted] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")
     const deferredQuery = useDeferredValue(searchQuery)
@@ -218,19 +218,26 @@ export default function QuestionPage() {
         return filterSuggestionItems(question.suggestions, deferredQuery)
     }, [question?.suggestions, deferredQuery])
 
-    const triggers = useSelector((state: RootState) => state.problemTriggers.triggers)
+    const triggers = useSelector((state: RootState) => state.selfDiscoveryItems.items)
+    const allProblems = useSelector((state: RootState) => state.problems.problems)
     const dispatch = useDispatch<AppDispatch>()
+
+    // Count how many saved Problems reference the trigger queued for deletion,
+    // so we can warn the user before they remove it.
+    const referencingProblemsCount = problemTriggerToDelete
+        ? allProblems.filter((p) => p.you?.includes(problemTriggerToDelete.id)).length
+        : 0
 
     const handleAddAnswer = () => {
         const answer = answers[question?.url || '']
         if (!answer || !question) return
 
-        dispatch.problemTriggers.addTrigger({ title: answer, questionUrl: question.url })
+        dispatch.selfDiscoveryItems.addItem({ title: answer, questionUrl: question.url })
         setAnswers(prev => ({ ...prev, [question.url]: '' }))
     }
 
     const handleDeleteTrigger = (triggerId: string) => {
-        dispatch.problemTriggers.removeTrigger(triggerId)
+        dispatch.selfDiscoveryItems.removeItem(triggerId)
         setProblemTriggerToDelete(null)
     }
 
@@ -274,9 +281,9 @@ export default function QuestionPage() {
         if (!question) return
         const existing = triggers.find(t => t.questionUrl === question.url && t.suggestionId === suggestionId)
         if (existing) {
-            dispatch.problemTriggers.removeTrigger(existing.id)
+            dispatch.selfDiscoveryItems.removeItem(existing.id)
         } else {
-            dispatch.problemTriggers.addTrigger({ title: label, questionUrl: question.url, suggestionId })
+            dispatch.selfDiscoveryItems.addItem({ title: label, questionUrl: question.url, suggestionId })
         }
     }
 
@@ -450,9 +457,11 @@ export default function QuestionPage() {
             <Dialog open={!!problemTriggerToDelete} onOpenChange={() => setProblemTriggerToDelete(null)}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Delete Idea Trigger</DialogTitle>
+                        <DialogTitle>Delete this self-discovery item?</DialogTitle>
                         <DialogDescription>
-                            Are you sure you want to delete this idea trigger? This action cannot be undone.
+                            {referencingProblemsCount > 0
+                                ? `This item is referenced by ${referencingProblemsCount} saved problem${referencingProblemsCount === 1 ? "" : "s"}. Those problems will keep the reference and show "(deleted item)" in its place. This action cannot be undone.`
+                                : "Are you sure you want to delete this item? This action cannot be undone."}
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>

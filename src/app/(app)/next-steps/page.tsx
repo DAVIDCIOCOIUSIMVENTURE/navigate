@@ -17,6 +17,8 @@ export default function NextStepsPage() {
   const router = useRouter()
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
   const problems = useSelector((state: RootState) => state.problems.problems)
+  const customByColumn = useSelector((state: RootState) => state.customBrainstormItems.byColumn)
+  const selfDiscoveryItems = useSelector((state: RootState) => state.selfDiscoveryItems.items)
   const size = useContainerSize()
   const roomy = size !== "narrow"
 
@@ -66,7 +68,7 @@ export default function NextStepsPage() {
           ) : (
             <div className="flex flex-col gap-3">
               {problemsWithSolutions.map(({ problem, solutions: linked }) => {
-                const label = problem.description || getProblemLabel(problem) || `Problem #${problem.id}`
+                const label = problem.description || getProblemLabel(problem, customByColumn, selfDiscoveryItems) || `Problem #${problem.id}`
                 return (
                   <div key={problem.id} className="rounded-lg border overflow-hidden">
                     <div className="flex items-center gap-2 px-4 py-2.5 bg-muted/40 border-b">

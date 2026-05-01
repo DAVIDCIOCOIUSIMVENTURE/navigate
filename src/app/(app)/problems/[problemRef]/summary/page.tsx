@@ -13,6 +13,7 @@ import {
 import { useProblemValidation, getAdjacentSteps } from "../context"
 import type { ValidationMetric } from "@/types/idea"
 import { useContainerSize } from "@/context/container-size-context"
+import { useDimensionLabels } from "@/lib/dimension-labels"
 import { cn } from "@/lib/utils"
 
 const sectionToneClasses = {
@@ -50,13 +51,14 @@ function SectionHeader({ icon: Icon, label, tone = "primary" }: { icon: React.El
   )
 }
 
-function ChipList({ items }: { items: string[] }) {
-  if (items.length === 0) return <span className="text-xs text-muted-foreground/60 italic">None added</span>
+function ChipList({ columnId, ids }: { columnId: string; ids: string[] }) {
+  const labels = useDimensionLabels(columnId, ids)
+  if (ids.length === 0) return <span className="text-xs text-muted-foreground/60 italic">None added</span>
   return (
     <div className="flex flex-wrap gap-1">
-      {items.map((t) => (
-        <span key={t} className="inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-sm border border-border">
-          {t}
+      {ids.map((id, i) => (
+        <span key={id} className="inline-flex items-center rounded-md bg-white/80 px-2 py-0.5 text-sm border border-border">
+          {labels[i]}
         </span>
       ))}
     </div>
@@ -295,13 +297,13 @@ export default function SummaryPage() {
                 )}
                 <dl className="flex flex-col gap-3">
                   <Field label="Customer">
-                    <ChipList items={problem.customers} />
+                    <ChipList columnId="customers" ids={problem.customers} />
                   </Field>
                   <Field label="Context">
-                    <ChipList items={problem.contexts} />
+                    <ChipList columnId="contexts" ids={problem.contexts} />
                   </Field>
                   <Field label="Problem">
-                    <ChipList items={problem.problems} />
+                    <ChipList columnId="problems" ids={problem.problems} />
                   </Field>
                 </dl>
               </>

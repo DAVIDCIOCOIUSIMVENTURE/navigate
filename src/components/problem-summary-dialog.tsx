@@ -9,12 +9,13 @@ import {
   CheckCircle2, XCircle, Clock, AlertTriangle,
 } from "lucide-react"
 import type { ValidationStatus, ExistingSolutionItem, ImpactItem, DecisionLevel, ValidationAssessment } from "@/types/idea"
+import { useDimensionLabels } from "@/lib/dimension-labels"
 
 /* ------------------------------------------------------------------ */
 /*  Normalised data shape                                              */
 /* ------------------------------------------------------------------ */
 
-export type ProblemSummaryTag = { label: string; values: string[] }
+export type ProblemSummaryTag = { label: string; columnId: string; ids: string[] }
 
 export type ProblemSummaryData = {
   /** Main problem text / description */
@@ -75,6 +76,11 @@ function Section({ title, children }: { title: string; children: React.ReactNode
       {children}
     </div>
   )
+}
+
+function TagValues({ columnId, ids }: { columnId: string; ids: string[] }) {
+  const labels = useDimensionLabels(columnId, ids)
+  return <p className="text-sm">{labels.join(", ")}</p>
 }
 
 function formatLevel(level: DecisionLevel | undefined): string | null {
@@ -142,7 +148,7 @@ function AssessmentSection({ assessment }: { assessment: ValidationAssessment })
 export function ProblemSummaryDialog({ open, onOpenChange, data }: ProblemSummaryDialogProps) {
   if (!data) return null
 
-  const hasTags = data.tags?.some((t) => t.values.length > 0)
+  const hasTags = data.tags?.some((t) => t.ids.length > 0)
 
   const emotionalImpactText = Array.isArray(data.emotionalImpact)
     ? data.emotionalImpact.filter(Boolean).join(", ")
@@ -165,9 +171,9 @@ export function ProblemSummaryDialog({ open, onOpenChange, data }: ProblemSummar
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Left column: tags */}
             <div className="flex flex-col gap-3">
-              {hasTags && data.tags!.filter((t) => t.values.length > 0).map((tag) => (
+              {hasTags && data.tags!.filter((t) => t.ids.length > 0).map((tag) => (
                 <Section key={tag.label} title={tag.label}>
-                  <p className="text-sm">{tag.values.join(", ")}</p>
+                  <TagValues columnId={tag.columnId} ids={tag.ids} />
                 </Section>
               ))}
             </div>

@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useProblemValidation, getAdjacentSteps } from "../context"
 import { CUSTOMER_CASE_STUDIES } from "./case-studies"
+import { DimensionChips } from "@/components/dimension-chips"
 import { Users, Target, MapPin, Briefcase, Filter } from "lucide-react"
 
 export default function CustomerSegmentPage() {
@@ -48,13 +49,7 @@ export default function CustomerSegmentPage() {
             <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
               Defined Segments
             </p>
-            <div className="flex flex-wrap gap-1.5">
-              {customerSegments.map((segment) => (
-                <span key={segment} className="rounded-md bg-muted px-2.5 py-1 text-md">
-                  {segment}
-                </span>
-              ))}
-            </div>
+            <DimensionChips columnId="customers" ids={customerSegments} />
           </div>
         )}
 
