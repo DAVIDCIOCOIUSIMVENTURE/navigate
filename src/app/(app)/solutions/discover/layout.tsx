@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Fragment, useEffect, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
@@ -34,7 +34,7 @@ function Stepper({
         const locked = STEPS_REQUIRING_PROBLEM.has(item.path) && !problemSelected
         const isClickable = !locked
         return (
-          <div key={item.path} className="flex items-center flex-1 last:flex-none min-w-0">
+          <Fragment key={item.path}>
             <button
               type="button"
               disabled={!isClickable}
@@ -78,7 +78,7 @@ function Stepper({
                 )}
               />
             )}
-          </div>
+          </Fragment>
         )
       })}
     </div>
@@ -290,20 +290,22 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-3 flex-1 w-full min-h-0">
       {isWide ? (
-        <Card>
-          <CardContent className="px-6 py-4 flex items-center gap-4">
-            <div className="flex-1 min-w-0">
+        <div className="flex flex-wrap items-center gap-3">
+          <Card className="flex-1">
+            <CardContent className="px-6 py-4">
               <Stepper
                 pathname={pathname}
                 problemSelected={problemSelected}
                 onNavigate={(path) => router.push(path)}
               />
-            </div>
+            </CardContent>
+          </Card>
+          <div className="flex flex-wrap items-center gap-2">
             {actionButtons}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       ) : (
-        <div className="flex flex-col gap-3">
+        <>
           <MobileStepper
             pathname={pathname}
             problemSelected={problemSelected}
@@ -312,7 +314,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           <div className="flex flex-wrap items-center gap-2">
             {actionButtons}
           </div>
-        </div>
+        </>
       )}
 
       <div className="flex-1 min-w-0 min-h-0 overflow-y-auto">{mounted ? children : null}</div>
