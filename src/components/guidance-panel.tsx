@@ -1,10 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useSelector, useDispatch } from "react-redux"
-import type { RootState, AppDispatch } from "@/store"
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import {
@@ -398,24 +395,12 @@ export function GuidancePanel({
   initialTopic?: string
 }) {
   const [openItem, setOpenItem] = useState(initialTopic ?? guidanceItems[0].id)
-  const dispatch = useDispatch<AppDispatch>()
-  const hideBrainstormGuidance = useSelector((state: RootState) => state.settings.hideBrainstormGuidance)
 
   useEffect(() => {
     if (initialTopic) {
       setOpenItem(initialTopic)
     }
   }, [initialTopic])
-
-  // Topics that support "don't show on page load"
-  const topicHasAutoOpen: Record<string, { label: string; hidden: boolean; toggle: () => void }> = {
-    "problem-discovery": {
-      label: "Don't show this when I open the brainstorm page",
-      hidden: hideBrainstormGuidance,
-      toggle: () => dispatch.settings.setHideBrainstormGuidance(!hideBrainstormGuidance),
-    },
-  }
-  const autoOpenConfig = topicHasAutoOpen[openItem]
 
   return (
     <div className="flex h-full flex-col bg-background">
@@ -467,18 +452,6 @@ export function GuidancePanel({
             </Accordion>
           </ScrollArea>
         </div>
-        {autoOpenConfig && (
-          <div className="flex items-center gap-2 px-4 py-3 border-t shrink-0">
-            <Checkbox
-              id="hide-guidance"
-              checked={autoOpenConfig.hidden}
-              onCheckedChange={() => autoOpenConfig.toggle()}
-            />
-            <label htmlFor="hide-guidance" className="text-sm text-muted-foreground cursor-pointer select-none">
-              {autoOpenConfig.label}
-            </label>
-          </div>
-        )}
       </div>
     </div>
   )

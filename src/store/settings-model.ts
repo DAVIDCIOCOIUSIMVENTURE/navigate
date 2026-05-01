@@ -13,7 +13,6 @@ interface SettingsState {
   fullView: boolean
   brainstormSelected: string[]
   brainstormMode: BrainstormMode
-  hideBrainstormGuidance: boolean
   journalOpen: boolean
   brainstormBuilderStep: BrainstormBuilderStep
   brainstormBuilderActiveColumnId: string | null
@@ -27,7 +26,6 @@ const defaultState: SettingsState = {
   fullView: false,
   brainstormSelected: [],
   brainstormMode: "builder",
-  hideBrainstormGuidance: false,
   journalOpen: false,
   brainstormBuilderStep: "pick",
   brainstormBuilderActiveColumnId: null,
@@ -69,11 +67,6 @@ export const settings = createModel<RootModel>()({
     },
     setBrainstormMode(state, brainstormMode: BrainstormMode) {
       const next = { ...state, brainstormMode }
-      saveToStorage(next)
-      return next
-    },
-    setHideBrainstormGuidance(state, hideBrainstormGuidance: boolean) {
-      const next = { ...state, hideBrainstormGuidance }
       saveToStorage(next)
       return next
     },
@@ -143,9 +136,6 @@ export const settings = createModel<RootModel>()({
             ? "builder"
             : stored.brainstormMode
           dispatch.settings.setBrainstormMode(mode)
-        }
-        if (stored.hideBrainstormGuidance) {
-          dispatch.settings.setHideBrainstormGuidance(stored.hideBrainstormGuidance)
         }
         if (typeof stored.journalOpen === "boolean") {
           dispatch.settings.setJournalOpen(stored.journalOpen)

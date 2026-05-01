@@ -66,7 +66,6 @@ import { AddCustomItemDialog } from "@/components/add-custom-item-dialog"
 import { ManageCustomItemsDialog } from "@/components/manage-custom-items-dialog"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { cn } from "@/lib/utils"
-import { useGuidance } from "@/context/guidance-context"
 import { useContainerSize } from "@/context/container-size-context"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import {
@@ -945,17 +944,8 @@ function ProblemBuilder({
 export default function BrainstormPage() {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
-  const { openGuidance } = useGuidance()
   const [mounted, setMounted] = useState(false)
   useEffect(() => { setMounted(true) }, [])
-  const hideBrainstormGuidance = useSelector((state: RootState) => state.settings.hideBrainstormGuidance)
-
-  // Auto-open guidance dialog on first visit
-  useEffect(() => {
-    if (mounted && !hideBrainstormGuidance) {
-      openGuidance("problem-discovery")
-    }
-  }, [mounted]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const savedProblems = useSelector((state: RootState) =>
     state.problems.problems.filter((p) => p.source === "brainstorm")
