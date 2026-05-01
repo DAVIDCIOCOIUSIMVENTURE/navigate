@@ -265,7 +265,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                 const statusConfig = status ? STATUS_CONFIG[status] : null
                 return (
                   <TableRow key={solution.id}>
-                    <TableCell className="text-muted-foreground">{originalIndex + 1}</TableCell>
+                    <TableCell>{originalIndex + 1}</TableCell>
                     <TableCell className="text-sm">
                       <div className="flex items-center gap-2">
                         <Lightbulb className="h-3.5 w-3.5 text-primary shrink-0" />
@@ -276,17 +276,17 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="text-sm text-muted-foreground">
+                    <TableCell className="text-sm">
                       <div className="flex items-center gap-2">
                         <Target className="h-3.5 w-3.5 text-primary shrink-0" />
                         {problemDescription ? (
                           <span className="line-clamp-2">{problemDescription}</span>
                         ) : (
-                          <span>-</span>
+                          <span className="text-muted-foreground">-</span>
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
+                    <TableCell className="text-sm whitespace-nowrap">
                       {new Date(solution.createdAt).toLocaleDateString("en-GB", {
                         day: "numeric", month: "short", year: "numeric",
                       })}
@@ -308,7 +308,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  className="h-7 text-muted-foreground hover:text-destructive"
+                                  className="h-7 hover:text-destructive"
                                   aria-label="Delete solution"
                                 >
                                   <Trash2 className="h-3.5 w-3.5" />
@@ -321,7 +321,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                             <Button
                               variant="ghost"
                               size="sm"
-                              className="h-7 text-muted-foreground"
+                              className="h-7"
                               onClick={() => setEditingSolution(solution)}
                               aria-label="Edit solution"
                             >

@@ -37,12 +37,10 @@ import {
   Check,
   ChevronDown,
   ChevronRight,
-  Compass,
   Eye,
   EyeOff,
   Grid3X3,
   Layers,
-  MapPin,
   Maximize2,
   Minimize2,
   Pencil,
@@ -52,8 +50,6 @@ import {
   Search,
   Settings,
   Trash2,
-  TriangleAlert,
-  Users,
   X,
 } from "lucide-react"
 import { Textarea } from "@/components/ui/textarea"
@@ -61,7 +57,8 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { brainstormColumns, type BrainstormItem, type BrainstormColumn } from "./data"
 import type { Problem } from "@/store/problems-model"
 import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
-import { resolveDimensionLabel, useResolveOrCreate } from "@/lib/dimension-labels"
+import { resolveDimensionLabel } from "@/lib/dimension-labels"
+import { DimensionPicker } from "@/components/dimension-picker"
 import { AddCustomItemDialog } from "@/components/add-custom-item-dialog"
 import { ManageCustomItemsDialog } from "@/components/manage-custom-items-dialog"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
@@ -75,19 +72,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-const COLUMN_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
-  "customers": Users,
-  "contexts": MapPin,
-  "problems": TriangleAlert,
-  "you": Compass,
-}
-
-const COLUMN_COLORS: Record<string, { icon: string; border: string; bg: string; bgIdle: string; bgExplored: string; iconBg: string; pill: string }> = {
-  "customers": { icon: "text-emerald-500", border: "border-t-emerald-500", bg: "bg-emerald-500/10", bgIdle: "bg-emerald-500/5 hover:bg-emerald-500/10", bgExplored: "bg-emerald-500/10 hover:bg-emerald-500/20", iconBg: "bg-emerald-500", pill: "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400" },
-  "contexts": { icon: "text-blue-500", border: "border-t-blue-500", bg: "bg-blue-500/10", bgIdle: "bg-blue-500/5 hover:bg-blue-500/10", bgExplored: "bg-blue-500/10 hover:bg-blue-500/20", iconBg: "bg-blue-500", pill: "bg-blue-500/10 text-blue-700 dark:text-blue-400" },
-  "problems": { icon: "text-rose-500", border: "border-t-rose-500", bg: "bg-rose-500/10", bgIdle: "bg-rose-500/5 hover:bg-rose-500/10", bgExplored: "bg-rose-500/10 hover:bg-rose-500/20", iconBg: "bg-rose-500", pill: "bg-rose-500/10 text-rose-700 dark:text-rose-400" },
-  "you": { icon: "text-amber-500", border: "border-t-amber-500", bg: "bg-amber-500/10", bgIdle: "bg-amber-500/5 hover:bg-amber-500/10", bgExplored: "bg-amber-500/10 hover:bg-amber-500/20", iconBg: "bg-amber-500", pill: "bg-amber-500/10 text-amber-700 dark:text-amber-400" },
-}
+import { DIMENSION_ICONS as COLUMN_ICONS, DIMENSION_COLORS as COLUMN_COLORS } from "@/lib/dimension-visuals"
 
 const COLUMN_DESCRIPTIONS: Record<string, string> = {
   "customers": "Who experiences this problem?",
@@ -220,16 +205,20 @@ function ProblemFormDialog({
   open,
   onOpenChange,
   title,
-  fields,
-  onFieldsChange,
+  description,
+  onDescriptionChange,
+  idsByColumn,
+  onColumnChange,
   columns,
   actions,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
   title: string
-  fields: Record<string, string>
-  onFieldsChange: (fields: Record<string, string>) => void
+  description: string
+  onDescriptionChange: (value: string) => void
+  idsByColumn: Record<string, string[]>
+  onColumnChange: (columnId: string, ids: string[]) => void
   columns: BrainstormColumn[]
   actions?: ReactNode
 }) {
@@ -243,28 +232,24 @@ function ProblemFormDialog({
         <div className="flex flex-col gap-4 py-4">
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium" htmlFor={`${title}-description`}>
-              Problem Description
+              Problem description
             </label>
             <Textarea
               id={`${title}-description`}
-              value={fields["description"] ?? ""}
-              onChange={(e) => onFieldsChange({ ...fields, description: e.target.value })}
+              value={description}
+              onChange={(e) => onDescriptionChange(e.target.value)}
               placeholder="Describe the problem..."
               rows={3}
             />
           </div>
           {columns.map((column) => (
-            <div key={column.id} className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium" htmlFor={`${title}-${column.id}`}>
-                {column.title}
-              </label>
-              <Input
-                id={`${title}-${column.id}`}
-                value={fields[column.id] ?? ""}
-                onChange={(e) => onFieldsChange({ ...fields, [column.id]: e.target.value })}
-                placeholder={`e.g. ${column.items[0]?.label}, ${column.items[1]?.label}`}
-              />
-            </div>
+            <DimensionPicker
+              key={column.id}
+              columnId={column.id}
+              ids={idsByColumn[column.id] ?? []}
+              onChange={(ids) => onColumnChange(column.id, ids)}
+              label={column.title}
+            />
           ))}
         </div>
         {actions && <div className="flex justify-end gap-2">{actions}</div>}
@@ -1036,10 +1021,12 @@ export default function BrainstormPage() {
   }, [allColumns, filteredColumnsMap])
 
   const [editingProblem, setEditingProblem] = useState<Problem | null>(null)
-  const [editFields, setEditFields] = useState<Record<string, string>>({})
+  const [editDescription, setEditDescription] = useState("")
+  const [editIdsByColumn, setEditIdsByColumn] = useState<Record<string, string[]>>({})
   const initRef = useRef(false)
   const [saveDialogOpen, setSaveDialogOpen] = useState(false)
-  const [saveFields, setSaveFields] = useState<Record<string, string>>({})
+  const [saveDescription, setSaveDescription] = useState("")
+  const [saveIdsByColumn, setSaveIdsByColumn] = useState<Record<string, string[]>>({})
   const [nextStepDialogOpen, setNextStepDialogOpen] = useState(false)
   const [lastSavedProblemId, setLastSavedProblemId] = useState<number | null>(null)
   const [tableDrawerOpen, setTableDrawerOpen] = useState(false)
@@ -1049,9 +1036,8 @@ export default function BrainstormPage() {
   const fullView = useSelector((state: RootState) => state.settings.fullView)
   const brainstormMode = useSelector((state: RootState) => state.settings.brainstormMode)
   const containerSize = useContainerSize()
-  const resolveOrCreate = useResolveOrCreate()
-  // Columns the user can edit via free-text dialogs (excludes "you", which is
-  // populated only from self-discovery selections).
+  // Columns the user can edit (excludes "you", which is populated only from
+  // self-discovery selections).
   const editableColumns = useMemo<BrainstormColumn[]>(
     () => allColumns.filter((c) => c.id !== "you"),
     [allColumns]
@@ -1086,26 +1072,16 @@ export default function BrainstormPage() {
     return () => document.removeEventListener("keydown", handler)
   }, [fullView, dispatch.settings])
 
-  const saveDebounced = useDebouncedCallback((fields: Record<string, string>) => {
+  const saveDescriptionDebounced = useDebouncedCallback((value: string) => {
     if (!editingProblem) return
-    const patch: Partial<Pick<Problem, "description" | "customers" | "contexts" | "problems">> = {
-      description: fields["description"] ?? "",
-    }
-    // Only Customer/Context/Problem are editable here; "you" is preserved on the existing problem.
-    for (const column of editableColumns) {
-      const field = COLUMN_TO_FIELD[column.id] as "customers" | "contexts" | "problems"
-      const value = fields[column.id]?.trim()
-      const tokens = value ? value.split(",").map((s) => s.trim()).filter(Boolean) : []
-      patch[field] = tokens.map((token) => resolveOrCreate(column.id, token)).filter(Boolean)
-    }
-    dispatch.problems.update({ id: editingProblem.id, patch })
+    dispatch.problems.update({ id: editingProblem.id, patch: { description: value } })
   }, 500)
 
   useEffect(() => {
     if (!initRef.current) { initRef.current = true; return }
-    saveDebounced(editFields)
+    saveDescriptionDebounced(editDescription)
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editFields])
+  }, [editDescription])
 
   const toggleItem = (id: string) => {
     setSelected((prev) => {
@@ -1124,15 +1100,12 @@ export default function BrainstormPage() {
   const totalSelected = selected.size
 
   const openSaveDialog = () => {
-    const fields: Record<string, string> = { description: "" }
+    const ids: Record<string, string[]> = {}
     for (const column of editableColumns) {
-      const allIds = collectAllIds(column.items)
-      const selectedLabels = allIds
-        .filter((id) => selected.has(id))
-        .map((id) => resolveDimensionLabel(column.id, id, customByColumn, triggers))
-      fields[column.id] = selectedLabels.join(", ")
+      ids[column.id] = collectAllIds(column.items).filter((id) => selected.has(id))
     }
-    setSaveFields(fields)
+    setSaveDescription("")
+    setSaveIdsByColumn(ids)
     setSaveDialogOpen(true)
   }
 
@@ -1140,9 +1113,7 @@ export default function BrainstormPage() {
     const patch: Partial<Pick<Problem, "customers" | "contexts" | "problems" | "you">> = {}
     for (const column of editableColumns) {
       const field = COLUMN_TO_FIELD[column.id] as "customers" | "contexts" | "problems"
-      const value = saveFields[column.id]?.trim()
-      const tokens = value ? value.split(",").map((s) => s.trim()).filter(Boolean) : []
-      patch[field] = tokens.map((token) => resolveOrCreate(column.id, token)).filter(Boolean)
+      patch[field] = saveIdsByColumn[column.id] ?? []
     }
     // Carry the live "you" selection straight through as ids: it never goes through the dialog.
     const youColumnDef = allColumns.find((c) => c.id === "you")
@@ -1150,7 +1121,7 @@ export default function BrainstormPage() {
       const youIds = collectAllIds(youColumnDef.items).filter((id) => selected.has(id))
       patch.you = youIds
     }
-    const newProblem = await dispatch.problems.create({ ...patch, source: "brainstorm", description: saveFields["description"]?.trim() ?? "" })
+    const newProblem = await dispatch.problems.create({ ...patch, source: "brainstorm", description: saveDescription.trim() })
     clearAll()
     setSaveDialogOpen(false)
     setLastSavedProblemId(newProblem.id)
@@ -1159,15 +1130,21 @@ export default function BrainstormPage() {
 
   const openEditDialog = (problem: Problem) => {
     initRef.current = false
-    const fields: Record<string, string> = { description: problem.description ?? "" }
+    const ids: Record<string, string[]> = {}
     for (const column of editableColumns) {
       const field = COLUMN_TO_FIELD[column.id]
-      fields[column.id] = problem[field]
-        .map((id) => resolveDimensionLabel(column.id, id, customByColumn, triggers))
-        .join(", ")
+      ids[column.id] = [...(problem[field] as string[])]
     }
-    setEditFields(fields)
+    setEditDescription(problem.description ?? "")
+    setEditIdsByColumn(ids)
     setEditingProblem(problem)
+  }
+
+  const updateEditColumn = (columnId: string, ids: string[]) => {
+    if (!editingProblem) return
+    setEditIdsByColumn((prev) => ({ ...prev, [columnId]: ids }))
+    const field = COLUMN_TO_FIELD[columnId] as "customers" | "contexts" | "problems"
+    dispatch.problems.update({ id: editingProblem.id, patch: { [field]: ids } })
   }
 
   if (!mounted) {
@@ -1514,7 +1491,7 @@ export default function BrainstormPage() {
                             variant="ghost"
                             size="sm"
                             className="h-7 text-muted-foreground hover:text-foreground"
-                            onClick={() => router.push(`/problems/${problem.id}/introduction`)}
+                            onClick={() => router.push(`/problems/${problem.id}/validation/introduction`)}
                             aria-label="Validate problem"
                           >
                             <ArrowRight className="h-3.5 w-3.5" />
@@ -1535,8 +1512,10 @@ export default function BrainstormPage() {
         open={saveDialogOpen}
         onOpenChange={(open) => { if (!open) setSaveDialogOpen(false) }}
         title="Save Problem"
-        fields={saveFields}
-        onFieldsChange={setSaveFields}
+        description={saveDescription}
+        onDescriptionChange={setSaveDescription}
+        idsByColumn={saveIdsByColumn}
+        onColumnChange={(columnId, ids) => setSaveIdsByColumn((prev) => ({ ...prev, [columnId]: ids }))}
         columns={editableColumns}
         actions={
           <>
@@ -1550,8 +1529,10 @@ export default function BrainstormPage() {
         open={editingProblem !== null}
         onOpenChange={(open) => { if (!open) setEditingProblem(null) }}
         title="Edit Problem"
-        fields={editFields}
-        onFieldsChange={setEditFields}
+        description={editDescription}
+        onDescriptionChange={setEditDescription}
+        idsByColumn={editIdsByColumn}
+        onColumnChange={updateEditColumn}
         columns={editableColumns}
       />
 
@@ -1586,7 +1567,7 @@ export default function BrainstormPage() {
               onClick={() => {
                 setNextStepDialogOpen(false)
                 if (lastSavedProblemId !== null) {
-                  router.push(`/problems/${lastSavedProblemId}/introduction`)
+                  router.push(`/problems/${lastSavedProblemId}/validation/introduction`)
                 }
               }}
               className="gap-2"

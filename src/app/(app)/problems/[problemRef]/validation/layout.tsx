@@ -2,12 +2,10 @@
 
 import { useState } from "react"
 import { useParams, usePathname, useRouter } from "next/navigation"
-import { useSelector } from "react-redux"
-import type { RootState } from "@/store"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
-import { ProblemSummaryDialog, type ProblemSummaryData } from "@/components/problem-summary-dialog"
+import { ProblemHubDialog } from "@/components/problem-hub/problem-hub-dialog"
 import { ProblemValidationProvider, useProblemValidation, NAV_ITEMS } from "./context"
 import {
   GitFork, Clock, ShieldCheck, FileText, LayoutTemplate, ClipboardCheck, Users, ChevronDown, Eye, Search,
@@ -71,30 +69,12 @@ function ViewProblemButton({ onClick }: { onClick: () => void }) {
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
-  const { problemRef, problemId } = useProblemValidation()
-  const problem = useSelector((state: RootState) =>
-    state.problems.problems.find((p) => p.id === problemId)
-  ) ?? null
+  const { problemRef } = useProblemValidation()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const isWide = useContainerSize() === "wide"
 
-  const summaryData: ProblemSummaryData | null = problem ? {
-    text: problem.description,
-    tags: [
-      { label: "Customer", columnId: "customers", ids: problem.customers },
-      { label: "Context", columnId: "contexts", ids: problem.contexts },
-      { label: "Problem", columnId: "problems", ids: problem.problems },
-    ],
-    context: problem.contextWhen,
-    emotionalImpact: problem.emotionalImpact,
-    existingSolutions: problem.existingSolutions,
-    validationStatus: problem.validationStatus,
-    reason: problem.validationReason,
-    assessment: problem.validationAssessment,
-  } : null
-
-  const base = `/problems/${problemRef}`
+  const base = `/problems/${problemRef}/validation`
 
   const activeItem = NAV_ITEMS.find((item) => pathname === `${base}/${item.path}`)
   const ActiveIcon = activeItem ? (NAV_ICONS[activeItem.path] ?? FileText) : ClipboardCheck
@@ -157,7 +137,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       <div className="flex-1 min-w-0">{children}</div>
     </div>
 
-    <ProblemSummaryDialog open={dialogOpen} onOpenChange={setDialogOpen} data={summaryData} />
+    <ProblemHubDialog open={dialogOpen} onOpenChange={setDialogOpen} problemRef={problemRef} />
     </div>
   )
 }

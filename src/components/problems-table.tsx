@@ -307,7 +307,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                           <div className="w-6 h-6" />
                         )}
                       </TableCell>
-                      <TableCell className="text-muted-foreground">{originalIndex + 1}</TableCell>
+                      <TableCell>{originalIndex + 1}</TableCell>
                       <TableCell className="text-sm">
                         <div className="flex items-center gap-2">
                           <Target className="h-3.5 w-3.5 text-primary shrink-0" />
@@ -323,10 +323,10 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                           )}
                         </div>
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground capitalize">
+                      <TableCell className="text-sm capitalize">
                         {problem.source}
                       </TableCell>
-                      <TableCell className="text-sm text-muted-foreground whitespace-nowrap">
+                      <TableCell className="text-sm whitespace-nowrap">
                         {new Date(problem.createdAt).toLocaleDateString("en-GB", {
                           day: "numeric", month: "short", year: "numeric",
                         })}
@@ -346,7 +346,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="h-7 text-muted-foreground"
+                                className="h-7"
                                 onClick={() => setEditingProblem(problem)}
                                 aria-label="Edit problem"
                               >
@@ -358,7 +358,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                   <Button
                                     variant="ghost"
                                     size="sm"
-                                    className="h-7 text-muted-foreground hover:text-destructive"
+                                    className="h-7 hover:text-destructive"
                                     aria-label="Delete problem"
                                   >
                                     <Trash2 className="h-3.5 w-3.5" />
@@ -373,7 +373,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                           <Button
                             size="sm"
                             className="h-7"
-                            onClick={() => router.push(`/problems/${problem.id}/introduction`)}
+                            onClick={() => router.push(`/problems/${problem.id}/validation/introduction`)}
                             aria-label="Validate problem"
                           >
                             <ArrowRight className="h-3.5 w-3.5" />
