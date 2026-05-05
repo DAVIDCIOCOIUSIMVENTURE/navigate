@@ -135,7 +135,7 @@ function SolutionsSection({ problemId }: { problemId: number }) {
                   variant="ghost"
                   size="sm"
                   className="h-7"
-                  onClick={() => router.push(`/solutions/${s.id}/validate/introduction`)}
+                  onClick={() => router.push(`/solutions/${s.id}`)}
                   aria-label="Open solution"
                 >
                   <ArrowRight className="h-3.5 w-3.5" />

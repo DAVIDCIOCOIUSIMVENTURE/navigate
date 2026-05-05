@@ -5,11 +5,12 @@ import { useParams, usePathname, useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
-import { ProblemSummaryDialog, type ProblemSummaryData } from "@/components/problem-summary-dialog"
+import { ProblemHubDialog } from "@/components/problem-hub/problem-hub-dialog"
+import { SolutionHubDialog } from "@/components/solution-hub/solution-hub-dialog"
 import { SolutionValidationProvider, useSolutionValidation, NAV_ITEMS } from "./context"
 import {
   ClipboardCheck, Gauge, Target, Coins, Clock, CheckCircle2, LayoutTemplate,
-  FileText, ChevronDown, Eye,
+  FileText, ChevronDown, Eye, Lightbulb,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
@@ -62,12 +63,18 @@ function NavItems({
   )
 }
 
-function ViewProblemButton({ onClick }: { onClick: () => void }) {
+function SidebarActions({ onOpenSolution, onOpenProblem }: { onOpenSolution: () => void; onOpenProblem: () => void }) {
   return (
-    <Button variant="outline" size="sm" className="w-full gap-2" onClick={onClick}>
-      <Eye className="h-3.5 w-3.5" />
-      View Problem
-    </Button>
+    <div className="flex flex-col gap-2">
+      <Button variant="outline" size="sm" className="w-full gap-2" onClick={onOpenSolution}>
+        <Lightbulb className="h-3.5 w-3.5" />
+        View Solution
+      </Button>
+      <Button variant="outline" size="sm" className="w-full gap-2" onClick={onOpenProblem}>
+        <Eye className="h-3.5 w-3.5" />
+        View Problem
+      </Button>
+    </div>
   )
 }
 
@@ -75,7 +82,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
   const { solutionId, problem } = useSolutionValidation()
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const [solutionDialogOpen, setSolutionDialogOpen] = useState(false)
+  const [problemDialogOpen, setProblemDialogOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const isWide = useContainerSize() === "wide"
@@ -83,23 +91,6 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setMounted(true)
   }, [])
-
-  const summaryData: ProblemSummaryData | null = problem
-    ? {
-        text: problem.description,
-        tags: [
-          { label: "Customer", columnId: "customers", ids: problem.customers },
-          { label: "Context", columnId: "contexts", ids: problem.contexts },
-          { label: "Problem", columnId: "problems", ids: problem.problems },
-        ],
-        context: problem.contextWhen,
-        emotionalImpact: problem.emotionalImpact,
-        existingSolutions: problem.existingSolutions,
-        validationStatus: problem.validationStatus,
-        reason: problem.validationReason,
-        assessment: problem.validationAssessment,
-      }
-    : null
 
   const base = `/solutions/${solutionId}/validate`
 
@@ -138,7 +129,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               <CollapsibleContent className="pt-1">
                 <NavItems base={base} pathname={pathname} onNavigate={handleNavigate} />
                 <div className="border-t mt-2 pt-2 px-1">
-                  <ViewProblemButton onClick={() => setDialogOpen(true)} />
+                  <SidebarActions
+                    onOpenSolution={() => setSolutionDialogOpen(true)}
+                    onOpenProblem={() => setProblemDialogOpen(true)}
+                  />
                 </div>
               </CollapsibleContent>
             </CardContent>
@@ -154,7 +148,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             <CardContent className="p-3">
               <NavItems base={base} pathname={pathname} onNavigate={handleNavigate} />
               <div className="border-t mt-2 pt-2">
-                <ViewProblemButton onClick={() => setDialogOpen(true)} />
+                <SidebarActions
+                  onOpenSolution={() => setSolutionDialogOpen(true)}
+                  onOpenProblem={() => setProblemDialogOpen(true)}
+                />
               </div>
             </CardContent>
           </Card>
@@ -164,7 +161,16 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         <div className="flex-1 min-w-0">{mounted ? children : null}</div>
       </div>
 
-      <ProblemSummaryDialog open={dialogOpen} onOpenChange={setDialogOpen} data={summaryData} />
+      <SolutionHubDialog
+        open={solutionDialogOpen}
+        onOpenChange={setSolutionDialogOpen}
+        solutionId={solutionId}
+      />
+      <ProblemHubDialog
+        open={problemDialogOpen}
+        onOpenChange={setProblemDialogOpen}
+        problemRef={problem ? String(problem.id) : null}
+      />
     </div>
   )
 }

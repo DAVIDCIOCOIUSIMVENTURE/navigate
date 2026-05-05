@@ -201,7 +201,7 @@ export default function DashboardPage() {
                             return (
                               <Link
                                 key={s.id}
-                                href={`/solutions/${s.id}/validate/introduction`}
+                                href={`/solutions/${s.id}`}
                                 className="flex items-center gap-2 group pl-7"
                               >
                                 <Lightbulb className="h-3.5 w-3.5 text-muted-foreground shrink-0" />

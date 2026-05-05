@@ -1,14 +1,17 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { useDispatch } from "react-redux"
 import type { AppDispatch } from "@/store"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
@@ -16,6 +19,7 @@ import { StatusSelect } from "@/components/ui/status-select"
 import type { Solution } from "@/store/solutions-model"
 import type { SolutionPatch } from "@/store/solutions-model"
 import type { ValidationStatus } from "@/types/idea"
+import { ExternalLink } from "lucide-react"
 
 function useDebouncedCallback<T>(callback: (value: T) => void, delay: number) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -32,6 +36,7 @@ interface EditSolutionDialogProps {
 
 export function EditSolutionDialog({ solution, onClose }: EditSolutionDialogProps) {
   const dispatch = useDispatch<AppDispatch>()
+  const router = useRouter()
   const [fields, setFields] = useState<{ title: string; description: string; validationStatus: ValidationStatus }>({
     title: "",
     description: "",
@@ -99,6 +104,22 @@ export function EditSolutionDialog({ solution, onClose }: EditSolutionDialogProp
             }}
           />
         </div>
+        {solution && (
+          <DialogFooter>
+            <Button
+              variant="outline"
+              className="border-primary/40 text-primary hover:bg-primary/5 hover:text-primary"
+              onClick={() => {
+                onClose()
+                router.push(`/solutions/${solution.id}`)
+              }}
+            >
+              <ExternalLink className="h-4 w-4 mr-2" />
+              Open Solution
+            </Button>
+            <Button onClick={onClose}>Done</Button>
+          </DialogFooter>
+        )}
       </DialogContent>
     </Dialog>
   )

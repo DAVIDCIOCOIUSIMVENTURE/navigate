@@ -90,7 +90,7 @@ export default function NextStepsPage() {
                         return (
                           <li key={s.id}>
                             <Link
-                              href={`/solutions/${s.id}/validate/introduction`}
+                              href={`/solutions/${s.id}`}
                               className="flex items-center gap-2 px-4 py-2 group hover:bg-accent/40 transition-colors"
                             >
                               <Lightbulb className="h-3.5 w-3.5 text-muted-foreground shrink-0" />

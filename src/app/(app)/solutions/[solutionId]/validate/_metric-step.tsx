@@ -5,34 +5,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { ArrowLeft, ArrowRight } from "lucide-react"
-import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { getAdjacentSteps, useSolutionValidation } from "./context"
+import { MetricStrategy, type MetricContent, type MetricCaseStudy, type ScaleStop } from "@/components/solution-strategies/metric-strategy"
 
-export type ScaleStop = {
-  score: number
-  label: string
-  description: string
-}
-
-export type MetricCaseStudy = {
-  company: string
-  context: string
-  score: number
-  reasoning: string
-  outcome: string
-  icon?: LucideIcon
-}
-
-export type MetricContent = {
-  icon: LucideIcon
-  title: string
-  summary: string
-  guidance: string[]
-  scale: ScaleStop[]
-  caseStudies: MetricCaseStudy[]
-  accent: string
-}
+export type { MetricContent, MetricCaseStudy, ScaleStop }
 
 interface MetricStepProps {
   content: MetricContent
@@ -80,7 +57,7 @@ export function MetricStep({ content, value, onChange }: MetricStepProps) {
           </TabsList>
 
           <TabsContent value="guidance">
-            <GuidanceBody
+            <MetricStrategy
               guidance={guidance}
               scale={scale}
               value={value}
@@ -110,77 +87,6 @@ export function MetricStep({ content, value, onChange }: MetricStepProps) {
         </div>
       </CardContent>
     </Card>
-  )
-}
-
-function GuidanceBody({
-  guidance,
-  scale,
-  value,
-  onChange,
-  accent,
-}: {
-  guidance: string[]
-  scale: ScaleStop[]
-  value: number | null
-  onChange: (val: number | null) => void
-  accent: string
-}) {
-  return (
-    <div className={cn("rounded-xl p-8 flex flex-col gap-6", accent)}>
-      <div className="flex flex-col gap-3">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-white/80">How to think about it</h3>
-        <ul className="flex flex-col gap-2">
-          {guidance.map((g) => (
-            <li key={g} className="text-sm text-white flex items-start gap-2">
-              <span className="text-white/50 mt-0.5">&bull;</span>
-              <span>{g}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <div className="flex flex-col gap-3">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-white/80">Your score (1 to 5)</h3>
-        <p className="text-sm text-white/80">Pick the row that best matches your situation. You can change it any time.</p>
-
-        <div className="flex flex-col gap-2">
-          {scale.map((stop) => {
-            const selected = value === stop.score
-            return (
-              <button
-                key={stop.score}
-                type="button"
-                onClick={() => onChange(selected ? null : stop.score)}
-                className={cn(
-                  "rounded-lg border-2 px-4 py-3 text-left flex items-start gap-4 transition-colors",
-                  selected
-                    ? "bg-white border-white shadow-md"
-                    : "bg-white/5 border-white/30 hover:bg-white/10 hover:border-white/60"
-                )}
-              >
-                <div
-                  className={cn(
-                    "flex h-10 w-10 shrink-0 items-center justify-center rounded-md text-xl font-bold",
-                    selected ? "bg-primary/10 text-primary" : "bg-white/10 text-white"
-                  )}
-                >
-                  {stop.score}
-                </div>
-                <div className="flex flex-col gap-0.5">
-                  <p className={cn("text-sm font-semibold", selected ? "text-foreground" : "text-white")}>
-                    {stop.label}
-                  </p>
-                  <p className={cn("text-sm", selected ? "text-muted-foreground" : "text-white/70")}>
-                    {stop.description}
-                  </p>
-                </div>
-              </button>
-            )
-          })}
-        </div>
-      </div>
-    </div>
   )
 }
 
@@ -220,7 +126,7 @@ function CaseStudies({
                 <span className="text-xs font-semibold uppercase tracking-wide text-white/70">Context</span>
                 <p className="mt-0.5 text-md text-white">{cs.context}</p>
               </div>
-              <div className="rounded-md border border-white/10 bg-white/5 p-3">
+              <div className={cn("rounded-md border border-white/10 bg-white/5 p-3")}>
                 <span className="text-xs font-semibold uppercase tracking-wide text-white/70">
                   Reasoning ({scaleStop?.label ?? `Score ${cs.score}`})
                 </span>
