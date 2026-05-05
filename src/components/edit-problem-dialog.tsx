@@ -19,7 +19,7 @@ import { StatusSelect } from "@/components/ui/status-select"
 import type { Problem, ProblemPatch } from "@/store/problems-model"
 import type { ValidationStatus } from "@/types/idea"
 import { DimensionPicker } from "@/components/dimension-picker"
-import { ExternalLink } from "lucide-react"
+import { ArrowRight, ExternalLink } from "lucide-react"
 
 const COLUMN_TO_FIELD: Record<string, "customers" | "contexts" | "problems"> = {
   customers: "customers",
@@ -114,7 +114,7 @@ export function EditProblemDialog({ problem, onClose, title = "Edit Problem", sh
           )}
         </div>
         {problem && (
-          <DialogFooter>
+          <DialogFooter className="gap-2 sm:gap-2">
             <Button
               variant="outline"
               className="border-primary/40 text-primary hover:bg-primary/5 hover:text-primary"
@@ -125,6 +125,17 @@ export function EditProblemDialog({ problem, onClose, title = "Edit Problem", sh
             >
               <ExternalLink className="h-4 w-4 mr-2" />
               Open Problem
+            </Button>
+            <Button
+              variant="outline"
+              className="border-primary/40 text-primary hover:bg-primary/5 hover:text-primary"
+              onClick={() => {
+                onClose()
+                router.push(`/problems/${problem.id}/validation/introduction`)
+              }}
+            >
+              Go to Validation
+              <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
             <Button onClick={onClose}>Done</Button>
           </DialogFooter>

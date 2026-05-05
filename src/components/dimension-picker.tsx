@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react"
 import { useSelector } from "react-redux"
-import { Plus, Search, X, ChevronRight, ChevronDown } from "lucide-react"
+import { Pencil, Plus, Search, X, ChevronRight, ChevronDown } from "lucide-react"
 import type { RootState } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -14,6 +14,7 @@ import { brainstormColumns } from "@/data/brainstormData"
 import type { BrainstormItem } from "@/app/(app)/problems/brainstorm/data"
 import { resolveDimensionLabel } from "@/lib/dimension-labels"
 import { DIMENSION_COLORS, DIMENSION_ICONS } from "@/lib/dimension-visuals"
+import { EditableLeafItem } from "@/components/editable-leaf-item"
 import { cn } from "@/lib/utils"
 
 function findInTree(items: BrainstormItem[], id: string): BrainstormItem | null {
@@ -45,11 +46,15 @@ function CheckTree({
   selected,
   onToggle,
   forceOpen,
+  customColumnId,
+  customItemIds,
 }: {
   item: BrainstormItem
   selected: Set<string>
   onToggle: (id: string) => void
   forceOpen?: boolean
+  customColumnId: string
+  customItemIds: Set<string>
 }) {
   const [open, setOpen] = useState(false)
   const isGroup = !!item.children?.length
@@ -79,6 +84,8 @@ function CheckTree({
                 selected={selected}
                 onToggle={onToggle}
                 forceOpen={forceOpen}
+                customColumnId={customColumnId}
+                customItemIds={customItemIds}
               />
             ))}
           </div>
@@ -87,14 +94,13 @@ function CheckTree({
     )
   }
 
-  const isChecked = selected.has(item.id)
   return (
-    <label className="flex items-center gap-2.5 px-1 py-1 cursor-pointer rounded hover:bg-accent/50 transition-colors">
-      <Checkbox checked={isChecked} onCheckedChange={() => onToggle(item.id)} />
-      <span className={cn("text-sm text-foreground select-none", isChecked && "font-medium")}>
-        {item.label}
-      </span>
-    </label>
+    <EditableLeafItem
+      item={item}
+      isChecked={selected.has(item.id)}
+      onToggle={() => onToggle(item.id)}
+      customColumnId={customItemIds.has(item.id) ? customColumnId : undefined}
+    />
   )
 }
 
@@ -125,6 +131,11 @@ export function DimensionPicker({
       label: "Your custom items",
       children: items.map((it) => ({ id: it.id, label: it.label })),
     }]
+  }, [customByColumn, columnId])
+
+  const customItemIds = useMemo(() => {
+    const items = customByColumn[columnId] ?? []
+    return new Set(items.map((i) => i.id))
   }, [customByColumn, columnId])
 
   const allItems = useMemo<BrainstormItem[]>(() => {
@@ -207,8 +218,17 @@ export function DimensionPicker({
             className="h-7 gap-1 text-xs border-primary/40 text-primary hover:bg-primary/5 hover:text-primary"
             onClick={() => setOpen(true)}
           >
-            <Plus className="h-3.5 w-3.5" />
-            {ids.length === 0 ? "Add" : "Edit"}
+            {ids.length === 0 ? (
+              <>
+                <Plus className="h-3.5 w-3.5" />
+                Add
+              </>
+            ) : (
+              <>
+                <Pencil className="h-3.5 w-3.5" />
+                Edit
+              </>
+            )}
           </Button>
         )}
       </div>
@@ -242,6 +262,8 @@ export function DimensionPicker({
                     selected={selectedSet}
                     onToggle={toggle}
                     forceOpen={!!query.trim()}
+                    customColumnId={columnId}
+                    customItemIds={customItemIds}
                   />
                 ))
               )}

@@ -85,7 +85,10 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
-  const [editingProblem, setEditingProblem] = useState<Problem | null>(null)
+  const [editingProblemId, setEditingProblemId] = useState<number | null>(null)
+  const editingProblem = useSelector((s: RootState) =>
+    editingProblemId !== null ? s.problems.problems.find((p) => p.id === editingProblemId) ?? null : null
+  )
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<"all" | ValidationStatus>("all")
   const [sortKey, setSortKey] = useState<SortKey>("index")
@@ -347,7 +350,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                 variant="ghost"
                                 size="sm"
                                 className="h-7"
-                                onClick={() => setEditingProblem(problem)}
+                                onClick={() => setEditingProblemId(problem.id)}
                                 aria-label="Edit problem"
                               >
                                 <Pencil className="h-3.5 w-3.5" />
@@ -428,7 +431,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
       {showEditDelete && (
         <EditProblemDialog
           problem={editingProblem}
-          onClose={() => setEditingProblem(null)}
+          onClose={() => setEditingProblemId(null)}
         />
       )}
     </>

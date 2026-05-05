@@ -6,7 +6,6 @@ import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import type { BrainstormMode } from "@/store/settings-model"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ScrollArea } from "@/components/ui/scroll-area"
@@ -61,6 +60,7 @@ import { resolveDimensionLabel } from "@/lib/dimension-labels"
 import { DimensionPicker } from "@/components/dimension-picker"
 import { AddCustomItemDialog } from "@/components/add-custom-item-dialog"
 import { ManageCustomItemsDialog } from "@/components/manage-custom-items-dialog"
+import { EditableLeafItem } from "@/components/editable-leaf-item"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { cn } from "@/lib/utils"
 import { useContainerSize } from "@/context/container-size-context"
@@ -130,11 +130,13 @@ function BrainstormCheckItem({
   selected,
   onToggle,
   forceOpen,
+  customItemColumns,
 }: {
   item: BrainstormItem
   selected: Set<string>
   onToggle: (id: string) => void
   forceOpen?: boolean
+  customItemColumns: Map<string, string>
 }) {
   const isGroup = !!item.children?.length
   const [open, setOpen] = useState(false)
@@ -167,6 +169,7 @@ function BrainstormCheckItem({
                 selected={selected}
                 onToggle={onToggle}
                 forceOpen={forceOpen}
+                customItemColumns={customItemColumns}
               />
             ))}
           </div>
@@ -175,21 +178,13 @@ function BrainstormCheckItem({
     )
   }
 
-  const isChecked = selected.has(item.id)
-
   return (
-    <label className="flex items-center gap-2.5 px-1 py-1.5 cursor-pointer rounded-md hover:bg-accent/50 transition-colors">
-      <Checkbox
-        checked={isChecked}
-        onCheckedChange={() => onToggle(item.id)}
-      />
-      <span className={cn(
-        "text-sm text-foreground select-none",
-        isChecked && "font-medium"
-      )}>
-        {item.label}
-      </span>
-    </label>
+    <EditableLeafItem
+      item={item}
+      isChecked={selected.has(item.id)}
+      onToggle={() => onToggle(item.id)}
+      customColumnId={customItemColumns.get(item.id)}
+    />
   )
 }
 
@@ -391,11 +386,13 @@ function ProblemBuilder({
   onSave,
   resetRef,
   onClearSearch,
+  customItemColumns,
 }: {
   columns: BrainstormColumn[]
   onSave: (selections: Record<string, string[]>, description: string) => void
   resetRef?: React.MutableRefObject<(() => void) | null>
   onClearSearch?: () => void
+  customItemColumns: Map<string, string>
 }) {
   const dispatch = useDispatch<AppDispatch>()
   const step = useSelector((state: RootState) => state.settings.brainstormBuilderStep)
@@ -833,21 +830,13 @@ function ProblemBuilder({
                     {chooseItems.length === 0 ? (
                       <NoSearchResults onClear={onClearSearch} />
                     ) : chooseItems.map((item) => (
-                      <label
+                      <EditableLeafItem
                         key={item.id}
-                        className="flex items-center gap-2.5 px-1 py-1.5 cursor-pointer rounded-md hover:bg-accent/50 transition-colors"
-                      >
-                        <Checkbox
-                          checked={(selectedByColumn[activeColumn.id] ?? []).includes(item.id)}
-                          onCheckedChange={() => toggleItem(activeColumn.id, item.id)}
-                        />
-                        <span className={cn(
-                          "text-sm text-foreground select-none",
-                          (selectedByColumn[activeColumn.id] ?? []).includes(item.id) && "font-medium"
-                        )}>
-                          {item.label}
-                        </span>
-                      </label>
+                        item={item}
+                        isChecked={(selectedByColumn[activeColumn.id] ?? []).includes(item.id)}
+                        onToggle={() => toggleItem(activeColumn.id, item.id)}
+                        customColumnId={customItemColumns.get(item.id)}
+                      />
                     ))}
                   </div>
                 </ScrollArea>
@@ -962,6 +951,16 @@ export default function BrainstormPage() {
     }))
     return { id: "you", title: "You", items }
   }, [triggers])
+
+  const customItemColumns = useMemo(() => {
+    const map = new Map<string, string>()
+    for (const [colId, items] of Object.entries(customByColumn)) {
+      for (const item of items) {
+        map.set(item.id, colId)
+      }
+    }
+    return map
+  }, [customByColumn])
 
   // Inject a synthetic "Your items" group into each Customer/Context/Problem
   // column whenever the user has authored at least one custom item there. The
@@ -1276,7 +1275,7 @@ export default function BrainstormPage() {
       </Card>
 
       {brainstormMode === "builder" ? (
-        <ProblemBuilder columns={filteredColumns} onSave={handleBuilderSave} resetRef={builderResetRef} onClearSearch={() => setSearchQuery("")} />
+        <ProblemBuilder columns={filteredColumns} onSave={handleBuilderSave} resetRef={builderResetRef} onClearSearch={() => setSearchQuery("")} customItemColumns={customItemColumns} />
       ) : (<>
       <div className={cn(
         "grid gap-4 flex-1 min-h-0 overflow-y-auto",
@@ -1366,6 +1365,7 @@ export default function BrainstormPage() {
                           selected={selected}
                           onToggle={toggleItem}
                           forceOpen={!!debouncedQuery}
+                          customItemColumns={customItemColumns}
                         />
                       )) : (
                         <p className="text-xs text-muted-foreground py-4 text-center">No matches</p>
