@@ -21,7 +21,14 @@ const CATEGORY_ICON_BG: Record<string, string> = {
     "knowledge": "bg-primary",
     "skills-expertise": "bg-primary",
     "social-impact": "bg-primary",
+    "other": "bg-primary",
 }
+
+const OTHER_CATEGORY = {
+    url: "other",
+    title: "Other",
+    description: "Items you've added that don't fit the categories above.",
+} as const
 
 function NavContent({
     pathname,
@@ -33,7 +40,10 @@ function NavContent({
     const activeCategoryUrl = SELF_DISCOVERY_CATEGORIES.find(c =>
         pathname.startsWith(`/self-discovery/${c.url}`)
     )?.url
+    const isOtherActive = pathname.startsWith(`/self-discovery/${OTHER_CATEGORY.url}`)
     const [openCategory, setOpenCategory] = useState<string>(activeCategoryUrl ?? "")
+    const OtherIcon = getSelfDiscoveryCategoryIcon(OTHER_CATEGORY.url) ?? Compass
+    const otherBgClass = CATEGORY_ICON_BG[OTHER_CATEGORY.url] ?? "bg-primary"
 
     useEffect(() => {
         if (activeCategoryUrl) {
@@ -116,6 +126,17 @@ function NavContent({
                     </AccordionItem>
                 ))}
             </Accordion>
+            <Button
+                variant={isOtherActive ? "secondary" : "ghost"}
+                className="w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2"
+                onClick={() => onNavigate(`/self-discovery/${OTHER_CATEGORY.url}`)}
+            >
+                <span className={cn("flex items-center justify-center w-6 h-6 rounded-md shrink-0", otherBgClass)}>
+                    <OtherIcon className="h-3.5 w-3.5 text-primary-foreground" aria-hidden="true" />
+                </span>
+                <span className="flex-1 text-left">{OTHER_CATEGORY.title}</span>
+                <ChevronDown className="h-4 w-4 shrink-0 opacity-0" aria-hidden="true" />
+            </Button>
         </div>
     )
 }
@@ -123,6 +144,14 @@ function NavContent({
 function getActiveInfo(pathname: string): { label: string; Icon: LucideIcon; bgClass: string } {
     if (pathname === "/self-discovery") {
         return { label: "Introduction", Icon: Compass, bgClass: "bg-primary" }
+    }
+    if (pathname.startsWith(`/self-discovery/${OTHER_CATEGORY.url}`)) {
+        const OtherIcon = getSelfDiscoveryCategoryIcon(OTHER_CATEGORY.url) ?? Compass
+        return {
+            label: OTHER_CATEGORY.title,
+            Icon: OtherIcon,
+            bgClass: CATEGORY_ICON_BG[OTHER_CATEGORY.url] ?? "bg-primary",
+        }
     }
     for (const category of SELF_DISCOVERY_CATEGORIES) {
         if (pathname.startsWith(`/self-discovery/${category.url}`)) {
@@ -155,6 +184,7 @@ export default function SelfDiscoveryLayout({
     const isWide = size === "wide"
 
     const triggers = useSelector((state: RootState) => state.selfDiscoveryItems.items)
+    const customYouItems = useSelector((state: RootState) => state.customBrainstormItems.byColumn.you ?? [])
 
     const handleNavigate = (path: string) => {
         setMobileNavOpen(false)
@@ -275,6 +305,28 @@ export default function SelfDiscoveryLayout({
                                     </div>
                                 </div>
                             ))}
+                            <div className="space-y-2">
+                                <h4 className="font-medium text-sm flex items-center gap-2">
+                                    {(() => {
+                                        const OtherIcon = getSelfDiscoveryCategoryIcon(OTHER_CATEGORY.url)
+                                        return OtherIcon && <OtherIcon className="h-4 w-4" />
+                                    })()}
+                                    {OTHER_CATEGORY.title}
+                                </h4>
+                                <div className="grid grid-cols-2 gap-2">
+                                    {customYouItems.map((item) => (
+                                        <div
+                                            key={item.id}
+                                            className="text-xs bg-secondary text-secondary-foreground rounded-md px-3 py-1.5"
+                                        >
+                                            {item.label}
+                                        </div>
+                                    ))}
+                                    {customYouItems.length === 0 && (
+                                        <p className="text-xs text-muted-foreground col-span-2">No items added yet</p>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </ScrollArea>
                 </SheetContent>

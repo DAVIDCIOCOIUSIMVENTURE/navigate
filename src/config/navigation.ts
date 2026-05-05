@@ -1,4 +1,4 @@
-import { BookOpen, Compass, Heart, Book, Brain, Globe, Target, Lightbulb, Search, FlaskConical, Clock, Trophy, Milestone, Hammer, Route, Users, RotateCcw, type LucideIcon } from "lucide-react"
+import { BookOpen, Compass, Heart, Book, Brain, Globe, Target, Lightbulb, Search, FlaskConical, Clock, Trophy, Milestone, Hammer, Route, Users, RotateCcw, Plus, type LucideIcon } from "lucide-react"
 
 export const navigationItems = {
   innovation: [
@@ -46,7 +46,8 @@ export const selfDiscoveryCategoryIcons = {
   "personal-interests": Heart,
   "knowledge": Book,
   "skills-expertise": Brain,
-  "social-impact": Globe
+  "social-impact": Globe,
+  "other": Plus,
 }
 
 export function getSelfDiscoveryCategoryIcon(categoryId: string) {

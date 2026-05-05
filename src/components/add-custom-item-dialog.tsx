@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { Users, MapPin, TriangleAlert, Plus } from "lucide-react"
+import { Users, MapPin, TriangleAlert, Compass, Plus } from "lucide-react"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
 
@@ -17,12 +17,14 @@ const DIMENSIONS: { id: string; label: string; icon: React.ComponentType<{ class
   { id: "customers", label: "Customer", icon: Users, iconClass: "text-emerald-500" },
   { id: "contexts", label: "Context", icon: MapPin, iconClass: "text-blue-500" },
   { id: "problems", label: "Problem", icon: TriangleAlert, iconClass: "text-rose-500" },
+  { id: "you", label: "You", icon: Compass, iconClass: "text-amber-500" },
 ]
 
 /**
- * Lets the user add a new custom item to one of the three editable dimensions
- * (Customer, Context, Problem). The "You" dimension is intentionally excluded
- * because items there are sourced from self-discovery.
+ * Lets the user add a new custom item to one of the four dimensions
+ * (Customer, Context, Problem, You). Items added under "You" appear in a
+ * synthetic "Your items" group in the brainstorm canvas and on the
+ * self-discovery "Other" page.
  *
  * On submit, mints a new id under the chosen column's user catalog and calls
  * `onCreated(columnId, id)` so the caller can auto-tick the new item.

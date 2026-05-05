@@ -270,7 +270,7 @@ export default function QuestionPage() {
                 const nextCategory = SELF_DISCOVERY_CATEGORIES[currentCategoryIndex + 1]
                 router.push(`/self-discovery/${nextCategory.url}`)
             } else {
-                router.push('/problems')
+                router.push('/self-discovery/other')
             }
         }
     }

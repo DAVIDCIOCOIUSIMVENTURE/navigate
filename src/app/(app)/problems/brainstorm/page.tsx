@@ -949,8 +949,16 @@ export default function BrainstormPage() {
       label: title,
       children,
     }))
+    const customYou = customByColumn.you ?? []
+    if (customYou.length > 0) {
+      items.push({
+        id: "you-user-group",
+        label: "Your items",
+        children: customYou.map((i) => ({ id: i.id, label: i.label })),
+      })
+    }
     return { id: "you", title: "You", items }
-  }, [triggers])
+  }, [triggers, customByColumn])
 
   const customItemColumns = useMemo(() => {
     const map = new Map<string, string>()
@@ -1342,12 +1350,10 @@ export default function BrainstormPage() {
                           <EyeOff className="h-4 w-4 mr-2" />
                           Hide column
                         </DropdownMenuItem>
-                        {column.id !== "you" && (
-                          <DropdownMenuItem onClick={() => setManagingColumnId(column.id)}>
-                            <Pencil className="h-4 w-4 mr-2" />
-                            Manage your items
-                          </DropdownMenuItem>
-                        )}
+                        <DropdownMenuItem onClick={() => setManagingColumnId(column.id)}>
+                          <Pencil className="h-4 w-4 mr-2" />
+                          Manage your items
+                        </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </div>
