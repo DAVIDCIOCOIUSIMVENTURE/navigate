@@ -110,31 +110,35 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Journey Overview: Problems and Solutions */}
-      <div className={cn("grid gap-3 shrink-0", isWide ? "grid-cols-2" : "grid-cols-1")}>
+      {/* Journey Overview: Problems, Validated Problems, Solutions, Validated Solutions */}
+      <div className={cn("grid gap-3 shrink-0", isWide ? "grid-cols-4" : "grid-cols-2")}>
         <StageCard
           icon={Target}
           title="Problems"
           value={problems.length}
-          subtitle={
-            validatedProblems.length > 0
-              ? `${validatedProblems.length} validated`
-              : undefined
-          }
           href="/problems"
           color="blue"
+        />
+        <StageCard
+          icon={CheckCircle2}
+          title="Validated Problems"
+          value={validatedProblems.length}
+          href="/problems"
+          color="green"
         />
         <StageCard
           icon={Lightbulb}
           title="Solutions"
           value={solutions.length}
-          subtitle={
-            validatedSolutions.length > 0
-              ? `${validatedSolutions.length} validated`
-              : undefined
-          }
           href="/solutions"
           color="purple"
+        />
+        <StageCard
+          icon={CheckCircle2}
+          title="Validated Solutions"
+          value={validatedSolutions.length}
+          href="/solutions"
+          color="green"
         />
       </div>
 
@@ -257,14 +261,12 @@ function StageCard({
   icon: Icon,
   title,
   value,
-  subtitle,
   href,
   color,
 }: {
   icon: React.ComponentType<{ className?: string }>
   title: string
   value: number
-  subtitle?: string
   href: string
   color: string
 }) {
@@ -273,6 +275,7 @@ function StageCard({
     blue: "bg-blue-500",
     indigo: "bg-indigo-500",
     purple: "bg-purple-500",
+    green: "bg-green-500",
   }
 
   return (
@@ -284,7 +287,7 @@ function StageCard({
           </div>
           <div className="min-w-0">
             <p className="text-xl font-bold leading-none">{value}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">{title}{subtitle && <span className="ml-1">({subtitle})</span>}</p>
+            <p className="text-xs text-muted-foreground mt-0.5">{title}</p>
           </div>
         </CardContent>
       </Card>

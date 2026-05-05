@@ -113,33 +113,53 @@ export function EditProblemDialog({ problem, onClose, title = "Edit Problem", sh
             />
           )}
         </div>
-        {problem && (
-          <DialogFooter className="gap-2 sm:gap-2">
-            <Button
-              variant="outline"
-              className="border-primary/40 text-primary hover:bg-primary/5 hover:text-primary"
-              onClick={() => {
-                onClose()
-                router.push(`/problems/${problem.id}`)
-              }}
-            >
-              <ExternalLink className="h-4 w-4 mr-2" />
-              Open Problem
-            </Button>
-            <Button
-              variant="outline"
-              className="border-primary/40 text-primary hover:bg-primary/5 hover:text-primary"
-              onClick={() => {
-                onClose()
-                router.push(`/problems/${problem.id}/validation/introduction`)
-              }}
-            >
-              Go to Validation
-              <ArrowRight className="h-4 w-4 ml-2" />
-            </Button>
-            <Button onClick={onClose}>Done</Button>
-          </DialogFooter>
-        )}
+        {problem && (() => {
+          const hasContent =
+            description.trim().length > 0 ||
+            (problem.customers?.length ?? 0) > 0 ||
+            (problem.contexts?.length ?? 0) > 0 ||
+            (problem.problems?.length ?? 0) > 0
+          const disabledHint = hasContent
+            ? undefined
+            : "Add a description or pick at least one dimension item first"
+          return (
+            <DialogFooter className="gap-2 sm:gap-2">
+              <Button
+                variant="outline"
+                className="border-primary/40 text-primary hover:bg-primary/5 hover:text-primary"
+                disabled={!hasContent}
+                title={disabledHint}
+                onClick={() => {
+                  onClose()
+                  router.push(`/problems/${problem.id}`)
+                }}
+              >
+                <ExternalLink className="h-4 w-4 mr-2" />
+                Open Problem
+              </Button>
+              <Button
+                variant="outline"
+                className="border-primary/40 text-primary hover:bg-primary/5 hover:text-primary"
+                disabled={!hasContent}
+                title={disabledHint}
+                onClick={() => {
+                  onClose()
+                  router.push(`/problems/${problem.id}/validation/introduction`)
+                }}
+              >
+                Go to Validation
+                <ArrowRight className="h-4 w-4 ml-2" />
+              </Button>
+              <Button
+                disabled={!hasContent}
+                title={disabledHint}
+                onClick={onClose}
+              >
+                Done
+              </Button>
+            </DialogFooter>
+          )
+        })()}
       </DialogContent>
     </Dialog>
   )

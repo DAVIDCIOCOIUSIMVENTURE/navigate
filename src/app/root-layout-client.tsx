@@ -191,7 +191,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             <ResizablePanelGroup direction="horizontal" className="flex-1 min-h-0">
               <ResizablePanel defaultSize={70} minSize={40}>
                 <div className="h-full bg-gray-100 overflow-y-auto">
-                  <div className={`flex min-h-full flex-col gap-4 ${fullView ? "px-6 py-6" : "px-4 py-6 sm:px-6 lg:px-8 lg:py-8"}`}>
+                  <div className={`mx-auto flex min-h-full w-full max-w-screen-2xl flex-col gap-4 ${fullView ? "px-6 py-6" : "px-4 py-6 sm:px-6 lg:px-8 lg:py-8"}`}>
                     <ContentArea>{children}</ContentArea>
                   </div>
                 </div>
@@ -207,7 +207,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             </ResizablePanelGroup>
           ) : (
             <div className="flex-1 min-h-0 bg-gray-100 overflow-y-auto">
-              <div className={`flex min-h-full flex-col gap-4 ${fullView ? "px-6 py-6" : "px-4 py-6 sm:px-6 lg:px-8 lg:py-8"}`}>
+              <div className={`mx-auto flex min-h-full w-full max-w-screen-2xl flex-col gap-4 ${fullView ? "px-6 py-6" : "px-4 py-6 sm:px-6 lg:px-8 lg:py-8"}`}>
                 <ContentArea>{children}</ContentArea>
               </div>
             </div>
