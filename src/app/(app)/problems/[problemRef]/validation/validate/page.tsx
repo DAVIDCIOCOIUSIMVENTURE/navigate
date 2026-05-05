@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { useProblemValidation, getAdjacentSteps } from "../context"
+import { useProblem, getAdjacentSteps } from "../context"
 import { VALIDATE_CASE_STUDIES } from "./case-studies"
 import { ValidationStrategy } from "@/components/problem-strategies/validation-strategy"
 import { cn } from "@/lib/utils"
@@ -14,7 +14,7 @@ import { useContainerSize } from "@/context/container-size-context"
 export default function VerdictPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { problemRef } = useProblemValidation()
+  const { problemRef } = useProblem()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, problemRef)
   const containerSize = useContainerSize()
 

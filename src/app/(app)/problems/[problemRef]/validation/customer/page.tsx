@@ -6,7 +6,7 @@ import type { RootState } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { useProblemValidation, getAdjacentSteps } from "../context"
+import { useProblem, getAdjacentSteps } from "../context"
 import { CUSTOMER_CASE_STUDIES } from "./case-studies"
 import { DimensionChips } from "@/components/dimension-chips"
 import { CustomerStrategy } from "@/components/problem-strategies/customer-strategy"
@@ -15,7 +15,7 @@ import { Users, Target, MapPin, Briefcase, Filter } from "lucide-react"
 export default function CustomerSegmentPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { problemRef, problemId } = useProblemValidation()
+  const { problemRef, problemId } = useProblem()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, problemRef)
 
   const problem = useSelector((state: RootState) =>

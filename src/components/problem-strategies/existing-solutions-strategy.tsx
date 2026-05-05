@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { AutoTextarea } from "@/components/ui/auto-textarea"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { useProblemValidation } from "@/app/(app)/problems/[problemRef]/validation/context"
+import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
 import type { ImpactItem, ShortcomingItem } from "@/types/idea"
 import { Plus, X, ChevronDown } from "lucide-react"
 
@@ -17,7 +17,7 @@ const IMPACT_CATEGORIES = [
 ]
 
 export function ExistingSolutionsStrategy({ readOnly = false }: { readOnly?: boolean }) {
-  const { existingSolutions, setExistingSolutions } = useProblemValidation()
+  const { existingSolutions, setExistingSolutions } = useProblem()
   const [addingSolution, setAddingSolution] = useState(false)
   const [draft, setDraft] = useState("")
   const [addingSc, setAddingSc] = useState<Record<number, boolean>>({})

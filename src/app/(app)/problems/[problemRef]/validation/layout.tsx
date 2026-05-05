@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
 import { ProblemHubDialog } from "@/components/problem-hub/problem-hub-dialog"
-import { ProblemValidationProvider, useProblemValidation, NAV_ITEMS } from "./context"
+import { ProblemProvider, useProblem, NAV_ITEMS } from "./context"
 import {
   GitFork, Clock, ShieldCheck, FileText, LayoutTemplate, ClipboardCheck, Users, ChevronDown, Eye, Search,
 } from "lucide-react"
@@ -69,7 +69,7 @@ function ViewProblemButton({ onClick }: { onClick: () => void }) {
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
-  const { problemRef } = useProblemValidation()
+  const { problemRef } = useProblem()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const isWide = useContainerSize() === "wide"
@@ -147,8 +147,8 @@ export default function ProblemRefLayout({ children }: { children: React.ReactNo
   const problemRef = params.problemRef as string
 
   return (
-    <ProblemValidationProvider problemRef={problemRef}>
+    <ProblemProvider problemRef={problemRef}>
       <LayoutContent>{children}</LayoutContent>
-    </ProblemValidationProvider>
+    </ProblemProvider>
   )
 }

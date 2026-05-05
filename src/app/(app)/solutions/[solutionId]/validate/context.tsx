@@ -1,5 +1,27 @@
 "use client"
 
+/**
+ * <SolutionProvider> + useSolution(): the active solution scope.
+ *
+ * The state itself lives in Redux. This context exists for one reason: it
+ * carries the current `solutionId` (route param or dialog state) down the
+ * tree and bundles the redux state + dispatch wrappers into a single typed
+ * hook so:
+ *
+ *   - strategy components like <MetricStrategy /> stay zero-prop and don't
+ *     have to know how the id was obtained (URL params on the step pages,
+ *     useState on the dialog opened from a problem flow, etc.).
+ *   - call sites get named setters (`setFeasibility(3)`) instead of
+ *     spelling out `dispatch.solutions.update({ id, patch: { ... } })` at
+ *     each one.
+ *
+ * No local state lives here - every read is a useSelector and every write
+ * is a dispatch. Two providers wrapping the same solutionId would stay
+ * perfectly in sync because Redux is the single source of truth.
+ *
+ * Mirror: src/app/(app)/problems/[problemRef]/validation/context.tsx.
+ */
+
 import { createContext, useContext, useCallback, type ReactNode } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
@@ -7,7 +29,7 @@ import type { Solution } from "@/types/solution"
 import type { ValidationStatus } from "@/types/idea"
 import type { Problem } from "@/store/problems-model"
 
-type SolutionValidationContextValue = {
+type SolutionContextValue = {
   solutionId: number
   solution: Solution | undefined
   problem: Problem | undefined
@@ -27,9 +49,9 @@ type SolutionValidationContextValue = {
   setValidationReason: (val: string) => void
 }
 
-const SolutionValidationContext = createContext<SolutionValidationContextValue | null>(null)
+const SolutionContext = createContext<SolutionContextValue | null>(null)
 
-export function SolutionValidationProvider({
+export function SolutionProvider({
   solutionId,
   children,
 }: {
@@ -68,7 +90,7 @@ export function SolutionValidationProvider({
   const setValidationReason = useCallback((val: string) => patch("validationReason", val), [patch])
 
   return (
-    <SolutionValidationContext.Provider
+    <SolutionContext.Provider
       value={{
         solutionId, solution, problem,
         feasibility, setFeasibility,
@@ -81,13 +103,13 @@ export function SolutionValidationProvider({
       }}
     >
       {children}
-    </SolutionValidationContext.Provider>
+    </SolutionContext.Provider>
   )
 }
 
-export function useSolutionValidation() {
-  const ctx = useContext(SolutionValidationContext)
-  if (!ctx) throw new Error("useSolutionValidation must be used within SolutionValidationProvider")
+export function useSolution() {
+  const ctx = useContext(SolutionContext)
+  if (!ctx) throw new Error("useSolution must be used within SolutionProvider")
   return ctx
 }
 

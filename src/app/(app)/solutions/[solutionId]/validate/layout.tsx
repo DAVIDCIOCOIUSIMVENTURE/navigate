@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
 import { ProblemHubDialog } from "@/components/problem-hub/problem-hub-dialog"
 import { SolutionHubDialog } from "@/components/solution-hub/solution-hub-dialog"
-import { SolutionValidationProvider, useSolutionValidation, NAV_ITEMS } from "./context"
+import { SolutionProvider, useSolution, NAV_ITEMS } from "./context"
 import {
   ClipboardCheck, Gauge, Target, Coins, Clock, CheckCircle2, LayoutTemplate,
   FileText, ChevronDown, Eye, Lightbulb,
@@ -81,7 +81,7 @@ function SidebarActions({ onOpenSolution, onOpenProblem }: { onOpenSolution: () 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
-  const { solutionId, problem } = useSolutionValidation()
+  const { solutionId, problem } = useSolution()
   const [solutionDialogOpen, setSolutionDialogOpen] = useState(false)
   const [problemDialogOpen, setProblemDialogOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
@@ -180,8 +180,8 @@ export default function ValidateLayout({ children }: { children: React.ReactNode
   const solutionId = Number(params.solutionId)
 
   return (
-    <SolutionValidationProvider solutionId={solutionId}>
+    <SolutionProvider solutionId={solutionId}>
       <LayoutContent>{children}</LayoutContent>
-    </SolutionValidationProvider>
+    </SolutionProvider>
   )
 }

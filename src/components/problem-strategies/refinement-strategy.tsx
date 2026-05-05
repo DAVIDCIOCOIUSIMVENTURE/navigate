@@ -5,13 +5,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { useProblemValidation } from "@/app/(app)/problems/[problemRef]/validation/context"
+import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
 import type { AffectedGroup, AnalysisToolType } from "@/types/solution"
 import { cn } from "@/lib/utils"
 import { Plus, Trash2, Search, TreePine, HelpCircle, Users, CheckCircle2 } from "lucide-react"
 
 function RootCausesForm({ readOnly = false }: { readOnly?: boolean }) {
-  const { rootCauses, setRootCauses, rootCauseNotes, setRootCauseNotes } = useProblemValidation()
+  const { rootCauses, setRootCauses, rootCauseNotes, setRootCauseNotes } = useProblem()
   const [adding, setAdding] = useState(false)
   const [draft, setDraft] = useState("")
   const inputRef = useRef<HTMLInputElement>(null)
@@ -120,7 +120,7 @@ function RootCausesForm({ readOnly = false }: { readOnly?: boolean }) {
 const WHY_LABELS = ["Why 1", "Why 2", "Why 3", "Why 4", "Why 5"]
 
 function FiveWhysForm({ readOnly = false }: { readOnly?: boolean }) {
-  const { fiveWhyChains, setFiveWhyChains } = useProblemValidation()
+  const { fiveWhyChains, setFiveWhyChains } = useProblem()
 
   const addChain = () => {
     const id = fiveWhyChains.length > 0 ? Math.max(...fiveWhyChains.map((c) => c.id)) + 1 : 1
@@ -224,7 +224,7 @@ const SEVERITY_OPTIONS = [
 ] as const
 
 function AffectedGroupsForm({ readOnly = false }: { readOnly?: boolean }) {
-  const { affectedGroups, setAffectedGroups } = useProblemValidation()
+  const { affectedGroups, setAffectedGroups } = useProblem()
 
   const addGroup = () => {
     const id = affectedGroups.length > 0 ? Math.max(...affectedGroups.map((g) => g.id)) + 1 : 1
@@ -348,7 +348,7 @@ const TOOL_CARDS: Record<ChosenTool, { title: string; description: string; icon:
 }
 
 function MethodChooser({ onChoose }: { onChoose: (tool: ChosenTool) => void }) {
-  const { analysisToolType } = useProblemValidation()
+  const { analysisToolType } = useProblem()
   const tools: ChosenTool[] = ["root-causes", "five-whys", "affected-groups"]
   return (
     <div className="grid gap-3 sm:grid-cols-3">
@@ -404,7 +404,7 @@ export function RefinementStrategy({
   showChooser?: boolean
   readOnly?: boolean
 }) {
-  const { analysisToolType, setAnalysisToolType } = useProblemValidation()
+  const { analysisToolType, setAnalysisToolType } = useProblem()
 
   // The chooser is only an editable affordance: hide it whenever the strategy
   // is readOnly, even when callers pass `showChooser`. Without a method

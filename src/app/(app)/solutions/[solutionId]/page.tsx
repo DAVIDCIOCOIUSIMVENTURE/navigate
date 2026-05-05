@@ -7,7 +7,7 @@ import type { RootState } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Lightbulb, ArrowLeft } from "lucide-react"
-import { SolutionValidationProvider } from "./validate/context"
+import { SolutionProvider } from "./validate/context"
 import { SolutionHubContent } from "@/components/solution-hub/solution-hub-content"
 
 function HubBody({ solutionId }: { solutionId: number }) {
@@ -53,8 +53,8 @@ export default function SolutionHubPage() {
   const solutionId = Number(params.solutionId)
 
   return (
-    <SolutionValidationProvider solutionId={solutionId}>
+    <SolutionProvider solutionId={solutionId}>
       <HubBody solutionId={solutionId} />
-    </SolutionValidationProvider>
+    </SolutionProvider>
   )
 }

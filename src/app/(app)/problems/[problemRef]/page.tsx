@@ -7,7 +7,7 @@ import type { RootState } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Target, ArrowLeft } from "lucide-react"
-import { ProblemValidationProvider } from "./validation/context"
+import { ProblemProvider } from "./validation/context"
 import { ProblemHubContent } from "@/components/problem-hub/problem-hub-content"
 
 function HubBody({ problemRef }: { problemRef: string }) {
@@ -54,8 +54,8 @@ export default function ProblemHubPage() {
   const problemRef = params.problemRef as string
 
   return (
-    <ProblemValidationProvider problemRef={problemRef}>
+    <ProblemProvider problemRef={problemRef}>
       <HubBody problemRef={problemRef} />
-    </ProblemValidationProvider>
+    </ProblemProvider>
   )
 }

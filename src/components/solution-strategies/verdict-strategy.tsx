@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
-import { useSolutionValidation } from "@/app/(app)/solutions/[solutionId]/validate/context"
+import { useSolution } from "@/app/(app)/solutions/[solutionId]/validate/context"
 import type { ValidationStatus } from "@/types/idea"
 import { CheckCircle2, HelpCircle, XCircle } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
@@ -48,7 +48,7 @@ export const VERDICT_GUIDANCE: string[] = [
  * readOnly mode) the validation summary.
  */
 export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
-  const { validationStatus, setValidationStatus, validationReason, setValidationReason } = useSolutionValidation()
+  const { validationStatus, setValidationStatus, validationReason, setValidationReason } = useSolution()
 
   const [mounted, setMounted] = useState(false)
   useEffect(() => { setMounted(true) }, [])

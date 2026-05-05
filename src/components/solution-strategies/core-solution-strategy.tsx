@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux"
 import type { AppDispatch } from "@/store"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { useSolutionValidation } from "@/app/(app)/solutions/[solutionId]/validate/context"
+import { useSolution } from "@/app/(app)/solutions/[solutionId]/validate/context"
 
 /**
  * Editable surface for the solution's title and description, the only
@@ -12,7 +12,7 @@ import { useSolutionValidation } from "@/app/(app)/solutions/[solutionId]/valida
  */
 export function CoreSolutionStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const dispatch = useDispatch<AppDispatch>()
-  const { solutionId, solution } = useSolutionValidation()
+  const { solutionId, solution } = useSolution()
 
   if (!solution) return null
 

@@ -1,10 +1,10 @@
 "use client"
 
 import { MetricStep } from "../_metric-step"
-import { useSolutionValidation } from "../context"
+import { useSolution } from "../context"
 import { IMPACT_CONTENT } from "@/components/solution-strategies/metric-content"
 
 export default function ImpactPage() {
-  const { impact, setImpact } = useSolutionValidation()
+  const { impact, setImpact } = useSolution()
   return <MetricStep content={IMPACT_CONTENT} value={impact} onChange={setImpact} />
 }

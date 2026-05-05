@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { useProblemValidation } from "@/app/(app)/problems/[problemRef]/validation/context"
+import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
 import { CoreProblemStrategy } from "@/components/problem-strategies/core-problem-strategy"
 import { CustomerStrategy } from "@/components/problem-strategies/customer-strategy"
 import { RefinementStrategy } from "@/components/problem-strategies/refinement-strategy"
@@ -152,7 +152,7 @@ function SolutionsSection({ problemId }: { problemId: number }) {
 function NextStepsSection({ problemRef, problemId }: { problemRef: string; problemId: number }) {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
-  const { status } = useProblemValidation()
+  const { status } = useProblem()
 
   const goToValidation = () => router.push(`/problems/${problemRef}/validation/validate`)
   const goToDiscover = () => {
@@ -345,7 +345,7 @@ export function ProblemHubContent({
   mode: "dialog" | "page"
   readOnly?: boolean
 }) {
-  const { problemRef, problemId } = useProblemValidation()
+  const { problemRef, problemId } = useProblem()
   const validationBase = `/problems/${problemRef}/validation`
   const stepHref = (suffix: string) => readOnly ? undefined : `${validationBase}/${suffix}`
 

@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
-import { useProblemValidation, getAdjacentSteps } from "../context"
+import { useProblem, getAdjacentSteps } from "../context"
 import { EXISTING_SOLUTIONS_CASE_STUDIES } from "./case-studies"
 import { ExistingSolutionsStrategy } from "@/components/problem-strategies/existing-solutions-strategy"
 import { GitFork, Monitor, Wrench, Users, Ban } from "lucide-react"
@@ -14,7 +14,7 @@ import { cn } from "@/lib/utils"
 export default function ExistingSolutionsPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { problemRef } = useProblemValidation()
+  const { problemRef } = useProblem()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, problemRef)
   const isNarrow = useContainerSize() === "narrow"
 

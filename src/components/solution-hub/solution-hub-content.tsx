@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux"
 import type { AppDispatch } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { useSolutionValidation } from "@/app/(app)/solutions/[solutionId]/validate/context"
+import { useSolution } from "@/app/(app)/solutions/[solutionId]/validate/context"
 import { CoreSolutionStrategy } from "@/components/solution-strategies/core-solution-strategy"
 import { MetricStrategy } from "@/components/solution-strategies/metric-strategy"
 import { VerdictStrategy } from "@/components/solution-strategies/verdict-strategy"
@@ -122,7 +122,7 @@ function LinkedProblemSection({ problemId, problemDescription }: { problemId: nu
 function NextStepsSection({ solutionId }: { solutionId: number }) {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
-  const { validationStatus, solution } = useSolutionValidation()
+  const { validationStatus, solution } = useSolution()
 
   const goToVerdict = () => router.push(`/solutions/${solutionId}/validate/verdict`)
 
@@ -293,7 +293,7 @@ export function SolutionHubContent({
     impact, setImpact,
     cost, setCost,
     timeToImplement, setTimeToImplement,
-  } = useSolutionValidation()
+  } = useSolution()
 
   if (!solution) return null
 

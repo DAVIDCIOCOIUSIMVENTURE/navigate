@@ -1,5 +1,26 @@
 "use client"
 
+/**
+ * <ProblemProvider> + useProblem(): the active problem scope.
+ *
+ * The state itself lives in Redux. This context exists for one reason: it
+ * carries the current `problemRef` (route param) down the tree and bundles
+ * the redux state + dispatch wrappers into a single typed hook so:
+ *
+ *   - strategy components like <CustomerStrategy /> stay zero-prop and
+ *     don't have to know how the id was obtained (URL params on the step
+ *     pages, useState on the dialog open from a solution flow, etc.).
+ *   - call sites get named setters (`setSegmentSize(5)`) instead of
+ *     spelling out `dispatch.problems.update({ id, patch: { ... } })` at
+ *     each one.
+ *
+ * No local state lives here - every read is a useSelector and every write
+ * is a dispatch. Two providers wrapping the same problemId would stay
+ * perfectly in sync because Redux is the single source of truth.
+ *
+ * Mirror: src/app/(app)/solutions/[solutionId]/validate/context.tsx.
+ */
+
 import { createContext, useContext, useCallback, useEffect, type ReactNode } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
@@ -13,7 +34,7 @@ import type {
   AffectedGroup,
 } from "@/types/solution"
 
-type ProblemValidationContextValue = {
+type ProblemContextValue = {
   problemRef: string
   problemId: number
   problem: Problem | undefined
@@ -52,9 +73,9 @@ type ProblemValidationContextValue = {
   setAffectedGroups: (val: AffectedGroup[]) => void
 }
 
-const ProblemValidationContext = createContext<ProblemValidationContextValue | null>(null)
+const ProblemContext = createContext<ProblemContextValue | null>(null)
 
-export function ProblemValidationProvider({
+export function ProblemProvider({
   problemRef,
   children,
 }: {
@@ -277,7 +298,7 @@ export function ProblemValidationProvider({
   )
 
   return (
-    <ProblemValidationContext.Provider
+    <ProblemContext.Provider
       value={{
         problemRef,
         problemId,
@@ -304,13 +325,13 @@ export function ProblemValidationProvider({
       }}
     >
       {children}
-    </ProblemValidationContext.Provider>
+    </ProblemContext.Provider>
   )
 }
 
-export function useProblemValidation() {
-  const ctx = useContext(ProblemValidationContext)
-  if (!ctx) throw new Error("useProblemValidation must be used within ProblemValidationProvider")
+export function useProblem() {
+  const ctx = useContext(ProblemContext)
+  if (!ctx) throw new Error("useProblem must be used within ProblemProvider")
   return ctx
 }
 

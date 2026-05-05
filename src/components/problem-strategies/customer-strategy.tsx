@@ -2,10 +2,10 @@
 
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { useProblemValidation } from "@/app/(app)/problems/[problemRef]/validation/context"
+import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
 
 export function CustomerStrategy({ readOnly = false }: { readOnly?: boolean }) {
-  const { segmentSize, setSegmentSize, customerDescription, setCustomerDescription } = useProblemValidation()
+  const { segmentSize, setSegmentSize, customerDescription, setCustomerDescription } = useProblem()
 
   if (readOnly && segmentSize === null && !customerDescription.trim()) {
     return (

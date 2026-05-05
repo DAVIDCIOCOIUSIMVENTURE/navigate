@@ -1,7 +1,7 @@
 "use client"
 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { ProblemValidationProvider } from "@/app/(app)/problems/[problemRef]/validation/context"
+import { ProblemProvider } from "@/app/(app)/problems/[problemRef]/validation/context"
 import { ProblemHubContent } from "./problem-hub-content"
 
 /**
@@ -28,9 +28,9 @@ export function ProblemHubDialog({
           </DialogDescription>
         </DialogHeader>
         {problemRef && (
-          <ProblemValidationProvider problemRef={problemRef}>
+          <ProblemProvider problemRef={problemRef}>
             <ProblemHubContent mode="dialog" />
-          </ProblemValidationProvider>
+          </ProblemProvider>
         )}
       </DialogContent>
     </Dialog>

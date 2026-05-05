@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { getAdjacentSteps, useSolutionValidation } from "./context"
+import { getAdjacentSteps, useSolution } from "./context"
 import { MetricStrategy, type MetricContent, type MetricCaseStudy, type ScaleStop } from "@/components/solution-strategies/metric-strategy"
 
 export type { MetricContent, MetricCaseStudy, ScaleStop }
@@ -20,7 +20,7 @@ interface MetricStepProps {
 export function MetricStep({ content, value, onChange }: MetricStepProps) {
   const router = useRouter()
   const pathname = usePathname()
-  const { solutionId, solution, problem } = useSolutionValidation()
+  const { solutionId, solution, problem } = useSolution()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, solutionId)
 
   const { icon: Icon, title, summary, guidance, scale, caseStudies, accent } = content

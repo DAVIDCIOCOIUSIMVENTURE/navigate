@@ -3,7 +3,7 @@
 import { useDispatch } from "react-redux"
 import { Textarea } from "@/components/ui/textarea"
 import type { AppDispatch } from "@/store"
-import { useProblemValidation } from "@/app/(app)/problems/[problemRef]/validation/context"
+import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
 import { DimensionPicker } from "@/components/dimension-picker"
 
 /**
@@ -14,7 +14,7 @@ import { DimensionPicker } from "@/components/dimension-picker"
  */
 export function CoreProblemStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const dispatch = useDispatch<AppDispatch>()
-  const { problemId, problem } = useProblemValidation()
+  const { problemId, problem } = useProblem()
 
   if (!problem) return null
 

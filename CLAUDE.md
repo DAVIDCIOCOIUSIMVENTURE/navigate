@@ -151,7 +151,7 @@ The app's three core flows live under `src/app/(app)/`. Each owns its own per-ro
 
 #### Problem refinement & validation: `/problems/[problemRef]`
 
-`problemRef` is the numeric problem id as a string. The route layout (`problems/[problemRef]/layout.tsx`) wraps children in `ProblemValidationProvider` (defined in the sibling `context.tsx`). Steps from `NAV_ITEMS`:
+`problemRef` is the numeric problem id as a string. The route layout (`problems/[problemRef]/layout.tsx`) wraps children in `ProblemProvider` (defined in the sibling `context.tsx`). Steps from `NAV_ITEMS`:
 
 ```
 introduction → customer → choose-refinement → refine → existing-solutions → validate → summary
@@ -177,7 +177,7 @@ The provider persists the active problem id in `localStorage["navigate-active-di
 
 #### Solution validation: `/solutions/[solutionId]/validate`
 
-`solutionId` is numeric. Wraps children in `SolutionValidationProvider`. Steps:
+`solutionId` is numeric. Wraps children in `SolutionProvider`. Steps:
 
 ```
 introduction → feasibility → impact → cost → time-to-implement → verdict → summary

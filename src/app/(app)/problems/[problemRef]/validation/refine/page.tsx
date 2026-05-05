@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { cn } from "@/lib/utils"
-import { useProblemValidation, getAdjacentSteps } from "../context"
+import { useProblem, getAdjacentSteps } from "../context"
 import { ROOT_CAUSES_CASE_STUDIES } from "./root-causes-case-studies"
 import { FIVE_WHYS_CASE_STUDIES } from "./five-whys-case-studies"
 import { AFFECTED_GROUPS_CASE_STUDIES } from "./affected-groups-case-studies"
@@ -306,7 +306,7 @@ const CASE_STUDIES_BY_TOOL = {
 export default function RefinePage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { problemRef, problem, analysisToolType } = useProblemValidation()
+  const { problemRef, problem, analysisToolType } = useProblem()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, problemRef)
 
   const toolInfo = analysisToolType ? TOOL_INFO[analysisToolType] : null

@@ -10,7 +10,7 @@ import {
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { getAdjacentSteps, useSolutionValidation } from "../context"
+import { getAdjacentSteps, useSolution } from "../context"
 import { VerdictStrategy } from "@/components/solution-strategies/verdict-strategy"
 
 type VerdictKey = "valid" | "unsure" | "invalid"
@@ -83,7 +83,7 @@ export default function VerdictPage() {
   const {
     solutionId, solution, problem,
     feasibility, impact, cost, timeToImplement,
-  } = useSolutionValidation()
+  } = useSolution()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, solutionId)
 
   return (

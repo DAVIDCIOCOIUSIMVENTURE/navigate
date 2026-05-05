@@ -6,7 +6,7 @@ import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { getAdjacentSteps, useProblemValidation } from "../context"
+import { getAdjacentSteps, useProblem } from "../context"
 import { DimensionChips } from "@/components/dimension-chips"
 import {
   ClipboardCheck, GitFork, ShieldCheck, LayoutTemplate, Users, Search,
@@ -33,7 +33,7 @@ function FieldRow({ label, columnId, ids }: { label: string; columnId: string; i
 export default function IntroductionPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { problemRef, problemId } = useProblemValidation()
+  const { problemRef, problemId } = useProblem()
   const { nextPath } = getAdjacentSteps(pathname, problemRef)
   const problem = useSelector((state: RootState) =>
     state.problems.problems.find((p) => p.id === problemId)

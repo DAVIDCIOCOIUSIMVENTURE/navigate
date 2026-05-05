@@ -4,13 +4,13 @@ import { usePathname, useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ExternalLink, LayoutTemplate } from "lucide-react"
-import { useProblemValidation, getAdjacentSteps } from "../context"
+import { useProblem, getAdjacentSteps } from "../context"
 import { ProblemHubContent } from "@/components/problem-hub/problem-hub-content"
 
 export default function SummaryPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { problemRef } = useProblemValidation()
+  const { problemRef } = useProblem()
   const { prevPath } = getAdjacentSteps(pathname, problemRef)
 
   return (

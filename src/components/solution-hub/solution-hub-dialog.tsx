@@ -1,7 +1,7 @@
 "use client"
 
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { SolutionValidationProvider } from "@/app/(app)/solutions/[solutionId]/validate/context"
+import { SolutionProvider } from "@/app/(app)/solutions/[solutionId]/validate/context"
 import { SolutionHubContent } from "./solution-hub-content"
 
 /**
@@ -28,9 +28,9 @@ export function SolutionHubDialog({
           </DialogDescription>
         </DialogHeader>
         {solutionId != null && (
-          <SolutionValidationProvider solutionId={solutionId}>
+          <SolutionProvider solutionId={solutionId}>
             <SolutionHubContent mode="dialog" />
-          </SolutionValidationProvider>
+          </SolutionProvider>
         )}
       </DialogContent>
     </Dialog>

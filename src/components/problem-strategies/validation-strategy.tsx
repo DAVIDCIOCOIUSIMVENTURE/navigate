@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { useProblemValidation } from "@/app/(app)/problems/[problemRef]/validation/context"
+import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
 import type { ValidationMetric } from "@/types/idea"
 import { cn } from "@/lib/utils"
 import { CheckCircle2, XCircle, HelpCircle, Users, RefreshCw, DollarSign, ArrowRightLeft, Target, Building2 } from "lucide-react"
@@ -155,7 +155,7 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
     status, setStatus, reason, setReason,
     validationAssessment, setHowManyPeople, setHowOften, setWorthToThem, setCostOfSwitching,
     setSolutionEffectiveness, setCompetitorSize,
-  } = useProblemValidation()
+  } = useProblem()
 
   const { howManyPeople, howOften, worthToThem, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
 

@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ClipboardCheck, Gauge, Target, Coins, Clock } from "lucide-react"
-import { getAdjacentSteps, useSolutionValidation } from "../context"
+import { getAdjacentSteps, useSolution } from "../context"
 
 const METRICS = [
   { icon: Gauge, title: "Feasibility", description: "How realistic is it to build this solution with the resources and skills available?", bg: "bg-blue-100", color: "text-blue-600" },
@@ -16,7 +16,7 @@ const METRICS = [
 export default function IntroductionPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { solutionId, solution, problem } = useSolutionValidation()
+  const { solutionId, solution, problem } = useSolution()
   const { nextPath } = getAdjacentSteps(pathname, solutionId)
 
   return (

@@ -12,7 +12,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog"
-import { useProblemValidation, getAdjacentSteps } from "../context"
+import { useProblem, getAdjacentSteps } from "../context"
 import type { AnalysisToolType } from "@/types/solution"
 import { Search, ArrowLeft, ArrowRight, TreePine, HelpCircle, Users, CheckCircle2 } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
@@ -177,7 +177,7 @@ const TOOL_ORDER: ToolKey[] = ["root-causes", "five-whys", "affected-groups"]
 export default function ChooseRefinementPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { problem, problemRef, analysisToolType, setAnalysisToolType } = useProblemValidation()
+  const { problem, problemRef, analysisToolType, setAnalysisToolType } = useProblem()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, problemRef)
   const [openTool, setOpenTool] = useState<ToolKey | null>(null)
   const [confirmOpen, setConfirmOpen] = useState(false)
