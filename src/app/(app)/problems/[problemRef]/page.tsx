@@ -18,34 +18,38 @@ function HubBody({ problemRef }: { problemRef: string }) {
 
   if (!problem) {
     return (
-      <Card className="w-full flex-1">
-        <CardContent className="p-10 flex flex-col items-center gap-4 text-center">
-          <p className="text-md text-muted-foreground">Problem not found.</p>
-          <Button asChild variant="outline">
-            <Link href="/problems">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Problems
-            </Link>
-          </Button>
-        </CardContent>
-      </Card>
+      <div className="flex flex-col w-full flex-1">
+        <Card className="w-full">
+          <CardContent className="p-10 flex flex-col items-center gap-4 text-center">
+            <p className="text-md text-muted-foreground">Problem not found.</p>
+            <Button asChild variant="outline">
+              <Link href="/problems">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Problems
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     )
   }
 
   return (
-    <Card className="w-full flex-1">
-      <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={Target}>
-          {problem.description || `Problem #${problem.id}`}
-        </CardTitle>
-        <p className="text-md text-muted-foreground">
-          Edit and review every part of this problem in one place.
-        </p>
-      </CardHeader>
-      <CardContent className="p-10 pt-6">
-        <ProblemHubContent mode="page" />
-      </CardContent>
-    </Card>
+    <div className="flex flex-col w-full flex-1">
+      <Card className="w-full">
+        <CardHeader className="px-10 pt-10 pb-0">
+          <CardTitle icon={Target}>
+            {problem.description || `Problem #${problem.id}`}
+          </CardTitle>
+          <p className="text-md text-muted-foreground">
+            Edit and review every part of this problem in one place.
+          </p>
+        </CardHeader>
+        <CardContent className="p-10 pt-6">
+          <ProblemHubContent mode="page" />
+        </CardContent>
+      </Card>
+    </div>
   )
 }
 

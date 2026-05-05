@@ -133,7 +133,7 @@ export const NEXT_STEPS_TOPICS: NextStepsTopic[] = [
     ],
     approaches: [
       {
-        title: "Riskiest assumption test (RAT)",
+        title: "Riskiest assumption test",
         description:
           "Identify the single belief that would sink everything if false, then design the smallest possible test for it. Run that test before anything else.",
       },

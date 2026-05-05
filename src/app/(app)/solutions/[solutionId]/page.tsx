@@ -17,34 +17,38 @@ function HubBody({ solutionId }: { solutionId: number }) {
 
   if (!solution) {
     return (
-      <Card className="w-full flex-1">
-        <CardContent className="p-10 flex flex-col items-center gap-4 text-center">
-          <p className="text-md text-muted-foreground">Solution not found.</p>
-          <Button asChild variant="outline">
-            <Link href="/solutions">
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Solutions
-            </Link>
-          </Button>
-        </CardContent>
-      </Card>
+      <div className="flex flex-col w-full flex-1">
+        <Card className="w-full">
+          <CardContent className="p-10 flex flex-col items-center gap-4 text-center">
+            <p className="text-md text-muted-foreground">Solution not found.</p>
+            <Button asChild variant="outline">
+              <Link href="/solutions">
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Back to Solutions
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
     )
   }
 
   return (
-    <Card className="w-full flex-1">
-      <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={Lightbulb}>
-          {solution.title || `Solution #${solution.id}`}
-        </CardTitle>
-        <p className="text-md text-muted-foreground">
-          Edit and review every part of this solution in one place.
-        </p>
-      </CardHeader>
-      <CardContent className="p-10 pt-6">
-        <SolutionHubContent mode="page" />
-      </CardContent>
-    </Card>
+    <div className="flex flex-col w-full flex-1">
+      <Card className="w-full">
+        <CardHeader className="px-10 pt-10 pb-0">
+          <CardTitle icon={Lightbulb}>
+            {solution.title || `Solution #${solution.id}`}
+          </CardTitle>
+          <p className="text-md text-muted-foreground">
+            Edit and review every part of this solution in one place.
+          </p>
+        </CardHeader>
+        <CardContent className="p-10 pt-6">
+          <SolutionHubContent mode="page" />
+        </CardContent>
+      </Card>
+    </div>
   )
 }
 
