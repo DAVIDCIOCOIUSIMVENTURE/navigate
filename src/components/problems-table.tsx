@@ -346,22 +346,12 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                         <div className="flex items-center gap-1">
                           {showEditDelete && (
                             <>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-7"
-                                onClick={() => setEditingProblemId(problem.id)}
-                                aria-label="Edit problem"
-                              >
-                                <Pencil className="h-3.5 w-3.5" />
-                                <span className="hidden md:inline ml-1">Edit</span>
-                              </Button>
                               <ConfirmDialog
                                 trigger={
                                   <Button
-                                    variant="ghost"
+                                    variant="destructive-outline"
                                     size="sm"
-                                    className="h-7 hover:text-destructive"
+                                    className="h-7"
                                     aria-label="Delete problem"
                                   >
                                     <Trash2 className="h-3.5 w-3.5" />
@@ -371,6 +361,16 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                 description="This will permanently delete this problem and any associated data."
                                 onConfirm={() => dispatch.problems.delete(problem.id)}
                               />
+                              <Button
+                                variant="primary-outline"
+                                size="sm"
+                                className="h-7"
+                                onClick={() => setEditingProblemId(problem.id)}
+                                aria-label="Edit problem"
+                              >
+                                <Pencil className="h-3.5 w-3.5" />
+                                <span className="hidden md:inline ml-1">Edit</span>
+                              </Button>
                             </>
                           )}
                           <Button

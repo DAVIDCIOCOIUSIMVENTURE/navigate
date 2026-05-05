@@ -306,9 +306,9 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                             <ConfirmDialog
                               trigger={
                                 <Button
-                                  variant="ghost"
+                                  variant="destructive-outline"
                                   size="sm"
-                                  className="h-7 hover:text-destructive"
+                                  className="h-7"
                                   aria-label="Delete solution"
                                 >
                                   <Trash2 className="h-3.5 w-3.5" />
@@ -319,7 +319,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                               onConfirm={() => dispatch.solutions.delete(solution.id)}
                             />
                             <Button
-                              variant="ghost"
+                              variant="primary-outline"
                               size="sm"
                               className="h-7"
                               onClick={() => setEditingSolution(solution)}
