@@ -15,6 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { Separator } from "@/components/ui/separator"
 import { StatusSelect } from "@/components/ui/status-select"
 import type { Solution } from "@/store/solutions-model"
 import type { SolutionPatch } from "@/store/solutions-model"
@@ -76,26 +77,29 @@ export function EditSolutionDialog({ solution, onClose }: EditSolutionDialogProp
           <DialogTitle>Edit Solution</DialogTitle>
           <DialogDescription className="sr-only">Edit Solution</DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-4 py-4">
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium" htmlFor="edit-solution-title">Title</label>
-            <Input
-              id="edit-solution-title"
-              value={fields.title}
-              onChange={(e) => setFields((prev) => ({ ...prev, title: e.target.value }))}
-              placeholder="Short solution title"
-            />
+        <div className="flex flex-col gap-5 py-4">
+          <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium" htmlFor="edit-solution-title">Title</label>
+              <Input
+                id="edit-solution-title"
+                value={fields.title}
+                onChange={(e) => setFields((prev) => ({ ...prev, title: e.target.value }))}
+                placeholder="Short solution title"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <label className="text-sm font-medium" htmlFor="edit-solution-description">Description</label>
+              <Textarea
+                id="edit-solution-description"
+                value={fields.description}
+                onChange={(e) => setFields((prev) => ({ ...prev, description: e.target.value }))}
+                placeholder="Describe the solution..."
+                rows={4}
+              />
+            </div>
           </div>
-          <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium" htmlFor="edit-solution-description">Description</label>
-            <Textarea
-              id="edit-solution-description"
-              value={fields.description}
-              onChange={(e) => setFields((prev) => ({ ...prev, description: e.target.value }))}
-              placeholder="Describe the solution..."
-              rows={4}
-            />
-          </div>
+          <Separator />
           <StatusSelect
             status={fields.validationStatus}
             setStatus={(v) => {

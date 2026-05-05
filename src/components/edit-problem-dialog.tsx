@@ -14,6 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { Separator } from "@/components/ui/separator"
 import { brainstormColumns } from "@/data/brainstormData"
 import { StatusSelect } from "@/components/ui/status-select"
 import type { Problem, ProblemPatch } from "@/store/problems-model"
@@ -81,7 +82,7 @@ export function EditProblemDialog({ problem, onClose, title = "Edit Problem", sh
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription className="sr-only">{title}</DialogDescription>
         </DialogHeader>
-        <div className="flex flex-col gap-4 py-4">
+        <div className="flex flex-col gap-5 py-4">
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium" htmlFor="edit-description">
               Problem description
@@ -94,23 +95,29 @@ export function EditProblemDialog({ problem, onClose, title = "Edit Problem", sh
               rows={3}
             />
           </div>
-          {EDITABLE_COLUMNS.map((col) => (
-            <DimensionPicker
-              key={col.id}
-              columnId={col.id}
-              ids={(problem?.[COLUMN_TO_FIELD[col.id]] as string[] | undefined) ?? []}
-              onChange={(ids) => updateColumn(col.id, ids)}
-              label={col.title}
-            />
-          ))}
+          <Separator />
+          <div className="flex flex-col gap-3">
+            {EDITABLE_COLUMNS.map((col) => (
+              <DimensionPicker
+                key={col.id}
+                columnId={col.id}
+                ids={(problem?.[COLUMN_TO_FIELD[col.id]] as string[] | undefined) ?? []}
+                onChange={(ids) => updateColumn(col.id, ids)}
+                label={col.title}
+              />
+            ))}
+          </div>
           {showStatus && (
-            <StatusSelect
-              status={status}
-              setStatus={(v) => {
-                setStatus(v)
-                if (problem) dispatch.problems.update({ id: problem.id, patch: { validationStatus: v } })
-              }}
-            />
+            <>
+              <Separator />
+              <StatusSelect
+                status={status}
+                setStatus={(v) => {
+                  setStatus(v)
+                  if (problem) dispatch.problems.update({ id: problem.id, patch: { validationStatus: v } })
+                }}
+              />
+            </>
           )}
         </div>
         {problem && (() => {
