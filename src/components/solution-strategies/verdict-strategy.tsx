@@ -1,9 +1,9 @@
-"use client"
+﻿"use client"
 
 import { useEffect, useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { useSolution } from "@/app/(app)/solutions/[solutionId]/validate/context"
-import type { ValidationStatus } from "@/types/idea"
+import type { ValidationStatus } from "@/types/validation"
 import { CheckCircle2, HelpCircle, XCircle } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"

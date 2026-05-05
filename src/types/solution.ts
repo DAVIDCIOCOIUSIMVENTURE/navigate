@@ -1,4 +1,4 @@
-import type { ValidationStatus } from "@/types/idea"
+﻿import type { ValidationStatus } from "@/types/validation"
 
 export type RootCause = {
   id: number

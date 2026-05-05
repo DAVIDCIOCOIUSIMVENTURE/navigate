@@ -26,7 +26,7 @@ import { createContext, useContext, useCallback, type ReactNode } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import type { Solution } from "@/types/solution"
-import type { ValidationStatus } from "@/types/idea"
+import type { ValidationStatus } from "@/types/validation"
 import type { Problem } from "@/store/problems-model"
 
 type SolutionContextValue = {

@@ -4,12 +4,20 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Writing Style
 
-**Never use em dashes (`—` or `--`).** When writing any user-facing text (UI copy, descriptions, tooltips, comments, placeholder text, etc.), replace em dashes with the most fitting alternative: a colon, comma, semicolon, full stop, or by restructuring the sentence. This applies to all generated content throughout the codebase.
+**Never use em dashes (`—` or `--`).** This rule applies *everywhere*, including:
+
+* UI copy, descriptions, tooltips, placeholder text
+* Code comments
+* Documentation, including this file
+* Commit messages and PR descriptions
+* Claude's own chat replies and explanations
+
+Replace em dashes with the most fitting alternative: a colon, comma, semicolon, full stop, parentheses, or by restructuring the sentence. The only exception is CLI flags (e.g. `--noEmit`, `--no-verify`), where the double hyphen is part of the syntax.
 
 ## Commands
 
 ```Shell
-npm run dev              # Start dev server on port 4000
+npm run dev              # Start dev server on port 4000 (uses Turbopack)
 npm run build            # Build for production
 npm run lint             # Run ESLint
 npm run test             # Run tests in watch mode
@@ -43,19 +51,19 @@ To bypass all hooks (e.g. for WIP pushes): `git push --no-verify`
 
 ## Architecture
 
-**Navigate** is a Next.js 15 (App Router) application guiding users through an innovation process: Foundations (Why It Matters) → Self-Discovery → Problem Triggers → Problems → Solutions → Next Steps.
+**Navigate** is a Next.js 15 (App Router) application guiding users through an innovation process: Foundations (Why It Matters) → Self-Discovery → Problems → Solutions → Next Steps.
 
 ### Stack
 
 * **Framework**: Next.js 15 with App Router, React 19
 * **UI**: Radix UI primitives + Tailwind CSS; custom components in `src/components/ui/`
-* **State**: Rematch (Redux wrapper) — `@rematch/core` + `react-redux`; React Context for lighter feature workflows
+* **State**: Rematch (Redux wrapper): `@rematch/core` + `react-redux`. React Context is used for lighter feature workflows.
 * **Drag & Drop**: `@dnd-kit` for sortable bucket organization
 * **Tables**: `@tanstack/react-table`
 * **Notifications**: `sonner`
 * **NLP/Parsing**: `compromise` + `js-yaml` (used by problem brainstorm parsing)
 * **Testing**: Vitest 4 + React Testing Library + happy-dom; test files co-located as `*.test.ts(x)`
-* **CI**: GitHub Actions (`.github/workflows/ci.yml`) — runs lint, type check, and tests on every push
+* **CI**: GitHub Actions (`.github/workflows/ci.yml`) runs lint, type check, and tests on every push
 
 ### Database Status
 
@@ -73,19 +81,19 @@ DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
 
 ### Project Structure
 
-* `src/app/(app)/` — All main app pages, wrapped by the sidebar layout (`(app)/layout.tsx`)
-* `src/app/login/` — Password-protected login page (outside the sidebar layout)
-* `src/app/api/auth/` — Login (`POST`) and logout (`POST`) API routes for cookie-based auth
-* `src/middleware.ts` — Checks for `site-auth` cookie; redirects to `/login` if missing
-* `src/lib/` — Core utilities: `prisma.ts` (unused singleton), `config.ts` (app-wide constants), `utils.ts` (`cn` helper)
-* `src/config/navigation.ts` — Centralized top-level nav items + icon resolvers for foundations, self-discovery categories, and next-steps topics
-* `src/components/ui/` — Shared Radix UI-based primitives
-* `src/store/` — Global Rematch store (see "State Management" below)
-* `src/types/` — Cross-feature TypeScript types: `idea.ts` (validation primitives: `ValidationStatus`, `ValidationAssessment`, `ExistingSolutionItem`), `solution.ts` (`Solution`, `SolutionWorkspace`, discovery tool types)
-* `src/data/` — Static content modules: `selfDiscoveryData.ts`, `foundationsData.ts`, `brainstormData.ts`, `nextStepsData.ts`
-* `src/context/` — App-wide React Context providers: `guidance-context.tsx`, `container-size-context.tsx`, `navigation-guard-context.tsx`
-* `prisma/schema.prisma` — Database schema (kept for reference; not actively used)
-* `locales/` — i18n translations (en, es, fr) via `next-i18next`; infrastructure exists but not heavily used
+* `src/app/(app)/`: All main app pages, wrapped by the sidebar layout (`(app)/layout.tsx`)
+* `src/app/login/`: Password-protected login page (outside the sidebar layout)
+* `src/app/api/auth/`: Login (`POST`) and logout (`POST`) API routes for cookie-based auth
+* `src/middleware.ts`: Checks for `site-auth` cookie; redirects to `/login` if missing
+* `src/lib/`: Core utilities. `prisma.ts` (unused singleton), `config.ts` (app-wide constants), `utils.ts` (`cn` helper), `dimension-labels.ts` (`resolveDimensionLabel` / `useDimensionLabel` / `resolveOrCreate` for id ↔ label translation across built-in, `customBrainstormItems`, and `selfDiscoveryItems` catalogs), `dimension-visuals.ts`, `discoveryMethods.ts`
+* `src/config/navigation.ts`: Centralized top-level nav items + icon resolvers for foundations, self-discovery categories, and next-steps topics
+* `src/components/ui/`: Shared Radix UI-based primitives
+* `src/store/`: Global Rematch store (see "State Management" below)
+* `src/types/`: Cross-feature TypeScript types. `validation.ts` holds validation primitives (`ValidationStatus`, `ValidationAssessment`, `ExistingSolutionItem`, `ValidationMetric`, `DEFAULT_VALIDATION_ASSESSMENT`); `solution.ts` holds `Solution`, `SolutionWorkspace`, and discovery tool types.
+* `src/data/`: Static content modules (`selfDiscoveryData.ts`, `foundationsData.ts`, `brainstormData.ts`, `nextStepsData.ts`)
+* `src/context/`: App-wide React Context providers (`guidance-context.tsx`, `container-size-context.tsx`, `navigation-guard-context.tsx`)
+* `prisma/schema.prisma`: Database schema (kept for reference; not actively used)
+* `locales/`: i18n translations (en, es, fr) via `next-i18next`. Infrastructure exists but is not heavily used.
 
 ### Password Protection
 
@@ -114,8 +122,9 @@ All state is client-side only (no database). Two patterns coexist; choose based 
 | ----- | ---------------- | ------- |
 | `settings` | `navigate-settings` | Sidebar mode, full-view toggle, journal panel open state |
 | `notes` | `navigate-notes` | Journal notes (id/title/text/createdAt/editedAt) |
-| `problemTriggers` | `navigate-problem-triggers` | Self-discovery prompts that surface candidate problems |
-| `problems` | `navigate-problems` | Global Problem list, including customer / context / problem fragments and full validation state (`existingSolutions`, `validationAssessment`, `validationStatus`, `contextWhen`, `segmentSize`, `customerDescription`, `emotionalImpact`) |
+| `selfDiscoveryItems` | `navigate-self-discovery-items` | Self-discovery answers (id `you-user-<8-char>`, title, `questionUrl`, optional `suggestionId`). Drives the brainstorm "You" column. Renamed from the legacy `problemTriggers` model. |
+| `customBrainstormItems` | `navigate-custom-brainstorm-items` | Per-user catalog of dimension items (`customers` / `contexts` / `problems`) added from the brainstorm canvas/builder, keyed by ids like `customer-user-<8-char>`. Built-in items live in `src/data/brainstormData.ts` with stable slugs (`customer-teenagers`, etc.). |
+| `problems` | `navigate-problems` | Global Problem list. `customers` / `contexts` / `problems` / `you` arrays now store **ids** (built-in slugs or `*-user-*` for custom/self-discovery items), resolved to labels via `src/lib/dimension-labels.ts`. Also holds full validation state (`existingSolutions`, `validationAssessment`, `validationStatus`, `contextWhen`, `segmentSize`, `customerDescription`, `emotionalImpact`). |
 | `solutions` | `navigate-solutions` | Solution candidates linked to a `problemId`; tracks inspiration source, scoring fields (`feasibility`/`impact`/`cost`/`timeToImplement`), validation, and discovery-tool artefacts (analogy / SCAMPER / improve / reverse) |
 | `solutionWorkspaces` | `navigate-solution-workspaces` | One workspace per `problemId`, scratch space shared by problem refinement and solution discovery (analysis tool, root causes, 5-Whys chains, affected groups, reverse brainstorm, etc.). Use `dispatch.solutionWorkspaces.ensureForProblem(problemId)` to lazily create one |
 | `accountSettings` | `navigate-account-settings` | Display name, email, theme, compact mode, notification preferences |
@@ -129,19 +138,19 @@ Access patterns:
 
 **React Context** for lighter, page-scoped state without persistence side effects:
 
-* `src/context/guidance-context.tsx` — `openGuidance(topic?)` / `useGuidance()` for the guidance side-panel
-* `src/context/container-size-context.tsx` — `useContainerSize()` returns `"narrow" | "wide"` based on `ResizeObserver` on the content area; used to switch responsive layouts (mobile vs. desktop step navigators, etc.)
-* `src/context/navigation-guard-context.tsx` — registers "are you sure?" prompts for in-progress flows
+* `src/context/guidance-context.tsx`: `openGuidance(topic?)` / `useGuidance()` for the guidance side-panel
+* `src/context/container-size-context.tsx`: `useContainerSize()` returns `"narrow" | "wide"` based on `ResizeObserver` on the content area; used to switch responsive layouts (mobile vs. desktop step navigators, etc.)
+* `src/context/navigation-guard-context.tsx`: registers "are you sure?" prompts for in-progress flows
 * Per-route contexts (described below) wrap a Rematch model and expose a typed setter API plus `NAV_ITEMS` for the sidebar/stepper.
 
 ### Layout & Navigation Patterns
 
-* `src/app/layout.tsx` — Root layout: HTML shell only (no sidebar). The `/login` route renders here directly.
-* `src/app/(app)/layout.tsx` — Wraps all main app pages with `RootLayoutClient`.
-* `src/app/root-layout-client.tsx` — Client layout containing:
+* `src/app/layout.tsx`: Root layout (HTML shell only, no sidebar). The `/login` route renders here directly.
+* `src/app/(app)/layout.tsx`: Wraps all main app pages with `RootLayoutClient`.
+* `src/app/root-layout-client.tsx`: Client layout containing:
   * `AppStoreProvider` and `NavigationGuardProvider` at the top
   * Global sidebar (`AppSidebar`), full-view toggle, journal panel, guidance panel, sonner `Toaster`
-  * A `ResizablePanelGroup` that splits content + side panel (`GuidancePanel` or `JournalPanel`) on desktop; on mobile they render as `Sheet`s instead
+  * A `ResizablePanelGroup` that splits content + side panel (`GuidancePanel` or `JournalPanel`) on desktop. On mobile they render as `Sheet`s instead.
   * `getSection(pathname)` derives the page title + icon shown in the header from the route segments. **When adding a new top-level route, update `getSection` here as well as `src/config/navigation.ts`.**
 * Section title + icon come from `getSection`; deeper breadcrumbs are not auto-generated by this layout.
 
@@ -187,11 +196,11 @@ The provider only sets fields on the `Solution` (1-5 metric scores, validation n
 
 ### Other Routes
 
-* `/` — Dashboard (achievements, problem/solution lists, quick search dialogs)
-* `/foundations` and `/foundations/[sectionUrl]` — Static "Why It Matters" content driven by `src/data/foundationsData.ts`
-* `/self-discovery`, `/self-discovery/[categoryId]`, `/self-discovery/[categoryId]/[questionId]` — Questionnaire driven by `src/data/selfDiscoveryData.ts`
-* `/next-steps` and `/next-steps/[topicUrl]` — Per-topic guidance pages (`src/data/nextStepsData.ts`)
-* `/settings`, `/settings/{account,appearance,notifications,data-privacy}` — User-facing settings backed by the `accountSettings` Rematch model
+* `/`: Dashboard (achievements, problem/solution lists, quick search dialogs)
+* `/foundations` and `/foundations/[sectionUrl]`: Static "Why It Matters" content driven by `src/data/foundationsData.ts`
+* `/self-discovery`, `/self-discovery/[categoryId]`, `/self-discovery/[categoryId]/[questionId]`: Questionnaire driven by `src/data/selfDiscoveryData.ts`
+* `/next-steps` and `/next-steps/[topicUrl]`: Per-topic guidance pages (`src/data/nextStepsData.ts`)
+* `/settings`, `/settings/{account,appearance,notifications,data-privacy}`: User-facing settings backed by the `accountSettings` Rematch model
 
 ### Vercel Deployment
 
@@ -206,21 +215,21 @@ Required environment variables in Vercel:
 
 * **Runner**: Vitest 4 with `happy-dom` environment (ESM-native; replaces jsdom)
 * **Config**: `vitest.config.ts` at root; setup file `vitest.setup.ts` imports `@testing-library/jest-dom`
-* **Globals**: `vitest/globals` and `@testing-library/jest-dom` types declared in `tsconfig.json` — no need to import `describe`/`it`/`expect` in test files
+* **Globals**: `vitest/globals` and `@testing-library/jest-dom` types declared in `tsconfig.json`, so test files do not need to import `describe`/`it`/`expect`.
 * **Patterns by test type**:
-  * Pure data / utilities → plain `.test.ts`, call functions directly
-  * Rematch reducers → import the model, call `model.reducers.fn(state, payload)` directly (they're pure functions, no store setup needed). Effects need a real store; see `src/store/notes-model.test.ts` for the existing example.
-  * React Context hooks → `renderHook(() => useHook(), { wrapper: ProviderComponent })`; each state-dependent `act()` call must be in its own block (stale closure behaviour)
+  * Pure data / utilities: plain `.test.ts`, call functions directly
+  * Rematch reducers: import the model, call `model.reducers.fn(state, payload)` directly (they're pure functions, no store setup needed). Effects need a real store; see `src/store/notes-model.test.ts` for the existing example.
+  * React Context hooks: `renderHook(() => useHook(), { wrapper: ProviderComponent })`. Each state-dependent `act()` call must be in its own block (stale closure behaviour).
 * **Module system**: `"type": "module"` is set in `package.json` (required by Vite 7 / Vitest 4); `prisma/seed.cjs` uses `.cjs` extension to stay CommonJS
 
 ### CI (GitHub Actions)
 
 `.github/workflows/ci.yml` runs on every push and on PRs to `main`:
 
-1. `npm ci` — clean install
-2. `npm run lint` — ESLint
-3. `npx tsc --noEmit` — type check
-4. `npm run test:run` — Vitest
+1. `npm ci`: clean install
+2. `npm run lint`: ESLint
+3. `npx tsc --noEmit`: type check
+4. `npm run test:run`: Vitest
 
 Uses Node 22 (Vite 7 requires `>=20.19.0`). The `SITE_PASSWORD` env var is set to a placeholder in CI so middleware doesn't error during the build step.
 
@@ -229,6 +238,5 @@ To enforce CI as a merge gate: GitHub → Settings → Branches → main → **R
 ### Known Inconsistencies / Work In Progress
 
 * **Prisma leftovers**: `@prisma/client`, `prisma`, and related scripts remain in `package.json` but the database is not used. They can be removed once there's confidence no DB will be re-introduced soon.
-* **`src/types/idea.ts`**: Despite the name, this file holds shared validation primitives (`ValidationStatus`, `ValidationAssessment`, `ExistingSolutionItem`, etc.) used by the problem and solution flows; there is no longer an "Idea" feature.
 * **i18n**: Translation infrastructure is wired but pages mostly use static strings.
 * **No multi-user auth**: The password gate is a single shared password for all users. No per-user sessions or roles.

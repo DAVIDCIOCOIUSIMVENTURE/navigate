@@ -1,8 +1,8 @@
-"use client"
+﻿"use client"
 
 import { CheckCircle2, HelpCircle, XCircle, Clock } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import type { ValidationStatus } from "@/types/idea"
+import type { ValidationStatus } from "@/types/validation"
 
 const STATUS_OPTIONS: { value: ValidationStatus; label: string; icon: React.ElementType; iconClass: string }[] = [
   { value: "unvalidated", label: "Not validated", icon: Clock,        iconClass: "text-muted-foreground" },

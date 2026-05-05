@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator"
 import {
   CheckCircle2, XCircle, Clock, AlertTriangle,
 } from "lucide-react"
-import type { ValidationStatus, ExistingSolutionItem, ImpactItem, DecisionLevel, ValidationAssessment } from "@/types/idea"
+import type { ValidationStatus, ExistingSolutionItem, ImpactItem, DecisionLevel, ValidationAssessment } from "@/types/validation"
 import { useDimensionLabels } from "@/lib/dimension-labels"
 
 /* ------------------------------------------------------------------ */

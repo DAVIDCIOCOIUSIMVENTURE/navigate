@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useEffect, useRef, useState } from "react"
 import { Input } from "@/components/ui/input"
@@ -6,7 +6,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
-import type { ValidationMetric } from "@/types/idea"
+import type { ValidationMetric } from "@/types/validation"
 import { cn } from "@/lib/utils"
 import { CheckCircle2, XCircle, HelpCircle, Users, RefreshCw, DollarSign, ArrowRightLeft, Target, Building2 } from "lucide-react"
 

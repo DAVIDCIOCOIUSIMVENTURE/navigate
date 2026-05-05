@@ -24,8 +24,8 @@
 import { createContext, useContext, useCallback, useEffect, type ReactNode } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
-import type { ExistingSolutionItem, ValidationStatus, ValidationMetric, ValidationAssessment } from "@/types/idea"
-import { DEFAULT_VALIDATION_ASSESSMENT } from "@/types/idea"
+import type { ExistingSolutionItem, ValidationStatus, ValidationMetric, ValidationAssessment } from "@/types/validation"
+import { DEFAULT_VALIDATION_ASSESSMENT } from "@/types/validation"
 import type { Problem } from "@/store/problems-model"
 import type {
   AnalysisToolType,

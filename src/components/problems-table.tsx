@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { Fragment, useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
@@ -45,7 +45,7 @@ import type { Problem } from "@/store/problems-model"
 import { EditProblemDialog } from "@/components/edit-problem-dialog"
 import { cn } from "@/lib/utils"
 
-import type { ValidationStatus } from "@/types/idea"
+import type { ValidationStatus } from "@/types/validation"
 
 const STATUS_CONFIG: Record<ValidationStatus, { icon: React.ElementType; label: string; className: string }> = {
   unvalidated: { icon: Circle, label: "Unvalidated", className: "text-muted-foreground" },

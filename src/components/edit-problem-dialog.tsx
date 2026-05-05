@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
@@ -17,7 +17,7 @@ import {
 import { brainstormColumns } from "@/data/brainstormData"
 import { StatusSelect } from "@/components/ui/status-select"
 import type { Problem, ProblemPatch } from "@/store/problems-model"
-import type { ValidationStatus } from "@/types/idea"
+import type { ValidationStatus } from "@/types/validation"
 import { DimensionPicker } from "@/components/dimension-picker"
 import { ArrowRight, ExternalLink } from "lucide-react"
 

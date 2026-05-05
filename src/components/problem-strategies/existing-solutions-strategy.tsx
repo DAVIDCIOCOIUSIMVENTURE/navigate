@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useEffect, useRef, useState, type KeyboardEvent } from "react"
 import { Button } from "@/components/ui/button"
@@ -7,7 +7,7 @@ import { AutoTextarea } from "@/components/ui/auto-textarea"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
-import type { ImpactItem, ShortcomingItem } from "@/types/idea"
+import type { ImpactItem, ShortcomingItem } from "@/types/validation"
 import { Plus, X, ChevronDown } from "lucide-react"
 
 const IMPACT_CATEGORIES = [

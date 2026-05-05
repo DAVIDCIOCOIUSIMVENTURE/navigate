@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState, useRef, useEffect } from "react"
 import { useRouter } from "next/navigation"
@@ -18,7 +18,7 @@ import {
 import { StatusSelect } from "@/components/ui/status-select"
 import type { Solution } from "@/store/solutions-model"
 import type { SolutionPatch } from "@/store/solutions-model"
-import type { ValidationStatus } from "@/types/idea"
+import type { ValidationStatus } from "@/types/validation"
 import { ExternalLink } from "lucide-react"
 
 function useDebouncedCallback<T>(callback: (value: T) => void, delay: number) {

@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { usePathname, useRouter } from "next/navigation"
 import { useSelector } from "react-redux"
@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Target, ArrowLeft, ArrowRight, CheckCircle2, HelpCircle, Info } from "lucide-react"
 import { getAdjacentSteps, useDiscovery } from "../context"
 import { DimensionChips } from "@/components/dimension-chips"
-import type { ValidationStatus } from "@/types/idea"
+import type { ValidationStatus } from "@/types/validation"
 
 const STATUS_BADGE: Record<"valid" | "unsure", { label: string; icon: typeof CheckCircle2; className: string }> = {
   valid: { label: "Valid", icon: CheckCircle2, className: "text-green-700 border-green-500/40 bg-green-50" },
