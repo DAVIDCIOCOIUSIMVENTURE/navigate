@@ -162,7 +162,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
       <CardHeader className="pb-3 gap-3">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <CardTitle className="text-sm font-semibold">
-            Solution Bank ({sortedSolutions.length}
+            Solutions ({sortedSolutions.length}
             {sortedSolutions.length !== solutions.length ? ` of ${solutions.length}` : ""})
           </CardTitle>
           <div className="flex items-center gap-2 flex-wrap">
