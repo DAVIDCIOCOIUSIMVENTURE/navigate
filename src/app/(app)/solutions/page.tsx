@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { SearchSolutionDialog } from "@/components/search-solution-dialog"
 import { SolutionsTable } from "@/components/solutions-table"
-import { Plus, Lightbulb } from "lucide-react"
+import { Plus, Lightbulb, Target, Sparkles, ShieldCheck } from "lucide-react"
 
 export default function SolutionsPage() {
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -21,15 +21,52 @@ export default function SolutionsPage() {
   return (
     <div className="flex flex-col gap-3 w-full flex-1">
       <Card>
-        <CardContent className="py-4 flex flex-wrap items-center gap-4">
-          <p className="flex-1 min-w-[16rem] text-sm text-muted-foreground leading-relaxed">
-            This is your <span className="font-medium text-foreground">solution library</span>, a central place to collect, refine, and track the solutions you&apos;ve identified.
-            Use the <span className="font-medium text-foreground">Identify solutions</span> button to pick a validated problem and generate candidates through a guided discovery wizard, then validate each one to decide whether it&apos;s worth pursuing.
-          </p>
-          <Button onClick={() => setDialogOpen(true)} className="gap-2 shrink-0">
-            <Plus className="h-4 w-4" />
-            Identify solutions
-          </Button>
+        <CardContent className="py-4 flex flex-col gap-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <p className="flex-1 min-w-[16rem] text-sm text-muted-foreground leading-relaxed">
+              This is your <span className="font-medium text-foreground">solution library</span>, a central place to collect, refine, and track the solutions you&apos;ve identified.
+              The goal of this section is to generate solution candidates for a validated problem, then pressure-test each one before committing. A good solution is feasible to build, has real impact for the customer, and is worth the cost and time it takes.
+            </p>
+            <Button onClick={() => setDialogOpen(true)} className="gap-2 shrink-0">
+              <Plus className="h-4 w-4" />
+              Identify solutions
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-3 border-t">
+            <div className="flex items-start gap-3">
+              <span className="flex items-center justify-center w-8 h-8 rounded-md bg-primary/10 text-primary shrink-0">
+                <Target className="h-4 w-4" />
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-foreground">1. Pick a problem</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">
+                  Choose a validated problem from your library to anchor the work. Everything you discover here will be tied back to it.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <span className="flex items-center justify-center w-8 h-8 rounded-md bg-primary/10 text-primary shrink-0">
+                <Sparkles className="h-4 w-4" />
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-foreground">2. Discover candidates</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">
+                  Use guided tools (analogy, SCAMPER, reverse brainstorm, root-cause attacks) to generate solution ideas instead of jumping to the first one.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <span className="flex items-center justify-center w-8 h-8 rounded-md bg-primary/10 text-primary shrink-0">
+                <ShieldCheck className="h-4 w-4" />
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-foreground">3. Validate</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">
+                  Score each candidate on feasibility, impact, cost, and time to implement, then decide which one is worth pursuing.
+                </p>
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
 

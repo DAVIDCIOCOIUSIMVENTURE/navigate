@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { SearchProblemDialog } from "@/components/search-problem-dialog"
 import { ProblemsTable } from "@/components/problems-table"
-import { Plus, Target } from "lucide-react"
+import { Plus, Target, Search, ShieldCheck } from "lucide-react"
 
 export default function ProblemsPage() {
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -21,15 +21,41 @@ export default function ProblemsPage() {
   return (
     <div className="flex flex-col gap-3 w-full flex-1">
       <Card>
-        <CardContent className="py-4 flex flex-wrap items-center gap-4">
-          <p className="flex-1 min-w-[16rem] text-sm text-muted-foreground leading-relaxed">
-            This is your <span className="font-medium text-foreground">problem library</span>, a central place to collect, refine, and track the problems you&apos;ve identified.
-            Use the <span className="font-medium text-foreground">Identify problems</span> button to brainstorm and discover problems worth solving, then validate each one to determine whether it&apos;s a real pain point with a viable opportunity behind it.
-          </p>
-          <Button onClick={() => setDialogOpen(true)} className="gap-2 shrink-0">
-            <Plus className="h-4 w-4" />
-            Identify problems
-          </Button>
+        <CardContent className="py-4 flex flex-col gap-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <p className="flex-1 min-w-[16rem] text-sm text-muted-foreground leading-relaxed">
+              This is your <span className="font-medium text-foreground">problem library</span>, a central place to collect, refine, and track the problems you&apos;ve identified.
+              The goal of this section is to find problems that are real, painful, and worth solving before you spend time building anything. A good problem is one that specific people feel, in a specific context, strongly enough that they&apos;d pay attention to a fix.
+            </p>
+            <Button onClick={() => setDialogOpen(true)} className="gap-2 shrink-0">
+              <Plus className="h-4 w-4" />
+              Identify problems
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t">
+            <div className="flex items-start gap-3">
+              <span className="flex items-center justify-center w-8 h-8 rounded-md bg-primary/10 text-primary shrink-0">
+                <Search className="h-4 w-4" />
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-foreground">1. Identify</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">
+                  Brainstorm problems worth solving by combining customer segments, contexts, and types of pain with what you&apos;ve learned about yourself.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <span className="flex items-center justify-center w-8 h-8 rounded-md bg-primary/10 text-primary shrink-0">
+                <ShieldCheck className="h-4 w-4" />
+              </span>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-foreground">2. Validate</p>
+                <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">
+                  Open a problem and refine it: who feels it, when it shows up, why it matters, and how today&apos;s alternatives fall short. Then decide whether it&apos;s real and painful enough to commit to.
+                </p>
+              </div>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
