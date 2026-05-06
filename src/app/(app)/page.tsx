@@ -81,7 +81,7 @@ export default function DashboardPage() {
   const isWide = useContainerSize() === "wide"
 
   return (
-    <div className="flex flex-col gap-4 w-full flex-1 min-h-0">
+    <div className={cn("flex flex-col gap-4 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
       {/* Foundations prompt + action buttons */}
       <div className="flex items-stretch gap-3 shrink-0">
         <Link href="/foundations" className="flex-1 min-w-0 flex">
@@ -143,8 +143,8 @@ export default function DashboardPage() {
       </div>
 
       {/* Problems list (expandable) and Achievements */}
-      <div className={cn("grid gap-4 flex-1 min-h-0", isWide ? "grid-cols-3" : "grid-cols-1")}>
-        <Card className={cn("flex flex-col", isWide ? "min-h-0 col-span-2" : "min-h-[300px]")}>
+      <div className={cn("grid gap-4 flex-1 min-h-0", isWide ? "grid-cols-3 grid-rows-1" : "grid-cols-1")}>
+        <Card className={cn("flex flex-col", isWide ? "min-h-0 col-span-2" : "min-h-[320px] max-h-[640px]")}>
           <CardHeader className="shrink-0">
             <CardTitle className="text-base">Problems &amp; Solutions</CardTitle>
           </CardHeader>
@@ -226,7 +226,7 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
 
-        <Card className={cn("flex flex-col", isWide ? "min-h-0" : "min-h-[300px]")}>
+        <Card className={cn("flex flex-col", isWide ? "min-h-0" : "min-h-[320px] max-h-[640px]")}>
           <CardHeader className="shrink-0">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base">Achievements</CardTitle>

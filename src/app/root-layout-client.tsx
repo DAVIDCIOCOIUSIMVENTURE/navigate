@@ -28,7 +28,7 @@ function ContentArea({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null)
   const size = useObserveContainerSize(ref)
   return (
-    <div ref={ref} className="flex flex-1 flex-col w-full">
+    <div ref={ref} className="flex flex-1 w-full min-h-0">
       <ContainerSizeContext.Provider value={size}>
         {children}
       </ContainerSizeContext.Provider>

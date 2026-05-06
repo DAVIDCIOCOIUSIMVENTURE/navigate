@@ -11,7 +11,8 @@
       "PowerShell($j = Get-Content \"$env:USERPROFILE\\\\.claude.json\" -Raw | ConvertFrom-Json; $proj = $j.projects.'c:/Development/OU/navigate'; if \\($proj.mcpServers\\) { \"Current mcpServers in this project:\"; $proj.mcpServers | ConvertTo-Json -Depth 5 } else { \"no mcpServers configured for this project\" }; \"---\"; \"User-level scope check:\"; $u = $j.projects.'C:/Users/DavidCiocoiu'; if \\($u.mcpServers\\) { $u.mcpServers | ConvertTo-Json -Depth 5 } else { \"none\" })",
       "PowerShell(Copy-Item \"$env:USERPROFILE\\\\.claude.json\" \"$env:USERPROFILE\\\\.claude.json.bak\"; \"backup created\")",
       "PowerShell($path = \"$env:USERPROFILE\\\\.claude.json\"; $j = Get-Content $path -Raw | ConvertFrom-Json; $context7 = [PSCustomObject]@{ type = \"stdio\"; command = \"npx\"; args = @\\(\"-y\", \"@upstash/context7-mcp\"\\) }; if \\($j.PSObject.Properties.Name -contains \"mcpServers\"\\) { $j.mcpServers | Add-Member -NotePropertyName \"context7\" -NotePropertyValue $context7 -Force } else { $j | Add-Member -NotePropertyName \"mcpServers\" -NotePropertyValue \\([PSCustomObject]@{ context7 = $context7 }\\) -Force }; \\($j | ConvertTo-Json -Depth 100\\) | Out-File -FilePath $path -Encoding utf8 -NoNewline; \"wrote mcpServers.context7\"; \"---\"; \\(Get-Content $path -Raw | ConvertFrom-Json\\).mcpServers | ConvertTo-Json -Depth 5)",
-      "mcp__playwright__browser_click"
+      "mcp__playwright__browser_click",
+      "mcp__playwright__browser_resize"
     ]
   }
 }
