@@ -26,8 +26,8 @@ export default function SolutionsPage() {
       <Card>
         <CardContent className="py-4 flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-4">
-            <p className="flex-1 min-w-[16rem] text-base text-muted-foreground leading-relaxed">
-              This is your <span className="font-medium text-foreground">solution library</span>, a central place to collect, refine, and track the solutions you&apos;ve identified.
+            <p className="flex-1 min-w-[16rem] text-base leading-relaxed">
+              This is your <span className="font-bold">solution library</span>, a central place to collect, refine, and track the solutions you&apos;ve identified.
               The goal of this section is to generate solution candidates for a validated problem, then pressure-test each one before committing. A good solution is feasible to build, has real impact for the customer, and is worth the cost and time it takes.
             </p>
             <Button onClick={() => setDialogOpen(true)} className="gap-2 shrink-0">
@@ -41,8 +41,8 @@ export default function SolutionsPage() {
                 <Target className="h-4 w-4" />
               </span>
               <div className="min-w-0">
-                <p className="text-base font-semibold text-foreground">1. Pick a problem</p>
-                <p className="text-sm text-muted-foreground leading-relaxed mt-0.5">
+                <p className="text-base font-semibold">1. Pick a problem</p>
+                <p className="text-sm leading-relaxed mt-0.5">
                   Choose a validated problem from your library to anchor the work. Everything you discover here will be tied back to it.
                 </p>
               </div>
@@ -52,8 +52,8 @@ export default function SolutionsPage() {
                 <Sparkles className="h-4 w-4" />
               </span>
               <div className="min-w-0">
-                <p className="text-base font-semibold text-foreground">2. Discover candidates</p>
-                <p className="text-sm text-muted-foreground leading-relaxed mt-0.5">
+                <p className="text-base font-semibold">2. Discover candidates</p>
+                <p className="text-sm leading-relaxed mt-0.5">
                   Use guided tools (analogy, SCAMPER, reverse brainstorm, root-cause attacks) to generate solution ideas instead of jumping to the first one.
                 </p>
               </div>
@@ -63,8 +63,8 @@ export default function SolutionsPage() {
                 <ShieldCheck className="h-4 w-4" />
               </span>
               <div className="min-w-0">
-                <p className="text-base font-semibold text-foreground">3. Validate</p>
-                <p className="text-sm text-muted-foreground leading-relaxed mt-0.5">
+                <p className="text-base font-semibold">3. Validate</p>
+                <p className="text-sm leading-relaxed mt-0.5">
                   Score each candidate on feasibility, impact, cost, and time to implement, then decide which one is worth pursuing.
                 </p>
               </div>

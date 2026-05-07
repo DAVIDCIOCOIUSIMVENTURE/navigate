@@ -26,8 +26,8 @@ export default function ProblemsPage() {
       <Card>
         <CardContent className="py-4 flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-4">
-            <p className="flex-1 min-w-[16rem] text-base text-muted-foreground leading-relaxed">
-              This is your <span className="font-medium text-foreground">problem library</span>, a central place to collect, refine, and track the problems you&apos;ve identified.
+            <p className="flex-1 min-w-[16rem] text-base leading-relaxed">
+              This is your <span className="font-bold">problem library</span>, a central place to collect, refine, and track the problems you&apos;ve identified.
               The goal of this section is to find problems that are real, painful, and worth solving before you spend time building anything. A good problem is one that specific people feel, in a specific context, strongly enough that they&apos;d pay attention to a fix.
             </p>
             <Button onClick={() => setDialogOpen(true)} className="gap-2 shrink-0">
@@ -41,8 +41,8 @@ export default function ProblemsPage() {
                 <Search className="h-4 w-4" />
               </span>
               <div className="min-w-0">
-                <p className="text-base font-semibold text-foreground">1. Identify</p>
-                <p className="text-sm text-muted-foreground leading-relaxed mt-0.5">
+                <p className="text-base font-semibold">1. Identify</p>
+                <p className="text-sm leading-relaxed mt-0.5">
                   Brainstorm problems worth solving by combining customer segments, contexts, and types of pain with what you&apos;ve learned about yourself.
                 </p>
               </div>
@@ -52,8 +52,8 @@ export default function ProblemsPage() {
                 <ShieldCheck className="h-4 w-4" />
               </span>
               <div className="min-w-0">
-                <p className="text-base font-semibold text-foreground">2. Validate</p>
-                <p className="text-sm text-muted-foreground leading-relaxed mt-0.5">
+                <p className="text-base font-semibold">2. Validate</p>
+                <p className="text-sm leading-relaxed mt-0.5">
                   Open a problem and refine it: who feels it, when it shows up, why it matters, and how today&apos;s alternatives fall short. Then decide whether it&apos;s real and painful enough to commit to.
                 </p>
               </div>
