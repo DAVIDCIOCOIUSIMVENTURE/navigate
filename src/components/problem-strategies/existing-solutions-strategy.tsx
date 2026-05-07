@@ -171,10 +171,10 @@ export function ExistingSolutionsStrategy({ readOnly = false }: { readOnly?: boo
                       <div className="flex items-center justify-between gap-2">
                         <p className="text-base font-semibold text-white">Shortcomings</p>
                         <Button
-                          variant="ghost"
+                          variant="on-primary"
                           size="sm"
                           onClick={() => setPanelOpen((prev) => ({ ...prev, [i]: !prev[i] }))}
-                          className="h-7 gap-1.5 px-2 text-white/80 hover:bg-white/10 hover:text-white"
+                          className="h-7 gap-1.5 px-2"
                           aria-expanded={isPanelOpen}
                           aria-label={isPanelOpen ? "Hide impact examples" : "Show impact examples"}
                         >
