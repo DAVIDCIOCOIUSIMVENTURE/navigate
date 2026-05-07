@@ -15,7 +15,7 @@ export default function ValidationSummaryPage() {
 
   return (
     <Card className="w-full flex-1">
-      <CardHeader className="px-10 pt-10 pb-0">
+      <CardHeader className="px-10 pt-10 pb-0 space-y-6">
         <CardTitle icon={LayoutTemplate}>Summary</CardTitle>
         <p className="text-base">A read-only overview of everything you have captured for this solution. Use <strong>Open Solution</strong> to jump to the editable solution page.</p>
       </CardHeader>

@@ -12,7 +12,9 @@
       "PowerShell(Copy-Item \"$env:USERPROFILE\\\\.claude.json\" \"$env:USERPROFILE\\\\.claude.json.bak\"; \"backup created\")",
       "PowerShell($path = \"$env:USERPROFILE\\\\.claude.json\"; $j = Get-Content $path -Raw | ConvertFrom-Json; $context7 = [PSCustomObject]@{ type = \"stdio\"; command = \"npx\"; args = @\\(\"-y\", \"@upstash/context7-mcp\"\\) }; if \\($j.PSObject.Properties.Name -contains \"mcpServers\"\\) { $j.mcpServers | Add-Member -NotePropertyName \"context7\" -NotePropertyValue $context7 -Force } else { $j | Add-Member -NotePropertyName \"mcpServers\" -NotePropertyValue \\([PSCustomObject]@{ context7 = $context7 }\\) -Force }; \\($j | ConvertTo-Json -Depth 100\\) | Out-File -FilePath $path -Encoding utf8 -NoNewline; \"wrote mcpServers.context7\"; \"---\"; \\(Get-Content $path -Raw | ConvertFrom-Json\\).mcpServers | ConvertTo-Json -Depth 5)",
       "mcp__playwright__browser_click",
-      "mcp__playwright__browser_resize"
+      "mcp__playwright__browser_resize",
+      "PowerShell(npx tsc --noEmit)",
+      "PowerShell(npm run lint)"
     ]
   }
 }

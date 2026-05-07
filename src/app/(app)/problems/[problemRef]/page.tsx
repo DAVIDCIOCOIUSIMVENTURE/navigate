@@ -37,7 +37,7 @@ function HubBody({ problemRef }: { problemRef: string }) {
   return (
     <div className="flex flex-col w-full flex-1">
       <Card className="w-full">
-        <CardHeader className="px-10 pt-10 pb-0">
+        <CardHeader className="px-10 pt-10 pb-0 space-y-6">
           <CardTitle icon={Target}>
             {problem.description || `Problem #${problem.id}`}
           </CardTitle>
