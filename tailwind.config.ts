@@ -86,6 +86,7 @@ export default {
   			}
   		},
   		fontSize: {
+  			'base': ['0.9375rem', { lineHeight: '1.375rem' }],
   			'md': ['0.9375rem', { lineHeight: '1.375rem' }]
   		},
   		borderRadius: {

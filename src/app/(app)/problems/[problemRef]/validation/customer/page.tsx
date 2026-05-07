@@ -151,7 +151,7 @@ export default function CustomerSegmentPage() {
 
           <TabsContent value="case-studies">
             <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-4">
-              <p className="text-sm text-white">
+              <p className="text-base text-white">
                 See how successful companies defined their early customer. Notice how specific they were; they didn&apos;t try to serve everyone. Use these examples as inspiration when writing your own strategy.
               </p>
               <Tabs defaultValue={CUSTOMER_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
@@ -179,20 +179,20 @@ export default function CustomerSegmentPage() {
                           <div className={`flex items-center justify-center w-8 h-8 rounded-lg shrink-0 ${cs.iconBg}`}>
                             <Icon className="h-4 w-4 text-white" />
                           </div>
-                          <p className="text-sm font-semibold text-white">{cs.company}</p>
+                          <p className="text-base font-semibold text-white">{cs.company}</p>
                         </div>
-                        <div className="grid grid-cols-1 gap-y-3 text-sm">
+                        <div className="grid grid-cols-1 gap-y-3 text-base">
                           <div>
-                            <span className="text-xs font-medium text-white uppercase tracking-wide">Customer Description</span>
-                            <p className="mt-0.5 text-white">{cs.customerDescription}</p>
+                            <span className="text-base font-semibold text-white">Customer Description</span>
+                            <p className="mt-1 text-base text-white">{cs.customerDescription}</p>
                           </div>
                           <div>
-                            <span className="text-xs font-medium text-white uppercase tracking-wide">Estimated Segment Size</span>
-                            <p className="mt-0.5 text-white">{cs.segmentSize}</p>
+                            <span className="text-base font-semibold text-white">Estimated Segment Size</span>
+                            <p className="mt-1 text-base text-white">{cs.segmentSize}</p>
                           </div>
                           <div>
-                            <span className="text-xs font-medium text-white uppercase tracking-wide">Why This Works</span>
-                            <p className="mt-0.5 text-white">{cs.whyThisWorks}</p>
+                            <span className="text-base font-semibold text-white">Why This Works</span>
+                            <p className="mt-1 text-base text-white">{cs.whyThisWorks}</p>
                           </div>
                         </div>
                       </div>

@@ -84,7 +84,7 @@ export default function VerdictPage() {
 
           <TabsContent value="case-studies">
             <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
-              <p className="text-md text-white">
+              <p className="text-base text-white">
                 See how successful companies quantified the opportunity behind their core problem, estimating reach, frequency, value, and switching cost to decide whether to pursue it.
               </p>
               <Tabs defaultValue={VALIDATE_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
@@ -114,58 +114,58 @@ export default function VerdictPage() {
                     <div className={`flex items-center justify-center w-8 h-8 rounded-lg shrink-0 ${cs.iconBg}`}>
                       <Icon className="h-4 w-4 text-white" />
                     </div>
-                    <p className="text-md font-semibold text-white">{cs.company}</p>
+                    <p className="text-base font-semibold text-white">{cs.company}</p>
                   </div>
                   <div className={cn(
-                    "grid gap-3 text-md",
+                    "grid gap-3 text-base",
                     containerSize === "narrow" ? "grid-cols-1" : containerSize === "medium" ? "grid-cols-2" : "grid-cols-3",
                   )}>
                     <div>
-                      <span className="text-md font-medium text-white uppercase tracking-wide">How Many Customers</span>
-                      <p className="mt-0.5 text-white">
-                        <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-md font-semibold text-white mr-1">{cs.howManyPeople.value.toLocaleString()}</span>
+                      <span className="text-base font-semibold text-white">How Many Customers</span>
+                      <p className="mt-1 text-base text-white">
+                        <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-base font-semibold text-white mr-1">{cs.howManyPeople.value.toLocaleString()}</span>
                         {cs.howManyPeople.detail}
                       </p>
                     </div>
                     <div>
-                      <span className="text-md font-medium text-white uppercase tracking-wide">How Often</span>
-                      <p className="mt-0.5 text-white">
-                        <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-md font-semibold text-white mr-1">{cs.howOften.value} {cs.howOften.unit}</span>
+                      <span className="text-base font-semibold text-white">How Often</span>
+                      <p className="mt-1 text-base text-white">
+                        <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-base font-semibold text-white mr-1">{cs.howOften.value} {cs.howOften.unit}</span>
                         {cs.howOften.detail}
                       </p>
                     </div>
                     <div>
-                      <span className="text-md font-medium text-white uppercase tracking-wide">How Much Is It Worth</span>
-                      <p className="mt-0.5 text-white">
-                        <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-md font-semibold text-white mr-1">{cs.worthToThem.value} {cs.worthToThem.unit}</span>
+                      <span className="text-base font-semibold text-white">How Much Is It Worth</span>
+                      <p className="mt-1 text-base text-white">
+                        <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-base font-semibold text-white mr-1">{cs.worthToThem.value} {cs.worthToThem.unit}</span>
                         {cs.worthToThem.detail}
                       </p>
                     </div>
                     <div>
-                      <span className="text-md font-medium text-white uppercase tracking-wide">Cost of Switching</span>
-                      <p className="mt-0.5 text-white">
+                      <span className="text-base font-semibold text-white">Cost of Switching</span>
+                      <p className="mt-1 text-base text-white">
                         <span className={cn(
-                          "inline-block rounded px-1.5 py-0.5 text-md font-semibold text-white mr-1 capitalize",
+                          "inline-block rounded px-1.5 py-0.5 text-base font-semibold text-white mr-1 capitalize",
                           cs.costOfSwitching.level === "none" ? "bg-emerald-500/30" : cs.costOfSwitching.level === "low" ? "bg-green-500/30" : cs.costOfSwitching.level === "medium" ? "bg-amber-500/30" : cs.costOfSwitching.level === "high" ? "bg-red-500/30" : "bg-red-700/30"
                         )}>{cs.costOfSwitching.level}</span>
                         {cs.costOfSwitching.detail}
                       </p>
                     </div>
                     <div>
-                      <span className="text-md font-medium text-white uppercase tracking-wide">Solution Effectiveness</span>
-                      <p className="mt-0.5 text-white">
+                      <span className="text-base font-semibold text-white">Solution Effectiveness</span>
+                      <p className="mt-1 text-base text-white">
                         <span className={cn(
-                          "inline-block rounded px-1.5 py-0.5 text-md font-semibold text-white mr-1 capitalize",
+                          "inline-block rounded px-1.5 py-0.5 text-base font-semibold text-white mr-1 capitalize",
                           cs.solutionEffectiveness.level === "terrible" || cs.solutionEffectiveness.level === "poor" ? "bg-green-500/30" : cs.solutionEffectiveness.level === "average" ? "bg-amber-500/30" : "bg-red-500/30"
                         )}>{cs.solutionEffectiveness.level}</span>
                         {cs.solutionEffectiveness.detail}
                       </p>
                     </div>
                     <div>
-                      <span className="text-md font-medium text-white uppercase tracking-wide">Competitor Size</span>
-                      <p className="mt-0.5 text-white">
+                      <span className="text-base font-semibold text-white">Competitor Size</span>
+                      <p className="mt-1 text-base text-white">
                         <span className={cn(
-                          "inline-block rounded px-1.5 py-0.5 text-md font-semibold text-white mr-1 capitalize",
+                          "inline-block rounded px-1.5 py-0.5 text-base font-semibold text-white mr-1 capitalize",
                           cs.competitorSize.level === "micro" ? "bg-emerald-500/30" : cs.competitorSize.level === "small" ? "bg-green-500/30" : cs.competitorSize.level === "medium" ? "bg-amber-500/30" : cs.competitorSize.level === "large" ? "bg-red-500/30" : "bg-red-700/30"
                         )}>{cs.competitorSize.level}</span>
                         {cs.competitorSize.detail}
@@ -173,8 +173,8 @@ export default function VerdictPage() {
                     </div>
                   </div>
                   <div className="border-t border-white/10 pt-3 mt-1">
-                    <span className="text-md font-medium text-white uppercase tracking-wide">Verdict: {cs.verdict}</span>
-                    <p className="mt-0.5 text-md text-white">{cs.reasoning}</p>
+                    <span className="text-base font-semibold text-white">Verdict: {cs.verdict}</span>
+                    <p className="mt-1 text-base text-white">{cs.reasoning}</p>
                   </div>
                   </div>
                   </TabsContent>

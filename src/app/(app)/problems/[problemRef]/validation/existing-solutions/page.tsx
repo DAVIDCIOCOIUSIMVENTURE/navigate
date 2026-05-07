@@ -94,7 +94,7 @@ export default function ExistingSolutionsPage() {
 
           <TabsContent value="case-studies">
             <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
-              <p className="text-sm text-white">
+              <p className="text-base text-white">
                 See how successful companies mapped out the existing solutions their customers were already using, and identified the shortcomings that created the opportunity.
               </p>
               <Tabs defaultValue={EXISTING_SOLUTIONS_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
@@ -122,21 +122,21 @@ export default function ExistingSolutionsPage() {
                           <div className={`flex items-center justify-center w-8 h-8 rounded-lg shrink-0 ${cs.iconBg}`}>
                             <Icon className="h-4 w-4 text-white" />
                           </div>
-                          <p className="text-sm font-semibold text-white">{cs.company}</p>
+                          <p className="text-base font-semibold text-white">{cs.company}</p>
                         </div>
                         <div className="flex flex-col gap-3">
                           {cs.solutions.map((sol) => (
-                            <div key={sol.name} className="flex flex-col gap-3 rounded-md border border-white/10 bg-white/5 p-3">
-                              <div className="flex flex-col gap-1">
-                                <p className="text-xs font-semibold uppercase tracking-wide text-white/60">Solution</p>
-                                <p className="text-sm font-medium text-white">{sol.name}</p>
+                            <div key={sol.name} className="flex flex-col gap-4 rounded-md border border-white/10 bg-white/5 p-4">
+                              <div className="flex flex-col gap-1.5">
+                                <p className="text-base font-semibold text-white">Solution</p>
+                                <p className="text-base text-white">{sol.name}</p>
                               </div>
-                              <div className="flex flex-col gap-2">
-                                <p className="text-xs font-semibold uppercase tracking-wide text-white/60">Shortcomings</p>
-                                <ul className="flex flex-col gap-2 text-sm text-white">
+                              <div className="flex flex-col gap-1.5">
+                                <p className="text-base font-semibold text-white">Shortcomings</p>
+                                <ul className="flex flex-col gap-2 text-base text-white">
                                   {sol.shortcomings.map((sc, j) => (
                                     <li key={j} className="flex gap-2">
-                                      <span className="shrink-0 text-white/50">&bull;</span>
+                                      <span className="shrink-0 text-white">&bull;</span>
                                       <span>{sc.text}</span>
                                     </li>
                                   ))}

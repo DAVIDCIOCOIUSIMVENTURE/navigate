@@ -26,7 +26,7 @@ const ROOT_CAUSES_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
 function RootCausesCaseStudies() {
   return (
     <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
-      <p className="text-md text-white">
+      <p className="text-base text-white">
         See how successful organisations dug past surface-level symptoms to identify the underlying causes that, once fixed, prevented entire categories of failure.
       </p>
       <Tabs defaultValue={ROOT_CAUSES_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
@@ -56,30 +56,30 @@ function RootCausesCaseStudies() {
                       <Icon className="h-4 w-4" />
                     </span>
                   )}
-                  <p className="text-md font-semibold text-white">{cs.company}</p>
+                  <p className="text-base font-semibold text-white">{cs.company}</p>
                 </div>
                 <div>
-                  <span className="text-md font-medium text-white uppercase tracking-wide">Problem</span>
-                  <p className="mt-1 text-md text-white">{cs.problem}</p>
+                  <span className="text-base font-semibold text-white">Problem</span>
+                  <p className="mt-1 text-base text-white">{cs.problem}</p>
                 </div>
                 <div>
-                  <span className="text-md font-medium text-white uppercase tracking-wide">Root Causes</span>
+                  <span className="text-base font-semibold text-white">Root Causes</span>
                   <div className="mt-2 flex flex-col gap-2">
                     {cs.causes.map((cause, i) => (
                       <div key={i} className="rounded-md border border-white/10 bg-white/5 p-3">
-                        <p className="text-md font-semibold text-white">{cause.title}</p>
-                        <p className="mt-1 text-md text-white">{cause.detail}</p>
+                        <p className="text-base font-semibold text-white">{cause.title}</p>
+                        <p className="mt-1 text-base text-white">{cause.detail}</p>
                       </div>
                     ))}
                   </div>
                 </div>
                 <div className="rounded-md border border-white/10 bg-white/5 p-3">
-                  <span className="text-xs font-semibold uppercase tracking-wide text-white/70">Notes</span>
-                  <p className="mt-1 text-md text-white">{cs.notes}</p>
+                  <span className="text-base font-semibold text-white">Notes</span>
+                  <p className="mt-1 text-base text-white">{cs.notes}</p>
                 </div>
                 <div className="border-t border-white/10 pt-3 mt-1">
-                  <span className="text-md font-medium text-white uppercase tracking-wide">Outcome</span>
-                  <p className="mt-1 text-md text-white">{cs.outcome}</p>
+                  <span className="text-base font-semibold text-white">Outcome</span>
+                  <p className="mt-1 text-base text-white">{cs.outcome}</p>
                 </div>
               </div>
             </TabsContent>
@@ -99,7 +99,7 @@ const FIVE_WHYS_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
 function FiveWhysCaseStudies() {
   return (
     <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
-      <p className="text-md text-white">
+      <p className="text-base text-white">
         See how teams used the 5 Whys to push past the first plausible answer and reach a fundamental cause that, once addressed, prevented the problem from recurring.
       </p>
       <Tabs defaultValue={FIVE_WHYS_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
@@ -129,20 +129,20 @@ function FiveWhysCaseStudies() {
                       <Icon className="h-4 w-4" />
                     </span>
                   )}
-                  <p className="text-md font-semibold text-white">{cs.company}</p>
+                  <p className="text-base font-semibold text-white">{cs.company}</p>
                 </div>
                 <div>
-                  <span className="text-md font-medium text-white uppercase tracking-wide">Problem</span>
-                  <p className="mt-1 text-md text-white">{cs.problem}</p>
+                  <span className="text-base font-semibold text-white">Problem</span>
+                  <p className="mt-1 text-base text-white">{cs.problem}</p>
                 </div>
                 {cs.chains.map((chain, ci) => (
                   <div key={ci} className="flex flex-col gap-3">
                     {cs.chains.length > 1 && (
-                      <span className="text-xs font-semibold uppercase tracking-wide text-white/70">Chain {ci + 1}</span>
+                      <span className="text-base font-semibold text-white">Chain {ci + 1}</span>
                     )}
                     <div className="rounded-md border border-white/10 bg-white/5 p-3">
-                      <span className="text-xs font-semibold uppercase tracking-wide text-white/70">Starting problem</span>
-                      <p className="mt-1 text-md font-semibold text-white">{chain.startingProblem}</p>
+                      <span className="text-base font-semibold text-white">Starting problem</span>
+                      <p className="mt-1 text-base font-semibold text-white">{chain.startingProblem}</p>
                     </div>
                     <div className="flex flex-col">
                       {chain.whys.map((why, i) => (
@@ -154,20 +154,20 @@ function FiveWhysCaseStudies() {
                             {i < chain.whys.length - 1 && <div className="w-px flex-1 bg-white/30" />}
                           </div>
                           <div className="flex-1 pb-3 last:pb-0">
-                            <p className="text-md text-white">{why}</p>
+                            <p className="text-base text-white">{why}</p>
                           </div>
                         </div>
                       ))}
                     </div>
                     <div className="rounded-md border border-white/10 bg-white/5 p-3">
-                      <span className="text-xs font-semibold uppercase tracking-wide text-white/70">Root cause</span>
-                      <p className="mt-1 text-md text-white">{chain.rootCause}</p>
+                      <span className="text-base font-semibold text-white">Root cause</span>
+                      <p className="mt-1 text-base text-white">{chain.rootCause}</p>
                     </div>
                   </div>
                 ))}
                 <div className="border-t border-white/10 pt-3 mt-1">
-                  <span className="text-md font-medium text-white uppercase tracking-wide">Outcome</span>
-                  <p className="mt-1 text-md text-white">{cs.outcome}</p>
+                  <span className="text-base font-semibold text-white">Outcome</span>
+                  <p className="mt-1 text-base text-white">{cs.outcome}</p>
                 </div>
               </div>
             </TabsContent>
@@ -194,7 +194,7 @@ const SEVERITY_BADGE: Record<"low" | "medium" | "high" | "critical", string> = {
 function AffectedGroupsCaseStudies() {
   return (
     <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
-      <p className="text-md text-white">
+      <p className="text-base text-white">
         See how successful companies mapped who was affected by the problem and how severely, then prioritised the most acute groups to design a focused first version.
       </p>
       <Tabs defaultValue={AFFECTED_GROUPS_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
@@ -224,19 +224,19 @@ function AffectedGroupsCaseStudies() {
                       <Icon className="h-4 w-4" />
                     </span>
                   )}
-                  <p className="text-md font-semibold text-white">{cs.company}</p>
+                  <p className="text-base font-semibold text-white">{cs.company}</p>
                 </div>
                 <div>
-                  <span className="text-md font-medium text-white uppercase tracking-wide">Problem</span>
-                  <p className="mt-1 text-md text-white">{cs.problem}</p>
+                  <span className="text-base font-semibold text-white">Problem</span>
+                  <p className="mt-1 text-base text-white">{cs.problem}</p>
                 </div>
                 <div>
-                  <span className="text-md font-medium text-white uppercase tracking-wide">Affected Groups</span>
+                  <span className="text-base font-semibold text-white">Affected Groups</span>
                   <div className="mt-2 flex flex-col gap-2">
                     {cs.groups.map((group, i) => (
                       <div key={i} className="rounded-md border border-white/10 bg-white/5 p-3">
                         <div className="flex flex-wrap items-center gap-2">
-                          <p className="text-md font-semibold text-white">{group.name}</p>
+                          <p className="text-base font-semibold text-white">{group.name}</p>
                           <span className={cn(
                             "inline-block rounded px-1.5 py-0.5 text-xs font-semibold text-white capitalize",
                             SEVERITY_BADGE[group.severity]
@@ -244,14 +244,14 @@ function AffectedGroupsCaseStudies() {
                             {group.severity}
                           </span>
                         </div>
-                        <p className="mt-1 text-md text-white">{group.description}</p>
+                        <p className="mt-1 text-base text-white">{group.description}</p>
                       </div>
                     ))}
                   </div>
                 </div>
                 <div className="border-t border-white/10 pt-3 mt-1">
-                  <span className="text-md font-medium text-white uppercase tracking-wide">Outcome</span>
-                  <p className="mt-1 text-md text-white">{cs.outcome}</p>
+                  <span className="text-base font-semibold text-white">Outcome</span>
+                  <p className="mt-1 text-base text-white">{cs.outcome}</p>
                 </div>
               </div>
             </TabsContent>
