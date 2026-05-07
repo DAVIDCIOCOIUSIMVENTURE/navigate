@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator"
 import {
   CheckCircle2, XCircle, Clock, AlertTriangle,
 } from "lucide-react"
-import type { ValidationStatus, ExistingSolutionItem, ImpactItem, DecisionLevel, ValidationAssessment } from "@/types/validation"
+import type { ValidationStatus, ExistingSolutionItem, DecisionLevel, ValidationAssessment } from "@/types/validation"
 import { useDimensionLabels } from "@/lib/dimension-labels"
 
 /* ------------------------------------------------------------------ */
@@ -25,8 +25,6 @@ export type ProblemSummaryData = {
   context?: string
   emotionalImpact?: string | string[]
   existingSolutions?: ExistingSolutionItem[]
-  /** Quantifiable impacts (idea-scoped) */
-  impacts?: ImpactItem[]
   validationStatus: ValidationStatus
   reason?: string
   /** Decision-factor levels (idea-scoped verdict) */
@@ -155,7 +153,6 @@ export function ProblemSummaryDialog({ open, onOpenChange, data }: ProblemSummar
     : data.emotionalImpact ?? ""
 
   const hasExistingSolutions = (data.existingSolutions?.length ?? 0) > 0
-  const hasImpacts = (data.impacts?.length ?? 0) > 0
   const hasVerdict = data.verdict && Object.values(data.verdict).some((v) => v)
 
   return (
@@ -199,7 +196,7 @@ export function ProblemSummaryDialog({ open, onOpenChange, data }: ProblemSummar
             </>
           )}
 
-          {/* Existing Solutions, Shortcomings & Impacts */}
+          {/* Existing Solutions & Shortcomings */}
           {hasExistingSolutions && (
             <>
               <Separator />
@@ -210,23 +207,12 @@ export function ProblemSummaryDialog({ open, onOpenChange, data }: ProblemSummar
                       <p className="font-medium">{sol.text}</p>
                       {sol.shortcomings.length > 0 && (
                         <ul className="mt-1 ml-4 space-y-1 text-muted-foreground">
-                          {sol.shortcomings.map((sc) => {
-                            const hasImpact = sc.impact.category || sc.impact.description
-                            return (
-                              <li key={sc.id}>
-                                <div className="flex gap-1.5">
-                                  <span className="shrink-0">&bull;</span>
-                                  <span>{sc.text}</span>
-                                </div>
-                                {hasImpact && (
-                                  <div className="ml-4 text-xs">
-                                    {sc.impact.category && <span className="font-medium">{sc.impact.category}: </span>}
-                                    {sc.impact.description}
-                                  </div>
-                                )}
-                              </li>
-                            )
-                          })}
+                          {sol.shortcomings.map((sc) => (
+                            <li key={sc.id} className="flex gap-1.5">
+                              <span className="shrink-0">&bull;</span>
+                              <span>{sc.text}</span>
+                            </li>
+                          ))}
                         </ul>
                       )}
                     </li>
@@ -242,22 +228,6 @@ export function ProblemSummaryDialog({ open, onOpenChange, data }: ProblemSummar
               <Separator />
               <Section title="Emotional Impact">
                 <p className="text-sm">{emotionalImpactText}</p>
-              </Section>
-            </>
-          )}
-
-          {/* Quantifiable Impacts */}
-          {hasImpacts && (
-            <>
-              <Separator />
-              <Section title="Quantifiable Impacts">
-                <ul className="space-y-1">
-                  {data.impacts!.map((impact, i) => (
-                    <li key={i} className="text-sm">
-                      <span className="font-medium">{impact.category}:</span> {impact.description}
-                    </li>
-                  ))}
-                </ul>
               </Section>
             </>
           )}

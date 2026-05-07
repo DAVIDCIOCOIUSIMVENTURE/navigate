@@ -8,15 +8,12 @@ import { useProblem, getAdjacentSteps } from "../context"
 import { EXISTING_SOLUTIONS_CASE_STUDIES } from "./case-studies"
 import { ExistingSolutionsStrategy } from "@/components/problem-strategies/existing-solutions-strategy"
 import { GitFork, Monitor, Wrench, Users, Ban } from "lucide-react"
-import { useContainerSize } from "@/context/container-size-context"
-import { cn } from "@/lib/utils"
 
 export default function ExistingSolutionsPage() {
   const router = useRouter()
   const pathname = usePathname()
   const { problemRef } = useProblem()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, problemRef)
-  const isNarrow = useContainerSize() === "narrow"
 
   return (
     <Card className="w-full flex-1">
@@ -69,10 +66,10 @@ export default function ExistingSolutionsPage() {
           </div>
           <h3 className="mt-4 text-xl font-bold text-foreground">What will you do?</h3>
           <p>
-            For each existing solution, capture its <strong className="text-foreground">shortcomings</strong> and
-            its <strong className="text-foreground">impact</strong>, both <strong className="text-foreground">quantifiable</strong> (time lost,
-            money wasted, error rates, etc.) and <strong className="text-foreground">emotional</strong> (frustration,
-            anxiety, loss of trust, etc.).
+            For each existing solution, capture its <strong className="text-foreground">shortcomings</strong>: the
+            specific places it falls short for the customer. If you need inspiration, open the
+            <strong className="text-foreground"> Impact examples</strong> panel on each solution to see common areas where
+            shortcomings tend to hurt (time, money, errors, frustration, and more).
           </p>
         </div>
 
@@ -81,7 +78,7 @@ export default function ExistingSolutionsPage() {
         <div className="flex flex-col gap-2 items-center text-center">
           <h3 className="text-xl font-bold"><span className="text-primary">Your Turn:</span> What existing solutions are there?</h3>
           <p className="text-md text-muted-foreground max-w-xl">
-            Add every existing solution your customer uses today. For each one, capture its shortcomings and the impact those gaps have on them.
+            Add every existing solution your customer uses today, and capture the shortcomings that leave room for something better.
           </p>
         </div>
 
@@ -130,20 +127,20 @@ export default function ExistingSolutionsPage() {
                         <div className="flex flex-col gap-3">
                           {cs.solutions.map((sol) => (
                             <div key={sol.name} className="flex flex-col gap-3 rounded-md border border-white/10 bg-white/5 p-3">
-                              <p className="text-sm font-medium text-white">{sol.name}</p>
-                              <div className="flex flex-col divide-y divide-white/10">
-                                {sol.shortcomings.map((sc, j) => (
-                                  <div key={j} className={cn("grid gap-3 text-sm py-3 first:pt-0 last:pb-0", isNarrow ? "grid-cols-1" : "grid-cols-2")}>
-                                    <div>
-                                      <span className="text-xs font-medium text-white uppercase tracking-wide">Shortcoming</span>
-                                      <p className="mt-1 text-white">{sc.text}</p>
-                                    </div>
-                                    <div>
-                                      <span className="text-xs font-medium text-white uppercase tracking-wide">Impact</span>
-                                      <p className="mt-1 text-white">{sc.impact}</p>
-                                    </div>
-                                  </div>
-                                ))}
+                              <div className="flex flex-col gap-1">
+                                <p className="text-xs font-semibold uppercase tracking-wide text-white/60">Solution</p>
+                                <p className="text-sm font-medium text-white">{sol.name}</p>
+                              </div>
+                              <div className="flex flex-col gap-2">
+                                <p className="text-xs font-semibold uppercase tracking-wide text-white/60">Shortcomings</p>
+                                <ul className="flex flex-col gap-2 text-sm text-white">
+                                  {sol.shortcomings.map((sc, j) => (
+                                    <li key={j} className="flex gap-2">
+                                      <span className="shrink-0 text-white/50">&bull;</span>
+                                      <span>{sc.text}</span>
+                                    </li>
+                                  ))}
+                                </ul>
                               </div>
                             </div>
                           ))}

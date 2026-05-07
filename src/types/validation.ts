@@ -1,6 +1,4 @@
-export type ImpactItem = { category: string; description: string }
-
-export type ShortcomingItem = { id: number; text: string; impact: ImpactItem }
+export type ShortcomingItem = { id: number; text: string }
 
 export type ExistingSolutionItem = { id: number; text: string; shortcomings: ShortcomingItem[] }
 
