@@ -35,7 +35,7 @@ export default function SolutionsPage() {
               Identify solutions
             </Button>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-3 border-t">
+          <div className={cn("grid gap-4 pt-3 border-t", isWide ? "grid-cols-3" : "grid-cols-1")}>
             <div className="flex items-start gap-3">
               <span className="flex items-center justify-center w-8 h-8 rounded-md bg-primary/10 text-primary shrink-0">
                 <Target className="h-4 w-4" />
