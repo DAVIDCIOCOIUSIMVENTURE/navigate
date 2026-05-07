@@ -130,7 +130,7 @@ export function EditProblemDialog({ problem, onClose, title = "Edit Problem", sh
             ? undefined
             : "Add a description or pick at least one dimension item first"
           return (
-            <DialogFooter className="gap-2 sm:gap-2">
+            <DialogFooter>
               <Button
                 variant="outline"
                 className="border-primary/40 text-primary hover:bg-primary/5 hover:text-primary"
