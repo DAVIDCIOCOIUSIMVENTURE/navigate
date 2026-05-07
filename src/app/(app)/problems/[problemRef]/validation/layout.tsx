@@ -12,6 +12,7 @@ import {
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
+import { cn } from "@/lib/utils"
 
 const NAV_ICONS: Record<string, LucideIcon> = {
   introduction: ClipboardCheck,
@@ -85,7 +86,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <div className="flex flex-col gap-3 flex-1 w-full">
+    <div className={cn("flex flex-col gap-3 flex-1 w-full min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
     {!isWide && (
     <nav aria-label="Problem validation steps" className="w-full">
       <Collapsible open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
@@ -120,7 +121,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     </nav>
     )}
 
-    <div className="flex gap-6 flex-1 w-full items-start">
+    <div className={cn("flex gap-6 flex-1 w-full min-h-0", isWide ? "items-stretch" : "items-start")}>
       {isWide && (
       <nav aria-label="Problem validation steps" className="flex w-56 flex-col gap-3 shrink-0">
         <Card>
@@ -134,7 +135,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       </nav>
       )}
 
-      <div className="flex-1 min-w-0">{children}</div>
+      <div className={cn("flex-1 min-w-0 flex flex-col", isWide && "min-h-0 overflow-y-auto")}>{children}</div>
     </div>
 
     <ProblemHubDialog open={dialogOpen} onOpenChange={setDialogOpen} problemRef={problemRef} />

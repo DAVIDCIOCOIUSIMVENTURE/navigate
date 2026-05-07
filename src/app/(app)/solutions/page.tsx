@@ -8,18 +8,21 @@ import { Card, CardContent } from "@/components/ui/card"
 import { SearchSolutionDialog } from "@/components/search-solution-dialog"
 import { SolutionsTable } from "@/components/solutions-table"
 import { Plus, Lightbulb, Target, Sparkles, ShieldCheck } from "lucide-react"
+import { useContainerSize } from "@/context/container-size-context"
+import { cn } from "@/lib/utils"
 
 export default function SolutionsPage() {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
+  const isWide = useContainerSize() === "wide"
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
   return (
-    <div className="flex flex-col gap-3 w-full flex-1">
+    <div className={cn("flex flex-col gap-3 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
       <Card>
         <CardContent className="py-4 flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-4">
@@ -87,7 +90,7 @@ export default function SolutionsPage() {
           </Button>
         </div>
       ) : (
-        <SolutionsTable solutions={solutions} />
+        <SolutionsTable solutions={solutions} className={cn(isWide ? "flex-1 min-h-0" : "min-h-[320px] max-h-[640px]")} />
       )}
 
       <SearchSolutionDialog open={dialogOpen} onOpenChange={setDialogOpen} />

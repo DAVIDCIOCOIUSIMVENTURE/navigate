@@ -79,9 +79,10 @@ interface ProblemsTableProps {
   problems: Problem[]
   showStatus?: boolean
   showEditDelete?: boolean
+  className?: string
 }
 
-export function ProblemsTable({ problems, showStatus = false, showEditDelete = false }: ProblemsTableProps) {
+export function ProblemsTable({ problems, showStatus = false, showEditDelete = false, className }: ProblemsTableProps) {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
@@ -179,8 +180,8 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
 
   return (
     <>
-      <Card>
-        <CardHeader className="pb-3 gap-3">
+      <Card className={cn("flex flex-col overflow-hidden", className)}>
+        <CardHeader className="shrink-0 pb-3 gap-3">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <CardTitle className="text-sm font-semibold">
               Problems ({sortedProblems.length}
@@ -216,7 +217,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
             </div>
           </div>
         </CardHeader>
-        <CardContent className="pt-0">
+        <CardContent className="pt-0 flex-1 min-h-0 overflow-y-auto">
           <Table>
             <TableHeader>
               <TableRow>

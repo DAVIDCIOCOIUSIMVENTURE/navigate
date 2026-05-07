@@ -1164,7 +1164,7 @@ export default function BrainstormPage() {
   }
 
   const content = (
-    <div className="flex flex-col gap-3 w-full flex-1 min-h-0 min-w-0 overflow-x-hidden">
+    <div className={cn("flex flex-col gap-3 w-full flex-1 min-h-0 min-w-0 overflow-x-hidden", containerSize === "wide" && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
       <Card className="shrink-0">
         <CardContent className="py-3">
           {/* Mode toggle + description + action buttons */}
