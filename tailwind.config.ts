@@ -21,6 +21,9 @@ export default {
   ],
   theme: {
   	extend: {
+  		fontSize: {
+  			base: ['0.9375rem', { lineHeight: '1.4375rem' }],
+  		},
   		colors: {
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
