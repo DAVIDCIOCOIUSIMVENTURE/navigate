@@ -65,7 +65,7 @@ function HubSection({
         <div className="flex items-center gap-3 p-4">
           <CollapsibleTrigger className="flex flex-1 items-center gap-2.5 text-left">
             <IconTile icon={icon} tone={tone} size="sm" />
-            <h3 className="flex-1 font-semibold text-md">{label}</h3>
+            <h3 className="flex-1 font-semibold text-base">{label}</h3>
             <ChevronDown
               className={cn("h-4 w-4 text-muted-foreground transition-transform", open && "rotate-180")}
               aria-hidden="true"
@@ -153,7 +153,7 @@ function NextStepsSection({ solutionId }: { solutionId: number }) {
         <IconTile icon={ArrowRight} tone="primary" size="sm" />
         Next Steps
       </h2>
-      <p className="text-md text-muted-foreground mb-4">
+      <p className="text-base mb-4">
         Based on your verdict, here is what you can do next.
       </p>
 
@@ -163,7 +163,7 @@ function NextStepsSection({ solutionId }: { solutionId: number }) {
             <IconTile icon={CheckCircle2} tone="emerald" />
             <h3 className="text-lg font-semibold text-foreground">This solution is worth pursuing</h3>
           </div>
-          <p className="text-md text-muted-foreground">
+          <p className="text-base">
             You have decided this solution is worth building. The next step is to plan delivery: scope a first version, decide on the team, and break the work into milestones.
           </p>
           <Button className="self-start" onClick={() => router.push("/next-steps")}>
@@ -179,7 +179,7 @@ function NextStepsSection({ solutionId }: { solutionId: number }) {
             <IconTile icon={HelpCircle} tone="amber" />
             <h3 className="text-lg font-semibold text-foreground">You need more evidence</h3>
           </div>
-          <p className="text-md text-muted-foreground">
+          <p className="text-base">
             Mixed scores are common. Identify the assumption that would tip the verdict, run a small experiment to test it, and revisit your scoring once you know more.
           </p>
           <div className="flex flex-col gap-3 mt-1">
@@ -209,7 +209,7 @@ function NextStepsSection({ solutionId }: { solutionId: number }) {
             <IconTile icon={XCircle} tone="rose" />
             <h3 className="text-lg font-semibold text-foreground">This solution is not worth pursuing</h3>
           </div>
-          <p className="text-md text-muted-foreground">
+          <p className="text-base">
             That is a useful answer too. Move on to a stronger candidate, or revisit the linked problem to refresh your thinking.
           </p>
           <div className="flex flex-col gap-3 mt-1">
@@ -231,7 +231,7 @@ function NextStepsSection({ solutionId }: { solutionId: number }) {
             <IconTile icon={HelpCircle} tone="muted" />
             <h3 className="text-lg font-semibold text-foreground">No verdict yet</h3>
           </div>
-          <p className="text-md text-muted-foreground">
+          <p className="text-base">
             Score the four metrics above, then record your verdict to see your next steps.
           </p>
           <Button className="self-start" onClick={goToVerdict}>

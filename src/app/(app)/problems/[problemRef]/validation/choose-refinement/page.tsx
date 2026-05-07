@@ -216,7 +216,7 @@ export default function ChooseRefinementPage() {
             </div>
           )}
 
-          <p className="text-md leading-relaxed">
+          <p className="text-base leading-relaxed">
             Take time to understand <strong>why</strong> this problem exists and <strong>who</strong> it affects.
             Choose a refinement technique below to get started.
           </p>
@@ -251,7 +251,7 @@ export default function ChooseRefinementPage() {
                   )}>
                     <Icon className={cn("h-5 w-5", isSelected ? "text-primary-foreground" : "text-primary")} />
                   </div>
-                  <h3 className={cn("text-md font-semibold", isSelected && "text-primary")}>{tool.title}</h3>
+                  <h3 className={cn("text-base font-semibold", isSelected && "text-primary")}>{tool.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{tool.description}</p>
                 </button>
               )

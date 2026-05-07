@@ -38,7 +38,7 @@ export default function NextStepsPage() {
             <Sparkles className="h-3.5 w-3.5 shrink-0 mt-1" aria-hidden="true" />
             <span>You&apos;ve found problems worth solving and solutions worth testing. Here&apos;s where most founders go next.</span>
           </p>
-          <p className="text-md text-foreground leading-relaxed">
+          <p className="text-base text-foreground leading-relaxed">
             This section is for reference. There&apos;s nothing to fill in: just guidance on how to take what you&apos;ve already
             built in Navigate and turn it into a real-world experiment, a prototype, or a commitment.
             Use it as a checkpoint before you sink time and money into the wrong direction.

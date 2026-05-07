@@ -20,7 +20,7 @@ function HubBody({ solutionId }: { solutionId: number }) {
       <div className="flex flex-col w-full flex-1">
         <Card className="w-full">
           <CardContent className="p-10 flex flex-col items-center gap-4 text-center">
-            <p className="text-md text-muted-foreground">Solution not found.</p>
+            <p className="text-base">Solution not found.</p>
             <Button asChild variant="outline">
               <Link href="/solutions">
                 <ArrowLeft className="h-4 w-4 mr-2" />
@@ -40,7 +40,7 @@ function HubBody({ solutionId }: { solutionId: number }) {
           <CardTitle icon={Lightbulb}>
             {solution.title || `Solution #${solution.id}`}
           </CardTitle>
-          <p className="text-md text-muted-foreground">
+          <p className="text-base">
             Edit and review every part of this solution in one place.
           </p>
         </CardHeader>

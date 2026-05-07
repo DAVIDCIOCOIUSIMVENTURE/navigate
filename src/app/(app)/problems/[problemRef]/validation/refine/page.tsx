@@ -326,7 +326,7 @@ export default function RefinePage() {
         )}
 
         {toolInfo && (
-          <div className="flex flex-col gap-3 text-md">
+          <div className="flex flex-col gap-3 text-base">
             <p>{toolInfo.description}</p>
             <div className="flex flex-col gap-3">
               {toolInfo.hints.map(({ icon: Icon, title, subtitle, bg }) => (
@@ -336,7 +336,7 @@ export default function RefinePage() {
                   </div>
                   <div>
                     <p className="font-semibold text-foreground">{title}</p>
-                    <p className="text-md">{subtitle}</p>
+                    <p className="text-base">{subtitle}</p>
                   </div>
                 </div>
               ))}

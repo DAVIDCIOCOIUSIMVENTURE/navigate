@@ -49,7 +49,7 @@ export function CoreProblemStrategy({ readOnly = false }: { readOnly?: boolean }
           placeholder="Describe the problem in one or two sentences..."
           rows={3}
           readOnly={readOnly}
-          className="text-md bg-white border-white text-foreground read-only:cursor-default"
+          className="text-base bg-white border-white text-foreground read-only:cursor-default"
         />
       </div>
 

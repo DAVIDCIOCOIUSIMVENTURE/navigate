@@ -40,7 +40,7 @@ export function CoreSolutionStrategy({ readOnly = false }: { readOnly?: boolean 
           onChange={(e) => update({ title: e.target.value })}
           placeholder="Give your solution a short, memorable name..."
           readOnly={readOnly}
-          className="text-md bg-white border-white text-foreground read-only:cursor-default"
+          className="text-base bg-white border-white text-foreground read-only:cursor-default"
         />
       </div>
 
@@ -55,7 +55,7 @@ export function CoreSolutionStrategy({ readOnly = false }: { readOnly?: boolean 
           placeholder="Describe how this solution works and why it addresses the problem..."
           rows={4}
           readOnly={readOnly}
-          className="text-md bg-white border-white text-foreground read-only:cursor-default"
+          className="text-base bg-white border-white text-foreground read-only:cursor-default"
         />
       </div>
     </div>

@@ -24,7 +24,7 @@ export default function VerdictPage() {
         <CardTitle icon={ShieldCheck}>Validate your problem</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
-        <div className="flex flex-col gap-3 text-md text-muted-foreground">
+        <div className="flex flex-col gap-3 text-base">
           <p>
             Many entrepreneurs fall in love with a problem too early, only to discover later that the market is too small, the pain too infrequent, or the competition too entrenched. Validation is the discipline of stepping back and pressure-testing your assumptions before investing real time and resources.
           </p>
@@ -35,33 +35,33 @@ export default function VerdictPage() {
           <div className={cn("grid gap-3", containerSize === "narrow" ? "grid-cols-1" : "grid-cols-2")}>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white text-md font-bold shrink-0">1</span>
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white text-base font-bold shrink-0">1</span>
                 <div>
                   <p className="font-semibold text-foreground">How many customers &amp; how often</p>
-                  <p className="text-md">Estimate the size of the audience and how frequently they encounter this problem.</p>
+                  <p className="text-base">Estimate the size of the audience and how frequently they encounter this problem.</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500 text-white text-md font-bold shrink-0">2</span>
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500 text-white text-base font-bold shrink-0">2</span>
                 <div>
                   <p className="font-semibold text-foreground">How much is it worth</p>
-                  <p className="text-md">Quantify how much customers would pay or benefit from a solution.</p>
+                  <p className="text-base">Quantify how much customers would pay or benefit from a solution.</p>
                 </div>
               </div>
             </div>
             <div className="flex flex-col gap-3">
               <div className="flex items-center gap-3">
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-amber-500 text-white text-md font-bold shrink-0">3</span>
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-amber-500 text-white text-base font-bold shrink-0">3</span>
                 <div>
                   <p className="font-semibold text-foreground">Competitive landscape</p>
-                  <p className="text-md">Assess the cost of switching, how effective existing solutions are, and how big the competitors are.</p>
+                  <p className="text-base">Assess the cost of switching, how effective existing solutions are, and how big the competitors are.</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-rose-500 text-white text-md font-bold shrink-0">4</span>
+                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-rose-500 text-white text-base font-bold shrink-0">4</span>
                 <div>
                   <p className="font-semibold text-foreground">Record your verdict</p>
-                  <p className="text-md">Decide whether the problem is <strong className="text-foreground">Valid</strong>, <strong className="text-foreground">Unsure</strong>, or <strong className="text-foreground">Invalid</strong>.</p>
+                  <p className="text-base">Decide whether the problem is <strong className="text-foreground">Valid</strong>, <strong className="text-foreground">Unsure</strong>, or <strong className="text-foreground">Invalid</strong>.</p>
                 </div>
               </div>
             </div>

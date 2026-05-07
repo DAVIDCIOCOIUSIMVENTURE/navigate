@@ -80,7 +80,7 @@ export default function OtherCategoryPage() {
                 <CardContent className={cn("flex-1 min-h-0 flex flex-col overflow-y-auto", roomy ? "p-10 pt-6" : "p-6 pt-4")}>
                     <div className="flex flex-col gap-5 flex-1 min-h-0">
                         <div className="shrink-0">
-                            <p className="text-md text-foreground">
+                            <p className="text-base text-foreground">
                                 Use this section for items you&apos;ve added that don&apos;t fit the categories above.
                                 Anything you add here will appear under &ldquo;Your items&rdquo; in the brainstorm You column.
                             </p>

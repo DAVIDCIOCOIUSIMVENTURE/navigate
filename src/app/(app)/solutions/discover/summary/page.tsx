@@ -38,7 +38,7 @@ function SectionHeader({ icon: Icon, label }: { icon: LucideIcon; label: string 
   return (
     <div className="flex items-center gap-2">
       <Icon className="h-4 w-4 shrink-0 text-foreground/70" />
-      <span className="font-semibold text-md">{label}</span>
+      <span className="font-semibold text-base">{label}</span>
     </div>
   )
 }
@@ -84,7 +84,7 @@ export default function SummaryPage() {
         <CardTitle icon={LayoutTemplate}>Summary</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-8">
-        <p className="text-md leading-relaxed">
+        <p className="text-base leading-relaxed">
           Here&apos;s everything you produced in this discovery session. Each candidate has been added to your Solution Bank; click <strong>Validate</strong> on any of them to start the validation flow.
         </p>
 

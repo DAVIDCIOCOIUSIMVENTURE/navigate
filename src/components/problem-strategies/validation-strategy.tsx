@@ -48,12 +48,12 @@ function HowManyInput({
         <span className="text-base font-semibold text-white">How many customers</span>
       </div>
       {!readOnly && (
-        <p className="text-md text-white">Estimate the total number of people who experience this problem. Think about your target market segment and how widespread the issue is.</p>
+        <p className="text-base text-white">Estimate the total number of people who experience this problem. Think about your target market segment and how widespread the issue is.</p>
       )}
       <Input
         type="number"
         placeholder="e.g. 10000"
-        className="mt-2 h-8 text-md w-28 bg-white border-white text-foreground read-only:cursor-default"
+        className="mt-2 h-8 text-base w-28 bg-white border-white text-foreground read-only:cursor-default"
         value={readOnly ? (metric.value ?? "") : localValue}
         onChange={(e) => setLocalValue(e.target.value)}
         readOnly={readOnly}
@@ -87,13 +87,13 @@ function FrequencyInput({
       <Input
         type="number"
         placeholder="e.g. 5"
-        className="h-8 text-md w-28 bg-white border-white text-foreground read-only:cursor-default"
+        className="h-8 text-base w-28 bg-white border-white text-foreground read-only:cursor-default"
         value={readOnly ? (metric.value ?? "") : localValue}
         onChange={(e) => setLocalValue(e.target.value)}
         readOnly={readOnly}
       />
       <Select value={metric.unit || "per day"} onValueChange={(val) => onChange({ unit: val })} disabled={readOnly}>
-        <SelectTrigger className="h-8 text-md w-40 bg-white border-white text-foreground">
+        <SelectTrigger className="h-8 text-base w-40 bg-white border-white text-foreground">
           <SelectValue placeholder="Frequency" />
         </SelectTrigger>
         <SelectContent>
@@ -131,13 +131,13 @@ function CurrencyInput({
       <Input
         type="number"
         placeholder="e.g. 50"
-        className="h-8 text-md w-28 bg-white border-white text-foreground read-only:cursor-default"
+        className="h-8 text-base w-28 bg-white border-white text-foreground read-only:cursor-default"
         value={readOnly ? (metric.value ?? "") : localValue}
         onChange={(e) => setLocalValue(e.target.value)}
         readOnly={readOnly}
       />
       <Select value={metric.unit || "GBP"} onValueChange={(val) => onChange({ unit: val })} disabled={readOnly}>
-        <SelectTrigger className="h-8 text-md w-28 bg-white border-white text-foreground">
+        <SelectTrigger className="h-8 text-base w-28 bg-white border-white text-foreground">
           <SelectValue placeholder="Currency" />
         </SelectTrigger>
         <SelectContent>
@@ -194,7 +194,7 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
     <div className="bg-primary rounded-xl p-8">
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-6">
-          <p className="text-md font-medium text-white">Decision Factors</p>
+          <p className="text-base font-medium text-white">Decision Factors</p>
 
           <HowManyInput metric={howManyPeople} onChange={setHowManyPeople} readOnly={readOnly} />
 
@@ -204,7 +204,7 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
               <span className="text-base font-semibold text-white">How often does the problem occur</span>
             </div>
             {!readOnly && (
-              <p className="text-md text-white">How frequently do customers encounter this problem? A problem that happens daily is far more urgent than one that occurs once a year.</p>
+              <p className="text-base text-white">How frequently do customers encounter this problem? A problem that happens daily is far more urgent than one that occurs once a year.</p>
             )}
             <FrequencyInput metric={howOften} onChange={setHowOften} readOnly={readOnly} />
           </div>
@@ -215,7 +215,7 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
               <span className="text-base font-semibold text-white">How much is it worth</span>
             </div>
             {!readOnly && (
-              <p className="text-md text-white">What is the monetary value of solving this problem? Consider how much customers currently spend on workarounds, or how much time and money they lose because of it.</p>
+              <p className="text-base text-white">What is the monetary value of solving this problem? Consider how much customers currently spend on workarounds, or how much time and money they lose because of it.</p>
             )}
             <CurrencyInput metric={worthToThem} onChange={setWorthToThem} readOnly={readOnly} />
           </div>
@@ -226,7 +226,7 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
               <span className="text-base font-semibold text-white">What is the cost of switching</span>
             </div>
             {!readOnly && (
-              <p className="text-md text-white">How much effort, money, or disruption does it take for customers to move away from their current solution? High switching costs mean customers are more locked in, so your solution needs to offer a compelling reason to change.</p>
+              <p className="text-base text-white">How much effort, money, or disruption does it take for customers to move away from their current solution? High switching costs mean customers are more locked in, so your solution needs to offer a compelling reason to change.</p>
             )}
             <div className="mt-2 inline-flex w-fit rounded-xl bg-white/10 p-1.5">
               <ToggleGroup
@@ -240,7 +240,7 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
                   <ToggleGroupItem
                     key={level}
                     value={level}
-                    className="px-4 py-1.5 text-md font-medium capitalize bg-transparent text-white/70 data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 hover:text-white rounded-md border-none"
+                    className="px-4 py-1.5 text-base font-medium capitalize bg-transparent text-white/70 data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 hover:text-white rounded-md border-none"
                   >
                     {level}
                   </ToggleGroupItem>
@@ -255,7 +255,7 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
               <span className="text-base font-semibold text-white">How effective are existing solutions</span>
             </div>
             {!readOnly && (
-              <p className="text-md text-white">How well do current solutions already address this problem? If existing solutions work well, customers have less incentive to switch. If they are poor, there is a bigger gap for you to fill.</p>
+              <p className="text-base text-white">How well do current solutions already address this problem? If existing solutions work well, customers have less incentive to switch. If they are poor, there is a bigger gap for you to fill.</p>
             )}
             <div className="mt-2 inline-flex w-fit rounded-xl bg-white/10 p-1.5">
               <ToggleGroup
@@ -269,7 +269,7 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
                   <ToggleGroupItem
                     key={level}
                     value={level}
-                    className="px-4 py-1.5 text-md font-medium capitalize bg-transparent text-white/70 data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 hover:text-white rounded-md border-none"
+                    className="px-4 py-1.5 text-base font-medium capitalize bg-transparent text-white/70 data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 hover:text-white rounded-md border-none"
                   >
                     {level}
                   </ToggleGroupItem>
@@ -284,7 +284,7 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
               <span className="text-base font-semibold text-white">How big are the competitors</span>
             </div>
             {!readOnly && (
-              <p className="text-md text-white">How large and established are the companies already solving this problem? Competing against well-funded incumbents requires a strong differentiator, while a market with only small players may signal an easier entry.</p>
+              <p className="text-base text-white">How large and established are the companies already solving this problem? Competing against well-funded incumbents requires a strong differentiator, while a market with only small players may signal an easier entry.</p>
             )}
             <div className="mt-2 inline-flex w-fit rounded-xl bg-white/10 p-1.5">
               <ToggleGroup
@@ -298,7 +298,7 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
                   <ToggleGroupItem
                     key={level}
                     value={level}
-                    className="px-4 py-1.5 text-md font-medium capitalize bg-transparent text-white/70 data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 hover:text-white rounded-md border-none"
+                    className="px-4 py-1.5 text-base font-medium capitalize bg-transparent text-white/70 data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 hover:text-white rounded-md border-none"
                   >
                     {level}
                   </ToggleGroupItem>
@@ -310,21 +310,21 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
 
         {(!readOnly || reason) && (
           <div className="flex flex-col gap-2 pt-2 border-t border-white/20">
-            <p className="text-md font-medium text-white">Notes{!readOnly && " (optional)"}</p>
+            <p className="text-base font-medium text-white">Notes{!readOnly && " (optional)"}</p>
             <Textarea
               rows={3}
               placeholder="Add any notes about your decision..."
               value={readOnly ? reason : localReason}
               onChange={(e) => setLocalReason(e.target.value)}
               readOnly={readOnly}
-              className="resize-none text-md focus-visible:ring-1 bg-white border-white text-foreground read-only:cursor-default"
+              className="resize-none text-base focus-visible:ring-1 bg-white border-white text-foreground read-only:cursor-default"
             />
           </div>
         )}
 
         {(!readOnly || (mounted && (status === "valid" || status === "unsure" || status === "invalid"))) && (
         <div className="flex flex-col gap-3 pt-2 border-t border-white/20">
-          <p className="text-md font-medium text-white">Your verdict</p>
+          <p className="text-base font-medium text-white">Your verdict</p>
           {([
             { value: "valid" as const, label: "Valid: Worth Solving", icon: <CheckCircle2 className="h-4 w-4" />, color: "text-green-700 border-green-300 bg-green-50" },
             { value: "unsure" as const, label: "Unsure: May Be Worth Solving", icon: <HelpCircle className="h-4 w-4" />, color: "text-orange-700 border-orange-300 bg-orange-50" },
@@ -356,7 +356,7 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
               </div>
               <div className="flex items-center gap-2">
                 {option.icon}
-                <span className="text-md font-medium">{option.label}</span>
+                <span className="text-base font-medium">{option.label}</span>
               </div>
             </button>
           ))}

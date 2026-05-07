@@ -308,9 +308,9 @@ export default function QuestionPage() {
                     <div className="flex flex-col gap-5 flex-1 min-h-0">
                         <div className="flex flex-col gap-4 flex-1 min-h-0">
                             <div className="shrink-0">
-                                <p className="text-md text-foreground">{category.description}</p>
-                                <p className="text-md text-foreground">{question.description}</p>
-                                <p className="text-md text-foreground">
+                                <p className="text-base text-foreground">{category.description}</p>
+                                <p className="text-base text-foreground">{question.description}</p>
+                                <p className="text-base text-foreground">
                                     {question.suggestions
                                         ? "Select the items below that apply to you, or add your own."
                                         : "Type your answer below and click Add."}

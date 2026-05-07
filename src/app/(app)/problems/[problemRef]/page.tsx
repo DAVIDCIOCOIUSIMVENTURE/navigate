@@ -21,7 +21,7 @@ function HubBody({ problemRef }: { problemRef: string }) {
       <div className="flex flex-col w-full flex-1">
         <Card className="w-full">
           <CardContent className="p-10 flex flex-col items-center gap-4 text-center">
-            <p className="text-md text-muted-foreground">Problem not found.</p>
+            <p className="text-base">Problem not found.</p>
             <Button asChild variant="outline">
               <Link href="/problems">
                 <ArrowLeft className="h-4 w-4 mr-2" />
@@ -41,7 +41,7 @@ function HubBody({ problemRef }: { problemRef: string }) {
           <CardTitle icon={Target}>
             {problem.description || `Problem #${problem.id}`}
           </CardTitle>
-          <p className="text-md text-muted-foreground">
+          <p className="text-base">
             Edit and review every part of this problem in one place.
           </p>
         </CardHeader>

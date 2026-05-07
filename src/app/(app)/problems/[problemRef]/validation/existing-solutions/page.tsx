@@ -21,7 +21,7 @@ export default function ExistingSolutionsPage() {
         <CardTitle icon={GitFork}>Explore existing solutions &amp; shortcomings</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
-        <div className="flex flex-col gap-3 text-md text-muted-foreground">
+        <div className="flex flex-col gap-3 text-base">
           <p>
             How are people currently solving, or living with, this problem? List every existing solution
             they reach for today, even if it&apos;s imperfect or informal.
@@ -33,7 +33,7 @@ export default function ExistingSolutionsPage() {
               </div>
               <div>
                 <p className="font-semibold text-foreground">Existing tools &amp; software</p>
-                <p className="text-md">Products already on the market</p>
+                <p className="text-base">Products already on the market</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -42,7 +42,7 @@ export default function ExistingSolutionsPage() {
               </div>
               <div>
                 <p className="font-semibold text-foreground">Manual workarounds</p>
-                <p className="text-md">Spreadsheets, sticky notes, email threads</p>
+                <p className="text-base">Spreadsheets, sticky notes, email threads</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -51,7 +51,7 @@ export default function ExistingSolutionsPage() {
               </div>
               <div>
                 <p className="font-semibold text-foreground">Hiring or outsourcing</p>
-                <p className="text-md">Paying someone else to handle it</p>
+                <p className="text-base">Paying someone else to handle it</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -60,7 +60,7 @@ export default function ExistingSolutionsPage() {
               </div>
               <div>
                 <p className="font-semibold text-foreground">Doing nothing</p>
-                <p className="text-md">Ignoring or tolerating the problem</p>
+                <p className="text-base">Ignoring or tolerating the problem</p>
               </div>
             </div>
           </div>
@@ -77,7 +77,7 @@ export default function ExistingSolutionsPage() {
 
         <div className="flex flex-col gap-2 items-center text-center">
           <h3 className="text-xl font-bold"><span className="text-primary">Your Turn:</span> What existing solutions are there?</h3>
-          <p className="text-md text-muted-foreground max-w-xl">
+          <p className="text-base max-w-xl">
             Add every existing solution your customer uses today, and capture the shortcomings that leave room for something better.
           </p>
         </div>

@@ -76,7 +76,7 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
     <div className="rounded-xl bg-primary p-8 flex flex-col gap-5">
       {!readOnly && (
         <div className="flex flex-col gap-3">
-          <p className="text-md font-medium text-white">How to weigh your scores</p>
+          <p className="text-base font-medium text-white">How to weigh your scores</p>
           <ul className="flex flex-col gap-2">
             {VERDICT_GUIDANCE.map((g) => (
               <li key={g} className="text-sm text-white flex items-start gap-2">
@@ -90,21 +90,21 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
 
       {(!readOnly || reasonText) && (
         <div className={cn("flex flex-col gap-2", !readOnly && "pt-2 border-t border-white/20")}>
-          <p className="text-md font-medium text-white">Reasoning{!readOnly && " (optional)"}</p>
+          <p className="text-base font-medium text-white">Reasoning{!readOnly && " (optional)"}</p>
           <Textarea
             rows={3}
             placeholder="Capture the thinking behind your verdict. What clinched it? What would change your mind?"
             value={reasonText}
             onChange={(e) => setValidationReason(e.target.value)}
             readOnly={readOnly}
-            className="resize-none text-md focus-visible:ring-1 bg-white border-white text-foreground read-only:cursor-default"
+            className="resize-none text-base focus-visible:ring-1 bg-white border-white text-foreground read-only:cursor-default"
           />
         </div>
       )}
 
       {(!readOnly || hasVerdict) && (
         <div className={cn("flex flex-col gap-3", !readOnly && "pt-2 border-t border-white/20")}>
-          <p className="text-md font-medium text-white">Your verdict</p>
+          <p className="text-base font-medium text-white">Your verdict</p>
           {VERDICT_OPTIONS.filter((option) => !readOnly || (mounted && currentKey === option.value)).map((option) => {
             const Icon = option.icon
             const selected = mounted && currentKey === option.value
@@ -135,7 +135,7 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
                 </div>
                 <div className="flex items-center gap-2">
                   <Icon className="h-4 w-4" />
-                  <span className="text-md font-medium">{option.label}</span>
+                  <span className="text-base font-medium">{option.label}</span>
                 </div>
               </button>
             )

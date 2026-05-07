@@ -270,7 +270,7 @@ export default function ChooseDiscoveryPage() {
             </div>
           )}
 
-          <p className="text-md leading-relaxed">
+          <p className="text-base leading-relaxed">
             Use creative brainstorming techniques to generate solution candidates.
             Choose a technique below to get started.
           </p>
@@ -289,7 +289,7 @@ export default function ChooseDiscoveryPage() {
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
                     <Icon className="h-5 w-5 text-primary" />
                   </div>
-                  <h3 className="text-md font-semibold">{tool.title}</h3>
+                  <h3 className="text-base font-semibold">{tool.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{tool.description}</p>
                 </button>
               )

@@ -69,7 +69,7 @@ export default function CategoryPage({
                 <CardTitle icon={CategoryIcon}>{category.title}</CardTitle>
             </CardHeader>
             <CardContent className={cn("flex-1 flex flex-col gap-6 overflow-y-auto min-h-0", roomy ? "p-10 pt-6" : "p-6 pt-4")}>
-                <p className="text-md text-foreground leading-relaxed">
+                <p className="text-base text-foreground leading-relaxed">
                     {category.description}
                 </p>
 

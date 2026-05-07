@@ -40,7 +40,7 @@ const AutoTextarea = forwardRef<HTMLTextAreaElement, ComponentProps<"textarea">>
         rows={1}
         value={value}
         className={cn(
-          "flex w-full min-h-7 resize-none overflow-hidden rounded-md border border-input bg-transparent px-3 py-1 text-md leading-5 shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
+          "flex w-full min-h-7 resize-none overflow-hidden rounded-md border border-input bg-transparent px-3 py-1 text-base leading-5 shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
         {...props}

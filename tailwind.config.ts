@@ -85,10 +85,6 @@ export default {
   				ring: 'hsl(var(--sidebar-ring))'
   			}
   		},
-  		fontSize: {
-  			'base': ['0.9375rem', { lineHeight: '1.375rem' }],
-  			'md': ['0.9375rem', { lineHeight: '1.375rem' }]
-  		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',

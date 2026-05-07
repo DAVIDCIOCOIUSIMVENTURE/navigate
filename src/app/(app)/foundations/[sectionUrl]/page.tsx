@@ -52,7 +52,7 @@ export default function FoundationsSectionPage() {
             <Sparkles className="h-3.5 w-3.5 shrink-0 mt-1" aria-hidden="true" />
             <span>{section.tagline}</span>
           </p>
-          <p className="text-md text-foreground leading-relaxed">{section.intro}</p>
+          <p className="text-base text-foreground leading-relaxed">{section.intro}</p>
         </div>
 
         {section.keyPoints.length > 0 && (
@@ -64,7 +64,7 @@ export default function FoundationsSectionPage() {
                   <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold shrink-0 mt-0.5">
                     {i + 1}
                   </span>
-                  <p className="text-md text-foreground leading-relaxed flex-1">{point}</p>
+                  <p className="text-base text-foreground leading-relaxed flex-1">{point}</p>
                 </li>
               ))}
             </ul>

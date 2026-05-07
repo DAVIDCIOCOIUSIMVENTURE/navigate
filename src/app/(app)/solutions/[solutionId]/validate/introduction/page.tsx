@@ -25,7 +25,7 @@ export default function IntroductionPage() {
         <CardTitle icon={ClipboardCheck}>Introduction</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
-        <p className="text-md leading-relaxed">
+        <p className="text-base leading-relaxed">
           Validation helps you decide whether this solution is worth pursuing. You&apos;ll work through four metrics one at a time, each with guidance and case studies to help you reason about it. At the end, you&apos;ll mark the solution as valid, invalid, or unsure.
         </p>
 
@@ -33,7 +33,7 @@ export default function IntroductionPage() {
           <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4 flex flex-col gap-3">
             <div className="flex flex-col gap-1">
               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Solution</p>
-              <p className="text-md font-medium">{solution.title || "Untitled solution"}</p>
+              <p className="text-base font-medium">{solution.title || "Untitled solution"}</p>
               {solution.description && (
                 <p className="text-sm text-muted-foreground">{solution.description}</p>
               )}
@@ -61,8 +61,8 @@ export default function IntroductionPage() {
                   )}
                 </div>
                 <div className="flex flex-col gap-0.5 pb-5">
-                  <p className="text-md font-medium leading-8">{title}</p>
-                  <p className="text-md leading-relaxed">{description}</p>
+                  <p className="text-base font-medium leading-8">{title}</p>
+                  <p className="text-base leading-relaxed">{description}</p>
                 </div>
               </div>
             ))}

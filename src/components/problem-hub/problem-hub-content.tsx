@@ -61,7 +61,7 @@ function HubSection({
         <div className="flex items-center gap-3 p-4">
           <CollapsibleTrigger className="flex flex-1 items-center gap-2.5 text-left">
             <IconTile icon={icon} tone={tone} size="sm" />
-            <h3 className="flex-1 font-semibold text-md">{label}</h3>
+            <h3 className="flex-1 font-semibold text-base">{label}</h3>
             <ChevronDown
               className={cn("h-4 w-4 text-muted-foreground transition-transform", open && "rotate-180")}
               aria-hidden="true"
@@ -187,7 +187,7 @@ function NextStepsSection({ problemRef, problemId }: { problemRef: string; probl
         <IconTile icon={ArrowRight} tone="primary" size="sm" />
         Next Steps
       </h2>
-      <p className="text-md text-muted-foreground mb-4">
+      <p className="text-base mb-4">
         Based on your validation verdict, here is what you can do next.
       </p>
 
@@ -197,7 +197,7 @@ function NextStepsSection({ problemRef, problemId }: { problemRef: string; probl
             <IconTile icon={CheckCircle2} tone="emerald" />
             <h3 className="text-lg font-semibold text-foreground">Your problem is valid</h3>
           </div>
-          <p className="text-md text-muted-foreground">
+          <p className="text-base">
             You have confirmed that this problem is real, painful, and worth pursuing. The next step is to brainstorm and evaluate potential solutions.
           </p>
           <Button className="self-start" onClick={goToDiscover}>
@@ -213,7 +213,7 @@ function NextStepsSection({ problemRef, problemId }: { problemRef: string; probl
             <IconTile icon={HelpCircle} tone="amber" />
             <h3 className="text-lg font-semibold text-foreground">You are unsure about this problem</h3>
           </div>
-          <p className="text-md text-muted-foreground">
+          <p className="text-base">
             Uncertainty is normal at this stage. It usually means you need more information before you can confidently commit to solving this problem.
           </p>
           <div className="flex flex-col gap-3 mt-1">
@@ -251,7 +251,7 @@ function NextStepsSection({ problemRef, problemId }: { problemRef: string; probl
             <IconTile icon={XCircle} tone="rose" />
             <h3 className="text-lg font-semibold text-foreground">This problem is not valid</h3>
           </div>
-          <p className="text-md text-muted-foreground">
+          <p className="text-base">
             Your validation suggests this problem is not worth solving in its current form. That does not mean the underlying idea is bad. Often, a problem becomes valid when you look at it through a different lens.
           </p>
           <div className="flex flex-col gap-3 mt-1">
@@ -281,7 +281,7 @@ function NextStepsSection({ problemRef, problemId }: { problemRef: string; probl
             <IconTile icon={HelpCircle} tone="primary" />
             <h3 className="text-lg font-semibold text-foreground">No verdict yet</h3>
           </div>
-          <p className="text-md text-muted-foreground">
+          <p className="text-base">
             Complete the validation step to see your next steps.
           </p>
           <Button className="self-start" onClick={goToValidation}>

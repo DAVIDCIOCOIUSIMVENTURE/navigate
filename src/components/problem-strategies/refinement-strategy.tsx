@@ -67,7 +67,7 @@ function RootCausesForm({ readOnly = false }: { readOnly?: boolean }) {
               value={cause.description}
               onChange={(e) => updateCause(cause.id, e.target.value)}
               readOnly={readOnly}
-              className="flex-1 text-md bg-white border-white text-foreground read-only:cursor-default"
+              className="flex-1 text-base bg-white border-white text-foreground read-only:cursor-default"
             />
             {!readOnly && (
               <Button
@@ -90,7 +90,7 @@ function RootCausesForm({ readOnly = false }: { readOnly?: boolean }) {
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={onKeyDown}
             onBlur={addCause}
-            className="text-md bg-white border-white text-foreground"
+            className="text-base bg-white border-white text-foreground"
           />
         ) : (
           <Button variant="on-primary" className="w-full" onClick={() => setAdding(true)}>

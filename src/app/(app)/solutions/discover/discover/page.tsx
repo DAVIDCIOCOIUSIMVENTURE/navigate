@@ -1504,7 +1504,7 @@ export default function DiscoverPage() {
         )}
 
         {toolInfo && (
-          <div className="flex flex-col gap-3 text-md">
+          <div className="flex flex-col gap-3 text-base">
             <p>{toolInfo.description}</p>
 
             {discoveryToolType === "scamper" && (
@@ -1541,7 +1541,7 @@ export default function DiscoverPage() {
                     </div>
                     <div>
                       <p className="font-semibold text-foreground">Make it worse</p>
-                      <p className="text-md">Think of every way to aggravate the problem. Be creative, the more outlandish the better.</p>
+                      <p className="text-base">Think of every way to aggravate the problem. Be creative, the more outlandish the better.</p>
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
@@ -1550,7 +1550,7 @@ export default function DiscoverPage() {
                     </div>
                     <div>
                       <p className="font-semibold text-foreground">Flip each idea</p>
-                      <p className="text-md">Take each &quot;make it worse&quot; idea and write its opposite. These inversions often reveal strong solution ideas.</p>
+                      <p className="text-base">Take each &quot;make it worse&quot; idea and write its opposite. These inversions often reveal strong solution ideas.</p>
                     </div>
                   </div>
                 </div>
@@ -1566,7 +1566,7 @@ export default function DiscoverPage() {
                   </div>
                   <div>
                     <p className="font-semibold text-foreground">{title}</p>
-                    <p className="text-md">{subtitle}</p>
+                    <p className="text-base">{subtitle}</p>
                   </div>
                 </div>
               ))}
@@ -1581,7 +1581,7 @@ export default function DiscoverPage() {
             <hr className="border-border/40" />
             <div className="flex flex-col gap-2 items-center text-center">
               <h3 className="text-xl font-bold"><span className="text-primary">Your Turn:</span> Work through the SCAMPER prompts</h3>
-              <p className="text-md text-muted-foreground max-w-xl">
+              <p className="text-base max-w-xl">
                 Run your problem through each of the seven angles. You don&apos;t need to answer every prompt: jot ideas where they spark, then click <strong>Save Solution</strong> when you have one worth keeping.
               </p>
             </div>

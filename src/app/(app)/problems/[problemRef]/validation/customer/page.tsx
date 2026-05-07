@@ -29,7 +29,7 @@ export default function CustomerSegmentPage() {
         <CardTitle icon={Users}>Define your customer</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
-        <div className="flex flex-col gap-3 text-md text-muted-foreground">
+        <div className="flex flex-col gap-3 text-base">
           <p>
             Who exactly experiences this problem? The more precisely you define your customer, the
             easier it becomes to validate the problem, estimate the market, and eventually craft a
@@ -52,7 +52,7 @@ export default function CustomerSegmentPage() {
           </div>
         )}
 
-        <div className="flex flex-col gap-3 text-md text-muted-foreground">
+        <div className="flex flex-col gap-3 text-base">
           <p className="text-xl font-bold text-foreground">How to narrow down your customer</p>
           <p>
             Start broad, then layer on filters until you reach a specific group. Each filter
@@ -65,7 +65,7 @@ export default function CustomerSegmentPage() {
               </div>
               <div>
                 <p className="font-semibold text-foreground">Role &amp; industry</p>
-                <p className="text-md">What do they do, and in which sector? (e.g. freelance graphic designers, NHS nurses, SaaS founders)</p>
+                <p className="text-base">What do they do, and in which sector? (e.g. freelance graphic designers, NHS nurses, SaaS founders)</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -74,7 +74,7 @@ export default function CustomerSegmentPage() {
               </div>
               <div>
                 <p className="font-semibold text-foreground">Demographics &amp; geography</p>
-                <p className="text-md">Age range, location, income level, company size</p>
+                <p className="text-base">Age range, location, income level, company size</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -83,7 +83,7 @@ export default function CustomerSegmentPage() {
               </div>
               <div>
                 <p className="font-semibold text-foreground">Behaviour &amp; situation</p>
-                <p className="text-md">What triggers the problem? When and how often does it happen?</p>
+                <p className="text-base">What triggers the problem? When and how often does it happen?</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -92,13 +92,13 @@ export default function CustomerSegmentPage() {
               </div>
               <div>
                 <p className="font-semibold text-foreground">Urgency &amp; willingness</p>
-                <p className="text-md">How badly do they need a solution? Are they already spending time or money trying to fix it?</p>
+                <p className="text-base">How badly do they need a solution? Are they already spending time or money trying to fix it?</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="rounded-lg border bg-muted/30 p-4 flex flex-col gap-2 text-md text-muted-foreground">
+        <div className="rounded-lg border bg-muted/30 p-4 flex flex-col gap-2 text-base">
           <p className="font-medium text-foreground">Why this matters</p>
           <p>
             A vague customer means vague problems and vague solutions. When you can describe
@@ -113,19 +113,19 @@ export default function CustomerSegmentPage() {
         </div>
 
         <h3 className="mt-4 text-xl font-bold text-foreground">What you&apos;ll do</h3>
-        <div className="flex flex-col gap-3 text-md text-muted-foreground">
+        <div className="flex flex-col gap-3 text-base">
           <div className="flex items-center gap-3">
             <span className="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white text-sm font-bold shrink-0">1</span>
             <div>
               <p className="font-semibold text-foreground">Describe your customer</p>
-              <p className="text-md">Paint a clear picture of who experiences this problem, using the filters above to be as specific as possible.</p>
+              <p className="text-base">Paint a clear picture of who experiences this problem, using the filters above to be as specific as possible.</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
             <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500 text-white text-sm font-bold shrink-0">2</span>
             <div>
               <p className="font-semibold text-foreground">Estimate the segment size</p>
-              <p className="text-md">How many people fit this description? An order-of-magnitude is fine.</p>
+              <p className="text-base">How many people fit this description? An order-of-magnitude is fine.</p>
             </div>
           </div>
         </div>
@@ -134,7 +134,7 @@ export default function CustomerSegmentPage() {
 
         <div className="flex flex-col gap-2 items-center text-center">
           <h3 className="text-xl font-bold"><span className="text-primary">Your Turn:</span> Who is your customer?</h3>
-          <p className="text-md text-muted-foreground max-w-xl">
+          <p className="text-base max-w-xl">
             Complete the two boxes below to describe your customer segment. Be as specific as you can, a clearer picture here makes every later step easier.
           </p>
         </div>

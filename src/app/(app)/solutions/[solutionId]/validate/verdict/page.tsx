@@ -92,7 +92,7 @@ export default function VerdictPage() {
         <CardTitle icon={CheckCircle2}>Verdict</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
-        <p className="text-md leading-relaxed">
+        <p className="text-base leading-relaxed">
           Based on the four metrics, decide whether this solution is worth pursuing. A high-impact, feasible, low-cost, fast solution is an easy yes. A low-impact, expensive, slow one is an easy no. Most sit somewhere in between.
         </p>
 
@@ -135,7 +135,7 @@ export default function VerdictPage() {
 
           <TabsContent value="case-studies">
             <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-4">
-              <p className="text-md text-white">
+              <p className="text-base text-white">
                 See how teams have weighed their metrics into a verdict. Each example shows the call they made, the reasoning behind it, and what happened next.
               </p>
               <div className="flex flex-col gap-4">
@@ -150,7 +150,7 @@ export default function VerdictPage() {
                         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/20 text-white">
                           <Icon className="h-4 w-4" />
                         </span>
-                        <p className="text-md font-semibold text-white">{cs.company}</p>
+                        <p className="text-base font-semibold text-white">{cs.company}</p>
                         <span className={cn(
                           "ml-auto rounded-full px-3 py-0.5 text-sm font-semibold",
                           VERDICT_BADGES[cs.verdict],
@@ -160,17 +160,17 @@ export default function VerdictPage() {
                       </div>
                       <div>
                         <span className="text-xs font-semibold uppercase tracking-wide text-white/70">Context</span>
-                        <p className="mt-0.5 text-md text-white">{cs.context}</p>
+                        <p className="mt-0.5 text-base text-white">{cs.context}</p>
                       </div>
                       <div className="rounded-md border border-white/10 bg-white/5 p-3">
                         <span className="text-xs font-semibold uppercase tracking-wide text-white/70">
                           Reasoning ({VERDICT_LABELS[cs.verdict]})
                         </span>
-                        <p className="mt-1 text-md text-white">{cs.reasoning}</p>
+                        <p className="mt-1 text-base text-white">{cs.reasoning}</p>
                       </div>
                       <div className="border-t border-white/10 pt-3 mt-1">
                         <span className="text-xs font-semibold uppercase tracking-wide text-white/70">Outcome</span>
-                        <p className="mt-0.5 text-md text-white">{cs.outcome}</p>
+                        <p className="mt-0.5 text-base text-white">{cs.outcome}</p>
                       </div>
                     </div>
                   )

@@ -48,7 +48,7 @@ export function MetricStep({ content, value, onChange }: MetricStepProps) {
           </div>
         )}
 
-        <p className="text-md leading-relaxed">{summary}</p>
+        <p className="text-base leading-relaxed">{summary}</p>
 
         <Tabs defaultValue="guidance" className="flex flex-col gap-4">
           <TabsList className="self-center">
@@ -99,7 +99,7 @@ function CaseStudies({
 }) {
   return (
     <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-4">
-      <p className="text-md text-white">
+      <p className="text-base text-white">
         See how companies have thought about this metric. Each example shows the score they would have given, the reasoning behind it, and what happened next.
       </p>
       <div className="flex flex-col gap-4">
@@ -117,24 +117,24 @@ function CaseStudies({
                     <Icon className="h-4 w-4" />
                   </span>
                 )}
-                <p className="text-md font-semibold text-white">{cs.company}</p>
+                <p className="text-base font-semibold text-white">{cs.company}</p>
                 <span className="ml-auto rounded-full bg-white text-primary px-3 py-0.5 text-sm font-semibold">
                   Score {cs.score} / 5
                 </span>
               </div>
               <div>
                 <span className="text-xs font-semibold uppercase tracking-wide text-white/70">Context</span>
-                <p className="mt-0.5 text-md text-white">{cs.context}</p>
+                <p className="mt-0.5 text-base text-white">{cs.context}</p>
               </div>
               <div className={cn("rounded-md border border-white/10 bg-white/5 p-3")}>
                 <span className="text-xs font-semibold uppercase tracking-wide text-white/70">
                   Reasoning ({scaleStop?.label ?? `Score ${cs.score}`})
                 </span>
-                <p className="mt-1 text-md text-white">{cs.reasoning}</p>
+                <p className="mt-1 text-base text-white">{cs.reasoning}</p>
               </div>
               <div className="border-t border-white/10 pt-3 mt-1">
                 <span className="text-xs font-semibold uppercase tracking-wide text-white/70">Outcome</span>
-                <p className="mt-0.5 text-md text-white">{cs.outcome}</p>
+                <p className="mt-0.5 text-base text-white">{cs.outcome}</p>
               </div>
             </div>
           )

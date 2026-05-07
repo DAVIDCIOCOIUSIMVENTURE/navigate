@@ -162,7 +162,7 @@ export function ExistingSolutionsStrategy({ readOnly = false }: { readOnly?: boo
                       value={sol.text}
                       onChange={(e) => setExistingSolutions(existingSolutions.map((a, idx) => idx === i ? { ...a, text: e.target.value } : a))}
                       readOnly={readOnly}
-                      className="text-md font-medium h-8 bg-white border-white text-foreground read-only:cursor-default"
+                      className="text-base font-medium h-8 bg-white border-white text-foreground read-only:cursor-default"
                     />
                   </div>
 
@@ -223,7 +223,7 @@ export function ExistingSolutionsStrategy({ readOnly = false }: { readOnly?: boo
                             onChange={(e) => setScDrafts((prev) => ({ ...prev, [i]: e.target.value }))}
                             onKeyDown={(e) => onScKeyDown(i, e)}
                             onBlur={() => addShortcoming(i)}
-                            className="text-md h-8 bg-white border-white text-foreground"
+                            className="text-base h-8 bg-white border-white text-foreground"
                           />
                         ) : (
                           <Button
@@ -259,7 +259,7 @@ export function ExistingSolutionsStrategy({ readOnly = false }: { readOnly?: boo
               onChange={(e) => setDraft(e.target.value)}
               onKeyDown={onSolutionKeyDown}
               onBlur={addSolution}
-              className="text-md h-9 bg-white border-white text-foreground"
+              className="text-base h-9 bg-white border-white text-foreground"
             />
           ) : (
             <Button variant="on-primary" className="w-full" onClick={() => setAddingSolution(true)}>

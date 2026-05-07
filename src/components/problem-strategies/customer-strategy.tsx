@@ -29,7 +29,7 @@ export function CustomerStrategy({ readOnly = false }: { readOnly?: boolean }) {
             onChange={(e) => setCustomerDescription(e.target.value)}
             rows={3}
             readOnly={readOnly}
-            className="text-md bg-white border-white text-foreground read-only:cursor-default"
+            className="text-base bg-white border-white text-foreground read-only:cursor-default"
           />
         </div>
 
@@ -48,7 +48,7 @@ export function CustomerStrategy({ readOnly = false }: { readOnly?: boolean }) {
               setSegmentSize(val === "" ? null : Number(val))
             }}
             readOnly={readOnly}
-            className="text-md h-9 max-w-xs bg-white border-white text-foreground read-only:cursor-default"
+            className="text-base h-9 max-w-xs bg-white border-white text-foreground read-only:cursor-default"
           />
           {!readOnly && (
             <p className="text-sm text-white/70 mt-1">
