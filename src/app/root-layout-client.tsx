@@ -17,6 +17,7 @@ import { GuidanceProvider } from "@/context/guidance-context"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { NavigationGuardProvider } from "@/context/navigation-guard-context"
 import { ContainerSizeContext, useObserveContainerSize } from "@/context/container-size-context"
+import { FocusChromeContext } from "@/context/focus-chrome-context"
 import { AppStoreProvider } from "@/store/provider"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
@@ -64,6 +65,10 @@ function getSection(pathname: string): { title: string; Icon: LucideIcon } | nul
   return null
 }
 
+function isFocusFlowPath(pathname: string): boolean {
+  return pathname.startsWith("/self-discovery/discover")
+}
+
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const section = getSection(pathname)
@@ -76,10 +81,20 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const journalOpen = useSelector((state: RootState) => state.settings.journalOpen)
   const dispatch = useDispatch<AppDispatch>()
 
+  const isFocusFlow = isFocusFlowPath(pathname)
+  const [topNavOpen, setTopNavOpen] = useState(false)
+
+  useEffect(() => {
+    if (!isFocusFlow) {
+      setTopNavOpen(false)
+    }
+  }, [isFocusFlow])
+
   const openGuidance = (topic?: string) => {
     setGuidanceTopic(topic)
     setGuidanceOpen(true)
     dispatch.settings.setJournalOpen(false)
+    setTopNavOpen(false)
   }
 
   const closeGuidance = () => setGuidanceOpen(false)
@@ -96,6 +111,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       dispatch.settings.setJournalOpen(true)
       setGuidanceOpen(false)
     }
+    setTopNavOpen(false)
   }
 
   const closeJournal = () => dispatch.settings.setJournalOpen(false)
@@ -114,6 +130,66 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     dispatch.notes.init()
   }, [dispatch.settings, dispatch.selfDiscoveryItems, dispatch.customBrainstormItems, dispatch.problems, dispatch.accountSettings, dispatch.solutions, dispatch.solutionWorkspaces, dispatch.notes])
 
+  const headerTitle = section && (
+    <h1 className="flex items-center gap-2 ml-2 text-xl font-bold min-w-0">
+      <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary shrink-0" aria-hidden="true">
+        <section.Icon className="h-4 w-4 text-primary-foreground" />
+      </span>
+      <span className="truncate">{section.title}</span>
+    </h1>
+  )
+
+  const headerActions = (
+    <>
+      <div className="hidden md:block">
+        <TeamAvatars />
+      </div>
+      <Button
+        variant={journalOpen ? "default" : "outline"}
+        size="icon"
+        className="lg:hidden"
+        onClick={toggleJournal}
+        aria-pressed={journalOpen}
+        aria-label="Toggle journal"
+      >
+        <NotebookText />
+      </Button>
+      <Button
+        variant={journalOpen ? "default" : "outline"}
+        className="hidden lg:flex flex-row items-center gap-2 justify-center"
+        onClick={toggleJournal}
+        aria-pressed={journalOpen}
+      >
+        <NotebookText />
+        <span>Journal</span>
+      </Button>
+      <Button
+        variant={guidanceOpen ? "default" : "outline"}
+        size="icon"
+        className="lg:hidden"
+        onClick={toggleGuidance}
+        aria-pressed={guidanceOpen}
+        aria-label="Toggle guidance"
+      >
+        <HelpCircle />
+      </Button>
+      <Button
+        variant={guidanceOpen ? "default" : "outline"}
+        className="hidden lg:flex flex-row items-center gap-2 justify-center"
+        onClick={toggleGuidance}
+        aria-pressed={guidanceOpen}
+      >
+        <HelpCircle />
+        <span>Guidance</span>
+      </Button>
+      <Button variant="outline" size="icon" asChild>
+        <Link href="/settings" onClick={() => setTopNavOpen(false)}>
+          <Settings />
+        </Link>
+      </Button>
+    </>
+  )
+
   return (
     <SidebarProvider
       sidebarMode={sidebarMode}
@@ -122,78 +198,33 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     >
       {!fullView && <AppSidebar />}
       <SidebarInset>
-        {!fullView && (
+        {!fullView && !isFocusFlow && (
         <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4 justify-between">
           <div className="flex items-center gap-2 min-w-0">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="h-4" />
-            {section && (
-              <h1 className="flex items-center gap-2 ml-2 text-xl font-bold min-w-0">
-                <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary shrink-0" aria-hidden="true">
-                  <section.Icon className="h-4 w-4 text-primary-foreground" />
-                </span>
-                <span className="truncate">{section.title}</span>
-              </h1>
-            )}
+            {headerTitle}
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <div className="hidden md:block">
-              <TeamAvatars />
-            </div>
-            <Button
-              variant={journalOpen ? "default" : "outline"}
-              size="icon"
-              className="lg:hidden"
-              onClick={toggleJournal}
-              aria-pressed={journalOpen}
-              aria-label="Toggle journal"
-            >
-              <NotebookText />
-            </Button>
-            <Button
-              variant={journalOpen ? "default" : "outline"}
-              className="hidden lg:flex flex-row items-center gap-2 justify-center"
-              onClick={toggleJournal}
-              aria-pressed={journalOpen}
-            >
-              <NotebookText />
-              <span>Journal</span>
-            </Button>
-            <Button
-              variant={guidanceOpen ? "default" : "outline"}
-              size="icon"
-              className="lg:hidden"
-              onClick={toggleGuidance}
-              aria-pressed={guidanceOpen}
-              aria-label="Toggle guidance"
-            >
-              <HelpCircle />
-            </Button>
-            <Button
-              variant={guidanceOpen ? "default" : "outline"}
-              className="hidden lg:flex flex-row items-center gap-2 justify-center"
-              onClick={toggleGuidance}
-              aria-pressed={guidanceOpen}
-            >
-              <HelpCircle />
-              <span>Guidance</span>
-            </Button>
-            <Button variant="outline" size="icon" asChild>
-              <Link href="/settings">
-                <Settings />
-              </Link>
-            </Button>
+            {headerActions}
           </div>
         </header>
         )}
+        <FocusChromeContext.Provider value={{ revealTopNav: () => setTopNavOpen(true) }}>
         <GuidanceProvider onOpen={openGuidance}>
           {sidePanelOpen ? (
             <ResizablePanelGroup direction="horizontal" className="flex-1 min-h-0">
               <ResizablePanel defaultSize={70} minSize={40}>
                 <div className="h-full bg-gray-100 overflow-y-auto">
-                  <div className={`mx-auto flex min-h-full w-full max-w-screen-2xl flex-col gap-4 ${fullView ? "px-6 py-6" : "px-4 py-6 sm:px-6 lg:px-8 lg:py-8"}`}>
-                    <ContentArea>{children}</ContentArea>
-                  </div>
+                  {isFocusFlow ? (
+                    <div className="flex min-h-full w-full flex-col">
+                      <ContentArea>{children}</ContentArea>
+                    </div>
+                  ) : (
+                    <div className={`mx-auto flex min-h-full w-full max-w-screen-2xl flex-col gap-4 ${fullView ? "px-6 py-6" : "px-4 py-6 sm:px-6 lg:px-8 lg:py-8"}`}>
+                      <ContentArea>{children}</ContentArea>
+                    </div>
+                  )}
                 </div>
               </ResizablePanel>
               <ResizableHandle withHandle />
@@ -207,12 +238,19 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             </ResizablePanelGroup>
           ) : (
             <div className="flex-1 min-h-0 bg-gray-100 overflow-y-auto">
-              <div className={`mx-auto flex min-h-full w-full max-w-screen-2xl flex-col gap-4 ${fullView ? "px-6 py-6" : "px-4 py-6 sm:px-6 lg:px-8 lg:py-8"}`}>
-                <ContentArea>{children}</ContentArea>
-              </div>
+              {isFocusFlow ? (
+                <div className="flex min-h-full w-full flex-col">
+                  <ContentArea>{children}</ContentArea>
+                </div>
+              ) : (
+                <div className={`mx-auto flex min-h-full w-full max-w-screen-2xl flex-col gap-4 ${fullView ? "px-6 py-6" : "px-4 py-6 sm:px-6 lg:px-8 lg:py-8"}`}>
+                  <ContentArea>{children}</ContentArea>
+                </div>
+              )}
             </div>
           )}
         </GuidanceProvider>
+        </FocusChromeContext.Provider>
       </SidebarInset>
       {isMobile && (
         <Sheet open={guidanceOpen} onOpenChange={setGuidanceOpen}>
@@ -231,6 +269,23 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               <SheetTitle>Journal</SheetTitle>
             </VisuallyHidden>
             <JournalPanel onClose={closeJournal} />
+          </SheetContent>
+        </Sheet>
+      )}
+      {isFocusFlow && (
+        <Sheet open={topNavOpen} onOpenChange={setTopNavOpen}>
+          <SheetContent side="top" className="p-0">
+            <VisuallyHidden>
+              <SheetTitle>App header</SheetTitle>
+            </VisuallyHidden>
+            <header className="flex h-16 items-center justify-between gap-2 px-4 sm:px-6">
+              <div className="flex items-center gap-2 min-w-0">
+                {headerTitle}
+              </div>
+              <div className="flex items-center gap-2 shrink-0 pr-10">
+                {headerActions}
+              </div>
+            </header>
           </SheetContent>
         </Sheet>
       )}

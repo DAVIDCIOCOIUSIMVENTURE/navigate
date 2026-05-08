@@ -5,12 +5,14 @@ import { getSelfDiscoveryCategoryIcon } from "@/config/navigation"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { useRouter, usePathname } from "next/navigation"
-import { ArrowLeft, ChevronDown, Compass, type LucideIcon } from "lucide-react"
+import { ArrowLeft, ChevronDown, Compass, PanelLeft, PanelTop, type LucideIcon } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { useSidebar } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
 import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
 import { useContainerSize } from "@/context/container-size-context"
+import { useFocusChrome } from "@/context/focus-chrome-context"
 
 const BASE_PATH = "/self-discovery/discover"
 
@@ -176,6 +178,8 @@ export default function SelfDiscoveryFlowLayout({
     const router = useRouter()
     const pathname = usePathname()
     const [mobileNavOpen, setMobileNavOpen] = useState(false)
+    const { toggleSidebar } = useSidebar()
+    const { revealTopNav } = useFocusChrome()
 
     const size = useContainerSize()
     const isWide = size === "wide"
@@ -191,12 +195,36 @@ export default function SelfDiscoveryFlowLayout({
 
     const { label: activeLabel, Icon: ActiveIcon, bgClass: activeBgClass } = getActiveInfo(pathname)
 
+    const chromeTriggers = (
+        <div className="flex items-center gap-1 shrink-0">
+            <Button
+                variant="outline"
+                size="icon"
+                onClick={toggleSidebar}
+                aria-label="Toggle app menu"
+                title="App menu"
+            >
+                <PanelLeft className="h-4 w-4" />
+            </Button>
+            <Button
+                variant="outline"
+                size="icon"
+                onClick={revealTopNav}
+                aria-label="Show top bar"
+                title="Top bar"
+            >
+                <PanelTop className="h-4 w-4" />
+            </Button>
+        </div>
+    )
+
     const inlineHeaderRow = (
         <div className="flex items-center gap-3 shrink-0">
             <Button variant="primary-outline" onClick={handleExit} className="gap-2">
                 <ArrowLeft className="h-4 w-4" />
                 Back
             </Button>
+            {chromeTriggers}
             <h1 className="flex items-center gap-2 text-xl font-bold min-w-0">
                 <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary shrink-0" aria-hidden="true">
                     <Compass className="h-4 w-4 text-primary-foreground" />
@@ -207,7 +235,7 @@ export default function SelfDiscoveryFlowLayout({
     )
 
     return (
-        <div className="flex h-svh w-full flex-col">
+        <div className="flex flex-1 min-h-0 w-full flex-col">
             <div
                 className={cn(
                     "mx-auto flex w-full max-w-screen-2xl flex-1 min-h-0 gap-3",
@@ -253,10 +281,13 @@ export default function SelfDiscoveryFlowLayout({
 
                 {isWide && (
                     <div className="w-72 shrink-0 h-full flex flex-col gap-3 min-h-0">
-                        <Button variant="primary-outline" onClick={handleExit} className="gap-2 self-start shrink-0">
-                            <ArrowLeft className="h-4 w-4" />
-                            Back
-                        </Button>
+                        <div className="flex items-center gap-2 shrink-0">
+                            <Button variant="primary-outline" onClick={handleExit} className="gap-2">
+                                <ArrowLeft className="h-4 w-4" />
+                                Back
+                            </Button>
+                            {chromeTriggers}
+                        </div>
                         <Card className="flex-1 min-h-0 flex flex-col overflow-hidden">
                             <CardContent className="p-3 flex flex-col gap-3 flex-1 min-h-0">
                                 <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 px-1 pt-1 pb-3 border-b">
