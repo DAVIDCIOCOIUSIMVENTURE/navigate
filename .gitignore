@@ -33,6 +33,7 @@
 
 # playwright
 /.playwright-mcp/
+/.playwright-screenshots/
 
 # debug
 npm-debug.log*

@@ -52,17 +52,17 @@ export default function OtherCategoryPage() {
         if (lastCategory) {
             const lastQuestion = lastCategory.questions[lastCategory.questions.length - 1]
             if (lastQuestion) {
-                router.push(`/self-discovery/${lastCategory.url}/${lastQuestion.url}`)
+                router.push(`/self-discovery/discover/${lastCategory.url}/${lastQuestion.url}`)
                 return
             }
-            router.push(`/self-discovery/${lastCategory.url}`)
+            router.push(`/self-discovery/discover/${lastCategory.url}`)
             return
         }
-        router.push("/self-discovery")
+        router.push("/self-discovery/discover")
     }
 
     const handleNext = () => {
-        router.push("/problems")
+        router.push("/self-discovery")
     }
 
     if (!mounted) {
@@ -125,9 +125,9 @@ export default function OtherCategoryPage() {
                         </div>
                     </div>
                 </CardContent>
-                <CardFooter className={cn("shrink-0 flex justify-between border-t", roomy ? "px-10 py-6" : "px-6 py-4")}>
+                <CardFooter className={cn("shrink-0 flex justify-between", roomy ? "px-10 pb-6 pt-0" : "px-6 pb-4 pt-0")}>
                     <Button variant="outline" onClick={handleBack}>Previous</Button>
-                    <Button onClick={handleNext}>Next</Button>
+                    <Button onClick={handleNext}>Done</Button>
                 </CardFooter>
             </Card>
 

@@ -14,7 +14,11 @@
       "mcp__playwright__browser_click",
       "mcp__playwright__browser_resize",
       "PowerShell(npx tsc --noEmit)",
-      "PowerShell(npm run lint)"
+      "PowerShell(npm run lint)",
+      "mcp__playwright__browser_type",
+      "mcp__playwright__browser_console_messages",
+      "PowerShell($j = Get-Content \"$env:USERPROFILE\\\\.claude.json\" -Raw | ConvertFrom-Json; \"Top-level mcpServers:\"; if \\($j.mcpServers\\) { $j.mcpServers | ConvertTo-Json -Depth 10 } else { \"none\" }; \"---\"; \"Project mcpServers:\"; $proj = $j.projects.'c:\\\\Development\\\\OU\\\\navigate'; if \\($proj.mcpServers\\) { $proj.mcpServers | ConvertTo-Json -Depth 10 } else { \"none in project\" })",
+      "PowerShell($paths = @\\(\"$env:APPDATA\\\\Claude\\\\claude_desktop_config.json\", \"$env:USERPROFILE\\\\.claude\\\\mcp.json\", \"$env:USERPROFILE\\\\.claude\\\\settings.json\", \"$env:USERPROFILE\\\\.config\\\\claude\\\\mcp.json\"\\); foreach \\($p in $paths\\) { if \\(Test-Path $p\\) { \"FOUND: $p\"; Get-Content $p -Raw } else { \"missing: $p\" } })"
     ]
   }
 }

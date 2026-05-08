@@ -54,6 +54,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { cn } from "@/lib/utils"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { useContainerSize } from "@/context/container-size-context"
 
 const GROUP_ICON_RULES: ReadonlyArray<readonly [RegExp, LucideIcon]> = [
@@ -222,8 +223,6 @@ export default function QuestionPage() {
     const allProblems = useSelector((state: RootState) => state.problems.problems)
     const dispatch = useDispatch<AppDispatch>()
 
-    // Count how many saved Problems reference the trigger queued for deletion,
-    // so we can warn the user before they remove it.
     const referencingProblemsCount = problemTriggerToDelete
         ? allProblems.filter((p) => p.you?.includes(problemTriggerToDelete.id)).length
         : 0
@@ -249,9 +248,9 @@ export default function QuestionPage() {
 
         if (currentIndex > 0) {
             const previousQuestion = categoryQuestions[currentIndex - 1]
-            router.push(`/self-discovery/${category.url}/${previousQuestion.url}`)
+            router.push(`/self-discovery/discover/${category.url}/${previousQuestion.url}`)
         } else {
-            router.push(`/self-discovery/${category.url}`)
+            router.push(`/self-discovery/discover/${category.url}`)
         }
     }
 
@@ -263,14 +262,14 @@ export default function QuestionPage() {
 
         if (currentIndex < categoryQuestions.length - 1) {
             const nextQuestion = categoryQuestions[currentIndex + 1]
-            router.push(`/self-discovery/${category.url}/${nextQuestion.url}`)
+            router.push(`/self-discovery/discover/${category.url}/${nextQuestion.url}`)
         } else {
             const currentCategoryIndex = SELF_DISCOVERY_CATEGORIES.findIndex(cat => cat.url === category.url)
             if (currentCategoryIndex < SELF_DISCOVERY_CATEGORIES.length - 1) {
                 const nextCategory = SELF_DISCOVERY_CATEGORIES[currentCategoryIndex + 1]
-                router.push(`/self-discovery/${nextCategory.url}`)
+                router.push(`/self-discovery/discover/${nextCategory.url}`)
             } else {
-                router.push('/self-discovery/other')
+                router.push('/self-discovery/discover/other')
             }
         }
     }
@@ -381,32 +380,44 @@ export default function QuestionPage() {
                                                     </button>
                                                 )}
                                             </div>
-                                            <div className="flex gap-2">
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={() => {
-                                                        setDefaultGroupOpen(true)
-                                                        setTreeResetKey(k => k + 1)
-                                                    }}
-                                                    className={cn("gap-1.5", roomy ? "flex-none" : "flex-1")}
-                                                >
-                                                    <ChevronsUpDown className="h-3.5 w-3.5" />
-                                                    Expand all
-                                                </Button>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    onClick={() => {
-                                                        setDefaultGroupOpen(false)
-                                                        setTreeResetKey(k => k + 1)
-                                                    }}
-                                                    className={cn("gap-1.5", roomy ? "flex-none" : "flex-1")}
-                                                >
-                                                    <ChevronsDownUp className="h-3.5 w-3.5" />
-                                                    Collapse all
-                                                </Button>
-                                            </div>
+                                            <TooltipProvider delayDuration={200}>
+                                                <div className="flex gap-2">
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <Button
+                                                                variant="outline"
+                                                                size="icon"
+                                                                onClick={() => {
+                                                                    setDefaultGroupOpen(true)
+                                                                    setTreeResetKey(k => k + 1)
+                                                                }}
+                                                                className="shrink-0"
+                                                                aria-label="Expand all"
+                                                            >
+                                                                <ChevronsUpDown className="h-3.5 w-3.5" />
+                                                            </Button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>Expand all</TooltipContent>
+                                                    </Tooltip>
+                                                    <Tooltip>
+                                                        <TooltipTrigger asChild>
+                                                            <Button
+                                                                variant="outline"
+                                                                size="icon"
+                                                                onClick={() => {
+                                                                    setDefaultGroupOpen(false)
+                                                                    setTreeResetKey(k => k + 1)
+                                                                }}
+                                                                className="shrink-0"
+                                                                aria-label="Collapse all"
+                                                            >
+                                                                <ChevronsDownUp className="h-3.5 w-3.5" />
+                                                            </Button>
+                                                        </TooltipTrigger>
+                                                        <TooltipContent>Collapse all</TooltipContent>
+                                                    </Tooltip>
+                                                </div>
+                                            </TooltipProvider>
                                         </div>
                                         <ScrollArea className="flex-1 min-h-[200px] rounded-lg border p-3">
                                             {filteredSuggestions.length === 0 ? (
@@ -477,7 +488,7 @@ export default function QuestionPage() {
                         </div>
                     </div>
                 </CardContent>
-                <CardFooter className={cn("shrink-0 flex justify-between border-t", roomy ? "px-10 py-6" : "px-6 py-4")}>
+                <CardFooter className={cn("shrink-0 flex justify-between", roomy ? "px-10 pb-6 pt-0" : "px-6 pb-4 pt-0")}>
                     <Button variant="outline" onClick={handleBack}>Previous</Button>
                     <Button onClick={handleNext}>Next</Button>
                 </CardFooter>

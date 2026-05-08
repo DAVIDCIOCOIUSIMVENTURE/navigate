@@ -48,18 +48,18 @@ export default function CategoryPage({
             const previousCategory = SELF_DISCOVERY_CATEGORIES[categoryIndex - 1]
             const lastQuestion = previousCategory.questions[previousCategory.questions.length - 1]
             if (lastQuestion) {
-                router.push(`/self-discovery/${previousCategory.url}/${lastQuestion.url}`)
+                router.push(`/self-discovery/discover/${previousCategory.url}/${lastQuestion.url}`)
                 return
             }
-            router.push(`/self-discovery/${previousCategory.url}`)
+            router.push(`/self-discovery/discover/${previousCategory.url}`)
             return
         }
-        router.push("/self-discovery")
+        router.push("/self-discovery/discover")
     }
 
     const handleNext = () => {
         if (firstQuestion) {
-            router.push(`/self-discovery/${category.url}/${firstQuestion.url}`)
+            router.push(`/self-discovery/discover/${category.url}/${firstQuestion.url}`)
         }
     }
 
@@ -80,7 +80,7 @@ export default function CategoryPage({
                             <li key={question.url}>
                                 <button
                                     type="button"
-                                    onClick={() => router.push(`/self-discovery/${category.url}/${question.url}`)}
+                                    onClick={() => router.push(`/self-discovery/discover/${category.url}/${question.url}`)}
                                     className="flex items-start gap-3 w-full text-left p-3 rounded-md border hover:bg-accent hover:text-primary transition-colors"
                                 >
                                     <span className={cn(
@@ -99,7 +99,7 @@ export default function CategoryPage({
                     </ol>
                 </div>
             </CardContent>
-            <CardFooter className={cn("shrink-0 flex justify-between border-t", roomy ? "px-10 py-6" : "px-6 py-4")}>
+            <CardFooter className={cn("shrink-0 flex justify-between", roomy ? "px-10 pb-6 pt-0" : "px-6 pb-4 pt-0")}>
                 <Button variant="outline" onClick={handleBack}>Previous</Button>
                 <Button onClick={handleNext} disabled={!firstQuestion}>Next</Button>
             </CardFooter>
