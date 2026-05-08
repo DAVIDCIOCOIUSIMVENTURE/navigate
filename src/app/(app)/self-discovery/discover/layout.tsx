@@ -111,7 +111,7 @@ function NavContent({
                                                 "text-sm cursor-pointer rounded-md px-2 py-1",
                                                 isActive
                                                     ? "bg-secondary text-secondary-foreground font-medium"
-                                                    : "text-muted-foreground hover:text-primary"
+                                                    : "text-foreground hover:text-primary"
                                             )}
                                             onClick={() => onNavigate(`${BASE_PATH}/${category.url}/${question.url}`)}
                                             role="menuitem"

@@ -90,14 +90,14 @@ export default function OtherCategoryPage() {
                                 {items.map((item) => (
                                     <div
                                         key={item.id}
-                                        className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2 text-sm"
+                                        className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2 text-sm"
                                     >
                                         <span className="flex-1">{item.label}</span>
                                         <Button
-                                            variant="destructive-ghost"
+                                            variant="ghost"
                                             size="icon"
                                             onClick={() => setPendingDelete(item)}
-                                            className="h-4 w-4"
+                                            className="h-4 w-4 text-muted-foreground hover:text-foreground"
                                         >
                                             <Trash2 className="h-3 w-3" />
                                         </Button>

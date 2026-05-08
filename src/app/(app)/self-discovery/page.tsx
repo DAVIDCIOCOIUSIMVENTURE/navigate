@@ -169,13 +169,13 @@ export default function SelfDiscoveryPage() {
                               {questionItems.map((trigger) => (
                                 <div
                                   key={trigger.id}
-                                  className="flex items-center gap-2 bg-muted/50 rounded-md px-3 py-1.5 text-sm"
+                                  className="flex items-center gap-2 bg-muted rounded-md px-3 py-1.5 text-sm"
                                 >
                                   <span>{trigger.title}</span>
                                   <Button
-                                    variant="destructive-ghost"
+                                    variant="ghost"
                                     size="icon"
-                                    className="h-4 w-4"
+                                    className="h-4 w-4 text-muted-foreground hover:text-foreground"
                                     onClick={() => setPendingDelete({ kind: "self-discovery", item: trigger })}
                                     aria-label={`Delete ${trigger.title}`}
                                   >
@@ -206,13 +206,13 @@ export default function SelfDiscoveryPage() {
                   {customYouItems.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center gap-2 bg-muted/50 rounded-md px-3 py-1.5 text-sm"
+                      className="flex items-center gap-2 bg-muted rounded-md px-3 py-1.5 text-sm"
                     >
                       <span>{item.label}</span>
                       <Button
-                        variant="destructive-ghost"
+                        variant="ghost"
                         size="icon"
-                        className="h-4 w-4"
+                        className="h-4 w-4 text-muted-foreground hover:text-foreground"
                         onClick={() => setPendingDelete({ kind: "custom-you", item })}
                         aria-label={`Delete ${item.label}`}
                       >

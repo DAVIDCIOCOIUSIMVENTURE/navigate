@@ -6,15 +6,15 @@
 
 @layer base {
   :root {
-    /* Background & Foreground: dark slate, not pure black */
+    /* Background & Foreground: dark slate (#28363b), not pure black */
     --background: 0 0% 100%;
-    --foreground: 198 22% 27%;
+    --foreground: 196 19% 19%;
 
     /* Cards & Popovers */
     --card: 0 0% 100%;
-    --card-foreground: 198 22% 27%;
+    --card-foreground: 196 19% 19%;
     --popover: 0 0% 100%;
-    --popover-foreground: 198 22% 27%;
+    --popover-foreground: 196 19% 19%;
 
     /* Primary: Indigo Purple (rgb(73, 66, 207)) */
     --primary: 243 70% 58%;

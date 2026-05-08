@@ -342,14 +342,14 @@ export default function QuestionPage() {
                                                     {questionTriggers.map((trigger) => (
                                                         <div
                                                             key={trigger.id}
-                                                            className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2 text-sm"
+                                                            className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2 text-sm"
                                                         >
                                                             <span className="flex-1">{trigger.title}</span>
                                                             <Button
-                                                                variant="destructive-ghost"
+                                                                variant="ghost"
                                                                 size="icon"
                                                                 onClick={() => setProblemTriggerToDelete(trigger)}
-                                                                className="h-4 w-4"
+                                                                className="h-4 w-4 text-muted-foreground hover:text-foreground"
                                                             >
                                                                 <Trash2 className="h-3 w-3" />
                                                             </Button>
@@ -452,14 +452,14 @@ export default function QuestionPage() {
                                             {questionTriggers.map((trigger) => (
                                                 <div
                                                     key={trigger.id}
-                                                    className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2 text-sm"
+                                                    className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2 text-sm"
                                                 >
                                                     <span className="flex-1">{trigger.title}</span>
                                                     <Button
-                                                        variant="destructive-ghost"
+                                                        variant="ghost"
                                                         size="icon"
                                                         onClick={() => setProblemTriggerToDelete(trigger)}
-                                                        className="h-4 w-4"
+                                                        className="h-4 w-4 text-muted-foreground hover:text-foreground"
                                                     >
                                                         <Trash2 className="h-3 w-3" />
                                                     </Button>
