@@ -28,7 +28,7 @@ export default function ProblemsPage() {
           <div className="flex flex-wrap items-center gap-4">
             <p className="flex-1 min-w-[16rem] text-base leading-relaxed">
               This is your <span className="font-bold">problem library</span>, a central place to collect, refine, and track the problems you&apos;ve identified.
-              The goal of this section is to find problems that are real, painful, and worth solving before you spend time building anything. A good problem is one that specific people feel, in a specific context, strongly enough that they&apos;d pay attention to a fix.
+              The goal of this section is to find problems that are real, painful, and worth solving before you spend time building anything. A good problem is one that specific people feel, in a specific context, strongly enough that they&apos;d pay for a solution.
             </p>
             <Button onClick={() => setDialogOpen(true)} className="gap-2 shrink-0">
               <Plus className="h-4 w-4" />

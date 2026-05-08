@@ -308,39 +308,157 @@ export default function QuestionPage() {
                     <div className="flex flex-col gap-5 flex-1 min-h-0">
                         <div className="flex flex-col gap-4 flex-1 min-h-0">
                             <div className="shrink-0">
-                                <p className="text-base text-foreground">{category.description}</p>
-                                <p className="text-base text-foreground">{question.description}</p>
                                 <p className="text-base text-foreground">
+                                    {category.description} {question.description}{" "}
                                     {question.suggestions
-                                        ? "Select the items below that apply to you, or add your own."
+                                        ? "Select the items that apply to you, or add your own."
                                         : "Type your answer below and click Add."}
                                 </p>
                             </div>
-                            {questionTriggers.length > 0 && (
-                                <div className="flex flex-wrap gap-2">
-                                    {questionTriggers.map((trigger) => (
-                                        <div
-                                            key={trigger.id}
-                                            className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2 text-sm"
-                                        >
-                                            <span className="flex-1">{trigger.title}</span>
-                                            <Button
-                                                variant="destructive-ghost"
-                                                size="icon"
-                                                onClick={() => setProblemTriggerToDelete(trigger)}
-                                                className="h-4 w-4"
-                                            >
-                                                <Trash2 className="h-3 w-3" />
+                            {question.suggestions ? (
+                                <div className={cn("flex gap-4 flex-1 min-h-0", roomy ? "flex-row" : "flex-col")}>
+                                    <div className={cn("flex flex-col gap-3", roomy ? "w-72 shrink-0" : "shrink-0")}>
+                                        <div className="flex gap-2 shrink-0">
+                                            <Input
+                                                placeholder="Add your own..."
+                                                value={answers[question.url] || ''}
+                                                onChange={(e) => setAnswers(prev => ({ ...prev, [question.url]: e.target.value }))}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        handleAddAnswer()
+                                                    }
+                                                }}
+                                                className="text-sm h-9"
+                                            />
+                                            <Button onClick={handleAddAnswer} size="sm" className="gap-1.5">
+                                                <Plus className="h-3.5 w-3.5" />
+                                                Add
                                             </Button>
                                         </div>
-                                    ))}
+                                        <ScrollArea className={cn("rounded-lg border p-3", roomy ? "flex-1 min-h-0" : "max-h-48 min-h-[100px]")}>
+                                            {questionTriggers.length === 0 ? (
+                                                <p className="text-sm text-muted-foreground text-center py-4">Your selections will appear here.</p>
+                                            ) : (
+                                                <div className="flex flex-col gap-2">
+                                                    {questionTriggers.map((trigger) => (
+                                                        <div
+                                                            key={trigger.id}
+                                                            className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2 text-sm"
+                                                        >
+                                                            <span className="flex-1">{trigger.title}</span>
+                                                            <Button
+                                                                variant="destructive-ghost"
+                                                                size="icon"
+                                                                onClick={() => setProblemTriggerToDelete(trigger)}
+                                                                className="h-4 w-4"
+                                                            >
+                                                                <Trash2 className="h-3 w-3" />
+                                                            </Button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </ScrollArea>
+                                    </div>
+                                    <div className="flex flex-col gap-3 flex-1 min-h-0">
+                                        <div className={cn("flex gap-2 shrink-0", roomy ? "flex-row items-center" : "flex-col")}>
+                                            <div className="relative flex-1">
+                                                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                                <Input
+                                                    placeholder="Search suggestions..."
+                                                    value={searchQuery}
+                                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                                    className="pl-9 pr-8 h-9"
+                                                />
+                                                {searchQuery && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setSearchQuery("")}
+                                                        className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                                        aria-label="Clear search"
+                                                    >
+                                                        <X className="h-3.5 w-3.5" />
+                                                    </button>
+                                                )}
+                                            </div>
+                                            <div className="flex gap-2">
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        setDefaultGroupOpen(true)
+                                                        setTreeResetKey(k => k + 1)
+                                                    }}
+                                                    className={cn("gap-1.5", roomy ? "flex-none" : "flex-1")}
+                                                >
+                                                    <ChevronsUpDown className="h-3.5 w-3.5" />
+                                                    Expand all
+                                                </Button>
+                                                <Button
+                                                    variant="outline"
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        setDefaultGroupOpen(false)
+                                                        setTreeResetKey(k => k + 1)
+                                                    }}
+                                                    className={cn("gap-1.5", roomy ? "flex-none" : "flex-1")}
+                                                >
+                                                    <ChevronsDownUp className="h-3.5 w-3.5" />
+                                                    Collapse all
+                                                </Button>
+                                            </div>
+                                        </div>
+                                        <ScrollArea className="flex-1 min-h-[200px] rounded-lg border p-3">
+                                            {filteredSuggestions.length === 0 ? (
+                                                <div className="flex flex-col items-center justify-center py-8 gap-2 text-center">
+                                                    <Search className="h-5 w-5 text-muted-foreground" />
+                                                    <p className="text-sm text-muted-foreground">No suggestions match your search.</p>
+                                                    <Button variant="outline" size="sm" onClick={() => setSearchQuery("")} className="mt-1 gap-1.5">
+                                                        <X className="h-3.5 w-3.5" />
+                                                        Clear search
+                                                    </Button>
+                                                </div>
+                                            ) : (
+                                                <div key={treeResetKey} className="flex flex-col">
+                                                    {filteredSuggestions.map((item) => (
+                                                        <SuggestionTreeItem
+                                                            key={item.id}
+                                                            item={item}
+                                                            selectedIds={selectedSuggestionIds}
+                                                            onToggle={handleToggleSuggestion}
+                                                            defaultOpen={defaultGroupOpen}
+                                                        />
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </ScrollArea>
+                                    </div>
                                 </div>
-                            )}
-                            {question.suggestions ? (
-                                <div className="flex flex-col gap-3 flex-1 min-h-0">
-                                    <div className="flex gap-2 shrink-0">
+                            ) : (
+                                <>
+                                    {questionTriggers.length > 0 && (
+                                        <div className="flex flex-wrap gap-2 shrink-0">
+                                            {questionTriggers.map((trigger) => (
+                                                <div
+                                                    key={trigger.id}
+                                                    className="flex items-center gap-2 bg-muted/50 rounded-lg px-3 py-2 text-sm"
+                                                >
+                                                    <span className="flex-1">{trigger.title}</span>
+                                                    <Button
+                                                        variant="destructive-ghost"
+                                                        size="icon"
+                                                        onClick={() => setProblemTriggerToDelete(trigger)}
+                                                        className="h-4 w-4"
+                                                    >
+                                                        <Trash2 className="h-3 w-3" />
+                                                    </Button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                    <div className="flex gap-2">
                                         <Input
-                                            placeholder="Add your own..."
+                                            placeholder="Type your answer..."
                                             value={answers[question.url] || ''}
                                             onChange={(e) => setAnswers(prev => ({ ...prev, [question.url]: e.target.value }))}
                                             onKeyDown={(e) => {
@@ -350,100 +468,11 @@ export default function QuestionPage() {
                                             }}
                                             className="text-sm h-9"
                                         />
-                                        <Button onClick={handleAddAnswer} size="sm" className="gap-1.5">
-                                            <Plus className="h-3.5 w-3.5" />
+                                        <Button onClick={handleAddAnswer}>
                                             Add
                                         </Button>
                                     </div>
-                                    <div className={cn("flex gap-2 shrink-0", roomy ? "flex-row items-center" : "flex-col")}>
-                                        <div className="relative flex-1">
-                                            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                            <Input
-                                                placeholder="Search suggestions..."
-                                                value={searchQuery}
-                                                onChange={(e) => setSearchQuery(e.target.value)}
-                                                className="pl-9 pr-8 h-9"
-                                            />
-                                            {searchQuery && (
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setSearchQuery("")}
-                                                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                                                    aria-label="Clear search"
-                                                >
-                                                    <X className="h-3.5 w-3.5" />
-                                                </button>
-                                            )}
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => {
-                                                    setDefaultGroupOpen(true)
-                                                    setTreeResetKey(k => k + 1)
-                                                }}
-                                                className={cn("gap-1.5", roomy ? "flex-none" : "flex-1")}
-                                            >
-                                                <ChevronsUpDown className="h-3.5 w-3.5" />
-                                                Expand all
-                                            </Button>
-                                            <Button
-                                                variant="outline"
-                                                size="sm"
-                                                onClick={() => {
-                                                    setDefaultGroupOpen(false)
-                                                    setTreeResetKey(k => k + 1)
-                                                }}
-                                                className={cn("gap-1.5", roomy ? "flex-none" : "flex-1")}
-                                            >
-                                                <ChevronsDownUp className="h-3.5 w-3.5" />
-                                                Collapse all
-                                            </Button>
-                                        </div>
-                                    </div>
-                                    <ScrollArea className="flex-1 min-h-[200px] rounded-lg border p-3">
-                                        {filteredSuggestions.length === 0 ? (
-                                            <div className="flex flex-col items-center justify-center py-8 gap-2 text-center">
-                                                <Search className="h-5 w-5 text-muted-foreground" />
-                                                <p className="text-sm text-muted-foreground">No suggestions match your search.</p>
-                                                <Button variant="outline" size="sm" onClick={() => setSearchQuery("")} className="mt-1 gap-1.5">
-                                                    <X className="h-3.5 w-3.5" />
-                                                    Clear search
-                                                </Button>
-                                            </div>
-                                        ) : (
-                                            <div key={treeResetKey} className="flex flex-col">
-                                                {filteredSuggestions.map((item) => (
-                                                    <SuggestionTreeItem
-                                                        key={item.id}
-                                                        item={item}
-                                                        selectedIds={selectedSuggestionIds}
-                                                        onToggle={handleToggleSuggestion}
-                                                        defaultOpen={defaultGroupOpen}
-                                                    />
-                                                ))}
-                                            </div>
-                                        )}
-                                    </ScrollArea>
-                                </div>
-                            ) : (
-                                <div className="flex gap-2">
-                                    <Input
-                                        placeholder="Type your answer..."
-                                        value={answers[question.url] || ''}
-                                        onChange={(e) => setAnswers(prev => ({ ...prev, [question.url]: e.target.value }))}
-                                        onKeyDown={(e) => {
-                                            if (e.key === 'Enter') {
-                                                handleAddAnswer()
-                                            }
-                                        }}
-                                        className="text-sm h-9"
-                                    />
-                                    <Button onClick={handleAddAnswer}>
-                                        Add
-                                    </Button>
-                                </div>
+                                </>
                             )}
                         </div>
                     </div>
