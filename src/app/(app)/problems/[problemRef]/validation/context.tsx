@@ -341,7 +341,9 @@ export const NAV_ITEMS = [
   { label: "Choose your refinement method", path: "choose-refinement" },
   { label: "Refine your problem", path: "refine" },
   { label: "Explore existing solutions & shortcomings", path: "existing-solutions" },
-  { label: "Validate your problem", path: "validate" },
+  { label: "Size the market", path: "market" },
+  { label: "Assess the competition", path: "competition" },
+  { label: "Record your verdict", path: "verdict" },
   { label: "Summary & Next Steps", path: "summary" },
 ] as const
 

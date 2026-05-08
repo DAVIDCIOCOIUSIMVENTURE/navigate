@@ -154,7 +154,7 @@ function NextStepsSection({ problemRef, problemId }: { problemRef: string; probl
   const dispatch = useDispatch<AppDispatch>()
   const { status } = useProblem()
 
-  const goToValidation = () => router.push(`/problems/${problemRef}/validation/validate`)
+  const goToValidation = () => router.push(`/problems/${problemRef}/validation/market`)
   const goToDiscover = () => {
     try {
       localStorage.setItem("navigate-active-discovery-problem", String(problemRef))
@@ -391,7 +391,7 @@ export function ProblemHubContent({
         icon={ShieldCheck}
         label="Validation Assessment"
         tone="emerald"
-        openInStep={stepHref("validate")}
+        openInStep={stepHref("market")}
       >
         <ValidationStrategy readOnly={readOnly} />
       </HubSection>

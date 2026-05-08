@@ -9,6 +9,7 @@ import { ProblemHubDialog } from "@/components/problem-hub/problem-hub-dialog"
 import { ProblemProvider, useProblem, NAV_ITEMS } from "./context"
 import {
   GitFork, Clock, ShieldCheck, FileText, LayoutTemplate, ClipboardCheck, Users, ChevronDown, Eye, Search,
+  TrendingUp, Building2,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
@@ -21,7 +22,9 @@ const NAV_ICONS: Record<string, LucideIcon> = {
   "context-step": Clock,
   "choose-refinement": Search,
   refine: Search,
-  validate: ShieldCheck,
+  market: TrendingUp,
+  competition: Building2,
+  verdict: ShieldCheck,
   summary: LayoutTemplate,
 }
 

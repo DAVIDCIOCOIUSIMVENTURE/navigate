@@ -10,9 +10,10 @@ import {
   Play, ToggleRight, Blocks, LayoutGrid, FileText, ArrowRight,
   GitFork, Heart, BarChart2, Target,
   Users, MapPin, AlertTriangle,
-  Repeat, DollarSign,
+  Repeat, DollarSign, ArrowRightLeft,
   Lightbulb, HelpCircle,
   BookOpen, FlaskConical, Clock, Trophy, Sparkles,
+  TrendingUp, Building2, Calculator, Scale, ShieldCheck,
   X,
 } from "lucide-react"
 
@@ -308,14 +309,31 @@ const guidanceItems: GuidanceItem[] = [
         <GuidanceSection icon={BarChart2} iconBg="bg-sky-500" title="Quantifiable Impact">
           <p>Document measurable evidence of the problem&apos;s cost. Choose a category: time lost, money wasted, error rates, or customer churn, and describe the scale in concrete terms. Numbers and specifics matter: <Keyword>&ldquo;two hours per week per employee&rdquo;</Keyword> is more compelling than <Keyword>&ldquo;wastes a lot of time&rdquo;</Keyword>.</p>
         </GuidanceSection>
-        <GuidanceSection icon={Target} iconBg="bg-emerald-500" title="Verdict">
-          <p>The verdict step asks you to rate three decision factors that determine whether the problem represents a real opportunity:</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
-            <ConceptCard icon={Users} label="How many people" description="How large is the audience experiencing this problem?" tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
-            <ConceptCard icon={Repeat} label="How often" description="How frequently do they encounter the problem?" tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
-            <ConceptCard icon={DollarSign} label="How much is it worth" description="How much would they pay or benefit from a solution?" tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
+        <GuidanceSection icon={TrendingUp} iconBg="bg-emerald-500" title="Size the market">
+          <p>The first of three validation steps tells you whether the prize is worth pursuing at all. Three numbers do most of the work, captured directly on the page:</p>
+          <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(180px,1fr))]">
+            <ConceptCard icon={Users} label="How many customers" description="The total population that experiences the problem, narrowed by your customer definition." tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
+            <ConceptCard icon={Repeat} label="How often" description="How frequently it recurs, picked from per-hour through per-year." tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
+            <ConceptCard icon={DollarSign} label="How much is it worth" description="What customers already pay for workarounds, lose in time, or miss in revenue." tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
           </div>
-          <p className="pt-1">Set each factor to Low, Medium, or High and optionally enter a numeric estimate. A validation signal is calculated to guide your thinking. Then record your verdict: <Keyword>Valid</Keyword>, <Keyword>Unsure</Keyword>, or <Keyword>Invalid</Keyword>. The verdict is your judgement call based on the evidence in front of you.</p>
+          <p className="pt-1">Below the inputs, a <Keyword>total addressable market</Keyword> calculation multiplies <Keyword>customers × frequency × value × annualisation factor</Keyword> (the factor is auto-derived from the cadence, e.g. 365 for &ldquo;per day&rdquo;). Treat the result as a sense check, not a forecast: an implausibly large or small number usually means one of the three inputs is off.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={Building2} iconBg="bg-amber-500" title="Assess the competition">
+          <p>The second step asks whether you can realistically capture the market you just sized. Three signals together tell you how hard the path will be:</p>
+          <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(180px,1fr))]">
+            <ConceptCard icon={ArrowRightLeft} label="Cost of switching" description="The time, money, and habit-change a customer must give up to leave their current setup." tile="bg-amber-500" border="border-amber-100 bg-amber-50/40" />
+            <ConceptCard icon={Target} label="Existing solution effectiveness" description="How well current options actually work, from terrible through excellent." tile="bg-amber-500" border="border-amber-100 bg-amber-50/40" />
+            <ConceptCard icon={Building2} label="Competitor size" description="How well-funded the incumbents are, from micro players up to giants." tile="bg-amber-500" border="border-amber-100 bg-amber-50/40" />
+          </div>
+          <p className="pt-1">Strong opportunities tend to combine low or moderate switching costs, average-or-worse alternatives, and competitors that are small or distracted. Capture supporting evidence in the <Keyword>notes</Keyword> field on this step: it carries through to the verdict and to the problem statement.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={ShieldCheck} iconBg="bg-orange-500" title="Record your verdict">
+          <p>The final step pulls everything together. The summary card shows each captured factor with a colour-coded dot (green favourable, amber neutral, red unfavourable) and the TAM number from the market step:</p>
+          <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(220px,1fr))]">
+            <ConceptCard icon={Scale} label="Lean indicator" description="Once at least four of the six signals are captured, a banner shows whether the evidence leans toward Valid, Unsure, or Invalid." tile="bg-orange-500" border="border-orange-100 bg-orange-50/40" />
+            <ConceptCard icon={Calculator} label="TAM as sanity check" description="A huge multiplied number is not the same as proven willingness to pay. Read the underlying signals before trusting the headline." tile="bg-orange-500" border="border-orange-100 bg-orange-50/40" />
+          </div>
+          <p className="pt-1">Then commit to one of three verdicts: <Keyword>Valid</Keyword>, <Keyword>Unsure</Keyword>, or <Keyword>Invalid</Keyword>. The dot colours and lean banner are heuristics, not rules; if you disagree with how a signal is being read, override it in the notes and explain why. Use the notes to record the two or three signals that drove the call plus the strongest counter-argument you considered.</p>
         </GuidanceSection>
         <GuidanceSection icon={FileText} iconBg="bg-emerald-500" title="Problem Statement">
           <p>The final step produces a consolidated summary of everything you have discovered. Review the core problem along with the customer, context, and problem dimensions, alongside all the evidence you collected. Edit any field directly. This statement is the artefact you carry forward if you decide to pursue the problem.</p>
