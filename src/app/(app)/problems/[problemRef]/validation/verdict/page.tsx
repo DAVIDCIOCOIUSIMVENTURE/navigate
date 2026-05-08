@@ -36,7 +36,7 @@ export default function VerdictPage() {
             The six factors split naturally into two halves. The market sizing inputs (how many, how often, how much) tell you whether the prize is worth pursuing. The competitive inputs (cost of switching, existing solution effectiveness, competitor size) tell you whether you can realistically capture it. A strong opportunity needs at least decent scores on both halves: a huge market you cannot win is no better than a small market you can dominate.
           </p>
           <p>
-            The total addressable market figure is a sanity check, not the verdict. A very large TAM with no demonstrated willingness to pay is a mirage, the arithmetic is real but the assumption that customers will hand over that money is not. Equally, a modest TAM is fine if willingness to pay is rock-solid and the competitive landscape is friendly.
+            The total addressable market figure is a sanity check, not the verdict. A very large total addressable market with no demonstrated willingness to pay is a mirage, the arithmetic is real but the assumption that customers will hand over that money is not. Equally, a modest total addressable market is fine if willingness to pay is rock-solid and the competitive landscape is friendly.
           </p>
           <p>
             When signals point in different directions, weight evidence over guesses. A &quot;large competitor&quot; you confirmed by reading their financials is worth more than a &quot;weekly frequency&quot; you wrote down without talking to anyone. If your strongest negative signal comes from data and your strongest positive comes from intuition, the data should usually win.

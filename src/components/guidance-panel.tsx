@@ -328,10 +328,10 @@ const guidanceItems: GuidanceItem[] = [
           <p className="pt-1">Strong opportunities tend to combine low or moderate switching costs, average-or-worse alternatives, and competitors that are small or distracted. Capture supporting evidence in the <Keyword>notes</Keyword> field on this step: it carries through to the verdict and to the problem statement.</p>
         </GuidanceSection>
         <GuidanceSection icon={ShieldCheck} iconBg="bg-orange-500" title="Record your verdict">
-          <p>The final step pulls everything together. The summary card shows each captured factor with a colour-coded dot (green favourable, amber neutral, red unfavourable) and the TAM number from the market step:</p>
+          <p>The final step pulls everything together. The summary card shows each captured factor with a colour-coded dot (green favourable, amber neutral, red unfavourable) and the total addressable market figure from the market step:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(220px,1fr))]">
             <ConceptCard icon={Scale} label="Lean indicator" description="Once at least four of the six signals are captured, a banner shows whether the evidence leans toward Valid, Unsure, or Invalid." tile="bg-orange-500" border="border-orange-100 bg-orange-50/40" />
-            <ConceptCard icon={Calculator} label="TAM as sanity check" description="A huge multiplied number is not the same as proven willingness to pay. Read the underlying signals before trusting the headline." tile="bg-orange-500" border="border-orange-100 bg-orange-50/40" />
+            <ConceptCard icon={Calculator} label="Total addressable market is a sanity check" description="A large multiplied number is not the same as proven willingness to pay. Read the underlying signals before trusting the headline." tile="bg-orange-500" border="border-orange-100 bg-orange-50/40" />
           </div>
           <p className="pt-1">Then commit to one of three verdicts: <Keyword>Valid</Keyword>, <Keyword>Unsure</Keyword>, or <Keyword>Invalid</Keyword>. The dot colours and lean banner are heuristics, not rules; if you disagree with how a signal is being read, override it in the notes and explain why. Use the notes to record the two or three signals that drove the call plus the strongest counter-argument you considered.</p>
         </GuidanceSection>
