@@ -18,6 +18,8 @@ import { getSelfDiscoveryCategoryIcon } from "@/config/navigation"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import type { SelfDiscoveryItem } from "@/store/self-discovery-items-model"
 import type { CustomBrainstormItem } from "@/store/custom-brainstorm-items-model"
+import { useContainerSize } from "@/context/container-size-context"
+import { cn } from "@/lib/utils"
 
 const FLOW_BASE = "/self-discovery/discover"
 
@@ -76,6 +78,7 @@ export default function SelfDiscoveryPage() {
   const dispatch = useDispatch<AppDispatch>()
   const [mounted, setMounted] = useState(false)
   const [pendingDelete, setPendingDelete] = useState<PendingDelete>(null)
+  const isWide = useContainerSize() === "wide"
 
   const selfDiscoveryAnswers = useSelector((state: RootState) => state.selfDiscoveryItems.items)
   const customYouItems = useSelector((state: RootState) => state.customBrainstormItems.byColumn.you ?? [])
@@ -102,7 +105,7 @@ export default function SelfDiscoveryPage() {
   }
 
   return (
-    <div className="flex flex-col gap-3 w-full">
+    <div className={cn("flex flex-col gap-3 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
       <Card>
         <CardContent className="py-4 flex flex-wrap items-center gap-4">
           <p className="flex-1 min-w-[16rem] text-base leading-relaxed">
@@ -132,8 +135,8 @@ export default function SelfDiscoveryPage() {
           </Button>
         </div>
       ) : (
-        <Card>
-          <CardContent className="p-6 flex flex-col gap-4">
+        <Card className={cn("flex flex-col", isWide ? "flex-1 min-h-0" : "min-h-[320px] max-h-[640px]")}>
+          <CardContent className="p-6 flex flex-col gap-4 flex-1 min-h-0 overflow-y-auto">
             {SELF_DISCOVERY_CATEGORIES.map((category) => {
               const Icon = getSelfDiscoveryCategoryIcon(category.url) ?? Compass
               const itemsForCategory = category.questions.flatMap((q) =>
