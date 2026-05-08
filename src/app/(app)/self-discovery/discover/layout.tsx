@@ -240,7 +240,7 @@ export default function SelfDiscoveryFlowLayout({
                 className={cn(
                     "mx-auto flex w-full max-w-screen-2xl flex-1 min-h-0 gap-3",
                     "px-4 py-4 sm:px-6 lg:px-8 lg:py-6",
-                    isWide ? "flex-row" : "flex-col",
+                    isWide ? "flex-row overflow-hidden max-h-[100svh]" : "flex-col",
                 )}
             >
                 {!isWide && (
