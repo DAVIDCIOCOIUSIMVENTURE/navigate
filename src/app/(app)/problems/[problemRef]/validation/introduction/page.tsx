@@ -27,7 +27,7 @@ function FieldRow({ label, columnId, ids }: { label: string; columnId: string; i
   if (ids.length === 0) return null
   return (
     <div className="flex flex-col gap-1">
-      <p className="text-sm font-semibold uppercase tracking-wide">{label}</p>
+      <p className="text-base font-semibold uppercase tracking-wide">{label}</p>
       <DimensionChips columnId={columnId} ids={ids} />
     </div>
   )
@@ -64,7 +64,7 @@ export default function IntroductionPage() {
           <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4 flex flex-col gap-3">
             {problem.description && (
               <div className="flex flex-col gap-1">
-                <p className="text-sm font-semibold uppercase tracking-wide">Problem Description</p>
+                <p className="text-base font-semibold uppercase tracking-wide">Problem Description</p>
                 <p className="text-base font-medium">{problem.description}</p>
               </div>
             )}
@@ -75,7 +75,7 @@ export default function IntroductionPage() {
         )}
 
         <div className="flex flex-col gap-3">
-          <p className="text-sm font-semibold uppercase tracking-wide">What you&apos;ll work through</p>
+          <h3 className="text-xl font-bold text-foreground">What you&apos;ll work through</h3>
           <div className="flex flex-col">
             {STEPS.map(({ icon: Icon, title, description, bg, color }, index) => (
               <div key={title} className="flex gap-4">
@@ -89,7 +89,7 @@ export default function IntroductionPage() {
                 </div>
                 <div className="flex flex-col gap-0.5 pb-5">
                   <p className="text-base font-medium leading-8">{title}</p>
-                  <p className="text-sm leading-relaxed">{description}</p>
+                  <p className="text-base leading-relaxed">{description}</p>
                 </div>
               </div>
             ))}

@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils"
 import {
   CheckCircle2, XCircle, HelpCircle, Users, RefreshCw, DollarSign, ArrowRightLeft, Target, Building2,
   Calculator, AlertTriangle, PieChart,
+  type LucideIcon,
 } from "lucide-react"
 
 const FREQUENCY_OPTIONS = [
@@ -198,7 +199,7 @@ function ObtainableShareInput({
           <span className="text-base font-semibold text-white w-14 text-right">{value}%</span>
         </div>
         {!readOnly && (
-          <p className="text-sm text-white/70">A higher percentage means you expect to win more of the addressable market. Be conservative: most early-stage ventures land in the 5 to 15 percent range.</p>
+          <p className="text-base text-white">A higher percentage means you expect to win more of the addressable market. Be conservative: most early-stage ventures land in the 5 to 15 percent range.</p>
         )}
       </div>
     </div>
@@ -306,7 +307,7 @@ function CompetitionSection({
               <ToggleGroupItem
                 key={level}
                 value={level}
-                className="px-4 py-1.5 text-base font-medium capitalize bg-transparent text-white/70 data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 hover:text-white rounded-md border-none"
+                className="px-4 py-1.5 text-base font-medium capitalize bg-transparent text-white data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 rounded-md border-none"
               >
                 {level}
               </ToggleGroupItem>
@@ -335,7 +336,7 @@ function CompetitionSection({
               <ToggleGroupItem
                 key={level}
                 value={level}
-                className="px-4 py-1.5 text-base font-medium capitalize bg-transparent text-white/70 data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 hover:text-white rounded-md border-none"
+                className="px-4 py-1.5 text-base font-medium capitalize bg-transparent text-white data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 rounded-md border-none"
               >
                 {level}
               </ToggleGroupItem>
@@ -364,7 +365,7 @@ function CompetitionSection({
               <ToggleGroupItem
                 key={level}
                 value={level}
-                className="px-4 py-1.5 text-base font-medium capitalize bg-transparent text-white/70 data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 hover:text-white rounded-md border-none"
+                className="px-4 py-1.5 text-base font-medium capitalize bg-transparent text-white data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 rounded-md border-none"
               >
                 {level}
               </ToggleGroupItem>
@@ -531,31 +532,31 @@ function TamCalculation({
         <span className="text-base font-semibold text-white">Total addressable market</span>
       </div>
       {!readOnly && (
-        <p className="text-base text-white/80">
+        <p className="text-base text-white">
           Multiplying customers, frequency, value, and an annualisation factor gives the gross opportunity. Applying your realistic share narrows that down to what you could plausibly capture. Treat the result as a sanity check, not a precise number.
         </p>
       )}
       <div className="rounded-lg bg-primary/40 border border-white/20 p-4 flex flex-col gap-2 text-base text-white">
         <div className="text-xl font-bold">
           {ready ? formatNumber(tam, { currency }) : "Fill in the three inputs above to see your estimate"}
-          {ready && <span className="ml-2 text-base font-normal text-white/80">per year</span>}
+          {ready && <span className="ml-2 text-base font-normal text-white">per year</span>}
         </div>
         {ready && (
-          <div className="text-sm text-white/70">
+          <div className="text-base text-white">
             Gross market: {formatNumber(grossMarket, { currency })} per year, before applying your {sharePct}% realistic share.
           </div>
         )}
         <Accordion type="single" collapsible className="-mb-2">
           <AccordionItem value="how" className="border-t border-white/20">
-            <AccordionTrigger className="py-2 text-sm font-medium text-white hover:no-underline [&>svg]:text-white/80">
+            <AccordionTrigger className="py-2 text-base font-medium text-white hover:no-underline [&>svg]:text-white">
               How is it calculated?
             </AccordionTrigger>
             <AccordionContent className="pb-2 pt-0 flex flex-col gap-2 text-white">
-              <div className="font-mono text-sm">customers × frequency × value × factor × share</div>
-              <div className="font-mono text-sm">
+              <div className="font-mono text-base">customers × frequency × value × factor × share</div>
+              <div className="font-mono text-base">
                 {formatNumber(customers)} × {frequency || 0} × {formatNumber(cost, { currency })} × {factor} × {sharePct}%
               </div>
-              <div className="text-sm text-white/70">
+              <div className="text-base text-white">
                 factor = {factor} (converts &quot;{unit}&quot; into a yearly total); share = {sharePct}% of the gross market.
               </div>
             </AccordionContent>
@@ -577,7 +578,7 @@ export function WorthStrategy({ readOnly = false }: { readOnly?: boolean }) {
   if (readOnly && !hasAny) {
     return (
       <div className="bg-primary rounded-xl p-8">
-        <p className="text-sm text-white/70 italic">No worth estimate captured.</p>
+        <p className="text-base text-white italic">No worth estimate captured.</p>
       </div>
     )
   }
@@ -609,7 +610,7 @@ export function MarketSizingStrategy({ readOnly = false }: { readOnly?: boolean 
   if (readOnly && !hasAny) {
     return (
       <div className="bg-primary rounded-xl p-8">
-        <p className="text-sm text-white/70 italic">No market sizing captured.</p>
+        <p className="text-base text-white italic">No market sizing captured.</p>
       </div>
     )
   }
@@ -649,7 +650,7 @@ export function CompetitionStrategy({ readOnly = false }: { readOnly?: boolean }
   if (readOnly && !hasAny && !reason.trim()) {
     return (
       <div className="bg-primary rounded-xl p-8">
-        <p className="text-sm text-white/70 italic">No competitive landscape captured.</p>
+        <p className="text-base text-white italic">No competitive landscape captured.</p>
       </div>
     )
   }
@@ -747,7 +748,7 @@ const SIGNAL_LABEL: Record<Signal, string> = {
   unknown: "Not captured",
 }
 
-function MetricRow({ label, value, signal }: { label: string; value: string; signal?: Signal }) {
+function MetricRow({ label, icon: Icon, value, signal }: { label: string; icon: LucideIcon; value: string; signal?: Signal }) {
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-center gap-2">
@@ -758,7 +759,8 @@ function MetricRow({ label, value, signal }: { label: string; value: string; sig
             title={SIGNAL_LABEL[signal]}
           />
         )}
-        <span className="text-sm uppercase tracking-wide text-white/60">{label}</span>
+        <Icon className="h-3.5 w-3.5 text-white shrink-0" />
+        <span className="text-base font-semibold text-white">{label}</span>
       </div>
       <span className="text-base font-semibold text-white">{value || "Not captured"}</span>
     </div>
@@ -775,7 +777,7 @@ function LeanIndicator({ signals }: { signals: Signal[] }) {
     return (
       <div className="rounded-lg border border-white/20 bg-white/10 p-4 text-base text-white">
         <p className="font-semibold">Not enough signals yet</p>
-        <p className="text-white/80 mt-1">Capture at least four of the six factors to see how the evidence leans. You have currently filled in {captured.length} of 6.</p>
+        <p className="text-white mt-1">Capture at least four of the six factors to see how the evidence leans. You have currently filled in {captured.length} of 6.</p>
       </div>
     )
   }
@@ -800,7 +802,7 @@ function LeanIndicator({ signals }: { signals: Signal[] }) {
   return (
     <div className={cn("rounded-lg border p-4 text-base text-white", tone)}>
       <p className="font-semibold">{title}</p>
-      <p className="text-white/85 mt-1">{body}</p>
+      <p className="text-white mt-1">{body}</p>
     </div>
   )
 }
@@ -811,7 +813,7 @@ function PitfallsCallout() {
       <AlertTriangle className="h-4 w-4 text-amber-300 shrink-0 mt-1" />
       <div className="flex flex-col gap-1.5">
         <p className="font-semibold">Before you commit, check yourself against the common pitfalls</p>
-        <ul className="list-disc pl-5 space-y-1 text-white/85">
+        <ul className="list-disc pl-5 space-y-1 text-white">
           <li>A large total addressable market is not the same as proven willingness to pay.</li>
           <li>If you cannot name a specific customer who hit this problem in the last week, it is probably not as universal as it feels.</li>
           <li>Switching costs and incumbent reactions are usually one level worse than your gut estimate.</li>
@@ -854,57 +856,64 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
           <p className="text-base font-medium text-white">Summary of your assessment</p>
-          <p className="text-sm text-white/70">
+          <p className="text-base text-white">
             Each signal below is colour-coded against a rough heuristic: green is favourable for pursuing the problem, amber is neutral, red is unfavourable. The dot is a hint, not a rule. If you disagree with how a signal is read, say so in the notes.
           </p>
           <div className="rounded-lg border border-white/20 bg-white/10 p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <MetricRow
               label="How many customers"
+              icon={Users}
               value={customers > 0 ? formatNumber(customers) : ""}
               signal={signals.howMany}
             />
             <MetricRow
-              label="How often"
+              label="How often does the problem occur"
+              icon={RefreshCw}
               value={frequency > 0 ? `${frequency} ${unit}` : ""}
               signal={signals.howOften}
             />
             <MetricRow
-              label="How much is it worth"
+              label="How much is it worth per occurrence"
+              icon={DollarSign}
               value={cost > 0 ? formatNumber(cost, { currency }) : ""}
               signal={signals.worth}
             />
             <MetricRow
-              label="Realistic share of market"
+              label="Realistic share of the market you can capture"
+              icon={PieChart}
               value={`${sharePct}%`}
             />
             <MetricRow
-              label="Cost of switching"
+              label="What is the cost of switching"
+              icon={ArrowRightLeft}
               value={costOfSwitching.level}
               signal={signals.cost}
             />
             <MetricRow
-              label="Solution effectiveness"
+              label="How effective are existing solutions"
+              icon={Target}
               value={solutionEffectiveness.level}
               signal={signals.effectiveness}
             />
             <MetricRow
-              label="Competitor size"
+              label="How big are the competitors"
+              icon={Building2}
               value={competitorSize.level}
               signal={signals.competitor}
             />
           </div>
           <div className="rounded-lg bg-primary/40 border border-white/20 p-4 flex flex-col gap-1 text-base text-white">
-            <span className="text-sm uppercase tracking-wide text-white/60">Total addressable market</span>
+            <span className="text-base uppercase tracking-wide text-white">Total addressable market</span>
             <span className="text-xl font-bold">
               {tamReady ? `${formatNumber(tam, { currency })} per year` : "Not enough data"}
             </span>
             {tamReady && (
-              <span className="text-sm text-white/70">customers × frequency × value × factor ({factor}) × share ({sharePct}%). Gross market before the share filter: {formatNumber(grossMarket, { currency })} per year. Treat the result as a sanity check, not as proof of demand.</span>
+              <span className="text-base text-white">customers × frequency × value × factor ({factor}) × share ({sharePct}%). Gross market before the share filter: {formatNumber(grossMarket, { currency })} per year. Treat the result as a sanity check, not as proof of demand.</span>
             )}
           </div>
           {reason.trim() && (
             <div className="rounded-lg border border-white/20 bg-white/10 p-4 flex flex-col gap-1">
-              <span className="text-sm uppercase tracking-wide text-white/60">Notes</span>
+              <span className="text-base uppercase tracking-wide text-white">Notes</span>
               <span className="text-base text-white whitespace-pre-wrap">{reason}</span>
             </div>
           )}
@@ -938,7 +947,7 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
   if (readOnly && !hasAnyMetric && !reason.trim() && !hasVerdict) {
     return (
       <div className="bg-primary rounded-xl p-8">
-        <p className="text-sm text-white/70 italic">No validation assessment captured.</p>
+        <p className="text-base text-white italic">No validation assessment captured.</p>
       </div>
     )
   }
