@@ -155,7 +155,7 @@ function BrainstormCheckItem({
             {item.label}
           </span>
           {selectedCount > 0 && (
-            <span className="text-xs text-primary font-medium tabular-nums">
+            <span className="text-sm text-primary font-medium tabular-nums">
               {selectedCount}
             </span>
           )}
@@ -257,8 +257,8 @@ function NoSearchResults({ onClear }: { onClear?: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center py-8 gap-2 text-center">
       <Search className="h-5 w-5 text-muted-foreground" />
-      <p className="text-sm text-muted-foreground">No items match your search.</p>
-      <p className="text-xs text-muted-foreground">Try a different term or clear the search.</p>
+      <p className="text-sm">No items match your search.</p>
+      <p className="text-sm">Try a different term or clear the search.</p>
       {onClear && (
         <Button variant="outline" size="sm" onClick={onClear} className="mt-1 gap-1.5">
           <X className="h-3.5 w-3.5" />
@@ -790,7 +790,7 @@ function ProblemBuilder({
                         <span className="text-sm text-muted-foreground">{activeCategory.label}</span>
                       </>
                     )}
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-sm">
                       ({(selectedByColumn[activeColumn.id] ?? []).length} selected)
                     </span>
                   </div>
@@ -892,7 +892,7 @@ function ProblemBuilder({
                 return (
                   <span
                     key={id}
-                    className={cn("inline-flex items-center gap-1 text-xs rounded-full px-2 py-0.5", colors?.pill || "bg-primary/10 text-primary")}
+                    className={cn("inline-flex items-center gap-1 text-sm rounded-full px-2 py-0.5", colors?.pill || "bg-primary/10 text-primary")}
                   >
                     {Icon && <Icon className="h-3 w-3 shrink-0" />}
                     {label}
@@ -1313,7 +1313,7 @@ export default function BrainstormPage() {
                   </DropdownMenuContent>
                 </DropdownMenu>
                 <div className="flex-1" />
-                <span className={cn("text-xs font-semibold [writing-mode:vertical-lr] rotate-180 select-none mb-3", colors?.icon || "text-muted-foreground")}>
+                <span className={cn("text-sm font-semibold [writing-mode:vertical-lr] rotate-180 select-none mb-3", colors?.icon || "text-muted-foreground")}>
                   {column.title}
                 </span>
                 {Icon && <Icon className={cn("h-4 w-4 mb-3", colors?.icon || "text-muted-foreground")} />}
@@ -1336,7 +1336,7 @@ export default function BrainstormPage() {
                     </CardTitle>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-sm">
                       {columnSelected.length} / {collectAllIds(column.items).length}
                     </span>
                     <DropdownMenu>
@@ -1374,7 +1374,7 @@ export default function BrainstormPage() {
                           customItemColumns={customItemColumns}
                         />
                       )) : (
-                        <p className="text-xs text-muted-foreground py-4 text-center">No matches</p>
+                        <p className="text-sm py-4 text-center">No matches</p>
                       )
                     })()}
                   </div>
@@ -1397,7 +1397,7 @@ export default function BrainstormPage() {
                 return columnSelected.map(({ id, label }) => (
                   <span
                     key={id}
-                    className={cn("inline-flex items-center gap-1 text-xs rounded-full px-2 py-0.5", colors?.pill || "bg-primary/10 text-primary")}
+                    className={cn("inline-flex items-center gap-1 text-sm rounded-full px-2 py-0.5", colors?.pill || "bg-primary/10 text-primary")}
                   >
                     {Icon && <Icon className="h-3 w-3 shrink-0" />}
                     {label}
