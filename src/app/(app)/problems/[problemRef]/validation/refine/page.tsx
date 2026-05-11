@@ -37,7 +37,7 @@ function RootCausesCaseStudies() {
               <TabsTrigger
                 key={cs.company}
                 value={cs.company}
-                className="gap-1.5 text-white/60 hover:text-white data-[state=active]:bg-white data-[state=active]:text-foreground"
+                className="gap-1.5 text-white data-[state=active]:bg-white data-[state=active]:text-foreground"
               >
                 {Icon && <Icon className="h-3.5 w-3.5" />}
                 {cs.company}
@@ -110,7 +110,7 @@ function FiveWhysCaseStudies() {
               <TabsTrigger
                 key={cs.company}
                 value={cs.company}
-                className="gap-1.5 text-white/60 hover:text-white data-[state=active]:bg-white data-[state=active]:text-foreground"
+                className="gap-1.5 text-white data-[state=active]:bg-white data-[state=active]:text-foreground"
               >
                 {Icon && <Icon className="h-3.5 w-3.5" />}
                 {cs.company}
@@ -205,7 +205,7 @@ function AffectedGroupsCaseStudies() {
               <TabsTrigger
                 key={cs.company}
                 value={cs.company}
-                className="gap-1.5 text-white/60 hover:text-white data-[state=active]:bg-white data-[state=active]:text-foreground"
+                className="gap-1.5 text-white data-[state=active]:bg-white data-[state=active]:text-foreground"
               >
                 {Icon && <Icon className="h-3.5 w-3.5" />}
                 {cs.company}
