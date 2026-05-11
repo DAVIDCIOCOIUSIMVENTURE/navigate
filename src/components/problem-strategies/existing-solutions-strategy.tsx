@@ -140,8 +140,8 @@ export function ExistingSolutionsStrategy({ readOnly = false }: { readOnly?: boo
                     )}
                   >
                     <div className="flex items-center gap-1.5 mb-3">
-                      <Lightbulb className="h-3.5 w-3.5 text-white/70" />
-                      <p className="text-sm font-semibold uppercase tracking-wide text-white/70">Impact examples</p>
+                      <Lightbulb className="h-3.5 w-3.5 text-white" />
+                      <p className="text-sm font-semibold uppercase tracking-wide text-white">Impact examples</p>
                     </div>
                     <ul className="flex flex-col gap-2.5">
                       {IMPACT_AREAS.map((area) => (
