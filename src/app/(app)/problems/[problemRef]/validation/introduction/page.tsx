@@ -9,14 +9,15 @@ import { Button } from "@/components/ui/button"
 import { getAdjacentSteps, useProblem } from "../context"
 import { DimensionChips } from "@/components/dimension-chips"
 import {
-  ClipboardCheck, GitFork, ShieldCheck, LayoutTemplate, Users, Search, TrendingUp, Building2,
+  ClipboardCheck, GitFork, ShieldCheck, LayoutTemplate, Users, Search, TrendingUp, Building2, DollarSign,
 } from "lucide-react"
 
 const STEPS = [
   { icon: Users, title: "Define your customer", description: "Pin down exactly who experiences this problem so the rest of the validation work has a real person at its centre.", bg: "bg-indigo-100 dark:bg-indigo-950", color: "text-indigo-600 dark:text-indigo-400" },
   { icon: Search, title: "Refine your problem", description: "Dig into why this problem exists and who it affects using Root Causes, 5 Whys, or Affected Groups.", bg: "bg-purple-100 dark:bg-purple-950", color: "text-purple-600 dark:text-purple-400" },
   { icon: GitFork, title: "Explore existing solutions & shortcomings", description: "Identify how customers currently deal with this problem, capture shortcomings, and measure the quantifiable impact of each solution.", bg: "bg-sky-100 dark:bg-sky-950", color: "text-sky-600 dark:text-sky-400" },
-  { icon: TrendingUp, title: "Size the market", description: "Estimate how many customers experience the problem, how often, and how much it is worth to them, then sense-check the result with a total addressable market calculation.", bg: "bg-emerald-100 dark:bg-emerald-950", color: "text-emerald-600 dark:text-emerald-400" },
+  { icon: DollarSign, title: "How much is it worth", description: "Estimate the monetary value of solving one occurrence of the problem and the realistic share of the market you could capture.", bg: "bg-teal-100 dark:bg-teal-950", color: "text-teal-600 dark:text-teal-400" },
+  { icon: TrendingUp, title: "Size the market", description: "Estimate how many customers experience the problem and how often, then sense-check the result with a total addressable market calculation that uses the worth and share from the previous step.", bg: "bg-emerald-100 dark:bg-emerald-950", color: "text-emerald-600 dark:text-emerald-400" },
   { icon: Building2, title: "Assess the competition", description: "Read the cost of switching, how good existing solutions actually are, and how big the incumbents are. Capture supporting notes as you go.", bg: "bg-amber-100 dark:bg-amber-950", color: "text-amber-600 dark:text-amber-400" },
   { icon: ShieldCheck, title: "Record your verdict", description: "Weigh the six factors together against a colour-coded summary and lean indicator, then commit to Valid, Unsure, or Invalid with reasoning in the notes.", bg: "bg-orange-100 dark:bg-orange-950", color: "text-orange-600 dark:text-orange-400" },
   { icon: LayoutTemplate, title: "Summary", description: "Review the problem statement assembled from your discovery and validation work.", bg: "bg-green-100 dark:bg-green-950", color: "text-green-600 dark:text-green-400" },

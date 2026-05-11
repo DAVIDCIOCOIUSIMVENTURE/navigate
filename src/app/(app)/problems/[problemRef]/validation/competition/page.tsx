@@ -64,6 +64,11 @@ export default function CompetitionPage() {
           <p className="mt-2 text-base">
             Strong opportunities tend to combine low or moderate switching costs, average-or-worse existing solutions, and competitors that are either small or distracted by adjacent markets. If all three signals point against you, that is your cue to rethink the problem rather than push harder.
           </p>
+
+          <h3 className="mt-4 text-xl font-bold text-foreground">What will you do?</h3>
+          <p>
+            Pick the level that best describes each of the three signals: cost of switching, existing solution effectiveness, and competitor size. Then use the notes field to record the evidence behind your judgements and anything that does not fit cleanly into the toggles. The colour-coded summary on the verdict step will read directly from what you capture here.
+          </p>
         </div>
 
         <hr className="border-border/40 my-4" />
@@ -158,7 +163,7 @@ export default function CompetitionPage() {
 
         <div className="flex justify-between mt-2">
           {prevPath ? (
-            <Button variant="outline" onClick={() => router.push(prevPath)}>Previous</Button>
+            <Button variant="primary-outline" onClick={() => router.push(prevPath)}>Previous</Button>
           ) : <div />}
           {nextPath && (
             <Button onClick={() => router.push(nextPath)}>Next</Button>

@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator"
 import {
   CheckCircle2, XCircle, Clock, AlertTriangle,
 } from "lucide-react"
-import type { ValidationStatus, ExistingSolutionItem, DecisionLevel, ValidationAssessment } from "@/types/validation"
+import type { ValidationStatus, ExistingSolutionItem, DecisionLevel, ValidationAssessment, ValidationMetric } from "@/types/validation"
 import { useDimensionLabels } from "@/lib/dimension-labels"
 
 /* ------------------------------------------------------------------ */
@@ -98,7 +98,11 @@ function formatMetricValue(value: number | null, unit: string): string | null {
   return parts.join(" ") || null
 }
 
-const ASSESSMENT_FIELDS: { key: keyof ValidationAssessment; label: string }[] = [
+type MetricKey = {
+  [K in keyof ValidationAssessment]: ValidationAssessment[K] extends ValidationMetric ? K : never
+}[keyof ValidationAssessment]
+
+const ASSESSMENT_FIELDS: { key: MetricKey; label: string }[] = [
   { key: "howManyPeople", label: "How many customers" },
   { key: "howOften", label: "How often" },
   { key: "worthToThem", label: "How much is it worth" },
@@ -118,7 +122,10 @@ function AssessmentSection({ assessment }: { assessment: ValidationAssessment })
     })
     .filter(Boolean) as { label: string; valueText: string | null; levelText: string | null }[]
 
-  if (entries.length === 0) return null
+  const sharePct = Math.max(0, Math.min(100, assessment.obtainableShare))
+  const showShare = sharePct !== 10
+
+  if (entries.length === 0 && !showShare) return null
 
   return (
     <>
@@ -133,6 +140,12 @@ function AssessmentSection({ assessment }: { assessment: ValidationAssessment })
               </p>
             </div>
           ))}
+          {showShare && (
+            <div className="text-sm">
+              <p className="text-muted-foreground">Realistic share of market</p>
+              <p className="font-medium">{sharePct}%</p>
+            </div>
+          )}
         </div>
       </Section>
     </>

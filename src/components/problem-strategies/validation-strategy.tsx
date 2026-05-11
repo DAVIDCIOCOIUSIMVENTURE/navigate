@@ -5,12 +5,14 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Slider } from "@/components/ui/slider"
 import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
 import type { ValidationMetric } from "@/types/validation"
+import { DEFAULT_OBTAINABLE_SHARE } from "@/types/validation"
 import { cn } from "@/lib/utils"
 import {
   CheckCircle2, XCircle, HelpCircle, Users, RefreshCw, DollarSign, ArrowRightLeft, Target, Building2,
-  Calculator, AlertTriangle,
+  Calculator, AlertTriangle, PieChart,
 } from "lucide-react"
 
 const FREQUENCY_OPTIONS = [
@@ -163,21 +165,87 @@ function CurrencyInput({
   )
 }
 
+function ObtainableShareInput({
+  value,
+  onChange,
+  readOnly,
+}: {
+  value: number
+  onChange: (val: number) => void
+  readOnly?: boolean
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <PieChart className="h-3.5 w-3.5 text-white shrink-0" />
+        <span className="text-base font-semibold text-white">Realistic share of the market you can capture</span>
+      </div>
+      {!readOnly && (
+        <p className="text-base text-white">Even a strong product rarely wins the whole market. Pick the slice you can realistically reach in the first few years: a focused niche entrant typically captures 1 to 5 percent, a strong differentiated play 5 to 20 percent, and a dominant winner 20 to 40 percent.</p>
+      )}
+      <div className="mt-2 flex flex-col gap-2">
+        <div className="flex items-center gap-3">
+          <Slider
+            value={[value]}
+            onValueChange={(vals) => onChange(vals[0])}
+            min={0}
+            max={100}
+            step={1}
+            disabled={readOnly}
+            className="max-w-md"
+          />
+          <span className="text-base font-semibold text-white w-14 text-right">{value}%</span>
+        </div>
+        {!readOnly && (
+          <p className="text-sm text-white/70">A higher percentage means you expect to win more of the addressable market. Be conservative: most early-stage ventures land in the 5 to 15 percent range.</p>
+        )}
+      </div>
+    </div>
+  )
+}
+
+function WorthSection({
+  worthToThem,
+  obtainableShare,
+  setWorthToThem,
+  setObtainableShare,
+  readOnly,
+}: {
+  worthToThem: ValidationMetric
+  obtainableShare: number
+  setWorthToThem: (patch: Partial<ValidationMetric>) => void
+  setObtainableShare: (val: number) => void
+  readOnly?: boolean
+}) {
+  return (
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-2">
+          <DollarSign className="h-3.5 w-3.5 text-white shrink-0" />
+          <span className="text-base font-semibold text-white">How much is it worth per occurrence</span>
+        </div>
+        {!readOnly && (
+          <p className="text-base text-white">What is the monetary value of solving this problem each time it happens? Think about what customers already spend on workarounds, or the time and money they lose by leaving the problem unaddressed.</p>
+        )}
+        <CurrencyInput metric={worthToThem} onChange={setWorthToThem} readOnly={readOnly} />
+      </div>
+
+      <ObtainableShareInput value={obtainableShare} onChange={setObtainableShare} readOnly={readOnly} />
+    </div>
+  )
+}
+
 function MarketSection({
   howManyPeople,
   howOften,
-  worthToThem,
   setHowManyPeople,
   setHowOften,
-  setWorthToThem,
   readOnly,
 }: {
   howManyPeople: ValidationMetric
   howOften: ValidationMetric
-  worthToThem: ValidationMetric
   setHowManyPeople: (patch: Partial<ValidationMetric>) => void
   setHowOften: (patch: Partial<ValidationMetric>) => void
-  setWorthToThem: (patch: Partial<ValidationMetric>) => void
   readOnly?: boolean
 }) {
   return (
@@ -193,17 +261,6 @@ function MarketSection({
           <p className="text-base text-white">How frequently do customers encounter this problem? A problem that happens daily is far more urgent than one that occurs once a year.</p>
         )}
         <FrequencyInput metric={howOften} onChange={setHowOften} readOnly={readOnly} />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          <DollarSign className="h-3.5 w-3.5 text-white shrink-0" />
-          <span className="text-base font-semibold text-white">How much is it worth</span>
-        </div>
-        {!readOnly && (
-          <p className="text-base text-white">What is the monetary value of solving this problem? Consider how much customers currently spend on workarounds, or how much time and money they lose because of it.</p>
-        )}
-        <CurrencyInput metric={worthToThem} onChange={setWorthToThem} readOnly={readOnly} />
       </div>
     </div>
   )
@@ -442,11 +499,13 @@ function TamCalculation({
   howManyPeople,
   howOften,
   worthToThem,
+  obtainableShare,
   readOnly,
 }: {
   howManyPeople: ValidationMetric
   howOften: ValidationMetric
   worthToThem: ValidationMetric
+  obtainableShare: number
   readOnly?: boolean
 }) {
   const customers = howManyPeople.value ?? 0
@@ -455,8 +514,11 @@ function TamCalculation({
   const unit = howOften.unit || "per day"
   const factor = FREQUENCY_ANNUAL_FACTOR[unit] ?? 365
   const currency = worthToThem.unit || "GBP"
+  const sharePct = Math.max(0, Math.min(100, obtainableShare))
+  const shareFactor = sharePct / 100
 
-  const tam = customers * frequency * cost * factor
+  const grossMarket = customers * frequency * cost * factor
+  const tam = grossMarket * shareFactor
   const ready = customers > 0 && frequency > 0 && cost > 0
 
   if (readOnly && !ready) return null
@@ -469,21 +531,58 @@ function TamCalculation({
       </div>
       {!readOnly && (
         <p className="text-base text-white/80">
-          Multiplying customers, frequency, value, and an annualisation factor gives a rough sense of how big the opportunity could be in a year. Treat this as a sanity check, not a precise number.
+          Multiplying customers, frequency, value, and an annualisation factor gives the gross opportunity. Applying your realistic share narrows that down to what you could plausibly capture. Treat the result as a sanity check, not a precise number.
         </p>
       )}
       <div className="rounded-lg bg-primary/40 border border-white/20 p-4 flex flex-col gap-2 text-base text-white">
-        <div className="font-mono text-sm">customers × frequency × value × factor</div>
+        <div className="font-mono text-sm">customers × frequency × value × factor × share</div>
         <div className="font-mono text-sm">
-          {formatNumber(customers)} × {frequency || 0} × {formatNumber(cost, { currency })} × {factor}
+          {formatNumber(customers)} × {frequency || 0} × {formatNumber(cost, { currency })} × {factor} × {sharePct}%
         </div>
         <div className="text-xl font-bold">
           {ready ? formatNumber(tam, { currency }) : "Fill in the three inputs above to see your estimate"}
           {ready && <span className="ml-2 text-base font-normal text-white/80">per year</span>}
         </div>
+        {ready && (
+          <div className="text-sm text-white/70">
+            Gross market: {formatNumber(grossMarket, { currency })} per year, before applying your {sharePct}% realistic share.
+          </div>
+        )}
         <div className="text-sm text-white/70">
-          factor = {factor} (converts &quot;{unit}&quot; into a yearly total)
+          factor = {factor} (converts &quot;{unit}&quot; into a yearly total); share = {sharePct}% of the gross market.
         </div>
+      </div>
+    </div>
+  )
+}
+
+export function WorthStrategy({ readOnly = false }: { readOnly?: boolean }) {
+  const {
+    validationAssessment, setWorthToThem, setObtainableShare,
+  } = useProblem()
+  const { worthToThem, obtainableShare } = validationAssessment
+
+  const hasAny = (worthToThem.value !== null && worthToThem.value !== 0) || obtainableShare !== DEFAULT_OBTAINABLE_SHARE
+
+  if (readOnly && !hasAny) {
+    return (
+      <div className="bg-primary rounded-xl p-8">
+        <p className="text-sm text-white/70 italic">No worth estimate captured.</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="bg-primary rounded-xl p-8">
+      <div className="flex flex-col gap-6">
+        <p className="text-base font-medium text-white">Worth of solving the problem</p>
+        <WorthSection
+          worthToThem={worthToThem}
+          obtainableShare={obtainableShare}
+          setWorthToThem={setWorthToThem}
+          setObtainableShare={setObtainableShare}
+          readOnly={readOnly}
+        />
       </div>
     </div>
   )
@@ -491,11 +590,11 @@ function TamCalculation({
 
 export function MarketSizingStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const {
-    validationAssessment, setHowManyPeople, setHowOften, setWorthToThem,
+    validationAssessment, setHowManyPeople, setHowOften,
   } = useProblem()
-  const { howManyPeople, howOften, worthToThem } = validationAssessment
+  const { howManyPeople, howOften, worthToThem, obtainableShare } = validationAssessment
 
-  const hasAny = [howManyPeople, howOften, worthToThem].some((m) => m.value !== null && m.value !== 0)
+  const hasAny = [howManyPeople, howOften].some((m) => m.value !== null && m.value !== 0)
 
   if (readOnly && !hasAny) {
     return (
@@ -512,13 +611,17 @@ export function MarketSizingStrategy({ readOnly = false }: { readOnly?: boolean 
         <MarketSection
           howManyPeople={howManyPeople}
           howOften={howOften}
-          worthToThem={worthToThem}
           setHowManyPeople={setHowManyPeople}
           setHowOften={setHowOften}
-          setWorthToThem={setWorthToThem}
           readOnly={readOnly}
         />
-        <TamCalculation howManyPeople={howManyPeople} howOften={howOften} worthToThem={worthToThem} readOnly={readOnly} />
+        <TamCalculation
+          howManyPeople={howManyPeople}
+          howOften={howOften}
+          worthToThem={worthToThem}
+          obtainableShare={obtainableShare}
+          readOnly={readOnly}
+        />
       </div>
     </div>
   )
@@ -713,7 +816,7 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const {
     validationAssessment, status, setStatus, reason,
   } = useProblem()
-  const { howManyPeople, howOften, worthToThem, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
+  const { howManyPeople, howOften, worthToThem, obtainableShare, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
 
   const customers = howManyPeople.value ?? 0
   const frequency = howOften.value ?? 0
@@ -721,7 +824,9 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const unit = howOften.unit || "per day"
   const factor = FREQUENCY_ANNUAL_FACTOR[unit] ?? 365
   const currency = worthToThem.unit || "GBP"
-  const tam = customers * frequency * cost * factor
+  const sharePct = Math.max(0, Math.min(100, obtainableShare))
+  const grossMarket = customers * frequency * cost * factor
+  const tam = grossMarket * (sharePct / 100)
   const tamReady = customers > 0 && frequency > 0 && cost > 0
 
   const signals = {
@@ -759,6 +864,10 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
               signal={signals.worth}
             />
             <MetricRow
+              label="Realistic share of market"
+              value={`${sharePct}%`}
+            />
+            <MetricRow
               label="Cost of switching"
               value={costOfSwitching.level}
               signal={signals.cost}
@@ -780,7 +889,7 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
               {tamReady ? `${formatNumber(tam, { currency })} per year` : "Not enough data"}
             </span>
             {tamReady && (
-              <span className="text-sm text-white/70">customers × frequency × value × factor ({factor}). Treat as a sanity check, not as proof of demand.</span>
+              <span className="text-sm text-white/70">customers × frequency × value × factor ({factor}) × share ({sharePct}%). Gross market before the share filter: {formatNumber(grossMarket, { currency })} per year. Treat the result as a sanity check, not as proof of demand.</span>
             )}
           </div>
           {reason.trim() && (
@@ -806,11 +915,11 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
 export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const {
     status, setStatus, reason, setReason,
-    validationAssessment, setHowManyPeople, setHowOften, setWorthToThem, setCostOfSwitching,
+    validationAssessment, setHowManyPeople, setHowOften, setWorthToThem, setObtainableShare, setCostOfSwitching,
     setSolutionEffectiveness, setCompetitorSize,
   } = useProblem()
 
-  const { howManyPeople, howOften, worthToThem, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
+  const { howManyPeople, howOften, worthToThem, obtainableShare, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
 
   const hasAnyMetric = [howManyPeople, howOften, worthToThem, costOfSwitching, solutionEffectiveness, competitorSize]
     .some((m) => m.value !== null || m.level !== "")
@@ -832,14 +941,26 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
         <MarketSection
           howManyPeople={howManyPeople}
           howOften={howOften}
-          worthToThem={worthToThem}
           setHowManyPeople={setHowManyPeople}
           setHowOften={setHowOften}
-          setWorthToThem={setWorthToThem}
           readOnly={readOnly}
         />
 
-        <TamCalculation howManyPeople={howManyPeople} howOften={howOften} worthToThem={worthToThem} readOnly={readOnly} />
+        <WorthSection
+          worthToThem={worthToThem}
+          obtainableShare={obtainableShare}
+          setWorthToThem={setWorthToThem}
+          setObtainableShare={setObtainableShare}
+          readOnly={readOnly}
+        />
+
+        <TamCalculation
+          howManyPeople={howManyPeople}
+          howOften={howOften}
+          worthToThem={worthToThem}
+          obtainableShare={obtainableShare}
+          readOnly={readOnly}
+        />
 
         <CompetitionSection
           costOfSwitching={costOfSwitching}

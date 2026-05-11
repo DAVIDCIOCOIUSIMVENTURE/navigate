@@ -21,7 +21,7 @@
  * Mirror: src/app/(app)/solutions/[solutionId]/validate/context.tsx.
  */
 
-import { createContext, useContext, useCallback, useEffect, type ReactNode } from "react"
+import { createContext, useContext, useCallback, useEffect, useMemo, type ReactNode } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import type { ExistingSolutionItem, ValidationStatus, ValidationMetric, ValidationAssessment } from "@/types/validation"
@@ -56,6 +56,7 @@ type ProblemContextValue = {
   setHowManyPeople: (patch: Partial<ValidationMetric>) => void
   setHowOften: (patch: Partial<ValidationMetric>) => void
   setWorthToThem: (patch: Partial<ValidationMetric>) => void
+  setObtainableShare: (val: number) => void
   setCostOfSwitching: (patch: Partial<ValidationMetric>) => void
   setSolutionEffectiveness: (patch: Partial<ValidationMetric>) => void
   setCompetitorSize: (patch: Partial<ValidationMetric>) => void
@@ -104,7 +105,11 @@ export function ProblemProvider({
   const customerDescription = problem?.customerDescription ?? ""
   const existingSolutions = problem?.existingSolutions ?? []
   const emotionalImpact = problem?.emotionalImpact ?? []
-  const validationAssessment = problem?.validationAssessment ?? DEFAULT_VALIDATION_ASSESSMENT
+  const storedAssessment = problem?.validationAssessment
+  const validationAssessment: ValidationAssessment = useMemo(() => ({
+    ...DEFAULT_VALIDATION_ASSESSMENT,
+    ...(storedAssessment ?? {}),
+  }), [storedAssessment])
   const contextWhen = problem?.contextWhen ?? ""
   const status = problem?.validationStatus ?? "unvalidated"
   const reason = problem?.validationReason ?? ""
@@ -196,6 +201,21 @@ export function ProblemProvider({
           validationAssessment: {
             ...validationAssessment,
             worthToThem: { ...validationAssessment.worthToThem, ...patch },
+          },
+        },
+      })
+    },
+    [dispatch, problemId, validationAssessment]
+  )
+
+  const setObtainableShare = useCallback(
+    (val: number) => {
+      dispatch.problems.update({
+        id: problemId,
+        patch: {
+          validationAssessment: {
+            ...validationAssessment,
+            obtainableShare: val,
           },
         },
       })
@@ -314,6 +334,7 @@ export function ProblemProvider({
         setHowManyPeople,
         setHowOften,
         setWorthToThem,
+        setObtainableShare,
         setCostOfSwitching,
         setSolutionEffectiveness,
         setCompetitorSize,
@@ -341,6 +362,7 @@ export const NAV_ITEMS = [
   { label: "Choose your refinement method", path: "choose-refinement" },
   { label: "Refine your problem", path: "refine" },
   { label: "Explore existing solutions & shortcomings", path: "existing-solutions" },
+  { label: "How much is it worth", path: "worth" },
   { label: "Size the market", path: "market" },
   { label: "Assess the competition", path: "competition" },
   { label: "Record your verdict", path: "verdict" },

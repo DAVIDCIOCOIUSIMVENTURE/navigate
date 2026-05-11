@@ -112,7 +112,7 @@ export default function CustomerSegmentPage() {
           </p>
         </div>
 
-        <h3 className="mt-4 text-xl font-bold text-foreground">What you&apos;ll do</h3>
+        <h3 className="mt-4 text-xl font-bold text-foreground">What will you do?</h3>
         <div className="flex flex-col gap-3 text-base">
           <div className="flex items-center gap-3">
             <span className="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white text-sm font-bold shrink-0">1</span>
@@ -206,7 +206,7 @@ export default function CustomerSegmentPage() {
 
         <div className="flex justify-between mt-2">
           {prevPath ? (
-            <Button variant="outline" onClick={() => router.push(prevPath)}>Previous</Button>
+            <Button variant="primary-outline" onClick={() => router.push(prevPath)}>Previous</Button>
           ) : <div />}
           {nextPath && <Button onClick={() => router.push(nextPath)}>Next</Button>}
         </div>

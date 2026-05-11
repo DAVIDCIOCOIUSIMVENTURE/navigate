@@ -94,6 +94,11 @@ export default function VerdictPage() {
               </div>
             </div>
           </div>
+
+          <h3 className="mt-4 text-xl font-bold text-foreground">What will you do?</h3>
+          <p>
+            Read the colour-coded summary of every signal you have captured, weigh the evidence rather than the enthusiasm, and choose Valid, Unsure, or Invalid. Use the notes field on the form to record the two or three signals that drove your decision and the strongest counter-argument you considered, so the verdict is defensible weeks from now.
+          </p>
         </div>
 
         <hr className="border-border/40 my-4" />
@@ -178,7 +183,7 @@ export default function VerdictPage() {
 
         <div className="flex justify-between mt-2">
           {prevPath ? (
-            <Button variant="outline" onClick={() => router.push(prevPath)}>Previous</Button>
+            <Button variant="primary-outline" onClick={() => router.push(prevPath)}>Previous</Button>
           ) : <div />}
           {nextPath && (
             <Button onClick={() => router.push(nextPath)}>Next</Button>

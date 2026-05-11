@@ -15,6 +15,7 @@ export type ValidationAssessment = {
   howManyPeople: ValidationMetric
   howOften: ValidationMetric
   worthToThem: ValidationMetric
+  obtainableShare: number
   costOfSwitching: ValidationMetric
   solutionEffectiveness: ValidationMetric
   competitorSize: ValidationMetric
@@ -22,10 +23,13 @@ export type ValidationAssessment = {
 
 export const DEFAULT_VALIDATION_METRIC: ValidationMetric = { value: null, unit: "", level: "" }
 
+export const DEFAULT_OBTAINABLE_SHARE = 10
+
 export const DEFAULT_VALIDATION_ASSESSMENT: ValidationAssessment = {
   howManyPeople: { value: 0, unit: "", level: "" },
   howOften: { value: 0, unit: "", level: "" },
   worthToThem: { value: 0, unit: "", level: "" },
+  obtainableShare: DEFAULT_OBTAINABLE_SHARE,
   costOfSwitching: { value: null, unit: "", level: "medium" },
   solutionEffectiveness: { value: null, unit: "", level: "average" },
   competitorSize: { value: null, unit: "", level: "medium" },
