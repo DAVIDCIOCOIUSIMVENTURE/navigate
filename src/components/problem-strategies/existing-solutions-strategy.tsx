@@ -156,7 +156,7 @@ export function ExistingSolutionsStrategy({ readOnly = false }: { readOnly?: boo
 
                 <div className="flex-1 min-w-0 flex flex-col gap-4">
                   <div className="flex flex-col gap-2">
-                    <label htmlFor={`solution-${sol.id}`} className="text-sm font-medium leading-none text-white/80">Existing solution name</label>
+                    <label htmlFor={`solution-${sol.id}`} className="text-base font-medium leading-none text-white">Existing solution name</label>
                     <Input
                       id={`solution-${sol.id}`}
                       value={sol.text}
@@ -183,7 +183,7 @@ export function ExistingSolutionsStrategy({ readOnly = false }: { readOnly?: boo
                         </Button>
                       </div>
                       {!readOnly && (
-                        <p className="text-sm text-white/70">Where this solution falls short for the customer.</p>
+                        <p className="text-base text-white">Where this solution falls short for the customer.</p>
                       )}
                     </div>
                     <div className="flex flex-col gap-2">
