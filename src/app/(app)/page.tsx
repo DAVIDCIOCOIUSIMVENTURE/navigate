@@ -91,8 +91,8 @@ export default function DashboardPage() {
                 <BookOpen className="h-4 w-4 text-primary" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm font-semibold">New here? Start with Why It Matters</p>
-                <p className="text-xs text-muted-foreground mt-0.5">Optional reading on why validating ideas, problems, and solutions is worth the time.</p>
+                <p className="text-base font-semibold">New here? Start with Why It Matters</p>
+                <p className="text-sm text-muted-foreground mt-0.5">Optional reading on why validating ideas, problems, and solutions is worth the time.</p>
               </div>
               <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
             </CardContent>
@@ -287,7 +287,7 @@ function StageCard({
           </div>
           <div className="min-w-0">
             <p className="text-xl font-bold leading-none">{value}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">{title}</p>
+            <p className="text-sm text-muted-foreground mt-0.5">{title}</p>
           </div>
         </CardContent>
       </Card>
