@@ -9,8 +9,8 @@ import {
   FileQuestion, Pencil, Package,
   Play, ToggleRight, Blocks, LayoutGrid, FileText, ArrowRight,
   GitFork, Heart, BarChart2, Target,
-  Users, MapPin, AlertTriangle,
-  Repeat, DollarSign, ArrowRightLeft,
+  Users, MapPin, AlertTriangle, Briefcase, Filter,
+  Repeat, DollarSign, ArrowRightLeft, Wallet, PieChart,
   Lightbulb, HelpCircle,
   BookOpen, FlaskConical, Clock, Trophy, Sparkles,
   TrendingUp, Building2, Calculator, Scale, ShieldCheck,
@@ -292,56 +292,71 @@ const guidanceItems: GuidanceItem[] = [
         <GuidanceSection icon={Play} iconBg="bg-emerald-500" title="How it works">
           <p>Each problem goes through a structured sequence of steps. Work through them in order; each step builds on the last, but you can return and update any step as your thinking develops.</p>
         </GuidanceSection>
-        <GuidanceSection icon={Search} iconBg="bg-indigo-500" title="Refine the Problem">
-          <p>Before exploring alternatives, dig into <Keyword>why</Keyword> the problem exists and <Keyword>who</Keyword> it affects. Pick the technique that matches the kind of clarity you need, then capture what you find.</p>
+        <GuidanceSection icon={Users} iconBg="bg-indigo-500" title="Define your customer">
+          <p>Pin down exactly who experiences the problem. Vague labels like <Keyword>&ldquo;everyone&rdquo;</Keyword> or <Keyword>&ldquo;businesses&rdquo;</Keyword> lead to vague problems and vague solutions; a sharp customer definition unlocks every later step. Narrow down by:</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-            <ConceptCard icon={GitFork} label="Root Causes" description="Map the underlying factors that give rise to the problem." tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
-            <ConceptCard icon={Repeat} label="5 Whys" description="Ask 'why' five times to drill from a surface symptom to the real cause." tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
-            <ConceptCard icon={Users} label="Affected Groups" description="Map who is impacted, how severely, and in what way." tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
+            <ConceptCard icon={Briefcase} label="Role &amp; industry" description="What they do and which sector they work in (e.g. freelance designers, NHS nurses, SaaS founders)." tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
+            <ConceptCard icon={MapPin} label="Demographics &amp; geography" description="Age range, location, income level, or company size." tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
+            <ConceptCard icon={Target} label="Behaviour &amp; situation" description="What triggers the problem and when it tends to happen." tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
+            <ConceptCard icon={Filter} label="Urgency &amp; willingness" description="How badly they need a solution and whether they already spend time or money fixing it." tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
+          </div>
+          <p className="pt-1">Capture a written description plus an order-of-magnitude estimate of the segment size. The size figure flows through to the market sizing step later.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={Search} iconBg="bg-purple-500" title="Refine the problem">
+          <p>Before exploring alternatives, dig into <Keyword>why</Keyword> the problem exists and <Keyword>who</Keyword> it affects. The <Keyword>Choose your refinement method</Keyword> step lets you pick one of three techniques; the next step is where you capture the actual analysis. The refinement output also surfaces later in solution discovery, so the work is reused.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+            <ConceptCard icon={GitFork} label="Root Causes" description="Map the underlying factors that give rise to the problem." tile="bg-purple-500" border="border-purple-100 bg-purple-50/40" />
+            <ConceptCard icon={Repeat} label="5 Whys" description="Ask 'why' five times to drill from a surface symptom to the real cause." tile="bg-purple-500" border="border-purple-100 bg-purple-50/40" />
+            <ConceptCard icon={Users} label="Affected Groups" description="Map who is impacted, how severely, and in what way." tile="bg-purple-500" border="border-purple-100 bg-purple-50/40" />
           </div>
         </GuidanceSection>
-        <GuidanceSection icon={GitFork} iconBg="bg-purple-500" title="Alternatives & Shortcomings">
-          <p>With a sharper view of the problem, list how people currently deal with it: the tools, workarounds, or habits they already use. Then, for each alternative, note its shortcomings: what it fails to do well, what it costs, or what friction it introduces. This step grounds the problem in reality and reveals the gap a future solution would need to fill.</p>
+        <GuidanceSection icon={GitFork} iconBg="bg-sky-500" title="Existing solutions &amp; shortcomings">
+          <p>List how customers handle the problem today: existing tools and software, manual workarounds, hiring or outsourcing, or simply tolerating the pain. For each one, capture its specific shortcomings: where it falls short, what it costs, or what friction it adds. This grounds the problem in reality and reveals the gap a future solution would need to fill.</p>
+          <p>Each existing solution exposes an <Keyword>Impact examples</Keyword> panel listing common areas where shortcomings hurt (time lost, money wasted, errors, frustration, churn, and more). Use it to quantify how much each existing solution actually costs the customer; this is where the old <Keyword>quantifiable impact</Keyword> work now lives.</p>
         </GuidanceSection>
-        <GuidanceSection icon={Heart} iconBg="bg-rose-500" title="Emotional Impact">
-          <p>Capture how the problem makes people feel. Emotional weight is a strong signal of whether a problem is genuinely painful. Frustration, anxiety, embarrassment, or helplessness all indicate that people care enough to want a better solution. Add as many emotional impacts as apply; even one strong emotion is significant.</p>
-        </GuidanceSection>
-        <GuidanceSection icon={BarChart2} iconBg="bg-sky-500" title="Quantifiable Impact">
-          <p>Document measurable evidence of the problem&apos;s cost. Choose a category: time lost, money wasted, error rates, or customer churn, and describe the scale in concrete terms. Numbers and specifics matter: <Keyword>&ldquo;two hours per week per employee&rdquo;</Keyword> is more compelling than <Keyword>&ldquo;wastes a lot of time&rdquo;</Keyword>.</p>
+        <GuidanceSection icon={DollarSign} iconBg="bg-teal-500" title="How much is it worth">
+          <p>Before counting customers or annualising frequencies, be honest about the value of solving the problem each time it happens. Two figures are captured on this step; both feed directly into the market sizing calculation that follows.</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+            <ConceptCard icon={Wallet} label="Money already spent" description="Subscriptions, contractors, late fines, or replacement parts. Revealed spend is the strongest evidence the problem is worth solving." tile="bg-teal-500" border="border-teal-100 bg-teal-50/40" />
+            <ConceptCard icon={Scale} label="Time, risk, &amp; missed value" description="Translate the soft costs into money: an hour of professional time, a missed sale, a delayed launch, or the expected cost of a bad outcome." tile="bg-teal-500" border="border-teal-100 bg-teal-50/40" />
+            <ConceptCard icon={DollarSign} label="Willingness to pay" description="What a customer would happily pay to make one occurrence go away, not what it would cost you to build a solution." tile="bg-teal-500" border="border-teal-100 bg-teal-50/40" />
+            <ConceptCard icon={PieChart} label="Obtainable share" description="The slice of the full market you can realistically capture. Niche entrants typically reach 1 to 5 percent, differentiated plays 5 to 20 percent, category winners 20 to 40 percent." tile="bg-teal-500" border="border-teal-100 bg-teal-50/40" />
+          </div>
+          <p className="pt-1">A useful sense check: pick the lowest of the first three angles. The worth figure and the obtainable share both flow into the total addressable market calculation on the next step, so any change here will move that number directly.</p>
         </GuidanceSection>
         <GuidanceSection icon={TrendingUp} iconBg="bg-emerald-500" title="Size the market">
-          <p>The first of three validation steps tells you whether the prize is worth pursuing at all. Three numbers do most of the work, captured directly on the page:</p>
+          <p>Layer the population on top of the worth figure you just captured. Two inputs do most of the work, captured directly on the page:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(180px,1fr))]">
-            <ConceptCard icon={Users} label="How many customers" description="The total population that experiences the problem, narrowed by your customer definition." tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
-            <ConceptCard icon={Repeat} label="How often" description="How frequently it recurs, picked from per-hour through per-year." tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
-            <ConceptCard icon={DollarSign} label="How much is it worth" description="What customers already pay for workarounds, lose in time, or miss in revenue." tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
+            <ConceptCard icon={Users} label="How many customers" description="The total population that fits your customer definition. Round generously; order of magnitude matters more than precision." tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
+            <ConceptCard icon={Repeat} label="How often" description="The natural cadence of the problem, picked from per-hour through per-year. Daily problems compound value quickly; annual ones need unusual pain." tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
           </div>
-          <p className="pt-1">Below the inputs, a <Keyword>total addressable market</Keyword> calculation multiplies <Keyword>customers × frequency × value × annualisation factor</Keyword> (the factor is auto-derived from the cadence, e.g. 365 for &ldquo;per day&rdquo;). Treat the result as a sense check, not a forecast: an implausibly large or small number usually means one of the three inputs is off.</p>
+          <p className="pt-1">Below the inputs a <Keyword>total addressable market</Keyword> calculation combines all four figures: <Keyword>customers × frequency × worth per occurrence × obtainable share</Keyword>, with an annualisation factor auto-derived from the cadence (e.g. 365 for &ldquo;per day&rdquo;). Treat the result as a sense check, not a forecast: an implausibly large or small number usually means one input is off, and the worth figure or share are usually the fastest to revisit.</p>
         </GuidanceSection>
         <GuidanceSection icon={Building2} iconBg="bg-amber-500" title="Assess the competition">
-          <p>The second step asks whether you can realistically capture the market you just sized. Three signals together tell you how hard the path will be:</p>
+          <p>A big market alone is not enough. The next question is whether you can realistically win in it. Three signals together tell you how hard the path will be:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(180px,1fr))]">
             <ConceptCard icon={ArrowRightLeft} label="Cost of switching" description="The time, money, and habit-change a customer must give up to leave their current setup." tile="bg-amber-500" border="border-amber-100 bg-amber-50/40" />
             <ConceptCard icon={Target} label="Existing solution effectiveness" description="How well current options actually work, from terrible through excellent." tile="bg-amber-500" border="border-amber-100 bg-amber-50/40" />
             <ConceptCard icon={Building2} label="Competitor size" description="How well-funded the incumbents are, from micro players up to giants." tile="bg-amber-500" border="border-amber-100 bg-amber-50/40" />
           </div>
-          <p className="pt-1">Strong opportunities tend to combine low or moderate switching costs, average-or-worse alternatives, and competitors that are small or distracted. Capture supporting evidence in the <Keyword>notes</Keyword> field on this step: it carries through to the verdict and to the problem statement.</p>
+          <p className="pt-1">Strong opportunities tend to combine low or moderate switching costs, average-or-worse alternatives, and competitors that are small or distracted. Capture supporting evidence in the <Keyword>notes</Keyword> field on this step: it carries through to the verdict and into the summary.</p>
         </GuidanceSection>
         <GuidanceSection icon={ShieldCheck} iconBg="bg-orange-500" title="Record your verdict">
-          <p>The final step pulls everything together. The summary card shows each captured factor with a colour-coded dot (green favourable, amber neutral, red unfavourable) and the total addressable market figure from the market step:</p>
+          <p>The verdict step pulls everything together. The summary card shows each captured factor (the three market signals and the three competition signals) with a colour-coded dot (green favourable, amber neutral, red unfavourable) and the total addressable market figure from the market step:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(220px,1fr))]">
             <ConceptCard icon={Scale} label="Lean indicator" description="Once at least four of the six signals are captured, a banner shows whether the evidence leans toward Valid, Unsure, or Invalid." tile="bg-orange-500" border="border-orange-100 bg-orange-50/40" />
             <ConceptCard icon={Calculator} label="Total addressable market is a sanity check" description="A large multiplied number is not the same as proven willingness to pay. Read the underlying signals before trusting the headline." tile="bg-orange-500" border="border-orange-100 bg-orange-50/40" />
           </div>
           <p className="pt-1">Then commit to one of three verdicts: <Keyword>Valid</Keyword>, <Keyword>Unsure</Keyword>, or <Keyword>Invalid</Keyword>. The dot colours and lean banner are heuristics, not rules; if you disagree with how a signal is being read, override it in the notes and explain why. Use the notes to record the two or three signals that drove the call plus the strongest counter-argument you considered.</p>
         </GuidanceSection>
-        <GuidanceSection icon={FileText} iconBg="bg-emerald-500" title="Problem Statement">
-          <p>The final step produces a consolidated summary of everything you have discovered. Review the core problem along with the customer, context, and problem dimensions, alongside all the evidence you collected. Edit any field directly. This statement is the artefact you carry forward if you decide to pursue the problem.</p>
+        <GuidanceSection icon={FileText} iconBg="bg-emerald-500" title="Summary &amp; next steps">
+          <p>A read-only overview of everything you have captured: the customer definition, refinement work, existing solutions and their shortcomings, the worth and market figures, the competitive picture, and your verdict with notes. Use <Keyword>Open Problem to edit</Keyword> to jump back to the editable problem page if anything needs revising before you move on to solution discovery.</p>
         </GuidanceSection>
         <TipCallout items={[
           "Be honest about the evidence: weak validation data is a signal, not a failure",
-          "Alternatives with many shortcomings suggest a genuine gap in the market",
-          "If you struggle to name emotional or quantifiable impacts, the problem may not be painful enough",
+          "Existing solutions with many shortcomings suggest a genuine gap in the market",
+          "If you cannot justify the worth or obtainable share to a sceptical friend, slide them down",
+          "Refinement work done here flows into solution discovery, so do not skip it",
           "You can validate multiple problems and compare verdicts before committing to one",
         ]} />
       </div>
