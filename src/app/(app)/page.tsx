@@ -83,7 +83,7 @@ export default function DashboardPage() {
   return (
     <div className={cn("flex flex-col gap-4 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
       {/* Foundations prompt + action buttons */}
-      <div className="flex items-stretch gap-3 shrink-0">
+      <div className={cn("flex gap-3 shrink-0", isWide ? "flex-row items-stretch" : "flex-col items-stretch")}>
         <Link href="/foundations" className="flex-1 min-w-0 flex">
           <Card className="hover:shadow-md transition-shadow w-full">
             <CardContent className="p-4 h-full flex items-center gap-3">
@@ -111,7 +111,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Journey Overview: Problems, Validated Problems, Solutions, Validated Solutions */}
-      <div className={cn("grid gap-3 shrink-0", isWide ? "grid-cols-4" : "grid-cols-2")}>
+      <div className={cn("grid gap-3 shrink-0", isWide ? "grid-cols-4" : "grid-cols-1")}>
         <StageCard
           icon={Target}
           title="Problems"

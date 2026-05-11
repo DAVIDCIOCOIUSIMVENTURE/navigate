@@ -344,10 +344,10 @@ function GuidancePanel({ title, description, tips, className }: {
 }) {
   return (
     <ScrollArea className={cn("min-h-0", className)}>
-      <div className="flex flex-col gap-3 text-sm pr-3">
+      <div className="flex flex-col gap-3 text-base pr-3">
         <h3 className="font-semibold text-base">{title}</h3>
-        <p className="text-muted-foreground leading-relaxed">{description}</p>
-        <ul className="flex flex-col gap-1.5 text-muted-foreground">
+        <p className="leading-relaxed">{description}</p>
+        <ul className="flex flex-col gap-1.5">
           {tips.map((tip, i) => (
             <li key={i} className="flex gap-2 leading-relaxed">
               <span className="text-primary mt-0.5 shrink-0">&#8226;</span>
@@ -621,7 +621,7 @@ function ProblemBuilder({
                   <h3 className="text-sm font-semibold">Dimensions</h3>
                   {totalSelections > 0 && (
                     <Button
-                      variant="outline"
+                      variant="primary-outline"
                       size="sm"
                       onClick={() => setStep("review")}
                     >
@@ -640,7 +640,7 @@ function ProblemBuilder({
                         key={col.id}
                         onClick={() => pickColumn(col.id)}
                         className={cn(
-                          "flex flex-col items-center gap-3 p-5 rounded-xl border border-t-4 transition-all",
+                          "flex flex-col items-center gap-3 p-5 rounded-xl border transition-all",
                           cn(colors?.bgIdle, "hover:shadow-sm"),
                           colors?.border || "border-border",
                         )}
@@ -687,7 +687,7 @@ function ProblemBuilder({
                     })()}
                     <h3 className={cn("text-base font-bold", COLUMN_COLORS[activeColumn.id]?.icon)}>{activeColumn.title}</h3>
                     {(selectedByColumn[activeColumn.id] ?? []).length > 0 && (
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-sm">
                         ({(selectedByColumn[activeColumn.id] ?? []).length} selected)
                       </span>
                     )}
@@ -715,17 +715,17 @@ function ProblemBuilder({
                         key={group.id}
                         onClick={() => pickCategory(group.id)}
                         className={cn(
-                          "flex flex-col items-start gap-2 p-4 rounded-xl border border-t-4 transition-all text-left",
+                          "flex flex-col items-start gap-2 p-4 rounded-xl border transition-all text-left",
                           cn(colors?.bgIdle, "hover:shadow-sm"),
                           colors?.border || "border-border",
                         )}
                       >
-                        <span className="text-sm font-medium">{group.label}</span>
-                        <span className="text-xs text-foreground leading-relaxed">
+                        <span className="text-base font-medium">{group.label}</span>
+                        <span className="text-sm leading-relaxed">
                           {previewItems.join(", ")}{group.children!.length > 3 ? `, +${group.children!.length - 3} more` : ""}
                         </span>
                         {explored && (
-                          <span className={cn("inline-flex items-center gap-1 text-xs font-medium", colors?.icon)}>
+                          <span className={cn("inline-flex items-center gap-1 text-sm font-medium", colors?.icon)}>
                             <Check className="h-3 w-3" />
                             {selectedInGroup} selected
                           </span>
@@ -758,13 +758,13 @@ function ProblemBuilder({
                         })()}
                         <span className={cn("text-base font-bold", COLUMN_COLORS[activeColumn.id]?.icon)}>{activeColumn.title}</span>
                       </div>
-                      <p className="text-muted-foreground leading-relaxed">
+                      <p className="leading-relaxed">
                         {DIMENSION_GUIDANCE[activeColumn.id].description}
                       </p>
                       <div className="flex flex-col gap-1 mt-1">
-                        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Examples</span>
+                        <span className="text-sm font-medium uppercase tracking-wide">Examples</span>
                         {DIMENSION_GUIDANCE[activeColumn.id].examples.map((ex, i) => (
-                          <span key={i} className="text-xs text-muted-foreground italic">&ldquo;{ex}&rdquo;</span>
+                          <span key={i} className="text-sm italic">&ldquo;{ex}&rdquo;</span>
                         ))}
                       </div>
                     </div>
@@ -1193,7 +1193,7 @@ export default function BrainstormPage() {
                   Builder
                 </ToggleGroupItem>
               </ToggleGroup>
-              <p className={cn("text-sm text-muted-foreground", containerSize === "narrow" ? "hidden" : "block")}>
+              <p className={cn("text-sm", containerSize === "narrow" ? "hidden" : "block")}>
                 {brainstormMode === "canvas"
                   ? "Explore potential areas for innovation by navigating through the options below."
                   : "Build a problem step by step by selecting from each dimension."}
