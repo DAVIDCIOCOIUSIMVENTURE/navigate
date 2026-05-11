@@ -170,7 +170,7 @@ const guidanceItems: GuidanceItem[] = [
         </GuidanceSection>
         <GuidanceSection icon={LayoutGrid} iconBg="bg-primary" title="What&apos;s inside">
           <p>Five short sections, each with a tagline, key points, videos, and real case studies:</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+          <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={Compass} label="Why the right idea matters" description="Survivorship bias, passion as a false filter, and what actually separates ideas that work." tile="bg-amber-500" border="border-amber-100 bg-amber-50/40" />
             <ConceptCard icon={Search} label="Why validate the problem" description="Polite enthusiasm is not validation. What a real problem looks like in user behaviour." tile="bg-sky-500" border="border-sky-100 bg-sky-50/40" />
             <ConceptCard icon={FlaskConical} label="Why validate the solution" description="A real problem doesn't mean your solution is the one people want. Landing pages, concierge tests, willingness to pay." tile="bg-violet-500" border="border-violet-100 bg-violet-50/40" />
@@ -259,7 +259,7 @@ const guidanceItems: GuidanceItem[] = [
         </GuidanceSection>
         <GuidanceSection icon={LayoutGrid} iconBg="bg-amber-500" title="Canvas (freeform mode)">
           <p>The canvas presents a multi-column framework for thinking systematically about who experiences a problem, in what situation, and what friction they face.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+          <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={Compass} label="You" description="Areas surfaced from your own self-discovery answers" tile="bg-violet-500" border="border-violet-100 bg-violet-50/40" />
             <ConceptCard icon={Users} label="Customer" description="Who you are focusing on (e.g. early-career professionals, small business owners)" tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
             <ConceptCard icon={MapPin} label="Context" description="The situation or environment where the problem occurs (e.g. daily commute, remote team)" tile="bg-sky-500" border="border-sky-100 bg-sky-50/40" />
@@ -294,7 +294,7 @@ const guidanceItems: GuidanceItem[] = [
         </GuidanceSection>
         <GuidanceSection icon={Users} iconBg="bg-indigo-500" title="Define your customer">
           <p>Pin down exactly who experiences the problem. Vague labels like <Keyword>&ldquo;everyone&rdquo;</Keyword> or <Keyword>&ldquo;businesses&rdquo;</Keyword> lead to vague problems and vague solutions; a sharp customer definition unlocks every later step. Narrow down by:</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+          <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={Briefcase} label="Role &amp; industry" description="What they do and which sector they work in (e.g. freelance designers, NHS nurses, SaaS founders)." tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
             <ConceptCard icon={MapPin} label="Demographics &amp; geography" description="Age range, location, income level, or company size." tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
             <ConceptCard icon={Target} label="Behaviour &amp; situation" description="What triggers the problem and when it tends to happen." tile="bg-indigo-500" border="border-indigo-100 bg-indigo-50/40" />
@@ -304,7 +304,7 @@ const guidanceItems: GuidanceItem[] = [
         </GuidanceSection>
         <GuidanceSection icon={Search} iconBg="bg-purple-500" title="Refine the problem">
           <p>Before exploring alternatives, dig into <Keyword>why</Keyword> the problem exists and <Keyword>who</Keyword> it affects. The <Keyword>Choose your refinement method</Keyword> step lets you pick one of three techniques; the next step is where you capture the actual analysis. The refinement output also surfaces later in solution discovery, so the work is reused.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+          <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={GitFork} label="Root Causes" description="Map the underlying factors that give rise to the problem." tile="bg-purple-500" border="border-purple-100 bg-purple-50/40" />
             <ConceptCard icon={Repeat} label="5 Whys" description="Ask 'why' five times to drill from a surface symptom to the real cause." tile="bg-purple-500" border="border-purple-100 bg-purple-50/40" />
             <ConceptCard icon={Users} label="Affected Groups" description="Map who is impacted, how severely, and in what way." tile="bg-purple-500" border="border-purple-100 bg-purple-50/40" />
@@ -316,7 +316,7 @@ const guidanceItems: GuidanceItem[] = [
         </GuidanceSection>
         <GuidanceSection icon={DollarSign} iconBg="bg-teal-500" title="How much is it worth">
           <p>Before counting customers or annualising frequencies, be honest about the value of solving the problem each time it happens. Two figures are captured on this step; both feed directly into the market sizing calculation that follows.</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+          <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={Wallet} label="Money already spent" description="Subscriptions, contractors, late fines, or replacement parts. Revealed spend is the strongest evidence the problem is worth solving." tile="bg-teal-500" border="border-teal-100 bg-teal-50/40" />
             <ConceptCard icon={Scale} label="Time, risk, &amp; missed value" description="Translate the soft costs into money: an hour of professional time, a missed sale, a delayed launch, or the expected cost of a bad outcome." tile="bg-teal-500" border="border-teal-100 bg-teal-50/40" />
             <ConceptCard icon={DollarSign} label="Willingness to pay" description="What a customer would happily pay to make one occurrence go away, not what it would cost you to build a solution." tile="bg-teal-500" border="border-teal-100 bg-teal-50/40" />
@@ -389,7 +389,7 @@ const guidanceItems: GuidanceItem[] = [
 
         <GuidanceSection icon={Lightbulb} iconBg="bg-sky-500" title="Discover (inside Discover)">
           <p>Pick a creative method to generate solution ideas. Each candidate you capture is added to the Solution Bank so you can validate it later:</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+          <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={Blocks} label="SCAMPER" description="Substitute, Combine, Adapt, Modify, Put to other use, Eliminate, Reverse. Generate ideas by transforming existing concepts." tile="bg-sky-500" border="border-sky-100 bg-sky-50/40" />
             <ConceptCard icon={Repeat} label="Reverse Brainstorming" description="Instead of asking how to solve it, ask how to make it worse, then invert the answers." tile="bg-sky-500" border="border-sky-100 bg-sky-50/40" />
             <ConceptCard icon={Compass} label="Analogy Thinking" description="Look at how other fields have solved similar problems and adapt their approach." tile="bg-sky-500" border="border-sky-100 bg-sky-50/40" />
@@ -400,7 +400,7 @@ const guidanceItems: GuidanceItem[] = [
 
         <GuidanceSection icon={BarChart2} iconBg="bg-emerald-500" title="Validate">
           <p>Open any solution in the bank and work through four one-at-a-time metric pages. Each page has guidance and case studies to help you score 1 to 5. At the end, you mark the solution valid, unsure, or invalid:</p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+          <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={Target} label="Feasibility" description="Can you actually build it with the resources and skills available?" tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
             <ConceptCard icon={Heart} label="Impact" description="How much value does it deliver, to the customer and the business?" tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
             <ConceptCard icon={DollarSign} label="Cost" description="What will it take to build, run, and maintain?" tile="bg-emerald-500" border="border-emerald-100 bg-emerald-50/40" />
