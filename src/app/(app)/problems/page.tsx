@@ -46,7 +46,7 @@ export default function ProblemsPage() {
           </div>
           <div className="text-center flex flex-col gap-2 max-w-sm">
             <h2 className="text-lg font-semibold">No problems yet</h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm">
               Start by searching for problems using the brainstorming tool or define one directly.
             </p>
           </div>

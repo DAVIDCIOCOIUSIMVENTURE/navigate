@@ -255,7 +255,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
               <TableRow>
                 <TableCell
                   colSpan={showStatus ? 6 : 5}
-                  className="text-center text-sm text-muted-foreground py-8"
+                  className="text-center text-sm py-8"
                 >
                   No solutions match the current filters.
                 </TableCell>
@@ -294,7 +294,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                     </TableCell>
                     {showStatus && statusConfig && (
                       <TableCell>
-                        <div className={`flex items-center gap-1.5 text-xs font-medium ${statusConfig.className}`}>
+                        <div className={`flex items-center gap-1.5 text-sm font-medium ${statusConfig.className}`}>
                           <statusConfig.icon className="h-3.5 w-3.5" />
                           {statusConfig.label}
                         </div>

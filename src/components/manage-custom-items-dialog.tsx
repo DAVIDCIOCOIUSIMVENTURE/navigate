@@ -72,7 +72,7 @@ export function ManageCustomItemsDialog({
 
           <div className="flex flex-col gap-2 py-2">
             {items.length === 0 ? (
-              <p className="text-sm text-muted-foreground italic">
+              <p className="text-sm italic">
                 You haven&apos;t added any custom {columnTitle.toLowerCase()} items yet.
               </p>
             ) : (

@@ -141,13 +141,13 @@ export function ExistingSolutionsStrategy({ readOnly = false }: { readOnly?: boo
                   >
                     <div className="flex items-center gap-1.5 mb-3">
                       <Lightbulb className="h-3.5 w-3.5 text-white/70" />
-                      <p className="text-xs font-semibold uppercase tracking-wide text-white/70">Impact examples</p>
+                      <p className="text-sm font-semibold uppercase tracking-wide text-white/70">Impact examples</p>
                     </div>
                     <ul className="flex flex-col gap-2.5">
                       {IMPACT_AREAS.map((area) => (
                         <li key={area.label} className="text-sm">
                           <p className="font-medium text-white">{area.label}</p>
-                          <p className="text-xs text-white/60 mt-0.5">{area.hint}</p>
+                          <p className="text-sm text-white/80 mt-0.5">{area.hint}</p>
                         </li>
                       ))}
                     </ul>
@@ -179,7 +179,7 @@ export function ExistingSolutionsStrategy({ readOnly = false }: { readOnly?: boo
                           aria-label={isPanelOpen ? "Hide impact examples" : "Show impact examples"}
                         >
                           <Lightbulb className="h-3.5 w-3.5" />
-                          <span className="text-xs">{isPanelOpen ? "Hide impact examples" : "Show impact examples"}</span>
+                          <span className="text-sm">{isPanelOpen ? "Hide impact examples" : "Show impact examples"}</span>
                         </Button>
                       </div>
                       {!readOnly && (

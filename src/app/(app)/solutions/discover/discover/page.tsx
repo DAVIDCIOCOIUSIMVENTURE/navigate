@@ -267,7 +267,7 @@ function ScamperPromptBody({
       <div className="rounded-md border border-white/20 bg-white/5 p-4">
         <div className="flex items-center gap-2 mb-2">
           <Sparkles className="h-3.5 w-3.5 text-white" />
-          <p className="text-xs font-semibold text-white uppercase tracking-wide">Spark questions</p>
+          <p className="text-sm font-semibold text-white uppercase tracking-wide">Spark questions</p>
         </div>
         <ul className="flex flex-col gap-1.5">
           {sparkQuestions.map((q) => (
@@ -282,7 +282,7 @@ function ScamperPromptBody({
         <div className="rounded-md border border-white/20 bg-white/5 p-4">
           <div className="flex items-center gap-2 mb-2">
             <Wrench className="h-3.5 w-3.5 text-white" />
-            <p className="text-xs font-semibold text-white uppercase tracking-wide">
+            <p className="text-sm font-semibold text-white uppercase tracking-wide">
               Try this technique: {technique.name}
             </p>
           </div>
@@ -292,7 +292,7 @@ function ScamperPromptBody({
       <div className="rounded-md border border-white/20 bg-white/5 p-4">
         <div className="flex items-center gap-2 mb-2">
           <Lightbulb className="h-3.5 w-3.5 text-white" />
-          <p className="text-xs font-semibold text-white uppercase tracking-wide">
+          <p className="text-sm font-semibold text-white uppercase tracking-wide">
             Example: {example.company}
           </p>
         </div>
@@ -326,7 +326,7 @@ function ScamperForm() {
             className="shrink-0 whitespace-nowrap text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-primary"
           >
             <LayoutPanelTop className="h-4 w-4" />
-            <span className="text-xs">Tabs</span>
+            <span className="text-sm">Tabs</span>
           </ToggleGroupItem>
           <ToggleGroupItem
             value="accordion"
@@ -334,7 +334,7 @@ function ScamperForm() {
             className="shrink-0 whitespace-nowrap text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-primary"
           >
             <Rows3 className="h-4 w-4" />
-            <span className="text-xs">Accordion</span>
+            <span className="text-sm">Accordion</span>
           </ToggleGroupItem>
         </ToggleGroup>
       </div>
@@ -668,7 +668,7 @@ function ImprovementDimension({
     <div className="flex flex-col gap-2">
       <span className="text-sm font-semibold text-white">{title}</span>
       <p className="text-sm text-white/80">{prompt}</p>
-      <p className="text-xs italic text-white/60">Example: {example}</p>
+      <p className="text-sm italic text-white/80">Example: {example}</p>
       <Input
         placeholder="Type your improvement here..."
         value={text}
@@ -702,7 +702,7 @@ function ImprovementForm() {
             className="shrink-0 whitespace-nowrap text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-primary"
           >
             <LayoutPanelTop className="h-4 w-4" />
-            <span className="text-xs">Tabs</span>
+            <span className="text-sm">Tabs</span>
           </ToggleGroupItem>
           <ToggleGroupItem
             value="accordion"
@@ -710,7 +710,7 @@ function ImprovementForm() {
             className="shrink-0 whitespace-nowrap text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-primary"
           >
             <Rows3 className="h-4 w-4" />
-            <span className="text-xs">Accordion</span>
+            <span className="text-sm">Accordion</span>
           </ToggleGroupItem>
         </ToggleGroup>
       </div>
@@ -726,7 +726,7 @@ function ImprovementForm() {
                   </span>
                   <div className="flex flex-col gap-1 min-w-0">
                     <span className="text-sm font-bold uppercase tracking-wide text-white/90">{group}</span>
-                    <span className="text-xs text-white/60 font-normal">{items.length} dimensions</span>
+                    <span className="text-sm text-white/80 font-normal">{items.length} dimensions</span>
                   </div>
                 </div>
               </AccordionTrigger>
@@ -1072,9 +1072,9 @@ function ListField({
   return (
     <div className="flex flex-col gap-1.5">
       <label className="text-sm font-medium">{label}</label>
-      <p className="text-xs text-muted-foreground">{helper}</p>
+      <p className="text-sm">{helper}</p>
       {values.length === 0 ? (
-        <p className="text-xs italic text-muted-foreground">No items yet.</p>
+        <p className="text-sm italic">No items yet.</p>
       ) : (
         <div className="flex flex-col gap-1.5">
           {values.map((v, i) => (
@@ -1177,10 +1177,10 @@ function SaveSolutionDialog({
           {toolType === "scamper" && scamperKeys.length > 0 && (
             <div className="flex flex-col gap-2">
               <p className="text-sm font-medium">Your SCAMPER ideas</p>
-              <p className="text-xs text-muted-foreground">Tweak the entries you captured before saving.</p>
+              <p className="text-sm">Tweak the entries you captured before saving.</p>
               {scamperKeys.map((key) => (
                 <div key={key} className="flex flex-col gap-1">
-                  <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground" htmlFor={`save-scamper-${key}`}>
+                  <label className="text-sm font-semibold uppercase tracking-wide" htmlFor={`save-scamper-${key}`}>
                     {SCAMPER_DIMENSION_LABELS[key] ?? key}
                   </label>
                   <Input
@@ -1196,10 +1196,10 @@ function SaveSolutionDialog({
           {toolType === "improve" && improveKeys.length > 0 && (
             <div className="flex flex-col gap-2">
               <p className="text-sm font-medium">Your improvement ideas</p>
-              <p className="text-xs text-muted-foreground">Tweak the entries you captured before saving.</p>
+              <p className="text-sm">Tweak the entries you captured before saving.</p>
               {improveKeys.map((key) => (
                 <div key={key} className="flex flex-col gap-1">
-                  <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground" htmlFor={`save-improve-${key}`}>
+                  <label className="text-sm font-semibold uppercase tracking-wide" htmlFor={`save-improve-${key}`}>
                     {IMPROVE_DIMENSION_LABELS[key] ?? key}
                   </label>
                   <Input
@@ -1498,7 +1498,7 @@ export default function DiscoverPage() {
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         {problem?.description && (
           <div className="rounded-lg border-2 border-primary/20 bg-primary/5 px-4 py-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Problem</p>
+            <p className="text-sm font-semibold uppercase tracking-wide mb-1">Problem</p>
             <p className="text-sm font-medium">{problem.description}</p>
           </div>
         )}
@@ -1521,7 +1521,7 @@ export default function DiscoverPage() {
                         </span>
                         <div className="flex flex-col gap-1 min-w-0">
                           <span className="text-sm font-semibold text-foreground">{title}</span>
-                          <p className="text-sm text-muted-foreground">{prompt}</p>
+                          <p className="text-sm">{prompt}</p>
                         </div>
                       </div>
                     )
@@ -1666,7 +1666,7 @@ export default function DiscoverPage() {
 
         {!discoveryToolType && (
           <div className="flex flex-col items-center justify-center gap-3 py-8 rounded-lg border border-dashed">
-            <p className="text-sm text-muted-foreground">No discovery technique selected.</p>
+            <p className="text-sm">No discovery technique selected.</p>
             <Button variant="outline" onClick={() => guardedRouter.push("/solutions/discover/choose-discovery")}>
               <ArrowLeft className="h-4 w-4 mr-2" />Choose a Discovery Technique
             </Button>

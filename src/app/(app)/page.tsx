@@ -92,7 +92,7 @@ export default function DashboardPage() {
               </div>
               <div className="min-w-0 flex-1">
                 <p className="text-base font-semibold">New here? Start with Why It Matters</p>
-                <p className="text-sm text-muted-foreground mt-0.5">Optional reading on why validating ideas, problems, and solutions is worth the time.</p>
+                <p className="text-sm mt-0.5">Optional reading on why validating ideas, problems, and solutions is worth the time.</p>
               </div>
               <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
             </CardContent>
@@ -150,7 +150,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent className="flex-1 min-h-0 overflow-y-auto">
             {sortedProblems.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm">
                 No problems yet.{" "}
                 <Link href="/problems" className="font-medium text-foreground underline underline-offset-2">
                   Add a problem
@@ -192,7 +192,7 @@ export default function DashboardPage() {
                           {label}
                         </Link>
                         {hasSolutions && (
-                          <span className="text-xs text-muted-foreground shrink-0">
+                          <span className="text-sm shrink-0">
                             {linkedSolutions.length} solution{linkedSolutions.length === 1 ? "" : "s"}
                           </span>
                         )}
@@ -230,7 +230,7 @@ export default function DashboardPage() {
           <CardHeader className="shrink-0">
             <div className="flex items-center justify-between">
               <CardTitle className="text-base">Achievements</CardTitle>
-              <span className="text-xs text-muted-foreground">{unlockedCount}/{achievements.length}</span>
+              <span className="text-sm">{unlockedCount}/{achievements.length}</span>
             </div>
           </CardHeader>
           <CardContent className="flex-1 min-h-0 overflow-y-auto">
@@ -287,7 +287,7 @@ function StageCard({
           </div>
           <div className="min-w-0">
             <p className="text-xl font-bold leading-none">{value}</p>
-            <p className="text-sm text-muted-foreground mt-0.5">{title}</p>
+            <p className="text-sm mt-0.5">{title}</p>
           </div>
         </CardContent>
       </Card>

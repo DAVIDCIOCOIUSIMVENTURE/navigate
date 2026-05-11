@@ -106,7 +106,7 @@ function ExampleHeader({ title, problem }: { title: string; problem: string }) {
     <div className="flex flex-col gap-1">
       <p className="text-sm font-semibold text-foreground">{title}</p>
       <p className="text-sm text-foreground/80">
-        <span className="font-semibold text-muted-foreground uppercase tracking-wide text-xs">Problem: </span>
+        <span className="font-semibold uppercase tracking-wide text-sm">Problem: </span>
         {problem}
       </p>
     </div>
@@ -123,7 +123,7 @@ function ExampleCard({ children }: { children: React.ReactNode }) {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{children}</p>
+    <p className="text-sm font-semibold uppercase tracking-wide">{children}</p>
   )
 }
 
@@ -165,11 +165,11 @@ function ReverseDialogContent() {
           <ExampleHeader title={REVERSE_CASE.title} problem={REVERSE_CASE.problem} />
           <div className="flex flex-col gap-2">
             <div className="rounded-md border border-rose-200/70 bg-rose-50 dark:border-rose-900/60 dark:bg-rose-950/40 p-3">
-              <p className="text-xs font-bold uppercase tracking-wide text-rose-700 dark:text-rose-300 mb-1.5">Make it worse</p>
+              <p className="text-sm font-bold uppercase tracking-wide text-rose-700 dark:text-rose-300 mb-1.5">Make it worse</p>
               <p className="text-sm text-foreground leading-relaxed">{REVERSE_CASE.worse}</p>
             </div>
             <div className="rounded-md border border-teal-200/70 bg-teal-50 dark:border-teal-900/60 dark:bg-teal-950/40 p-3">
-              <p className="text-xs font-bold uppercase tracking-wide text-teal-700 dark:text-teal-300 mb-1.5">Flip it into a solution</p>
+              <p className="text-sm font-bold uppercase tracking-wide text-teal-700 dark:text-teal-300 mb-1.5">Flip it into a solution</p>
               <p className="text-sm text-foreground leading-relaxed">{REVERSE_CASE.inverted}</p>
             </div>
           </div>
@@ -192,7 +192,7 @@ function AnalogyDialogContent() {
             <ExampleCard key={cs.title}>
               <ExampleHeader title={cs.title} problem={cs.problem} />
               <div className="rounded-md border border-sky-200 bg-sky-100 dark:border-sky-900 dark:bg-sky-950/60 p-3">
-                <p className="text-xs font-bold uppercase tracking-wide text-sky-800 dark:text-sky-300 mb-1.5">
+                <p className="text-sm font-bold uppercase tracking-wide text-sky-800 dark:text-sky-300 mb-1.5">
                   Analogy from: {cs.domain}
                 </p>
                 <p className="text-sm text-foreground leading-relaxed">{cs.insight}</p>
@@ -218,7 +218,7 @@ function ImproveDialogContent() {
           <div className="flex flex-col divide-y border-t">
             {IMPROVE_CASE.examples.map((ex) => (
               <div key={ex.dimension} className="flex flex-col gap-1 py-2.5 first:pt-3 last:pb-0">
-                <span className="inline-flex self-start rounded-md bg-primary/15 px-2 py-0.5 text-xs font-semibold text-primary">
+                <span className="inline-flex self-start rounded-md bg-primary/15 px-2 py-0.5 text-sm font-semibold text-primary">
                   {ex.dimension}
                 </span>
                 <p className="text-sm text-foreground leading-relaxed">{ex.idea}</p>
@@ -265,7 +265,7 @@ export default function ChooseDiscoveryPage() {
         <CardContent className="p-10 pt-6 flex flex-col gap-6">
           {problem?.description && (
             <div className="rounded-lg border-2 border-primary/20 bg-primary/5 px-4 py-3">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Problem</p>
+              <p className="text-sm font-semibold uppercase tracking-wide mb-1">Problem</p>
               <p className="text-sm font-medium">{problem.description}</p>
             </div>
           )}
@@ -290,7 +290,7 @@ export default function ChooseDiscoveryPage() {
                     <Icon className="h-5 w-5 text-primary" />
                   </div>
                   <h3 className="text-base font-semibold">{tool.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{tool.description}</p>
+                  <p className="text-sm leading-relaxed">{tool.description}</p>
                 </button>
               )
             })}

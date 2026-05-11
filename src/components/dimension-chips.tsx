@@ -23,7 +23,7 @@ export function DimensionChips({
   const labels = useDimensionLabels(columnId, ids)
   if (ids.length === 0) {
     return emptyText ? (
-      <span className="text-xs text-muted-foreground/60 italic">{emptyText}</span>
+      <span className="text-sm italic">{emptyText}</span>
     ) : null
   }
   return (
@@ -31,7 +31,7 @@ export function DimensionChips({
       {ids.map((id, i) => (
         <span
           key={id}
-          className="rounded-md bg-background px-2 py-0.5 text-xs border"
+          className="rounded-md bg-background px-2 py-0.5 text-sm border"
         >
           {labels[i]}
         </span>

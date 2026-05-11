@@ -71,7 +71,7 @@ function HubSection({
             <Button
               variant="ghost"
               size="sm"
-              className="h-7 gap-1 text-xs text-muted-foreground hover:text-foreground"
+              className="h-7 gap-1 text-sm hover:text-foreground"
               onClick={(e) => {
                 e.stopPropagation()
                 router.push(openInStep)
@@ -105,7 +105,7 @@ function SolutionsSection({ problemId }: { problemId: number }) {
     >
       {solutions.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-6 text-center">
-          <p className="text-sm text-muted-foreground">No solutions yet for this problem.</p>
+          <p className="text-sm">No solutions yet for this problem.</p>
           <Button
             size="sm"
             onClick={() => {
@@ -128,7 +128,7 @@ function SolutionsSection({ problemId }: { problemId: number }) {
               <li key={s.id} className="flex items-center gap-2 rounded-md bg-background border px-3 py-2">
                 <Lightbulb className="h-3.5 w-3.5 text-primary shrink-0" />
                 <span className="flex-1 min-w-0 text-sm truncate">{label}</span>
-                <span className="text-xs text-muted-foreground capitalize whitespace-nowrap">
+                <span className="text-sm capitalize whitespace-nowrap">
                   {status.replace("_", " ")}
                 </span>
                 <Button
@@ -315,7 +315,7 @@ function NextStepCard({
         <Icon className="h-3.5 w-3.5 text-muted-foreground" />
         {title}
       </h4>
-      <p className="text-sm text-muted-foreground" dangerouslySetInnerHTML={{ __html: description }} />
+      <p className="text-sm" dangerouslySetInnerHTML={{ __html: description }} />
       <Button size="sm" className="self-start mt-1" onClick={onAction}>
         <ActionIcon className="h-4 w-4 mr-2" />
         <span dangerouslySetInnerHTML={{ __html: actionLabel }} />
@@ -354,7 +354,7 @@ export function ProblemHubContent({
       {mode === "dialog" && (
         <Link
           href={`/problems/${problemRef}`}
-          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground self-start"
+          className="inline-flex items-center gap-1.5 text-sm hover:text-foreground self-start"
         >
           <ExternalLink className="h-3 w-3" />
           Open as full page

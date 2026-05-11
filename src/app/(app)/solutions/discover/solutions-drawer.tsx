@@ -83,8 +83,8 @@ export function SolutionsDrawer({
         <div className="overflow-auto px-4 pb-6">
           {candidates.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-3 py-12 rounded-lg border border-dashed">
-              <p className="text-sm text-muted-foreground">No solutions yet.</p>
-              <p className="text-xs text-muted-foreground">Use a brainstorming tool to generate ideas, then click &quot;Add as Solution&quot; on the ones worth keeping.</p>
+              <p className="text-base font-semibold">No solutions yet.</p>
+              <p className="text-sm">Use a brainstorming tool to generate ideas, then click &quot;Add as Solution&quot; on the ones worth keeping.</p>
             </div>
           ) : (
             <div className="flex flex-col gap-3">
@@ -138,7 +138,7 @@ export function SolutionsDrawer({
                             )}
                           </div>
                           {candidate.description && (
-                            <p className="text-xs text-muted-foreground mt-1">{candidate.description}</p>
+                            <p className="text-sm mt-1">{candidate.description}</p>
                           )}
                         </div>
                         <div className="flex gap-1 shrink-0">

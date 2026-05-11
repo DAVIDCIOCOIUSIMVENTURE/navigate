@@ -45,7 +45,7 @@ function NoteRow({
     >
       <div className="flex-1 min-w-0">
         <p className="text-sm font-medium truncate">{notePreview(note)}</p>
-        <p className="text-xs text-muted-foreground mt-0.5">{formatEditedAt(note.editedAt)}</p>
+        <p className="text-sm mt-0.5">{formatEditedAt(note.editedAt)}</p>
       </div>
       <ConfirmDialog
         trigger={
@@ -181,8 +181,8 @@ export function JournalPanel({ onClose }: { onClose: () => void }) {
               <NotebookText className="h-7 w-7 text-primary" />
             </div>
             <div className="flex flex-col gap-1">
-              <h3 className="text-sm font-semibold">No entries yet</h3>
-              <p className="text-xs text-muted-foreground">
+              <h3 className="text-base font-semibold">No entries yet</h3>
+              <p className="text-sm">
                 Capture thoughts as you work through each step.
               </p>
             </div>

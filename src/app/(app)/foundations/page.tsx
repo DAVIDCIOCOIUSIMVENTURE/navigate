@@ -55,7 +55,7 @@ export default function FoundationsPage() {
                   </span>
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-foreground">{section.title}</p>
-                    <p className="text-sm text-muted-foreground italic mt-0.5 flex items-start gap-1.5">
+                    <p className="text-sm italic mt-0.5 flex items-start gap-1.5">
                       <Sparkles className="h-3 w-3 shrink-0 mt-1" aria-hidden="true" />
                       <span>{section.tagline}</span>
                     </p>

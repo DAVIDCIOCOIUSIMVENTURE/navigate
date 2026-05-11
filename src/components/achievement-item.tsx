@@ -27,8 +27,8 @@ export function AchievementItem({
         )}
       </div>
       <div>
-        <h3 className="text-sm font-semibold">{title}</h3>
-        <p className="text-xs text-muted-foreground">{description}</p>
+        <h3 className="text-base font-semibold">{title}</h3>
+        <p className="text-sm">{description}</p>
       </div>
     </div>
   )

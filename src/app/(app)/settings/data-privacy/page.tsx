@@ -146,7 +146,7 @@ export default function DataPrivacySettingsPage() {
           <Separator />
           <div className="flex flex-col gap-1">
             <Label>Clear data by category</Label>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm">
               Remove a single category at a time. The page will reload after each clear so the rest of your work stays intact.
             </p>
           </div>
@@ -157,7 +157,7 @@ export default function DataPrivacySettingsPage() {
                 <div className="flex items-start justify-between gap-4 py-3">
                   <div className="flex flex-col gap-0.5 min-w-0">
                     <p className="text-sm font-medium">{group.label}</p>
-                    <p className="text-sm text-muted-foreground">{group.description}</p>
+                    <p className="text-sm">{group.description}</p>
                   </div>
                   <Button
                     variant="destructive-outline"
@@ -178,7 +178,7 @@ export default function DataPrivacySettingsPage() {
         <CardContent className="pt-6 flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <Label className="text-destructive">Danger Zone</Label>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm">
               Permanently delete every record this app has stored on this device.
             </p>
           </div>

@@ -35,14 +35,14 @@ export function MetricStep({ content, value, onChange }: MetricStepProps) {
           <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4 flex flex-col gap-2">
             {solution?.title && (
               <div className="flex flex-col gap-0.5">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Solution</p>
+                <p className="text-sm font-semibold uppercase tracking-wide">Solution</p>
                 <p className="text-sm font-medium">{solution.title}</p>
               </div>
             )}
             {problem?.description && (
               <div className="flex flex-col gap-0.5">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Problem</p>
-                <p className="text-sm text-muted-foreground">{problem.description}</p>
+                <p className="text-sm font-semibold uppercase tracking-wide">Problem</p>
+                <p className="text-sm">{problem.description}</p>
               </div>
             )}
           </div>
@@ -123,17 +123,17 @@ function CaseStudies({
                 </span>
               </div>
               <div>
-                <span className="text-xs font-semibold uppercase tracking-wide text-white/70">Context</span>
+                <span className="text-sm font-semibold uppercase tracking-wide text-white/70">Context</span>
                 <p className="mt-0.5 text-base text-white">{cs.context}</p>
               </div>
               <div className={cn("rounded-md border border-white/10 bg-white/5 p-3")}>
-                <span className="text-xs font-semibold uppercase tracking-wide text-white/70">
+                <span className="text-sm font-semibold uppercase tracking-wide text-white/70">
                   Reasoning ({scaleStop?.label ?? `Score ${cs.score}`})
                 </span>
                 <p className="mt-1 text-base text-white">{cs.reasoning}</p>
               </div>
               <div className="border-t border-white/10 pt-3 mt-1">
-                <span className="text-xs font-semibold uppercase tracking-wide text-white/70">Outcome</span>
+                <span className="text-sm font-semibold uppercase tracking-wide text-white/70">Outcome</span>
                 <p className="mt-0.5 text-base text-white">{cs.outcome}</p>
               </div>
             </div>

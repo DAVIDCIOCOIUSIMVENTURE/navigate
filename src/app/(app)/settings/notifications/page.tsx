@@ -26,7 +26,7 @@ export default function NotificationsSettingsPage() {
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-1">
               <Label htmlFor="enableNotifications">Enable Notifications</Label>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm">
                 Master toggle for all in-app notifications.
               </p>
             </div>
@@ -43,7 +43,7 @@ export default function NotificationsSettingsPage() {
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-1">
               <Label htmlFor="notifyOnStageComplete">Stage Completion</Label>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm">
                 Notify when an innovation stage is completed.
               </p>
             </div>
@@ -60,7 +60,7 @@ export default function NotificationsSettingsPage() {
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-1">
               <Label htmlFor="notifyOnValidationVerdict">Validation Verdict</Label>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm">
                 Notify when a problem validation verdict is reached.
               </p>
             </div>

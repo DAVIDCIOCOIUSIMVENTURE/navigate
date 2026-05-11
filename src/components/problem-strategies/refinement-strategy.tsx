@@ -382,7 +382,7 @@ function MethodChooser({ onChoose }: { onChoose: (tool: ChosenTool) => void }) {
               <Icon className={cn("h-4 w-4", isSelected ? "text-primary-foreground" : "text-primary")} />
             </div>
             <h4 className={cn("text-sm font-semibold", isSelected && "text-primary")}>{tool.title}</h4>
-            <p className="text-xs text-muted-foreground leading-relaxed">{tool.description}</p>
+            <p className="text-sm leading-relaxed">{tool.description}</p>
           </button>
         )
       })}
@@ -426,7 +426,7 @@ export function RefinementStrategy({
             <p className="text-sm text-white/70 italic">No refinement captured.</p>
           </div>
         ) : (
-          <div className="rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+          <div className="rounded-lg border border-dashed p-6 text-center text-sm">
             No refinement method selected.
           </div>
         )

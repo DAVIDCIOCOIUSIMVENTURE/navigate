@@ -55,12 +55,12 @@ function CategorySection({
           <div className="min-w-0">
             <h3 className="font-semibold text-foreground">{title}</h3>
             {description && (
-              <p className="text-sm text-muted-foreground mt-0.5">{description}</p>
+              <p className="text-sm mt-0.5">{description}</p>
             )}
           </div>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <span className="text-xs text-muted-foreground tabular-nums">
+          <span className="text-sm tabular-nums">
             {count} {count === 1 ? "item" : "items"}
           </span>
           <Button variant="outline" size="sm" onClick={() => router.push(ctaUrl)}>
@@ -125,7 +125,7 @@ export default function SelfDiscoveryPage() {
           </div>
           <div className="text-center flex flex-col gap-2 max-w-sm">
             <h2 className="text-lg font-semibold">No items yet</h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm">
               Start the self discovery journey to add insights about your strengths, interests, and experiences.
             </p>
           </div>
@@ -164,7 +164,7 @@ export default function SelfDiscoveryPage() {
                             <button
                               type="button"
                               onClick={() => router.push(`${FLOW_BASE}/${category.url}/${question.url}`)}
-                              className="text-sm text-muted-foreground hover:text-primary text-left"
+                              className="text-sm hover:text-primary text-left"
                             >
                               {question.title}
                             </button>

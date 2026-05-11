@@ -48,7 +48,7 @@ export default function FoundationsSectionPage() {
       </CardHeader>
       <CardContent className={cn("flex-1 flex flex-col gap-8 overflow-y-auto min-h-0", roomy ? "p-10 pt-6" : "p-6 pt-4")}>
         <div className="flex flex-col gap-2">
-          <p className="text-sm text-muted-foreground italic flex items-start gap-2">
+          <p className="text-sm italic flex items-start gap-2">
             <Sparkles className="h-3.5 w-3.5 shrink-0 mt-1" aria-hidden="true" />
             <span>{section.tagline}</span>
           </p>
@@ -138,14 +138,14 @@ function VideoCard({ video }: { video: FoundationsVideo }) {
             <div className="flex items-center justify-center w-12 h-12 rounded-full bg-background border">
               <Play className="h-5 w-5" />
             </div>
-            <p className="text-xs">Video coming soon</p>
+            <p className="text-sm">Video coming soon</p>
           </div>
         )}
       </div>
       <div className="p-3">
         <p className="font-semibold text-sm text-foreground">{video.title}</p>
         {video.description && (
-          <p className="text-xs text-muted-foreground mt-1">{video.description}</p>
+          <p className="text-sm mt-1">{video.description}</p>
         )}
       </div>
     </div>
@@ -164,18 +164,18 @@ function CaseStudyCard({ caseStudy }: { caseStudy: FoundationsCaseStudy }) {
     <div className="flex flex-col gap-2 rounded-lg border p-4">
       <div className="flex items-center justify-between gap-3">
         <p className="font-semibold text-foreground">{caseStudy.title}</p>
-        <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium", outcomeClasses)}>
+        <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-sm font-medium", outcomeClasses)}>
           <OutcomeIcon className="h-3 w-3" />
           {outcomeLabel}
         </span>
       </div>
-      <p className="text-sm text-muted-foreground leading-relaxed">{caseStudy.summary}</p>
+      <p className="text-sm leading-relaxed">{caseStudy.summary}</p>
       {caseStudy.link && (
         <a
           href={caseStudy.link}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:underline w-fit"
+          className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline w-fit"
         >
           Read more
           <ExternalLink className="h-3 w-3" />

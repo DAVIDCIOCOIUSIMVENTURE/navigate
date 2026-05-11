@@ -85,7 +85,7 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
                   <span className="font-semibold text-sm">Brainstorming Tool</span>
                   <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </div>
-                <span className="text-sm text-muted-foreground leading-relaxed">
+                <span className="text-sm leading-relaxed">
                   Guided prompts to help you uncover problems from your own experience and observations.
                 </span>
               </div>
@@ -103,7 +103,7 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
                   <span className="font-semibold text-sm">Define a Problem Statement</span>
                   <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </div>
-                <span className="text-sm text-muted-foreground leading-relaxed">
+                <span className="text-sm leading-relaxed">
                   Already know what you want to explore? Write it directly.
                 </span>
               </div>
@@ -119,9 +119,9 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
               <div className="flex flex-col gap-1 flex-1">
                 <div className="flex items-center justify-between">
                   <span className="font-semibold text-sm">Changes in the Environment</span>
-                  <span className="text-xs text-muted-foreground font-medium bg-muted px-2 py-0.5 rounded-full">Coming soon</span>
+                  <span className="text-sm font-medium bg-muted px-2 py-0.5 rounded-full">Coming soon</span>
                 </div>
-                <span className="text-sm text-muted-foreground leading-relaxed">
+                <span className="text-sm leading-relaxed">
                   Spot problems emerging from market shifts, technology changes, or regulatory updates.
                 </span>
               </div>

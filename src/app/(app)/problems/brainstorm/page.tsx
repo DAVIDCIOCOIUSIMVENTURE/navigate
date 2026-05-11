@@ -787,7 +787,7 @@ function ProblemBuilder({
                     {activeCategory && (
                       <>
                         <ChevronRight className="h-3.5 w-3.5 text-muted-foreground" />
-                        <span className="text-sm text-muted-foreground">{activeCategory.label}</span>
+                        <span className="text-sm">{activeCategory.label}</span>
                       </>
                     )}
                     <span className="text-sm">
@@ -1158,7 +1158,7 @@ export default function BrainstormPage() {
     return (
       <div className="flex flex-col items-center justify-center flex-1 min-h-[50vh] gap-3">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-muted border-t-primary" />
-        <p className="text-sm text-muted-foreground">Loading...</p>
+        <p className="text-sm">Loading...</p>
       </div>
     )
   }
@@ -1468,7 +1468,7 @@ export default function BrainstormPage() {
                                 {ids.map((id) => resolveDimensionLabel(column.id, id, customByColumn, triggers)).join(", ")}
                               </span>
                             ) : (
-                              <span className="text-sm text-muted-foreground">-</span>
+                              <span className="text-sm">-</span>
                             )}
                           </TableCell>
                         )

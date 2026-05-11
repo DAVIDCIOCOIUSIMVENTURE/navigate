@@ -72,7 +72,7 @@ function CheckTree({
             {item.label}
           </span>
           {selectedCount > 0 && (
-            <span className="text-xs text-primary font-medium tabular-nums">{selectedCount}</span>
+            <span className="text-sm text-primary font-medium tabular-nums">{selectedCount}</span>
           )}
         </CollapsibleTrigger>
         <CollapsibleContent>
@@ -168,7 +168,7 @@ export function DimensionPicker({
   return (
     <div className="flex flex-col gap-2">
       {label && (
-        <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-foreground">
+        <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-foreground">
           {DimensionIcon && (
             <span
               className={cn(
@@ -185,7 +185,7 @@ export function DimensionPicker({
       )}
       <div className="flex flex-wrap gap-1.5">
         {ids.length === 0 && readOnly ? (
-          <span className="text-xs text-muted-foreground/60 italic">None added</span>
+          <span className="text-sm italic">None added</span>
         ) : null}
         {ids.map((id) => {
           const text = resolveDimensionLabel(columnId, id, customByColumn, triggers)
@@ -193,7 +193,7 @@ export function DimensionPicker({
             <span
               key={id}
               className={cn(
-                "inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-xs font-medium",
+                "inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-sm font-medium",
                 dimensionColor ? `${dimensionColor.pill} ${dimensionColor.pillBorder}` : "bg-background border-border"
               )}
             >
@@ -215,7 +215,7 @@ export function DimensionPicker({
           <Button
             variant="outline"
             size="sm"
-            className="h-7 gap-1 text-xs border-primary/40 text-primary hover:bg-primary/5 hover:text-primary"
+            className="h-7 gap-1 text-sm border-primary/40 text-primary hover:bg-primary/5 hover:text-primary"
             onClick={() => setOpen(true)}
           >
             {ids.length === 0 ? (
@@ -253,7 +253,7 @@ export function DimensionPicker({
           <ScrollArea className="h-80">
             <div className="flex flex-col pr-2">
               {filtered.length === 0 ? (
-                <p className="text-sm text-muted-foreground py-4 text-center">No matches.</p>
+                <p className="text-sm py-4 text-center">No matches.</p>
               ) : (
                 filtered.map((item) => (
                   <CheckTree

@@ -135,11 +135,11 @@ function SuggestionTreeItem({
                         : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                     }
                     <GroupIcon className="h-3.5 w-3.5 text-foreground shrink-0" aria-hidden="true" />
-                    <span className="text-xs font-semibold text-foreground uppercase tracking-wide select-none flex-1 text-left">
+                    <span className="text-sm font-semibold text-foreground uppercase tracking-wide select-none flex-1 text-left">
                         {item.label}
                     </span>
                     {selectedCount > 0 && (
-                        <span className="text-xs text-primary font-medium tabular-nums">
+                        <span className="text-sm text-primary font-medium tabular-nums">
                             {selectedCount}
                         </span>
                     )}
@@ -336,7 +336,7 @@ export default function QuestionPage() {
                                         </div>
                                         <ScrollArea className={cn("rounded-lg border p-3", roomy ? "flex-1 min-h-0" : "max-h-48 min-h-[100px]")}>
                                             {questionTriggers.length === 0 ? (
-                                                <p className="text-sm text-muted-foreground text-center py-4">Your selections will appear here.</p>
+                                                <p className="text-sm text-center py-4">Your selections will appear here.</p>
                                             ) : (
                                                 <div className="flex flex-col gap-2">
                                                     {questionTriggers.map((trigger) => (
@@ -423,7 +423,7 @@ export default function QuestionPage() {
                                             {filteredSuggestions.length === 0 ? (
                                                 <div className="flex flex-col items-center justify-center py-8 gap-2 text-center">
                                                     <Search className="h-5 w-5 text-muted-foreground" />
-                                                    <p className="text-sm text-muted-foreground">No suggestions match your search.</p>
+                                                    <p className="text-sm">No suggestions match your search.</p>
                                                     <Button variant="outline" size="sm" onClick={() => setSearchQuery("")} className="mt-1 gap-1.5">
                                                         <X className="h-3.5 w-3.5" />
                                                         Clear search

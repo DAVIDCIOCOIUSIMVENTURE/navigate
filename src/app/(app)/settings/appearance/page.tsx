@@ -34,7 +34,7 @@ export default function AppearanceSettingsPage() {
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-1">
               <Label htmlFor="theme">Theme</Label>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm">
                 Select a colour theme for the interface.
               </p>
             </div>
@@ -59,7 +59,7 @@ export default function AppearanceSettingsPage() {
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-1">
               <Label htmlFor="compactMode">Compact Mode</Label>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm">
                 Reduce spacing and padding throughout the app.
               </p>
             </div>

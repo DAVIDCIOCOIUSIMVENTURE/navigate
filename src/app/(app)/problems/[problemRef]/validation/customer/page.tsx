@@ -45,7 +45,7 @@ export default function CustomerSegmentPage() {
 
         {customerSegments.length > 0 && (
           <div className="flex flex-col gap-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+            <p className="text-sm font-semibold uppercase tracking-wide">
               Defined Segments
             </p>
             <DimensionChips columnId="customers" ids={customerSegments} />

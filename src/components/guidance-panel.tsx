@@ -35,7 +35,7 @@ function GuidanceHero({ icon, tone, title, subtitle }: { icon: React.ElementType
       <IconTile icon={icon} className={tone} size="lg" />
       <div className="flex flex-col gap-1 min-w-0">
         <h3 className="text-xl font-bold leading-tight">{title}</h3>
-        <p className="text-sm text-muted-foreground leading-relaxed">{subtitle}</p>
+        <p className="text-sm leading-relaxed">{subtitle}</p>
       </div>
     </header>
   )
@@ -48,7 +48,7 @@ function GuidanceSection({ icon, iconBg, title, children }: { icon: React.Elemen
         <IconTile icon={icon} className={iconBg} size="sm" />
         {title}
       </h4>
-      <div className="text-sm text-muted-foreground leading-relaxed flex flex-col gap-2 pl-[38px]">
+      <div className="text-sm leading-relaxed flex flex-col gap-2 pl-[38px]">
         {children}
       </div>
     </section>
@@ -63,7 +63,7 @@ function NumberedStep({ n, title, accent = "bg-primary", children }: { n: number
       </span>
       <div className="flex flex-col gap-1 min-w-0">
         <h5 className="font-semibold text-foreground text-sm">{title}</h5>
-        <div className="text-sm text-muted-foreground leading-relaxed">{children}</div>
+        <div className="text-sm leading-relaxed">{children}</div>
       </div>
     </div>
   )
@@ -75,7 +75,7 @@ function ConceptCard({ icon: Icon, label, description, tile, border }: { icon: R
       <IconTile icon={Icon} className={tile} size="sm" />
       <div className="flex flex-col gap-0.5 min-w-0">
         <span className="font-semibold text-sm text-foreground">{label}</span>
-        <span className="text-xs text-muted-foreground leading-relaxed">{description}</span>
+        <span className="text-sm leading-relaxed">{description}</span>
       </div>
     </div>
   )

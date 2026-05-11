@@ -238,7 +238,7 @@ function AffectedGroupsCaseStudies() {
                         <div className="flex flex-wrap items-center gap-2">
                           <p className="text-base font-semibold text-white">{group.name}</p>
                           <span className={cn(
-                            "inline-block rounded px-1.5 py-0.5 text-xs font-semibold text-white capitalize",
+                            "inline-block rounded px-1.5 py-0.5 text-sm font-semibold text-white capitalize",
                             SEVERITY_BADGE[group.severity]
                           )}>
                             {group.severity}
@@ -320,7 +320,7 @@ export default function RefinePage() {
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         {problem?.description && (
           <div className="rounded-lg border-2 border-primary/20 bg-primary/5 px-4 py-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Problem</p>
+            <p className="text-sm font-semibold uppercase tracking-wide mb-1">Problem</p>
             <p className="text-sm font-medium">{problem.description}</p>
           </div>
         )}
@@ -365,7 +365,7 @@ export default function RefinePage() {
 
         {!analysisToolType && (
           <div className="flex flex-col items-center justify-center gap-3 py-8 rounded-lg border border-dashed">
-            <p className="text-sm text-muted-foreground">No analysis type selected.</p>
+            <p className="text-sm">No analysis type selected.</p>
             <Button variant="outline" onClick={() => router.push(`/problems/${problemRef}/validation/choose-refinement`)}>
               <ArrowLeft className="h-4 w-4 mr-2" />Choose a Refinement Method
             </Button>

@@ -47,7 +47,7 @@ export default function SolutionsPage() {
           </div>
           <div className="text-center flex flex-col gap-2 max-w-sm">
             <h2 className="text-lg font-semibold">No solutions yet</h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm">
               Start by searching for a solution. Pick a validated problem and work through the discovery wizard.
             </p>
           </div>

@@ -59,7 +59,7 @@ export function SearchSolutionDialog({ open, onOpenChange }: SearchSolutionDialo
                 <span className="font-semibold text-sm">Solution Discovery</span>
                 <ArrowRight className="h-4 w-4 text-muted-foreground" />
               </div>
-              <span className="text-sm text-muted-foreground leading-relaxed">
+              <span className="text-sm leading-relaxed">
                 Pick a validated problem, refine your understanding, and generate solution candidates using creative techniques.
               </span>
             </div>
@@ -75,9 +75,9 @@ export function SearchSolutionDialog({ open, onOpenChange }: SearchSolutionDialo
             <div className="flex flex-col gap-1 flex-1">
               <div className="flex items-center justify-between">
                 <span className="font-semibold text-sm">Quick Capture</span>
-                <span className="text-xs text-muted-foreground font-medium bg-muted px-2 py-0.5 rounded-full">Coming soon</span>
+                <span className="text-sm font-medium bg-muted px-2 py-0.5 rounded-full">Coming soon</span>
               </div>
-              <span className="text-sm text-muted-foreground leading-relaxed">
+              <span className="text-sm leading-relaxed">
                 Already have an idea? Add it directly to the bank without going through the full discovery wizard.
               </span>
             </div>

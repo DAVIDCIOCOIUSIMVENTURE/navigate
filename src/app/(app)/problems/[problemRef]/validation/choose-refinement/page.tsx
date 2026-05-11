@@ -92,12 +92,12 @@ function RootCausesDialogContent() {
         List the underlying causes of the problem. Ask yourself: &quot;Why does this happen?&quot; This technique helps you move beyond surface-level symptoms to uncover what&apos;s really driving the issue.
       </p>
       <div className="flex flex-col gap-2">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Examples</p>
+        <p className="text-sm font-semibold uppercase tracking-wide">Examples</p>
         {ROOT_CAUSE_CASES.map((cs) => (
           <div key={cs.title} className="rounded-lg border bg-muted/50 p-4 flex flex-col gap-2">
             <p className="text-sm font-semibold">{cs.title}</p>
-            <p className="text-sm text-muted-foreground"><strong>Problem:</strong> {cs.problem}</p>
-            <ul className="list-disc pl-5 text-sm text-muted-foreground flex flex-col gap-1">
+            <p className="text-sm"><strong>Problem:</strong> {cs.problem}</p>
+            <ul className="list-disc pl-5 text-sm flex flex-col gap-1">
               {cs.rootCauses.map((rc) => (
                 <li key={rc}>{rc}</li>
               ))}
@@ -116,13 +116,13 @@ function FiveWhysDialogContent() {
         Start with the problem and ask &quot;Why?&quot; five times in succession. Each answer becomes the basis for the next question, drilling down to the fundamental root cause.
       </p>
       <div className="flex flex-col gap-2">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Example</p>
+        <p className="text-sm font-semibold uppercase tracking-wide">Example</p>
         <div className="rounded-lg border bg-muted/50 p-4 flex flex-col gap-2">
           <p className="text-sm font-semibold">{FIVE_WHYS_CASE.title}</p>
-          <p className="text-sm text-muted-foreground"><strong>Problem:</strong> {FIVE_WHYS_CASE.problem}</p>
+          <p className="text-sm"><strong>Problem:</strong> {FIVE_WHYS_CASE.problem}</p>
           <ul className="flex flex-col gap-1.5 mt-1">
             {FIVE_WHYS_CASE.chain.map((step, i) => (
-              <li key={i} className="flex gap-2 items-start text-sm text-muted-foreground">
+              <li key={i} className="flex gap-2 items-start text-sm">
                 <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">
                   {i + 1}
                 </span>
@@ -143,19 +143,19 @@ function AffectedGroupsDialogContent() {
         Identify who is most affected by this problem and how severely. Understanding the different groups helps you design a solution that targets the right audience.
       </p>
       <div className="flex flex-col gap-2">
-        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Example</p>
+        <p className="text-sm font-semibold uppercase tracking-wide">Example</p>
         {AFFECTED_GROUP_CASES.map((cs) => (
           <div key={cs.title} className="rounded-lg border bg-muted/50 p-4 flex flex-col gap-2">
             <p className="text-sm font-semibold">{cs.title}</p>
-            <p className="text-sm text-muted-foreground"><strong>Problem:</strong> {cs.problem}</p>
+            <p className="text-sm"><strong>Problem:</strong> {cs.problem}</p>
             <div className="flex flex-col gap-2 mt-1">
               {cs.groups.map((g) => (
                 <div key={g.name} className="flex flex-col gap-0.5 rounded bg-muted/50 p-2">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-semibold">{g.name}</span>
-                    <span className="text-xs rounded bg-primary/10 text-primary px-1.5 py-0.5 font-medium">{g.severity}</span>
+                    <span className="text-sm rounded bg-primary/10 text-primary px-1.5 py-0.5 font-medium">{g.severity}</span>
                   </div>
-                  <p className="text-sm text-muted-foreground">{g.description}</p>
+                  <p className="text-sm">{g.description}</p>
                 </div>
               ))}
             </div>
@@ -211,7 +211,7 @@ export default function ChooseRefinementPage() {
         <CardContent className="p-10 pt-6 flex flex-col gap-6">
           {problem?.description && (
             <div className="rounded-lg border-2 border-primary/20 bg-primary/5 px-4 py-3">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Problem</p>
+              <p className="text-sm font-semibold uppercase tracking-wide mb-1">Problem</p>
               <p className="text-sm font-medium">{problem.description}</p>
             </div>
           )}
@@ -252,7 +252,7 @@ export default function ChooseRefinementPage() {
                     <Icon className={cn("h-5 w-5", isSelected ? "text-primary-foreground" : "text-primary")} />
                   </div>
                   <h3 className={cn("text-base font-semibold", isSelected && "text-primary")}>{tool.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{tool.description}</p>
+                  <p className="text-sm leading-relaxed">{tool.description}</p>
                 </button>
               )
             })}

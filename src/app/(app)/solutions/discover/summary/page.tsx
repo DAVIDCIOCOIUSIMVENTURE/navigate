@@ -44,7 +44,7 @@ function SectionHeader({ icon: Icon, label }: { icon: LucideIcon; label: string 
 }
 
 function EmptyHint({ text }: { text: string }) {
-  return <p className="text-xs text-muted-foreground italic">{text}</p>
+  return <p className="text-sm italic">{text}</p>
 }
 
 export default function SummaryPage() {
@@ -90,7 +90,7 @@ export default function SummaryPage() {
 
         {problem?.description && (
           <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4 flex flex-col gap-1">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Problem</p>
+            <p className="text-sm font-semibold uppercase tracking-wide">Problem</p>
             <p className="text-sm font-medium">{problem.description}</p>
           </div>
         )}
@@ -111,7 +111,7 @@ export default function SummaryPage() {
               )}
               {rootCauseNotes && (
                 <div className="rounded-md border bg-muted/40 p-3">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground mb-1">Notes</p>
+                  <p className="text-sm font-semibold uppercase tracking-wide mb-1">Notes</p>
                   <p className="text-sm whitespace-pre-wrap">{rootCauseNotes}</p>
                 </div>
               )}
@@ -125,7 +125,7 @@ export default function SummaryPage() {
                   const filled = chain.whys.filter((w) => w.trim())
                   return (
                     <div key={chain.id} className="rounded-md border bg-muted/40 p-3 flex flex-col gap-1.5">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Chain {i + 1} ({filled.length}/5 filled)</p>
+                      <p className="text-sm font-semibold uppercase tracking-wide">Chain {i + 1} ({filled.length}/5 filled)</p>
                       {filled.length === 0 ? (
                         <EmptyHint text="No whys captured in this chain." />
                       ) : (
@@ -151,7 +151,7 @@ export default function SummaryPage() {
                       <span className="text-sm font-semibold">{g.name || <span className="italic text-muted-foreground">Unnamed</span>}</span>
                       {g.severity && <Badge variant="outline" className="text-[10px] capitalize">{g.severity}</Badge>}
                     </div>
-                    {g.description && <p className="text-sm text-muted-foreground">{g.description}</p>}
+                    {g.description && <p className="text-sm">{g.description}</p>}
                   </div>
                 ))
               ) : (
@@ -169,7 +169,7 @@ export default function SummaryPage() {
           {discoveryToolType === "reverse" && (
             <div className="grid gap-2 md:grid-cols-2">
               <div className="rounded-md border bg-muted/40 p-3 flex flex-col gap-1">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Make it worse ({reverseBrainstorm.length})</p>
+                <p className="text-sm font-semibold uppercase tracking-wide">Make it worse ({reverseBrainstorm.length})</p>
                 {reverseBrainstorm.length > 0 ? (
                   <ul className="list-disc pl-5 text-sm flex flex-col gap-0.5">
                     {reverseBrainstorm.map((item) => <li key={item.id}>{item.text}</li>)}
@@ -179,7 +179,7 @@ export default function SummaryPage() {
                 )}
               </div>
               <div className="rounded-md border bg-muted/40 p-3 flex flex-col gap-1">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Inversions ({reverseInversion.length})</p>
+                <p className="text-sm font-semibold uppercase tracking-wide">Inversions ({reverseInversion.length})</p>
                 {reverseInversion.length > 0 ? (
                   <ul className="list-disc pl-5 text-sm flex flex-col gap-0.5">
                     {reverseInversion.map((item) => <li key={item.id}>{item.text}</li>)}
@@ -194,11 +194,11 @@ export default function SummaryPage() {
           {discoveryToolType === "analogy" && (
             <div className="rounded-md border bg-muted/40 p-3 flex flex-col gap-2">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Domain</p>
+                <p className="text-sm font-semibold uppercase tracking-wide">Domain</p>
                 <p className="text-sm">{analogyDomain || <span className="italic text-muted-foreground">Not set</span>}</p>
               </div>
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Insight</p>
+                <p className="text-sm font-semibold uppercase tracking-wide">Insight</p>
                 {analogyInsight ? (
                   <p className="text-sm whitespace-pre-wrap">{analogyInsight}</p>
                 ) : (
@@ -209,7 +209,7 @@ export default function SummaryPage() {
           )}
 
           {(discoveryToolType === "scamper" || discoveryToolType === "improve") && (
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm">
               {candidates.length > 0
                 ? `You captured ${candidates.length} candidate${candidates.length === 1 ? "" : "s"} using this method. See them below.`
                 : "No candidates captured yet."}
@@ -234,7 +234,7 @@ export default function SummaryPage() {
                         </Badge>
                       )}
                     </div>
-                    {c.description && <p className="text-xs text-muted-foreground">{c.description}</p>}
+                    {c.description && <p className="text-sm">{c.description}</p>}
                   </div>
                   <Button
                     size="sm"

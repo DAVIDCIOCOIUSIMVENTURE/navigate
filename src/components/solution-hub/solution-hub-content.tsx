@@ -75,7 +75,7 @@ function HubSection({
             <Button
               variant="ghost"
               size="sm"
-              className="h-7 gap-1 text-xs text-muted-foreground hover:text-foreground"
+              className="h-7 gap-1 text-sm hover:text-foreground"
               onClick={(e) => {
                 e.stopPropagation()
                 router.push(openInStep)
@@ -98,7 +98,7 @@ function LinkedProblemSection({ problemId, problemDescription }: { problemId: nu
   return (
     <HubSection icon={Target} label="Linked Problem" tone="amber">
       {problemId == null ? (
-        <p className="text-sm text-muted-foreground italic">This solution is not linked to a problem.</p>
+        <p className="text-sm italic">This solution is not linked to a problem.</p>
       ) : (
         <div className="flex items-start gap-3 rounded-md border bg-background p-3">
           <Target className="h-4 w-4 text-primary shrink-0 mt-0.5" />
@@ -107,7 +107,7 @@ function LinkedProblemSection({ problemId, problemDescription }: { problemId: nu
               {problemDescription || `Problem #${problemId}`}
             </p>
           </div>
-          <Button asChild variant="outline" size="sm" className="h-7 gap-1 text-xs border-primary/40 text-primary hover:bg-primary/5 hover:text-primary shrink-0">
+          <Button asChild variant="outline" size="sm" className="h-7 gap-1 text-sm border-primary/40 text-primary hover:bg-primary/5 hover:text-primary shrink-0">
             <Link href={`/problems/${problemId}`}>
               <ExternalLink className="h-3 w-3" />
               Open Problem
@@ -265,7 +265,7 @@ function NextStepCard({
         <Icon className="h-3.5 w-3.5 text-muted-foreground" />
         {title}
       </h4>
-      <p className="text-sm text-muted-foreground" dangerouslySetInnerHTML={{ __html: description }} />
+      <p className="text-sm" dangerouslySetInnerHTML={{ __html: description }} />
       <Button size="sm" className="self-start mt-1" onClick={onAction}>
         <ActionIcon className="h-4 w-4 mr-2" />
         <span dangerouslySetInnerHTML={{ __html: actionLabel }} />
@@ -305,7 +305,7 @@ export function SolutionHubContent({
       {mode === "dialog" && (
         <Link
           href={`/solutions/${solutionId}`}
-          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground self-start"
+          className="inline-flex items-center gap-1.5 text-sm hover:text-foreground self-start"
         >
           <ExternalLink className="h-3 w-3" />
           Open as full page

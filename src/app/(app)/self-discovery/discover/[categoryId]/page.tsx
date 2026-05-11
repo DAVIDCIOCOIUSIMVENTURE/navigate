@@ -91,7 +91,7 @@ export default function CategoryPage({
                                     </span>
                                     <span className="flex flex-col gap-0.5">
                                         <span className="font-semibold text-foreground">{question.title}</span>
-                                        <span className="text-sm text-muted-foreground">{question.description}</span>
+                                        <span className="text-sm">{question.description}</span>
                                     </span>
                                 </button>
                             </li>

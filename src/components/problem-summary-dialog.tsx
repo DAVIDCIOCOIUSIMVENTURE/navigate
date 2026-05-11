@@ -70,7 +70,7 @@ function StatusBadge({ status }: { status: ValidationStatus }) {
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">{title}</p>
+      <p className="text-sm font-semibold uppercase tracking-wide mb-1.5">{title}</p>
       {children}
     </div>
   )

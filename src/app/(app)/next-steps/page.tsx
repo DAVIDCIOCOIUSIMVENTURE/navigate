@@ -34,7 +34,7 @@ export default function NextStepsPage() {
     <Card className="w-full h-full flex flex-col overflow-hidden">
       <CardContent className={cn("flex-1 flex flex-col gap-8 overflow-y-auto min-h-0", roomy ? "p-10" : "p-6")}>
         <div className="flex flex-col gap-2">
-          <p className="text-sm text-muted-foreground italic flex items-start gap-2">
+          <p className="text-sm italic flex items-start gap-2">
             <Sparkles className="h-3.5 w-3.5 shrink-0 mt-1" aria-hidden="true" />
             <span>You&apos;ve found problems worth solving and solutions worth testing. Here&apos;s where most founders go next.</span>
           </p>
@@ -54,7 +54,7 @@ export default function NextStepsPage() {
               </div>
               <div className="flex flex-col gap-1">
                 <p className="text-sm font-medium text-foreground">No solutions to summarise yet</p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm">
                   Once you&apos;ve generated and validated a few solutions, they&apos;ll appear here grouped by the problem they solve.
                 </p>
               </div>
@@ -80,7 +80,7 @@ export default function NextStepsPage() {
                         {label}
                       </Link>
                       <StatusPill status={problem.validationStatus.replace("_", " ")} />
-                      <span className="text-xs text-muted-foreground shrink-0">
+                      <span className="text-sm shrink-0">
                         {linked.length} solution{linked.length === 1 ? "" : "s"}
                       </span>
                     </div>
@@ -137,7 +137,7 @@ function TopicCard({ topic, onClick }: { topic: NextStepsTopic; onClick: () => v
       </span>
       <div className="flex-1 min-w-0">
         <p className="font-semibold text-foreground">{topic.title}</p>
-        <p className="text-sm text-muted-foreground italic mt-0.5 flex items-start gap-1.5">
+        <p className="text-sm italic mt-0.5 flex items-start gap-1.5">
           <Sparkles className="h-3 w-3 shrink-0 mt-1" aria-hidden="true" />
           <span>{topic.tagline}</span>
         </p>

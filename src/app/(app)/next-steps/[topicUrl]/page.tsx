@@ -39,7 +39,7 @@ export default function NextStepsTopicPage() {
       </CardHeader>
       <CardContent className={cn("flex-1 flex flex-col gap-8 overflow-y-auto min-h-0", roomy ? "p-10 pt-6" : "p-6 pt-4")}>
         <div className="flex flex-col gap-2">
-          <p className="text-sm text-muted-foreground italic flex items-start gap-2">
+          <p className="text-sm italic flex items-start gap-2">
             <Sparkles className="h-3.5 w-3.5 shrink-0 mt-1" aria-hidden="true" />
             <span>{topic.tagline}</span>
           </p>
@@ -119,7 +119,7 @@ function ApproachCard({ approach }: { approach: NextStepsApproach }) {
   return (
     <div className="flex flex-col gap-1.5 rounded-lg border p-4 h-full">
       <p className="font-semibold text-foreground">{approach.title}</p>
-      <p className="text-sm text-muted-foreground leading-relaxed">{approach.description}</p>
+      <p className="text-sm leading-relaxed">{approach.description}</p>
     </div>
   )
 }

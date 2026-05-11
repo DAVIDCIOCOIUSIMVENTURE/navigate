@@ -59,7 +59,7 @@ export default function SelectProblemPage() {
             <Target className="h-8 w-8 text-muted-foreground" />
             <div className="flex flex-col gap-1">
               <p className="text-sm font-semibold">No eligible problems yet</p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-sm">
                 Validate a problem as Valid or Unsure before starting solution discovery.
               </p>
             </div>

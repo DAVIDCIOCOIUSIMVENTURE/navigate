@@ -32,15 +32,15 @@ export default function IntroductionPage() {
         {solution && (
           <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4 flex flex-col gap-3">
             <div className="flex flex-col gap-1">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Solution</p>
+              <p className="text-sm font-semibold uppercase tracking-wide">Solution</p>
               <p className="text-base font-medium">{solution.title || "Untitled solution"}</p>
               {solution.description && (
-                <p className="text-sm text-muted-foreground">{solution.description}</p>
+                <p className="text-sm">{solution.description}</p>
               )}
             </div>
             {problem?.description && (
               <div className="flex flex-col gap-1">
-                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Problem</p>
+                <p className="text-sm font-semibold uppercase tracking-wide">Problem</p>
                 <p className="text-sm">{problem.description}</p>
               </div>
             )}

@@ -277,7 +277,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                 <TableRow>
                   <TableCell
                     colSpan={showStatus ? 7 : 6}
-                    className="text-center text-sm text-muted-foreground py-8"
+                    className="text-center text-sm py-8"
                   >
                     No problems match the current filters.
                   </TableCell>
@@ -321,7 +321,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                             <span className="text-muted-foreground">-</span>
                           )}
                           {hasSolutions && (
-                            <span className="ml-1 text-xs text-muted-foreground whitespace-nowrap">
+                            <span className="ml-1 text-sm whitespace-nowrap">
                               {linkedSolutions.length} solution{linkedSolutions.length === 1 ? "" : "s"}
                             </span>
                           )}
@@ -337,7 +337,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                       </TableCell>
                       {showStatus && statusConfig && (
                         <TableCell>
-                          <div className={`flex items-center gap-1.5 text-xs font-medium ${statusConfig.className}`}>
+                          <div className={`flex items-center gap-1.5 text-sm font-medium ${statusConfig.className}`}>
                             <statusConfig.icon className="h-3.5 w-3.5" />
                             {statusConfig.label}
                           </div>
@@ -399,7 +399,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                 <div key={s.id} className="flex items-center gap-2 text-sm">
                                   <Lightbulb className="h-3.5 w-3.5 text-primary shrink-0" />
                                   <span className="flex-1 min-w-0 truncate">{solutionLabel}</span>
-                                  <div className={`flex items-center gap-1.5 text-xs font-medium ${sStatusConfig.className}`}>
+                                  <div className={`flex items-center gap-1.5 text-sm font-medium ${sStatusConfig.className}`}>
                                     <sStatusConfig.icon className="h-3.5 w-3.5" />
                                     {sStatusConfig.label}
                                   </div>
