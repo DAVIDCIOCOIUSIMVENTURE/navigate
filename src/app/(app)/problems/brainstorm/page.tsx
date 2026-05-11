@@ -694,7 +694,7 @@ function ProblemBuilder({
                   </div>
                   <div className="flex items-center gap-2">
                     <Button
-                      variant="outline"
+                      variant="primary-outline"
                       size="sm"
                       onClick={() => { setActiveColumnId(null); setActiveCategoryId(null); setStep("pick") }}
                     >
@@ -798,7 +798,7 @@ function ProblemBuilder({
                     {hasCategories && (
                       <>
                         <Button
-                          variant="outline"
+                          variant="primary-outline"
                           size="sm"
                           onClick={() => { setActiveColumnId(null); setActiveCategoryId(null); setStep("pick") }}
                         >

@@ -1675,7 +1675,7 @@ export default function DiscoverPage() {
 
         <div className="flex justify-between mt-2">
           {prevPath ? (
-            <Button variant="outline" onClick={() => guardedRouter.push(prevPath)}>
+            <Button variant="primary-outline" onClick={() => guardedRouter.push(prevPath)}>
               <ArrowLeft className="h-4 w-4 mr-2" />Previous
             </Button>
           ) : <div />}

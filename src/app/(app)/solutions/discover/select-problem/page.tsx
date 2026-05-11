@@ -110,7 +110,7 @@ export default function SelectProblemPage() {
 
         <div className="flex justify-between mt-2">
           {prevPath
-            ? <Button variant="outline" onClick={() => router.push(prevPath)}><ArrowLeft className="h-4 w-4" />Previous</Button>
+            ? <Button variant="primary-outline" onClick={() => router.push(prevPath)}><ArrowLeft className="h-4 w-4" />Previous</Button>
             : <span />}
           {nextPath && (
             <Button onClick={() => router.push(nextPath)} disabled={problemId == null}>

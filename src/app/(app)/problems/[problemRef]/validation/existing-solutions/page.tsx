@@ -156,7 +156,7 @@ export default function ExistingSolutionsPage() {
 
         <div className="flex justify-between mt-2">
           {prevPath ? (
-            <Button variant="outline" onClick={() => router.push(prevPath)}>Previous</Button>
+            <Button variant="primary-outline" onClick={() => router.push(prevPath)}>Previous</Button>
           ) : <div />}
           {nextPath && <Button onClick={() => router.push(nextPath)}>Next</Button>}
         </div>

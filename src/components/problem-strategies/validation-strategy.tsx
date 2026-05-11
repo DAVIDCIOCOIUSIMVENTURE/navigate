@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
 import type { ValidationMetric } from "@/types/validation"
 import { DEFAULT_OBTAINABLE_SHARE } from "@/types/validation"
@@ -535,10 +536,6 @@ function TamCalculation({
         </p>
       )}
       <div className="rounded-lg bg-primary/40 border border-white/20 p-4 flex flex-col gap-2 text-base text-white">
-        <div className="font-mono text-sm">customers × frequency × value × factor × share</div>
-        <div className="font-mono text-sm">
-          {formatNumber(customers)} × {frequency || 0} × {formatNumber(cost, { currency })} × {factor} × {sharePct}%
-        </div>
         <div className="text-xl font-bold">
           {ready ? formatNumber(tam, { currency }) : "Fill in the three inputs above to see your estimate"}
           {ready && <span className="ml-2 text-base font-normal text-white/80">per year</span>}
@@ -548,9 +545,22 @@ function TamCalculation({
             Gross market: {formatNumber(grossMarket, { currency })} per year, before applying your {sharePct}% realistic share.
           </div>
         )}
-        <div className="text-sm text-white/70">
-          factor = {factor} (converts &quot;{unit}&quot; into a yearly total); share = {sharePct}% of the gross market.
-        </div>
+        <Accordion type="single" collapsible className="-mb-2">
+          <AccordionItem value="how" className="border-t border-white/20">
+            <AccordionTrigger className="py-2 text-sm font-medium text-white hover:no-underline [&>svg]:text-white/80">
+              How is it calculated?
+            </AccordionTrigger>
+            <AccordionContent className="pb-2 pt-0 flex flex-col gap-2 text-white">
+              <div className="font-mono text-sm">customers × frequency × value × factor × share</div>
+              <div className="font-mono text-sm">
+                {formatNumber(customers)} × {frequency || 0} × {formatNumber(cost, { currency })} × {factor} × {sharePct}%
+              </div>
+              <div className="text-sm text-white/70">
+                factor = {factor} (converts &quot;{unit}&quot; into a yearly total); share = {sharePct}% of the gross market.
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </div>
     </div>
   )

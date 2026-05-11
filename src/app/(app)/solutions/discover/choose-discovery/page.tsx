@@ -298,7 +298,7 @@ export default function ChooseDiscoveryPage() {
 
           <div className="flex justify-between mt-2">
             {prevPath ? (
-              <Button variant="outline" onClick={() => router.push(prevPath)}>
+              <Button variant="primary-outline" onClick={() => router.push(prevPath)}>
                 <ArrowLeft className="h-4 w-4 mr-2" />Previous
               </Button>
             ) : <div />}

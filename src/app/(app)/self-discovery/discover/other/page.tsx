@@ -126,7 +126,7 @@ export default function OtherCategoryPage() {
                     </div>
                 </CardContent>
                 <CardFooter className={cn("shrink-0 flex justify-between", roomy ? "px-10 pb-6 pt-0" : "px-6 pb-4 pt-0")}>
-                    <Button variant="outline" onClick={handleBack}>Previous</Button>
+                    <Button variant="primary-outline" onClick={handleBack}>Previous</Button>
                     <Button onClick={handleNext}>Done</Button>
                 </CardFooter>
             </Card>
