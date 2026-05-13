@@ -43,7 +43,7 @@ export default function FoundationsPage() {
           <img
             src="/illustrations/13-validate-problem.svg"
             alt=""
-            className="hidden lg:block w-full max-w-xs lg:max-w-sm h-auto shrink-0 rounded-lg"
+            className="hidden lg:block w-96 h-auto shrink-0 rounded-lg"
           />
         </div>
 
