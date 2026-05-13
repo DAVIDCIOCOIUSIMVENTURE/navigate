@@ -44,13 +44,13 @@ const TOOL_CARDS: Record<ToolKey, { title: string; description: string; icon: ty
 }
 
 const SCAMPER_LETTER_COLORS: Record<string, string> = {
-  S: "bg-red-500",
-  C: "bg-orange-500",
-  A: "bg-amber-500",
-  M: "bg-emerald-500",
-  P: "bg-cyan-500",
-  E: "bg-pink-500",
-  R: "bg-fuchsia-500",
+  S: "bg-red-800",
+  C: "bg-orange-700",
+  A: "bg-yellow-600",
+  M: "bg-emerald-800",
+  P: "bg-teal-700",
+  E: "bg-rose-800",
+  R: "bg-violet-800",
 }
 
 const SCAMPER_CASE = {
@@ -164,12 +164,12 @@ function ReverseDialogContent() {
         <ExampleCard>
           <ExampleHeader title={REVERSE_CASE.title} problem={REVERSE_CASE.problem} />
           <div className="flex flex-col gap-2">
-            <div className="rounded-md border border-rose-200/70 bg-rose-50 dark:border-rose-900/60 dark:bg-rose-950/40 p-3">
-              <p className="text-sm font-bold uppercase tracking-wide text-rose-700 dark:text-rose-300 mb-1.5">Make it worse</p>
+            <div className="rounded-md border border-red-200/70 bg-red-50 dark:border-red-900/60 dark:bg-red-950/40 p-3">
+              <p className="text-sm font-bold uppercase tracking-wide text-red-800 dark:text-red-300 mb-1.5">Make it worse</p>
               <p className="text-sm text-foreground leading-relaxed">{REVERSE_CASE.worse}</p>
             </div>
-            <div className="rounded-md border border-teal-200/70 bg-teal-50 dark:border-teal-900/60 dark:bg-teal-950/40 p-3">
-              <p className="text-sm font-bold uppercase tracking-wide text-teal-700 dark:text-teal-300 mb-1.5">Flip it into a solution</p>
+            <div className="rounded-md border border-green-200/70 bg-green-50 dark:border-green-900/60 dark:bg-green-950/40 p-3">
+              <p className="text-sm font-bold uppercase tracking-wide text-green-800 dark:text-green-300 mb-1.5">Flip it into a solution</p>
               <p className="text-sm text-foreground leading-relaxed">{REVERSE_CASE.inverted}</p>
             </div>
           </div>
@@ -191,8 +191,8 @@ function AnalogyDialogContent() {
           {ANALOGY_CASES.map((cs) => (
             <ExampleCard key={cs.title}>
               <ExampleHeader title={cs.title} problem={cs.problem} />
-              <div className="rounded-md border border-sky-200 bg-sky-100 dark:border-sky-900 dark:bg-sky-950/60 p-3">
-                <p className="text-sm font-bold uppercase tracking-wide text-sky-800 dark:text-sky-300 mb-1.5">
+              <div className="rounded-md border border-blue-200/70 bg-blue-50 dark:border-blue-900/60 dark:bg-blue-950/40 p-3">
+                <p className="text-sm font-bold uppercase tracking-wide text-blue-900 dark:text-blue-300 mb-1.5">
                   Analogy from: {cs.domain}
                 </p>
                 <p className="text-sm text-foreground leading-relaxed">{cs.insight}</p>
@@ -286,8 +286,8 @@ export default function ChooseDiscoveryPage() {
                   onClick={() => setOpenTool(key)}
                   className="flex flex-col gap-3 rounded-xl border bg-card p-6 text-left transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                    <Icon className="h-5 w-5 text-primary" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary-brand/10">
+                    <Icon className="h-5 w-5 text-secondary-brand" />
                   </div>
                   <h3 className="text-base font-semibold">{tool.title}</h3>
                   <p className="text-sm leading-relaxed">{tool.description}</p>

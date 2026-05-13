@@ -9,14 +9,14 @@ export function CustomerStrategy({ readOnly = false }: { readOnly?: boolean }) {
 
   if (readOnly && segmentSize === null && !customerDescription.trim()) {
     return (
-      <div className="bg-primary rounded-xl p-8">
+      <div className="bg-secondary-brand rounded-xl p-8">
         <p className="text-sm text-white/70 italic">No customer details captured.</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-primary rounded-xl p-8">
+    <div className="bg-secondary-brand rounded-xl p-8">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">
           <label htmlFor="customer-description" className="text-sm font-medium text-white">

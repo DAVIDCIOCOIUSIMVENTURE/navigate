@@ -56,13 +56,13 @@ function emptyFields(): SaveDialogFields {
 /* -- SCAMPER Form -- */
 
 const SCAMPER_LETTER_COLORS: Record<string, string> = {
-  S: "bg-red-500",
-  C: "bg-orange-500",
-  A: "bg-amber-500",
-  M: "bg-emerald-500",
-  P: "bg-cyan-500",
-  E: "bg-pink-500",
-  R: "bg-fuchsia-500",
+  S: "bg-red-800",
+  C: "bg-orange-700",
+  A: "bg-yellow-600",
+  M: "bg-emerald-800",
+  P: "bg-teal-700",
+  E: "bg-rose-800",
+  R: "bg-violet-800",
 }
 
 type ScamperKey = "substitute" | "combine" | "adapt" | "modify" | "putToOtherUse" | "eliminate" | "reverse"
@@ -307,7 +307,7 @@ function ScamperForm() {
   const [viewMode, setViewMode] = useState<"accordion" | "tabs">("tabs")
 
   return (
-    <div className="bg-primary rounded-xl p-8">
+    <div className="bg-secondary-brand rounded-xl p-8">
       <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
         <div className="flex flex-col gap-1 min-w-0 flex-1">
           <h4 className="text-sm font-semibold text-white">SCAMPER Prompts</h4>
@@ -514,7 +514,7 @@ function ReverseBrainstormForm() {
   const inversionItems = Array.isArray(reverseInversion) ? reverseInversion : []
 
   return (
-    <div className="bg-primary rounded-xl p-8">
+    <div className="bg-secondary-brand rounded-xl p-8">
       <div className="flex flex-col divide-y divide-white/20">
         <div className="py-5 first:pt-0 last:pb-0">
           <ReverseItemList
@@ -545,7 +545,7 @@ function AnalogyForm() {
   const { analogyDomain, setAnalogyDomain, analogyInsight, setAnalogyInsight } = useDiscovery()
 
   return (
-    <div className="bg-primary rounded-xl p-8">
+    <div className="bg-secondary-brand rounded-xl p-8">
       <div className="flex flex-col gap-5">
         <div className="flex flex-col gap-2">
           <label className="text-sm font-semibold text-white">Domain / Industry</label>
@@ -683,7 +683,7 @@ function ImprovementForm() {
   const [viewMode, setViewMode] = useState<"accordion" | "tabs">("tabs")
 
   return (
-    <div className="bg-primary rounded-xl p-8">
+    <div className="bg-secondary-brand rounded-xl p-8">
       <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
         <div className="flex flex-col gap-1 min-w-0 flex-1">
           <h4 className="text-sm font-semibold text-white">Improvement Dimensions</h4>

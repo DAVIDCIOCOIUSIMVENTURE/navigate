@@ -102,14 +102,14 @@ export function ExistingSolutionsStrategy({ readOnly = false }: { readOnly?: boo
 
   if (readOnly && existingSolutions.length === 0) {
     return (
-      <div className="bg-primary rounded-xl p-8">
+      <div className="bg-secondary-brand rounded-xl p-8">
         <p className="text-sm text-white/70 italic">No existing solutions captured.</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-primary rounded-xl p-8">
+    <div className="bg-secondary-brand rounded-xl p-8">
       <div className="flex flex-col gap-4">
         {mounted && existingSolutions.map((sol, i) => {
           const isPanelOpen = !!panelOpen[i]

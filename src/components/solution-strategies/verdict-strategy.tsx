@@ -62,7 +62,7 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
 
   if (readOnly && !hasVerdict && !reasonText.trim()) {
     return (
-      <div className="bg-primary rounded-xl p-8">
+      <div className="bg-secondary-brand rounded-xl p-8">
         <p className="text-sm text-white/70 italic">No verdict captured.</p>
       </div>
     )

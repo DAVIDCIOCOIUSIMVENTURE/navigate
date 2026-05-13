@@ -18,7 +18,7 @@ export function CoreSolutionStrategy({ readOnly = false }: { readOnly?: boolean 
 
   if (readOnly && !solution.title.trim() && !solution.description.trim()) {
     return (
-      <div className="bg-primary rounded-xl p-8">
+      <div className="bg-secondary-brand rounded-xl p-8">
         <p className="text-sm text-white/70 italic">No solution details captured.</p>
       </div>
     )
@@ -29,7 +29,7 @@ export function CoreSolutionStrategy({ readOnly = false }: { readOnly?: boolean 
   }
 
   return (
-    <div className="bg-primary rounded-xl p-8 flex flex-col gap-5">
+    <div className="bg-secondary-brand rounded-xl p-8 flex flex-col gap-5">
       <div className="flex flex-col gap-2">
         <label htmlFor="core-solution-title" className="text-sm font-medium text-white">
           Title

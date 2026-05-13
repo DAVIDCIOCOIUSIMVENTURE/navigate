@@ -536,7 +536,7 @@ function TamCalculation({
           Multiplying customers, frequency, value, and an annualisation factor gives the gross opportunity. Applying your realistic share narrows that down to what you could plausibly capture. Treat the result as a sanity check, not a precise number.
         </p>
       )}
-      <div className="rounded-lg bg-primary/40 border border-white/20 p-4 flex flex-col gap-2 text-base text-white">
+      <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 flex flex-col gap-2 text-base text-white">
         <div className="text-xl font-bold">
           {ready ? formatNumber(tam, { currency }) : "Fill in the three inputs above to see your estimate"}
           {ready && <span className="ml-2 text-base font-normal text-white">per year</span>}
@@ -577,14 +577,14 @@ export function WorthStrategy({ readOnly = false }: { readOnly?: boolean }) {
 
   if (readOnly && !hasAny) {
     return (
-      <div className="bg-primary rounded-xl p-8">
+      <div className="bg-secondary-brand rounded-xl p-8">
         <p className="text-base text-white italic">No worth estimate captured.</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-primary rounded-xl p-8">
+    <div className="bg-secondary-brand rounded-xl p-8">
       <div className="flex flex-col gap-6">
         <p className="text-base font-medium text-white">Worth of solving the problem</p>
         <WorthSection
@@ -609,14 +609,14 @@ export function MarketSizingStrategy({ readOnly = false }: { readOnly?: boolean 
 
   if (readOnly && !hasAny) {
     return (
-      <div className="bg-primary rounded-xl p-8">
+      <div className="bg-secondary-brand rounded-xl p-8">
         <p className="text-base text-white italic">No market sizing captured.</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-primary rounded-xl p-8">
+    <div className="bg-secondary-brand rounded-xl p-8">
       <div className="flex flex-col gap-6">
         <p className="text-base font-medium text-white">Market sizing</p>
         <MarketSection
@@ -649,14 +649,14 @@ export function CompetitionStrategy({ readOnly = false }: { readOnly?: boolean }
 
   if (readOnly && !hasAny && !reason.trim()) {
     return (
-      <div className="bg-primary rounded-xl p-8">
+      <div className="bg-secondary-brand rounded-xl p-8">
         <p className="text-base text-white italic">No competitive landscape captured.</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-primary rounded-xl p-8">
+    <div className="bg-secondary-brand rounded-xl p-8">
       <div className="flex flex-col gap-6">
         <p className="text-base font-medium text-white">Competitive landscape</p>
         <CompetitionSection
@@ -852,7 +852,7 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const signalList: Signal[] = [signals.howMany, signals.howOften, signals.worth, signals.cost, signals.effectiveness, signals.competitor]
 
   return (
-    <div className="bg-primary rounded-xl p-8">
+    <div className="bg-secondary-brand rounded-xl p-8">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
           <p className="text-base font-medium text-white">Summary of your assessment</p>
@@ -902,7 +902,7 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
               signal={signals.competitor}
             />
           </div>
-          <div className="rounded-lg bg-primary/40 border border-white/20 p-4 flex flex-col gap-1 text-base text-white">
+          <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 flex flex-col gap-1 text-base text-white">
             <span className="text-base uppercase tracking-wide text-white">Total addressable market</span>
             <span className="text-xl font-bold">
               {tamReady ? `${formatNumber(tam, { currency })} per year` : "Not enough data"}
@@ -946,14 +946,14 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
 
   if (readOnly && !hasAnyMetric && !reason.trim() && !hasVerdict) {
     return (
-      <div className="bg-primary rounded-xl p-8">
+      <div className="bg-secondary-brand rounded-xl p-8">
         <p className="text-base text-white italic">No validation assessment captured.</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-primary rounded-xl p-8">
+    <div className="bg-secondary-brand rounded-xl p-8">
       <div className="flex flex-col gap-6">
         <p className="text-base font-medium text-white">Decision Factors</p>
 

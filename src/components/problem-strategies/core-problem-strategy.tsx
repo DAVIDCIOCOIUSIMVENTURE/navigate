@@ -30,14 +30,14 @@ export function CoreProblemStrategy({ readOnly = false }: { readOnly?: boolean }
     && problem.problems.length === 0
   ) {
     return (
-      <div className="bg-primary rounded-xl p-8">
+      <div className="bg-secondary-brand rounded-xl p-8">
         <p className="text-sm text-white/70 italic">No core problem details captured.</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-primary rounded-xl p-8 flex flex-col gap-5">
+    <div className="bg-secondary-brand rounded-xl p-8 flex flex-col gap-5">
       <div className="flex flex-col gap-2">
         <label htmlFor="core-problem-description" className="text-sm font-medium text-white">
           Problem description

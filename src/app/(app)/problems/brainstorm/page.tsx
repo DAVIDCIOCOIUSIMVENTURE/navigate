@@ -1184,11 +1184,11 @@ export default function BrainstormPage() {
                 size="sm"
                 className="shrink-0"
               >
-                <ToggleGroupItem value="canvas" aria-label="Canvas mode" className="gap-1.5 px-3 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
+                <ToggleGroupItem value="canvas" aria-label="Canvas mode" className="gap-1.5 px-3 data-[state=on]:bg-secondary-brand data-[state=on]:text-secondary-brand-foreground">
                   <Grid3X3 className="h-3.5 w-3.5" />
                   Canvas
                 </ToggleGroupItem>
-                <ToggleGroupItem value="builder" aria-label="Problem Builder mode" className="gap-1.5 px-3 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground">
+                <ToggleGroupItem value="builder" aria-label="Problem Builder mode" className="gap-1.5 px-3 data-[state=on]:bg-secondary-brand data-[state=on]:text-secondary-brand-foreground">
                   <Layers className="h-3.5 w-3.5" />
                   Builder
                 </ToggleGroupItem>

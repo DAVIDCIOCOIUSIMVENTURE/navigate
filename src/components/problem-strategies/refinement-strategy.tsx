@@ -45,14 +45,14 @@ function RootCausesForm({ readOnly = false }: { readOnly?: boolean }) {
 
   if (readOnly && rootCauses.length === 0 && !rootCauseNotes.trim()) {
     return (
-      <div className="bg-primary rounded-xl p-8">
+      <div className="bg-secondary-brand rounded-xl p-8">
         <p className="text-sm text-white/70 italic">No root causes captured.</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-primary rounded-xl p-8 flex flex-col gap-6">
+    <div className="bg-secondary-brand rounded-xl p-8 flex flex-col gap-6">
       <div className="flex flex-col gap-3">
         <label className="text-sm font-semibold text-white">Root Causes</label>
         {!readOnly && (
@@ -144,14 +144,14 @@ function FiveWhysForm({ readOnly = false }: { readOnly?: boolean }) {
 
   if (readOnly && fiveWhyChains.length === 0) {
     return (
-      <div className="bg-primary rounded-xl p-8">
+      <div className="bg-secondary-brand rounded-xl p-8">
         <p className="text-sm text-white/70 italic">No 5-Whys chains captured.</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-primary rounded-xl p-8 flex flex-col gap-5">
+    <div className="bg-secondary-brand rounded-xl p-8 flex flex-col gap-5">
       {!readOnly && fiveWhyChains.length === 0 && (
         <p className="text-sm text-white/70 text-center py-4">
           No chains yet. Add one to start exploring root causes.
@@ -241,14 +241,14 @@ function AffectedGroupsForm({ readOnly = false }: { readOnly?: boolean }) {
 
   if (readOnly && affectedGroups.length === 0) {
     return (
-      <div className="bg-primary rounded-xl p-8">
+      <div className="bg-secondary-brand rounded-xl p-8">
         <p className="text-sm text-white/70 italic">No affected groups captured.</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-primary rounded-xl p-8 flex flex-col gap-5">
+    <div className="bg-secondary-brand rounded-xl p-8 flex flex-col gap-5">
       {!readOnly && affectedGroups.length === 0 && (
         <p className="text-sm text-white/70 text-center py-4">
           No groups added yet. Add a group to start mapping who is affected.
@@ -422,7 +422,7 @@ export function RefinementStrategy({
       {analysisToolType === "affected-groups" && <AffectedGroupsForm readOnly={readOnly} />}
       {!analysisToolType && !showSelector && (
         readOnly ? (
-          <div className="bg-primary rounded-xl p-8">
+          <div className="bg-secondary-brand rounded-xl p-8">
             <p className="text-sm text-white/70 italic">No refinement captured.</p>
           </div>
         ) : (

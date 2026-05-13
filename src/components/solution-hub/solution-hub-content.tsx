@@ -28,11 +28,11 @@ type SectionTone = "primary" | "indigo" | "amber" | "emerald" | "purple" | "rose
 
 const TONE_CLASSES: Record<SectionTone, string> = {
   primary: "bg-primary",
-  indigo: "bg-indigo-500",
-  amber: "bg-amber-500",
-  emerald: "bg-emerald-500",
-  purple: "bg-purple-500",
-  rose: "bg-rose-500",
+  indigo: "bg-indigo-800",
+  amber: "bg-yellow-600",
+  emerald: "bg-emerald-800",
+  purple: "bg-violet-800",
+  rose: "bg-rose-800",
   muted: "bg-muted-foreground/70",
 }
 

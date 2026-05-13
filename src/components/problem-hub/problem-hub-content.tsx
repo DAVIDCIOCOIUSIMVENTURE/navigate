@@ -24,12 +24,12 @@ import { cn } from "@/lib/utils"
 type SectionTone = "indigo" | "amber" | "purple" | "emerald" | "primary" | "rose"
 
 const TONE_CLASSES: Record<SectionTone, string> = {
-  indigo: "bg-indigo-500",
-  amber: "bg-amber-500",
-  purple: "bg-purple-500",
-  emerald: "bg-emerald-500",
+  indigo: "bg-indigo-800",
+  amber: "bg-yellow-600",
+  purple: "bg-violet-800",
+  emerald: "bg-emerald-800",
   primary: "bg-primary",
-  rose: "bg-rose-500",
+  rose: "bg-rose-800",
 }
 
 function IconTile({ icon: Icon, tone, size = "md" }: { icon: LucideIcon; tone: SectionTone; size?: "sm" | "md" | "lg" }) {
