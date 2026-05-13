@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" width="400" height="280">
+  <rect width="400" height="280" fill="#F6F2EA"></rect>
+  <path d="M60 64 L61.8 68.2 L66 70 L61.8 71.8 L60 76 L58.2 71.8 L54 70 L58.2 68.2 Z" fill="#C9A227"></path>
+  <circle cx="350" cy="60" r="2" fill="#1B1B14"></circle>
+  <rect x="80" y="120" width="160" height="120" rx="6" fill="#E8CF7F" stroke="#1B1B14" stroke-width="2" transform="rotate(-6 160 180)"></rect>
+  <rect x="90" y="110" width="160" height="120" rx="6" fill="#FFFDF8" stroke="#1B1B14" stroke-width="2" transform="rotate(3 170 170)"></rect>
+  <rect x="100" y="100" width="160" height="120" rx="6" fill="#FFFDF8" stroke="#1B1B14" stroke-width="2.5"></rect>
+  <line x1="115" y1="120" x2="245" y2="120" stroke="#1B1B14" stroke-width="3" stroke-linecap="round"></line>
+  <line x1="115" y1="140" x2="225" y2="140" stroke="#6E6856" stroke-width="2.5" stroke-linecap="round" opacity="0.6"></line>
+  <line x1="115" y1="155" x2="240" y2="155" stroke="#6E6856" stroke-width="2.5" stroke-linecap="round" opacity="0.6"></line>
+  <line x1="115" y1="170" x2="200" y2="170" stroke="#6E6856" stroke-width="2.5" stroke-linecap="round" opacity="0.6"></line>
+  <rect x="115" y="188" width="80" height="14" rx="3" fill="#C25A3C" opacity="0.25"></rect>
+  <line x1="115" y1="200" x2="195" y2="200" stroke="#C25A3C" stroke-width="3" stroke-linecap="round"></line>
+  <circle cx="280" cy="180" r="46" fill="#E8CF7F" opacity="0.35"></circle>
+  <circle cx="280" cy="180" r="46" fill="none" stroke="#1B1B14" stroke-width="6"></circle>
+  <circle cx="280" cy="180" r="46" fill="none" stroke="#C25A3C" stroke-width="2"></circle>
+  <path d="M250 160 A40 40 0 0 1 270 140" fill="none" stroke="#FFFDF8" stroke-width="3" stroke-linecap="round" opacity="0.8"></path>
+  <line x1="312" y1="212" x2="350" y2="250" stroke="#1B1B14" stroke-width="10" stroke-linecap="round"></line>
+  <line x1="312" y1="212" x2="350" y2="250" stroke="#C25A3C" stroke-width="6" stroke-linecap="round"></line>
+  <path d="M330 82 L332.4 87.6 L338 90 L332.4 92.4 L330 98 L327.6 92.4 L322 90 L327.6 87.6 Z" fill="#C9A227"></path>
+</svg>

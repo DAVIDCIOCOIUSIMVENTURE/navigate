@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" width="400" height="280">
+  <rect width="400" height="280" fill="#F8EFE0"></rect>
+  <path d="M60 53 L62.1 57.9 L67 60 L62.1 62.1 L60 67 L57.9 62.1 L53 60 L57.9 57.9 Z" fill="#C9A227"></path>
+  <circle cx="355" cy="90" r="2" fill="#2C3E7A"></circle>
+  <rect x="195" y="100" width="10" height="120" fill="#1A2447"></rect>
+  <path d="M160 220 L240 220 L230 240 L170 240 Z" fill="#1A2447"></path>
+  <circle cx="200" cy="100" r="8" fill="#2C3E7A"></circle>
+  <line x1="80" y1="115" x2="320" y2="105" stroke="#1B1B14" stroke-width="4" stroke-linecap="round"></line>
+  <line x1="80" y1="115" x2="65" y2="155" stroke="#1B1B14" stroke-width="1.5"></line>
+  <line x1="80" y1="115" x2="95" y2="155" stroke="#1B1B14" stroke-width="1.5"></line>
+  <path d="M50 155 L110 155 L100 175 L60 175 Z" fill="#1F6E48" stroke="#1B1B14" stroke-width="2" stroke-linejoin="round"></path>
+  <circle cx="80" cy="142" r="14" fill="#1F6E48" stroke="#1B1B14" stroke-width="2"></circle>
+  <path d="M73 142 L79 148 L88 137" fill="none" stroke="#FFFDF8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+  <line x1="320" y1="105" x2="305" y2="135" stroke="#1B1B14" stroke-width="1.5"></line>
+  <line x1="320" y1="105" x2="335" y2="135" stroke="#1B1B14" stroke-width="1.5"></line>
+  <path d="M290 135 L350 135 L340 155 L300 155 Z" fill="#E5A48A" stroke="#1B1B14" stroke-width="2" stroke-linejoin="round"></path>
+  <circle cx="320" cy="122" r="12" fill="#FFFDF8" stroke="#1B1B14" stroke-width="2"></circle>
+  <text x="320" y="128" text-anchor="middle" font-family="Inter, sans-serif" font-size="16" font-weight="700" fill="#1B1B14">?</text>
+  <line x1="40" y1="244" x2="360" y2="244" stroke="#1B1B14" stroke-width="2" stroke-linecap="round"></line>
+  <path d="M35 123 L37.1 127.9 L42 130 L37.1 132.1 L35 137 L32.9 132.1 L28 130 L32.9 127.9 Z" fill="#1F6E48"></path>
+</svg>

@@ -60,7 +60,7 @@ export default function CustomerSegmentPage() {
           </p>
           <div className="flex flex-col gap-3">
             <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500 shrink-0 mt-0.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-900 shrink-0 mt-0.5">
                 <Briefcase className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -69,7 +69,7 @@ export default function CustomerSegmentPage() {
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500 shrink-0 mt-0.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-800 shrink-0 mt-0.5">
                 <MapPin className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -78,7 +78,7 @@ export default function CustomerSegmentPage() {
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500 shrink-0 mt-0.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-yellow-600 shrink-0 mt-0.5">
                 <Target className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -87,7 +87,7 @@ export default function CustomerSegmentPage() {
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-rose-500 shrink-0 mt-0.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-rose-800 shrink-0 mt-0.5">
                 <Filter className="h-4 w-4 text-white" />
               </div>
               <div>

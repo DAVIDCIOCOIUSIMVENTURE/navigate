@@ -29,14 +29,23 @@ export default function FoundationsPage() {
         <CardTitle icon={BookOpen}>Introduction</CardTitle>
       </CardHeader>
       <CardContent className={cn("flex-1 flex flex-col gap-6 overflow-y-auto min-h-0", roomy ? "p-10 pt-6" : "p-6 pt-4")}>
-        <p className="text-base text-foreground leading-relaxed">
-          This section is optional, but highly recommended. Before you dive into self discovery, problems, or solutions,
-          it&apos;s worth understanding <span className="font-semibold">why</span> each of those stages matters, and what happens to founders who skip them.
-        </p>
-        <p className="text-base text-foreground leading-relaxed">
-          What you&apos;ll find here: short pages, videos, and real case studies about the <span className="font-semibold">whys</span> and the <span className="font-semibold">whats</span>.
-          Why finding the right idea matters. What goes wrong when people skip validation. What went well for founders who did the work. We don&apos;t cover <span className="italic">how</span> to solve things here: that&apos;s what the Problems and Solutions sections are for.
-        </p>
+        <div className="flex flex-col md:flex-row gap-6 md:items-center">
+          <div className="flex flex-col gap-6 flex-1 min-w-0">
+            <p className="text-base text-foreground leading-relaxed">
+              This section is optional, but highly recommended. Before you dive into self discovery, problems, or solutions,
+              it&apos;s worth understanding <span className="font-semibold">why</span> each of those stages matters, and what happens to founders who skip them.
+            </p>
+            <p className="text-base text-foreground leading-relaxed">
+              What you&apos;ll find here: short pages, videos, and real case studies about the <span className="font-semibold">whys</span> and the <span className="font-semibold">whats</span>.
+              Why finding the right idea matters. What goes wrong when people skip validation. What went well for founders who did the work. We don&apos;t cover <span className="italic">how</span> to solve things here: that&apos;s what the Problems and Solutions sections are for.
+            </p>
+          </div>
+          <img
+            src="/illustrations/13-validate-problem.svg"
+            alt=""
+            className="hidden lg:block w-full max-w-xs lg:max-w-sm h-auto shrink-0 rounded-lg"
+          />
+        </div>
 
         <div className="flex flex-col gap-3">
           <h3 className="text-xl font-bold text-foreground">Browse the sections</h3>
