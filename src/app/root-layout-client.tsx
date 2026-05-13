@@ -221,7 +221,14 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                       <ContentArea>{children}</ContentArea>
                     </div>
                   ) : (
-                    <div className={`mx-auto flex min-h-full w-full max-w-screen-2xl flex-col gap-4 ${fullView ? "px-6 py-6" : "px-4 py-6 sm:px-6 lg:px-8 lg:py-8"}`}>
+                    <div className={`relative isolate mx-auto flex min-h-full w-full max-w-screen-2xl flex-col gap-4 ${fullView ? "px-6 py-6" : "px-4 py-6 sm:px-6 lg:px-8 lg:py-8"}`}>
+                      <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+                        <img
+                          src="/illustrations/02-compass.svg"
+                          alt=""
+                          className="select-none absolute -right-48 -bottom-48 w-[220rem] opacity-10 rotate-12 origin-bottom-right"
+                        />
+                      </div>
                       <ContentArea>{children}</ContentArea>
                     </div>
                   )}
@@ -243,7 +250,14 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                   <ContentArea>{children}</ContentArea>
                 </div>
               ) : (
-                <div className={`mx-auto flex min-h-full w-full max-w-screen-2xl flex-col gap-4 ${fullView ? "px-6 py-6" : "px-4 py-6 sm:px-6 lg:px-8 lg:py-8"}`}>
+                <div className={`relative isolate mx-auto flex min-h-full w-full max-w-screen-2xl flex-col gap-4 ${fullView ? "px-6 py-6" : "px-4 py-6 sm:px-6 lg:px-8 lg:py-8"}`}>
+                  <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+                    <img
+                      src="/illustrations/02-compass.svg"
+                      alt=""
+                      className="select-none absolute -right-48 -bottom-48 w-[220rem] opacity-10 rotate-12 origin-bottom-right"
+                    />
+                  </div>
                   <ContentArea>{children}</ContentArea>
                 </div>
               )}
