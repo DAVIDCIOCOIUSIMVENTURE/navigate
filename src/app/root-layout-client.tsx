@@ -215,7 +215,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           {sidePanelOpen ? (
             <ResizablePanelGroup direction="horizontal" className="flex-1 min-h-0">
               <ResizablePanel defaultSize={70} minSize={40}>
-                <div className="h-full bg-gray-100 overflow-y-auto">
+                <div className="h-full bg-background overflow-y-auto">
                   {isFocusFlow ? (
                     <div className="flex min-h-full w-full flex-col">
                       <ContentArea>{children}</ContentArea>
@@ -237,7 +237,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               </ResizablePanel>
             </ResizablePanelGroup>
           ) : (
-            <div className="flex-1 min-h-0 bg-gray-100 overflow-y-auto">
+            <div className="flex-1 min-h-0 bg-background overflow-y-auto">
               {isFocusFlow ? (
                 <div className="flex min-h-full w-full flex-col">
                   <ContentArea>{children}</ContentArea>

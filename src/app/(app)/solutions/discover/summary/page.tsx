@@ -237,6 +237,7 @@ export default function SummaryPage() {
                     {c.description && <p className="text-sm">{c.description}</p>}
                   </div>
                   <Button
+                    variant="secondary-brand"
                     size="sm"
                     className="shrink-0 h-8"
                     onClick={() => router.push(`/solutions/${c.id}/validate/introduction`)}

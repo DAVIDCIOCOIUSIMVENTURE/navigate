@@ -51,7 +51,7 @@ export function SearchSolutionDialog({ open, onOpenChange }: SearchSolutionDialo
             onClick={handleDiscover}
             className="flex items-start gap-4 rounded-lg border bg-card p-4 text-left transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
           >
-            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-violet-500 shrink-0">
+            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-violet-800 shrink-0">
               <Lightbulb className="h-5 w-5 text-white" />
             </div>
             <div className="flex flex-col gap-1 flex-1">

@@ -1,9 +1,9 @@
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 const members = [
-  { initials: "AK", name: "Anna K.", color: "bg-violet-500" },
-  { initials: "JR", name: "James R.", color: "bg-emerald-500" },
-  { initials: "ML", name: "Maya L.", color: "bg-amber-500" },
+  { initials: "AK", name: "Anna K.", color: "bg-amber-500" },
+  { initials: "JR", name: "James R.", color: "bg-emerald-600" },
+  { initials: "ML", name: "Maya L.", color: "bg-[hsl(13_55%_51%)]" },
 ]
 
 export function TeamAvatars() {

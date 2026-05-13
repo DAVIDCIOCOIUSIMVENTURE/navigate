@@ -320,7 +320,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                               onConfirm={() => dispatch.solutions.delete(solution.id)}
                             />
                             <Button
-                              variant="primary-outline"
+                              variant="outline-card"
                               size="sm"
                               className="h-7"
                               onClick={() => setEditingSolution(solution)}
@@ -332,6 +332,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                           </>
                         )}
                         <Button
+                          variant="secondary-brand"
                           size="sm"
                           className="h-7"
                           onClick={() => router.push(`/solutions/${solution.id}/validate/introduction`)}
