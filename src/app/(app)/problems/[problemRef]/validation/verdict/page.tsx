@@ -45,7 +45,7 @@ export default function VerdictPage() {
           <h3 className="mt-4 text-xl font-bold text-foreground">Patterns that point to each verdict</h3>
           <div className="flex flex-col gap-3">
             <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-green-600 shrink-0 mt-0.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-green-800 shrink-0 mt-0.5">
                 <CheckCircle2 className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -54,7 +54,7 @@ export default function VerdictPage() {
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-orange-500 shrink-0 mt-0.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-yellow-600 shrink-0 mt-0.5">
                 <HelpCircle className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -63,7 +63,7 @@ export default function VerdictPage() {
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-red-500 shrink-0 mt-0.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-red-800 shrink-0 mt-0.5">
                 <XCircle className="h-4 w-4 text-white" />
               </div>
               <div>

@@ -14,6 +14,46 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Replace em dashes with the most fitting alternative: a colon, comma, semicolon, full stop, parentheses, or by restructuring the sentence. The only exception is CLI flags (e.g. `--noEmit`, `--no-verify`), where the double hyphen is part of the syntax.
 
+## Theme
+
+The Navigate brand palette. Use these hex values as the source of truth for any new colored surface; do not invent new tones outside this set without a reason.
+
+| Token     | Hex       | CSS variable          | Tailwind class                                | Use                                                                                                                                                                                  |
+| --------- | --------- | --------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Primary   | `#C25A3C` | `--primary`           | `bg-primary` / `text-primary`                 | Terracotta. CTAs, primary buttons, brand accents, default `CardTitle` icon tile.                                                                                                     |
+| Secondary | `#2C3E7A` | `--secondary-brand`   | `bg-secondary-brand`                          | Navy. Brand counterpart to primary for cool / analytical surfaces. Also reachable as `bg-blue-900` (used for the "Validate the solution" foundations tile, "Knowledge" self-discovery, etc.). Note: `--secondary` / `bg-secondary` is the warm-beige UI surface token and is a different thing. |
+| Tertiary  | `#C9A227` | `--tertiary`          | `bg-tertiary`                                 | Mustard gold. Also reachable as `bg-yellow-600` (used for the "Right idea" foundations tile, "Skills & Expertise" self-discovery, "Cost" solution metric, etc.).                     |
+| Sidebar   | `#2A1A14` | `--sidebar-background`| (sidebar component)                           | Dark warm brown. The app sidebar background and other dark inverted surfaces.                                                                                                        |
+| App bg    | `#F6F2EA` | `--background`        | `bg-background`                               | Warm cream. The page background behind cards. Card surfaces use a slightly lighter cream (`--card`, `hsl(45 40% 98%)`).                                                              |
+| Success   | `#1F6E48` | `--success`           | `bg-success`                                  | Forest green. Also reachable as `bg-green-800` (valid verdicts, "Decide on commitment", "Social & Environmental Impact", positive achievement tiles).                                |
+| Danger    | `#9F1239` | `--destructive`       | `bg-destructive` / `bg-red-800` for tiles     | Crimson. Invalid verdicts, "Cost of skipping" foundations, "Personal Interests" self-discovery, destructive actions.                                                                 |
+
+Each brand token also has a matching `-foreground` variable for text/icon contrast (e.g. `--tertiary-foreground`, `bg-tertiary text-tertiary-foreground`). Dark mode uses slightly brighter shades for `--secondary-brand`, `--tertiary`, `--success`, `--destructive` so they stay readable on the dark background.
+
+### Tile palette derived from these tokens
+
+Sectioned tile colors (Foundations, Self-Discovery categories, validation step timelines, Next Steps, dashboard achievements) draw from this saturated dark set so colored surfaces feel like one family:
+
+* Mustard tertiary: `bg-yellow-600`
+* Navy secondary: `bg-blue-900`
+* Forest success: `bg-green-800`
+* Crimson danger: `bg-red-800`
+* Dark teal: `bg-teal-700`
+* Dark emerald: `bg-emerald-800`
+* Burnt orange: `bg-orange-700`
+* Dark indigo: `bg-indigo-800`
+* Dark violet: `bg-violet-800`
+* Dark rose: `bg-rose-800`
+
+Icons sitting on these tiles use `text-white` (or `text-primary-foreground` for the terracotta `bg-primary`).
+
+### Out-of-scope (deliberately keep their own visual language)
+
+* Dimension chips (Customers / Contexts / Problems / You) use saturated pill colors at `bg-X-100 text-X-700` from `src/lib/dimension-visuals.ts`; only the solid `iconBg` field uses the dark palette.
+* Status pills (`unvalidated`, `in progress`, `valid`, `invalid`, etc.) use soft `bg-X-100 text-X-700` so they fade into rows.
+* Competition signal backgrounds use a semantic intensity gradient (`bg-X-500/30`) and must preserve order from low to high.
+* SCAMPER letter badges keep bright `-500` colors for at-a-glance letter distinction.
+
 ## Commands
 
 ```Shell

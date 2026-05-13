@@ -6,146 +6,170 @@
 
 @layer base {
   :root {
-    /* Background & Foreground: dark slate (#28363b), not pure black */
-    --background: 0 0% 100%;
-    --foreground: 196 19% 19%;
+    /* Background & Foreground: warm cream + dark warm brown (App bg #F6F2EA) */
+    --background: 40 40% 94%;
+    --foreground: 18 35% 10%;
 
-    /* Cards & Popovers */
-    --card: 0 0% 100%;
-    --card-foreground: 196 19% 19%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 196 19% 19%;
+    /* Cards & Popovers: lighter cream so cards lift off the page */
+    --card: 45 40% 98%;
+    --card-foreground: 18 35% 10%;
+    --popover: 45 40% 98%;
+    --popover-foreground: 18 35% 10%;
 
-    /* Primary: Indigo Purple (rgb(73, 66, 207)) */
-    --primary: 243 70% 58%;
-    --primary-foreground: 0 0% 100%;
+    /* Primary: Terracotta / rust (#C25A3C) */
+    --primary: 13 55% 51%;
+    --primary-foreground: 40 60% 97%;
 
-    /* Secondary: Subtle purple tint */
-    --secondary: 260 25% 95%;
-    --secondary-foreground: 215 20% 30%;
+    /* Secondary: warm beige tint (UI secondary surface, not brand) */
+    --secondary: 36 28% 88%;
+    --secondary-foreground: 18 35% 18%;
 
-    /* Muted: Neutral with purple undertone */
-    --muted: 260 15% 95%;
-    --muted-foreground: 215 16% 47%;
+    /* Secondary brand: navy (#2C3E7A) for brand accents that need a cool counterpart to primary */
+    --secondary-brand: 226 47% 33%;
+    --secondary-brand-foreground: 40 60% 97%;
 
-    /* Accent: Light purple */
-    --accent: 262 30% 93%;
-    --accent-foreground: 215 20% 30%;
+    /* Tertiary: mustard gold (#C9A227) */
+    --tertiary: 46 67% 47%;
+    --tertiary-foreground: 40 60% 97%;
 
-    /* Destructive */
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
+    /* Success: forest green (#1F6E48) */
+    --success: 151 56% 28%;
+    --success-foreground: 40 60% 97%;
+
+    /* Muted: neutral with warm beige undertone */
+    --muted: 36 22% 88%;
+    --muted-foreground: 25 14% 38%;
+
+    /* Accent: light warm beige */
+    --accent: 36 30% 90%;
+    --accent-foreground: 18 35% 18%;
+
+    /* Destructive: deep crimson (#9F1239) */
+    --destructive: 343 80% 35%;
+    --destructive-foreground: 40 60% 97%;
 
     /* Borders & Inputs */
-    --border: 260 12% 89%;
-    --input: 260 12% 89%;
-    --ring: 243 70% 58%;
+    --border: 34 22% 82%;
+    --input: 34 22% 82%;
+    --ring: 13 55% 51%;
 
-    /* Chart palette: purple-complementary */
-    --chart-1: 262 70% 58%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 326 70% 55%;
+    /* Chart palette: terracotta, green, gold, blue, rose to match avatar set */
+    --chart-1: 13 55% 51%;
+    --chart-2: 138 32% 38%;
+    --chart-3: 43 65% 49%;
+    --chart-4: 210 45% 45%;
+    --chart-5: 350 55% 50%;
 
     /* Border Radius: slightly larger for modern feel */
     --radius: 0.625rem;
 
     /* Primary dark variant */
-    --primary-dark: 243 70% 44%;
-    --primary-dark-foreground: 0 0% 100%;
+    --primary-dark: 13 55% 38%;
+    --primary-dark-foreground: 40 60% 97%;
 
     /* Primary light variant: tinted background */
-    --primary-light: 262 60% 96%;
-    --primary-light-foreground: 262 40% 20%;
+    --primary-light: 13 60% 93%;
+    --primary-light-foreground: 13 55% 25%;
 
-    /* Sidebar */
-    --sidebar-background: 0 0% 0%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 0 0% 100%;
-    --sidebar-primary-foreground: 243 70% 58%;
-    --sidebar-accent: 243 70% 58%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 0 0% 15%;
-    --sidebar-ring: 0 0% 100%;
+    /* Sidebar: dark warm brown (#2A1A14) */
+    --sidebar-background: 16 36% 12%;
+    --sidebar-foreground: 40 30% 95%;
+    --sidebar-primary: 13 55% 51%;
+    --sidebar-primary-foreground: 40 60% 97%;
+    --sidebar-accent: 13 55% 51%;
+    --sidebar-accent-foreground: 40 60% 97%;
+    --sidebar-border: 17 30% 16%;
+    --sidebar-ring: 13 55% 51%;
 
     /* Brand: keep distinct from primary for marketing/callout use */
-    --brand: 262 83% 58%;
-    --brand-foreground: 0 0% 100%;
+    --brand: 13 60% 45%;
+    --brand-foreground: 40 60% 97%;
 
-    /* Surface: dark blue-grey for case study sections (#37474F) */
-    --surface: 200 16% 27%;
-    --surface-foreground: 200 15% 95%;
+    /* Surface: dark warm brown for case study sections */
+    --surface: 17 30% 18%;
+    --surface-foreground: 40 25% 92%;
   }
 
   .dark {
-    /* Background & Foreground */
-    --background: 260 20% 6%;
-    --foreground: 260 10% 95%;
+    /* Background & Foreground: deep warm brown */
+    --background: 18 22% 7%;
+    --foreground: 36 25% 92%;
 
     /* Cards & Popovers */
-    --card: 260 18% 10%;
-    --card-foreground: 260 10% 95%;
-    --popover: 260 18% 10%;
-    --popover-foreground: 260 10% 95%;
+    --card: 18 22% 11%;
+    --card-foreground: 36 25% 92%;
+    --popover: 18 22% 11%;
+    --popover-foreground: 36 25% 92%;
 
-    /* Primary: Lighter purple for dark backgrounds */
-    --primary: 262 80% 68%;
-    --primary-foreground: 262 80% 10%;
+    /* Primary: lighter terracotta for dark backgrounds */
+    --primary: 14 65% 62%;
+    --primary-foreground: 14 50% 10%;
 
     /* Primary dark variant */
-    --primary-dark: 262 80% 30%;
-    --primary-dark-foreground: 0 0% 100%;
+    --primary-dark: 13 55% 35%;
+    --primary-dark-foreground: 40 60% 97%;
 
     /* Primary light variant */
-    --primary-light: 262 40% 20%;
-    --primary-light-foreground: 260 10% 90%;
+    --primary-light: 14 35% 20%;
+    --primary-light-foreground: 36 25% 92%;
 
     /* Secondary */
-    --secondary: 260 15% 16%;
-    --secondary-foreground: 260 10% 90%;
+    --secondary: 20 15% 16%;
+    --secondary-foreground: 36 25% 90%;
+
+    /* Secondary brand: brighter navy for dark mode */
+    --secondary-brand: 226 55% 55%;
+    --secondary-brand-foreground: 40 60% 97%;
+
+    /* Tertiary: brighter mustard for dark mode */
+    --tertiary: 46 70% 58%;
+    --tertiary-foreground: 18 35% 10%;
+
+    /* Success: brighter forest green for dark mode */
+    --success: 151 50% 45%;
+    --success-foreground: 40 60% 97%;
 
     /* Muted */
-    --muted: 260 15% 16%;
-    --muted-foreground: 260 10% 60%;
+    --muted: 20 15% 16%;
+    --muted-foreground: 30 12% 62%;
 
     /* Accent */
-    --accent: 262 30% 18%;
-    --accent-foreground: 260 10% 90%;
+    --accent: 14 35% 22%;
+    --accent-foreground: 36 25% 90%;
 
-    /* Destructive */
-    --destructive: 0 63% 35%;
-    --destructive-foreground: 0 0% 95%;
+    /* Destructive: brighter crimson for dark mode */
+    --destructive: 343 65% 50%;
+    --destructive-foreground: 40 60% 95%;
 
     /* Borders & Inputs */
-    --border: 260 12% 18%;
-    --input: 260 12% 18%;
-    --ring: 262 80% 68%;
+    --border: 20 15% 18%;
+    --input: 20 15% 18%;
+    --ring: 14 65% 62%;
 
     /* Chart palette: brighter for dark mode */
-    --chart-1: 262 70% 65%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 200 65% 55%;
-    --chart-5: 326 70% 60%;
+    --chart-1: 14 65% 62%;
+    --chart-2: 138 38% 52%;
+    --chart-3: 43 70% 58%;
+    --chart-4: 210 55% 58%;
+    --chart-5: 350 60% 60%;
 
-    /* Sidebar */
-    --sidebar-background: 0 0% 0%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 260 10% 95%;
-    --sidebar-primary-foreground: 262 60% 14%;
-    --sidebar-accent: 262 80% 68%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 0 0% 15%;
-    --sidebar-ring: 262 80% 68%;
+    /* Sidebar: kept dark brown (matches light-mode sidebar) */
+    --sidebar-background: 17 40% 7%;
+    --sidebar-foreground: 36 25% 92%;
+    --sidebar-primary: 14 65% 62%;
+    --sidebar-primary-foreground: 40 60% 97%;
+    --sidebar-accent: 14 65% 62%;
+    --sidebar-accent-foreground: 40 60% 97%;
+    --sidebar-border: 17 30% 14%;
+    --sidebar-ring: 14 65% 62%;
 
     /* Brand */
-    --brand: 262 80% 68%;
-    --brand-foreground: 262 80% 10%;
+    --brand: 14 65% 62%;
+    --brand-foreground: 14 50% 10%;
 
-    /* Surface: dark blue-grey for case study sections (#37474F) */
-    --surface: 200 16% 27%;
-    --surface-foreground: 200 15% 95%;
+    /* Surface: dark warm brown for case study sections */
+    --surface: 17 30% 18%;
+    --surface-foreground: 40 25% 92%;
   }
 }
 

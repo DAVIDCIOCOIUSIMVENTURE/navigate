@@ -10,11 +10,11 @@ import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 
 const SECTION_ICON_BG: Record<string, string> = {
-  "why-the-right-idea": "bg-amber-500",
-  "why-validate-the-problem": "bg-sky-500",
-  "why-validate-the-solution": "bg-violet-500",
-  "the-cost-of-skipping": "bg-rose-500",
-  "when-it-goes-right": "bg-emerald-500",
+  "why-the-right-idea": "bg-yellow-600",
+  "why-validate-the-problem": "bg-teal-700",
+  "why-validate-the-solution": "bg-blue-900",
+  "the-cost-of-skipping": "bg-red-800",
+  "when-it-goes-right": "bg-green-800",
 }
 
 export default function FoundationsPage() {

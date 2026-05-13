@@ -65,16 +65,16 @@ export default function DashboardPage() {
 
   // Dynamic achievements
   const achievements = [
-    { icon: Compass, title: "Explorer", description: "Add your first self-discovery trigger", unlocked: triggers.length >= 1, iconBgColor: "bg-teal-100", iconColor: "text-teal-600" },
-    { icon: Zap, title: "Trigger Happy", description: "Collect 10 problem triggers", unlocked: triggers.length >= 10, iconBgColor: "bg-amber-100", iconColor: "text-amber-600" },
-    { icon: Target, title: "Problem Spotter", description: "Create your first problem", unlocked: problems.length >= 1, iconBgColor: "bg-blue-100", iconColor: "text-blue-600" },
-    { icon: Crosshair, title: "Sharp Shooter", description: "Identify 5 distinct problems", unlocked: problems.length >= 5, iconBgColor: "bg-indigo-100", iconColor: "text-indigo-600" },
-    { icon: Trophy, title: "Verdict Reached", description: "Validate your first problem", unlocked: validatedProblems.length >= 1, iconBgColor: "bg-green-100", iconColor: "text-green-600" },
-    { icon: CheckCircle2, title: "Validated Thinker", description: "Get 3 problems to a verdict", unlocked: validatedProblems.length >= 3, iconBgColor: "bg-emerald-100", iconColor: "text-emerald-600" },
-    { icon: FlaskConical, title: "Solution Seeker", description: "Start your first solution exploration", unlocked: solutions.length >= 1, iconBgColor: "bg-purple-100", iconColor: "text-purple-600" },
-    { icon: Award, title: "Innovator", description: "Validate a solution as valid", unlocked: completeSolutions.length >= 1, iconBgColor: "bg-rose-100", iconColor: "text-rose-600" },
-    { icon: Star, title: "Full Cycle", description: "Trigger, problem, validation, and solution", unlocked: triggers.length >= 1 && validProblems.length >= 1 && completeSolutions.length >= 1, iconBgColor: "bg-yellow-100", iconColor: "text-yellow-600" },
-    { icon: Crown, title: "Innovation Master", description: "Validate 3 or more solutions as valid", unlocked: completeSolutions.length >= 3, iconBgColor: "bg-red-100", iconColor: "text-red-600" },
+    { icon: Compass, title: "Explorer", description: "Add your first self-discovery trigger", unlocked: triggers.length >= 1, iconBgColor: "bg-teal-700", iconColor: "text-white" },
+    { icon: Zap, title: "Trigger Happy", description: "Collect 10 problem triggers", unlocked: triggers.length >= 10, iconBgColor: "bg-yellow-600", iconColor: "text-white" },
+    { icon: Target, title: "Problem Spotter", description: "Create your first problem", unlocked: problems.length >= 1, iconBgColor: "bg-blue-900", iconColor: "text-white" },
+    { icon: Crosshair, title: "Sharp Shooter", description: "Identify 5 distinct problems", unlocked: problems.length >= 5, iconBgColor: "bg-indigo-800", iconColor: "text-white" },
+    { icon: Trophy, title: "Verdict Reached", description: "Validate your first problem", unlocked: validatedProblems.length >= 1, iconBgColor: "bg-green-800", iconColor: "text-white" },
+    { icon: CheckCircle2, title: "Validated Thinker", description: "Get 3 problems to a verdict", unlocked: validatedProblems.length >= 3, iconBgColor: "bg-emerald-800", iconColor: "text-white" },
+    { icon: FlaskConical, title: "Solution Seeker", description: "Start your first solution exploration", unlocked: solutions.length >= 1, iconBgColor: "bg-violet-800", iconColor: "text-white" },
+    { icon: Award, title: "Innovator", description: "Validate a solution as valid", unlocked: completeSolutions.length >= 1, iconBgColor: "bg-rose-800", iconColor: "text-white" },
+    { icon: Star, title: "Full Cycle", description: "Trigger, problem, validation, and solution", unlocked: triggers.length >= 1 && validProblems.length >= 1 && completeSolutions.length >= 1, iconBgColor: "bg-orange-700", iconColor: "text-white" },
+    { icon: Crown, title: "Innovation Master", description: "Validate 3 or more solutions as valid", unlocked: completeSolutions.length >= 3, iconBgColor: "bg-red-800", iconColor: "text-white" },
   ]
   const unlockedCount = achievements.filter((a) => a.unlocked).length
 
@@ -271,11 +271,11 @@ function StageCard({
   color: string
 }) {
   const bgMap: Record<string, string> = {
-    teal: "bg-teal-500",
-    blue: "bg-blue-500",
-    indigo: "bg-indigo-500",
-    purple: "bg-purple-500",
-    green: "bg-green-500",
+    teal: "bg-teal-700",
+    blue: "bg-blue-900",
+    indigo: "bg-indigo-800",
+    purple: "bg-violet-800",
+    green: "bg-green-800",
   }
 
   return (

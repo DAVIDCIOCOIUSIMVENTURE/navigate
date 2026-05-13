@@ -4,19 +4,19 @@ import { use } from "react"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
-import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
+import { SELF_DISCOVERY_CATEGORIES, SELF_DISCOVERY_CATEGORY_ICON_BG } from "@/data/selfDiscoveryData"
 import { getSelfDiscoveryCategoryIcon } from "@/config/navigation"
 import { Compass } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 
 const QUESTION_COLORS = [
-    "bg-indigo-500",
-    "bg-emerald-500",
-    "bg-amber-500",
-    "bg-rose-500",
-    "bg-sky-500",
-    "bg-fuchsia-500",
+    "bg-indigo-800",
+    "bg-green-800",
+    "bg-yellow-600",
+    "bg-red-800",
+    "bg-teal-700",
+    "bg-violet-800",
 ]
 
 export default function CategoryPage({
@@ -63,10 +63,12 @@ export default function CategoryPage({
         }
     }
 
+    const categoryIconBg = SELF_DISCOVERY_CATEGORY_ICON_BG[category.url] ?? "bg-primary"
+
     return (
         <Card className="w-full h-full flex flex-col overflow-hidden">
             <CardHeader className={cn("pb-0 shrink-0", roomy ? "px-10 pt-10" : "px-6 pt-6")}>
-                <CardTitle icon={CategoryIcon}>{category.title}</CardTitle>
+                <CardTitle icon={CategoryIcon} iconBg={categoryIconBg}>{category.title}</CardTitle>
             </CardHeader>
             <CardContent className={cn("flex-1 flex flex-col gap-6 overflow-y-auto min-h-0", roomy ? "p-10 pt-6" : "p-6 pt-4")}>
                 <p className="text-base text-foreground leading-relaxed">

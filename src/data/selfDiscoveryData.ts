@@ -19,6 +19,14 @@ export interface SelfDiscoveryCategory {
   questions: SelfDiscoveryQuestion[]
 }
 
+export const SELF_DISCOVERY_CATEGORY_ICON_BG: Record<string, string> = {
+  "personal-interests": "bg-red-800",
+  "knowledge": "bg-blue-900",
+  "skills-expertise": "bg-yellow-600",
+  "social-impact": "bg-green-800",
+  "other": "bg-teal-700",
+}
+
 export const SELF_DISCOVERY_CATEGORIES: SelfDiscoveryCategory[] = [
   {
     url: "personal-interests",

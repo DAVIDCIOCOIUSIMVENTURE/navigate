@@ -47,6 +47,18 @@ export default {
   				DEFAULT: 'hsl(var(--secondary))',
   				foreground: 'hsl(var(--secondary-foreground))'
   			},
+  			'secondary-brand': {
+  				DEFAULT: 'hsl(var(--secondary-brand))',
+  				foreground: 'hsl(var(--secondary-brand-foreground))'
+  			},
+  			tertiary: {
+  				DEFAULT: 'hsl(var(--tertiary))',
+  				foreground: 'hsl(var(--tertiary-foreground))'
+  			},
+  			success: {
+  				DEFAULT: 'hsl(var(--success))',
+  				foreground: 'hsl(var(--success-foreground))'
+  			},
   			muted: {
   				DEFAULT: 'hsl(var(--muted))',
   				foreground: 'hsl(var(--muted-foreground))'

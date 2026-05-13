@@ -10,19 +10,13 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { useSidebar } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
-import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
+import { SELF_DISCOVERY_CATEGORIES, SELF_DISCOVERY_CATEGORY_ICON_BG } from "@/data/selfDiscoveryData"
 import { useContainerSize } from "@/context/container-size-context"
 import { useFocusChrome } from "@/context/focus-chrome-context"
 
 const BASE_PATH = "/self-discovery/discover"
 
-const CATEGORY_ICON_BG: Record<string, string> = {
-    "personal-interests": "bg-primary",
-    "knowledge": "bg-primary",
-    "skills-expertise": "bg-primary",
-    "social-impact": "bg-primary",
-    "other": "bg-primary",
-}
+const CATEGORY_ICON_BG = SELF_DISCOVERY_CATEGORY_ICON_BG
 
 const OTHER_CATEGORY = {
     url: "other",

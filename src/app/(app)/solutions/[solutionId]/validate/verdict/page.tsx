@@ -31,9 +31,9 @@ const VERDICT_LABELS: Record<VerdictKey, string> = {
 }
 
 const VERDICT_BADGES: Record<VerdictKey, string> = {
-  valid: "bg-green-500 text-white",
-  unsure: "bg-orange-500 text-white",
-  invalid: "bg-red-500 text-white",
+  valid: "bg-green-800 text-white",
+  unsure: "bg-yellow-600 text-white",
+  invalid: "bg-red-800 text-white",
 }
 
 const VERDICT_CASE_STUDIES: VerdictCaseStudy[] = [

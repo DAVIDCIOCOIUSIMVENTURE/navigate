@@ -22,7 +22,8 @@
       "Read(//c/Development/OU/navigate/src/app/\\(app\\)/problems/**)",
       "PowerShell(npx tsc --noEmit 2>&1)",
       "PowerShell(npm run lint 2>&1)",
-      "PowerShell(npm run test:run 2>&1)"
+      "PowerShell(npm run test:run 2>&1)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 4000 -State Listen | Select-Object LocalAddress, LocalPort, OwningProcess | Format-Table -AutoSize; Get-NetTCPConnection -LocalPort 4000 -State Listen | ForEach-Object { Get-Process -Id $_.OwningProcess } | Select-Object Id, ProcessName, StartTime | Format-Table -AutoSize)"
     ]
   }
 }

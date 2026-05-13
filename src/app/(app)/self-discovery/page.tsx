@@ -13,7 +13,7 @@ import {
   Trash2,
   type LucideIcon,
 } from "lucide-react"
-import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
+import { SELF_DISCOVERY_CATEGORIES, SELF_DISCOVERY_CATEGORY_ICON_BG } from "@/data/selfDiscoveryData"
 import { getSelfDiscoveryCategoryIcon } from "@/config/navigation"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import type { SelfDiscoveryItem } from "@/store/self-discovery-items-model"
@@ -32,6 +32,7 @@ function CategorySection({
   title,
   description,
   Icon,
+  iconBg,
   count,
   ctaUrl,
   router,
@@ -40,6 +41,7 @@ function CategorySection({
   title: string
   description?: string
   Icon: LucideIcon
+  iconBg: string
   count: number
   ctaUrl: string
   router: ReturnType<typeof useRouter>
@@ -49,7 +51,7 @@ function CategorySection({
     <section className="flex flex-col gap-3 rounded-lg border bg-card p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3 min-w-0">
-          <span className="flex items-center justify-center w-9 h-9 rounded-md bg-primary shrink-0">
+          <span className={cn("flex items-center justify-center w-9 h-9 rounded-md shrink-0", iconBg)}>
             <Icon className="h-4 w-4 text-primary-foreground" aria-hidden="true" />
           </span>
           <div className="min-w-0">
@@ -150,6 +152,7 @@ export default function SelfDiscoveryPage() {
                   title={category.title}
                   description={category.description}
                   Icon={Icon}
+                  iconBg={SELF_DISCOVERY_CATEGORY_ICON_BG[category.url] ?? "bg-primary"}
                   count={itemsForCategory.length}
                   ctaUrl={`${FLOW_BASE}/${category.url}`}
                   router={router}
@@ -200,6 +203,7 @@ export default function SelfDiscoveryPage() {
               title="Other"
               description="Items you've added that don't fit the categories above."
               Icon={getSelfDiscoveryCategoryIcon("other") ?? Plus}
+              iconBg={SELF_DISCOVERY_CATEGORY_ICON_BG["other"] ?? "bg-primary"}
               count={customYouItems.length}
               ctaUrl={`${FLOW_BASE}/other`}
               router={router}

@@ -7,10 +7,10 @@ import { ClipboardCheck, Gauge, Target, Coins, Clock } from "lucide-react"
 import { getAdjacentSteps, useSolution } from "../context"
 
 const METRICS = [
-  { icon: Gauge, title: "Feasibility", description: "How realistic is it to build this solution with the resources and skills available?", bg: "bg-blue-100", color: "text-blue-600" },
-  { icon: Target, title: "Impact", description: "How much value does this solution deliver to the customer and to the business?", bg: "bg-green-100", color: "text-green-600" },
-  { icon: Coins, title: "Cost", description: "What will this solution cost to build, maintain, and deliver?", bg: "bg-amber-100", color: "text-amber-600" },
-  { icon: Clock, title: "Time to Implement", description: "How long will it take to get this solution from idea to delivery?", bg: "bg-purple-100", color: "text-purple-600" },
+  { icon: Gauge, title: "Feasibility", description: "How realistic is it to build this solution with the resources and skills available?", bg: "bg-teal-700", color: "text-white" },
+  { icon: Target, title: "Impact", description: "How much value does this solution deliver to the customer and to the business?", bg: "bg-green-800", color: "text-white" },
+  { icon: Coins, title: "Cost", description: "What will this solution cost to build, maintain, and deliver?", bg: "bg-yellow-600", color: "text-white" },
+  { icon: Clock, title: "Time to Implement", description: "How long will it take to get this solution from idea to delivery?", bg: "bg-blue-900", color: "text-white" },
 ]
 
 export default function IntroductionPage() {

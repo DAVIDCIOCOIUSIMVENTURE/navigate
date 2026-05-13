@@ -51,11 +51,12 @@ CardEyebrow.displayName = "CardEyebrow"
 
 type CardTitleProps = React.HTMLAttributes<HTMLHeadingElement> & {
   icon?: React.ElementType
+  iconBg?: string
   as?: "h1" | "h2" | "h3" | "h4"
 }
 
 const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
-  ({ className, icon: Icon, as: Tag = "h2", children, ...props }, ref) => (
+  ({ className, icon: Icon, iconBg = "bg-primary", as: Tag = "h2", children, ...props }, ref) => (
     <Tag
       ref={ref}
       className={cn(
@@ -65,7 +66,7 @@ const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
       {...props}
     >
       {Icon && (
-        <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary shrink-0">
+        <div className={cn("flex items-center justify-center w-10 h-10 rounded-lg shrink-0", iconBg)}>
           <Icon className="h-5 w-5 text-primary-foreground" />
         </div>
       )}
