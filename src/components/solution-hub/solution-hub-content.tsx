@@ -18,7 +18,7 @@ import {
   TIME_CONTENT,
 } from "@/components/solution-strategies/metric-content"
 import {
-  ArrowRight, ChevronDown, CheckCircle2, ExternalLink, Eye, HelpCircle, Lightbulb,
+  ArrowRight, ChevronDown, CheckCircle2, ExternalLink, HelpCircle, Lightbulb,
   Pencil, RotateCcw, Target, XCircle, Copy,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
@@ -107,7 +107,7 @@ function LinkedProblemSection({ problemId, problemDescription }: { problemId: nu
               {problemDescription || `Problem #${problemId}`}
             </p>
           </div>
-          <Button asChild variant="outline" size="sm" className="h-7 gap-1 text-sm border-primary/40 text-primary hover:bg-primary/5 hover:text-primary shrink-0">
+          <Button asChild variant="outline" size="sm" className="h-7 gap-1 text-sm border-secondary-brand/40 text-secondary-brand hover:bg-secondary-brand/5 hover:text-secondary-brand shrink-0">
             <Link href={`/problems/${problemId}`}>
               <ExternalLink className="h-3 w-3" />
               Open Problem
@@ -302,16 +302,6 @@ export function SolutionHubContent({
 
   return (
     <div className={cn("flex flex-col gap-4", mode === "page" && "gap-6")}>
-      {mode === "dialog" && (
-        <Link
-          href={`/solutions/${solutionId}`}
-          className="inline-flex items-center gap-1.5 text-sm hover:text-foreground self-start"
-        >
-          <ExternalLink className="h-3 w-3" />
-          Open as full page
-        </Link>
-      )}
-
       <HubSection icon={Lightbulb} label="Solution" tone="primary">
         <CoreSolutionStrategy readOnly={readOnly} />
       </HubSection>
@@ -395,17 +385,6 @@ export function SolutionHubContent({
       </HubSection>
 
       <NextStepsSection solutionId={solutionId} />
-
-      {mode === "dialog" && (
-        <div className="flex justify-end border-t pt-4">
-          <Button asChild>
-            <Link href={`/solutions/${solutionId}`}>
-              <Eye className="h-4 w-4 mr-2" />
-              Open full page
-            </Link>
-          </Button>
-        </div>
-      )}
 
       {mode === "page" && !readOnly && (
         <div className="flex justify-end border-t pt-4">
