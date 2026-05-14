@@ -25,9 +25,18 @@ export default function IntroductionPage() {
         <CardTitle icon={ClipboardCheck} iconBg="bg-violet-800">Introduction</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
-        <p className="text-base leading-relaxed">
-          Validation helps you decide whether this solution is worth pursuing. You&apos;ll work through four metrics one at a time, each with guidance and case studies to help you reason about it. At the end, you&apos;ll mark the solution as valid, invalid, or unsure.
-        </p>
+        <div className="flex flex-col md:flex-row gap-6 md:items-center">
+          <div className="flex flex-col gap-4 flex-1 min-w-0">
+            <p className="text-base leading-relaxed">
+              Validation helps you decide whether this solution is worth pursuing. You&apos;ll work through four metrics one at a time, each with guidance and case studies to help you reason about it. At the end, you&apos;ll mark the solution as valid, invalid, or unsure.
+            </p>
+          </div>
+          <img
+            src="/illustrations/16-success.svg"
+            alt=""
+            className="hidden lg:block w-96 h-auto shrink-0 rounded-lg"
+          />
+        </div>
 
         {solution && (
           <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4 flex flex-col gap-3">

@@ -44,7 +44,7 @@ export const DIMENSION_COLORS: Record<string, DimensionColor> = {
     bgIdle: "bg-green-800/5 hover:bg-green-800/10",
     bgExplored: "bg-green-800/10 hover:bg-green-800/20",
     iconBg: "bg-green-800",
-    pill: "bg-green-800/20 text-green-800 dark:bg-green-800/30 dark:text-green-300",
+    pill: "bg-green-800/40 text-green-900 font-bold dark:bg-green-700/40 dark:text-green-200",
     pillBorder: "border-green-800/30",
   },
   contexts: {
@@ -54,7 +54,7 @@ export const DIMENSION_COLORS: Record<string, DimensionColor> = {
     bgIdle: "bg-blue-900/5 hover:bg-blue-900/10",
     bgExplored: "bg-blue-900/10 hover:bg-blue-900/20",
     iconBg: "bg-blue-900",
-    pill: "bg-blue-900/20 text-blue-900 dark:bg-blue-900/30 dark:text-blue-300",
+    pill: "bg-blue-900/40 text-blue-950 font-bold dark:bg-blue-800/40 dark:text-blue-200",
     pillBorder: "border-blue-900/30",
   },
   problems: {
@@ -64,7 +64,7 @@ export const DIMENSION_COLORS: Record<string, DimensionColor> = {
     bgIdle: "bg-red-800/5 hover:bg-red-800/10",
     bgExplored: "bg-red-800/10 hover:bg-red-800/20",
     iconBg: "bg-red-800",
-    pill: "bg-red-800/20 text-red-800 dark:bg-red-800/30 dark:text-red-300",
+    pill: "bg-red-800/40 text-red-900 font-bold dark:bg-red-700/40 dark:text-red-200",
     pillBorder: "border-red-800/30",
   },
   you: {
@@ -74,7 +74,7 @@ export const DIMENSION_COLORS: Record<string, DimensionColor> = {
     bgIdle: "bg-yellow-600/5 hover:bg-yellow-600/10",
     bgExplored: "bg-yellow-600/10 hover:bg-yellow-600/20",
     iconBg: "bg-yellow-600",
-    pill: "bg-yellow-600/25 text-yellow-700 dark:bg-yellow-600/30 dark:text-yellow-200",
+    pill: "bg-yellow-600/40 text-yellow-800 font-bold dark:bg-yellow-500/40 dark:text-yellow-100",
     pillBorder: "border-yellow-600/30",
   },
 }
