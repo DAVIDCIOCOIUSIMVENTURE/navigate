@@ -132,8 +132,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   const headerTitle = section && (
     <h1 className="flex items-center gap-2 ml-2 text-xl font-bold min-w-0">
-      <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary shrink-0" aria-hidden="true">
-        <section.Icon className="h-4 w-4 text-primary-foreground" />
+      <span className="flex h-7 w-7 items-center justify-center rounded-md bg-secondary-brand shrink-0" aria-hidden="true">
+        <section.Icon className="h-4 w-4 text-secondary-brand-foreground" />
       </span>
       <span className="truncate">{section.title}</span>
     </h1>

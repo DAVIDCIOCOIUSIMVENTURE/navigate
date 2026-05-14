@@ -157,8 +157,8 @@ function CaseStudyCard({ caseStudy }: { caseStudy: FoundationsCaseStudy }) {
   const OutcomeIcon = isRight ? CheckCircle2 : AlertTriangle
   const outcomeLabel = isRight ? "What went right" : "What went wrong"
   const outcomeClasses = isRight
-    ? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
-    : "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400"
+    ? "bg-success text-success-foreground shadow-sm"
+    : "bg-destructive text-destructive-foreground shadow-sm"
 
   return (
     <div className="flex flex-col gap-2 rounded-lg border p-4">
