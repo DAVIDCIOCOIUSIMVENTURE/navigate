@@ -168,6 +168,7 @@ function SuggestionTreeItem({
             <Checkbox
                 checked={isSelected}
                 onCheckedChange={() => onToggle(item.id, item.label)}
+                className="border-secondary-brand data-[state=checked]:bg-secondary-brand data-[state=checked]:text-secondary-brand-foreground"
             />
             <span className={cn(
                 "text-sm text-foreground select-none",
@@ -329,7 +330,7 @@ export default function QuestionPage() {
                                                 }}
                                                 className="text-sm h-9"
                                             />
-                                            <Button onClick={handleAddAnswer} size="sm" className="gap-1.5">
+                                            <Button onClick={handleAddAnswer} size="sm" variant="secondary-brand" className="gap-1.5">
                                                 <Plus className="h-3.5 w-3.5" />
                                                 Add
                                             </Button>
