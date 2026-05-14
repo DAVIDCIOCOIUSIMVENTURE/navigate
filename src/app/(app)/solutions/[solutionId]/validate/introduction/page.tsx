@@ -30,6 +30,9 @@ export default function IntroductionPage() {
             <p className="text-base leading-relaxed">
               Validation helps you decide whether this solution is worth pursuing. You&apos;ll work through four metrics one at a time, each with guidance and case studies to help you reason about it. At the end, you&apos;ll mark the solution as valid, invalid, or unsure.
             </p>
+            <p className="text-base leading-relaxed">
+              The aim is not to fall in love with the solution; it is to stress-test it against feasibility, impact, cost, and time so you can commit to building it (or walk away) with your eyes open.
+            </p>
           </div>
           <img
             src="/illustrations/16-success.svg"

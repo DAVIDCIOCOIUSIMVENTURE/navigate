@@ -49,7 +49,7 @@ Icons sitting on these tiles use `text-white` (or `text-primary-foreground` for 
 
 ### Out-of-scope (deliberately keep their own visual language)
 
-* Dimension visuals (Customers / Contexts / Problems / You) from `src/lib/dimension-visuals.ts` use a single color family per dimension that matches the dark `iconBg`: green (Customers), blue (Contexts), red (Problems), yellow (You). Pills use the solid dimension shade as the background (`bg-green-800`, `bg-blue-900`, `bg-red-800`, `bg-yellow-600`) with `text-white`. Column accents tint the same family at `/10` to `/20`.
+* Dimension visuals (Customers / Contexts / Problems / You) from `src/lib/dimension-visuals.ts` use a single color family per dimension that matches the dark `iconBg`: green (Customers), blue (Contexts), red (Problems), yellow (You). Pills tint the same dark shade as the iconBg (e.g. `bg-green-800/20`, `bg-blue-900/20`, `bg-red-800/20`, `bg-yellow-600/25`) so the background is a muted version of the dimension color, and text uses the dimension's full primary dark shade (matches the dimension title). Column accents tint the same family at `/10` to `/20`.
 * Status pills (`unvalidated`, `in progress`, `valid`, `invalid`, etc.) use soft `bg-X-100 text-X-700` so they fade into rows.
 * Competition signal backgrounds use a semantic intensity gradient (`bg-X-500/30`) and must preserve order from low to high.
 * SCAMPER letter badges draw from the saturated dark palette (`bg-red-800`, `bg-orange-700`, `bg-yellow-600`, `bg-emerald-800`, `bg-teal-700`, `bg-rose-800`, `bg-violet-800`) so each letter stays visually distinct while matching the brand theme.
