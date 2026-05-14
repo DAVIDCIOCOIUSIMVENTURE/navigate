@@ -864,7 +864,7 @@ function ProblemBuilder({
                   <Button variant="outline" size="sm" onClick={() => setStep("pick")}>
                     Add More Dimensions
                   </Button>
-                  <Button onClick={handleSave} disabled={totalSelections === 0} className="gap-2">
+                  <Button size="sm" onClick={handleSave} disabled={totalSelections === 0} className="gap-2">
                     <Save className="h-3.5 w-3.5" />
                     Save Problem
                   </Button>
