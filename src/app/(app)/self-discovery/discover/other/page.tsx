@@ -105,7 +105,7 @@ export default function OtherCategoryPage() {
                                 ))}
                             </div>
                         )}
-                        <div className="flex gap-2 shrink-0">
+                        <div className="flex gap-2 shrink-0 items-center">
                             <Input
                                 placeholder="Add your own..."
                                 value={draft}
@@ -118,7 +118,7 @@ export default function OtherCategoryPage() {
                                 }}
                                 className="text-sm h-9"
                             />
-                            <Button onClick={handleAdd} size="sm" className="gap-1.5" disabled={!draft.trim()}>
+                            <Button onClick={handleAdd} variant="secondary-brand" size="sm" className="gap-1.5" disabled={!draft.trim()}>
                                 <Plus className="h-3.5 w-3.5" />
                                 Add
                             </Button>
