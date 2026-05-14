@@ -28,8 +28,8 @@ export default function ProblemsPage() {
           <div className="flex flex-wrap items-center gap-4">
             <p className="flex-1 min-w-[16rem] text-base leading-relaxed">
               This is your <span className="font-bold">problem library</span>, a central place to collect, refine, and track the problems you&apos;ve identified.
-              The workflow has two steps. First, <span className="font-semibold">identify</span> problems worth solving by combining customer segments, contexts, and types of pain with what you&apos;ve learned about yourself.
-              Then <span className="font-semibold">validate</span> each one by refining who feels it, when it shows up, why it matters, and how today&apos;s alternatives fall short, so you can decide whether it&apos;s real and painful enough to commit to.
+              The workflow has two steps. First, <span className="font-bold">identify</span> problems worth solving by combining customer segments, contexts, and types of pain with what you&apos;ve learned about yourself.
+              Then <span className="font-bold">validate</span> each one by refining who feels it, when it shows up, why it matters, and how today&apos;s alternatives fall short, so you can decide whether it&apos;s real and painful enough to commit to.
             </p>
             <Button onClick={() => setDialogOpen(true)} className="gap-2 shrink-0">
               <Plus className="h-4 w-4" />
