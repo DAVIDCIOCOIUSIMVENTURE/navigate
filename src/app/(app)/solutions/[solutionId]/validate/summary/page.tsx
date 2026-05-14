@@ -30,7 +30,7 @@ export default function ValidationSummaryPage() {
           ) : <div />}
           <Button
             variant="outline"
-            className="border-primary/40 text-primary hover:bg-primary/5 hover:text-primary"
+            className="bg-[#fcfbf8] border-secondary-brand/40 text-secondary-brand hover:bg-secondary-brand/5 hover:text-secondary-brand"
             onClick={() => router.push(`/solutions/${solutionId}`)}
           >
             <ExternalLink className="h-4 w-4 mr-2" />

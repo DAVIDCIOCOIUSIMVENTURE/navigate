@@ -86,6 +86,7 @@ export function EditSolutionDialog({ solution, onClose }: EditSolutionDialogProp
                 value={fields.title}
                 onChange={(e) => setFields((prev) => ({ ...prev, title: e.target.value }))}
                 placeholder="Short solution title"
+                className="bg-[#fcfbf8]"
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -96,6 +97,7 @@ export function EditSolutionDialog({ solution, onClose }: EditSolutionDialogProp
                 onChange={(e) => setFields((prev) => ({ ...prev, description: e.target.value }))}
                 placeholder="Describe the solution..."
                 rows={4}
+                className="bg-[#fcfbf8]"
               />
             </div>
           </div>
@@ -112,7 +114,7 @@ export function EditSolutionDialog({ solution, onClose }: EditSolutionDialogProp
           <DialogFooter>
             <Button
               variant="outline"
-              className="border-primary/40 text-primary hover:bg-primary/5 hover:text-primary"
+              className="bg-[#fcfbf8] border-secondary-brand/40 text-secondary-brand hover:bg-secondary-brand/5 hover:text-secondary-brand"
               onClick={() => {
                 onClose()
                 router.push(`/solutions/${solution.id}`)
