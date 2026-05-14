@@ -139,7 +139,7 @@ function SuggestionTreeItem({
                         {item.label}
                     </span>
                     {selectedCount > 0 && (
-                        <span className="text-sm text-primary font-medium tabular-nums">
+                        <span className="text-sm text-secondary-brand font-medium tabular-nums">
                             {selectedCount}
                         </span>
                     )}

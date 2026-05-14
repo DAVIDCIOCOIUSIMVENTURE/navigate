@@ -276,7 +276,11 @@ export function DimensionPicker({
                       key={id}
                       className="flex items-center gap-2.5 px-1 py-1 cursor-pointer rounded hover:bg-accent/50"
                     >
-                      <Checkbox checked onCheckedChange={() => toggle(id)} />
+                      <Checkbox
+                        checked
+                        onCheckedChange={() => toggle(id)}
+                        className="border-secondary-brand data-[state=checked]:bg-secondary-brand data-[state=checked]:text-secondary-brand-foreground"
+                      />
                       <span className="text-sm font-medium text-muted-foreground italic">{text}</span>
                     </label>
                   )

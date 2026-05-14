@@ -53,7 +53,11 @@ export function EditableLeafItem({
   if (isEditing) {
     return (
       <div className="flex items-center gap-2.5 px-1 py-1.5">
-        <Checkbox checked={isChecked} onCheckedChange={onToggle} />
+        <Checkbox
+          checked={isChecked}
+          onCheckedChange={onToggle}
+          className="border-secondary-brand data-[state=checked]:bg-secondary-brand data-[state=checked]:text-secondary-brand-foreground"
+        />
         <Input
           autoFocus
           value={draft}
@@ -74,7 +78,11 @@ export function EditableLeafItem({
   return (
     <div className="group flex items-center gap-2.5 px-1 py-1.5 rounded-md hover:bg-accent/50 transition-colors">
       <label className="flex flex-1 min-w-0 items-center gap-2.5 cursor-pointer">
-        <Checkbox checked={isChecked} onCheckedChange={onToggle} />
+        <Checkbox
+          checked={isChecked}
+          onCheckedChange={onToggle}
+          className="border-secondary-brand data-[state=checked]:bg-secondary-brand data-[state=checked]:text-secondary-brand-foreground"
+        />
         <span className={cn(
           "text-sm text-foreground select-none",
           isChecked && "font-medium"

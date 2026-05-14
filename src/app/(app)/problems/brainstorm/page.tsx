@@ -350,7 +350,7 @@ function GuidancePanel({ title, description, tips, className }: {
         <ul className="flex flex-col gap-1.5">
           {tips.map((tip, i) => (
             <li key={i} className="flex gap-2 leading-relaxed">
-              <span className="text-primary mt-0.5 shrink-0">&#8226;</span>
+              <span className="text-secondary-brand mt-0.5 shrink-0">&#8226;</span>
               <span>{tip}</span>
             </li>
           ))}
