@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog"
-import { Brain, Clock, PenLine, ArrowRight, Target } from "lucide-react"
+import { Brain, Clock, PenLine, ArrowRight } from "lucide-react"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
 import { useRouter } from "next/navigation"
@@ -61,12 +61,7 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
       <Dialog open={open} onOpenChange={handleClose}>
         <DialogContent className="sm:max-w-lg">
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary shrink-0">
-                <Target className="h-5 w-5 text-primary-foreground" />
-              </div>
-              Identify Problems
-            </DialogTitle>
+            <DialogTitle>Identify Problems</DialogTitle>
             <DialogDescription>
               Choose how you&apos;d like to identify a problem worth solving.
             </DialogDescription>

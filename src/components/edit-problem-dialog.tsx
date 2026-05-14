@@ -80,7 +80,9 @@ export function EditProblemDialog({ problem, onClose, title = "Edit Problem", sh
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{title}</DialogTitle>
-          <DialogDescription className="sr-only">{title}</DialogDescription>
+          <DialogDescription>
+            Refine the problem statement and the dimensions that frame it.
+          </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-5 py-4">
           <div className="flex flex-col gap-2">
