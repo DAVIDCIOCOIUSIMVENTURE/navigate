@@ -323,7 +323,7 @@ function ScamperForm() {
           <ToggleGroupItem
             value="tabs"
             aria-label="Tabs view"
-            className="shrink-0 whitespace-nowrap text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-primary"
+            className="shrink-0 whitespace-nowrap text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-secondary-brand"
           >
             <LayoutPanelTop className="h-4 w-4" />
             <span className="text-sm">Tabs</span>
@@ -331,7 +331,7 @@ function ScamperForm() {
           <ToggleGroupItem
             value="accordion"
             aria-label="Accordion view"
-            className="shrink-0 whitespace-nowrap text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-primary"
+            className="shrink-0 whitespace-nowrap text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-secondary-brand"
           >
             <Rows3 className="h-4 w-4" />
             <span className="text-sm">Accordion</span>
@@ -373,7 +373,7 @@ function ScamperForm() {
               <TabsTrigger
                 key={key}
                 value={key}
-                className="gap-2 text-white/80 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow"
+                className="gap-2 text-white/80 data-[state=active]:bg-white data-[state=active]:text-secondary-brand data-[state=active]:shadow"
               >
                 <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${color} text-white text-[10px] font-bold`}>
                   {letter}
@@ -699,7 +699,7 @@ function ImprovementForm() {
           <ToggleGroupItem
             value="tabs"
             aria-label="Tabs view"
-            className="shrink-0 whitespace-nowrap text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-primary"
+            className="shrink-0 whitespace-nowrap text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-secondary-brand"
           >
             <LayoutPanelTop className="h-4 w-4" />
             <span className="text-sm">Tabs</span>
@@ -707,7 +707,7 @@ function ImprovementForm() {
           <ToggleGroupItem
             value="accordion"
             aria-label="Accordion view"
-            className="shrink-0 whitespace-nowrap text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-primary"
+            className="shrink-0 whitespace-nowrap text-white/80 hover:bg-white/10 hover:text-white data-[state=on]:bg-white data-[state=on]:text-secondary-brand"
           >
             <Rows3 className="h-4 w-4" />
             <span className="text-sm">Accordion</span>
@@ -754,7 +754,7 @@ function ImprovementForm() {
               <TabsTrigger
                 key={group}
                 value={group}
-                className="gap-2 text-white/80 data-[state=active]:bg-white data-[state=active]:text-primary data-[state=active]:shadow"
+                className="gap-2 text-white/80 data-[state=active]:bg-white data-[state=active]:text-secondary-brand data-[state=active]:shadow"
               >
                 <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${color} text-white`}>
                   <Icon className="h-3 w-3" />
@@ -1434,9 +1434,9 @@ const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo:
     description: "SCAMPER is a creative thinking technique that prompts you to look at a problem from seven angles: Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate, and Reverse. Each prompt sparks ideas you wouldn't reach through normal brainstorming.",
     whatYouDo: "Work through each of the <strong>7 SCAMPER prompts</strong> below. You don't need to fill in every one, but try at least 3-4. When you find a promising idea, click <strong>Add as Candidate</strong> to save it.",
     hints: [
-      { icon: Shuffle, title: "7 creative angles", subtitle: "Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate, Reverse", bg: "bg-blue-500" },
-      { icon: Plus, title: "Save the best ideas", subtitle: "Click \"Add as Candidate\" to promote ideas to your Solution Bank", bg: "bg-amber-500" },
-      { icon: Shuffle, title: "Quantity over quality", subtitle: "Generate lots of ideas first. You'll refine them later", bg: "bg-emerald-500" },
+      { icon: Shuffle, title: "7 creative angles", subtitle: "Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate, Reverse", bg: "bg-blue-900" },
+      { icon: Plus, title: "Save the best ideas", subtitle: "Click \"Add as Candidate\" to promote ideas to your Solution Bank", bg: "bg-yellow-600" },
+      { icon: Shuffle, title: "Quantity over quality", subtitle: "Generate lots of ideas first. You'll refine them later", bg: "bg-green-800" },
     ],
   },
   reverse: {
@@ -1444,9 +1444,9 @@ const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo:
     description: "Instead of solving the problem directly, first brainstorm how to make it worse. Then flip each \"make it worse\" idea to discover creative solutions you might not have considered. This counterintuitive approach breaks you out of conventional thinking patterns.",
     whatYouDo: "First, list every way to <strong>make the problem worse</strong>. Be creative, the more outlandish the better. Then <strong>flip each idea</strong> into its opposite to reveal solution ideas. Save the best flips as candidates.",
     hints: [
-      { icon: RotateCcw, title: "Think backwards", subtitle: "How could you make the problem worse?", bg: "bg-rose-500" },
-      { icon: RotateCcw, title: "Flip each idea", subtitle: "The opposite of a bad idea is often a great solution", bg: "bg-blue-500" },
-      { icon: Plus, title: "Save your flips", subtitle: "Add the strongest inversions as solution candidates", bg: "bg-emerald-500" },
+      { icon: RotateCcw, title: "Think backwards", subtitle: "How could you make the problem worse?", bg: "bg-red-800" },
+      { icon: RotateCcw, title: "Flip each idea", subtitle: "The opposite of a bad idea is often a great solution", bg: "bg-blue-900" },
+      { icon: Plus, title: "Save your flips", subtitle: "Add the strongest inversions as solution candidates", bg: "bg-green-800" },
     ],
   },
   analogy: {
@@ -1454,9 +1454,9 @@ const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo:
     description: "Look outside your domain for inspiration. How have other industries solved similar problems? Cross-pollinating ideas from different fields often leads to breakthrough solutions that feel fresh and unexpected.",
     whatYouDo: "Pick a <strong>different industry or domain</strong> that faces a similar challenge. Describe <strong>how they solved it</strong> and what you could borrow or adapt. Save the insight as a candidate if it inspires a concrete solution idea.",
     hints: [
-      { icon: Globe, title: "Look outside your field", subtitle: "Aviation, healthcare, hospitality, logistics...", bg: "bg-blue-500" },
-      { icon: Globe, title: "Borrow and adapt", subtitle: "What worked there that could work here?", bg: "bg-violet-500" },
-      { icon: Plus, title: "Turn insights into candidates", subtitle: "Save analogies that inspire concrete solutions", bg: "bg-emerald-500" },
+      { icon: Globe, title: "Look outside your field", subtitle: "Aviation, healthcare, hospitality, logistics...", bg: "bg-blue-900" },
+      { icon: Globe, title: "Borrow and adapt", subtitle: "What worked there that could work here?", bg: "bg-violet-800" },
+      { icon: Plus, title: "Turn insights into candidates", subtitle: "Save analogies that inspire concrete solutions", bg: "bg-green-800" },
     ],
   },
   improve: {
@@ -1464,9 +1464,9 @@ const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo:
     description: "Systematically improve an existing product or service from the customer's perspective. Work through 15 improvement dimensions covering the entire customer journey: before purchase, during purchase, and after purchase.",
     whatYouDo: "Work through the <strong>15 improvement dimensions</strong> below, organised into 4 groups. You don't need to fill in every one, just focus on the dimensions most relevant to your problem. Your progress is saved automatically as you type. Use <strong>Add Item</strong> to create your own custom dimensions.",
     hints: [
-      { icon: TrendingUp, title: "15 improvement dimensions", subtitle: "Core functionality, ease of use, price value, trust, delivery, and more", bg: "bg-blue-500" },
-      { icon: TrendingUp, title: "Customer journey focus", subtitle: "Think before, during, and after the purchase experience", bg: "bg-amber-500" },
-      { icon: Plus, title: "Add your own", subtitle: "Use \"Add Item\" to create custom improvement dimensions", bg: "bg-emerald-500" },
+      { icon: TrendingUp, title: "15 improvement dimensions", subtitle: "Core functionality, ease of use, price value, trust, delivery, and more", bg: "bg-blue-900" },
+      { icon: TrendingUp, title: "Customer journey focus", subtitle: "Think before, during, and after the purchase experience", bg: "bg-yellow-600" },
+      { icon: Plus, title: "Add your own", subtitle: "Use \"Add Item\" to create custom improvement dimensions", bg: "bg-green-800" },
     ],
   },
 }

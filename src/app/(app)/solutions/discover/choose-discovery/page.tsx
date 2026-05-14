@@ -115,7 +115,7 @@ function ExampleHeader({ title, problem }: { title: string; problem: string }) {
 
 function ExampleCard({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-lg border bg-background p-4 flex flex-col gap-3">
+    <div className="rounded-lg border bg-card p-4 flex flex-col gap-3">
       {children}
     </div>
   )
@@ -164,13 +164,13 @@ function ReverseDialogContent() {
         <ExampleCard>
           <ExampleHeader title={REVERSE_CASE.title} problem={REVERSE_CASE.problem} />
           <div className="flex flex-col gap-2">
-            <div className="rounded-md border border-red-200/70 bg-red-50 dark:border-red-900/60 dark:bg-red-950/40 p-3">
-              <p className="text-sm font-bold uppercase tracking-wide text-red-800 dark:text-red-300 mb-1.5">Make it worse</p>
-              <p className="text-sm text-foreground leading-relaxed">{REVERSE_CASE.worse}</p>
+            <div className="rounded-md border bg-destructive p-3">
+              <p className="text-sm font-bold uppercase tracking-wide text-destructive-foreground mb-1.5">Make it worse</p>
+              <p className="text-sm text-destructive-foreground leading-relaxed">{REVERSE_CASE.worse}</p>
             </div>
-            <div className="rounded-md border border-green-200/70 bg-green-50 dark:border-green-900/60 dark:bg-green-950/40 p-3">
-              <p className="text-sm font-bold uppercase tracking-wide text-green-800 dark:text-green-300 mb-1.5">Flip it into a solution</p>
-              <p className="text-sm text-foreground leading-relaxed">{REVERSE_CASE.inverted}</p>
+            <div className="rounded-md border bg-success p-3">
+              <p className="text-sm font-bold uppercase tracking-wide text-success-foreground mb-1.5">Flip it into a solution</p>
+              <p className="text-sm text-success-foreground leading-relaxed">{REVERSE_CASE.inverted}</p>
             </div>
           </div>
         </ExampleCard>
@@ -191,11 +191,11 @@ function AnalogyDialogContent() {
           {ANALOGY_CASES.map((cs) => (
             <ExampleCard key={cs.title}>
               <ExampleHeader title={cs.title} problem={cs.problem} />
-              <div className="rounded-md border border-blue-200/70 bg-blue-50 dark:border-blue-900/60 dark:bg-blue-950/40 p-3">
-                <p className="text-sm font-bold uppercase tracking-wide text-blue-900 dark:text-blue-300 mb-1.5">
+              <div className="rounded-md border bg-secondary-brand p-3">
+                <p className="text-sm font-bold uppercase tracking-wide text-secondary-brand-foreground mb-1.5">
                   Analogy from: {cs.domain}
                 </p>
-                <p className="text-sm text-foreground leading-relaxed">{cs.insight}</p>
+                <p className="text-sm text-secondary-brand-foreground leading-relaxed">{cs.insight}</p>
               </div>
             </ExampleCard>
           ))}
@@ -218,7 +218,7 @@ function ImproveDialogContent() {
           <div className="flex flex-col divide-y border-t">
             {IMPROVE_CASE.examples.map((ex) => (
               <div key={ex.dimension} className="flex flex-col gap-1 py-2.5 first:pt-3 last:pb-0">
-                <span className="inline-flex self-start rounded-md bg-primary/15 px-2 py-0.5 text-sm font-semibold text-primary">
+                <span className="inline-flex self-start rounded-md bg-secondary-brand px-2 py-0.5 text-sm font-semibold text-secondary-brand-foreground">
                   {ex.dimension}
                 </span>
                 <p className="text-sm text-foreground leading-relaxed">{ex.idea}</p>
