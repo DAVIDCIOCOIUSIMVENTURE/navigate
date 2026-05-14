@@ -41,8 +41,8 @@ export default function ProblemsPage() {
 
       {!mounted || problems.length === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center gap-6 py-24">
-          <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-primary">
-            <Target className="h-8 w-8 text-primary-foreground" />
+          <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-secondary-brand">
+            <Target className="h-8 w-8 text-secondary-brand-foreground" />
           </div>
           <div className="text-center flex flex-col gap-2 max-w-sm">
             <h2 className="text-lg font-semibold">No problems yet</h2>
