@@ -52,8 +52,8 @@ function NavContent({
                 className="w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2"
                 onClick={() => onNavigate(BASE_PATH)}
             >
-                <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-primary">
-                    <Compass className="h-3.5 w-3.5 text-primary-foreground" aria-hidden="true" />
+                <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-violet-800">
+                    <Compass className="h-3.5 w-3.5 text-white" aria-hidden="true" />
                 </span>
                 <span className="flex-1 text-left">Introduction</span>
                 <ChevronDown className="h-4 w-4 shrink-0 opacity-0" aria-hidden="true" />
@@ -137,7 +137,7 @@ function NavContent({
 
 function getActiveInfo(pathname: string): { label: string; Icon: LucideIcon; bgClass: string } {
     if (pathname === BASE_PATH) {
-        return { label: "Introduction", Icon: Compass, bgClass: "bg-primary" }
+        return { label: "Introduction", Icon: Compass, bgClass: "bg-violet-800" }
     }
     if (pathname.startsWith(`${BASE_PATH}/${OTHER_CATEGORY.url}`)) {
         const OtherIcon = getSelfDiscoveryCategoryIcon(OTHER_CATEGORY.url) ?? Compass
@@ -220,8 +220,8 @@ export default function SelfDiscoveryFlowLayout({
             </Button>
             {chromeTriggers}
             <h1 className="flex items-center gap-2 text-xl font-bold min-w-0">
-                <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary shrink-0" aria-hidden="true">
-                    <Compass className="h-4 w-4 text-primary-foreground" />
+                <span className="flex h-7 w-7 items-center justify-center rounded-md bg-secondary-brand shrink-0" aria-hidden="true">
+                    <Compass className="h-4 w-4 text-secondary-brand-foreground" />
                 </span>
                 <span className="truncate">Self Discovery</span>
             </h1>
@@ -285,8 +285,8 @@ export default function SelfDiscoveryFlowLayout({
                         <Card className="flex-1 min-h-0 flex flex-col overflow-hidden">
                             <CardContent className="p-3 flex flex-col gap-3 flex-1 min-h-0">
                                 <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 px-1 pt-1 pb-3 border-b">
-                                    <span className="flex h-7 w-7 items-center justify-center rounded-md bg-primary shrink-0" aria-hidden="true">
-                                        <Compass className="h-4 w-4 text-primary-foreground" />
+                                    <span className="flex h-7 w-7 items-center justify-center rounded-md bg-secondary-brand shrink-0" aria-hidden="true">
+                                        <Compass className="h-4 w-4 text-secondary-brand-foreground" />
                                     </span>
                                     <span className="truncate">Self Discovery</span>
                                 </h1>

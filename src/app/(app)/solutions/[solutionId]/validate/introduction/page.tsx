@@ -22,7 +22,7 @@ export default function IntroductionPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={ClipboardCheck}>Introduction</CardTitle>
+        <CardTitle icon={ClipboardCheck} iconBg="bg-violet-800">Introduction</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <p className="text-base leading-relaxed">

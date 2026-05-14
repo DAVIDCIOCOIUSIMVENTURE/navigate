@@ -95,12 +95,12 @@ export default function FoundationsSectionPage() {
       </CardContent>
       <CardFooter className={cn("shrink-0 flex items-center justify-between border-t gap-3", roomy ? "px-10 py-6" : "px-6 py-4")}>
         {prev ? (
-          <Button variant="ghost" onClick={() => router.push(`/foundations/${prev.url}`)}>
+          <Button variant="outline" onClick={() => router.push(`/foundations/${prev.url}`)}>
             <ChevronLeft className="mr-2 h-4 w-4" />
             {prev.shortTitle}
           </Button>
         ) : (
-          <Button variant="ghost" onClick={() => router.push("/foundations")}>
+          <Button variant="outline" onClick={() => router.push("/foundations")}>
             <ChevronLeft className="mr-2 h-4 w-4" />
             Introduction
           </Button>

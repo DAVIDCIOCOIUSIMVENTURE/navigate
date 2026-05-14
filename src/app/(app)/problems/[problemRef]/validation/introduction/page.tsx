@@ -52,13 +52,25 @@ export default function IntroductionPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={ClipboardCheck}>Introduction</CardTitle>
+        <CardTitle icon={ClipboardCheck} iconBg="bg-violet-800">Introduction</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
 
-        <p className="text-base leading-relaxed">
-          It&apos;s time to validate whether this problem is truly worth solving. You&apos;ll work through your customer, the way the problem really shows up, the alternatives people already use, the size of the market, and the competitive landscape, then commit to a verdict you can defend with the evidence in front of you. The goal is not to prove yourself right; it is to gather enough to make an honest call before you invest in a solution.
-        </p>
+        <div className="flex flex-col md:flex-row gap-6 md:items-center">
+          <div className="flex flex-col gap-4 flex-1 min-w-0">
+            <p className="text-base leading-relaxed">
+              It&apos;s time to validate whether this problem is truly worth solving. You&apos;ll work through your customer, the way the problem really shows up, the alternatives people already use, the size of the market, and the competitive landscape, then commit to a verdict you can defend with the evidence in front of you.
+            </p>
+            <p className="text-base leading-relaxed">
+              The goal is not to prove yourself right; it is to gather enough to make an honest call before you invest in a solution.
+            </p>
+          </div>
+          <img
+            src="/illustrations/06-flask.svg"
+            alt=""
+            className="hidden lg:block w-96 h-auto shrink-0 rounded-lg"
+          />
+        </div>
 
         {mounted && problem && (
           <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4 flex flex-col gap-3">

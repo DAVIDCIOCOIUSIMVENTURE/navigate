@@ -26,7 +26,7 @@ export default function FoundationsPage() {
   return (
     <Card className="w-full h-full flex flex-col overflow-hidden">
       <CardHeader className={cn("pb-0 shrink-0", roomy ? "px-10 pt-10" : "px-6 pt-6")}>
-        <CardTitle icon={BookOpen}>Introduction</CardTitle>
+        <CardTitle icon={BookOpen} iconBg="bg-violet-800">Introduction</CardTitle>
       </CardHeader>
       <CardContent className={cn("flex-1 flex flex-col gap-6 overflow-y-auto min-h-0", roomy ? "p-10 pt-6" : "p-6 pt-4")}>
         <div className="flex flex-col md:flex-row gap-6 md:items-center">
@@ -77,7 +77,7 @@ export default function FoundationsPage() {
         </div>
       </CardContent>
       <CardFooter className={cn("shrink-0 flex justify-between border-t gap-3", roomy ? "px-10 py-6" : "px-6 py-4")}>
-        <Button variant="ghost" onClick={() => router.push("/self-discovery")}>
+        <Button variant="outline" onClick={() => router.push("/self-discovery")}>
           Skip to Self Discovery
         </Button>
         <Button onClick={() => router.push(`/foundations/${firstSectionUrl}`)}>
