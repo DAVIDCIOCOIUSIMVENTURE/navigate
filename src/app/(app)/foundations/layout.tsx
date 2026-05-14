@@ -30,7 +30,10 @@ function NavContent({
         <div className="flex flex-col gap-1">
             <Button
                 variant={pathname === "/foundations" ? "secondary" : "ghost"}
-                className="w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2"
+                className={cn(
+                    "w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2 hover:text-secondary-brand",
+                    pathname === "/foundations" && "text-secondary-brand",
+                )}
                 onClick={() => onNavigate("/foundations")}
             >
                 <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-violet-800">
@@ -46,7 +49,10 @@ function NavContent({
                     <Button
                         key={section.url}
                         variant={isActive ? "secondary" : "ghost"}
-                        className="w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2"
+                        className={cn(
+                            "w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2 hover:text-secondary-brand",
+                            isActive && "text-secondary-brand",
+                        )}
                         onClick={() => onNavigate(`/foundations/${section.url}`)}
                     >
                         <span className={cn("flex items-center justify-center w-6 h-6 rounded-md shrink-0", bgClass)}>

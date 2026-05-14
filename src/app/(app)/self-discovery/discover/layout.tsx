@@ -49,7 +49,10 @@ function NavContent({
         <div className="flex flex-col gap-1">
             <Button
                 variant={pathname === BASE_PATH ? "secondary" : "ghost"}
-                className="w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2"
+                className={cn(
+                    "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2 hover:text-secondary-brand",
+                    pathname === BASE_PATH && "text-secondary-brand",
+                )}
                 onClick={() => onNavigate(BASE_PATH)}
             >
                 <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-violet-800">
@@ -69,10 +72,10 @@ function NavContent({
                     <AccordionItem key={category.url} value={category.url}>
                         <AccordionTrigger
                             className={`w-full h-auto py-1.5 gap-4 justify-between px-3 text-sm text-left whitespace-normal rounded-md hover:no-underline ${pathname === `${BASE_PATH}/${category.url}`
-                                ? "bg-secondary text-secondary-foreground"
+                                ? "bg-secondary text-secondary-brand"
                                 : pathname.startsWith(`${BASE_PATH}/${category.url}/`)
-                                    ? "text-foreground hover:bg-accent hover:text-primary"
-                                    : "hover:bg-accent hover:text-primary"
+                                    ? "text-foreground hover:bg-accent hover:text-secondary-brand"
+                                    : "hover:bg-accent hover:text-secondary-brand"
                                 }`}
                             aria-label={`${category.title} category`}
                             onClick={(e) => {
@@ -104,8 +107,8 @@ function NavContent({
                                             className={cn(
                                                 "text-sm cursor-pointer rounded-md px-2 py-1",
                                                 isActive
-                                                    ? "bg-secondary text-secondary-foreground font-medium"
-                                                    : "text-foreground hover:text-primary"
+                                                    ? "bg-secondary text-secondary-brand font-medium"
+                                                    : "text-foreground hover:text-secondary-brand"
                                             )}
                                             onClick={() => onNavigate(`${BASE_PATH}/${category.url}/${question.url}`)}
                                             role="menuitem"
@@ -122,7 +125,10 @@ function NavContent({
             </Accordion>
             <Button
                 variant={isOtherActive ? "secondary" : "ghost"}
-                className="w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2"
+                className={cn(
+                    "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2 hover:text-secondary-brand",
+                    isOtherActive && "text-secondary-brand",
+                )}
                 onClick={() => onNavigate(`${BASE_PATH}/${OTHER_CATEGORY.url}`)}
             >
                 <span className={cn("flex items-center justify-center w-6 h-6 rounded-md shrink-0", otherBgClass)}>

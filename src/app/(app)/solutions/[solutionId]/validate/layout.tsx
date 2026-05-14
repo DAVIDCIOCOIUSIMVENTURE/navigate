@@ -61,7 +61,7 @@ function NavItems({
             )}
             <Button
               variant={isActive ? "secondary" : "ghost"}
-              className={`w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2 ${isActive ? "text-primary" : ""}`}
+              className={`w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2 hover:text-secondary-brand ${isActive ? "text-secondary-brand" : ""}`}
               onClick={() => onNavigate(href)}
               aria-current={isActive ? "page" : undefined}
             >

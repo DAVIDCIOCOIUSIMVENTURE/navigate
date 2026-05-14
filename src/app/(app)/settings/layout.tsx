@@ -33,13 +33,13 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
                     disabled={item.disabled}
                     aria-disabled={item.disabled}
                     title={item.disabled ? "Coming soon" : undefined}
-                    className="w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2"
+                    className={`w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2 hover:text-secondary-brand ${isActive ? "text-secondary-brand" : ""}`}
                     onClick={() => {
                       if (item.disabled) return
                       router.push(`/settings/${item.path}`)
                     }}
                   >
-                    <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? "text-primary" : ""}`} />
+                    <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? "text-secondary-brand" : ""}`} />
                     <span className="flex-1 text-left">{item.label}</span>
                     {item.disabled && (
                       <span className="text-[10px] font-medium text-muted-foreground/70 uppercase tracking-wide shrink-0">
