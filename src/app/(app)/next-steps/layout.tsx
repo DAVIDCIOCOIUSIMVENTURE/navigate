@@ -25,10 +25,10 @@ function NavContent({
         className="w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2"
         onClick={() => onNavigate("/next-steps")}
       >
-        <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-primary">
-          <Milestone className="h-3.5 w-3.5 text-primary-foreground" aria-hidden="true" />
+        <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-violet-800">
+          <Milestone className="h-3.5 w-3.5 text-white" aria-hidden="true" />
         </span>
-        <span className="flex-1 text-left">Overview</span>
+        <span className="flex-1 text-left">Introduction</span>
       </Button>
       {NEXT_STEPS_TOPICS.map((topic) => {
         const isActive = pathname === `/next-steps/${topic.url}`
@@ -54,7 +54,7 @@ function NavContent({
 
 function getActiveInfo(pathname: string): { label: string; Icon: LucideIcon; bgClass: string } {
   if (pathname === "/next-steps") {
-    return { label: "Overview", Icon: Milestone, bgClass: "bg-primary" }
+    return { label: "Introduction", Icon: Milestone, bgClass: "bg-violet-800" }
   }
   for (const topic of NEXT_STEPS_TOPICS) {
     if (pathname === `/next-steps/${topic.url}`) {

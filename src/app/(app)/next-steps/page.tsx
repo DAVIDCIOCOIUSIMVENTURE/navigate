@@ -4,12 +4,12 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 import { getProblemLabel } from "@/store/problems-model"
-import { Sparkles, Lightbulb, Target, ChevronRight } from "lucide-react"
+import { Sparkles, Lightbulb, Milestone, Target, ChevronRight } from "lucide-react"
 import { NEXT_STEPS_TOPICS, NEXT_STEPS_TOPIC_ICON_BG, type NextStepsTopic } from "@/data/nextStepsData"
 import { getNextStepsTopicIcon } from "@/config/navigation"
 
@@ -32,7 +32,10 @@ export default function NextStepsPage() {
 
   return (
     <Card className="w-full h-full flex flex-col overflow-hidden">
-      <CardContent className={cn("flex-1 flex flex-col gap-8 overflow-y-auto min-h-0", roomy ? "p-10" : "p-6")}>
+      <CardHeader className={cn("pb-0 shrink-0", roomy ? "px-10 pt-10" : "px-6 pt-6")}>
+        <CardTitle icon={Milestone} iconBg="bg-violet-800">Introduction</CardTitle>
+      </CardHeader>
+      <CardContent className={cn("flex-1 flex flex-col gap-8 overflow-y-auto min-h-0", roomy ? "p-10 pt-6" : "p-6 pt-4")}>
         <div className="flex flex-col gap-2">
           <p className="text-sm italic flex items-start gap-2">
             <Sparkles className="h-3.5 w-3.5 shrink-0 mt-1" aria-hidden="true" />
