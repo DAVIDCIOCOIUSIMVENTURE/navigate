@@ -894,7 +894,7 @@ function ProblemBuilder({
                     key={id}
                     className={cn("inline-flex items-center gap-1 text-sm rounded-full px-2 py-0.5", colors?.pill || "bg-primary/10 text-primary")}
                   >
-                    {Icon && <Icon className="h-3 w-3 shrink-0" />}
+                    {Icon && <Icon className={cn("h-3 w-3 shrink-0", colors?.icon)} />}
                     {label}
                     <button
                       onClick={() => toggleItem(col.id, id)}
@@ -1399,7 +1399,7 @@ export default function BrainstormPage() {
                     key={id}
                     className={cn("inline-flex items-center gap-1 text-sm rounded-full px-2 py-0.5", colors?.pill || "bg-primary/10 text-primary")}
                   >
-                    {Icon && <Icon className="h-3 w-3 shrink-0" />}
+                    {Icon && <Icon className={cn("h-3 w-3 shrink-0", colors?.icon)} />}
                     {label}
                     <button
                       onClick={() => toggleItem(id)}
