@@ -15,9 +15,10 @@ interface MetricStepProps {
   content: MetricContent
   value: number | null
   onChange: (val: number | null) => void
+  iconBg?: string
 }
 
-export function MetricStep({ content, value, onChange }: MetricStepProps) {
+export function MetricStep({ content, value, onChange, iconBg }: MetricStepProps) {
   const router = useRouter()
   const pathname = usePathname()
   const { solutionId, solution, problem } = useSolution()
@@ -28,7 +29,7 @@ export function MetricStep({ content, value, onChange }: MetricStepProps) {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={Icon}>{title}</CardTitle>
+        <CardTitle icon={Icon} iconBg={iconBg}>{title}</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         {(solution?.title || problem?.description) && (
@@ -98,7 +99,7 @@ function CaseStudies({
   scale: ScaleStop[]
 }) {
   return (
-    <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-4">
+    <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-4">
       <p className="text-base text-white">
         See how companies have thought about this metric. Each example shows the score they would have given, the reasoning behind it, and what happened next.
       </p>

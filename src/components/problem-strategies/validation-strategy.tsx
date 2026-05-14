@@ -443,9 +443,9 @@ function VerdictButtons({
     <div className="flex flex-col gap-3">
       <p className="text-base font-medium text-white">Your verdict</p>
       {([
-        { value: "valid" as const, label: "Valid: Worth Solving", icon: <CheckCircle2 className="h-4 w-4" />, color: "text-green-700 border-green-300 bg-green-50" },
-        { value: "unsure" as const, label: "Unsure: May Be Worth Solving", icon: <HelpCircle className="h-4 w-4" />, color: "text-orange-700 border-orange-300 bg-orange-50" },
-        { value: "invalid" as const, label: "Invalid: Not Worth Solving", icon: <XCircle className="h-4 w-4" />, color: "text-red-700 border-red-300 bg-red-50" },
+        { value: "valid" as const, label: "Valid: Worth Solving", icon: <CheckCircle2 className="h-4 w-4" />, color: "text-success border-success bg-success-foreground" },
+        { value: "unsure" as const, label: "Unsure: May Be Worth Solving", icon: <HelpCircle className="h-4 w-4" />, color: "text-tertiary border-tertiary bg-tertiary-foreground" },
+        { value: "invalid" as const, label: "Invalid: Not Worth Solving", icon: <XCircle className="h-4 w-4" />, color: "text-destructive border-destructive bg-destructive-foreground" },
       ]).filter((option) => !readOnly || (mounted && status === option.value)).map((option) => (
         <button
           key={option.value}
@@ -462,7 +462,7 @@ function VerdictButtons({
           <div className={cn(
             "flex items-center justify-center w-5 h-5 rounded-full border-2 shrink-0 transition-colors",
             mounted && status === option.value
-              ? option.value === "valid" ? "border-green-600 bg-green-600" : option.value === "unsure" ? "border-orange-500 bg-orange-500" : "border-red-500 bg-red-500"
+              ? option.value === "valid" ? "border-success bg-success" : option.value === "unsure" ? "border-tertiary bg-tertiary" : "border-destructive bg-destructive"
               : "border-white/50"
           )}>
             {mounted && status === option.value && (

@@ -26,7 +26,7 @@ export default function CustomerSegmentPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={Users}>Define your customer</CardTitle>
+        <CardTitle icon={Users} iconBg="bg-teal-700">Define your customer</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-base">
@@ -115,14 +115,14 @@ export default function CustomerSegmentPage() {
         <h3 className="mt-4 text-xl font-bold text-foreground">What will you do?</h3>
         <div className="flex flex-col gap-3 text-base">
           <div className="flex items-center gap-3">
-            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-500 text-white text-sm font-bold shrink-0">1</span>
+            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-800 text-white text-sm font-bold shrink-0">1</span>
             <div>
               <p className="font-semibold text-foreground">Describe your customer</p>
               <p className="text-base">Paint a clear picture of who experiences this problem, using the filters above to be as specific as possible.</p>
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500 text-white text-sm font-bold shrink-0">2</span>
+            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-800 text-white text-sm font-bold shrink-0">2</span>
             <div>
               <p className="font-semibold text-foreground">Estimate the segment size</p>
               <p className="text-base">How many people fit this description? An order-of-magnitude is fine.</p>
@@ -150,7 +150,7 @@ export default function CustomerSegmentPage() {
           </TabsContent>
 
           <TabsContent value="case-studies">
-            <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-4">
+            <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-4">
               <p className="text-base text-white">
                 See how successful companies defined their early customer. Notice how specific they were; they didn&apos;t try to serve everyone. Use these examples as inspiration when writing your own strategy.
               </p>

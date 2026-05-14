@@ -21,7 +21,7 @@ export default function CompetitionPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={Building2}>Assess the competition</CardTitle>
+        <CardTitle icon={Building2} iconBg="bg-red-800">Assess the competition</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-base">
@@ -34,7 +34,7 @@ export default function CompetitionPage() {
           <h3 className="mt-4 text-xl font-bold text-foreground">How to read each signal</h3>
           <div className={cn("grid gap-3", containerSize === "narrow" ? "grid-cols-1" : "grid-cols-3")}>
             <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500 shrink-0 mt-0.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-900 shrink-0 mt-0.5">
                 <ArrowRightLeft className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -43,7 +43,7 @@ export default function CompetitionPage() {
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500 shrink-0 mt-0.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-800 shrink-0 mt-0.5">
                 <Target className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -52,7 +52,7 @@ export default function CompetitionPage() {
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500 shrink-0 mt-0.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-yellow-600 shrink-0 mt-0.5">
                 <Building2 className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -86,7 +86,7 @@ export default function CompetitionPage() {
           </TabsContent>
 
           <TabsContent value="case-studies">
-            <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
+            <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-5">
               <p className="text-base text-white">
                 See how successful companies read the competitive landscape: switching costs, the quality of existing alternatives, and the size of the incumbents they were taking on.
               </p>

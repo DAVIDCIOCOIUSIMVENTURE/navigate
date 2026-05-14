@@ -206,7 +206,7 @@ export default function ChooseRefinementPage() {
     <>
       <Card className="w-full flex-1">
         <CardHeader className="px-10 pt-10 pb-0">
-          <CardTitle icon={Search}>Choose Your Refinement Method</CardTitle>
+          <CardTitle icon={Search} iconBg="bg-blue-900">Choose Your Refinement Method</CardTitle>
         </CardHeader>
         <CardContent className="p-10 pt-6 flex flex-col gap-6">
           {problem?.description && (

@@ -797,7 +797,7 @@ function ScamperCaseStudies() {
   const containerSize = useContainerSize()
   const isNarrow = containerSize === "narrow"
   return (
-    <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-8">
+    <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-8">
       <p className="text-base text-white">
         See how successful companies used SCAMPER thinking to reimagine existing products and create breakthrough solutions by looking at problems from multiple creative angles.
       </p>
@@ -857,7 +857,7 @@ const IMPROVE_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
 
 function ImproveCaseStudies() {
   return (
-    <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
+    <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-5">
       <p className="text-base text-white">
         See how successful companies improved existing solutions along multiple dimensions at once, turning ordinary products into category-defining experiences.
       </p>
@@ -914,7 +914,7 @@ const REVERSE_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
 function ReverseCaseStudies() {
   const isNarrow = useContainerSize() === "narrow"
   return (
-    <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
+    <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-5">
       <p className="text-base text-white">
         See how successful companies flipped every way they were making customers unhappy into a feature that won them loyalty, trust, and market share.
       </p>
@@ -982,7 +982,7 @@ const ANALOGY_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
 
 function AnalogyCaseStudies() {
   return (
-    <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
+    <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-5">
       <p className="text-base text-white">
         See how breakthrough innovators borrowed ideas from unrelated fields: factories, racing, even nature. A good analogy reframes the problem and unlocks solutions you would never reach by thinking inside your own industry.
       </p>

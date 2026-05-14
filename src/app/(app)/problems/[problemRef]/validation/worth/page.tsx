@@ -21,7 +21,7 @@ export default function WorthPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={DollarSign}>How much is it worth</CardTitle>
+        <CardTitle icon={DollarSign} iconBg="bg-green-800">How much is it worth</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-base">
@@ -35,7 +35,7 @@ export default function WorthPage() {
           <h3 className="mt-4 text-xl font-bold text-foreground">How to estimate the worth per occurrence</h3>
           <div className={cn("grid gap-3", containerSize === "narrow" ? "grid-cols-1" : "grid-cols-3")}>
             <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500 shrink-0 mt-0.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-800 shrink-0 mt-0.5">
                 <Wallet className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -44,7 +44,7 @@ export default function WorthPage() {
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500 shrink-0 mt-0.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-yellow-600 shrink-0 mt-0.5">
                 <Scale className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -53,7 +53,7 @@ export default function WorthPage() {
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500 shrink-0 mt-0.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-900 shrink-0 mt-0.5">
                 <DollarSign className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -101,7 +101,7 @@ export default function WorthPage() {
           </TabsContent>
 
           <TabsContent value="case-studies">
-            <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
+            <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-5">
               <p className="text-base text-white">
                 See how successful companies reasoned about willingness to pay before working out how many customers and how often.
               </p>

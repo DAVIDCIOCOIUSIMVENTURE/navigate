@@ -21,7 +21,7 @@ export default function VerdictPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={ShieldCheck}>Record your verdict</CardTitle>
+        <CardTitle icon={ShieldCheck} iconBg="bg-orange-700">Record your verdict</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-base">
@@ -116,7 +116,7 @@ export default function VerdictPage() {
           </TabsContent>
 
           <TabsContent value="case-studies">
-            <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
+            <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-5">
               <p className="text-base text-white">
                 See how successful companies weighed all of the signals together to reach a verdict on whether the problem was worth pursuing.
               </p>

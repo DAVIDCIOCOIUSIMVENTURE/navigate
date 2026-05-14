@@ -25,7 +25,7 @@ const ROOT_CAUSES_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
 
 function RootCausesCaseStudies() {
   return (
-    <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
+    <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-5">
       <p className="text-base text-white">
         See how successful organisations dug past surface-level symptoms to identify the underlying causes that, once fixed, prevented entire categories of failure.
       </p>
@@ -98,7 +98,7 @@ const FIVE_WHYS_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
 
 function FiveWhysCaseStudies() {
   return (
-    <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
+    <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-5">
       <p className="text-base text-white">
         See how teams used the 5 Whys to push past the first plausible answer and reach a fundamental cause that, once addressed, prevented the problem from recurring.
       </p>
@@ -193,7 +193,7 @@ const SEVERITY_BADGE: Record<"low" | "medium" | "high" | "critical", string> = {
 
 function AffectedGroupsCaseStudies() {
   return (
-    <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
+    <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-5">
       <p className="text-base text-white">
         See how successful companies mapped who was affected by the problem and how severely, then prioritised the most acute groups to design a focused first version.
       </p>
@@ -270,9 +270,9 @@ const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo:
     description: "List the underlying causes of the problem. Ask yourself: \"Why does this happen?\" This technique helps you move beyond surface-level symptoms to uncover what's really driving the issue.",
     whatYouDo: "Brainstorm every underlying reason the problem exists. Focus on the <strong>root causes</strong>, not the symptoms. Then add <strong>notes</strong> to capture any patterns or connections you spot.",
     hints: [
-      { icon: Search, title: "Dig deeper", subtitle: "Go beyond surface-level symptoms", bg: "bg-blue-500" },
-      { icon: Plus, title: "Capture everything", subtitle: "Don't filter yet, list all possible causes", bg: "bg-amber-500" },
-      { icon: Trash2, title: "Refine later", subtitle: "You can remove weak causes after brainstorming", bg: "bg-emerald-500" },
+      { icon: Search, title: "Dig deeper", subtitle: "Go beyond surface-level symptoms", bg: "bg-blue-900" },
+      { icon: Plus, title: "Capture everything", subtitle: "Don't filter yet, list all possible causes", bg: "bg-yellow-600" },
+      { icon: Trash2, title: "Refine later", subtitle: "You can remove weak causes after brainstorming", bg: "bg-emerald-800" },
     ],
   },
   "five-whys": {
@@ -280,9 +280,9 @@ const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo:
     description: "Start with the problem and ask \"Why?\" five times in succession. Each answer becomes the basis for the next question, drilling down to the fundamental root cause.",
     whatYouDo: "Create a <strong>chain</strong> of five \"Why?\" questions. Each answer becomes the starting point for the next question. By the 5th why you should reach a <strong>fundamental cause</strong> that, if fixed, prevents the problem.",
     hints: [
-      { icon: Search, title: "Start specific", subtitle: "Begin with a clear problem statement", bg: "bg-blue-500" },
-      { icon: Plus, title: "Keep asking why", subtitle: "Each answer feeds the next question", bg: "bg-violet-500" },
-      { icon: Plus, title: "Multiple chains", subtitle: "A problem can have more than one root cause", bg: "bg-emerald-500" },
+      { icon: Search, title: "Start specific", subtitle: "Begin with a clear problem statement", bg: "bg-blue-900" },
+      { icon: Plus, title: "Keep asking why", subtitle: "Each answer feeds the next question", bg: "bg-violet-800" },
+      { icon: Plus, title: "Multiple chains", subtitle: "A problem can have more than one root cause", bg: "bg-emerald-800" },
     ],
   },
   "affected-groups": {
@@ -290,9 +290,9 @@ const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo:
     description: "Identify who is most affected by this problem and how severely. Understanding the different groups helps you design a solution that targets the right audience.",
     whatYouDo: "List the different <strong>groups of people</strong> affected by this problem. For each group, describe <strong>how</strong> they are affected and rate the <strong>severity</strong> so you can prioritise who to solve for first.",
     hints: [
-      { icon: Search, title: "Think broadly", subtitle: "Customers, employees, stakeholders, partners", bg: "bg-blue-500" },
-      { icon: Plus, title: "Describe the impact", subtitle: "What makes each group's experience unique?", bg: "bg-amber-500" },
-      { icon: Search, title: "Rate severity", subtitle: "Low, Medium, High, or Critical", bg: "bg-rose-500" },
+      { icon: Search, title: "Think broadly", subtitle: "Customers, employees, stakeholders, partners", bg: "bg-blue-900" },
+      { icon: Plus, title: "Describe the impact", subtitle: "What makes each group's experience unique?", bg: "bg-yellow-600" },
+      { icon: Search, title: "Rate severity", subtitle: "Low, Medium, High, or Critical", bg: "bg-red-800" },
     ],
   },
 }
@@ -315,7 +315,7 @@ export default function RefinePage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={Search}>Refine: {toolInfo?.title ?? "-"}</CardTitle>
+        <CardTitle icon={Search} iconBg="bg-blue-900">Refine: {toolInfo?.title ?? "-"}</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         {problem?.description && (

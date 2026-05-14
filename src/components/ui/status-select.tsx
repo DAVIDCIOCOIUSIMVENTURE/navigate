@@ -6,9 +6,9 @@ import type { ValidationStatus } from "@/types/validation"
 
 const STATUS_OPTIONS: { value: ValidationStatus; label: string; icon: React.ElementType; iconClass: string }[] = [
   { value: "unvalidated", label: "Not validated", icon: Clock,        iconClass: "text-muted-foreground" },
-  { value: "valid",       label: "Valid",         icon: CheckCircle2, iconClass: "text-green-600" },
-  { value: "unsure",      label: "Unsure",        icon: HelpCircle,   iconClass: "text-orange-500" },
-  { value: "invalid",     label: "Invalid",       icon: XCircle,      iconClass: "text-red-500" },
+  { value: "valid",       label: "Valid",         icon: CheckCircle2, iconClass: "text-success" },
+  { value: "unsure",      label: "Unsure",        icon: HelpCircle,   iconClass: "text-tertiary" },
+  { value: "invalid",     label: "Invalid",       icon: XCircle,      iconClass: "text-destructive" },
 ]
 
 export function StatusSelect({ status, setStatus }: { status: ValidationStatus; setStatus: (v: ValidationStatus) => void }) {

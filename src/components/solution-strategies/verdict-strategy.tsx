@@ -15,22 +15,22 @@ const VERDICT_OPTIONS: { value: VerdictKey; label: string; icon: LucideIcon; col
     value: "valid",
     label: "Valid: Worth Pursuing",
     icon: CheckCircle2,
-    color: "text-green-700 border-green-300 bg-green-50",
-    dotColor: "border-green-600 bg-green-600",
+    color: "text-success border-success bg-success-foreground",
+    dotColor: "border-success bg-success",
   },
   {
     value: "unsure",
     label: "Unsure: Needs More Evidence",
     icon: HelpCircle,
-    color: "text-orange-700 border-orange-300 bg-orange-50",
-    dotColor: "border-orange-500 bg-orange-500",
+    color: "text-tertiary border-tertiary bg-tertiary-foreground",
+    dotColor: "border-tertiary bg-tertiary",
   },
   {
     value: "invalid",
     label: "Invalid: Not Worth Pursuing",
     icon: XCircle,
-    color: "text-red-700 border-red-300 bg-red-50",
-    dotColor: "border-red-500 bg-red-500",
+    color: "text-destructive border-destructive bg-destructive-foreground",
+    dotColor: "border-destructive bg-destructive",
   },
 ]
 

@@ -12,8 +12,8 @@ import { DimensionChips } from "@/components/dimension-chips"
 import type { ValidationStatus } from "@/types/validation"
 
 const STATUS_BADGE: Record<"valid" | "unsure", { label: string; icon: typeof CheckCircle2; className: string }> = {
-  valid: { label: "Valid", icon: CheckCircle2, className: "text-green-700 border-green-500/40 bg-green-50" },
-  unsure: { label: "Unsure", icon: HelpCircle, className: "text-orange-700 border-orange-500/40 bg-orange-50" },
+  valid: { label: "Valid", icon: CheckCircle2, className: "text-success border-success/40 bg-success/10" },
+  unsure: { label: "Unsure", icon: HelpCircle, className: "text-tertiary border-tertiary/40 bg-tertiary/10" },
 }
 
 const ELIGIBLE_STATUSES: ValidationStatus[] = ["valid", "unsure"]

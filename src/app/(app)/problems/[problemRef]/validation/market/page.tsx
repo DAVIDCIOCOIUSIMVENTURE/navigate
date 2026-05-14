@@ -21,7 +21,7 @@ export default function MarketSizingPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={TrendingUp}>Size the market</CardTitle>
+        <CardTitle icon={TrendingUp} iconBg="bg-emerald-800">Size the market</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-base">
@@ -31,7 +31,7 @@ export default function MarketSizingPage() {
           <h3 className="mt-4 text-xl font-bold text-foreground">How to estimate each input on this page</h3>
           <div className={cn("grid gap-3", containerSize === "narrow" ? "grid-cols-1" : "grid-cols-2")}>
             <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500 shrink-0 mt-0.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-900 shrink-0 mt-0.5">
                 <Users className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -40,7 +40,7 @@ export default function MarketSizingPage() {
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500 shrink-0 mt-0.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-800 shrink-0 mt-0.5">
                 <RefreshCw className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -74,7 +74,7 @@ export default function MarketSizingPage() {
           </TabsContent>
 
           <TabsContent value="case-studies">
-            <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
+            <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-5">
               <p className="text-base text-white">
                 See how successful companies estimated reach, frequency, and value when sizing the opportunity behind their core problem.
               </p>

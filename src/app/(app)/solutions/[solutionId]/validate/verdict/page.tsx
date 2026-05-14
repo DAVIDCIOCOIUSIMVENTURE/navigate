@@ -89,7 +89,7 @@ export default function VerdictPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={CheckCircle2}>Verdict</CardTitle>
+        <CardTitle icon={CheckCircle2} iconBg="bg-orange-700">Verdict</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <p className="text-base leading-relaxed">
@@ -134,7 +134,7 @@ export default function VerdictPage() {
           </TabsContent>
 
           <TabsContent value="case-studies">
-            <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-4">
+            <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-4">
               <p className="text-base text-white">
                 See how teams have weighed their metrics into a verdict. Each example shows the call they made, the reasoning behind it, and what happened next.
               </p>

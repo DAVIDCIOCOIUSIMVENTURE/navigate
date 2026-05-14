@@ -18,7 +18,7 @@ export default function ExistingSolutionsPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={GitFork}>Explore existing solutions &amp; shortcomings</CardTitle>
+        <CardTitle icon={GitFork} iconBg="bg-yellow-600">Explore existing solutions &amp; shortcomings</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-base">
@@ -28,7 +28,7 @@ export default function ExistingSolutionsPage() {
           </p>
           <div className="flex flex-col gap-3">
             <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500 shrink-0 mt-0.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-900 shrink-0 mt-0.5">
                 <Monitor className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -37,7 +37,7 @@ export default function ExistingSolutionsPage() {
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500 shrink-0 mt-0.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-orange-700 shrink-0 mt-0.5">
                 <Wrench className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -46,7 +46,7 @@ export default function ExistingSolutionsPage() {
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500 shrink-0 mt-0.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-800 shrink-0 mt-0.5">
                 <Users className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -55,7 +55,7 @@ export default function ExistingSolutionsPage() {
               </div>
             </div>
             <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-rose-500 shrink-0 mt-0.5">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-red-800 shrink-0 mt-0.5">
                 <Ban className="h-4 w-4 text-white" />
               </div>
               <div>
@@ -93,7 +93,7 @@ export default function ExistingSolutionsPage() {
           </TabsContent>
 
           <TabsContent value="case-studies">
-            <div className="rounded-xl border border-surface/20 bg-surface p-8 flex flex-col gap-5">
+            <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-5">
               <p className="text-base text-white">
                 See how successful companies mapped out the existing solutions their customers were already using, and identified the shortcomings that created the opportunity.
               </p>

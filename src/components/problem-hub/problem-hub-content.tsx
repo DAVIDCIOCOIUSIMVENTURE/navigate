@@ -100,7 +100,7 @@ function SolutionsSection({ problemId }: { problemId: number }) {
     <HubSection
       icon={Lightbulb}
       label={`Solutions (${solutions.length})`}
-      tone="rose"
+      tone="primary"
       defaultOpen={solutions.length > 0}
     >
       {solutions.length === 0 ? (
@@ -262,6 +262,14 @@ function NextStepsSection({ problemRef, problemId }: { problemRef: string; probl
               actionLabel="Duplicate &amp; Start Again"
               actionIcon={Copy}
               onAction={handleDuplicate}
+            />
+            <NextStepCard
+              icon={RotateCcw}
+              title="Revisit your validation"
+              description="If new evidence has come in, or you want to reconsider any of your scores, go back to validation and update your verdict."
+              actionLabel="Revisit Validation"
+              actionIcon={RotateCcw}
+              onAction={goToValidation}
             />
             <NextStepCard
               icon={RotateCcw}
