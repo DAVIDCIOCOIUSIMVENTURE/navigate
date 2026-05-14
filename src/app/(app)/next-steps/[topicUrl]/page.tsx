@@ -38,12 +38,21 @@ export default function NextStepsTopicPage() {
         </CardTitle>
       </CardHeader>
       <CardContent className={cn("flex-1 flex flex-col gap-8 overflow-y-auto min-h-0", roomy ? "p-10 pt-6" : "p-6 pt-4")}>
-        <div className="flex flex-col gap-2">
-          <p className="text-sm italic flex items-start gap-2">
-            <Sparkles className="h-3.5 w-3.5 shrink-0 mt-1" aria-hidden="true" />
-            <span>{topic.tagline}</span>
-          </p>
-          <p className="text-base text-foreground leading-relaxed">{topic.intro}</p>
+        <div className="flex flex-col md:flex-row gap-6 md:items-center">
+          <div className="flex flex-col gap-2 flex-1 min-w-0">
+            <p className="text-base italic flex items-start gap-2">
+              <Sparkles className="h-3.5 w-3.5 shrink-0 mt-1" aria-hidden="true" />
+              <span>{topic.tagline}</span>
+            </p>
+            <p className="text-base text-foreground leading-relaxed">{topic.intro}</p>
+          </div>
+          {topic.url === "build-a-prototype" && (
+            <img
+              src="/illustrations/21-toolbox.svg"
+              alt=""
+              className="hidden lg:block w-96 h-auto shrink-0 rounded-lg"
+            />
+          )}
         </div>
 
         {topic.keyPoints.length > 0 && (

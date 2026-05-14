@@ -18,7 +18,7 @@ export const FEASIBILITY_CONTENT: MetricContent = {
   icon: Gauge,
   title: "Feasibility",
   summary: "Feasibility is about whether you can actually build this solution with the resources, skills, and technology available to you. It's not about whether the idea is good; it's about whether you can realistically ship it.",
-  accent: "bg-primary",
+  accent: "bg-secondary-brand",
   guidance: [
     "Audit what you already have: team skills, existing tech, available tooling, partnerships.",
     "List the biggest unknowns. The more fundamental unknowns you have, the lower the score.",
@@ -64,7 +64,7 @@ export const IMPACT_CONTENT: MetricContent = {
   icon: Target,
   title: "Impact",
   summary: "Impact is about how much value the solution delivers: to the customer, to the business, or to both. A solution that solves a real pain for many people, or a big pain for a smaller group, is high impact. A nice-to-have is not.",
-  accent: "bg-primary",
+  accent: "bg-secondary-brand",
   guidance: [
     "Picture the customer after adopting the solution: what changes in their day, week, or month?",
     "Count who benefits. A solution that helps every customer is usually higher impact than one that helps a niche.",
@@ -110,7 +110,7 @@ export const COST_CONTENT: MetricContent = {
   icon: Coins,
   title: "Cost",
   summary: "Cost captures what it will take to build, operate, and maintain the solution in money and equivalent resources. A higher score means higher cost, so a 1 is cheap and a 5 is expensive. Include engineering time, infrastructure, licensing, support, and ongoing maintenance.",
-  accent: "bg-primary",
+  accent: "bg-secondary-brand",
   guidance: [
     "Estimate build cost: engineering time, design, research, and any third-party tooling.",
     "Estimate run cost: infrastructure, support staff, licensing, and customer operations over the first year.",
@@ -156,7 +156,7 @@ export const TIME_CONTENT: MetricContent = {
   icon: Clock,
   title: "Time to Implement",
   summary: "Time to implement is how long it will take to get this solution from decision to delivery, including design, build, test, and launch. A higher score means it takes longer. Think about calendar time, not just effort time.",
-  accent: "bg-primary",
+  accent: "bg-secondary-brand",
   guidance: [
     "Break the work into phases: design, build, test, launch. Estimate calendar time for each.",
     "Account for dependencies: other teams, vendors, approvals, or data that must come together.",

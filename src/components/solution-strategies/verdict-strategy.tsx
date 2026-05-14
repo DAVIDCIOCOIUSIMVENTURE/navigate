@@ -73,7 +73,7 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
   }
 
   return (
-    <div className="rounded-xl bg-primary p-8 flex flex-col gap-5">
+    <div className="rounded-xl bg-secondary-brand p-8 flex flex-col gap-5">
       {!readOnly && (
         <div className="flex flex-col gap-3">
           <p className="text-base font-medium text-white">How to weigh your scores</p>
