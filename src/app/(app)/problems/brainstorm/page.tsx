@@ -857,11 +857,11 @@ function ProblemBuilder({
                   />
                 </div>
                 <div className="flex items-center gap-2 justify-end">
-                  <Button variant="outline" size="sm" onClick={reset}>
+                  <Button variant="secondary-brand-outline" size="sm" onClick={reset}>
                     <RotateCcw className="h-3.5 w-3.5 mr-1.5" />
                     Start Over
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => setStep("pick")}>
+                  <Button variant="secondary-brand-outline" size="sm" onClick={() => setStep("pick")}>
                     Add More Dimensions
                   </Button>
                   <Button size="sm" onClick={handleSave} disabled={totalSelections === 0} className="gap-2">
