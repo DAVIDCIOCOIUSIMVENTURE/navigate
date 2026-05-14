@@ -215,7 +215,7 @@ export function DimensionPicker({
           <Button
             variant="outline"
             size="sm"
-            className="h-7 gap-1 text-sm border-primary/40 text-primary hover:bg-primary/5 hover:text-primary"
+            className="h-7 gap-1 text-sm bg-[#fcfbf8] border-secondary-brand/40 text-secondary-brand hover:bg-secondary-brand/5 hover:text-secondary-brand"
             onClick={() => setOpen(true)}
           >
             {ids.length === 0 ? (

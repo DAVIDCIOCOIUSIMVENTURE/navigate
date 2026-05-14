@@ -95,6 +95,7 @@ export function EditProblemDialog({ problem, onClose, title = "Edit Problem", sh
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Describe the problem..."
               rows={3}
+              className="bg-[#fcfbf8]"
             />
           </div>
           <Separator />
@@ -135,7 +136,7 @@ export function EditProblemDialog({ problem, onClose, title = "Edit Problem", sh
             <DialogFooter>
               <Button
                 variant="outline"
-                className="border-primary/40 text-primary hover:bg-primary/5 hover:text-primary"
+                className="bg-[#fcfbf8] border-secondary-brand/40 text-secondary-brand hover:bg-secondary-brand/5 hover:text-secondary-brand"
                 disabled={!hasContent}
                 title={disabledHint}
                 onClick={() => {
@@ -148,7 +149,7 @@ export function EditProblemDialog({ problem, onClose, title = "Edit Problem", sh
               </Button>
               <Button
                 variant="outline"
-                className="border-primary/40 text-primary hover:bg-primary/5 hover:text-primary"
+                className="bg-[#fcfbf8] border-secondary-brand/40 text-secondary-brand hover:bg-secondary-brand/5 hover:text-secondary-brand"
                 disabled={!hasContent}
                 title={disabledHint}
                 onClick={() => {

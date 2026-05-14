@@ -20,7 +20,7 @@ export function StatusSelect({ status, setStatus }: { status: ValidationStatus; 
         Validation Status
       </label>
       <Select value={status} onValueChange={(v) => setStatus(v as ValidationStatus)}>
-        <SelectTrigger id="validation-status" className="bg-white">
+        <SelectTrigger id="validation-status" className="bg-[#fcfbf8]">
           <SelectValue>
             <span className="flex items-center gap-1.5">
               <CurrentIcon className={`h-3.5 w-3.5 shrink-0 ${current.iconClass}`} />
