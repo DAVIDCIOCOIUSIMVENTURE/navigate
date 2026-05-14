@@ -155,7 +155,7 @@ function BrainstormCheckItem({
             {item.label}
           </span>
           {selectedCount > 0 && (
-            <span className="text-sm text-primary font-medium tabular-nums">
+            <span className="text-sm text-secondary-brand font-medium tabular-nums">
               {selectedCount}
             </span>
           )}
@@ -640,9 +640,8 @@ function ProblemBuilder({
                         key={col.id}
                         onClick={() => pickColumn(col.id)}
                         className={cn(
-                          "flex flex-col items-center gap-3 p-5 rounded-xl border transition-all",
+                          "flex flex-col items-center gap-3 p-5 rounded-xl border border-border transition-all",
                           cn(colors?.bgIdle, "hover:shadow-sm"),
-                          colors?.border || "border-border",
                         )}
                       >
                         <div className="flex items-center gap-2">
@@ -715,9 +714,8 @@ function ProblemBuilder({
                         key={group.id}
                         onClick={() => pickCategory(group.id)}
                         className={cn(
-                          "flex flex-col items-start gap-2 p-4 rounded-xl border transition-all text-left",
+                          "flex flex-col items-start gap-2 p-4 rounded-xl border border-border transition-all text-left",
                           cn(colors?.bgIdle, "hover:shadow-sm"),
-                          colors?.border || "border-border",
                         )}
                       >
                         <span className="text-base font-medium">{group.label}</span>
@@ -892,7 +890,7 @@ function ProblemBuilder({
                 return (
                   <span
                     key={id}
-                    className={cn("inline-flex items-center gap-1 text-sm rounded-full px-2 py-0.5", colors?.pill || "bg-primary/10 text-primary")}
+                    className={cn("inline-flex items-center gap-1 text-sm font-semibold rounded-full px-2 py-0.5", colors?.pill || "bg-primary/10 text-primary")}
                   >
                     {Icon && <Icon className={cn("h-3 w-3 shrink-0", colors?.icon)} />}
                     {label}
@@ -1336,7 +1334,7 @@ export default function BrainstormPage() {
                     </CardTitle>
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span className="text-sm">
+                    <span className="text-sm text-secondary-brand font-medium tabular-nums">
                       {columnSelected.length} / {collectAllIds(column.items).length}
                     </span>
                     <DropdownMenu>
@@ -1397,7 +1395,7 @@ export default function BrainstormPage() {
                 return columnSelected.map(({ id, label }) => (
                   <span
                     key={id}
-                    className={cn("inline-flex items-center gap-1 text-sm rounded-full px-2 py-0.5", colors?.pill || "bg-primary/10 text-primary")}
+                    className={cn("inline-flex items-center gap-1 text-sm font-semibold rounded-full px-2 py-0.5", colors?.pill || "bg-primary/10 text-primary")}
                   >
                     {Icon && <Icon className={cn("h-3 w-3 shrink-0", colors?.icon)} />}
                     {label}
