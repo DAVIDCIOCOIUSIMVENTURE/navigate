@@ -98,12 +98,12 @@ export default function DashboardPage() {
             </CardContent>
           </Card>
         </Link>
-        <div className="flex flex-col gap-2 shrink-0">
-          <Button onClick={() => setProblemDialogOpen(true)} className="gap-2">
+        <div className={cn("flex gap-2 shrink-0", isWide ? "flex-col" : "flex-row")}>
+          <Button onClick={() => setProblemDialogOpen(true)} className={cn("gap-2", !isWide && "flex-1")}>
             <Plus className="h-4 w-4" />
             Identify problems
           </Button>
-          <Button onClick={() => setSolutionDialogOpen(true)} className="gap-2">
+          <Button onClick={() => setSolutionDialogOpen(true)} className={cn("gap-2", !isWide && "flex-1")}>
             <Plus className="h-4 w-4" />
             Identify solutions
           </Button>
@@ -296,15 +296,15 @@ function StageCard({
 }
 
 const statusColors: Record<string, string> = {
-  unvalidated: "bg-gray-100 text-gray-700",
-  "in progress": "bg-amber-100 text-amber-700",
-  valid: "bg-green-100 text-green-700",
-  invalid: "bg-red-100 text-red-700",
-  unsure: "bg-yellow-100 text-yellow-700",
-  "not started": "bg-gray-100 text-gray-700",
-  pursue: "bg-green-100 text-green-700",
-  revisit: "bg-amber-100 text-amber-700",
-  abandon: "bg-red-100 text-red-700",
+  unvalidated: "bg-muted text-muted-foreground",
+  "in progress": "bg-primary/15 text-primary",
+  valid: "bg-success/15 text-success",
+  invalid: "bg-destructive/15 text-destructive",
+  unsure: "bg-tertiary/20 text-tertiary",
+  "not started": "bg-muted text-muted-foreground",
+  pursue: "bg-success/15 text-success",
+  revisit: "bg-primary/15 text-primary",
+  abandon: "bg-destructive/15 text-destructive",
 }
 
 function StatusBadge({ status }: { status: string }) {
