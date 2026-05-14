@@ -77,7 +77,7 @@ export default function FoundationsPage() {
         </div>
       </CardContent>
       <CardFooter className={cn("shrink-0 flex justify-between border-t gap-3", roomy ? "px-10 py-6" : "px-6 py-4")}>
-        <Button variant="outline" onClick={() => router.push("/self-discovery")}>
+        <Button variant="secondary-brand-outline" onClick={() => router.push("/self-discovery")}>
           Skip to Self Discovery
         </Button>
         <Button onClick={() => router.push(`/foundations/${firstSectionUrl}`)}>
