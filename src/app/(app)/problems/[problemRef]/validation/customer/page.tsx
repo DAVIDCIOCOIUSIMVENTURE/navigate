@@ -26,21 +26,28 @@ export default function CustomerSegmentPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={Users} iconBg="bg-teal-700">Define your customer</CardTitle>
+        <CardTitle icon={Users} iconBg="bg-green-800">Define your customer</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
-        <div className="flex flex-col gap-3 text-base">
-          <p>
-            Who exactly experiences this problem? The more precisely you define your customer, the
-            easier it becomes to validate the problem, estimate the market, and eventually craft a
-            solution that resonates.
-          </p>
-          <p>
-            Avoid broad labels like &quot;everyone&quot; or &quot;businesses.&quot;
-            Narrow down until you can picture a real person. A well-defined customer isn&apos;t just
-            a demographic, it&apos;s someone whose daily life you understand well enough to describe
-            their frustrations, habits, and the workarounds they already use.
-          </p>
+        <div className="flex flex-col md:flex-row gap-6 md:items-center">
+          <div className="flex flex-col gap-4 flex-1 min-w-0">
+            <p className="text-base text-foreground leading-relaxed">
+              Who exactly experiences this problem? The more precisely you define your customer, the
+              easier it becomes to validate the problem, estimate the market, and eventually craft a
+              solution that resonates.
+            </p>
+            <p className="text-base text-foreground leading-relaxed">
+              Avoid broad labels like &quot;everyone&quot; or &quot;businesses.&quot;
+              Narrow down until you can picture a real person. A well-defined customer isn&apos;t just
+              a demographic, it&apos;s someone whose daily life you understand well enough to describe
+              their frustrations, habits, and the workarounds they already use.
+            </p>
+          </div>
+          <img
+            src="/illustrations/23-customer.svg"
+            alt=""
+            className="hidden lg:block w-96 h-auto shrink-0 rounded-lg"
+          />
         </div>
 
         {customerSegments.length > 0 && (
