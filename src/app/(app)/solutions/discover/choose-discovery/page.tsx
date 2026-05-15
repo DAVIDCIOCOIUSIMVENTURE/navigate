@@ -238,7 +238,8 @@ const DIALOG_CONTENT: Record<ToolKey, () => React.JSX.Element> = {
   improve: ImproveDialogContent,
 }
 
-const TOOL_ORDER: ToolKey[] = ["scamper", "reverse", "analogy", "improve"]
+const PRIMARY_TOOLS: ToolKey[] = ["scamper", "improve"]
+const SECONDARY_TOOLS: ToolKey[] = ["analogy", "reverse"]
 
 export default function ChooseDiscoveryPage() {
   const router = useRouter()
@@ -287,8 +288,8 @@ export default function ChooseDiscoveryPage() {
             Choose a technique below to get started.
           </p>
 
-          <div className={cn("grid gap-4", isNarrow ? "grid-cols-1" : "grid-cols-2")}>
-            {TOOL_ORDER.map((key) => {
+          {(() => {
+            const renderCard = (key: ToolKey) => {
               const tool = TOOL_CARDS[key]
               const Icon = tool.icon
               const isSelected = selectedTool === key
@@ -299,7 +300,7 @@ export default function ChooseDiscoveryPage() {
                   onClick={() => setOpenTool(key)}
                   aria-pressed={isSelected}
                   className={cn(
-                    "group relative flex cursor-pointer flex-col gap-3 rounded-xl border-2 p-6 pr-8 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    "group relative flex cursor-pointer flex-col gap-2 rounded-xl border-2 p-5 pr-8 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     isSelected
                       ? "border-primary bg-primary/10 ring-2 ring-primary/40 ring-offset-2"
                       : "border-border bg-card hover:border-primary hover:bg-primary/5"
@@ -311,19 +312,37 @@ export default function ChooseDiscoveryPage() {
                       Selected
                     </span>
                   )}
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                    <Icon className="h-5 w-5" />
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                      <Icon className="h-4 w-4" />
+                    </div>
+                    <h3 className={cn("text-base font-semibold", isSelected && "text-primary")}>{tool.title}</h3>
                   </div>
-                  <h3 className={cn("text-base font-semibold", isSelected && "text-primary")}>{tool.title}</h3>
                   <p className="text-base leading-relaxed">{tool.description}</p>
-                  <div className="mt-2 flex items-center gap-1.5 text-base font-semibold text-primary">
+                  <div className="mt-1 flex items-center gap-1.5 text-base font-semibold text-primary">
                     {isSelected ? "Selected method" : "Preview this method"}
                     <ArrowRight className="h-4 w-4" />
                   </div>
                 </button>
               )
-            })}
-          </div>
+            }
+            return (
+              <div className="flex flex-col gap-5">
+                <div className="flex flex-col gap-3">
+                  <p className="text-base font-semibold uppercase tracking-wide">Recommended methods</p>
+                  <div className={cn("grid gap-4", isNarrow ? "grid-cols-1" : "grid-cols-2")}>
+                    {PRIMARY_TOOLS.map(renderCard)}
+                  </div>
+                </div>
+                <div className="flex flex-col gap-3 border-t pt-5">
+                  <p className="text-base font-semibold uppercase tracking-wide">Other methods</p>
+                  <div className={cn("grid gap-4", isNarrow ? "grid-cols-1" : "grid-cols-2")}>
+                    {SECONDARY_TOOLS.map(renderCard)}
+                  </div>
+                </div>
+              </div>
+            )
+          })()}
 
           <div className="flex justify-between mt-2">
             {prevPath ? (
