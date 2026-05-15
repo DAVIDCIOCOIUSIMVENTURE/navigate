@@ -11,14 +11,6 @@ import { cn } from "@/lib/utils"
 import { FOUNDATIONS_SECTIONS } from "@/data/foundationsData"
 import { useContainerSize } from "@/context/container-size-context"
 
-const SECTION_ICON_BG: Record<string, string> = {
-    "why-the-right-idea": "bg-yellow-600",
-    "why-validate-the-problem": "bg-teal-700",
-    "why-validate-the-solution": "bg-blue-900",
-    "the-cost-of-skipping": "bg-red-800",
-    "when-it-goes-right": "bg-green-800",
-}
-
 function NavContent({
     pathname,
     onNavigate,
@@ -26,60 +18,59 @@ function NavContent({
     pathname: string
     onNavigate: (path: string) => void
 }) {
+    const renderItem = (isActive: boolean, Icon: LucideIcon, label: string, href: string) => (
+        <Button
+            variant={isActive ? "secondary" : "ghost"}
+            className={cn(
+                "w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2 hover:text-secondary-brand",
+                isActive && "text-secondary-brand",
+            )}
+            onClick={() => onNavigate(href)}
+        >
+            <span
+                className={cn(
+                    "flex items-center justify-center w-6 h-6 rounded-md shrink-0",
+                    isActive ? "bg-secondary-brand" : "bg-muted",
+                )}
+            >
+                <Icon
+                    className={cn("h-3.5 w-3.5", isActive ? "text-white" : "text-muted-foreground")}
+                    aria-hidden="true"
+                />
+            </span>
+            <span className="flex-1 text-left">{label}</span>
+        </Button>
+    )
+
     return (
         <div className="flex flex-col gap-1">
-            <Button
-                variant={pathname === "/foundations" ? "secondary" : "ghost"}
-                className={cn(
-                    "w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2 hover:text-secondary-brand",
-                    pathname === "/foundations" && "text-secondary-brand",
-                )}
-                onClick={() => onNavigate("/foundations")}
-            >
-                <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-violet-800">
-                    <BookOpen className="h-3.5 w-3.5 text-white" aria-hidden="true" />
-                </span>
-                <span className="flex-1 text-left">Introduction</span>
-            </Button>
+            {renderItem(pathname === "/foundations", BookOpen, "Introduction", "/foundations")}
             {FOUNDATIONS_SECTIONS.map((section) => {
                 const isActive = pathname === `/foundations/${section.url}`
                 const SectionIcon = getFoundationsSectionIcon(section.iconKey)
-                const bgClass = SECTION_ICON_BG[section.url] ?? "bg-primary"
                 return (
-                    <Button
-                        key={section.url}
-                        variant={isActive ? "secondary" : "ghost"}
-                        className={cn(
-                            "w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2 hover:text-secondary-brand",
-                            isActive && "text-secondary-brand",
-                        )}
-                        onClick={() => onNavigate(`/foundations/${section.url}`)}
-                    >
-                        <span className={cn("flex items-center justify-center w-6 h-6 rounded-md shrink-0", bgClass)}>
-                            <SectionIcon className="h-3.5 w-3.5 text-white" aria-hidden="true" />
-                        </span>
-                        <span className="flex-1 text-left">{section.shortTitle}</span>
-                    </Button>
+                    <div key={section.url}>
+                        {renderItem(isActive, SectionIcon, section.shortTitle, `/foundations/${section.url}`)}
+                    </div>
                 )
             })}
         </div>
     )
 }
 
-function getActiveInfo(pathname: string): { label: string; Icon: LucideIcon; bgClass: string } {
+function getActiveInfo(pathname: string): { label: string; Icon: LucideIcon } {
     if (pathname === "/foundations") {
-        return { label: "Introduction", Icon: BookOpen, bgClass: "bg-violet-800" }
+        return { label: "Introduction", Icon: BookOpen }
     }
     for (const section of FOUNDATIONS_SECTIONS) {
         if (pathname === `/foundations/${section.url}`) {
             return {
                 label: section.shortTitle,
                 Icon: getFoundationsSectionIcon(section.iconKey),
-                bgClass: SECTION_ICON_BG[section.url] ?? "bg-primary",
             }
         }
     }
-    return { label: "Why It Matters", Icon: BookOpen, bgClass: "bg-primary" }
+    return { label: "Why It Matters", Icon: BookOpen }
 }
 
 export default function FoundationsLayout({
@@ -99,7 +90,7 @@ export default function FoundationsLayout({
         router.push(path)
     }
 
-    const { label: activeLabel, Icon: ActiveIcon, bgClass: activeBgClass } = getActiveInfo(pathname)
+    const { label: activeLabel, Icon: ActiveIcon } = getActiveInfo(pathname)
 
     return (
         <div
@@ -119,7 +110,7 @@ export default function FoundationsLayout({
                                         className="w-full justify-between h-auto py-2 px-3"
                                     >
                                         <span className="flex items-center gap-2 text-sm font-medium min-w-0">
-                                            <span className={cn("flex items-center justify-center w-6 h-6 rounded-md shrink-0", activeBgClass)}>
+                                            <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-secondary-brand">
                                                 <ActiveIcon className="h-3.5 w-3.5 text-white" aria-hidden="true" />
                                             </span>
                                             <span className="truncate">{activeLabel}</span>

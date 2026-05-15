@@ -10,14 +10,6 @@ import { ChevronLeft, ChevronRight, Play, AlertTriangle, CheckCircle2, ExternalL
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 
-const SECTION_ICON_BG: Record<string, string> = {
-  "why-the-right-idea": "bg-yellow-600",
-  "why-validate-the-problem": "bg-teal-700",
-  "why-validate-the-solution": "bg-blue-900",
-  "the-cost-of-skipping": "bg-red-800",
-  "when-it-goes-right": "bg-green-800",
-}
-
 export default function FoundationsSectionPage() {
   const params = useParams<{ sectionUrl: string }>()
   const router = useRouter()
@@ -34,13 +26,12 @@ export default function FoundationsSectionPage() {
   const next = index < FOUNDATIONS_SECTIONS.length - 1 ? FOUNDATIONS_SECTIONS[index + 1] : null
 
   const Icon = getFoundationsSectionIcon(section.iconKey)
-  const bgClass = SECTION_ICON_BG[section.url] ?? "bg-primary"
 
   return (
     <Card className="w-full h-full flex flex-col overflow-hidden">
       <CardHeader className={cn("pb-0 shrink-0", roomy ? "px-10 pt-10" : "px-6 pt-6")}>
         <CardTitle>
-          <div className={cn("flex items-center justify-center w-10 h-10 rounded-lg shrink-0", bgClass)}>
+          <div className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-secondary-brand">
             <Icon className="h-5 w-5 text-white" />
           </div>
           {section.title}

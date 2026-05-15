@@ -233,10 +233,10 @@ export default function ChooseRefinementPage() {
                   onClick={() => setOpenTool(key)}
                   aria-pressed={isSelected}
                   className={cn(
-                    "relative flex flex-col gap-3 rounded-xl border-2 p-6 pr-8 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    "group relative flex cursor-pointer flex-col gap-3 rounded-xl border-2 p-6 pr-8 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     isSelected
-                      ? "border-primary bg-primary/10 shadow-md ring-2 ring-primary/40 ring-offset-2"
-                      : "border-border bg-card hover:border-primary/40 hover:bg-primary/5"
+                      ? "border-primary bg-primary/10 ring-2 ring-primary/40 ring-offset-2"
+                      : "border-border bg-card hover:border-primary hover:bg-primary/5"
                   )}
                 >
                   {isSelected && (
@@ -245,14 +245,15 @@ export default function ChooseRefinementPage() {
                       Selected
                     </span>
                   )}
-                  <div className={cn(
-                    "flex h-10 w-10 items-center justify-center rounded-lg",
-                    isSelected ? "bg-primary text-primary-foreground" : "bg-primary/10"
-                  )}>
-                    <Icon className={cn("h-5 w-5", isSelected ? "text-primary-foreground" : "text-primary")} />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                    <Icon className="h-5 w-5" />
                   </div>
                   <h3 className={cn("text-base font-semibold", isSelected && "text-primary")}>{tool.title}</h3>
-                  <p className="text-sm leading-relaxed">{tool.description}</p>
+                  <p className="text-base leading-relaxed">{tool.description}</p>
+                  <div className="mt-2 flex items-center gap-1.5 text-base font-semibold text-primary">
+                    {isSelected ? "Selected method" : "Preview this method"}
+                    <ArrowRight className="h-4 w-4" />
+                  </div>
                 </button>
               )
             })}

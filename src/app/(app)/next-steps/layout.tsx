@@ -8,7 +8,7 @@ import { useRouter, usePathname } from "next/navigation"
 import { ChevronDown, Milestone, type LucideIcon } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
-import { NEXT_STEPS_TOPICS, NEXT_STEPS_TOPIC_ICON_BG } from "@/data/nextStepsData"
+import { NEXT_STEPS_TOPICS } from "@/data/nextStepsData"
 import { useContainerSize } from "@/context/container-size-context"
 
 function NavContent({
@@ -18,60 +18,59 @@ function NavContent({
   pathname: string
   onNavigate: (path: string) => void
 }) {
+  const renderItem = (isActive: boolean, Icon: LucideIcon, label: string, href: string) => (
+    <Button
+      variant={isActive ? "secondary" : "ghost"}
+      className={cn(
+        "w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2 hover:text-secondary-brand",
+        isActive && "text-secondary-brand",
+      )}
+      onClick={() => onNavigate(href)}
+    >
+      <span
+        className={cn(
+          "flex items-center justify-center w-6 h-6 rounded-md shrink-0",
+          isActive ? "bg-secondary-brand" : "bg-muted",
+        )}
+      >
+        <Icon
+          className={cn("h-3.5 w-3.5", isActive ? "text-white" : "text-muted-foreground")}
+          aria-hidden="true"
+        />
+      </span>
+      <span className="flex-1 text-left">{label}</span>
+    </Button>
+  )
+
   return (
     <div className="flex flex-col gap-1">
-      <Button
-        variant={pathname === "/next-steps" ? "secondary" : "ghost"}
-        className={cn(
-          "w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2 hover:text-secondary-brand",
-          pathname === "/next-steps" && "text-secondary-brand",
-        )}
-        onClick={() => onNavigate("/next-steps")}
-      >
-        <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-violet-800">
-          <Milestone className="h-3.5 w-3.5 text-white" aria-hidden="true" />
-        </span>
-        <span className="flex-1 text-left">Introduction</span>
-      </Button>
+      {renderItem(pathname === "/next-steps", Milestone, "Introduction", "/next-steps")}
       {NEXT_STEPS_TOPICS.map((topic) => {
         const isActive = pathname === `/next-steps/${topic.url}`
         const TopicIcon = getNextStepsTopicIcon(topic.iconKey)
-        const bgClass = NEXT_STEPS_TOPIC_ICON_BG[topic.url] ?? "bg-primary"
         return (
-          <Button
-            key={topic.url}
-            variant={isActive ? "secondary" : "ghost"}
-            className={cn(
-              "w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2 hover:text-secondary-brand",
-              isActive && "text-secondary-brand",
-            )}
-            onClick={() => onNavigate(`/next-steps/${topic.url}`)}
-          >
-            <span className={cn("flex items-center justify-center w-6 h-6 rounded-md shrink-0", bgClass)}>
-              <TopicIcon className="h-3.5 w-3.5 text-white" aria-hidden="true" />
-            </span>
-            <span className="flex-1 text-left">{topic.shortTitle}</span>
-          </Button>
+          <div key={topic.url}>
+            {renderItem(isActive, TopicIcon, topic.shortTitle, `/next-steps/${topic.url}`)}
+          </div>
         )
       })}
     </div>
   )
 }
 
-function getActiveInfo(pathname: string): { label: string; Icon: LucideIcon; bgClass: string } {
+function getActiveInfo(pathname: string): { label: string; Icon: LucideIcon } {
   if (pathname === "/next-steps") {
-    return { label: "Introduction", Icon: Milestone, bgClass: "bg-violet-800" }
+    return { label: "Introduction", Icon: Milestone }
   }
   for (const topic of NEXT_STEPS_TOPICS) {
     if (pathname === `/next-steps/${topic.url}`) {
       return {
         label: topic.shortTitle,
         Icon: getNextStepsTopicIcon(topic.iconKey),
-        bgClass: NEXT_STEPS_TOPIC_ICON_BG[topic.url] ?? "bg-primary",
       }
     }
   }
-  return { label: "Next Steps", Icon: Milestone, bgClass: "bg-primary" }
+  return { label: "Next Steps", Icon: Milestone }
 }
 
 export default function NextStepsLayout({
@@ -91,7 +90,7 @@ export default function NextStepsLayout({
     router.push(path)
   }
 
-  const { label: activeLabel, Icon: ActiveIcon, bgClass: activeBgClass } = getActiveInfo(pathname)
+  const { label: activeLabel, Icon: ActiveIcon } = getActiveInfo(pathname)
 
   return (
     <div
@@ -111,7 +110,7 @@ export default function NextStepsLayout({
                     className="w-full justify-between h-auto py-2 px-3"
                   >
                     <span className="flex items-center gap-2 text-sm font-medium min-w-0">
-                      <span className={cn("flex items-center justify-center w-6 h-6 rounded-md shrink-0", activeBgClass)}>
+                      <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-secondary-brand">
                         <ActiveIcon className="h-3.5 w-3.5 text-white" aria-hidden="true" />
                       </span>
                       <span className="truncate">{activeLabel}</span>

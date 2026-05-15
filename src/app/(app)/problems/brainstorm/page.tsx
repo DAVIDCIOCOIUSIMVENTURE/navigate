@@ -161,7 +161,7 @@ function BrainstormCheckItem({
           )}
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <div className="ml-4 flex flex-col">
+          <div className="ml-7 flex flex-col">
             {item.children!.map((child) => (
               <BrainstormCheckItem
                 key={child.id}
@@ -631,7 +631,7 @@ function ProblemBuilder({
                 </div>
                 {!hasAnyItems ? (
                   <NoSearchResults onClear={onClearSearch} />
-                ) : <ScrollArea className="flex-1 min-h-0"><div className="grid grid-cols-2 gap-3 pr-3">
+                ) : <div className={cn("grid grid-cols-2 gap-3", isWide && "flex-1 min-h-0 grid-rows-2")}>
                   {columns.map((col) => {
                     const Icon = COLUMN_ICONS[col.id]
                     const colors = COLUMN_COLORS[col.id]
@@ -640,30 +640,30 @@ function ProblemBuilder({
                         key={col.id}
                         onClick={() => pickColumn(col.id)}
                         className={cn(
-                          "flex flex-col items-center gap-3 p-5 rounded-xl border border-border transition-all",
+                          "flex flex-col items-center justify-center gap-3 p-5 rounded-xl border border-border transition-all min-h-0 w-full h-full",
                           cn(colors?.bgIdle, "hover:shadow-sm"),
                         )}
                       >
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2.5">
                           {Icon && (
                             <span className={cn(
-                              "inline-flex items-center justify-center h-6 w-6 rounded",
+                              "inline-flex items-center justify-center h-7 w-7 rounded",
                               colors?.iconBg || "bg-muted",
                             )}>
-                              <Icon className="h-3.5 w-3.5 text-white" />
+                              <Icon className="h-4 w-4 text-white" />
                             </span>
                           )}
-                          <span className={cn("text-base font-bold", colors?.icon)}>{col.title}</span>
+                          <span className={cn("text-xl font-bold", colors?.icon)}>{col.title}</span>
                         </div>
                         {COLUMN_DESCRIPTIONS[col.id] && (
-                          <span className="text-sm text-foreground text-center leading-snug">
+                          <span className="text-base text-foreground text-center leading-snug">
                             {COLUMN_DESCRIPTIONS[col.id]}
                           </span>
                         )}
                       </button>
                     )
                   })}
-                </div></ScrollArea>}
+                </div>}
               </div>
             </div>
           )}

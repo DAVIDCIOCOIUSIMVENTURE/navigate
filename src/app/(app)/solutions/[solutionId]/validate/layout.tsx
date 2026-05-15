@@ -26,16 +26,6 @@ const NAV_ICONS: Record<string, LucideIcon> = {
   summary: LayoutTemplate,
 }
 
-const NAV_ICON_BG: Record<string, string> = {
-  introduction: "bg-violet-800",
-  feasibility: "bg-teal-700",
-  impact: "bg-green-800",
-  cost: "bg-yellow-600",
-  "time-to-implement": "bg-blue-900",
-  verdict: "bg-orange-700",
-  summary: "bg-violet-800",
-}
-
 function NavItems({
   base,
   pathname,
@@ -51,7 +41,6 @@ function NavItems({
         const href = `${base}/${item.path}`
         const isActive = pathname === href
         const Icon = NAV_ICONS[item.path] ?? FileText
-        const bgClass = NAV_ICON_BG[item.path] ?? "bg-primary"
         return (
           <li key={item.path}>
             {item.section && (
@@ -65,8 +54,16 @@ function NavItems({
               onClick={() => onNavigate(href)}
               aria-current={isActive ? "page" : undefined}
             >
-              <span className={cn("flex items-center justify-center w-6 h-6 rounded-md shrink-0", bgClass)}>
-                <Icon className="h-3.5 w-3.5 text-white" aria-hidden="true" />
+              <span
+                className={cn(
+                  "flex items-center justify-center w-6 h-6 rounded-md shrink-0",
+                  isActive ? "bg-secondary-brand" : "bg-muted",
+                )}
+              >
+                <Icon
+                  className={cn("h-3.5 w-3.5", isActive ? "text-white" : "text-muted-foreground")}
+                  aria-hidden="true"
+                />
               </span>
               <span className="flex-1 text-left">{item.label}</span>
             </Button>
@@ -110,7 +107,6 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   const activeItem = NAV_ITEMS.find((item) => pathname === `${base}/${item.path}`)
   const ActiveIcon = activeItem ? (NAV_ICONS[activeItem.path] ?? FileText) : ClipboardCheck
-  const activeBgClass = activeItem ? (NAV_ICON_BG[activeItem.path] ?? "bg-primary") : "bg-violet-800"
 
   const handleNavigate = (href: string) => {
     setMobileNavOpen(false)
@@ -130,7 +126,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                   className="w-full justify-between h-auto py-2 px-3"
                 >
                   <span className="flex items-center gap-2 text-sm font-medium min-w-0">
-                    <span className={cn("flex items-center justify-center w-6 h-6 rounded-md shrink-0", activeBgClass)}>
+                    <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-secondary-brand">
                       <ActiveIcon className="h-3.5 w-3.5 text-white" aria-hidden="true" />
                     </span>
                     <span className="truncate">{activeItem?.label ?? "Navigation"}</span>

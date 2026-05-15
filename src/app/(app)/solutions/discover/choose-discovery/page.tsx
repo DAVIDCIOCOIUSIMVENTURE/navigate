@@ -284,13 +284,17 @@ export default function ChooseDiscoveryPage() {
                   key={key}
                   type="button"
                   onClick={() => setOpenTool(key)}
-                  className="flex flex-col gap-3 rounded-xl border bg-card p-6 text-left transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="group relative flex cursor-pointer flex-col gap-3 rounded-xl border-2 border-border bg-card p-6 text-left transition-colors hover:border-primary hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary-brand/10">
-                    <Icon className="h-5 w-5 text-secondary-brand" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                    <Icon className="h-5 w-5" />
                   </div>
                   <h3 className="text-base font-semibold">{tool.title}</h3>
-                  <p className="text-sm leading-relaxed">{tool.description}</p>
+                  <p className="text-base leading-relaxed">{tool.description}</p>
+                  <div className="mt-2 flex items-center gap-1.5 text-base font-semibold text-primary">
+                    Preview this method
+                    <ArrowRight className="h-4 w-4" />
+                  </div>
                 </button>
               )
             })}

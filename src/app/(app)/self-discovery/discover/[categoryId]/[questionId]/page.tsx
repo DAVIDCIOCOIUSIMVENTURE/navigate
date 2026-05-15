@@ -145,7 +145,7 @@ function SuggestionTreeItem({
                     )}
                 </CollapsibleTrigger>
                 <CollapsibleContent>
-                    <div className="ml-4 flex flex-col">
+                    <div className="ml-7 flex flex-col">
                         {item.children!.map((child) => (
                             <SuggestionTreeItem
                                 key={child.id}

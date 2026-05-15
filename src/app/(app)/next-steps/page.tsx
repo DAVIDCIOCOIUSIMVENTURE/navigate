@@ -33,7 +33,7 @@ export default function NextStepsPage() {
   return (
     <Card className="w-full h-full flex flex-col overflow-hidden">
       <CardHeader className={cn("pb-0 shrink-0", roomy ? "px-10 pt-10" : "px-6 pt-6")}>
-        <CardTitle icon={Milestone} iconBg="bg-violet-800">Introduction</CardTitle>
+        <CardTitle icon={Milestone} iconBg="bg-secondary-brand">Introduction</CardTitle>
       </CardHeader>
       <CardContent className={cn("flex-1 flex flex-col gap-8 overflow-y-auto min-h-0", roomy ? "p-10 pt-6" : "p-6 pt-4")}>
         <div className="flex flex-col md:flex-row gap-6 md:items-center">

@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { useParams, useRouter, notFound } from "next/navigation"
-import { NEXT_STEPS_TOPICS, NEXT_STEPS_TOPIC_ICON_BG, getNextStepsTopic, type NextStepsApproach } from "@/data/nextStepsData"
+import { NEXT_STEPS_TOPICS, getNextStepsTopic, type NextStepsApproach } from "@/data/nextStepsData"
 import { getNextStepsTopicIcon } from "@/config/navigation"
 import { ChevronLeft, ChevronRight, Sparkles, AlertTriangle } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
@@ -25,13 +25,12 @@ export default function NextStepsTopicPage() {
   const next = index < NEXT_STEPS_TOPICS.length - 1 ? NEXT_STEPS_TOPICS[index + 1] : null
 
   const Icon = getNextStepsTopicIcon(topic.iconKey)
-  const bgClass = NEXT_STEPS_TOPIC_ICON_BG[topic.url] ?? "bg-primary"
 
   return (
     <Card className="w-full h-full flex flex-col overflow-hidden">
       <CardHeader className={cn("pb-0 shrink-0", roomy ? "px-10 pt-10" : "px-6 pt-6")}>
         <CardTitle>
-          <div className={cn("flex items-center justify-center w-10 h-10 rounded-lg shrink-0", bgClass)}>
+          <div className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-secondary-brand">
             <Icon className="h-5 w-5 text-white" />
           </div>
           {topic.title}
