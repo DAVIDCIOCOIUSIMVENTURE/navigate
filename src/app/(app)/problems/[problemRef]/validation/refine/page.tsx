@@ -25,19 +25,19 @@ const ROOT_CAUSES_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
 
 function RootCausesCaseStudies() {
   return (
-    <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-5">
-      <p className="text-base text-white">
+    <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
+      <p className="text-base text-foreground">
         See how successful organisations dug past surface-level symptoms to identify the underlying causes that, once fixed, prevented entire categories of failure.
       </p>
       <Tabs defaultValue={ROOT_CAUSES_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
-        <TabsList className="self-center bg-white/10 h-auto flex-wrap">
+        <TabsList className="self-center bg-background h-auto flex-wrap">
           {ROOT_CAUSES_CASE_STUDIES.map((cs) => {
             const Icon = ROOT_CAUSES_CASE_STUDY_ICONS[cs.company]
             return (
               <TabsTrigger
                 key={cs.company}
                 value={cs.company}
-                className="gap-1.5 text-white data-[state=active]:bg-white data-[state=active]:text-foreground"
+                className="gap-1.5"
               >
                 {Icon && <Icon className="h-3.5 w-3.5" />}
                 {cs.company}
@@ -49,37 +49,37 @@ function RootCausesCaseStudies() {
           const Icon = ROOT_CAUSES_CASE_STUDY_ICONS[cs.company]
           return (
             <TabsContent key={cs.company} value={cs.company}>
-              <div className="rounded-lg border border-white/10 bg-white/10 p-6 flex flex-col gap-5">
+              <div className="rounded-lg border bg-card p-6 flex flex-col gap-5">
                 <div className="flex items-center gap-2.5">
                   {Icon && (
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/20 text-white">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground">
                       <Icon className="h-4 w-4" />
                     </span>
                   )}
-                  <p className="text-base font-semibold text-white">{cs.company}</p>
+                  <p className="text-base font-semibold text-foreground">{cs.company}</p>
                 </div>
                 <div>
-                  <span className="text-base font-semibold text-white">Problem</span>
-                  <p className="mt-1 text-base text-white">{cs.problem}</p>
+                  <span className="text-base font-semibold text-foreground">Problem</span>
+                  <p className="mt-1 text-base text-foreground">{cs.problem}</p>
                 </div>
                 <div>
-                  <span className="text-base font-semibold text-white">Root Causes</span>
+                  <span className="text-base font-semibold text-foreground">Root Causes</span>
                   <div className="mt-2 flex flex-col gap-2">
                     {cs.causes.map((cause, i) => (
-                      <div key={i} className="rounded-md border border-white/10 bg-white/5 p-3">
-                        <p className="text-base font-semibold text-white">{cause.title}</p>
-                        <p className="mt-1 text-base text-white">{cause.detail}</p>
+                      <div key={i} className="rounded-md border bg-muted p-3">
+                        <p className="text-base font-semibold text-foreground">{cause.title}</p>
+                        <p className="mt-1 text-base text-foreground">{cause.detail}</p>
                       </div>
                     ))}
                   </div>
                 </div>
-                <div className="rounded-md border border-white/10 bg-white/5 p-3">
-                  <span className="text-base font-semibold text-white">Notes</span>
-                  <p className="mt-1 text-base text-white">{cs.notes}</p>
+                <div className="rounded-md border bg-muted p-3">
+                  <span className="text-base font-semibold text-foreground">Notes</span>
+                  <p className="mt-1 text-base text-foreground">{cs.notes}</p>
                 </div>
-                <div className="border-t border-white/10 pt-3 mt-1">
-                  <span className="text-base font-semibold text-white">Outcome</span>
-                  <p className="mt-1 text-base text-white">{cs.outcome}</p>
+                <div className="border-t pt-3 mt-1">
+                  <span className="text-base font-semibold text-foreground">Outcome</span>
+                  <p className="mt-1 text-base text-foreground">{cs.outcome}</p>
                 </div>
               </div>
             </TabsContent>
@@ -98,19 +98,19 @@ const FIVE_WHYS_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
 
 function FiveWhysCaseStudies() {
   return (
-    <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-5">
-      <p className="text-base text-white">
+    <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
+      <p className="text-base text-foreground">
         See how teams used the 5 Whys to push past the first plausible answer and reach a fundamental cause that, once addressed, prevented the problem from recurring.
       </p>
       <Tabs defaultValue={FIVE_WHYS_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
-        <TabsList className="self-center bg-white/10 h-auto flex-wrap">
+        <TabsList className="self-center bg-background h-auto flex-wrap">
           {FIVE_WHYS_CASE_STUDIES.map((cs) => {
             const Icon = FIVE_WHYS_CASE_STUDY_ICONS[cs.company]
             return (
               <TabsTrigger
                 key={cs.company}
                 value={cs.company}
-                className="gap-1.5 text-white data-[state=active]:bg-white data-[state=active]:text-foreground"
+                className="gap-1.5"
               >
                 {Icon && <Icon className="h-3.5 w-3.5" />}
                 {cs.company}
@@ -122,52 +122,52 @@ function FiveWhysCaseStudies() {
           const Icon = FIVE_WHYS_CASE_STUDY_ICONS[cs.company]
           return (
             <TabsContent key={cs.company} value={cs.company}>
-              <div className="rounded-lg border border-white/10 bg-white/10 p-6 flex flex-col gap-5">
+              <div className="rounded-lg border bg-card p-6 flex flex-col gap-5">
                 <div className="flex items-center gap-2.5">
                   {Icon && (
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/20 text-white">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground">
                       <Icon className="h-4 w-4" />
                     </span>
                   )}
-                  <p className="text-base font-semibold text-white">{cs.company}</p>
+                  <p className="text-base font-semibold text-foreground">{cs.company}</p>
                 </div>
                 <div>
-                  <span className="text-base font-semibold text-white">Problem</span>
-                  <p className="mt-1 text-base text-white">{cs.problem}</p>
+                  <span className="text-base font-semibold text-foreground">Problem</span>
+                  <p className="mt-1 text-base text-foreground">{cs.problem}</p>
                 </div>
                 {cs.chains.map((chain, ci) => (
                   <div key={ci} className="flex flex-col gap-3">
                     {cs.chains.length > 1 && (
-                      <span className="text-base font-semibold text-white">Chain {ci + 1}</span>
+                      <span className="text-base font-semibold text-foreground">Chain {ci + 1}</span>
                     )}
-                    <div className="rounded-md border border-white/10 bg-white/5 p-3">
-                      <span className="text-base font-semibold text-white">Starting problem</span>
-                      <p className="mt-1 text-base font-semibold text-white">{chain.startingProblem}</p>
+                    <div className="rounded-md border bg-muted p-3">
+                      <span className="text-base font-semibold text-foreground">Starting problem</span>
+                      <p className="mt-1 text-base font-semibold text-foreground">{chain.startingProblem}</p>
                     </div>
                     <div className="flex flex-col">
                       {chain.whys.map((why, i) => (
                         <div key={i} className="flex gap-3">
                           <div className="flex flex-col items-center">
-                            <div className="mt-2 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-bold text-primary">
+                            <div className="mt-2 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-base font-bold text-primary-foreground">
                               {i + 1}
                             </div>
-                            {i < chain.whys.length - 1 && <div className="w-px flex-1 bg-white/30" />}
+                            {i < chain.whys.length - 1 && <div className="w-px flex-1 bg-border" />}
                           </div>
                           <div className="flex-1 pb-3 last:pb-0">
-                            <p className="text-base text-white">{why}</p>
+                            <p className="text-base text-foreground">{why}</p>
                           </div>
                         </div>
                       ))}
                     </div>
-                    <div className="rounded-md border border-white/10 bg-white/5 p-3">
-                      <span className="text-base font-semibold text-white">Root cause</span>
-                      <p className="mt-1 text-base text-white">{chain.rootCause}</p>
+                    <div className="rounded-md border bg-muted p-3">
+                      <span className="text-base font-semibold text-foreground">Root cause</span>
+                      <p className="mt-1 text-base text-foreground">{chain.rootCause}</p>
                     </div>
                   </div>
                 ))}
-                <div className="border-t border-white/10 pt-3 mt-1">
-                  <span className="text-base font-semibold text-white">Outcome</span>
-                  <p className="mt-1 text-base text-white">{cs.outcome}</p>
+                <div className="border-t pt-3 mt-1">
+                  <span className="text-base font-semibold text-foreground">Outcome</span>
+                  <p className="mt-1 text-base text-foreground">{cs.outcome}</p>
                 </div>
               </div>
             </TabsContent>
@@ -193,19 +193,19 @@ const SEVERITY_BADGE: Record<"low" | "medium" | "high" | "critical", string> = {
 
 function AffectedGroupsCaseStudies() {
   return (
-    <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-5">
-      <p className="text-base text-white">
+    <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
+      <p className="text-base text-foreground">
         See how successful companies mapped who was affected by the problem and how severely, then prioritised the most acute groups to design a focused first version.
       </p>
       <Tabs defaultValue={AFFECTED_GROUPS_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
-        <TabsList className="self-center bg-white/10 h-auto flex-wrap">
+        <TabsList className="self-center bg-background h-auto flex-wrap">
           {AFFECTED_GROUPS_CASE_STUDIES.map((cs) => {
             const Icon = AFFECTED_GROUPS_CASE_STUDY_ICONS[cs.company]
             return (
               <TabsTrigger
                 key={cs.company}
                 value={cs.company}
-                className="gap-1.5 text-white data-[state=active]:bg-white data-[state=active]:text-foreground"
+                className="gap-1.5"
               >
                 {Icon && <Icon className="h-3.5 w-3.5" />}
                 {cs.company}
@@ -217,41 +217,41 @@ function AffectedGroupsCaseStudies() {
           const Icon = AFFECTED_GROUPS_CASE_STUDY_ICONS[cs.company]
           return (
             <TabsContent key={cs.company} value={cs.company}>
-              <div className="rounded-lg border border-white/10 bg-white/10 p-6 flex flex-col gap-5">
+              <div className="rounded-lg border bg-card p-6 flex flex-col gap-5">
                 <div className="flex items-center gap-2.5">
                   {Icon && (
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/20 text-white">
+                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground">
                       <Icon className="h-4 w-4" />
                     </span>
                   )}
-                  <p className="text-base font-semibold text-white">{cs.company}</p>
+                  <p className="text-base font-semibold text-foreground">{cs.company}</p>
                 </div>
                 <div>
-                  <span className="text-base font-semibold text-white">Problem</span>
-                  <p className="mt-1 text-base text-white">{cs.problem}</p>
+                  <span className="text-base font-semibold text-foreground">Problem</span>
+                  <p className="mt-1 text-base text-foreground">{cs.problem}</p>
                 </div>
                 <div>
-                  <span className="text-base font-semibold text-white">Affected Groups</span>
+                  <span className="text-base font-semibold text-foreground">Affected Groups</span>
                   <div className="mt-2 flex flex-col gap-2">
                     {cs.groups.map((group, i) => (
-                      <div key={i} className="rounded-md border border-white/10 bg-white/5 p-3">
+                      <div key={i} className="rounded-md border bg-muted p-3">
                         <div className="flex flex-wrap items-center gap-2">
-                          <p className="text-base font-semibold text-white">{group.name}</p>
+                          <p className="text-base font-semibold text-foreground">{group.name}</p>
                           <span className={cn(
-                            "inline-block rounded px-1.5 py-0.5 text-sm font-semibold text-white capitalize",
+                            "inline-block rounded px-1.5 py-0.5 text-base font-semibold text-foreground capitalize",
                             SEVERITY_BADGE[group.severity]
                           )}>
                             {group.severity}
                           </span>
                         </div>
-                        <p className="mt-1 text-base text-white">{group.description}</p>
+                        <p className="mt-1 text-base text-foreground">{group.description}</p>
                       </div>
                     ))}
                   </div>
                 </div>
-                <div className="border-t border-white/10 pt-3 mt-1">
-                  <span className="text-base font-semibold text-white">Outcome</span>
-                  <p className="mt-1 text-base text-white">{cs.outcome}</p>
+                <div className="border-t pt-3 mt-1">
+                  <span className="text-base font-semibold text-foreground">Outcome</span>
+                  <p className="mt-1 text-base text-foreground">{cs.outcome}</p>
                 </div>
               </div>
             </TabsContent>

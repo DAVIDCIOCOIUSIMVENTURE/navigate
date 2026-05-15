@@ -74,19 +74,19 @@ export default function MarketSizingPage() {
           </TabsContent>
 
           <TabsContent value="case-studies">
-            <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-5">
-              <p className="text-base text-white">
+            <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
+              <p className="text-base text-foreground">
                 See how successful companies estimated reach, frequency, and value when sizing the opportunity behind their core problem.
               </p>
               <Tabs defaultValue={VALIDATE_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
-                <TabsList className="self-center bg-white/10">
+                <TabsList className="self-center bg-background">
                   {VALIDATE_CASE_STUDIES.map((cs) => {
                     const Icon = cs.icon
                     return (
                       <TabsTrigger
                         key={cs.company}
                         value={cs.company}
-                        className="gap-1.5 text-white data-[state=active]:bg-white data-[state=active]:text-foreground"
+                        className="gap-1.5"
                       >
                         <Icon className="h-3.5 w-3.5" />
                         {cs.company}
@@ -98,28 +98,28 @@ export default function MarketSizingPage() {
                   const Icon = cs.icon
                   return (
                   <TabsContent key={cs.company} value={cs.company}>
-                  <div className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-3">
+                  <div className="rounded-lg border bg-card p-4 flex flex-col gap-3">
                     <div className="flex items-center gap-2.5">
                       <div className={`flex items-center justify-center w-8 h-8 rounded-lg shrink-0 ${cs.iconBg}`}>
                         <Icon className="h-4 w-4 text-white" />
                       </div>
-                      <p className="text-base font-semibold text-white">{cs.company}</p>
+                      <p className="text-base font-semibold text-foreground">{cs.company}</p>
                     </div>
                     <div className={cn(
                       "grid gap-3 text-base",
                       containerSize === "narrow" ? "grid-cols-1" : "grid-cols-2",
                     )}>
                       <div>
-                        <span className="text-base font-semibold text-white">How Many Customers</span>
-                        <p className="mt-1 text-base text-white">
-                          <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-base font-semibold text-white mr-1">{cs.howManyPeople.value.toLocaleString()}</span>
+                        <span className="text-base font-semibold text-foreground">How Many Customers</span>
+                        <p className="mt-1 text-base text-foreground">
+                          <span className="inline-block rounded bg-muted px-1.5 py-0.5 text-base font-semibold text-foreground mr-1">{cs.howManyPeople.value.toLocaleString()}</span>
                           {cs.howManyPeople.detail}
                         </p>
                       </div>
                       <div>
-                        <span className="text-base font-semibold text-white">How Often</span>
-                        <p className="mt-1 text-base text-white">
-                          <span className="inline-block rounded bg-white/10 px-1.5 py-0.5 text-base font-semibold text-white mr-1">{cs.howOften.value} {cs.howOften.unit}</span>
+                        <span className="text-base font-semibold text-foreground">How Often</span>
+                        <p className="mt-1 text-base text-foreground">
+                          <span className="inline-block rounded bg-muted px-1.5 py-0.5 text-base font-semibold text-foreground mr-1">{cs.howOften.value} {cs.howOften.unit}</span>
                           {cs.howOften.detail}
                         </p>
                       </div>

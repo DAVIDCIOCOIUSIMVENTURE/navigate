@@ -86,19 +86,19 @@ export default function CompetitionPage() {
           </TabsContent>
 
           <TabsContent value="case-studies">
-            <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-5">
-              <p className="text-base text-white">
+            <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
+              <p className="text-base text-foreground">
                 See how successful companies read the competitive landscape: switching costs, the quality of existing alternatives, and the size of the incumbents they were taking on.
               </p>
               <Tabs defaultValue={VALIDATE_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
-                <TabsList className="self-center bg-white/10">
+                <TabsList className="self-center bg-background">
                   {VALIDATE_CASE_STUDIES.map((cs) => {
                     const Icon = cs.icon
                     return (
                       <TabsTrigger
                         key={cs.company}
                         value={cs.company}
-                        className="gap-1.5 text-white data-[state=active]:bg-white data-[state=active]:text-foreground"
+                        className="gap-1.5"
                       >
                         <Icon className="h-3.5 w-3.5" />
                         {cs.company}
@@ -110,42 +110,42 @@ export default function CompetitionPage() {
                   const Icon = cs.icon
                   return (
                   <TabsContent key={cs.company} value={cs.company}>
-                  <div className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-3">
+                  <div className="rounded-lg border bg-card p-4 flex flex-col gap-3">
                     <div className="flex items-center gap-2.5">
                       <div className={`flex items-center justify-center w-8 h-8 rounded-lg shrink-0 ${cs.iconBg}`}>
                         <Icon className="h-4 w-4 text-white" />
                       </div>
-                      <p className="text-base font-semibold text-white">{cs.company}</p>
+                      <p className="text-base font-semibold text-foreground">{cs.company}</p>
                     </div>
                     <div className={cn(
                       "grid gap-3 text-base",
                       containerSize === "narrow" ? "grid-cols-1" : "grid-cols-3",
                     )}>
                       <div>
-                        <span className="text-base font-semibold text-white">Cost of Switching</span>
-                        <p className="mt-1 text-base text-white">
+                        <span className="text-base font-semibold text-foreground">Cost of Switching</span>
+                        <p className="mt-1 text-base text-foreground">
                           <span className={cn(
-                            "inline-block rounded px-1.5 py-0.5 text-base font-semibold text-white mr-1 capitalize",
+                            "inline-block rounded px-1.5 py-0.5 text-base font-semibold text-foreground mr-1 capitalize",
                             cs.costOfSwitching.level === "none" ? "bg-emerald-500/30" : cs.costOfSwitching.level === "low" ? "bg-green-500/30" : cs.costOfSwitching.level === "medium" ? "bg-amber-500/30" : cs.costOfSwitching.level === "high" ? "bg-red-500/30" : "bg-red-700/30"
                           )}>{cs.costOfSwitching.level}</span>
                           {cs.costOfSwitching.detail}
                         </p>
                       </div>
                       <div>
-                        <span className="text-base font-semibold text-white">Solution Effectiveness</span>
-                        <p className="mt-1 text-base text-white">
+                        <span className="text-base font-semibold text-foreground">Solution Effectiveness</span>
+                        <p className="mt-1 text-base text-foreground">
                           <span className={cn(
-                            "inline-block rounded px-1.5 py-0.5 text-base font-semibold text-white mr-1 capitalize",
+                            "inline-block rounded px-1.5 py-0.5 text-base font-semibold text-foreground mr-1 capitalize",
                             cs.solutionEffectiveness.level === "terrible" || cs.solutionEffectiveness.level === "poor" ? "bg-green-500/30" : cs.solutionEffectiveness.level === "average" ? "bg-amber-500/30" : "bg-red-500/30"
                           )}>{cs.solutionEffectiveness.level}</span>
                           {cs.solutionEffectiveness.detail}
                         </p>
                       </div>
                       <div>
-                        <span className="text-base font-semibold text-white">Competitor Size</span>
-                        <p className="mt-1 text-base text-white">
+                        <span className="text-base font-semibold text-foreground">Competitor Size</span>
+                        <p className="mt-1 text-base text-foreground">
                           <span className={cn(
-                            "inline-block rounded px-1.5 py-0.5 text-base font-semibold text-white mr-1 capitalize",
+                            "inline-block rounded px-1.5 py-0.5 text-base font-semibold text-foreground mr-1 capitalize",
                             cs.competitorSize.level === "micro" ? "bg-emerald-500/30" : cs.competitorSize.level === "small" ? "bg-green-500/30" : cs.competitorSize.level === "medium" ? "bg-amber-500/30" : cs.competitorSize.level === "large" ? "bg-red-500/30" : "bg-red-700/30"
                           )}>{cs.competitorSize.level}</span>
                           {cs.competitorSize.detail}

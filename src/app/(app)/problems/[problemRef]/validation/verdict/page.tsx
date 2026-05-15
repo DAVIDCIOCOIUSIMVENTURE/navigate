@@ -125,19 +125,19 @@ export default function VerdictPage() {
           </TabsContent>
 
           <TabsContent value="case-studies">
-            <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-5">
-              <p className="text-base text-white">
+            <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
+              <p className="text-base text-foreground">
                 See how successful companies weighed all of the signals together to reach a verdict on whether the problem was worth pursuing.
               </p>
               <Tabs defaultValue={VALIDATE_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
-                <TabsList className="self-center bg-white/10">
+                <TabsList className="self-center bg-background">
                   {VALIDATE_CASE_STUDIES.map((cs) => {
                     const Icon = cs.icon
                     return (
                       <TabsTrigger
                         key={cs.company}
                         value={cs.company}
-                        className="gap-1.5 text-white data-[state=active]:bg-white data-[state=active]:text-foreground"
+                        className="gap-1.5"
                       >
                         <Icon className="h-3.5 w-3.5" />
                         {cs.company}
@@ -149,37 +149,37 @@ export default function VerdictPage() {
                   const Icon = cs.icon
                   return (
                   <TabsContent key={cs.company} value={cs.company}>
-                  <div className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-3">
+                  <div className="rounded-lg border bg-card p-4 flex flex-col gap-3">
                     <div className="flex items-center gap-2.5">
                       <div className={`flex items-center justify-center w-8 h-8 rounded-lg shrink-0 ${cs.iconBg}`}>
                         <Icon className="h-4 w-4 text-white" />
                       </div>
-                      <p className="text-base font-semibold text-white">{cs.company}</p>
+                      <p className="text-base font-semibold text-foreground">{cs.company}</p>
                     </div>
                     <div className={cn(
                       "grid gap-3 text-base",
                       containerSize === "narrow" ? "grid-cols-1" : "grid-cols-2",
                     )}>
                       <div>
-                        <span className="text-base font-semibold text-white">Market signals</span>
-                        <ul className="mt-1 text-base text-white list-disc pl-5 space-y-1">
+                        <span className="text-base font-semibold text-foreground">Market signals</span>
+                        <ul className="mt-1 text-base text-foreground list-disc pl-5 space-y-1">
                           <li>{cs.howManyPeople.value.toLocaleString()} customers</li>
                           <li>{cs.howOften.value} {cs.howOften.unit}</li>
                           <li>{cs.worthToThem.value} {cs.worthToThem.unit}</li>
                         </ul>
                       </div>
                       <div>
-                        <span className="text-base font-semibold text-white">Competitive signals</span>
-                        <ul className="mt-1 text-base text-white list-disc pl-5 space-y-1">
+                        <span className="text-base font-semibold text-foreground">Competitive signals</span>
+                        <ul className="mt-1 text-base text-foreground list-disc pl-5 space-y-1">
                           <li>Cost of switching: <span className="capitalize">{cs.costOfSwitching.level}</span></li>
                           <li>Solution effectiveness: <span className="capitalize">{cs.solutionEffectiveness.level}</span></li>
                           <li>Competitor size: <span className="capitalize">{cs.competitorSize.level}</span></li>
                         </ul>
                       </div>
                     </div>
-                    <div className="border-t border-white/10 pt-3 mt-1">
-                      <span className="text-base font-semibold text-white">Verdict: {cs.verdict}</span>
-                      <p className="mt-1 text-base text-white">{cs.reasoning}</p>
+                    <div className="border-t pt-3 mt-1">
+                      <span className="text-base font-semibold text-foreground">Verdict: {cs.verdict}</span>
+                      <p className="mt-1 text-base text-foreground">{cs.reasoning}</p>
                     </div>
                   </div>
                   </TabsContent>

@@ -93,19 +93,19 @@ export default function ExistingSolutionsPage() {
           </TabsContent>
 
           <TabsContent value="case-studies">
-            <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-5">
-              <p className="text-base text-white">
+            <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
+              <p className="text-base text-foreground">
                 See how successful companies mapped out the existing solutions their customers were already using, and identified the shortcomings that created the opportunity.
               </p>
               <Tabs defaultValue={EXISTING_SOLUTIONS_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
-                <TabsList className="self-center bg-white/10">
+                <TabsList className="self-center bg-background">
                   {EXISTING_SOLUTIONS_CASE_STUDIES.map((cs) => {
                     const Icon = cs.icon
                     return (
                       <TabsTrigger
                         key={cs.company}
                         value={cs.company}
-                        className="gap-1.5 text-white data-[state=active]:bg-white data-[state=active]:text-foreground"
+                        className="gap-1.5"
                       >
                         <Icon className="h-3.5 w-3.5" />
                         {cs.company}
@@ -117,26 +117,26 @@ export default function ExistingSolutionsPage() {
                   const Icon = cs.icon
                   return (
                     <TabsContent key={cs.company} value={cs.company}>
-                      <div className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-4">
+                      <div className="rounded-lg border bg-card p-4 flex flex-col gap-4">
                         <div className="flex items-center gap-2.5">
                           <div className={`flex items-center justify-center w-8 h-8 rounded-lg shrink-0 ${cs.iconBg}`}>
                             <Icon className="h-4 w-4 text-white" />
                           </div>
-                          <p className="text-base font-semibold text-white">{cs.company}</p>
+                          <p className="text-base font-semibold text-foreground">{cs.company}</p>
                         </div>
                         <div className="flex flex-col gap-3">
                           {cs.solutions.map((sol) => (
-                            <div key={sol.name} className="flex flex-col gap-4 rounded-md border border-white/10 bg-white/5 p-4">
+                            <div key={sol.name} className="flex flex-col gap-4 rounded-md border bg-muted p-4">
                               <div className="flex flex-col gap-1.5">
-                                <p className="text-base font-semibold text-white">Solution</p>
-                                <p className="text-base text-white">{sol.name}</p>
+                                <p className="text-base font-semibold text-foreground">Solution</p>
+                                <p className="text-base text-foreground">{sol.name}</p>
                               </div>
                               <div className="flex flex-col gap-1.5">
-                                <p className="text-base font-semibold text-white">Shortcomings</p>
-                                <ul className="flex flex-col gap-2 text-base text-white">
+                                <p className="text-base font-semibold text-foreground">Shortcomings</p>
+                                <ul className="flex flex-col gap-2 text-base text-foreground">
                                   {sol.shortcomings.map((sc, j) => (
                                     <li key={j} className="flex gap-2">
-                                      <span className="shrink-0 text-white">&bull;</span>
+                                      <span className="shrink-0 text-foreground">&bull;</span>
                                       <span>{sc.text}</span>
                                     </li>
                                   ))}

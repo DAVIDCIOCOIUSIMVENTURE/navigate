@@ -134,8 +134,8 @@ export default function VerdictPage() {
           </TabsContent>
 
           <TabsContent value="case-studies">
-            <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-4">
-              <p className="text-base text-white">
+            <div className="rounded-xl border bg-muted p-8 flex flex-col gap-4">
+              <p className="text-base text-foreground">
                 See how teams have weighed their metrics into a verdict. Each example shows the call they made, the reasoning behind it, and what happened next.
               </p>
               <div className="flex flex-col gap-4">
@@ -144,33 +144,33 @@ export default function VerdictPage() {
                   return (
                     <div
                       key={cs.company}
-                      className="rounded-lg border border-white/10 bg-white/10 p-5 flex flex-col gap-3"
+                      className="rounded-lg border bg-card p-5 flex flex-col gap-3"
                     >
                       <div className="flex items-center gap-2.5">
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/20 text-white">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground">
                           <Icon className="h-4 w-4" />
                         </span>
-                        <p className="text-base font-semibold text-white">{cs.company}</p>
+                        <p className="text-base font-semibold text-foreground">{cs.company}</p>
                         <span className={cn(
-                          "ml-auto rounded-full px-3 py-0.5 text-sm font-semibold",
+                          "ml-auto rounded-full px-3 py-0.5 text-base font-semibold",
                           VERDICT_BADGES[cs.verdict],
                         )}>
                           {VERDICT_LABELS[cs.verdict]}
                         </span>
                       </div>
                       <div>
-                        <span className="text-sm font-semibold uppercase tracking-wide text-white/70">Context</span>
-                        <p className="mt-0.5 text-base text-white">{cs.context}</p>
+                        <span className="text-base font-semibold uppercase tracking-wide text-foreground">Context</span>
+                        <p className="mt-0.5 text-base text-foreground">{cs.context}</p>
                       </div>
-                      <div className="rounded-md border border-white/10 bg-white/5 p-3">
-                        <span className="text-sm font-semibold uppercase tracking-wide text-white/70">
+                      <div className="rounded-md border bg-muted p-3">
+                        <span className="text-base font-semibold uppercase tracking-wide text-foreground">
                           Reasoning ({VERDICT_LABELS[cs.verdict]})
                         </span>
-                        <p className="mt-1 text-base text-white">{cs.reasoning}</p>
+                        <p className="mt-1 text-base text-foreground">{cs.reasoning}</p>
                       </div>
-                      <div className="border-t border-white/10 pt-3 mt-1">
-                        <span className="text-sm font-semibold uppercase tracking-wide text-white/70">Outcome</span>
-                        <p className="mt-0.5 text-base text-white">{cs.outcome}</p>
+                      <div className="border-t pt-3 mt-1">
+                        <span className="text-base font-semibold uppercase tracking-wide text-foreground">Outcome</span>
+                        <p className="mt-0.5 text-base text-foreground">{cs.outcome}</p>
                       </div>
                     </div>
                   )

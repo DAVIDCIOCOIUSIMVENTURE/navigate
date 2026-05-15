@@ -797,8 +797,8 @@ function ScamperCaseStudies() {
   const containerSize = useContainerSize()
   const isNarrow = containerSize === "narrow"
   return (
-    <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-8">
-      <p className="text-base text-white">
+    <div className="rounded-xl border bg-muted p-8 flex flex-col gap-8">
+      <p className="text-base text-foreground">
         See how successful companies used SCAMPER thinking to reimagine existing products and create breakthrough solutions by looking at problems from multiple creative angles.
       </p>
       {SCAMPER_CASE_STUDIES.map((cs) => {
@@ -806,19 +806,19 @@ function ScamperCaseStudies() {
         return (
         <div
           key={cs.company}
-          className="rounded-lg border border-white/10 bg-white/10 p-6 flex flex-col gap-5"
+          className="rounded-lg border bg-card p-6 flex flex-col gap-5"
         >
           <div className="flex items-center gap-2">
             {Icon && (
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/20 text-white">
+              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-foreground">
                 <Icon className="h-4 w-4" />
               </span>
             )}
-            <p className="text-base font-semibold text-white">{cs.company}</p>
+            <p className="text-base font-semibold text-foreground">{cs.company}</p>
           </div>
           <div>
-            <span className="text-base font-semibold text-white">Problem</span>
-            <p className="mt-1 text-base text-white">{cs.problem}</p>
+            <span className="text-base font-semibold text-foreground">Problem</span>
+            <p className="mt-1 text-base text-foreground">{cs.problem}</p>
           </div>
           <div className={cn(
             "grid gap-5 text-base",
@@ -827,18 +827,18 @@ function ScamperCaseStudies() {
             {cs.dimensions.map((dim) => (
               <div key={dim.letter}>
                 <div className="flex items-center gap-1.5">
-                  <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${SCAMPER_LETTER_COLORS[dim.letter] ?? "bg-white/20"} text-white text-[10px] font-bold`}>
+                  <span className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full ${SCAMPER_LETTER_COLORS[dim.letter] ?? "bg-muted"} text-white text-[10px] font-bold`}>
                     {dim.letter}
                   </span>
-                  <span className="text-base font-semibold text-white">{dim.title}</span>
+                  <span className="text-base font-semibold text-foreground">{dim.title}</span>
                 </div>
-                <p className="mt-1 text-base text-white">{dim.idea}</p>
+                <p className="mt-1 text-base text-foreground">{dim.idea}</p>
               </div>
             ))}
           </div>
-          <div className="border-t border-white/10 pt-5 mt-1">
-            <span className="text-base font-semibold text-white">Outcome</span>
-            <p className="mt-1 text-base text-white">{cs.outcome}</p>
+          <div className="border-t pt-5 mt-1">
+            <span className="text-base font-semibold text-foreground">Outcome</span>
+            <p className="mt-1 text-base text-foreground">{cs.outcome}</p>
           </div>
         </div>
         )
@@ -857,8 +857,8 @@ const IMPROVE_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
 
 function ImproveCaseStudies() {
   return (
-    <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-5">
-      <p className="text-base text-white">
+    <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
+      <p className="text-base text-foreground">
         See how successful companies improved existing solutions along multiple dimensions at once, turning ordinary products into category-defining experiences.
       </p>
       {IMPROVE_CASE_STUDIES.map((cs) => {
@@ -866,35 +866,35 @@ function ImproveCaseStudies() {
         return (
           <div
             key={cs.company}
-            className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-3"
+            className="rounded-lg border bg-card p-4 flex flex-col gap-3"
           >
             <div className="flex items-center gap-2">
               {Icon && (
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/20 text-white">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-foreground">
                   <Icon className="h-4 w-4" />
                 </span>
               )}
-              <p className="text-base font-semibold text-white">{cs.company}</p>
+              <p className="text-base font-semibold text-foreground">{cs.company}</p>
             </div>
             <div>
-              <span className="text-base font-semibold text-white">Problem</span>
-              <p className="mt-1 text-base text-white">{cs.problem}</p>
+              <span className="text-base font-semibold text-foreground">Problem</span>
+              <p className="mt-1 text-base text-foreground">{cs.problem}</p>
             </div>
             <div className="flex flex-col gap-3">
               {cs.improvements.map((imp, i) => (
-                <div key={i} className="rounded-md border border-white/10 bg-white/5 p-3">
+                <div key={i} className="rounded-md border bg-muted p-3">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-base font-semibold text-white">{imp.group}</span>
-                    <span className="text-white">/</span>
-                    <span className="text-base font-semibold text-white">{imp.dimension}</span>
+                    <span className="text-base font-semibold text-foreground">{imp.group}</span>
+                    <span className="text-foreground">/</span>
+                    <span className="text-base font-semibold text-foreground">{imp.dimension}</span>
                   </div>
-                  <p className="mt-1 text-base text-white">{imp.idea}</p>
+                  <p className="mt-1 text-base text-foreground">{imp.idea}</p>
                 </div>
               ))}
             </div>
-            <div className="border-t border-white/10 pt-3 mt-1">
-              <span className="text-base font-semibold text-white">Outcome</span>
-              <p className="mt-1 text-base text-white">{cs.outcome}</p>
+            <div className="border-t pt-3 mt-1">
+              <span className="text-base font-semibold text-foreground">Outcome</span>
+              <p className="mt-1 text-base text-foreground">{cs.outcome}</p>
             </div>
           </div>
         )
@@ -914,8 +914,8 @@ const REVERSE_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
 function ReverseCaseStudies() {
   const isNarrow = useContainerSize() === "narrow"
   return (
-    <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-5">
-      <p className="text-base text-white">
+    <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
+      <p className="text-base text-foreground">
         See how successful companies flipped every way they were making customers unhappy into a feature that won them loyalty, trust, and market share.
       </p>
       {REVERSE_CASE_STUDIES.map((cs) => {
@@ -923,47 +923,47 @@ function ReverseCaseStudies() {
         return (
           <div
             key={cs.company}
-            className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-3"
+            className="rounded-lg border bg-card p-4 flex flex-col gap-3"
           >
             <div className="flex items-center gap-2">
               {Icon && (
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/20 text-white">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-foreground">
                   <Icon className="h-4 w-4" />
                 </span>
               )}
-              <p className="text-base font-semibold text-white">{cs.company}</p>
+              <p className="text-base font-semibold text-foreground">{cs.company}</p>
             </div>
             <div>
-              <span className="text-base font-semibold text-white">Problem</span>
-              <p className="mt-1 text-base text-white">{cs.problem}</p>
+              <span className="text-base font-semibold text-foreground">Problem</span>
+              <p className="mt-1 text-base text-foreground">{cs.problem}</p>
             </div>
             <div className={cn("grid gap-3", isNarrow ? "grid-cols-1" : "grid-cols-2")}>
-              <div className="rounded-md border border-white/10 bg-white/5 p-3">
-                <span className="text-base font-semibold text-white">How to make it worse</span>
+              <div className="rounded-md border bg-muted p-3">
+                <span className="text-base font-semibold text-foreground">How to make it worse</span>
                 <ul className="mt-2 flex flex-col gap-1.5">
                   {cs.worseIdeas.map((idea, i) => (
-                    <li key={i} className="text-base text-white flex gap-1.5">
-                      <span className="text-white">•</span>
+                    <li key={i} className="text-base text-foreground flex gap-1.5">
+                      <span className="text-foreground">•</span>
                       <span>{idea}</span>
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="rounded-md border border-white/10 bg-white/5 p-3">
-                <span className="text-base font-semibold text-white">Flipped into solutions</span>
+              <div className="rounded-md border bg-muted p-3">
+                <span className="text-base font-semibold text-foreground">Flipped into solutions</span>
                 <ul className="mt-2 flex flex-col gap-1.5">
                   {cs.flippedIdeas.map((idea, i) => (
-                    <li key={i} className="text-base text-white flex gap-1.5">
-                      <span className="text-white">&rarr;</span>
+                    <li key={i} className="text-base text-foreground flex gap-1.5">
+                      <span className="text-foreground">&rarr;</span>
                       <span>{idea}</span>
                     </li>
                   ))}
                 </ul>
               </div>
             </div>
-            <div className="border-t border-white/10 pt-3 mt-1">
-              <span className="text-base font-semibold text-white">Outcome</span>
-              <p className="mt-1 text-base text-white">{cs.outcome}</p>
+            <div className="border-t pt-3 mt-1">
+              <span className="text-base font-semibold text-foreground">Outcome</span>
+              <p className="mt-1 text-base text-foreground">{cs.outcome}</p>
             </div>
           </div>
         )
@@ -982,8 +982,8 @@ const ANALOGY_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
 
 function AnalogyCaseStudies() {
   return (
-    <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-5">
-      <p className="text-base text-white">
+    <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
+      <p className="text-base text-foreground">
         See how breakthrough innovators borrowed ideas from unrelated fields: factories, racing, even nature. A good analogy reframes the problem and unlocks solutions you would never reach by thinking inside your own industry.
       </p>
       {ANALOGY_CASE_STUDIES.map((cs) => {
@@ -991,32 +991,32 @@ function AnalogyCaseStudies() {
         return (
           <div
             key={cs.company}
-            className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-3"
+            className="rounded-lg border bg-card p-4 flex flex-col gap-3"
           >
             <div className="flex items-center gap-2">
               {Icon && (
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/20 text-white">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-foreground">
                   <Icon className="h-4 w-4" />
                 </span>
               )}
-              <p className="text-base font-semibold text-white">{cs.company}</p>
+              <p className="text-base font-semibold text-foreground">{cs.company}</p>
             </div>
             <div>
-              <span className="text-base font-semibold text-white">Problem</span>
-              <p className="mt-1 text-base text-white">{cs.problem}</p>
+              <span className="text-base font-semibold text-foreground">Problem</span>
+              <p className="mt-1 text-base text-foreground">{cs.problem}</p>
             </div>
-            <div className="rounded-md border border-white/10 bg-white/5 p-3">
-              <span className="text-base font-semibold text-white">Source domain</span>
-              <p className="mt-1 text-base font-semibold text-white">{cs.sourceDomain}</p>
-              <p className="mt-1 text-base text-white">{cs.insight}</p>
+            <div className="rounded-md border bg-muted p-3">
+              <span className="text-base font-semibold text-foreground">Source domain</span>
+              <p className="mt-1 text-base font-semibold text-foreground">{cs.sourceDomain}</p>
+              <p className="mt-1 text-base text-foreground">{cs.insight}</p>
             </div>
-            <div className="rounded-md border border-white/10 bg-white/5 p-3">
-              <span className="text-base font-semibold text-white">How it was applied</span>
-              <p className="mt-1 text-base text-white">{cs.application}</p>
+            <div className="rounded-md border bg-muted p-3">
+              <span className="text-base font-semibold text-foreground">How it was applied</span>
+              <p className="mt-1 text-base text-foreground">{cs.application}</p>
             </div>
-            <div className="border-t border-white/10 pt-3 mt-1">
-              <span className="text-base font-semibold text-white">Outcome</span>
-              <p className="mt-1 text-base text-white">{cs.outcome}</p>
+            <div className="border-t pt-3 mt-1">
+              <span className="text-base font-semibold text-foreground">Outcome</span>
+              <p className="mt-1 text-base text-foreground">{cs.outcome}</p>
             </div>
           </div>
         )

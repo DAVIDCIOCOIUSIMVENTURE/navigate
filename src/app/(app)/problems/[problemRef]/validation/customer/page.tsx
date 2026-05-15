@@ -157,19 +157,19 @@ export default function CustomerSegmentPage() {
           </TabsContent>
 
           <TabsContent value="case-studies">
-            <div className="rounded-xl border border-sidebar/20 bg-sidebar p-8 flex flex-col gap-4">
-              <p className="text-base text-white">
+            <div className="rounded-xl border bg-muted p-8 flex flex-col gap-4">
+              <p className="text-base text-foreground">
                 See how successful companies defined their early customer. Notice how specific they were; they didn&apos;t try to serve everyone. Use these examples as inspiration when writing your own strategy.
               </p>
               <Tabs defaultValue={CUSTOMER_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
-                <TabsList className="self-center bg-white/10">
+                <TabsList className="self-center bg-background">
                   {CUSTOMER_CASE_STUDIES.map((cs) => {
                     const Icon = cs.icon
                     return (
                       <TabsTrigger
                         key={cs.company}
                         value={cs.company}
-                        className="gap-1.5 text-white data-[state=active]:bg-white data-[state=active]:text-foreground"
+                        className="gap-1.5"
                       >
                         <Icon className="h-3.5 w-3.5" />
                         {cs.company}
@@ -181,25 +181,25 @@ export default function CustomerSegmentPage() {
                   const Icon = cs.icon
                   return (
                     <TabsContent key={cs.company} value={cs.company}>
-                      <div className="rounded-lg border border-white/10 bg-white/10 p-4 flex flex-col gap-3">
+                      <div className="rounded-lg border bg-card p-4 flex flex-col gap-3">
                         <div className="flex items-center gap-2.5">
                           <div className={`flex items-center justify-center w-8 h-8 rounded-lg shrink-0 ${cs.iconBg}`}>
                             <Icon className="h-4 w-4 text-white" />
                           </div>
-                          <p className="text-base font-semibold text-white">{cs.company}</p>
+                          <p className="text-base font-semibold text-foreground">{cs.company}</p>
                         </div>
                         <div className="grid grid-cols-1 gap-y-3 text-base">
                           <div>
-                            <span className="text-base font-semibold text-white">Customer Description</span>
-                            <p className="mt-1 text-base text-white">{cs.customerDescription}</p>
+                            <span className="text-base font-semibold text-foreground">Customer Description</span>
+                            <p className="mt-1 text-base text-foreground">{cs.customerDescription}</p>
                           </div>
                           <div>
-                            <span className="text-base font-semibold text-white">Estimated Segment Size</span>
-                            <p className="mt-1 text-base text-white">{cs.segmentSize}</p>
+                            <span className="text-base font-semibold text-foreground">Estimated Segment Size</span>
+                            <p className="mt-1 text-base text-foreground">{cs.segmentSize}</p>
                           </div>
                           <div>
-                            <span className="text-base font-semibold text-white">Why This Works</span>
-                            <p className="mt-1 text-base text-white">{cs.whyThisWorks}</p>
+                            <span className="text-base font-semibold text-foreground">Why This Works</span>
+                            <p className="mt-1 text-base text-foreground">{cs.whyThisWorks}</p>
                           </div>
                         </div>
                       </div>
