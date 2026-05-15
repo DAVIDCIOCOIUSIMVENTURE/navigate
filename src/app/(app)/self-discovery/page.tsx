@@ -9,6 +9,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import {
   ArrowRight,
   Compass,
+  Pencil,
   Plus,
   Trash2,
   type LucideIcon,
@@ -48,7 +49,7 @@ function CategorySection({
   children: React.ReactNode
 }) {
   return (
-    <section className="flex flex-col gap-3 rounded-lg border bg-card p-4">
+    <section className="flex flex-col gap-3 rounded-lg border bg-muted/70 p-4">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3 min-w-0">
           <span className={cn("flex items-center justify-center w-9 h-9 rounded-md shrink-0", iconBg)}>
@@ -65,8 +66,9 @@ function CategorySection({
           <span className="text-sm tabular-nums">
             {count} {count === 1 ? "item" : "items"}
           </span>
-          <Button variant="outline" size="sm" onClick={() => router.push(ctaUrl)}>
-            {count === 0 ? "Start" : "Edit"}
+          <Button variant="outline" size="sm" className="bg-white gap-1.5" onClick={() => router.push(ctaUrl)}>
+            <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
+            Edit
           </Button>
         </div>
       </div>
@@ -175,7 +177,7 @@ export default function SelfDiscoveryPage() {
                               {questionItems.map((trigger) => (
                                 <div
                                   key={trigger.id}
-                                  className="flex items-center gap-2 bg-muted rounded-md px-3 py-1.5 text-sm"
+                                  className="flex items-center gap-2 bg-white rounded-md px-3 py-1.5 text-sm"
                                 >
                                   <span>{trigger.title}</span>
                                   <Button
@@ -213,7 +215,7 @@ export default function SelfDiscoveryPage() {
                   {customYouItems.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center gap-2 bg-muted rounded-md px-3 py-1.5 text-sm"
+                      className="flex items-center gap-2 bg-white rounded-md px-3 py-1.5 text-sm"
                     >
                       <span>{item.label}</span>
                       <Button
