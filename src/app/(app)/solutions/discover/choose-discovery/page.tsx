@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog"
 import { useDiscovery, getAdjacentSteps } from "../context"
 import type { DiscoveryToolType } from "@/types/solution"
-import { Shuffle, ArrowLeft, ArrowRight, Lightbulb, RotateCcw, GitCompare, Wrench } from "lucide-react"
+import { Shuffle, ArrowLeft, ArrowRight, Lightbulb, RotateCcw, GitCompare, Wrench, CheckCircle2 } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 
@@ -243,15 +243,27 @@ const TOOL_ORDER: ToolKey[] = ["scamper", "reverse", "analogy", "improve"]
 export default function ChooseDiscoveryPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { problem, setDiscoveryToolType } = useDiscovery()
+  const { problem, discoveryToolType, setDiscoveryToolType } = useDiscovery()
   const { prevPath, nextPath } = getAdjacentSteps(pathname)
   const [openTool, setOpenTool] = useState<ToolKey | null>(null)
+  const [confirmOpen, setConfirmOpen] = useState(false)
   const isNarrow = useContainerSize() === "narrow"
+
+  const selectedTool = (discoveryToolType || null) as ToolKey | null
 
   const handleChoose = (tool: ToolKey) => {
     setDiscoveryToolType(tool as DiscoveryToolType)
     setOpenTool(null)
     if (nextPath) router.push(nextPath)
+  }
+
+  const handleNext = () => {
+    if (!nextPath) return
+    if (!selectedTool) {
+      setConfirmOpen(true)
+      return
+    }
+    router.push(nextPath)
   }
 
   const DialogBody = openTool ? DIALOG_CONTENT[openTool] : null
@@ -279,20 +291,33 @@ export default function ChooseDiscoveryPage() {
             {TOOL_ORDER.map((key) => {
               const tool = TOOL_CARDS[key]
               const Icon = tool.icon
+              const isSelected = selectedTool === key
               return (
                 <button
                   key={key}
                   type="button"
                   onClick={() => setOpenTool(key)}
-                  className="group relative flex cursor-pointer flex-col gap-3 rounded-xl border-2 border-border bg-card p-6 text-left transition-colors hover:border-primary hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  aria-pressed={isSelected}
+                  className={cn(
+                    "group relative flex cursor-pointer flex-col gap-3 rounded-xl border-2 p-6 pr-8 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    isSelected
+                      ? "border-primary bg-primary/10 ring-2 ring-primary/40 ring-offset-2"
+                      : "border-border bg-card hover:border-primary hover:bg-primary/5"
+                  )}
                 >
+                  {isSelected && (
+                    <span className="absolute -top-3 right-4 flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground shadow-sm">
+                      <CheckCircle2 className="h-3 w-3" />
+                      Selected
+                    </span>
+                  )}
                   <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
                     <Icon className="h-5 w-5" />
                   </div>
-                  <h3 className="text-base font-semibold">{tool.title}</h3>
+                  <h3 className={cn("text-base font-semibold", isSelected && "text-primary")}>{tool.title}</h3>
                   <p className="text-base leading-relaxed">{tool.description}</p>
                   <div className="mt-2 flex items-center gap-1.5 text-base font-semibold text-primary">
-                    Preview this method
+                    {isSelected ? "Selected method" : "Preview this method"}
                     <ArrowRight className="h-4 w-4" />
                   </div>
                 </button>
@@ -307,7 +332,7 @@ export default function ChooseDiscoveryPage() {
               </Button>
             ) : <div />}
             {nextPath && (
-              <Button onClick={() => router.push(nextPath)}>
+              <Button onClick={handleNext}>
                 Next<ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             )}
@@ -332,6 +357,28 @@ export default function ChooseDiscoveryPage() {
               </DialogFooter>
             </>
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Continue without a discovery method?</DialogTitle>
+            <DialogDescription>
+              You haven&apos;t chosen a discovery method yet. Picking one helps you generate stronger solution candidates before moving on. Are you sure you want to continue?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmOpen(false)}>Go Back</Button>
+            <Button
+              onClick={() => {
+                setConfirmOpen(false)
+                if (nextPath) router.push(nextPath)
+              }}
+            >
+              Continue Anyway
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </>
