@@ -16,6 +16,7 @@ export type MetricCaseStudy = {
   reasoning: string
   outcome: string
   icon?: LucideIcon
+  iconBg?: string
 }
 
 export type MetricContent = {

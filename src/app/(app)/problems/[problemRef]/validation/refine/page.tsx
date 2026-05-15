@@ -17,10 +17,10 @@ import {
   type LucideIcon,
 } from "lucide-react"
 
-const ROOT_CAUSES_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
-  "Toyota (post-war production)": Car,
-  "Slack (early enterprise rollout)": MessageSquare,
-  "NHS A&E waiting times": Stethoscope,
+const ROOT_CAUSES_CASE_STUDY_ICONS: Record<string, { icon: LucideIcon; bg: string }> = {
+  "Toyota (post-war production)": { icon: Car, bg: "bg-red-800" },
+  "Slack (early enterprise rollout)": { icon: MessageSquare, bg: "bg-violet-800" },
+  "NHS A&E waiting times": { icon: Stethoscope, bg: "bg-teal-700" },
 }
 
 function RootCausesCaseStudies() {
@@ -32,7 +32,8 @@ function RootCausesCaseStudies() {
       <Tabs defaultValue={ROOT_CAUSES_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
         <TabsList className="self-center bg-background h-auto flex-wrap">
           {ROOT_CAUSES_CASE_STUDIES.map((cs) => {
-            const Icon = ROOT_CAUSES_CASE_STUDY_ICONS[cs.company]
+            const meta = ROOT_CAUSES_CASE_STUDY_ICONS[cs.company]
+            const Icon = meta?.icon
             return (
               <TabsTrigger
                 key={cs.company}
@@ -46,13 +47,17 @@ function RootCausesCaseStudies() {
           })}
         </TabsList>
         {ROOT_CAUSES_CASE_STUDIES.map((cs) => {
-          const Icon = ROOT_CAUSES_CASE_STUDY_ICONS[cs.company]
+          const meta = ROOT_CAUSES_CASE_STUDY_ICONS[cs.company]
+          const Icon = meta?.icon
           return (
             <TabsContent key={cs.company} value={cs.company}>
               <div className="rounded-lg border bg-card p-6 flex flex-col gap-5">
                 <div className="flex items-center gap-2.5">
                   {Icon && (
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground">
+                    <span className={cn(
+                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white",
+                      meta.bg,
+                    )}>
                       <Icon className="h-4 w-4" />
                     </span>
                   )}
@@ -90,10 +95,10 @@ function RootCausesCaseStudies() {
   )
 }
 
-const FIVE_WHYS_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
-  "Toyota (the original 5 Whys)": Wrench,
-  "NASA Jefferson Memorial": Landmark,
-  "Amazon (S3 outage, 2017)": Cloud,
+const FIVE_WHYS_CASE_STUDY_ICONS: Record<string, { icon: LucideIcon; bg: string }> = {
+  "Toyota (the original 5 Whys)": { icon: Wrench, bg: "bg-red-800" },
+  "NASA Jefferson Memorial": { icon: Landmark, bg: "bg-blue-900" },
+  "Amazon (S3 outage, 2017)": { icon: Cloud, bg: "bg-orange-700" },
 }
 
 function FiveWhysCaseStudies() {
@@ -105,7 +110,8 @@ function FiveWhysCaseStudies() {
       <Tabs defaultValue={FIVE_WHYS_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
         <TabsList className="self-center bg-background h-auto flex-wrap">
           {FIVE_WHYS_CASE_STUDIES.map((cs) => {
-            const Icon = FIVE_WHYS_CASE_STUDY_ICONS[cs.company]
+            const meta = FIVE_WHYS_CASE_STUDY_ICONS[cs.company]
+            const Icon = meta?.icon
             return (
               <TabsTrigger
                 key={cs.company}
@@ -119,13 +125,17 @@ function FiveWhysCaseStudies() {
           })}
         </TabsList>
         {FIVE_WHYS_CASE_STUDIES.map((cs) => {
-          const Icon = FIVE_WHYS_CASE_STUDY_ICONS[cs.company]
+          const meta = FIVE_WHYS_CASE_STUDY_ICONS[cs.company]
+          const Icon = meta?.icon
           return (
             <TabsContent key={cs.company} value={cs.company}>
               <div className="rounded-lg border bg-card p-6 flex flex-col gap-5">
                 <div className="flex items-center gap-2.5">
                   {Icon && (
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground">
+                    <span className={cn(
+                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white",
+                      meta.bg,
+                    )}>
                       <Icon className="h-4 w-4" />
                     </span>
                   )}
@@ -178,10 +188,10 @@ function FiveWhysCaseStudies() {
   )
 }
 
-const AFFECTED_GROUPS_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
-  "Uber (early ride-hail launch)": Car,
-  "Khan Academy (early years)": GraduationCap,
-  "Stripe (developer-first payments)": CreditCard,
+const AFFECTED_GROUPS_CASE_STUDY_ICONS: Record<string, { icon: LucideIcon; bg: string }> = {
+  "Uber (early ride-hail launch)": { icon: Car, bg: "bg-rose-800" },
+  "Khan Academy (early years)": { icon: GraduationCap, bg: "bg-emerald-800" },
+  "Stripe (developer-first payments)": { icon: CreditCard, bg: "bg-indigo-800" },
 }
 
 const SEVERITY_BADGE: Record<"low" | "medium" | "high" | "critical", string> = {
@@ -200,7 +210,8 @@ function AffectedGroupsCaseStudies() {
       <Tabs defaultValue={AFFECTED_GROUPS_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
         <TabsList className="self-center bg-background h-auto flex-wrap">
           {AFFECTED_GROUPS_CASE_STUDIES.map((cs) => {
-            const Icon = AFFECTED_GROUPS_CASE_STUDY_ICONS[cs.company]
+            const meta = AFFECTED_GROUPS_CASE_STUDY_ICONS[cs.company]
+            const Icon = meta?.icon
             return (
               <TabsTrigger
                 key={cs.company}
@@ -214,13 +225,17 @@ function AffectedGroupsCaseStudies() {
           })}
         </TabsList>
         {AFFECTED_GROUPS_CASE_STUDIES.map((cs) => {
-          const Icon = AFFECTED_GROUPS_CASE_STUDY_ICONS[cs.company]
+          const meta = AFFECTED_GROUPS_CASE_STUDY_ICONS[cs.company]
+          const Icon = meta?.icon
           return (
             <TabsContent key={cs.company} value={cs.company}>
               <div className="rounded-lg border bg-card p-6 flex flex-col gap-5">
                 <div className="flex items-center gap-2.5">
                   {Icon && (
-                    <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground">
+                    <span className={cn(
+                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white",
+                      meta.bg,
+                    )}>
                       <Icon className="h-4 w-4" />
                     </span>
                   )}

@@ -35,6 +35,7 @@ export const FEASIBILITY_CONTENT: MetricContent = {
   caseStudies: [
     {
       icon: Rocket,
+      iconBg: "bg-red-800",
       company: "SpaceX (reusable rockets, 2010)",
       context: "Landing a rocket booster upright and reflying it had been attempted unsuccessfully for decades. SpaceX proposed doing it as a core business capability.",
       score: 1,
@@ -43,6 +44,7 @@ export const FEASIBILITY_CONTENT: MetricContent = {
     },
     {
       icon: Car,
+      iconBg: "bg-indigo-800",
       company: "Tesla (Model S engineering, 2009)",
       context: "Building a premium all-electric sedan with 200+ miles of range, using an existing battery chemistry but at much larger scale than anyone had attempted.",
       score: 3,
@@ -51,6 +53,7 @@ export const FEASIBILITY_CONTENT: MetricContent = {
     },
     {
       icon: Home,
+      iconBg: "bg-rose-800",
       company: "Airbnb (air mattresses, 2007)",
       context: "Two founders with design backgrounds wanted to let strangers book air mattresses in their apartment during a design conference when hotels sold out.",
       score: 5,
@@ -81,6 +84,7 @@ export const IMPACT_CONTENT: MetricContent = {
   caseStudies: [
     {
       icon: Stethoscope,
+      iconBg: "bg-teal-700",
       company: "Dropbox (seamless file sync, 2008)",
       context: "Before Dropbox, sharing a file across devices meant emailing it to yourself or using awkward FTP tools.",
       score: 5,
@@ -89,6 +93,7 @@ export const IMPACT_CONTENT: MetricContent = {
     },
     {
       icon: ShoppingBag,
+      iconBg: "bg-orange-700",
       company: "Amazon Subscribe & Save (2007)",
       context: "A feature that let customers auto-reorder household consumables at a modest discount.",
       score: 3,
@@ -97,6 +102,7 @@ export const IMPACT_CONTENT: MetricContent = {
     },
     {
       icon: Coffee,
+      iconBg: "bg-emerald-800",
       company: "Starbucks (free in-store mug polish, early 2000s)",
       context: "A proposal to polish personal travel mugs for customers who brought them in.",
       score: 1,
@@ -127,6 +133,7 @@ export const COST_CONTENT: MetricContent = {
   caseStudies: [
     {
       icon: Building2,
+      iconBg: "bg-yellow-600",
       company: "Amazon (opening Whole Foods checkout-free stores, 2018)",
       context: "Retrofitting grocery stores with cameras, shelf sensors, and computer vision to remove checkout entirely.",
       score: 5,
@@ -135,6 +142,7 @@ export const COST_CONTENT: MetricContent = {
     },
     {
       icon: Code2,
+      iconBg: "bg-violet-800",
       company: "Linear (keyboard shortcut overhaul, 2023)",
       context: "Adding a comprehensive keyboard shortcut system across the web app to match the preferences of their power-user audience.",
       score: 2,
@@ -143,6 +151,7 @@ export const COST_CONTENT: MetricContent = {
     },
     {
       icon: Plane,
+      iconBg: "bg-blue-900",
       company: "Boeing (787 Dreamliner composites, early 2000s)",
       context: "Replacing aluminium with carbon-fibre composites as the primary structure of a new widebody aircraft.",
       score: 5,
@@ -173,6 +182,7 @@ export const TIME_CONTENT: MetricContent = {
   caseStudies: [
     {
       icon: MessageSquare,
+      iconBg: "bg-emerald-800",
       company: "Slack (emoji reactions, 2016)",
       context: "A small team added reactions to messages as a way to reduce notification noise.",
       score: 2,
@@ -181,6 +191,7 @@ export const TIME_CONTENT: MetricContent = {
     },
     {
       icon: Rocket,
+      iconBg: "bg-indigo-800",
       company: "Stripe (Checkout v1, 2016)",
       context: "Stripe's hosted checkout page, meant to replace self-hosted payment forms for merchants.",
       score: 3,
@@ -189,6 +200,7 @@ export const TIME_CONTENT: MetricContent = {
     },
     {
       icon: Factory,
+      iconBg: "bg-orange-700",
       company: "Apple Silicon (M1 chip, announced 2020)",
       context: "Transitioning the entire Mac lineup away from Intel chips to Apple-designed ARM processors.",
       score: 5,

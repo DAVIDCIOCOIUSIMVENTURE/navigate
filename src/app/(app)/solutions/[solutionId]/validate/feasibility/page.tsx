@@ -7,6 +7,6 @@ import { FEASIBILITY_CONTENT } from "@/components/solution-strategies/metric-con
 export default function FeasibilityPage() {
   const { feasibility, setFeasibility } = useSolution()
   return (
-    <MetricStep content={FEASIBILITY_CONTENT} value={feasibility} onChange={setFeasibility} iconBg="bg-teal-700" />
+    <MetricStep content={FEASIBILITY_CONTENT} value={feasibility} onChange={setFeasibility} iconBg="bg-secondary-brand" />
   )
 }

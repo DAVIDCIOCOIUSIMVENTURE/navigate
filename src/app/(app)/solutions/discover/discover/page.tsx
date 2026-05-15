@@ -787,10 +787,10 @@ function ImprovementForm() {
 
 /* -- SCAMPER Case Studies -- */
 
-const CASE_STUDY_ICONS: Record<string, LucideIcon> = {
-  "Dyson": Wind,
-  "Netflix (DVD to Streaming)": Tv,
-  "IKEA": Armchair,
+const CASE_STUDY_ICONS: Record<string, { icon: LucideIcon; bg: string }> = {
+  "Dyson": { icon: Wind, bg: "bg-teal-700" },
+  "Netflix (DVD to Streaming)": { icon: Tv, bg: "bg-red-800" },
+  "IKEA": { icon: Armchair, bg: "bg-yellow-600" },
 }
 
 function ScamperCaseStudies() {
@@ -802,7 +802,8 @@ function ScamperCaseStudies() {
         See how successful companies used SCAMPER thinking to reimagine existing products and create breakthrough solutions by looking at problems from multiple creative angles.
       </p>
       {SCAMPER_CASE_STUDIES.map((cs) => {
-        const Icon = CASE_STUDY_ICONS[cs.company]
+        const meta = CASE_STUDY_ICONS[cs.company]
+        const Icon = meta?.icon
         return (
         <div
           key={cs.company}
@@ -810,7 +811,10 @@ function ScamperCaseStudies() {
         >
           <div className="flex items-center gap-2">
             {Icon && (
-              <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-foreground">
+              <span className={cn(
+                "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-white",
+                meta.bg,
+              )}>
                 <Icon className="h-4 w-4" />
               </span>
             )}
@@ -849,10 +853,10 @@ function ScamperCaseStudies() {
 
 /* -- Improve Case Studies -- */
 
-const IMPROVE_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
-  "Amazon Prime": Package,
-  "Apple iPhone": Smartphone,
-  "Starbucks": Coffee,
+const IMPROVE_CASE_STUDY_ICONS: Record<string, { icon: LucideIcon; bg: string }> = {
+  "Amazon Prime": { icon: Package, bg: "bg-orange-700" },
+  "Apple iPhone": { icon: Smartphone, bg: "bg-violet-800" },
+  "Starbucks": { icon: Coffee, bg: "bg-emerald-800" },
 }
 
 function ImproveCaseStudies() {
@@ -862,7 +866,8 @@ function ImproveCaseStudies() {
         See how successful companies improved existing solutions along multiple dimensions at once, turning ordinary products into category-defining experiences.
       </p>
       {IMPROVE_CASE_STUDIES.map((cs) => {
-        const Icon = IMPROVE_CASE_STUDY_ICONS[cs.company]
+        const meta = IMPROVE_CASE_STUDY_ICONS[cs.company]
+        const Icon = meta?.icon
         return (
           <div
             key={cs.company}
@@ -870,7 +875,10 @@ function ImproveCaseStudies() {
           >
             <div className="flex items-center gap-2">
               {Icon && (
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-foreground">
+                <span className={cn(
+                  "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-white",
+                  meta.bg,
+                )}>
                   <Icon className="h-4 w-4" />
                 </span>
               )}
@@ -905,10 +913,10 @@ function ImproveCaseStudies() {
 
 /* -- Reverse Brainstorming Case Studies -- */
 
-const REVERSE_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
-  "Airbnb": Home,
-  "Domino's Pizza": Pizza,
-  "Zappos": ShoppingBag,
+const REVERSE_CASE_STUDY_ICONS: Record<string, { icon: LucideIcon; bg: string }> = {
+  "Airbnb": { icon: Home, bg: "bg-rose-800" },
+  "Domino's Pizza": { icon: Pizza, bg: "bg-red-800" },
+  "Zappos": { icon: ShoppingBag, bg: "bg-blue-900" },
 }
 
 function ReverseCaseStudies() {
@@ -919,7 +927,8 @@ function ReverseCaseStudies() {
         See how successful companies flipped every way they were making customers unhappy into a feature that won them loyalty, trust, and market share.
       </p>
       {REVERSE_CASE_STUDIES.map((cs) => {
-        const Icon = REVERSE_CASE_STUDY_ICONS[cs.company]
+        const meta = REVERSE_CASE_STUDY_ICONS[cs.company]
+        const Icon = meta?.icon
         return (
           <div
             key={cs.company}
@@ -927,7 +936,10 @@ function ReverseCaseStudies() {
           >
             <div className="flex items-center gap-2">
               {Icon && (
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-foreground">
+                <span className={cn(
+                  "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-white",
+                  meta.bg,
+                )}>
                   <Icon className="h-4 w-4" />
                 </span>
               )}
@@ -974,10 +986,10 @@ function ReverseCaseStudies() {
 
 /* -- Analogy Case Studies -- */
 
-const ANALOGY_CASE_STUDY_ICONS: Record<string, LucideIcon> = {
-  "McDonald's": Utensils,
-  "Formula 1 Pit Stops > NHS Neonatal Transfers": Flag,
-  "George de Mestral > Velcro": Leaf,
+const ANALOGY_CASE_STUDY_ICONS: Record<string, { icon: LucideIcon; bg: string }> = {
+  "McDonald's": { icon: Utensils, bg: "bg-red-800" },
+  "Formula 1 Pit Stops > NHS Neonatal Transfers": { icon: Flag, bg: "bg-blue-900" },
+  "George de Mestral > Velcro": { icon: Leaf, bg: "bg-emerald-800" },
 }
 
 function AnalogyCaseStudies() {
@@ -987,7 +999,8 @@ function AnalogyCaseStudies() {
         See how breakthrough innovators borrowed ideas from unrelated fields: factories, racing, even nature. A good analogy reframes the problem and unlocks solutions you would never reach by thinking inside your own industry.
       </p>
       {ANALOGY_CASE_STUDIES.map((cs) => {
-        const Icon = ANALOGY_CASE_STUDY_ICONS[cs.company]
+        const meta = ANALOGY_CASE_STUDY_ICONS[cs.company]
+        const Icon = meta?.icon
         return (
           <div
             key={cs.company}
@@ -995,7 +1008,10 @@ function AnalogyCaseStudies() {
           >
             <div className="flex items-center gap-2">
               {Icon && (
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-muted text-foreground">
+                <span className={cn(
+                  "flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-white",
+                  meta.bg,
+                )}>
                   <Icon className="h-4 w-4" />
                 </span>
               )}

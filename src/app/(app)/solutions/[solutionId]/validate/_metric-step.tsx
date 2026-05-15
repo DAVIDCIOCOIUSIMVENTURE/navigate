@@ -98,49 +98,70 @@ function CaseStudies({
   caseStudies: MetricCaseStudy[]
   scale: ScaleStop[]
 }) {
+  if (caseStudies.length === 0) {
+    return null
+  }
   return (
     <div className="rounded-xl border bg-muted p-8 flex flex-col gap-4">
       <p className="text-base text-foreground">
         See how companies have thought about this metric. Each example shows the score they would have given, the reasoning behind it, and what happened next.
       </p>
-      <div className="flex flex-col gap-4">
+      <Tabs defaultValue={caseStudies[0].company} className="flex flex-col gap-4">
+        <TabsList className="self-center bg-background">
+          {caseStudies.map((cs) => {
+            const Icon = cs.icon
+            return (
+              <TabsTrigger
+                key={cs.company}
+                value={cs.company}
+                className="gap-1.5"
+              >
+                {Icon && <Icon className="h-3.5 w-3.5" />}
+                {cs.company}
+              </TabsTrigger>
+            )
+          })}
+        </TabsList>
         {caseStudies.map((cs) => {
           const scaleStop = scale.find((s) => s.score === cs.score)
           const Icon = cs.icon
           return (
-            <div
-              key={cs.company}
-              className="rounded-lg border bg-card p-5 flex flex-col gap-3"
-            >
-              <div className="flex items-center gap-2.5">
-                {Icon && (
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted text-foreground">
-                    <Icon className="h-4 w-4" />
+            <TabsContent key={cs.company} value={cs.company}>
+              <div className="rounded-lg border bg-card p-5 flex flex-col gap-3">
+                <div className="flex items-center gap-2.5">
+                  {Icon && (
+                    <span className={cn(
+                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
+                      cs.iconBg ?? "bg-muted",
+                      cs.iconBg ? "text-white" : "text-foreground",
+                    )}>
+                      <Icon className="h-4 w-4" />
+                    </span>
+                  )}
+                  <p className="text-base font-semibold text-foreground">{cs.company}</p>
+                  <span className="ml-auto rounded-full bg-primary text-primary-foreground px-3 py-0.5 text-base font-semibold">
+                    Score {cs.score} / 5
                   </span>
-                )}
-                <p className="text-base font-semibold text-foreground">{cs.company}</p>
-                <span className="ml-auto rounded-full bg-primary text-primary-foreground px-3 py-0.5 text-base font-semibold">
-                  Score {cs.score} / 5
-                </span>
+                </div>
+                <div>
+                  <span className="text-base font-semibold uppercase tracking-wide text-foreground">Context</span>
+                  <p className="mt-0.5 text-base text-foreground">{cs.context}</p>
+                </div>
+                <div className={cn("rounded-md border bg-muted p-3")}>
+                  <span className="text-base font-semibold uppercase tracking-wide text-foreground">
+                    Reasoning ({scaleStop?.label ?? `Score ${cs.score}`})
+                  </span>
+                  <p className="mt-1 text-base text-foreground">{cs.reasoning}</p>
+                </div>
+                <div className="border-t pt-3 mt-1">
+                  <span className="text-base font-semibold uppercase tracking-wide text-foreground">Outcome</span>
+                  <p className="mt-0.5 text-base text-foreground">{cs.outcome}</p>
+                </div>
               </div>
-              <div>
-                <span className="text-base font-semibold uppercase tracking-wide text-foreground">Context</span>
-                <p className="mt-0.5 text-base text-foreground">{cs.context}</p>
-              </div>
-              <div className={cn("rounded-md border bg-muted p-3")}>
-                <span className="text-base font-semibold uppercase tracking-wide text-foreground">
-                  Reasoning ({scaleStop?.label ?? `Score ${cs.score}`})
-                </span>
-                <p className="mt-1 text-base text-foreground">{cs.reasoning}</p>
-              </div>
-              <div className="border-t pt-3 mt-1">
-                <span className="text-base font-semibold uppercase tracking-wide text-foreground">Outcome</span>
-                <p className="mt-0.5 text-base text-foreground">{cs.outcome}</p>
-              </div>
-            </div>
+            </TabsContent>
           )
         })}
-      </div>
+      </Tabs>
     </div>
   )
 }
