@@ -42,7 +42,7 @@ export default function IntroductionPage() {
         </div>
 
         {solution && (
-          <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4 flex flex-col gap-3">
+          <div className="rounded-lg border-2 border-secondary-brand/20 bg-secondary-brand/5 p-4 flex flex-col gap-3">
             <div className="flex flex-col gap-1">
               <p className="text-sm font-semibold uppercase tracking-wide">Solution</p>
               <p className="text-base font-medium">{solution.title || "Untitled solution"}</p>

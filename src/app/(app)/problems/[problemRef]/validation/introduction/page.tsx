@@ -66,14 +66,14 @@ export default function IntroductionPage() {
             </p>
           </div>
           <img
-            src="/illustrations/06-flask.svg"
+            src="/illustrations/14-validate-solution.svg"
             alt=""
             className="hidden lg:block w-96 h-auto shrink-0 rounded-lg"
           />
         </div>
 
         {mounted && problem && (
-          <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4 flex flex-col gap-3">
+          <div className="rounded-lg border-2 border-secondary-brand/20 bg-secondary-brand/5 p-4 flex flex-col gap-3">
             {problem.description && (
               <div className="flex flex-col gap-1">
                 <p className="text-base font-semibold uppercase tracking-wide">Problem Description</p>

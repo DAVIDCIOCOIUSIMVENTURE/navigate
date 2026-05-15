@@ -210,7 +210,7 @@ export default function ChooseRefinementPage() {
         </CardHeader>
         <CardContent className="p-10 pt-6 flex flex-col gap-6">
           {problem?.description && (
-            <div className="rounded-lg border-2 border-primary/20 bg-primary/5 px-4 py-3">
+            <div className="rounded-lg border-2 border-secondary-brand/20 bg-secondary-brand/5 px-4 py-3">
               <p className="text-sm font-semibold uppercase tracking-wide mb-1">Problem</p>
               <p className="text-sm font-medium">{problem.description}</p>
             </div>

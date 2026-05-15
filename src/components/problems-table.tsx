@@ -49,10 +49,10 @@ import type { ValidationStatus } from "@/types/validation"
 
 const STATUS_CONFIG: Record<ValidationStatus, { icon: React.ElementType; label: string; className: string }> = {
   unvalidated: { icon: Circle, label: "Unvalidated", className: "text-muted-foreground" },
-  in_progress: { icon: Clock, label: "In Progress", className: "text-yellow-600" },
-  valid: { icon: CheckCircle2, label: "Valid", className: "text-green-600" },
-  invalid: { icon: XCircle, label: "Invalid", className: "text-red-600" },
-  unsure: { icon: HelpCircle, label: "Unsure", className: "text-orange-600" },
+  in_progress: { icon: Clock, label: "In Progress", className: "text-primary" },
+  valid: { icon: CheckCircle2, label: "Valid", className: "text-success" },
+  invalid: { icon: XCircle, label: "Invalid", className: "text-destructive" },
+  unsure: { icon: HelpCircle, label: "Unsure", className: "text-tertiary" },
 }
 
 const STATUS_FILTER_OPTIONS: { value: "all" | ValidationStatus; label: string }[] = [

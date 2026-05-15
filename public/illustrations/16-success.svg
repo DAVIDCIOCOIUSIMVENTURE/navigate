@@ -30,5 +30,4 @@
   <rect x="194" y="195" width="12" height="20" fill="#A37F18" stroke="#1B1B14" stroke-width="2"></rect>
   <path d="M170 215 L230 215 L240 238 L160 238 Z" fill="#2C3E7A" stroke="#1B1B14" stroke-width="2" stroke-linejoin="round"></path>
   <line x1="40" y1="244" x2="360" y2="244" stroke="#1B1B14" stroke-width="2" stroke-linecap="round"></line>
-  <text x="200" y="234" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" font-weight="700" fill="#FFFDF8">1st</text>
 </svg>

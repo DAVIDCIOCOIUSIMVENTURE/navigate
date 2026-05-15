@@ -735,9 +735,9 @@ function classifyCompetitorSize(m: ValidationMetric): Signal {
 }
 
 const SIGNAL_DOT: Record<Signal, string> = {
-  positive: "bg-green-400",
-  neutral: "bg-amber-300",
-  negative: "bg-red-400",
+  positive: "bg-success",
+  neutral: "bg-tertiary",
+  negative: "bg-destructive",
   unknown: "bg-white/30",
 }
 
@@ -788,15 +788,15 @@ function LeanIndicator({ signals }: { signals: Signal[] }) {
   if (net >= 3) {
     title = "Signals lean toward Valid"
     body = `${positive} favourable, ${negative} unfavourable, ${captured.length - positive - negative} neutral. The evidence supports pursuing this problem, but read the notes once more before committing.`
-    tone = "border-green-400/40 bg-green-500/15"
+    tone = "border-success/40 bg-success/15"
   } else if (net <= -3) {
     title = "Signals lean toward Invalid"
     body = `${positive} favourable, ${negative} unfavourable, ${captured.length - positive - negative} neutral. The evidence is stacked against this problem. Consider whether a tighter customer segment or different angle changes the picture.`
-    tone = "border-red-400/40 bg-red-500/15"
+    tone = "border-destructive/40 bg-destructive/15"
   } else {
     title = "Signals are mixed"
     body = `${positive} favourable, ${negative} unfavourable, ${captured.length - positive - negative} neutral. The evidence is genuinely split. A single targeted experiment (a few customer interviews, a pricing test, a competitor audit) usually cuts through faster than another round of guessing.`
-    tone = "border-amber-300/40 bg-amber-400/15"
+    tone = "border-tertiary/40 bg-tertiary/15"
   }
 
   return (

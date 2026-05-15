@@ -53,6 +53,27 @@ export default function NextStepsTopicPage() {
               className="hidden lg:block w-96 h-auto shrink-0 rounded-lg"
             />
           )}
+          {topic.url === "run-a-customer-test" && (
+            <img
+              src="/illustrations/23-customer.svg"
+              alt=""
+              className="hidden lg:block w-96 h-auto shrink-0 rounded-lg"
+            />
+          )}
+          {topic.url === "map-a-learning-roadmap" && (
+            <img
+              src="/illustrations/19-mindmap.svg"
+              alt=""
+              className="hidden lg:block w-96 h-auto shrink-0 rounded-lg"
+            />
+          )}
+          {topic.url === "decide-on-commitment" && (
+            <img
+              src="/illustrations/04-terrain.svg"
+              alt=""
+              className="hidden lg:block w-96 h-auto shrink-0 rounded-lg"
+            />
+          )}
         </div>
 
         {topic.keyPoints.length > 0 && (
@@ -87,9 +108,9 @@ export default function NextStepsTopicPage() {
             <h3 className="text-lg font-bold text-foreground">Common pitfalls</h3>
             <ul className="flex flex-col gap-2">
               {topic.pitfalls.map((p, i) => (
-                <li key={i} className="flex gap-3 items-start rounded-lg border border-rose-200 bg-rose-50/40 dark:border-rose-900/40 dark:bg-rose-900/10 px-4 py-3">
-                  <AlertTriangle className="h-4 w-4 text-rose-500 shrink-0 mt-0.5" aria-hidden="true" />
-                  <p className="text-sm text-foreground leading-relaxed flex-1">{p}</p>
+                <li key={i} className="flex gap-3 items-start rounded-lg border border-destructive/20 bg-destructive/5 dark:border-destructive/40 dark:bg-destructive/10 px-4 py-3">
+                  <AlertTriangle className="h-4 w-4 text-destructive shrink-0 mt-0.5" aria-hidden="true" />
+                  <p className="text-base text-foreground leading-relaxed flex-1">{p}</p>
                 </li>
               ))}
             </ul>

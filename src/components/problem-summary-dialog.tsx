@@ -50,10 +50,10 @@ interface ProblemSummaryDialogProps {
 
 const STATUS_CONFIG: Record<ValidationStatus, { label: string; icon: React.ElementType; className: string }> = {
   unvalidated: { label: "Not validated", icon: Clock,          className: "bg-muted text-muted-foreground" },
-  in_progress: { label: "In progress",  icon: Clock,          className: "bg-blue-100 text-blue-700" },
-  valid:       { label: "Valid",         icon: CheckCircle2,   className: "bg-green-100 text-green-700" },
-  invalid:     { label: "Invalid",       icon: XCircle,        className: "bg-red-100 text-red-700" },
-  unsure:      { label: "Unsure",        icon: AlertTriangle,  className: "bg-orange-100 text-orange-700" },
+  in_progress: { label: "In progress",  icon: Clock,          className: "bg-primary/15 text-primary" },
+  valid:       { label: "Valid",         icon: CheckCircle2,   className: "bg-success/15 text-success" },
+  invalid:     { label: "Invalid",       icon: XCircle,        className: "bg-destructive/15 text-destructive" },
+  unsure:      { label: "Unsure",        icon: AlertTriangle,  className: "bg-tertiary/20 text-tertiary" },
 }
 
 function StatusBadge({ status }: { status: ValidationStatus }) {

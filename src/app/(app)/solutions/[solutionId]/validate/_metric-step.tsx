@@ -33,7 +33,7 @@ export function MetricStep({ content, value, onChange, iconBg }: MetricStepProps
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         {(solution?.title || problem?.description) && (
-          <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4 flex flex-col gap-2">
+          <div className="rounded-lg border-2 border-secondary-brand/20 bg-secondary-brand/5 p-4 flex flex-col gap-2">
             {solution?.title && (
               <div className="flex flex-col gap-0.5">
                 <p className="text-sm font-semibold uppercase tracking-wide">Solution</p>

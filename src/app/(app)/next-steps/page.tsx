@@ -36,16 +36,23 @@ export default function NextStepsPage() {
         <CardTitle icon={Milestone} iconBg="bg-violet-800">Introduction</CardTitle>
       </CardHeader>
       <CardContent className={cn("flex-1 flex flex-col gap-8 overflow-y-auto min-h-0", roomy ? "p-10 pt-6" : "p-6 pt-4")}>
-        <div className="flex flex-col gap-2">
-          <p className="text-sm italic flex items-start gap-2">
-            <Sparkles className="h-3.5 w-3.5 shrink-0 mt-1" aria-hidden="true" />
-            <span>You&apos;ve found problems worth solving and solutions worth testing. Here&apos;s where most founders go next.</span>
-          </p>
-          <p className="text-base text-foreground leading-relaxed">
-            This section is for reference. There&apos;s nothing to fill in: just guidance on how to take what you&apos;ve already
-            built in Navigate and turn it into a real-world experiment, a prototype, or a commitment.
-            Use it as a checkpoint before you sink time and money into the wrong direction.
-          </p>
+        <div className="flex flex-col md:flex-row gap-6 md:items-center">
+          <div className="flex flex-col gap-2 flex-1 min-w-0">
+            <p className="text-base italic flex items-start gap-2">
+              <Sparkles className="h-3.5 w-3.5 shrink-0 mt-1" aria-hidden="true" />
+              <span>You&apos;ve found problems worth solving and solutions worth testing. Here&apos;s where most founders go next.</span>
+            </p>
+            <p className="text-base text-foreground leading-relaxed">
+              This section is for reference. There&apos;s nothing to fill in: just guidance on how to take what you&apos;ve already
+              built in Navigate and turn it into a real-world experiment, a prototype, or a commitment.
+              Use it as a checkpoint before you sink time and money into the wrong direction.
+            </p>
+          </div>
+          <img
+            src="/illustrations/24-rocket.svg"
+            alt=""
+            className="hidden lg:block w-96 h-auto shrink-0 rounded-lg"
+          />
         </div>
 
         <div className="flex flex-col gap-3">
@@ -151,15 +158,15 @@ function TopicCard({ topic, onClick }: { topic: NextStepsTopic; onClick: () => v
 }
 
 const statusColors: Record<string, string> = {
-  unvalidated: "bg-gray-100 text-gray-700",
-  "in progress": "bg-amber-100 text-amber-700",
-  valid: "bg-green-100 text-green-700",
-  invalid: "bg-red-100 text-red-700",
-  unsure: "bg-yellow-100 text-yellow-700",
-  "not started": "bg-gray-100 text-gray-700",
-  pursue: "bg-green-100 text-green-700",
-  revisit: "bg-amber-100 text-amber-700",
-  abandon: "bg-red-100 text-red-700",
+  unvalidated: "bg-muted text-muted-foreground",
+  "in progress": "bg-primary/15 text-primary",
+  valid: "bg-success/15 text-success",
+  invalid: "bg-destructive/15 text-destructive",
+  unsure: "bg-tertiary/20 text-tertiary",
+  "not started": "bg-muted text-muted-foreground",
+  pursue: "bg-success/15 text-success",
+  revisit: "bg-primary/15 text-primary",
+  abandon: "bg-destructive/15 text-destructive",
 }
 
 function StatusPill({ status }: { status: string }) {

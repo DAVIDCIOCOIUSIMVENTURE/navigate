@@ -16,7 +16,7 @@ import { ValidationStrategy } from "@/components/problem-strategies/validation-s
 import {
   AlertCircle, ArrowRight, ChevronDown, CheckCircle2, Copy, ExternalLink,
   GitFork, HelpCircle, Lightbulb, RotateCcw, Search, ShieldCheck,
-  Users, XCircle, Pencil, Eye,
+  Users, XCircle, Pencil,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -359,16 +359,6 @@ export function ProblemHubContent({
 
   return (
     <div className={cn("flex flex-col gap-4", mode === "page" && "gap-6")}>
-      {mode === "dialog" && (
-        <Link
-          href={`/problems/${problemRef}`}
-          className="inline-flex items-center gap-1.5 text-sm hover:text-foreground self-start"
-        >
-          <ExternalLink className="h-3 w-3" />
-          Open as full page
-        </Link>
-      )}
-
       <HubSection icon={AlertCircle} label="Core Problem" tone="amber">
         <CoreProblemStrategy readOnly={readOnly} />
       </HubSection>
@@ -407,17 +397,6 @@ export function ProblemHubContent({
       <SolutionsSection problemId={problemId} />
 
       <NextStepsSection problemRef={problemRef} problemId={problemId} />
-
-      {mode === "dialog" && (
-        <div className="flex justify-end border-t pt-4">
-          <Button asChild>
-            <Link href={`/problems/${problemRef}`}>
-              <Eye className="h-4 w-4 mr-2" />
-              Open full page
-            </Link>
-          </Button>
-        </div>
-      )}
 
       {mode === "page" && !readOnly && (
         <div className="flex justify-end border-t pt-4">

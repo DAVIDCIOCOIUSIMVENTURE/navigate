@@ -89,7 +89,7 @@ export default function SummaryPage() {
         </p>
 
         {problem?.description && (
-          <div className="rounded-lg border-2 border-primary/20 bg-primary/5 p-4 flex flex-col gap-1">
+          <div className="rounded-lg border-2 border-secondary-brand/20 bg-secondary-brand/5 p-4 flex flex-col gap-1">
             <p className="text-sm font-semibold uppercase tracking-wide">Problem</p>
             <p className="text-sm font-medium">{problem.description}</p>
           </div>
