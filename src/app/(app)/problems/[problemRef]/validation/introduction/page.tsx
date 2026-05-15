@@ -13,14 +13,14 @@ import {
 } from "lucide-react"
 
 const STEPS = [
-  { icon: Users, title: "Define your customer", description: "Pin down exactly who experiences this problem so the rest of the validation work has a real person at its centre.", bg: "bg-teal-700", color: "text-white" },
-  { icon: Search, title: "Refine your problem", description: "Dig into why this problem exists and who it affects using Root Causes, 5 Whys, or Affected Groups.", bg: "bg-blue-900", color: "text-white" },
-  { icon: GitFork, title: "Explore existing solutions & shortcomings", description: "Identify how customers currently deal with this problem, capture shortcomings, and measure the quantifiable impact of each solution.", bg: "bg-yellow-600", color: "text-white" },
-  { icon: DollarSign, title: "How much is it worth", description: "Estimate the monetary value of solving one occurrence of the problem and the realistic share of the market you could capture.", bg: "bg-green-800", color: "text-white" },
-  { icon: TrendingUp, title: "Size the market", description: "Estimate how many customers experience the problem and how often, then sense-check the result with a total addressable market calculation that uses the worth and share from the previous step.", bg: "bg-emerald-800", color: "text-white" },
-  { icon: Building2, title: "Assess the competition", description: "Read the cost of switching, how good existing solutions actually are, and how big the incumbents are. Capture supporting notes as you go.", bg: "bg-red-800", color: "text-white" },
-  { icon: ShieldCheck, title: "Record your verdict", description: "Weigh the six factors together against a colour-coded summary and lean indicator, then commit to Valid, Unsure, or Invalid with reasoning in the notes.", bg: "bg-orange-700", color: "text-white" },
-  { icon: LayoutTemplate, title: "Summary", description: "Review the problem statement assembled from your discovery and validation work.", bg: "bg-violet-800", color: "text-white" },
+  { icon: Users, title: "Define your customer", description: "Pin down exactly who experiences this problem so the rest of the validation work has a real person at its centre." },
+  { icon: Search, title: "Refine your problem", description: "Dig into why this problem exists and who it affects using Root Causes, 5 Whys, or Affected Groups." },
+  { icon: GitFork, title: "Explore existing solutions & shortcomings", description: "Identify how customers currently deal with this problem, capture shortcomings, and measure the quantifiable impact of each solution." },
+  { icon: DollarSign, title: "How much is it worth", description: "Estimate the monetary value of solving one occurrence of the problem and the realistic share of the market you could capture." },
+  { icon: TrendingUp, title: "Size the market", description: "Estimate how many customers experience the problem and how often, then sense-check the result with a total addressable market calculation that uses the worth and share from the previous step." },
+  { icon: Building2, title: "Assess the competition", description: "Read the cost of switching, how good existing solutions actually are, and how big the incumbents are. Capture supporting notes as you go." },
+  { icon: ShieldCheck, title: "Record your verdict", description: "Weigh the six factors together against a colour-coded summary and lean indicator, then commit to Valid, Unsure, or Invalid with reasoning in the notes." },
+  { icon: LayoutTemplate, title: "Summary", description: "Review the problem statement assembled from your discovery and validation work." },
 ]
 
 function FieldRow({ label, columnId, ids }: { label: string; columnId: string; ids: string[] }) {
@@ -89,11 +89,11 @@ export default function IntroductionPage() {
         <div className="flex flex-col gap-3">
           <h3 className="text-xl font-bold text-foreground">What you&apos;ll work through</h3>
           <div className="flex flex-col">
-            {STEPS.map(({ icon: Icon, title, description, bg, color }, index) => (
+            {STEPS.map(({ icon: Icon, title, description }, index) => (
               <div key={title} className="flex gap-4">
                 <div className="flex flex-col items-center">
-                  <div className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${bg}`}>
-                    <Icon className={`h-3.5 w-3.5 ${color}`} />
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary-brand">
+                    <Icon className="h-3.5 w-3.5 text-white" />
                   </div>
                   {index < STEPS.length - 1 && (
                     <div className="w-px flex-1 bg-border my-1" />
