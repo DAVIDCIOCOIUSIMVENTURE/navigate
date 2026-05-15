@@ -261,11 +261,12 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                 </TableCell>
               </TableRow>
             ) : (
-              sortedSolutions.map(({ solution, originalIndex, problemDescription }) => {
+              sortedSolutions.map(({ solution, originalIndex, problemDescription }, rowIndex) => {
                 const status = showStatus ? (solution.validationStatus ?? "unvalidated") : null
                 const statusConfig = status ? STATUS_CONFIG[status] : null
+                const zebra = rowIndex % 2 === 1 ? "bg-muted/20" : undefined
                 return (
-                  <TableRow key={solution.id}>
+                  <TableRow key={solution.id} className={cn(zebra)}>
                     <TableCell>{originalIndex + 1}</TableCell>
                     <TableCell className="text-sm">
                       <div className="flex items-center gap-2">

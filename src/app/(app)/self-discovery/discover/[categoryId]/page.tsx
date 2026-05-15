@@ -83,7 +83,7 @@ export default function CategoryPage({
                                 <button
                                     type="button"
                                     onClick={() => router.push(`/self-discovery/discover/${category.url}/${question.url}`)}
-                                    className="flex items-start gap-3 w-full text-left p-3 rounded-md border hover:bg-accent hover:text-primary transition-colors"
+                                    className="flex items-start gap-3 w-full text-left p-3 rounded-md border bg-muted/70 hover:bg-accent hover:text-primary transition-colors"
                                 >
                                     <span className={cn(
                                         "flex items-center justify-center w-7 h-7 rounded-full text-white text-sm font-bold shrink-0",

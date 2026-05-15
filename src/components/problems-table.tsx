@@ -283,15 +283,16 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                   </TableCell>
                 </TableRow>
               ) : (
-                sortedProblems.map(({ problem, originalIndex }) => {
+                sortedProblems.map(({ problem, originalIndex }, rowIndex) => {
                   const status = showStatus ? (problem.validationStatus ?? "unvalidated") : null
                   const statusConfig = status ? STATUS_CONFIG[status] : null
                   const linkedSolutions = solutionsByProblemId.get(problem.id) ?? []
                   const hasSolutions = linkedSolutions.length > 0
                   const expanded = expandedIds.has(problem.id)
+                  const zebra = rowIndex % 2 === 1 ? "bg-muted/20" : undefined
                   return (
                     <Fragment key={problem.id}>
-                    <TableRow className={cn(expanded && hasSolutions && "border-b-0")}>
+                    <TableRow className={cn(zebra, expanded && hasSolutions && "border-b-0")}>
                       <TableCell className="pr-0">
                         {hasSolutions ? (
                           <button
