@@ -13,6 +13,7 @@ import {
 import { ArrowLeft, ArrowRight, ChevronDown, Plus, Trash2 } from "lucide-react"
 import { useReflect } from "../context"
 import { SelfDiscoveryChips } from "@/components/reflect/self-discovery-chips"
+import { LifeExperiencesPicker } from "@/components/reflect/life-experiences-picker"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 
@@ -33,12 +34,29 @@ export default function LensPromptsPage() {
     return src?.category
   }, [lens, prompt.id])
 
+  const useLifeExperiencesPicker =
+    lens.id === "life" && prompt.id === "significant-experience"
+
+  const selectedExperienceTitle = useMemo(() => {
+    if (!useLifeExperiencesPicker) return null
+    const firstFilled = promptAnswers.find((a) => a.text.trim().length > 0)
+    return firstFilled ? firstFilled.text.trim() : null
+  }, [useLifeExperiencesPicker, promptAnswers])
+
+  function handleSelectExperience(title: string | null) {
+    setAnswerText(prompt.id, 0, title ?? "")
+  }
+
   useEffect(() => {
     setExamplesOpen(false)
   }, [prompt.id])
 
   function goPrev() {
-    if (index > 0) setIndex(index - 1)
+    if (index > 0) {
+      setIndex(index - 1)
+    } else {
+      router.push(`/problems/reflect/${lens.id}/introduction`)
+    }
   }
 
   function goNext() {
@@ -127,10 +145,16 @@ export default function LensPromptsPage() {
             </Collapsible>
           )}
 
-          {chipsCategory && (
+          {chipsCategory && !useLifeExperiencesPicker && (
             <SelfDiscoveryChips category={chipsCategory} onPick={handlePickChip} />
           )}
 
+          {useLifeExperiencesPicker ? (
+            <LifeExperiencesPicker
+              selectedTitle={selectedExperienceTitle}
+              onSelect={handleSelectExperience}
+            />
+          ) : (
           <div className="flex flex-col gap-2">
             {promptAnswers.map((a, i) => (
               <div key={i} className="flex items-start gap-2">
@@ -168,6 +192,7 @@ export default function LensPromptsPage() {
               </Button>
             )}
           </div>
+          )}
         </CardContent>
       </Card>
 
@@ -175,7 +200,6 @@ export default function LensPromptsPage() {
         <Button
           variant="outline"
           onClick={goPrev}
-          disabled={index === 0}
           className="gap-2"
         >
           <ArrowLeft className="h-4 w-4" />

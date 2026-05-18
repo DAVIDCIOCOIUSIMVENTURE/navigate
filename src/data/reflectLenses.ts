@@ -65,6 +65,54 @@ export type Lens = {
 
 export const REFLECT_LENSES: Lens[] = [
   {
+    id: "life",
+    title: "Life experiences",
+    shortDescription: "Productize what you've already lived through. The friction you remember is friction others are about to hit.",
+    longDescription:
+      "Look back at one significant experience you've navigated and pull out the parts that were harder than they needed to be. You focus on a single experience per run so the prompts stay specific; to explore another, simply run this tool again and pick a different one.",
+    icon: HeartHandshake,
+    tileColor: "bg-yellow-600",
+    estimatedMinutes: 10,
+    helperText:
+      "Retrospective beats current pain here. The specific things you only learned by doing are the things others are looking for.",
+    prompts: [
+      {
+        id: "significant-experience",
+        question: "Which significant life experience are you reflecting on?",
+        helperText:
+          "Pick one from your self-discovery, or add a new one. One experience at a time keeps the next prompts specific. To explore another experience later, run this tool again. This selection sets the stage for the next prompts and is not saved as a candidate.",
+        multipleAllowed: false,
+        contextOnly: true,
+      },
+      {
+        id: "harder-than-needed",
+        question: "Looking back at that experience, what part was harder than it needed to be?",
+        multipleAllowed: true,
+        capturesContext: ["who-else"],
+      },
+      {
+        id: "wish-told",
+        question: "What did you wish someone had told you upfront?",
+        helperText: "Not generic advice. The specific thing you only learned by doing.",
+        multipleAllowed: true,
+        capturesContext: ["who-else"],
+      },
+      {
+        id: "wasted-spend",
+        question: "What did you spend money on during that experience that turned out not to help?",
+        helperText: "Misallocated spend often signals a missing or misleading product.",
+        multipleAllowed: true,
+        capturesContext: ["who-else"],
+      },
+      {
+        id: "personal-workaround",
+        question: "What workaround did you build for yourself that you still use?",
+        multipleAllowed: true,
+        capturesContext: ["who-else"],
+      },
+    ],
+  },
+  {
     id: "work",
     title: "Work friction",
     shortDescription: "Mine your own job for repeated annoyances and \"this should just exist\" thoughts.",
@@ -125,63 +173,6 @@ export const REFLECT_LENSES: Lens[] = [
         id: "should-exist",
         question: "What \"this should just exist\" thought have you had recently?",
         helperText: "Small, specific, and slightly weird is good.",
-        multipleAllowed: true,
-        capturesContext: ["who-else"],
-      },
-    ],
-  },
-  {
-    id: "life",
-    title: "Life experiences",
-    shortDescription: "Productize what you've already lived through. The friction you remember is friction others are about to hit.",
-    longDescription:
-      "Look back at something significant you've navigated and pull out the parts that were harder than they needed to be.",
-    icon: HeartHandshake,
-    tileColor: "bg-yellow-600",
-    estimatedMinutes: 10,
-    helperText:
-      "Retrospective beats current pain here. The specific things you only learned by doing are the things others are looking for.",
-    selfDiscoverySources: [
-      { category: "personal-interests", promptIds: ["significant-experience"] },
-    ],
-    prompts: [
-      {
-        id: "significant-experience",
-        question: "What's something significant you've navigated in the last few years?",
-        helperText: "This answer sets the stage for the next prompts. It doesn't become a candidate by itself.",
-        examples: [
-          "Moving country",
-          "A health change",
-          "Becoming a parent",
-          "Switching careers",
-          "Caring for a relative",
-        ],
-        multipleAllowed: false,
-        contextOnly: true,
-      },
-      {
-        id: "harder-than-needed",
-        question: "Looking back at that experience, what part was harder than it needed to be?",
-        multipleAllowed: true,
-        capturesContext: ["who-else"],
-      },
-      {
-        id: "wish-told",
-        question: "What did you wish someone had told you upfront?",
-        helperText: "Not generic advice. The specific thing you only learned by doing.",
-        multipleAllowed: true,
-        capturesContext: ["who-else"],
-      },
-      {
-        id: "wasted-spend",
-        question: "What did you spend money on during that experience that turned out not to help?",
-        helperText: "Misallocated spend often signals a missing or misleading product.",
-        multipleAllowed: true,
-        capturesContext: ["who-else"],
-      },
-      {
-        id: "personal-workaround",
-        question: "What workaround did you build for yourself that you still use?",
         multipleAllowed: true,
         capturesContext: ["who-else"],
       },

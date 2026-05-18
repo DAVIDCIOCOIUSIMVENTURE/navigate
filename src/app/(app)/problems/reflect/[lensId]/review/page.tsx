@@ -17,7 +17,7 @@ import type { SessionAnswer } from "@/store/problem-candidates-model"
 export default function LensReviewPage() {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
-  const { lens, sessionId, answers, setAnswerText, setAnswerContext, removeAnswerSlot } =
+  const { lens, sessionId, answers, setAnswerText, setAnswerContext, removeAnswerSlot, clearSession } =
     useReflect()
   const [saving, setSaving] = useState(false)
 
@@ -46,6 +46,7 @@ export default function LensReviewPage() {
         lensId: lens.id,
         answers: payload,
       })
+      clearSession()
       router.push(`/problems/reflect/${lens.id}/done?count=${created.length}`)
     } finally {
       setSaving(false)

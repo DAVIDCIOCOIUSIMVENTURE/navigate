@@ -6,25 +6,25 @@
 
 @layer base {
   :root {
-    /* Background & Foreground: warm gray (no yellow) + dark teal text [experiment, from 40 40% 94%] */
-    --background: 20 8% 94%;
+    /* Background & Foreground: barely-warm neutral gray + dark teal text */
+    --background: 40 6% 92%;
     --foreground: 194 80% 12%;
 
-    /* Cards & Popovers: slightly lighter warm gray so cards lift off the page */
-    --card: 20 8% 98%;
+    /* Cards & Popovers: barely-warm near-white so cards lift off the page */
+    --card: 40 10% 98%;
     --card-foreground: 194 80% 12%;
-    --popover: 20 8% 98%;
+    --popover: 40 10% 98%;
     --popover-foreground: 194 80% 12%;
 
-    /* Primary: Cerulean teal (#0a7cb2) [experiment, swapped from terracotta 13 55% 51%] */
+    /* Primary: Cerulean teal (#0a7cb2) */
     --primary: 199 89% 37%;
     --primary-foreground: 40 60% 97%;
 
-    /* Secondary: warm beige tint (UI secondary surface, not brand) */
-    --secondary: 36 28% 88%;
-    --secondary-foreground: 18 35% 18%;
+    /* Secondary: soft warm-leaning neutral (UI secondary surface, not brand) */
+    --secondary: 40 12% 90%;
+    --secondary-foreground: 212 50% 20%;
 
-    /* Secondary brand: navy (#0f3e74) [experiment] */
+    /* Secondary brand: navy (#0f3e74) */
     --secondary-brand: 212 77% 26%;
     --secondary-brand-foreground: 40 60% 97%;
 
@@ -36,21 +36,21 @@
     --success: 151 56% 28%;
     --success-foreground: 40 60% 97%;
 
-    /* Muted: neutral with warm beige undertone */
-    --muted: 36 22% 88%;
-    --muted-foreground: 25 14% 38%;
+    /* Muted: neutral with the faintest warm undertone */
+    --muted: 40 8% 90%;
+    --muted-foreground: 30 8% 38%;
 
-    /* Accent: light warm beige */
-    --accent: 36 30% 90%;
-    --accent-foreground: 18 35% 18%;
+    /* Accent: soft teal-leaning sage for hovers (still cool, but less corporate-blue) */
+    --accent: 185 28% 88%;
+    --accent-foreground: 199 70% 20%;
 
     /* Destructive: deep crimson (#9F1239) */
     --destructive: 343 80% 35%;
     --destructive-foreground: 40 60% 97%;
 
     /* Borders & Inputs */
-    --border: 34 22% 82%;
-    --input: 34 22% 82%;
+    --border: 40 8% 84%;
+    --input: 40 8% 84%;
     --ring: 199 89% 37%;
 
     /* Chart palette: coral primary, green, gold, blue, rose */
@@ -71,35 +71,35 @@
     --primary-light: 199 80% 94%;
     --primary-light-foreground: 199 89% 22%;
 
-    /* Sidebar: cerulean (#086089) for the left-hand menu */
-    --sidebar-background: 199 89% 28%;
-    --sidebar-foreground: 40 30% 95%;
-    --sidebar-primary: 199 89% 37%;
+    /* Sidebar: deep teal-navy (#172c35) for the left-hand menu */
+    --sidebar-background: 198 40% 15%;
+    --sidebar-foreground: 210 25% 95%;
+    --sidebar-primary: 199 89% 45%;
     --sidebar-primary-foreground: 40 60% 97%;
     --sidebar-accent: 199 89% 37%;
     --sidebar-accent-foreground: 40 60% 97%;
-    --sidebar-border: 199 89% 18%;
-    --sidebar-ring: 199 89% 37%;
+    --sidebar-border: 198 40% 10%;
+    --sidebar-ring: 199 89% 45%;
 
     /* Brand: keep distinct from primary for marketing/callout use */
     --brand: 199 89% 32%;
     --brand-foreground: 40 60% 97%;
 
-    /* Surface: dark warm brown for case study sections */
-    --surface: 17 30% 18%;
-    --surface-foreground: 40 25% 92%;
+    /* Surface: deep teal-navy for case study sections */
+    --surface: 200 25% 14%;
+    --surface-foreground: 40 15% 92%;
   }
 
   .dark {
-    /* Background & Foreground: deep warm brown */
-    --background: 18 22% 7%;
-    --foreground: 36 25% 92%;
+    /* Background & Foreground: deep teal-navy with reduced saturation */
+    --background: 200 22% 9%;
+    --foreground: 40 15% 92%;
 
     /* Cards & Popovers */
-    --card: 18 22% 11%;
-    --card-foreground: 36 25% 92%;
-    --popover: 18 22% 11%;
-    --popover-foreground: 36 25% 92%;
+    --card: 200 18% 12%;
+    --card-foreground: 40 15% 92%;
+    --popover: 200 18% 12%;
+    --popover-foreground: 40 15% 92%;
 
     /* Primary: brighter cerulean for dark backgrounds */
     --primary: 199 85% 55%;
@@ -111,11 +111,11 @@
 
     /* Primary light variant */
     --primary-light: 199 40% 22%;
-    --primary-light-foreground: 36 25% 92%;
+    --primary-light-foreground: 40 15% 92%;
 
     /* Secondary */
-    --secondary: 20 15% 16%;
-    --secondary-foreground: 36 25% 90%;
+    --secondary: 200 14% 17%;
+    --secondary-foreground: 40 15% 90%;
 
     /* Secondary brand: brighter navy for dark mode (lighter variant of #0f3e74) */
     --secondary-brand: 212 70% 65%;
@@ -123,27 +123,27 @@
 
     /* Tertiary: brighter mustard for dark mode */
     --tertiary: 46 70% 58%;
-    --tertiary-foreground: 18 35% 10%;
+    --tertiary-foreground: 200 25% 10%;
 
     /* Success: brighter forest green for dark mode */
     --success: 151 50% 45%;
     --success-foreground: 40 60% 97%;
 
     /* Muted */
-    --muted: 20 15% 16%;
-    --muted-foreground: 30 12% 62%;
+    --muted: 200 12% 17%;
+    --muted-foreground: 30 10% 65%;
 
-    /* Accent */
-    --accent: 14 35% 22%;
-    --accent-foreground: 36 25% 90%;
+    /* Accent: deep sage-teal for hovers in dark mode */
+    --accent: 185 40% 22%;
+    --accent-foreground: 185 25% 92%;
 
     /* Destructive: brighter crimson for dark mode */
     --destructive: 343 65% 50%;
     --destructive-foreground: 40 60% 95%;
 
     /* Borders & Inputs */
-    --border: 20 15% 18%;
-    --input: 20 15% 18%;
+    --border: 200 14% 20%;
+    --input: 200 14% 20%;
     --ring: 199 85% 55%;
 
     /* Chart palette: brighter for dark mode */
@@ -153,14 +153,14 @@
     --chart-4: 210 55% 58%;
     --chart-5: 350 60% 60%;
 
-    /* Sidebar: cerulean (matches light-mode sidebar, #086089) */
-    --sidebar-background: 199 89% 22%;
-    --sidebar-foreground: 36 25% 92%;
+    /* Sidebar: deep teal-navy (#172c35) matches light-mode sidebar */
+    --sidebar-background: 198 40% 12%;
+    --sidebar-foreground: 210 25% 92%;
     --sidebar-primary: 199 85% 55%;
     --sidebar-primary-foreground: 40 60% 97%;
     --sidebar-accent: 199 85% 55%;
     --sidebar-accent-foreground: 40 60% 97%;
-    --sidebar-border: 199 89% 14%;
+    --sidebar-border: 198 40% 8%;
     --sidebar-ring: 199 85% 55%;
 
     /* Brand */

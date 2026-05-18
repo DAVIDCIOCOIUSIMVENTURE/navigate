@@ -130,7 +130,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     dispatch.solutionWorkspaces.init()
     dispatch.notes.init()
     dispatch.problemCandidates.init()
-  }, [dispatch.settings, dispatch.selfDiscoveryItems, dispatch.customBrainstormItems, dispatch.problems, dispatch.accountSettings, dispatch.solutions, dispatch.solutionWorkspaces, dispatch.notes, dispatch.problemCandidates])
+    dispatch.reflectSessions.init()
+  }, [dispatch.settings, dispatch.selfDiscoveryItems, dispatch.customBrainstormItems, dispatch.problems, dispatch.accountSettings, dispatch.solutions, dispatch.solutionWorkspaces, dispatch.notes, dispatch.problemCandidates, dispatch.reflectSessions])
 
   const headerTitle = section && (
     <h1 className="flex items-center gap-2 ml-2 text-xl font-bold min-w-0">

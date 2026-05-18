@@ -1,16 +1,15 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, ChevronDown, Clock, HelpCircle, Sparkles, Telescope, X } from "lucide-react"
+import { ArrowRight, ChevronDown, Clock, HelpCircle, Telescope, X } from "lucide-react"
 import { REFLECT_LENSES } from "@/data/reflectLenses"
 import { useContainerSize } from "@/context/container-size-context"
 import { useGuidance } from "@/context/guidance-context"
-import { getRecommendedLensIds } from "@/lib/reflect-recommendations"
 import { cn } from "@/lib/utils"
 import { CandidatesTray } from "@/components/reflect/candidates-tray"
 
@@ -21,20 +20,12 @@ export default function ReflectHubPage() {
   const introDismissed = useSelector(
     (s: RootState) => s.settings.reflectIntroDismissed
   )
-  const selfDiscoveryItems = useSelector(
-    (s: RootState) => s.selfDiscoveryItems.items
-  )
 
   // Avoid hydration mismatch on the dismiss state by holding "expanded" until mount.
   const [mounted, setMounted] = useState(false)
   useEffect(() => {
     setMounted(true)
   }, [])
-
-  const recommended = useMemo(
-    () => (mounted ? getRecommendedLensIds(selfDiscoveryItems) : new Set<string>()),
-    [mounted, selfDiscoveryItems]
-  )
 
   const showFullIntro = !mounted || !introDismissed
 
@@ -126,48 +117,69 @@ export default function ReflectHubPage() {
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {REFLECT_LENSES.map((lens) => {
             const Icon = lens.icon
-            const isRecommended = recommended.has(lens.id)
+            const isEnabled = lens.id === "life"
+
+            const cardInner = (
+              <Card
+                className={cn(
+                  "h-full transition-colors",
+                  isEnabled && "group-hover:border-primary/40",
+                  !isEnabled && "opacity-60"
+                )}
+              >
+                <CardContent className="p-5 flex flex-col gap-3 h-full">
+                  <div className="flex items-start justify-between gap-3">
+                    <div
+                      className={cn(
+                        "flex items-center justify-center w-10 h-10 rounded-lg shrink-0",
+                        lens.tileColor
+                      )}
+                      aria-hidden="true"
+                    >
+                      <Icon className="h-5 w-5 text-white" />
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {!isEnabled && (
+                        <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-base font-medium">
+                          Coming soon
+                        </span>
+                      )}
+                      {isEnabled && (
+                        <ArrowRight className="h-4 w-4 self-center transition-transform group-hover:translate-x-0.5" />
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-1.5">
+                    <h3 className="text-base font-semibold leading-tight">{lens.title}</h3>
+                    <p className="text-base leading-relaxed">{lens.shortDescription}</p>
+                  </div>
+                  <div className="mt-auto flex items-center gap-1.5 text-base">
+                    <Clock className="h-4 w-4" aria-hidden="true" />
+                    <span>About {lens.estimatedMinutes} minutes</span>
+                  </div>
+                </CardContent>
+              </Card>
+            )
+
+            if (!isEnabled) {
+              return (
+                <div
+                  key={lens.id}
+                  aria-disabled="true"
+                  className="block cursor-not-allowed rounded-xl"
+                >
+                  {cardInner}
+                </div>
+              )
+            }
+
             return (
               <Link
                 key={lens.id}
                 href={`/problems/reflect/${lens.id}/introduction`}
                 className="group block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl"
               >
-                <Card className="h-full transition-colors group-hover:border-primary/40">
-                  <CardContent className="p-5 flex flex-col gap-3 h-full">
-                    <div className="flex items-start justify-between gap-3">
-                      <div
-                        className={cn(
-                          "flex items-center justify-center w-10 h-10 rounded-lg shrink-0",
-                          lens.tileColor
-                        )}
-                        aria-hidden="true"
-                      >
-                        <Icon className="h-5 w-5 text-white" />
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {isRecommended && (
-                          <span
-                            className="inline-flex items-center gap-1 rounded-full bg-tertiary/15 px-2 py-0.5 text-base font-medium"
-                            title="Recommended based on your self-discovery"
-                          >
-                            <Sparkles className="h-3.5 w-3.5 text-tertiary" />
-                            Recommended
-                          </span>
-                        )}
-                        <ArrowRight className="h-4 w-4 self-center transition-transform group-hover:translate-x-0.5" />
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                      <h3 className="text-base font-semibold leading-tight">{lens.title}</h3>
-                      <p className="text-base leading-relaxed">{lens.shortDescription}</p>
-                    </div>
-                    <div className="mt-auto flex items-center gap-1.5 text-base">
-                      <Clock className="h-4 w-4" aria-hidden="true" />
-                      <span>About {lens.estimatedMinutes} minutes</span>
-                    </div>
-                  </CardContent>
-                </Card>
+                {cardInner}
               </Link>
             )
           })}

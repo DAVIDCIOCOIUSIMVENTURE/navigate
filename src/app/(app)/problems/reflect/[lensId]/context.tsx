@@ -4,16 +4,16 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
-  useState,
   type ReactNode,
 } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import type { AppDispatch, RootState } from "@/store"
 import type { Lens } from "@/data/reflectLenses"
+import type { ReflectAnswer } from "@/store/reflect-sessions-model"
 
-export type ReflectAnswer = {
-  text: string
-  context: Record<string, string>
-}
+export type { ReflectAnswer }
 
 type ReflectContextValue = {
   lens: Lens
@@ -30,6 +30,7 @@ type ReflectContextValue = {
   addAnswerSlot: (promptId: string) => void
   removeAnswerSlot: (promptId: string, index: number) => void
   resetSession: () => void
+  clearSession: () => void
 }
 
 const ReflectContext = createContext<ReflectContextValue | null>(null)
@@ -60,54 +61,68 @@ export function ReflectProvider({
   lens: Lens
   children: ReactNode
 }) {
-  const [sessionId, setSessionId] = useState<string>(createSessionId)
-  const [answers, setAnswers] = useState<Record<string, ReflectAnswer[]>>(() =>
-    initialAnswers(lens)
-  )
+  const dispatch = useDispatch<AppDispatch>()
+  const hydrated = useSelector((s: RootState) => s.reflectSessions.hydrated)
+  const session = useSelector((s: RootState) => s.reflectSessions.sessions[lens.id])
 
-  const setAnswerText = useCallback((promptId: string, index: number, text: string) => {
-    setAnswers((prev) => {
-      const list = prev[promptId] ?? [emptyAnswer()]
-      const next = [...list]
-      next[index] = { ...(next[index] ?? emptyAnswer()), text }
-      return { ...prev, [promptId]: next }
+  useEffect(() => {
+    if (!hydrated) return
+    if (session) return
+    dispatch.reflectSessions.ensureSession({
+      lensId: lens.id,
+      sessionId: createSessionId(),
+      promptIds: lens.prompts.map((p) => p.id),
     })
-  }, [])
+  }, [hydrated, session, dispatch, lens.id, lens.prompts])
+
+  const sessionId = session?.sessionId ?? ""
+  const answers = session?.answers ?? initialAnswers(lens)
+
+  const setAnswerText = useCallback(
+    (promptId: string, index: number, text: string) => {
+      dispatch.reflectSessions.setAnswerText({ lensId: lens.id, promptId, index, text })
+    },
+    [dispatch, lens.id]
+  )
 
   const setAnswerContext = useCallback(
     (promptId: string, index: number, fieldId: string, value: string) => {
-      setAnswers((prev) => {
-        const list = prev[promptId] ?? [emptyAnswer()]
-        const next = [...list]
-        const slot = next[index] ?? emptyAnswer()
-        next[index] = { ...slot, context: { ...slot.context, [fieldId]: value } }
-        return { ...prev, [promptId]: next }
+      dispatch.reflectSessions.setAnswerContext({
+        lensId: lens.id,
+        promptId,
+        index,
+        fieldId,
+        value,
       })
     },
-    []
+    [dispatch, lens.id]
   )
 
-  const addAnswerSlot = useCallback((promptId: string) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [promptId]: [...(prev[promptId] ?? []), emptyAnswer()],
-    }))
-  }, [])
+  const addAnswerSlot = useCallback(
+    (promptId: string) => {
+      dispatch.reflectSessions.addAnswerSlot({ lensId: lens.id, promptId })
+    },
+    [dispatch, lens.id]
+  )
 
-  const removeAnswerSlot = useCallback((promptId: string, index: number) => {
-    setAnswers((prev) => {
-      const next = (prev[promptId] ?? []).filter((_, i) => i !== index)
-      return {
-        ...prev,
-        [promptId]: next.length === 0 ? [emptyAnswer()] : next,
-      }
-    })
-  }, [])
+  const removeAnswerSlot = useCallback(
+    (promptId: string, index: number) => {
+      dispatch.reflectSessions.removeAnswerSlot({ lensId: lens.id, promptId, index })
+    },
+    [dispatch, lens.id]
+  )
 
   const resetSession = useCallback(() => {
-    setSessionId(createSessionId())
-    setAnswers(initialAnswers(lens))
-  }, [lens])
+    dispatch.reflectSessions.resetSession({
+      lensId: lens.id,
+      sessionId: createSessionId(),
+      promptIds: lens.prompts.map((p) => p.id),
+    })
+  }, [dispatch, lens.id, lens.prompts])
+
+  const clearSession = useCallback(() => {
+    dispatch.reflectSessions.clearSession(lens.id)
+  }, [dispatch, lens.id])
 
   const value = useMemo<ReflectContextValue>(
     () => ({
@@ -119,6 +134,7 @@ export function ReflectProvider({
       addAnswerSlot,
       removeAnswerSlot,
       resetSession,
+      clearSession,
     }),
     [
       lens,
@@ -129,6 +145,7 @@ export function ReflectProvider({
       addAnswerSlot,
       removeAnswerSlot,
       resetSession,
+      clearSession,
     ]
   )
 
