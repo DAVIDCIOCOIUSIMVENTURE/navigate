@@ -67,7 +67,7 @@ function getSection(pathname: string): { title: string; Icon: LucideIcon } | nul
 }
 
 function isFocusFlowPath(pathname: string): boolean {
-  return pathname.startsWith("/self-discovery/discover")
+  return pathname.startsWith("/self-discovery/discover") || pathname.startsWith("/problems/reflect")
 }
 
 function LayoutContent({ children }: { children: React.ReactNode }) {

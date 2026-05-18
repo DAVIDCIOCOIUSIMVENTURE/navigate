@@ -12,10 +12,18 @@ export type LifePromptExample = {
   iconBg?: string
 }
 
+const PARENT_BADGE = { icon: TriangleAlert, iconBg: "bg-rose-800" } as const
+const MOVE_BADGE = { icon: TriangleAlert, iconBg: "bg-blue-900" } as const
+const CARER_BADGE = { icon: TriangleAlert, iconBg: "bg-emerald-800" } as const
+
 /**
  * Examples shown on the "Examples" tab of each Life experiences prompt. Designed
  * to demonstrate the *kind* of answer the prompt is meant to surface, not as
  * templates to copy. Keys map to `LensPrompt.id` in `src/data/reflectLenses.ts`.
+ *
+ * The same three personas (Becoming a parent, Moving country, Caring for a
+ * relative) recur across every prompt, so a learner can follow each story all
+ * the way through the lens.
  */
 export const LIFE_PROMPT_EXAMPLES: Record<string, LifePromptExample[]> = {
   "significant-experience": [
@@ -25,8 +33,7 @@ export const LIFE_PROMPT_EXAMPLES: Record<string, LifePromptExample[]> = {
         "Recent enough that the small bits of friction are still vivid, not just the big milestones.",
       whyItMatters:
         "Pick something close enough to remember vividly. Distant memories smooth out the details you actually need.",
-      icon: TriangleAlert,
-      iconBg: "bg-rose-800",
+      ...PARENT_BADGE,
     },
     {
       experience: "Moving country",
@@ -34,8 +41,7 @@ export const LIFE_PROMPT_EXAMPLES: Record<string, LifePromptExample[]> = {
         "Concrete touchpoints: bank accounts, visas, leases. Each step had its own surface area of friction.",
       whyItMatters:
         "Concrete experiences with many touchpoints surface more problems than abstract ones like 'becoming more confident'.",
-      icon: TriangleAlert,
-      iconBg: "bg-blue-900",
+      ...MOVE_BADGE,
     },
     {
       experience: "Caring for a relative",
@@ -43,8 +49,7 @@ export const LIFE_PROMPT_EXAMPLES: Record<string, LifePromptExample[]> = {
         "Involves many different systems and people, with friction sitting at every handoff between them.",
       whyItMatters:
         "Experiences that cross many systems or stakeholders are rich problem territory. Single-actor experiences tend to surface fewer opportunities.",
-      icon: TriangleAlert,
-      iconBg: "bg-emerald-800",
+      ...CARER_BADGE,
     },
   ],
   "harder-than-needed": [
@@ -54,8 +59,7 @@ export const LIFE_PROMPT_EXAMPLES: Record<string, LifePromptExample[]> = {
         "Coordinating between two pediatricians and a daycare that each wanted the same information on different forms.",
       whyItMatters:
         "Repeated handoff friction signals a missing 'family profile' that travels with the child across services.",
-      icon: TriangleAlert,
-      iconBg: "bg-rose-800",
+      ...PARENT_BADGE,
     },
     {
       experience: "Moving country",
@@ -63,8 +67,7 @@ export const LIFE_PROMPT_EXAMPLES: Record<string, LifePromptExample[]> = {
         "Proving identity to open a bank account with no local credit history and no permanent address yet.",
       whyItMatters:
         "Newcomers are creditworthy in their old country but invisible in the new one. Cross-border financial portability is an underserved market.",
-      icon: TriangleAlert,
-      iconBg: "bg-blue-900",
+      ...MOVE_BADGE,
     },
     {
       experience: "Caring for a relative",
@@ -72,95 +75,85 @@ export const LIFE_PROMPT_EXAMPLES: Record<string, LifePromptExample[]> = {
         "Finding which specialists at the hospital actually had availability without a clear referral path to follow.",
       whyItMatters:
         "Care navigation is opaque to families. The bottleneck is information, not specialist capacity.",
-      icon: TriangleAlert,
-      iconBg: "bg-emerald-800",
+      ...CARER_BADGE,
     },
   ],
   "wish-told": [
     {
-      experience: "Switching careers",
+      experience: "Becoming a parent",
       answer:
-        "That recruiters in the new field auto-screen on keywords that aren't on most career-switcher CVs.",
+        "That the first three months land critical paperwork (insurance, registration, leave) in the foggiest window of your life.",
       whyItMatters:
-        "Generic career-switch advice misses the real bottleneck: applicant tracking systems pattern-matching on vocabulary.",
-      icon: TriangleAlert,
-      iconBg: "bg-violet-800",
+        "Major admin lands during peak cognitive load. There's room for life-event-aware admin assistance that batches and pre-fills the worst of it.",
+      ...PARENT_BADGE,
     },
     {
-      experience: "Studying abroad",
+      experience: "Moving country",
       answer:
-        "The visa cost was the smallest line item. Legal fees, certified translations, and apostille stamps dwarfed it.",
+        "That the visa fee was the smallest line item. Legal fees, certified translations, and apostille stamps dwarfed it.",
       whyItMatters:
-        "The headline cost of complex life moves is misleading. Budgeting tools focus on the wrong line items.",
-      icon: TriangleAlert,
-      iconBg: "bg-orange-700",
+        "Budgeting tools focus on headline costs and miss the long tail of cross-border admin spend.",
+      ...MOVE_BADGE,
     },
     {
-      experience: "Going freelance",
+      experience: "Caring for a relative",
       answer:
-        "Self-employment tax effectively doubles what you owe on income people forget to set aside for.",
+        "That the bottleneck isn't specialist capacity, it's knowing which specialist is actually accepting referrals this month.",
       whyItMatters:
-        "Tax surprises for freelancers point at a per-invoice automatic withholding product.",
-      icon: TriangleAlert,
-      iconBg: "bg-yellow-600",
+        "Care navigation is opaque to families. The hidden information asymmetry is the product opportunity.",
+      ...CARER_BADGE,
     },
   ],
   "wasted-spend": [
     {
-      experience: "Recovering from burnout",
+      experience: "Becoming a parent",
       answer:
-        "An annual meditation app subscription that went unused because focusing long enough to start a session was the problem.",
+        "An annual baby tracker app subscription that stopped getting opened because logging a 3am feed required more focus than the feed itself.",
       whyItMatters:
-        "Generic wellness products do not meet people where they are during burnout. Severity-aware onboarding matters more than content.",
-      icon: TriangleAlert,
-      iconBg: "bg-emerald-800",
+        "Baby and wellness apps assume active logging. Sleep-deprived parents need passive sensing, not another tap target.",
+      ...PARENT_BADGE,
     },
     {
-      experience: "First-time renting",
+      experience: "Moving country",
       answer:
-        "A premium credit-check report the landlord did not accept because it was not from their preferred vendor.",
+        "A premium credit-check report from my home country that no local landlord or bank would accept.",
       whyItMatters:
-        "Renters pay for things landlords arbitrarily reject. Standardising what counts as proof of creditworthiness is the opportunity.",
-      icon: TriangleAlert,
-      iconBg: "bg-blue-900",
+        "Cross-border financial reputation is non-portable. There's a product in translating creditworthiness across systems.",
+      ...MOVE_BADGE,
     },
     {
-      experience: "Buying a first home",
+      experience: "Caring for a relative",
       answer:
-        "Three pre-purchase building inspections on three houses, each flagging broadly the same recurring issues.",
+        "Three private second-opinion appointments that each referred back to the original specialist anyway.",
       whyItMatters:
-        "Inspection findings are not shared between sellers and serial buyers. A data-sharing platform could remove the repeated spend.",
-      icon: TriangleAlert,
-      iconBg: "bg-violet-800",
+        "Families pay to re-explain the same case to every provider. Shared care records would remove the duplicative spend.",
+      ...CARER_BADGE,
     },
   ],
   "personal-workaround": [
     {
-      experience: "Long-distance relationship",
+      experience: "Becoming a parent",
       answer:
-        "A shared calendar of phone-call slots that adjusts for daylight savings in both countries automatically.",
+        "A running phone note logging each pediatrician visit: what was asked, what was answered, and which form needed updating next.",
       whyItMatters:
-        "Time-zone-aware shared time is a niche but real product. Existing calendar tools assume both people are colocated.",
-      icon: TriangleAlert,
-      iconBg: "bg-rose-800",
+        "Parents are stitching together their child's medical record by hand. A portable, parent-owned health record is an obvious product.",
+      ...PARENT_BADGE,
     },
     {
-      experience: "Recovering from a serious illness",
+      experience: "Moving country",
       answer:
-        "A spreadsheet of medications, side effects, and which doctor prescribed each one across three clinics.",
+        "A spreadsheet tracking every document I'd had translated: by whom, when, and where the original lived. Reused on every visa renewal.",
       whyItMatters:
-        "Patients are doing manual medication reconciliation that electronic health record systems should do for them.",
-      icon: TriangleAlert,
-      iconBg: "bg-emerald-800",
+        "Newcomers reinvent the same document tracker every time. A persistent immigration document vault is a clear opportunity.",
+      ...MOVE_BADGE,
     },
     {
-      experience: "Caring for an aging parent",
+      experience: "Caring for a relative",
       answer:
-        "A sibling WhatsApp group used informally as the parent's daily care log: meals, meds, mood, doctor visits.",
+        "A sibling WhatsApp group used as the daily care log: meals, meds, mood, doctor visits, who took her in.",
       whyItMatters:
-        "Family care coordination is happening on the wrong tools. A dedicated multi-caregiver app is a clear opportunity.",
-      icon: TriangleAlert,
-      iconBg: "bg-yellow-600",
+        "Family care coordination is happening on the wrong tools. A dedicated multi-caregiver app is a real opportunity.",
+      ...CARER_BADGE,
     },
   ],
 }

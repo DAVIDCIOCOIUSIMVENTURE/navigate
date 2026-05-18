@@ -25,6 +25,7 @@ export default function LensPromptsPage() {
   const { lens, answers, setAnswerText, addAnswerSlot, removeAnswerSlot } = useReflect()
   const [index, setIndex] = useState(0)
   const [examplesOpen, setExamplesOpen] = useState(false)
+  const [activeTab, setActiveTab] = useState<"strategy" | "examples">("strategy")
   const isNarrow = useContainerSize() === "narrow"
 
   const prompt = lens.prompts[index]
@@ -65,6 +66,7 @@ export default function LensPromptsPage() {
 
   useEffect(() => {
     setExamplesOpen(false)
+    setActiveTab("strategy")
   }, [prompt.id])
 
   function goPrev() {
@@ -227,7 +229,11 @@ export default function LensPromptsPage() {
             if (!lifeExamples) return strategyBlock
 
             return (
-              <Tabs defaultValue="strategy" className="flex flex-col gap-4">
+              <Tabs
+                value={activeTab}
+                onValueChange={(v) => setActiveTab(v as "strategy" | "examples")}
+                className="flex flex-col gap-4"
+              >
                 <TabsList className="self-center">
                   <TabsTrigger value="strategy">Your strategy</TabsTrigger>
                   <TabsTrigger value="examples">Examples</TabsTrigger>

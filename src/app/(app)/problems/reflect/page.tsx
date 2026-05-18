@@ -15,7 +15,7 @@ export default function ReflectHubPage() {
     <div
       className={cn(
         "flex flex-col gap-4 w-full flex-1 min-h-0",
-        isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)] overflow-y-auto"
+        isWide && "overflow-y-auto"
       )}
     >
       <Card>
