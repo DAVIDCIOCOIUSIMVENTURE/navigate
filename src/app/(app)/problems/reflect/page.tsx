@@ -1,33 +1,15 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import Link from "next/link"
-import { useSelector, useDispatch } from "react-redux"
-import type { RootState, AppDispatch } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { ArrowRight, ChevronDown, Clock, HelpCircle, Telescope, X } from "lucide-react"
+import { ArrowRight, Clock, Compass } from "lucide-react"
 import { REFLECT_LENSES } from "@/data/reflectLenses"
 import { useContainerSize } from "@/context/container-size-context"
-import { useGuidance } from "@/context/guidance-context"
 import { cn } from "@/lib/utils"
 import { CandidatesTray } from "@/components/reflect/candidates-tray"
 
 export default function ReflectHubPage() {
-  const dispatch = useDispatch<AppDispatch>()
-  const { openGuidance } = useGuidance()
   const isWide = useContainerSize() === "wide"
-  const introDismissed = useSelector(
-    (s: RootState) => s.settings.reflectIntroDismissed
-  )
-
-  // Avoid hydration mismatch on the dismiss state by holding "expanded" until mount.
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  const showFullIntro = !mounted || !introDismissed
 
   return (
     <div
@@ -36,85 +18,19 @@ export default function ReflectHubPage() {
         isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)] overflow-y-auto"
       )}
     >
-      {showFullIntro ? (
-        <Card>
-          <CardHeader className="space-y-6">
-            <div className="flex items-start justify-between gap-3">
-              <CardTitle icon={Telescope} iconBg="bg-secondary-brand">
-                Reflect on Problems
-              </CardTitle>
-              <div className="flex items-center gap-1 shrink-0">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  type="button"
-                  onClick={() => openGuidance("reflect-hub")}
-                  aria-label="Open guidance for Reflect"
-                  title="Open guidance"
-                >
-                  <HelpCircle className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  type="button"
-                  onClick={() => dispatch.settings.setReflectIntroDismissed(true)}
-                  aria-label="Hide the introduction"
-                  title="Hide introduction"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-            <p className="text-base leading-relaxed">
-              Reflect is a guided way to surface problems worth solving by answering short
-              prompts about your work, your life, the organizations you know, the people
-              around you, and what you spot in the wider world. Each lens takes a few minutes
-              and saves your answers as <span className="font-semibold">candidates</span>{" "}
-              you can review before promoting them into your problem library.
-            </p>
-          </CardHeader>
-        </Card>
-      ) : (
-        <Card>
-          <CardContent className="px-6 py-3 flex flex-wrap items-center justify-between gap-3">
-            <div className="flex items-center gap-2 min-w-0">
-              <span
-                className="flex items-center justify-center w-8 h-8 rounded-md bg-secondary-brand shrink-0"
-                aria-hidden="true"
-              >
-                <Telescope className="h-4 w-4 text-secondary-brand-foreground" />
-              </span>
-              <span className="text-base font-medium truncate">Reflect on Problems</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <Button
-                variant="ghost"
-                size="icon"
-                type="button"
-                onClick={() => openGuidance("reflect-hub")}
-                aria-label="Open guidance for Reflect"
-                title="Open guidance"
-              >
-                <HelpCircle className="h-4 w-4" />
-              </Button>
-              <Button
-                variant="ghost"
-                type="button"
-                onClick={() => dispatch.settings.setReflectIntroDismissed(false)}
-                className="gap-2"
-              >
-                <ChevronDown className="h-4 w-4" />
-                Show intro
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
-
-      <div>
-        <h2 className="text-lg font-semibold mb-3">Choose a lens</h2>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      <Card>
+        <CardHeader className="space-y-6">
+          <CardTitle icon={Compass}>Choose your discovery method</CardTitle>
+          <p className="text-base leading-relaxed">
+            Reflect is a guided way to surface problems worth solving by answering short
+            prompts about your work, your life, the organizations you know, the people
+            around you, and what you spot in the wider world. Each lens takes a few minutes
+            and saves your answers as <span className="font-semibold">candidates</span>{" "}
+            you can review before promoting them into your problem library.
+          </p>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {REFLECT_LENSES.map((lens) => {
             const Icon = lens.icon
             const isEnabled = lens.id === "life"
@@ -123,22 +39,27 @@ export default function ReflectHubPage() {
               <Card
                 className={cn(
                   "h-full transition-colors",
-                  isEnabled && "group-hover:border-primary/40",
+                  isEnabled && "group-hover:border-primary/40 group-hover:bg-primary/5",
                   !isEnabled && "opacity-60"
                 )}
               >
                 <CardContent className="p-5 flex flex-col gap-3 h-full">
                   <div className="flex items-start justify-between gap-3">
-                    <div
-                      className={cn(
-                        "flex items-center justify-center w-10 h-10 rounded-lg shrink-0",
-                        lens.tileColor
-                      )}
-                      aria-hidden="true"
-                    >
-                      <Icon className="h-5 w-5 text-white" />
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div
+                        className={cn(
+                          "flex items-center justify-center w-10 h-10 rounded-lg shrink-0",
+                          lens.tileColor
+                        )}
+                        aria-hidden="true"
+                      >
+                        <Icon className="h-5 w-5 text-white" />
+                      </div>
+                      <h3 className="text-base font-semibold leading-tight truncate">
+                        {lens.title}
+                      </h3>
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 shrink-0">
                       {!isEnabled && (
                         <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-base font-medium">
                           Coming soon
@@ -150,7 +71,6 @@ export default function ReflectHubPage() {
                     </div>
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <h3 className="text-base font-semibold leading-tight">{lens.title}</h3>
                     <p className="text-base leading-relaxed">{lens.shortDescription}</p>
                   </div>
                   <div className="mt-auto flex items-center gap-1.5 text-base">
@@ -183,8 +103,9 @@ export default function ReflectHubPage() {
               </Link>
             )
           })}
-        </div>
-      </div>
+          </div>
+        </CardContent>
+      </Card>
 
       <CandidatesTray />
     </div>

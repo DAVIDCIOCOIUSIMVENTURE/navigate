@@ -75,7 +75,7 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
           <div className="flex flex-col gap-3 mt-2">
             <button
               onClick={handleBrainstorm}
-              className="flex items-start gap-4 rounded-lg bg-card p-4 text-left transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex items-start gap-4 rounded-lg border bg-card p-4 text-left transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-yellow-600 shrink-0">
                 <Brain className="h-5 w-5 text-white" />
@@ -93,7 +93,7 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
 
             <button
               onClick={handleReflect}
-              className="flex items-start gap-4 rounded-lg bg-card p-4 text-left transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex items-start gap-4 rounded-lg border bg-card p-4 text-left transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-secondary-brand shrink-0">
                 <Telescope className="h-5 w-5 text-secondary-brand-foreground" />
@@ -112,7 +112,7 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
 
             <button
               onClick={handleDefine}
-              className="flex items-start gap-4 rounded-lg bg-card p-4 text-left transition-colors hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex items-start gap-4 rounded-lg border bg-card p-4 text-left transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-900 shrink-0">
                 <PenLine className="h-5 w-5 text-white" />
@@ -130,7 +130,7 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
 
             <button
               disabled
-              className="flex items-start gap-4 rounded-lg bg-card p-4 text-left opacity-60 cursor-not-allowed"
+              className="flex items-start gap-4 rounded-lg border bg-card p-4 text-left opacity-60 cursor-not-allowed"
             >
               <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-muted shrink-0">
                 <Clock className="h-5 w-5 text-muted-foreground" />

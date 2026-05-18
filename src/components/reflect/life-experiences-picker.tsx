@@ -50,10 +50,10 @@ export function LifeExperiencesPicker({ selectedTitle, onSelect }: Props) {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <label htmlFor="life-experience-new" className="text-base font-semibold">
+        <label htmlFor="life-experience-new" className="text-base font-semibold text-white">
           Add your own
         </label>
-        <p className="text-base">
+        <p className="text-base text-white">
           Anything you add is also saved to your self-discovery under
           &quot;What significant life experiences have shaped you?&quot;.
         </p>
@@ -69,14 +69,13 @@ export function LifeExperiencesPicker({ selectedTitle, onSelect }: Props) {
               }
             }}
             placeholder="e.g. Moving country, becoming a parent, switching careers"
-            className="text-base"
+            className="text-base bg-white border-white text-foreground"
           />
           <Button
             type="button"
             onClick={handleAdd}
             disabled={draft.trim().length === 0}
-            variant="secondary-brand"
-            className="gap-1.5 shrink-0"
+            className="gap-1.5 shrink-0 bg-white text-foreground hover:bg-white/90"
           >
             <Plus className="h-4 w-4" />
             Add
@@ -89,13 +88,13 @@ export function LifeExperiencesPicker({ selectedTitle, onSelect }: Props) {
         aria-label="Pick one significant life experience"
         className="flex flex-col gap-2"
       >
-        <p className="text-base font-semibold">From your self-discovery</p>
+        <p className="text-base font-semibold text-white">From your self-discovery</p>
         {sortedItems.length === 0 ? (
-          <p className="text-base">
+          <p className="text-base text-white">
             Nothing saved yet. Add one above or visit Self-Discovery to fill this in.
           </p>
         ) : (
-          <ul className="flex flex-col gap-1 rounded-lg border bg-card p-2">
+          <ul className="flex flex-col gap-1 rounded-lg bg-card p-2">
             {sortedItems.map((item) => {
               const isSelected = selectedTitle === item.title
               return (

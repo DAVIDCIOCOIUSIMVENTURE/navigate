@@ -18,7 +18,6 @@ interface SettingsState {
   brainstormBuilderActiveColumnId: string | null
   brainstormBuilderActiveCategoryId: string | null
   brainstormBuilderDescription: string
-  reflectIntroDismissed: boolean
 }
 
 const defaultState: SettingsState = {
@@ -32,7 +31,6 @@ const defaultState: SettingsState = {
   brainstormBuilderActiveColumnId: null,
   brainstormBuilderActiveCategoryId: null,
   brainstormBuilderDescription: "",
-  reflectIntroDismissed: false,
 }
 
 function saveToStorage(state: SettingsState) {
@@ -97,11 +95,6 @@ export const settings = createModel<RootModel>()({
       saveToStorage(next)
       return next
     },
-    setReflectIntroDismissed(state, reflectIntroDismissed: boolean) {
-      const next = { ...state, reflectIntroDismissed }
-      saveToStorage(next)
-      return next
-    },
     resetBrainstormBuilder(state) {
       const next: SettingsState = {
         ...state,
@@ -158,9 +151,6 @@ export const settings = createModel<RootModel>()({
         }
         if (typeof stored.brainstormBuilderDescription === "string") {
           dispatch.settings.setBrainstormBuilderDescription(stored.brainstormBuilderDescription)
-        }
-        if (typeof stored.reflectIntroDismissed === "boolean") {
-          dispatch.settings.setReflectIntroDismissed(stored.reflectIntroDismissed)
         }
       } catch {
         // ignore parse errors
