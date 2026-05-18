@@ -26,7 +26,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader className="px-6 py-6 group-data-[collapsible=icon]:px-0 group-data-[collapsible=icon]:py-4">
         <Link href="/" className="flex items-center gap-2 group-data-[collapsible=icon]:justify-center">
-          <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary text-primary-foreground shrink-0">
+          <div className="flex items-center justify-center w-8 h-8 shrink-0 text-sidebar-foreground">
             <Compass className="h-5 w-5" />
           </div>
           <h1 className="text-lg font-semibold group-data-[collapsible=icon]:hidden">Navigate</h1>
