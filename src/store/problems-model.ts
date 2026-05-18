@@ -8,7 +8,7 @@ import { resolveDimensionLabel } from "@/lib/dimension-labels"
 
 const STORAGE_KEY = "navigate-problems"
 
-export type ProblemSource = "manual" | "brainstorm"
+export type ProblemSource = "manual" | "brainstorm" | "reflect"
 
 export type Problem = {
   id: number

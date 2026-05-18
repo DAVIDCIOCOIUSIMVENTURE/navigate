@@ -7,6 +7,7 @@ import { problems } from "./problems-model"
 import { accountSettings } from "./account-settings-model"
 import { solutions } from "./solutions-model"
 import { solutionWorkspaces } from "./solution-workspaces-model"
+import { problemCandidates } from "./problem-candidates-model"
 export interface RootModel extends Models<RootModel> {
   notes: typeof notes
   settings: typeof settings
@@ -16,9 +17,10 @@ export interface RootModel extends Models<RootModel> {
   accountSettings: typeof accountSettings
   solutions: typeof solutions
   solutionWorkspaces: typeof solutionWorkspaces
+  problemCandidates: typeof problemCandidates
 }
 
-const models: RootModel = { notes, settings, selfDiscoveryItems, customBrainstormItems, problems, accountSettings, solutions, solutionWorkspaces }
+const models: RootModel = { notes, settings, selfDiscoveryItems, customBrainstormItems, problems, accountSettings, solutions, solutionWorkspaces, problemCandidates }
 
 export function createStore() {
   return init<RootModel>({ models })

@@ -1,0 +1,196 @@
+"use client"
+
+import { useState, useMemo, useEffect } from "react"
+import { useRouter } from "next/navigation"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Textarea } from "@/components/ui/textarea"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
+import { ArrowLeft, ArrowRight, ChevronDown, Plus, Trash2 } from "lucide-react"
+import { useReflect } from "../context"
+import { SelfDiscoveryChips } from "@/components/reflect/self-discovery-chips"
+import { useContainerSize } from "@/context/container-size-context"
+import { cn } from "@/lib/utils"
+
+export default function LensPromptsPage() {
+  const router = useRouter()
+  const { lens, answers, setAnswerText, addAnswerSlot, removeAnswerSlot } = useReflect()
+  const [index, setIndex] = useState(0)
+  const [examplesOpen, setExamplesOpen] = useState(false)
+  const isNarrow = useContainerSize() === "narrow"
+
+  const prompt = lens.prompts[index]
+  const total = lens.prompts.length
+  const isLast = index === total - 1
+  const promptAnswers = answers[prompt.id] ?? [{ text: "", context: {} }]
+
+  const chipsCategory = useMemo(() => {
+    const src = lens.selfDiscoverySources?.find((s) => s.promptIds.includes(prompt.id))
+    return src?.category
+  }, [lens, prompt.id])
+
+  useEffect(() => {
+    setExamplesOpen(false)
+  }, [prompt.id])
+
+  function goPrev() {
+    if (index > 0) setIndex(index - 1)
+  }
+
+  function goNext() {
+    if (isLast) {
+      router.push(`/problems/reflect/${lens.id}/review`)
+    } else {
+      setIndex(index + 1)
+    }
+  }
+
+  function handlePickChip(text: string) {
+    const emptyIdx = promptAnswers.findIndex((a) => a.text.trim().length === 0)
+    if (emptyIdx >= 0) {
+      setAnswerText(prompt.id, emptyIdx, text)
+      return
+    }
+    if (prompt.multipleAllowed) {
+      addAnswerSlot(prompt.id)
+      setAnswerText(prompt.id, promptAnswers.length, text)
+      return
+    }
+    const current = promptAnswers[0].text
+    setAnswerText(prompt.id, 0, current.length > 0 ? `${current}\n${text}` : text)
+  }
+
+  const Icon = lens.icon
+
+  return (
+    <div className="flex flex-col gap-4 w-full">
+      <div className="flex items-center gap-3">
+        <span className="text-base font-medium shrink-0">
+          Prompt {index + 1} of {total}
+        </span>
+        <div
+          className="h-1.5 flex-1 rounded-full bg-muted overflow-hidden"
+          role="progressbar"
+          aria-valuemin={0}
+          aria-valuemax={total}
+          aria-valuenow={index + 1}
+        >
+          <div
+            className="h-full bg-primary transition-all"
+            style={{ width: `${((index + 1) / total) * 100}%` }}
+          />
+        </div>
+      </div>
+
+      <Card>
+        <CardHeader className="space-y-6">
+          <CardTitle icon={Icon} iconBg={lens.tileColor} as="h2">
+            {lens.title}
+          </CardTitle>
+          <p className="text-lg font-semibold leading-snug">{prompt.question}</p>
+          {prompt.helperText && (
+            <p className="text-base leading-relaxed">{prompt.helperText}</p>
+          )}
+          {prompt.contextOnly && (
+            <p className="text-base italic">
+              This answer sets context for the prompts that follow. It won&apos;t be saved as a
+              candidate.
+            </p>
+          )}
+        </CardHeader>
+        <CardContent className="flex flex-col gap-4">
+          {prompt.examples && prompt.examples.length > 0 && (
+            <Collapsible open={examplesOpen} onOpenChange={setExamplesOpen}>
+              <CollapsibleTrigger asChild>
+                <Button variant="outline" className="gap-2 self-start">
+                  <span>Examples</span>
+                  <ChevronDown
+                    className={cn(
+                      "h-4 w-4 transition-transform",
+                      examplesOpen && "rotate-180"
+                    )}
+                    aria-hidden="true"
+                  />
+                </Button>
+              </CollapsibleTrigger>
+              <CollapsibleContent className="pt-3">
+                <ul className="text-base leading-relaxed list-disc pl-5 space-y-1">
+                  {prompt.examples.map((ex) => (
+                    <li key={ex}>{ex}</li>
+                  ))}
+                </ul>
+              </CollapsibleContent>
+            </Collapsible>
+          )}
+
+          {chipsCategory && (
+            <SelfDiscoveryChips category={chipsCategory} onPick={handlePickChip} />
+          )}
+
+          <div className="flex flex-col gap-2">
+            {promptAnswers.map((a, i) => (
+              <div key={i} className="flex items-start gap-2">
+                <Textarea
+                  value={a.text}
+                  onChange={(e) => setAnswerText(prompt.id, i, e.target.value)}
+                  placeholder="Type your answer."
+                  className={cn(
+                    "flex-1 text-base",
+                    isNarrow ? "min-h-[7rem]" : "min-h-[5rem]"
+                  )}
+                />
+                {prompt.multipleAllowed && promptAnswers.length > 1 && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    type="button"
+                    onClick={() => removeAnswerSlot(prompt.id, i)}
+                    aria-label="Remove this answer"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            ))}
+            {prompt.multipleAllowed && (
+              <Button
+                variant="outline"
+                type="button"
+                onClick={() => addAnswerSlot(prompt.id)}
+                className="self-start gap-2"
+              >
+                <Plus className="h-4 w-4" />
+                Add another answer
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <Button
+          variant="outline"
+          onClick={goPrev}
+          disabled={index === 0}
+          className="gap-2"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back
+        </Button>
+        <div className="flex items-center gap-2 flex-wrap">
+          <Button variant="ghost" onClick={goNext}>
+            Skip
+          </Button>
+          <Button onClick={goNext} className="gap-2">
+            {isLast ? "Review" : "Next"}
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}

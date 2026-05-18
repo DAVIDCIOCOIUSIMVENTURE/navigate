@@ -5,7 +5,7 @@ import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/s
 import { AppSidebar } from "@/components/app-sidebar"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import { Settings, HelpCircle, NotebookText, LayoutDashboard, Target, Lightbulb, Search, ClipboardCheck, BookOpen, Compass, Milestone, type LucideIcon } from "lucide-react"
+import { Settings, HelpCircle, NotebookText, LayoutDashboard, Target, Lightbulb, Search, ClipboardCheck, BookOpen, Compass, Milestone, Telescope, type LucideIcon } from "lucide-react"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
@@ -51,6 +51,7 @@ function getSection(pathname: string): { title: string; Icon: LucideIcon } | nul
   if (first === "problems") {
     if (segments.length === 1) return { title: "Problems", Icon: Target }
     if (second === "brainstorm") return { title: "Discover Problems", Icon: Search }
+    if (second === "reflect") return { title: "Reflect on Problems", Icon: Telescope }
     return { title: "Problem Validation", Icon: ClipboardCheck }
   }
 
@@ -128,7 +129,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     dispatch.solutions.init()
     dispatch.solutionWorkspaces.init()
     dispatch.notes.init()
-  }, [dispatch.settings, dispatch.selfDiscoveryItems, dispatch.customBrainstormItems, dispatch.problems, dispatch.accountSettings, dispatch.solutions, dispatch.solutionWorkspaces, dispatch.notes])
+    dispatch.problemCandidates.init()
+  }, [dispatch.settings, dispatch.selfDiscoveryItems, dispatch.customBrainstormItems, dispatch.problems, dispatch.accountSettings, dispatch.solutions, dispatch.solutionWorkspaces, dispatch.notes, dispatch.problemCandidates])
 
   const headerTitle = section && (
     <h1 className="flex items-center gap-2 ml-2 text-xl font-bold min-w-0">

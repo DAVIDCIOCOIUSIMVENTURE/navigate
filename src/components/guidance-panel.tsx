@@ -14,6 +14,7 @@ import {
   Lightbulb, HelpCircle,
   BookOpen, FlaskConical, Clock, Trophy, Sparkles,
   TrendingUp, Building2, Calculator, Scale, ShieldCheck,
+  Telescope, HeartHandshake, Shuffle, Radar,
   X,
 } from "lucide-react"
 
@@ -414,6 +415,95 @@ const guidanceItems: GuidanceItem[] = [
           "Quantity beats quality at the discover step; validation prunes later",
           "A weak candidate is still useful as a comparison baseline",
           "You can come back and add more candidates at any time",
+        ]} />
+      </div>
+    ),
+  },
+  {
+    id: "reflect-hub",
+    title: "Reflect on Problems",
+    icon: Telescope,
+    iconBg: "bg-secondary-brand",
+    content: (
+      <div className="flex flex-col gap-5">
+        <GuidanceHero
+          icon={Telescope}
+          tone="bg-secondary-brand"
+          title="Reflect on Problems"
+          subtitle="A guided way to surface problems worth solving by answering short prompts about your work, life, the organizations you know, the people around you, and what you spot in the wider world."
+        />
+        <GuidanceSection icon={Compass} iconBg="bg-secondary-brand" title="When to use Reflect">
+          <p>Reflect is at <Keyword>/problems/reflect</Keyword>. It sits alongside Brainstorm. Use Reflect when you want a prompt to react to, when you would rather mine experience you already have than research the market, or when you are not sure where to start.</p>
+          <p>Use Brainstorm instead when you already have specific customers, contexts, or pain points in mind and want to compose problems by combining columns on a canvas.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={LayoutGrid} iconBg="bg-secondary-brand" title="The six lenses">
+          <p>Each lens is a short Q&A focused on one source of insight. Answers are saved as <Keyword>candidates</Keyword> you can review before promoting them into your problem library.</p>
+          <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
+            <ConceptCard icon={Briefcase} label="Work friction" description="Repeated annoyances, expensive habits, and 'this should just exist' thoughts at your job." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
+            <ConceptCard icon={HeartHandshake} label="Life experiences" description="Productize what you have already lived through. The friction you remember is friction others are about to hit." tile="bg-yellow-600" border="border-yellow-600/20 bg-yellow-600/5" />
+            <ConceptCard icon={Building2} label="Insider angle" description="Use what you know about organizations from the inside. Outsiders cannot see what you have seen." tile="bg-emerald-800" border="border-emerald-800/20 bg-emerald-800/5" />
+            <ConceptCard icon={Shuffle} label="Cross-context patterns" description="Spot something that works in one industry, hobby, or country and is missing in another you know." tile="bg-violet-800" border="border-violet-800/20 bg-violet-800/5" />
+            <ConceptCard icon={Users} label="People around you" description="Observation, not introspection. Validate by asking the person." tile="bg-rose-800" border="border-rose-800/20 bg-rose-800/5" />
+            <ConceptCard icon={Radar} label="Market signals" description="A capture form for problems you spot by looking outward: reviews, trends, public data, research." tile="bg-orange-700" border="border-orange-700/20 bg-orange-700/5" />
+          </div>
+        </GuidanceSection>
+        <GuidanceSection icon={Sparkles} iconBg="bg-secondary-brand" title="From your self-discovery">
+          <p>Several lenses surface chips drawn from your saved self-discovery answers. Picking a chip drops the title into the textarea as a starting point so you can edit and expand. The panel only appears if you have items in the matching category and is suggestion-only: nothing is ever auto-filled.</p>
+          <p>The hub also marks a few lenses as <Keyword>Recommended</Keyword> based on what you already answered in self-discovery. It is a nudge, not a gate.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={ArrowRight} iconBg="bg-secondary-brand" title="The candidate flow">
+          <div className="flex flex-col gap-3 pt-1">
+            <NumberedStep n={1} title="Pick a lens" accent="bg-secondary-brand">
+              From the hub, pick a lens and read the short introduction. Lenses take roughly 5 to 10 minutes.
+            </NumberedStep>
+            <NumberedStep n={2} title="Answer the prompts" accent="bg-secondary-brand">
+              One prompt per screen. Multiple answers allowed where it helps. Skip anything that does not apply.
+            </NumberedStep>
+            <NumberedStep n={3} title="Review and save" accent="bg-secondary-brand">
+              Edit or remove answers, capture optional context (who else has this, why has nobody done it yet), and save the rest as candidates.
+            </NumberedStep>
+            <NumberedStep n={4} title="Promote what is worth refining" accent="bg-secondary-brand">
+              Candidates live on the hub. Promote the strongest ones into your problem library to validate them in the existing flow.
+            </NumberedStep>
+          </div>
+        </GuidanceSection>
+        <TipCallout items={[
+          "Small, specific, and slightly weird answers tend to point at the most interesting problems",
+          "If you are not sure between two answers, save both. Pruning happens later",
+          "The Market signals lens is for capturing what you find when you look outward. The prompts do not tell you what to look at",
+        ]} />
+      </div>
+    ),
+  },
+  {
+    id: "reflect-candidates",
+    title: "Candidates",
+    icon: Lightbulb,
+    iconBg: "bg-tertiary",
+    content: (
+      <div className="flex flex-col gap-5">
+        <GuidanceHero
+          icon={Lightbulb}
+          tone="bg-tertiary"
+          title="Reflect candidates"
+          subtitle="A staging area between lens answers and full Problems. Candidates let you collect more than you commit to, then promote only the ones worth refining."
+        />
+        <GuidanceSection icon={Filter} iconBg="bg-tertiary" title="Three tabs">
+          <p><Keyword>Active</Keyword> is the default. It shows candidates you have not yet promoted or dismissed.</p>
+          <p><Keyword>Promoted</Keyword> shows candidates that became Problems. Use the open-Problem icon to jump straight into the refinement flow.</p>
+          <p><Keyword>Dismissed</Keyword> is soft-deleted. Candidates here can be restored at any time. Nothing is ever hard-deleted from the UI.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={ArrowRight} iconBg="bg-tertiary" title="Promoting to a Problem">
+          <p>Promotion creates a new, <Keyword>blank</Keyword> Problem with the candidate title as its description. You fill in the rest (customers, contexts, problem types, validation) in the existing problem refinement flow at <Keyword>/problems/&#x5b;id&#x5d;</Keyword>.</p>
+          <p>You can edit the title before confirming. Captured context fields on the candidate stay on the candidate for reference; they do not auto-fill the Problem.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={Repeat} iconBg="bg-tertiary" title="Bulk actions">
+          <p>The Active tab has a select-all checkbox plus per-row checkboxes. When you have a selection, the row at the top of the list shows <Keyword>Promote selected</Keyword> and <Keyword>Dismiss selected</Keyword>. Both ask for confirmation before running.</p>
+        </GuidanceSection>
+        <TipCallout items={[
+          "Candidates persist indefinitely. There is no auto-decay",
+          "Two lenses can produce near-identical candidates; both stay. Pick the wording you prefer when you promote",
+          "Dismissed candidates do not clutter the Active count but are kept for context",
         ]} />
       </div>
     ),
