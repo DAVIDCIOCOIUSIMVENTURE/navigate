@@ -24,8 +24,8 @@
     --secondary: 36 28% 88%;
     --secondary-foreground: 18 35% 18%;
 
-    /* Secondary brand: deep navy (#0d3059) [experiment, swapped from teal 194 87% 27%] */
-    --secondary-brand: 212 75% 20%;
+    /* Secondary brand: navy (#0f3e74) [experiment] */
+    --secondary-brand: 212 77% 26%;
     --secondary-brand-foreground: 40 60% 97%;
 
     /* Tertiary: mustard gold (#C9A227) */
@@ -71,14 +71,14 @@
     --primary-light: 199 80% 94%;
     --primary-light-foreground: 199 89% 22%;
 
-    /* Sidebar: deep teal (#095c76) for the left-hand menu */
-    --sidebar-background: 194 86% 25%;
+    /* Sidebar: cerulean (#086089) for the left-hand menu */
+    --sidebar-background: 199 89% 28%;
     --sidebar-foreground: 40 30% 95%;
     --sidebar-primary: 199 89% 37%;
     --sidebar-primary-foreground: 40 60% 97%;
     --sidebar-accent: 199 89% 37%;
     --sidebar-accent-foreground: 40 60% 97%;
-    --sidebar-border: 194 86% 15%;
+    --sidebar-border: 199 89% 18%;
     --sidebar-ring: 199 89% 37%;
 
     /* Brand: keep distinct from primary for marketing/callout use */
@@ -117,8 +117,8 @@
     --secondary: 20 15% 16%;
     --secondary-foreground: 36 25% 90%;
 
-    /* Secondary brand: brighter navy for dark mode (lighter variant of #0d3059) */
-    --secondary-brand: 212 70% 62%;
+    /* Secondary brand: brighter navy for dark mode (lighter variant of #0f3e74) */
+    --secondary-brand: 212 70% 65%;
     --secondary-brand-foreground: 40 60% 97%;
 
     /* Tertiary: brighter mustard for dark mode */
@@ -153,14 +153,14 @@
     --chart-4: 210 55% 58%;
     --chart-5: 350 60% 60%;
 
-    /* Sidebar: deep teal (matches light-mode sidebar, #095c76) */
-    --sidebar-background: 194 86% 20%;
+    /* Sidebar: cerulean (matches light-mode sidebar, #086089) */
+    --sidebar-background: 199 89% 22%;
     --sidebar-foreground: 36 25% 92%;
     --sidebar-primary: 199 85% 55%;
     --sidebar-primary-foreground: 40 60% 97%;
     --sidebar-accent: 199 85% 55%;
     --sidebar-accent-foreground: 40 60% 97%;
-    --sidebar-border: 194 86% 12%;
+    --sidebar-border: 199 89% 14%;
     --sidebar-ring: 199 85% 55%;
 
     /* Brand */

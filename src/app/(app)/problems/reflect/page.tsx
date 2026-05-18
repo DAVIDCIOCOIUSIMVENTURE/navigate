@@ -83,28 +83,6 @@ export default function ReflectHubPage() {
               you can review before promoting them into your problem library.
             </p>
           </CardHeader>
-          <CardContent>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="rounded-lg border bg-card p-4">
-                <h3 className="text-base font-semibold mb-1">Use Reflect when</h3>
-                <ul className="text-base leading-relaxed list-disc pl-5 space-y-1">
-                  <li>You want a prompt to react to, not a blank canvas.</li>
-                  <li>
-                    You&apos;d rather mine experience you already have than research the market.
-                  </li>
-                  <li>You&apos;re not sure where to start.</li>
-                </ul>
-              </div>
-              <div className="rounded-lg border bg-card p-4">
-                <h3 className="text-base font-semibold mb-1">Use Brainstorm instead when</h3>
-                <ul className="text-base leading-relaxed list-disc pl-5 space-y-1">
-                  <li>You already have specific customers, contexts, or pain points in mind.</li>
-                  <li>You want to compose problems by combining columns on a canvas.</li>
-                  <li>You&apos;re iterating on an existing problem area.</li>
-                </ul>
-              </div>
-            </div>
-          </CardContent>
         </Card>
       ) : (
         <Card>

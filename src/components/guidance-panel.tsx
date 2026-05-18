@@ -433,8 +433,25 @@ const guidanceItems: GuidanceItem[] = [
           subtitle="A guided way to surface problems worth solving by answering short prompts about your work, life, the organizations you know, the people around you, and what you spot in the wider world."
         />
         <GuidanceSection icon={Compass} iconBg="bg-secondary-brand" title="When to use Reflect">
-          <p>Reflect is at <Keyword>/problems/reflect</Keyword>. It sits alongside Brainstorm. Use Reflect when you want a prompt to react to, when you would rather mine experience you already have than research the market, or when you are not sure where to start.</p>
-          <p>Use Brainstorm instead when you already have specific customers, contexts, or pain points in mind and want to compose problems by combining columns on a canvas.</p>
+          <p>Reflect is at <Keyword>/problems/reflect</Keyword>. It sits alongside Brainstorm.</p>
+          <div className="grid gap-3 pt-1 sm:grid-cols-2">
+            <div className="rounded-lg border bg-card p-3">
+              <h5 className="text-sm font-semibold mb-1">Use Reflect when</h5>
+              <ul className="text-sm leading-relaxed list-disc pl-5 space-y-1">
+                <li>You want a prompt to react to, not a blank canvas.</li>
+                <li>You&apos;d rather mine experience you already have than research the market.</li>
+                <li>You&apos;re not sure where to start.</li>
+              </ul>
+            </div>
+            <div className="rounded-lg border bg-card p-3">
+              <h5 className="text-sm font-semibold mb-1">Use Brainstorm instead when</h5>
+              <ul className="text-sm leading-relaxed list-disc pl-5 space-y-1">
+                <li>You already have specific customers, contexts, or pain points in mind.</li>
+                <li>You want to compose problems by combining columns on a canvas.</li>
+                <li>You&apos;re iterating on an existing problem area.</li>
+              </ul>
+            </div>
+          </div>
         </GuidanceSection>
         <GuidanceSection icon={LayoutGrid} iconBg="bg-secondary-brand" title="The six lenses">
           <p>Each lens is a short Q&A focused on one source of insight. Answers are saved as <Keyword>candidates</Keyword> you can review before promoting them into your problem library.</p>
