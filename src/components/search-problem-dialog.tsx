@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog"
-import { Brain, Clock, PenLine, Telescope, ArrowRight } from "lucide-react"
+import { Brain, PenLine, ArrowRight } from "lucide-react"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
 import { useRouter } from "next/navigation"
@@ -34,11 +34,6 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
   function handleBrainstorm() {
     handleClose()
     router.push("/problems/brainstorm")
-  }
-
-  function handleReflect() {
-    handleClose()
-    router.push("/problems/reflect")
   }
 
   async function handleDefine() {
@@ -92,25 +87,6 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
             </button>
 
             <button
-              onClick={handleReflect}
-              className="flex items-start gap-4 rounded-lg border bg-card p-4 text-left transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-secondary-brand shrink-0">
-                <Telescope className="h-5 w-5 text-secondary-brand-foreground" />
-              </div>
-              <div className="flex flex-col gap-1 flex-1">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-base">Reflect on Problems</span>
-                  <ArrowRight className="h-4 w-4 text-muted-foreground" />
-                </div>
-                <span className="text-base leading-relaxed">
-                  Answer short prompts about your work, life, and the people around you. Saves what you
-                  surface as candidate problems to review later.
-                </span>
-              </div>
-            </button>
-
-            <button
               onClick={handleDefine}
               className="flex items-start gap-4 rounded-lg border bg-card p-4 text-left transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
@@ -124,24 +100,6 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
                 </div>
                 <span className="text-base leading-relaxed">
                   Already know what you want to explore? Write it directly.
-                </span>
-              </div>
-            </button>
-
-            <button
-              disabled
-              className="flex items-start gap-4 rounded-lg border bg-card p-4 text-left opacity-60 cursor-not-allowed"
-            >
-              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-muted shrink-0">
-                <Clock className="h-5 w-5 text-muted-foreground" />
-              </div>
-              <div className="flex flex-col gap-1 flex-1">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-base">Changes in the Environment</span>
-                  <span className="text-base font-medium bg-muted px-2 py-0.5 rounded-full">Coming soon</span>
-                </div>
-                <span className="text-base leading-relaxed">
-                  Spot problems emerging from market shifts, technology changes, or regulatory updates.
                 </span>
               </div>
             </button>

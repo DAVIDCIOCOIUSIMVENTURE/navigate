@@ -32,6 +32,10 @@
     --tertiary: 212 77% 26%;
     --tertiary-foreground: 40 60% 97%;
 
+    /* Quaternary: deep teal (#1F5F6B), the sidebar accent */
+    --quaternary: 189 55% 27%;
+    --quaternary-foreground: 185 25% 95%;
+
     /* Success: forest green (#1F6E48) */
     --success: 151 56% 28%;
     --success-foreground: 40 60% 97%;
@@ -71,9 +75,9 @@
     --primary-light: 41 80% 92%;
     --primary-light-foreground: 41 96% 22%;
 
-    /* Sidebar: mid teal (#145e81) for the left-hand menu */
-    --sidebar-background: 199 73% 29%;
-    --sidebar-foreground: 210 25% 95%;
+    /* Sidebar: uses the quaternary brand token (#145e81) */
+    --sidebar-background: var(--quaternary);
+    --sidebar-foreground: var(--quaternary-foreground);
     --sidebar-primary: 41 96% 55%;
     --sidebar-primary-foreground: 40 60% 97%;
     --sidebar-accent: 41 96% 50%;
@@ -125,6 +129,10 @@
     --tertiary: 212 70% 62%;
     --tertiary-foreground: 212 50% 10%;
 
+    /* Quaternary: deeper teal (#1F5F6B family) for dark-mode surfaces */
+    --quaternary: 189 55% 20%;
+    --quaternary-foreground: 185 25% 92%;
+
     /* Success: brighter forest green for dark mode */
     --success: 151 50% 45%;
     --success-foreground: 40 60% 97%;
@@ -153,9 +161,9 @@
     --chart-4: 212 70% 62%;
     --chart-5: 350 60% 60%;
 
-    /* Sidebar: darker teal for dark-mode sidebar */
-    --sidebar-background: 199 73% 22%;
-    --sidebar-foreground: 210 25% 92%;
+    /* Sidebar: uses the quaternary brand token in dark mode */
+    --sidebar-background: var(--quaternary);
+    --sidebar-foreground: var(--quaternary-foreground);
     --sidebar-primary: 41 90% 58%;
     --sidebar-primary-foreground: 40 60% 97%;
     --sidebar-accent: 41 90% 50%;

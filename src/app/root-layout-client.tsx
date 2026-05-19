@@ -5,7 +5,7 @@ import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/s
 import { AppSidebar } from "@/components/app-sidebar"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import { Settings, HelpCircle, NotebookText, LayoutDashboard, Target, Lightbulb, Search, ClipboardCheck, BookOpen, Compass, Milestone, Telescope, type LucideIcon } from "lucide-react"
+import { Settings, HelpCircle, NotebookText, LayoutDashboard, Target, Lightbulb, Search, ClipboardCheck, BookOpen, Compass, Milestone, type LucideIcon } from "lucide-react"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
@@ -51,7 +51,6 @@ function getSection(pathname: string): { title: string; Icon: LucideIcon } | nul
   if (first === "problems") {
     if (segments.length === 1) return { title: "Problems", Icon: Target }
     if (second === "brainstorm") return { title: "Discover Problems", Icon: Search }
-    if (second === "reflect") return { title: "Reflect on Problems", Icon: Telescope }
     return { title: "Problem Validation", Icon: ClipboardCheck }
   }
 
@@ -67,7 +66,7 @@ function getSection(pathname: string): { title: string; Icon: LucideIcon } | nul
 }
 
 function isFocusFlowPath(pathname: string): boolean {
-  return pathname.startsWith("/self-discovery/discover") || pathname.startsWith("/problems/reflect")
+  return pathname.startsWith("/self-discovery/discover")
 }
 
 function LayoutContent({ children }: { children: React.ReactNode }) {

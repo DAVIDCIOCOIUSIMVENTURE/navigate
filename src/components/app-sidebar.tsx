@@ -17,7 +17,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 const activeMenuClass =
-  "active:bg-white/10 active:text-sidebar-foreground data-[active=true]:bg-white data-[active=true]:text-black data-[active=true]:hover:bg-white data-[active=true]:active:bg-white data-[active=true]:active:text-black"
+  "active:bg-white/10 active:text-sidebar-foreground data-[active=true]:bg-white data-[active=true]:text-[hsl(199_73%_18%)] data-[active=true]:hover:bg-white data-[active=true]:hover:text-[hsl(199_73%_18%)] data-[active=true]:active:bg-white data-[active=true]:active:text-[hsl(199_73%_18%)]"
 
 export function AppSidebar() {
   const pathname = usePathname()

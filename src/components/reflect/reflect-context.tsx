@@ -18,7 +18,6 @@ export type { ReflectAnswer }
 type ReflectContextValue = {
   lens: Lens
   sessionId: string
-  /** promptId -> ordered list of answer slots. Always has at least one slot per prompt. */
   answers: Record<string, ReflectAnswer[]>
   setAnswerText: (promptId: string, index: number, text: string) => void
   setAnswerContext: (
@@ -168,24 +167,4 @@ export function useReflect(): ReflectContextValue {
     throw new Error("useReflect must be used inside a ReflectProvider")
   }
   return ctx
-}
-
-export const REFLECT_NAV_ITEMS_STANDARD = [
-  { path: "introduction", label: "Introduction" },
-  { path: "prompts", label: "Prompts" },
-  { path: "review", label: "Review" },
-  { path: "done", label: "Done" },
-] as const
-
-export const REFLECT_NAV_ITEMS_SINGLE_FORM = [
-  { path: "introduction", label: "Introduction" },
-  { path: "capture", label: "Capture" },
-] as const
-
-export type ReflectNavItem = { path: string; label: string }
-
-export function getReflectNavItems(lens: Lens): readonly ReflectNavItem[] {
-  return lens.flowKind === "single-form"
-    ? REFLECT_NAV_ITEMS_SINGLE_FORM
-    : REFLECT_NAV_ITEMS_STANDARD
 }

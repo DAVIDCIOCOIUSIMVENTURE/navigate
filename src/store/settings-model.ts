@@ -4,7 +4,7 @@ import type { SidebarMode } from "@/components/ui/sidebar"
 
 const STORAGE_KEY = "navigate-settings"
 
-export type BrainstormMode = "canvas" | "builder"
+export type BrainstormMode = "canvas" | "builder" | "reflect"
 export type BrainstormBuilderStep = "pick" | "category" | "choose" | "review"
 
 interface SettingsState {
@@ -135,7 +135,9 @@ export const settings = createModel<RootModel>()({
           const mode = (stored.brainstormMode as string) === "builder-v2"
             ? "builder"
             : stored.brainstormMode
-          dispatch.settings.setBrainstormMode(mode)
+          if (mode === "canvas" || mode === "builder" || mode === "reflect") {
+            dispatch.settings.setBrainstormMode(mode)
+          }
         }
         if (typeof stored.journalOpen === "boolean") {
           dispatch.settings.setJournalOpen(stored.journalOpen)

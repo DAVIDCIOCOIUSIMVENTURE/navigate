@@ -48,6 +48,7 @@ import {
   Save,
   Search,
   Settings,
+  Telescope,
   Trash2,
   X,
 } from "lucide-react"
@@ -73,6 +74,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import { DIMENSION_ICONS as COLUMN_ICONS, DIMENSION_COLORS as COLUMN_COLORS } from "@/lib/dimension-visuals"
+import { ReflectBuilder } from "./reflect-builder"
 
 const COLUMN_DESCRIPTIONS: Record<string, string> = {
   "customers": "Who experiences this problem?",
@@ -1038,6 +1040,7 @@ export default function BrainstormPage() {
   const [addCustomDialogOpen, setAddCustomDialogOpen] = useState(false)
   const [managingColumnId, setManagingColumnId] = useState<string | null>(null)
   const builderResetRef = useRef<(() => void) | null>(null)
+  const reflectResetRef = useRef<(() => void) | null>(null)
   const fullView = useSelector((state: RootState) => state.settings.fullView)
   const brainstormMode = useSelector((state: RootState) => state.settings.brainstormMode)
   const containerSize = useContainerSize()
@@ -1190,41 +1193,51 @@ export default function BrainstormPage() {
                   <Layers className="h-3.5 w-3.5" />
                   Builder
                 </ToggleGroupItem>
+                <ToggleGroupItem value="reflect" aria-label="Reflect mode" className="gap-1.5 px-3 data-[state=on]:bg-secondary-brand data-[state=on]:text-secondary-brand-foreground">
+                  <Telescope className="h-3.5 w-3.5" />
+                  Reflect
+                </ToggleGroupItem>
               </ToggleGroup>
               <p className={cn("text-sm", containerSize === "narrow" ? "hidden" : "block")}>
                 {brainstormMode === "canvas"
                   ? "Explore potential areas for innovation by navigating through the options below."
-                  : "Build a problem step by step by selecting from each dimension."}
+                  : brainstormMode === "builder"
+                    ? "Build a problem step by step by selecting from each dimension."
+                    : "Reflect on your own experiences with guided prompts to surface problems worth solving."}
               </p>
             </div>
             <div className={cn("flex items-center gap-2 flex-wrap", containerSize === "wide" && "ml-auto gap-3")}>
-              <div className={cn("relative", containerSize === "narrow" && "w-full")}>
-                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className={cn("pl-9 h-8 bg-white", containerSize === "narrow" ? "w-full" : "w-44")}
-                />
-                {searchQuery && (
-                  <button
-                    onClick={() => setSearchQuery("")}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                    aria-label="Clear search"
-                  >
-                    <X className="h-3.5 w-3.5" />
-                  </button>
-                )}
-              </div>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setAddCustomDialogOpen(true)}
-                className="gap-2"
-              >
-                <Plus className="h-3.5 w-3.5" />
-                Add your own item
-              </Button>
+              {brainstormMode !== "reflect" && (
+                <div className={cn("relative", containerSize === "narrow" && "w-full")}>
+                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder="Search..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className={cn("pl-9 h-8 bg-white", containerSize === "narrow" ? "w-full" : "w-44")}
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                      aria-label="Clear search"
+                    >
+                      <X className="h-3.5 w-3.5" />
+                    </button>
+                  )}
+                </div>
+              )}
+              {brainstormMode !== "reflect" && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setAddCustomDialogOpen(true)}
+                  className="gap-2"
+                >
+                  <Plus className="h-3.5 w-3.5" />
+                  Add your own item
+                </Button>
+              )}
               <Button
                 variant="outline"
                 size="sm"
@@ -1253,7 +1266,9 @@ export default function BrainstormPage() {
                 description={
                   brainstormMode === "canvas"
                     ? "This will clear your current selection across all dimensions. Saved problems are not affected."
-                    : "This will clear your in-progress problem builder. Saved problems are not affected."
+                    : brainstormMode === "builder"
+                      ? "This will clear your in-progress problem builder. Saved problems are not affected."
+                      : "This will return you to the discovery-method picker. Your prompt answers will remain saved for next time."
                 }
                 confirmLabel="Reset"
                 onConfirm={() => {
@@ -1261,6 +1276,8 @@ export default function BrainstormPage() {
                     clearAll()
                   } else if (brainstormMode === "builder") {
                     builderResetRef.current?.()
+                  } else if (brainstormMode === "reflect") {
+                    reflectResetRef.current?.()
                   }
                 }}
               />
@@ -1280,7 +1297,9 @@ export default function BrainstormPage() {
         </CardContent>
       </Card>
 
-      {brainstormMode === "builder" ? (
+      {brainstormMode === "reflect" ? (
+        <ReflectBuilder resetRef={reflectResetRef} />
+      ) : brainstormMode === "builder" ? (
         <ProblemBuilder columns={filteredColumns} onSave={handleBuilderSave} resetRef={builderResetRef} onClearSearch={() => setSearchQuery("")} customItemColumns={customItemColumns} />
       ) : (<>
       <div className={cn(

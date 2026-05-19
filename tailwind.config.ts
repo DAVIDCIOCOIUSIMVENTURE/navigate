@@ -56,6 +56,10 @@ export default {
   				DEFAULT: 'hsl(var(--tertiary))',
   				foreground: 'hsl(var(--tertiary-foreground))'
   			},
+  			quaternary: {
+  				DEFAULT: 'hsl(var(--quaternary))',
+  				foreground: 'hsl(var(--quaternary-foreground))'
+  			},
   			success: {
   				DEFAULT: 'hsl(var(--success))',
   				foreground: 'hsl(var(--success-foreground))'
