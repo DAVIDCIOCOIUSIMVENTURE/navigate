@@ -4,19 +4,46 @@ import { type ReactNode } from "react"
 import { useRouter, usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { ArrowLeft, PanelLeft, PanelTop, Telescope } from "lucide-react"
+import { ArrowLeft, PanelLeft, PanelTop } from "lucide-react"
 import { useSidebar } from "@/components/ui/sidebar"
 import { useFocusChrome } from "@/context/focus-chrome-context"
+import { getReflectLens } from "@/data/reflectLenses"
+import {
+  getReflectNavItems,
+  type ReflectNavItem,
+} from "./[lensId]/context"
+import { LensStepper, LensMobileStepper } from "@/components/reflect/lens-stepper"
+import { useContainerSize } from "@/context/container-size-context"
 
 const HUB_PATH = "/problems/reflect"
+
+function getLensStep(
+  pathname: string
+): { lensId: string; activeIdx: number; navItems: readonly ReflectNavItem[] } | null {
+  const segments = pathname.split("/").filter(Boolean)
+  if (segments[0] !== "problems" || segments[1] !== "reflect" || !segments[2]) {
+    return null
+  }
+  const lensId = segments[2]
+  const lens = getReflectLens(lensId)
+  if (!lens) return null
+  const navItems = getReflectNavItems(lens)
+  const stepPath = segments[3]
+  const activeIdx = stepPath
+    ? navItems.findIndex((item) => item.path === stepPath)
+    : -1
+  return { lensId, activeIdx, navItems }
+}
 
 export default function ReflectLayout({ children }: { children: ReactNode }) {
     const router = useRouter()
     const pathname = usePathname()
     const { toggleSidebar } = useSidebar()
     const { revealTopNav } = useFocusChrome()
+    const isWide = useContainerSize() === "wide"
 
     const isHub = pathname === HUB_PATH
+    const lensStep = getLensStep(pathname)
     const handleExit = () => {
         router.push(isHub ? "/problems" : HUB_PATH)
     }
@@ -53,12 +80,23 @@ export default function ReflectLayout({ children }: { children: ReactNode }) {
                         Back
                     </Button>
                     {chromeTriggers}
-                    <h1 className="flex items-center gap-2 text-xl font-bold min-w-0">
-                        <span className="flex h-7 w-7 items-center justify-center rounded-md bg-secondary-brand shrink-0" aria-hidden="true">
-                            <Telescope className="h-4 w-4 text-secondary-brand-foreground" />
-                        </span>
-                        <span className="truncate">Reflect on Problems</span>
-                    </h1>
+                    {lensStep && (
+                        <div className="flex-1 min-w-[16rem]">
+                            {isWide ? (
+                                <LensStepper
+                                    navItems={lensStep.navItems}
+                                    activeIdx={lensStep.activeIdx}
+                                    lensId={lensStep.lensId}
+                                />
+                            ) : (
+                                <LensMobileStepper
+                                    navItems={lensStep.navItems}
+                                    activeIdx={lensStep.activeIdx}
+                                    lensId={lensStep.lensId}
+                                />
+                            )}
+                        </div>
+                    )}
                 </CardContent>
             </Card>
             <div className="flex flex-col min-w-0">

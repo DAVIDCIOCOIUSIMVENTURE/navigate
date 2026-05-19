@@ -106,6 +106,13 @@ export const REFLECT_LENSES: Lens[] = [
         question: "What workaround did you build for yourself that you still use?",
         multipleAllowed: true,
       },
+      {
+        id: "customer",
+        question: "Who is this for?",
+        helperText:
+          "Optional, but giving the problem a customer makes it easier to define later. You are the source of this insight; pick the customer segments who feel this problem the same way.",
+        multipleAllowed: true,
+      },
     ],
   },
   {

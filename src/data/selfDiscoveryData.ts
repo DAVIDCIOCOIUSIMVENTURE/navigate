@@ -24,6 +24,7 @@ export const SELF_DISCOVERY_CATEGORY_ICON_BG: Record<string, string> = {
   "knowledge": "bg-blue-900",
   "skills-expertise": "bg-yellow-600",
   "social-impact": "bg-green-800",
+  "audience": "bg-orange-700",
   "other": "bg-teal-700",
 }
 
@@ -921,6 +922,57 @@ export const SELF_DISCOVERY_CATEGORIES: SelfDiscoveryCategory[] = [
               { id: "sp-conflict-resolution", label: "International Conflict Resolution" },
               { id: "sp-climate-policy", label: "Climate Policy & Agreements" },
               { id: "sp-tech-governance", label: "Global Technology Governance" },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    url: "audience",
+    title: "Audience",
+    description: "Identify the people and organisations you most want to serve.",
+    questions: [
+      {
+        url: "target-audience",
+        titleId: "target-audience",
+        title: "Who is your target audience?",
+        description: "Think about the people and organisations whose problems you most want to solve.",
+        suggestions: [
+          {
+            id: "ta-individuals",
+            label: "Individuals",
+            children: [
+              { id: "ta-general-consumers", label: "General Consumers" },
+              { id: "ta-professionals", label: "Professionals" },
+              { id: "ta-students", label: "Students" },
+              { id: "ta-parents-families", label: "Parents & Families" },
+              { id: "ta-children-teens", label: "Children & Teenagers" },
+              { id: "ta-seniors", label: "Seniors & Older Adults" },
+              { id: "ta-hobbyists", label: "Hobbyists & Enthusiasts" },
+            ],
+          },
+          {
+            id: "ta-businesses",
+            label: "Businesses",
+            children: [
+              { id: "ta-freelancers", label: "Freelancers & Solo Operators" },
+              { id: "ta-startups", label: "Startups" },
+              { id: "ta-small-businesses", label: "Small Businesses" },
+              { id: "ta-medium-businesses", label: "Medium-Sized Businesses" },
+              { id: "ta-large-enterprises", label: "Large Enterprises" },
+            ],
+          },
+          {
+            id: "ta-organisations",
+            label: "Organisations & Institutions",
+            children: [
+              { id: "ta-nonprofits", label: "Nonprofit Organisations" },
+              { id: "ta-charities-ngos", label: "Charities & NGOs" },
+              { id: "ta-government", label: "Government & Public Sector" },
+              { id: "ta-education", label: "Educational Institutions" },
+              { id: "ta-healthcare", label: "Healthcare Providers" },
+              { id: "ta-community-groups", label: "Religious & Community Groups" },
             ],
           },
         ],

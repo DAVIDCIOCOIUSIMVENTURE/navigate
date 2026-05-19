@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Check, ChevronDown, Plus } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { brainstormColumns } from "@/data/brainstormData"
+import type { CustomBrainstormColumnId } from "@/store/custom-brainstorm-items-model"
 import {
   Collapsible,
   CollapsibleContent,
@@ -15,45 +16,58 @@ import {
 } from "@/components/ui/collapsible"
 
 type Props = {
+  columnId: CustomBrainstormColumnId
   selectedLabels: string[]
   onChange: (labels: string[]) => void
+  addPlaceholder?: string
+  pickLabel?: string
 }
 
 type FlatItem = { id: string; label: string }
 type Group = { id: string; label: string; items: FlatItem[] }
 
 /**
- * Multi-select picker bound to the brainstorm "Problem" dimension. Built-in
- * problem categories come from `brainstormColumns`; custom additions persist
- * through `customBrainstormItems.problems` so they appear back in the brainstorm
- * canvas too.
+ * Multi-select picker bound to one of the brainstorm dimensions (customers,
+ * contexts, or problems). Built-in categories come from `brainstormColumns`;
+ * custom additions persist through `customBrainstormItems` so they show up
+ * back in the brainstorm canvas too.
  */
-export function ProblemsDimensionPicker({ selectedLabels, onChange }: Props) {
+export function BrainstormDimensionPicker({
+  columnId,
+  selectedLabels,
+  onChange,
+  addPlaceholder,
+  pickLabel,
+}: Props) {
   const dispatch = useDispatch<AppDispatch>()
   const customItems = useSelector(
-    (s: RootState) => s.customBrainstormItems.byColumn.problems ?? []
+    (s: RootState) => s.customBrainstormItems.byColumn[columnId] ?? []
   )
   const [draft, setDraft] = useState("")
   const [openGroupId, setOpenGroupId] = useState<string | null>(null)
 
+  const column = useMemo(
+    () => brainstormColumns.find((c) => c.id === columnId),
+    [columnId]
+  )
+
   const builtInGroups = useMemo<Group[]>(() => {
-    const problemsColumn = brainstormColumns.find((c) => c.id === "problems")
-    if (!problemsColumn) return []
-    return problemsColumn.items.map((cat) => ({
+    if (!column) return []
+    return column.items.map((cat) => ({
       id: cat.id,
       label: cat.label,
       items: (cat.children ?? []).map((c) => ({ id: c.id, label: c.label })),
     }))
-  }, [])
+  }, [column])
 
   const customGroup = useMemo<Group | null>(() => {
     if (customItems.length === 0) return null
     return {
-      id: "problem-custom",
-      label: "Your problems",
+      id: `${columnId}-custom`,
+      label: `Your ${column?.title?.toLowerCase() ?? columnId}`,
       items: customItems.map((c) => ({ id: c.id, label: c.label })),
     }
-  }, [customItems])
+  }, [customItems, columnId, column])
 
   const selectedSet = useMemo(
     () => new Set(selectedLabels.map((l) => l.trim().toLowerCase())),
@@ -83,7 +97,7 @@ export function ProblemsDimensionPicker({ selectedLabels, onChange }: Props) {
       ...customItems.map((i) => i.label.toLowerCase()),
     ]
     if (!allLabels.includes(label.toLowerCase())) {
-      dispatch.customBrainstormItems.create({ columnId: "problems", label })
+      dispatch.customBrainstormItems.create({ columnId, label })
     }
     if (!selectedSet.has(label.toLowerCase())) {
       onChange([...selectedLabels, label])
@@ -92,23 +106,24 @@ export function ProblemsDimensionPicker({ selectedLabels, onChange }: Props) {
   }
 
   const groups = customGroup ? [customGroup, ...builtInGroups] : builtInGroups
+  const inputId = `${columnId}-dimension-new`
+  const heading =
+    pickLabel ?? `Pick one or more ${column?.title?.toLowerCase() ?? columnId}`
+  const placeholder = addPlaceholder ?? "Type your own and press Add"
 
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <label
-          htmlFor="problem-dimension-new"
-          className="text-base font-semibold text-white"
-        >
+        <label htmlFor={inputId} className="text-base font-semibold text-white">
           Add your own
         </label>
         <p className="text-base text-white">
-          Anything you add joins the Problems dimension in the brainstorm canvas
-          and the picker below.
+          Anything you add joins the {column?.title ?? columnId} dimension in
+          the brainstorm canvas and the picker below.
         </p>
         <div className="flex gap-2">
           <Input
-            id="problem-dimension-new"
+            id={inputId}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => {
@@ -117,7 +132,7 @@ export function ProblemsDimensionPicker({ selectedLabels, onChange }: Props) {
                 handleAdd()
               }
             }}
-            placeholder="e.g. School pickup logistics, finding a trusted plumber"
+            placeholder={placeholder}
             className="text-base bg-white border-white text-foreground"
           />
           <Button
@@ -133,9 +148,7 @@ export function ProblemsDimensionPicker({ selectedLabels, onChange }: Props) {
       </div>
 
       <div className="flex flex-col gap-2">
-        <p className="text-base font-semibold text-white">
-          Pick one or more problem types
-        </p>
+        <p className="text-base font-semibold text-white">{heading}</p>
         <div className="flex flex-col gap-2 rounded-lg bg-card p-2">
           {groups.map((group) => {
             const open = openGroupId === group.id

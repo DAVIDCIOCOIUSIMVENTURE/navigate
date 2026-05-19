@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useMemo, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -14,7 +14,7 @@ import { ArrowLeft, ArrowRight, ChevronDown, Plus, Trash2 } from "lucide-react"
 import { useReflect } from "../context"
 import { SelfDiscoveryChips } from "@/components/reflect/self-discovery-chips"
 import { LifeExperiencesPicker } from "@/components/reflect/life-experiences-picker"
-import { ProblemsDimensionPicker } from "@/components/reflect/problems-dimension-picker"
+import { BrainstormDimensionPicker } from "@/components/reflect/brainstorm-dimension-picker"
 import { PromptExamples } from "@/components/reflect/prompt-examples"
 import { LIFE_PROMPT_EXAMPLES } from "@/data/reflectLifeExamples"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -31,7 +31,15 @@ export default function LensPromptsPage() {
     removeAnswerSlot,
     setAnswerSlots,
   } = useReflect()
-  const [index, setIndex] = useState(0)
+  const searchParams = useSearchParams()
+  const requestedStep = searchParams.get("step")
+  const initialIndex = useMemo(() => {
+    if (!requestedStep) return 0
+    const i = lens.prompts.findIndex((p) => p.id === requestedStep)
+    return i >= 0 ? i : 0
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  const [index, setIndex] = useState(initialIndex)
   const [examplesOpen, setExamplesOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<"strategy" | "examples">("strategy")
   const isNarrow = useContainerSize() === "narrow"
@@ -52,17 +60,21 @@ export default function LensPromptsPage() {
   const useLifeExperiencesPicker =
     lens.id === "life" && prompt.id === "significant-experience"
 
-  const useProblemsPicker =
+  const dimensionPickerColumn: "problems" | "customers" | null =
     lens.id === "life" && prompt.id === "harder-than-needed"
+      ? "problems"
+      : lens.id === "life" && prompt.id === "customer"
+        ? "customers"
+        : null
 
-  const selectedProblemLabels = useMemo(() => {
-    if (!useProblemsPicker) return [] as string[]
+  const selectedDimensionLabels = useMemo(() => {
+    if (!dimensionPickerColumn) return [] as string[]
     return promptAnswers
       .map((a) => a.text.trim())
       .filter((t) => t.length > 0)
-  }, [useProblemsPicker, promptAnswers])
+  }, [dimensionPickerColumn, promptAnswers])
 
-  function handleProblemsChange(next: string[]) {
+  function handleDimensionChange(next: string[]) {
     const byLabel = new Map<string, (typeof promptAnswers)[number]>()
     for (const a of promptAnswers) {
       const key = a.text.trim().toLowerCase()
@@ -140,26 +152,25 @@ export default function LensPromptsPage() {
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      <div className="flex items-center gap-3">
-        <span className="text-base font-medium shrink-0">
-          Prompt {index + 1} of {total}
-        </span>
-        <div
-          className="h-1.5 flex-1 rounded-full bg-muted overflow-hidden"
-          role="progressbar"
-          aria-valuemin={0}
-          aria-valuemax={total}
-          aria-valuenow={index + 1}
-        >
-          <div
-            className="h-full bg-primary transition-all"
-            style={{ width: `${((index + 1) / total) * 100}%` }}
-          />
-        </div>
-      </div>
-
       <Card>
         <CardHeader className="space-y-6">
+          <div className="flex items-center gap-3">
+            <span className="text-base font-medium shrink-0">
+              Prompt {index + 1} of {total}
+            </span>
+            <div
+              className="h-1.5 flex-1 rounded-full bg-muted overflow-hidden"
+              role="progressbar"
+              aria-valuemin={0}
+              aria-valuemax={total}
+              aria-valuenow={index + 1}
+            >
+              <div
+                className="h-full bg-primary transition-all"
+                style={{ width: `${((index + 1) / total) * 100}%` }}
+              />
+            </div>
+          </div>
           <CardTitle icon={Icon} iconBg={lens.tileColor} as="h2">
             {lens.title}
           </CardTitle>
@@ -211,7 +222,7 @@ export default function LensPromptsPage() {
                   </Collapsible>
                 )}
 
-                {chipsCategory && !useLifeExperiencesPicker && !useProblemsPicker && (
+                {chipsCategory && !useLifeExperiencesPicker && !dimensionPickerColumn && (
                   <SelfDiscoveryChips category={chipsCategory} onPick={handlePickChip} />
                 )}
 
@@ -220,10 +231,21 @@ export default function LensPromptsPage() {
                     selectedTitle={selectedExperienceTitle}
                     onSelect={handleSelectExperience}
                   />
-                ) : useProblemsPicker ? (
-                  <ProblemsDimensionPicker
-                    selectedLabels={selectedProblemLabels}
-                    onChange={handleProblemsChange}
+                ) : dimensionPickerColumn ? (
+                  <BrainstormDimensionPicker
+                    columnId={dimensionPickerColumn}
+                    selectedLabels={selectedDimensionLabels}
+                    onChange={handleDimensionChange}
+                    addPlaceholder={
+                      dimensionPickerColumn === "problems"
+                        ? "e.g. School pickup logistics, finding a trusted plumber"
+                        : "e.g. First-time freelancers, parents of teenagers"
+                    }
+                    pickLabel={
+                      dimensionPickerColumn === "problems"
+                        ? "Pick one or more problem types"
+                        : "Pick one or more customer segments"
+                    }
                   />
                 ) : (
                   <div className="flex flex-col gap-2">
@@ -298,15 +320,10 @@ export default function LensPromptsPage() {
           <ArrowLeft className="h-4 w-4" />
           Back
         </Button>
-        <div className="flex items-center gap-2 flex-wrap">
-          <Button variant="ghost" onClick={goNext}>
-            Skip
-          </Button>
-          <Button onClick={goNext} className="gap-2">
-            {isLast ? "Review" : "Next"}
-            <ArrowRight className="h-4 w-4" />
-          </Button>
-        </div>
+        <Button onClick={goNext} className="gap-2">
+          {isLast ? "Review" : "Next"}
+          <ArrowRight className="h-4 w-4" />
+        </Button>
       </div>
     </div>
   )

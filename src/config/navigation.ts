@@ -47,6 +47,7 @@ export const selfDiscoveryCategoryIcons = {
   "knowledge": Book,
   "skills-expertise": Brain,
   "social-impact": Globe,
+  "audience": Users,
   "other": Plus,
 }
 

@@ -290,12 +290,6 @@ export default function SelfDiscoveryFlowLayout({
                         </div>
                         <Card className="flex-1 min-h-0 flex flex-col overflow-hidden">
                             <CardContent className="p-3 flex flex-col gap-3 flex-1 min-h-0">
-                                <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 px-1 pt-1 pb-3 border-b">
-                                    <span className="flex h-7 w-7 items-center justify-center rounded-md bg-secondary-brand shrink-0" aria-hidden="true">
-                                        <Compass className="h-4 w-4 text-secondary-brand-foreground" />
-                                    </span>
-                                    <span className="truncate">Self Discovery</span>
-                                </h1>
                                 <div className="flex-1 min-h-0 overflow-y-auto">
                                     <NavContent pathname={pathname} onNavigate={handleNavigate} />
                                 </div>

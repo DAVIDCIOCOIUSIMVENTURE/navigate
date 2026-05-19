@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { useDispatch } from "react-redux"
@@ -9,21 +9,40 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
-import { ArrowLeft, ArrowRight, ClipboardCheck, HeartHandshake, Trash2 } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import {
+  ArrowLeft,
+  ArrowRight,
+  ClipboardCheck,
+  HeartHandshake,
+  Pencil,
+  Trash2,
+  Users,
+} from "lucide-react"
 import { useReflect } from "../context"
 import { LENS_CONTEXT_FIELDS } from "@/data/reflectLenses"
 import type { SessionAnswer } from "@/store/problem-candidates-model"
+import { useResolveOrCreate } from "@/lib/dimension-labels"
 
 const LIFE_LENS_ORDER = [
   "harder-than-needed",
   "wish-told",
   "wasted-spend",
   "personal-workaround",
+  "customer",
 ] as const
 
 export default function LensReviewPage() {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
+  const resolveOrCreate = useResolveOrCreate()
   const {
     lens,
     sessionId,
@@ -34,6 +53,8 @@ export default function LensReviewPage() {
     clearSession,
   } = useReflect()
   const [saving, setSaving] = useState(false)
+  const [saveDialogOpen, setSaveDialogOpen] = useState(false)
+  const [dialogTitle, setDialogTitle] = useState("")
 
   const candidatePrompts = lens.prompts.filter((p) => !p.contextOnly)
   const isLifeLens = lens.id === "life"
@@ -48,41 +69,46 @@ export default function LensReviewPage() {
   const hasLifeCandidate = isLifeLens && lifeExperience.length > 0 && filledAnswers > 0
   const totalKept = isLifeLens ? (hasLifeCandidate ? 1 : 0) : filledAnswers
 
-  async function handleSave() {
+  const filledLabels = useMemo(() => {
+    function labels(promptId: string): string[] {
+      return (answers[promptId] ?? [])
+        .map((a) => a.text.trim())
+        .filter((t) => t.length > 0)
+    }
+    return {
+      problems: labels("harder-than-needed"),
+      customers: labels("customer"),
+      wishTold: labels("wish-told"),
+      wastedSpend: labels("wasted-spend"),
+      workaround: labels("personal-workaround"),
+    }
+  }, [answers])
+
+  function goToStep(stepId: string) {
+    router.push(`/problems/reflect/${lens.id}/prompts?step=${stepId}`)
+  }
+
+  function openSaveDialog() {
+    setDialogTitle(lifeExperience)
+    setSaveDialogOpen(true)
+  }
+
+  async function handleSaveAsCandidates() {
     setSaving(true)
     try {
-      let payload: SessionAnswer[] = []
-
-      if (isLifeLens) {
-        if (!hasLifeCandidate) return
-        const context: Record<string, string> = { experience: lifeExperience }
-        for (const p of candidatePrompts) {
-          const list = (answers[p.id] ?? []).filter((a) => a.text.trim().length > 0)
-          if (list.length === 0) continue
-          context[p.id] = list.map((a) => a.text.trim()).join("\n")
-        }
-        payload = [
-          {
-            promptId: "life-summary",
-            title: lifeExperience,
-            context,
-          },
-        ]
-      } else {
-        const lensContext: Record<string, string> = {}
-        for (const p of candidatePrompts) {
-          const list = answers[p.id] ?? []
-          for (const a of list) {
-            if (a.text.trim().length === 0) continue
-            payload.push({
-              promptId: p.id,
-              title: a.text.trim(),
-              context: { ...lensContext, ...a.context },
-            })
-          }
+      const payload: SessionAnswer[] = []
+      const lensContext: Record<string, string> = {}
+      for (const p of candidatePrompts) {
+        const list = answers[p.id] ?? []
+        for (const a of list) {
+          if (a.text.trim().length === 0) continue
+          payload.push({
+            promptId: p.id,
+            title: a.text.trim(),
+            context: { ...lensContext, ...a.context },
+          })
         }
       }
-
       const created = await dispatch.problemCandidates.bulkCreateForSession({
         sessionId,
         lensId: lens.id,
@@ -95,15 +121,67 @@ export default function LensReviewPage() {
     }
   }
 
+  async function handleSaveAsProblem() {
+    if (!isLifeLens || !hasLifeCandidate) return
+    const trimmedTitle = dialogTitle.trim()
+    if (trimmedTitle.length === 0) return
+    setSaving(true)
+    try {
+      const customerIds = filledLabels.customers
+        .map((label) => resolveOrCreate("customers", label))
+        .filter((id) => id.length > 0)
+      const problemIds = filledLabels.problems
+        .map((label) => resolveOrCreate("problems", label))
+        .filter((id) => id.length > 0)
+
+      const newProblem = await dispatch.problems.create({
+        source: "reflect",
+        description: trimmedTitle,
+        customers: customerIds,
+        contexts: [],
+        problems: problemIds,
+        you: [],
+      })
+      clearSession()
+      setSaveDialogOpen(false)
+      router.push(`/problems/${newProblem.id}/validation/introduction`)
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  function TitleButton({
+    onClick,
+    children,
+  }: {
+    onClick: () => void
+    children: React.ReactNode
+  }) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        className="group inline-flex items-center gap-2 text-left text-base font-semibold hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+      >
+        <span>{children}</span>
+        <Pencil
+          className="h-3.5 w-3.5 opacity-0 group-hover:opacity-100 transition-opacity"
+          aria-hidden="true"
+        />
+        <span className="sr-only">Edit this step</span>
+      </button>
+    )
+  }
+
   if (isLifeLens) {
     const orderedPrompts = LIFE_LENS_ORDER.map((id) =>
       candidatePrompts.find((p) => p.id === id)
     ).filter((p): p is NonNullable<typeof p> => Boolean(p))
     const problemsPrompt = orderedPrompts.find((p) => p.id === "harder-than-needed")
-    const otherPrompts = orderedPrompts.filter((p) => p.id !== "harder-than-needed")
-    const problemAnswers = problemsPrompt
-      ? (answers[problemsPrompt.id] ?? []).filter((a) => a.text.trim().length > 0)
-      : []
+    const customerPrompt = orderedPrompts.find((p) => p.id === "customer")
+    const otherPrompts = orderedPrompts.filter(
+      (p) => p.id !== "harder-than-needed" && p.id !== "customer"
+    )
 
     return (
       <div className="flex flex-col gap-4 w-full">
@@ -116,15 +194,14 @@ export default function LensReviewPage() {
               {hasLifeCandidate ? (
                 <>
                   Your answers will be saved as{" "}
-                  <span className="font-semibold">one combined candidate</span>{" "}
-                  for the life experience &ldquo;{lifeExperience}&rdquo;. Edit
-                  or remove anything below; everything kept becomes context on
-                  that single candidate.
+                  <span className="font-semibold">one problem</span> in your
+                  problem bank. Click any heading below to jump back to that
+                  step.
                 </>
               ) : (
                 <>
                   Add a life experience and at least one friction-prompt answer
-                  to save a candidate.
+                  to save a problem.
                 </>
               )}
             </p>
@@ -135,7 +212,9 @@ export default function LensReviewPage() {
           <Card>
             <CardHeader className="space-y-6">
               <CardTitle icon={HeartHandshake} iconBg="bg-yellow-600" as="h2">
-                Life experience
+                <TitleButton onClick={() => goToStep("significant-experience")}>
+                  Life experience
+                </TitleButton>
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -144,16 +223,16 @@ export default function LensReviewPage() {
           </Card>
         )}
 
-        {problemsPrompt && problemAnswers.length > 0 && (
+        {problemsPrompt && filledLabels.problems.length > 0 && (
           <Card>
             <CardHeader className="space-y-3">
-              <p className="text-base font-semibold">
+              <TitleButton onClick={() => goToStep(problemsPrompt.id)}>
                 Problems you encountered
-              </p>
+              </TitleButton>
               <p className="text-base">
-                {problemAnswers.length}{" "}
-                {problemAnswers.length === 1 ? "problem" : "problems"} selected.
-                Remove anything that doesn&apos;t belong.
+                {filledLabels.problems.length}{" "}
+                {filledLabels.problems.length === 1 ? "problem" : "problems"}{" "}
+                selected. Remove anything that doesn&apos;t belong.
               </p>
             </CardHeader>
             <CardContent>
@@ -180,6 +259,44 @@ export default function LensReviewPage() {
           </Card>
         )}
 
+        {customerPrompt && (
+          <Card>
+            <CardHeader className="space-y-3">
+              <TitleButton onClick={() => goToStep(customerPrompt.id)}>
+                Who is this for?
+              </TitleButton>
+              <p className="text-base">
+                {filledLabels.customers.length > 0
+                  ? `${filledLabels.customers.length} ${filledLabels.customers.length === 1 ? "customer" : "customers"} selected. Remove anything that doesn't belong.`
+                  : "No customers selected yet. Optional, but helps frame the problem."}
+              </p>
+            </CardHeader>
+            {filledLabels.customers.length > 0 && (
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {(answers[customerPrompt.id] ?? []).map((answer, idx) => {
+                    if (answer.text.trim().length === 0) return null
+                    return (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => removeAnswerSlot(customerPrompt.id, idx)}
+                        className="inline-flex items-center gap-1.5 rounded-full bg-foreground text-background px-3 py-1 text-base hover:bg-foreground/90"
+                      >
+                        <span>{answer.text.trim()}</span>
+                        <span aria-hidden="true">×</span>
+                        <span className="sr-only">
+                          Remove {answer.text.trim()}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </CardContent>
+            )}
+          </Card>
+        )}
+
         {otherPrompts.map((prompt) => {
           const list = answers[prompt.id] ?? []
           const hasAny = list.some((a) => a.text.trim().length > 0)
@@ -187,7 +304,9 @@ export default function LensReviewPage() {
           return (
             <Card key={prompt.id}>
               <CardHeader className="space-y-3">
-                <p className="text-base font-semibold">{prompt.question}</p>
+                <TitleButton onClick={() => goToStep(prompt.id)}>
+                  {prompt.question}
+                </TitleButton>
               </CardHeader>
               <CardContent className="flex flex-col gap-3">
                 {list.map((answer, originalIdx) => {
@@ -226,14 +345,92 @@ export default function LensReviewPage() {
             </Link>
           </Button>
           <Button
-            onClick={handleSave}
+            onClick={openSaveDialog}
             disabled={saving || totalKept === 0}
             className="gap-2"
           >
-            {saving ? "Saving..." : "Save as candidate"}
+            Save Problem
             <ArrowRight className="h-4 w-4" />
           </Button>
         </div>
+
+        <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Save Problem</DialogTitle>
+              <DialogDescription>
+                Describe the problem in a sentence or two. You can refine it
+                later in the problem bank.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-col gap-4 py-2">
+              <div className="flex flex-col gap-1.5">
+                <label
+                  htmlFor="reflect-problem-description"
+                  className="text-base font-medium"
+                >
+                  Problem description
+                </label>
+                <Textarea
+                  id="reflect-problem-description"
+                  value={dialogTitle}
+                  onChange={(e) => setDialogTitle(e.target.value)}
+                  placeholder="A short sentence that describes the problem"
+                  rows={2}
+                  className="text-base"
+                />
+              </div>
+
+              {filledLabels.customers.length > 0 && (
+                <div className="flex flex-col gap-1.5">
+                  <p className="text-base font-medium">Customers</p>
+                  <div className="flex flex-wrap gap-2">
+                    {filledLabels.customers.map((label) => (
+                      <span
+                        key={label}
+                        className="inline-flex items-center gap-1.5 rounded-full bg-foreground text-background px-3 py-1 text-base"
+                      >
+                        <Users className="h-3.5 w-3.5" aria-hidden="true" />
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {filledLabels.problems.length > 0 && (
+                <div className="flex flex-col gap-1.5">
+                  <p className="text-base font-medium">Problems</p>
+                  <div className="flex flex-wrap gap-2">
+                    {filledLabels.problems.map((label) => (
+                      <span
+                        key={label}
+                        className="inline-flex items-center gap-1.5 rounded-full bg-foreground text-background px-3 py-1 text-base"
+                      >
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setSaveDialogOpen(false)}
+                disabled={saving}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSaveAsProblem}
+                disabled={saving || dialogTitle.trim().length === 0}
+              >
+                {saving ? "Saving..." : "Save Problem"}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     )
   }
@@ -328,7 +525,7 @@ export default function LensReviewPage() {
           </Link>
         </Button>
         <Button
-          onClick={handleSave}
+          onClick={handleSaveAsCandidates}
           disabled={saving || totalKept === 0}
           className="gap-2"
         >
