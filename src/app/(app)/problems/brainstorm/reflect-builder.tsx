@@ -450,11 +450,11 @@ function PromptsPanel({
   }, [useLifeExperiencesPicker, promptAnswers])
 
   const chosenLifeExperience = useMemo(() => {
-    if (lens.id !== "life" || prompt.id === "significant-experience") return null
+    if (lens.id !== "life") return null
     const list = answers["significant-experience"] ?? []
     const firstFilled = list.find((a) => a.text.trim().length > 0)
     return firstFilled ? firstFilled.text.trim() : null
-  }, [lens.id, prompt.id, answers])
+  }, [lens.id, answers])
 
   function handleSelectExperience(title: string | null) {
     setAnswerText(prompt.id, 0, title ?? "")
@@ -646,7 +646,7 @@ function PromptsPanel({
         <Button
           variant="outline"
           onClick={goPrev}
-          className="gap-2 border-primary text-primary hover:bg-primary/10 hover:text-primary"
+          className="gap-2 bg-white border-primary text-primary hover:bg-primary/10 hover:text-primary"
         >
           <ArrowLeft className="h-4 w-4" />
           Back
