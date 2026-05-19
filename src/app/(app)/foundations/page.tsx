@@ -9,14 +9,6 @@ import { getFoundationsSectionIcon } from "@/config/navigation"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 
-const SECTION_ICON_BG: Record<string, string> = {
-  "why-the-right-idea": "bg-yellow-600",
-  "why-validate-the-problem": "bg-teal-700",
-  "why-validate-the-solution": "bg-blue-900",
-  "the-cost-of-skipping": "bg-red-800",
-  "when-it-goes-right": "bg-green-800",
-}
-
 export default function FoundationsPage() {
   const router = useRouter()
   const firstSectionUrl = FOUNDATIONS_SECTIONS[0].url
@@ -52,15 +44,14 @@ export default function FoundationsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {FOUNDATIONS_SECTIONS.map((section) => {
               const Icon = getFoundationsSectionIcon(section.iconKey)
-              const bgClass = SECTION_ICON_BG[section.url] ?? "bg-primary"
               return (
                 <button
                   key={section.url}
                   onClick={() => router.push(`/foundations/${section.url}`)}
                   className="text-left flex items-start gap-3 p-4 rounded-lg border hover:border-primary hover:bg-accent/40 transition-colors"
                 >
-                  <span className={cn("flex items-center justify-center w-9 h-9 rounded-lg shrink-0", bgClass)}>
-                    <Icon className="h-5 w-5 text-white" aria-hidden="true" />
+                  <span className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0 bg-tertiary">
+                    <Icon className="h-5 w-5 text-tertiary-foreground" aria-hidden="true" />
                   </span>
                   <div className="flex-1 min-w-0">
                     <p className="font-semibold text-foreground">{section.title}</p>
@@ -69,7 +60,7 @@ export default function FoundationsPage() {
                       <span>{section.tagline}</span>
                     </p>
                   </div>
-                  <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0 mt-1" aria-hidden="true" />
+                  <ChevronRight className="h-4 w-4 text-primary shrink-0 mt-1" aria-hidden="true" />
                 </button>
               )
             })}

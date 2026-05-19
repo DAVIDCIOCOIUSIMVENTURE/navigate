@@ -15,13 +15,14 @@ import { ExistingSolutionsStrategy } from "@/components/problem-strategies/exist
 import { ValidationStrategy } from "@/components/problem-strategies/validation-strategy"
 import {
   AlertCircle, ArrowRight, ChevronDown, CheckCircle2, Copy, ExternalLink,
-  GitFork, HelpCircle, Lightbulb, RotateCcw, Search, ShieldCheck,
+  GitFork, HelpCircle, Lightbulb, MessageSquare, RotateCcw, Search, ShieldCheck,
   Users, XCircle, Pencil,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { getReflectLens } from "@/data/reflectLenses"
 
-type SectionTone = "indigo" | "amber" | "purple" | "emerald" | "primary" | "rose"
+type SectionTone = "indigo" | "amber" | "purple" | "emerald" | "primary" | "rose" | "tertiary"
 
 const TONE_CLASSES: Record<SectionTone, string> = {
   indigo: "bg-indigo-800",
@@ -30,6 +31,7 @@ const TONE_CLASSES: Record<SectionTone, string> = {
   emerald: "bg-emerald-800",
   primary: "bg-primary",
   rose: "bg-rose-800",
+  tertiary: "bg-tertiary",
 }
 
 function IconTile({ icon: Icon, tone, size = "md" }: { icon: LucideIcon; tone: SectionTone; size?: "sm" | "md" | "lg" }) {
@@ -43,11 +45,10 @@ function IconTile({ icon: Icon, tone, size = "md" }: { icon: LucideIcon; tone: S
 }
 
 function HubSection({
-  icon, label, tone, defaultOpen = true, openInStep, children,
+  icon, label, defaultOpen = true, openInStep, children,
 }: {
   icon: LucideIcon
   label: string
-  tone: SectionTone
   defaultOpen?: boolean
   openInStep?: string
   children: React.ReactNode
@@ -60,7 +61,7 @@ function HubSection({
       <Collapsible open={open} onOpenChange={setOpen}>
         <div className="flex items-center gap-3 p-4">
           <CollapsibleTrigger className="flex flex-1 items-center gap-2.5 text-left">
-            <IconTile icon={icon} tone={tone} size="sm" />
+            <IconTile icon={icon} tone="tertiary" size="sm" />
             <h3 className="flex-1 font-semibold text-base">{label}</h3>
             <ChevronDown
               className={cn("h-4 w-4 text-muted-foreground transition-transform", open && "rotate-180")}
@@ -90,6 +91,56 @@ function HubSection({
   )
 }
 
+function ReflectionSection({ problemId }: { problemId: number }) {
+  const reflection = useSelector((state: RootState) =>
+    state.problems.problems.find((p) => p.id === problemId)?.reflection
+  )
+  if (!reflection) return null
+  const lens = getReflectLens(reflection.lensId)
+  if (!lens) return null
+  const filledPrompts = reflection.prompts.filter((p) => p.answers.length > 0)
+  if (filledPrompts.length === 0) return null
+
+  const LensIcon = lens.icon
+  return (
+    <HubSection
+      icon={MessageSquare}
+      label={`Reflection: ${lens.title}`}
+      defaultOpen={false}
+    >
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center gap-3">
+          <div
+            className="flex items-center justify-center w-8 h-8 rounded-md shrink-0 bg-tertiary"
+            aria-hidden="true"
+          >
+            <LensIcon className="h-4 w-4 text-white" />
+          </div>
+          <p className="text-base font-medium">{lens.title}</p>
+        </div>
+        <div className="flex flex-col gap-4">
+          {filledPrompts.map((p) => {
+            const prompt = lens.prompts.find((lp) => lp.id === p.promptId)
+            if (!prompt) return null
+            return (
+              <div key={p.promptId} className="flex flex-col gap-1.5">
+                <p className="text-base font-semibold">{prompt.question}</p>
+                <ul className="list-disc pl-5 space-y-1">
+                  {p.answers.map((answer, i) => (
+                    <li key={i} className="text-base leading-relaxed">
+                      {answer}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </HubSection>
+  )
+}
+
 function SolutionsSection({ problemId }: { problemId: number }) {
   const router = useRouter()
   const solutions = useSelector((state: RootState) =>
@@ -100,7 +151,6 @@ function SolutionsSection({ problemId }: { problemId: number }) {
     <HubSection
       icon={Lightbulb}
       label={`Solutions (${solutions.length})`}
-      tone="primary"
       defaultOpen={solutions.length > 0}
     >
       {solutions.length === 0 ? (
@@ -359,18 +409,19 @@ export function ProblemHubContent({
 
   return (
     <div className={cn("flex flex-col gap-4", mode === "page" && "gap-6")}>
-      <HubSection icon={AlertCircle} label="Core Problem" tone="amber">
+      <HubSection icon={AlertCircle} label="Core Problem">
         <CoreProblemStrategy readOnly={readOnly} />
       </HubSection>
 
-      <HubSection icon={Users} label="Customer" tone="indigo" openInStep={stepHref("customer")}>
+      <ReflectionSection problemId={problemId} />
+
+      <HubSection icon={Users} label="Customer" openInStep={stepHref("customer")}>
         <CustomerStrategy readOnly={readOnly} />
       </HubSection>
 
       <HubSection
         icon={Search}
         label="Refinement"
-        tone="purple"
         openInStep={stepHref("choose-refinement")}
       >
         <RefinementStrategy showChooser readOnly={readOnly} />
@@ -379,7 +430,6 @@ export function ProblemHubContent({
       <HubSection
         icon={GitFork}
         label="Existing Solutions, Shortcomings & Impacts"
-        tone="purple"
         openInStep={stepHref("existing-solutions")}
       >
         <ExistingSolutionsStrategy readOnly={readOnly} />
@@ -388,7 +438,6 @@ export function ProblemHubContent({
       <HubSection
         icon={ShieldCheck}
         label="Validation Assessment"
-        tone="emerald"
         openInStep={stepHref("market")}
       >
         <ValidationStrategy readOnly={readOnly} />

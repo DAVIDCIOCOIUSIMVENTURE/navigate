@@ -1,37 +1,37 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" width="400" height="280">
-  <rect width="400" height="280" fill="#F6F2EA"></rect>
+  <rect width="400" height="280" fill="#FAFAF9"></rect>
 
   
-  <path d="M90 70 L91.8 74.2 L96 76 L91.8 77.8 L90 82 L88.2 77.8 L84 76 L88.2 74.2 Z" fill="#C9A227"></path>
-  <path d="M320 100 L322.1 104.9 L327 107 L322.1 109.1 L320 114 L317.9 109.1 L313 107 L317.9 104.9 Z" fill="#C25A3C"></path>
-  <path d="M310 50 L311.5 53.5 L315 55 L311.5 56.5 L310 60 L308.5 56.5 L305 55 L308.5 53.5 Z" fill="#C9A227"></path>
-  <circle cx="120" cy="130" r="2" fill="#1B1B14"></circle>
-  <circle cx="350" cy="170" r="1.8" fill="#1B1B14"></circle>
-  <circle cx="60" cy="160" r="1.5" fill="#1B1B14"></circle>
+  <path d="M90 70 L91.8 74.2 L96 76 L91.8 77.8 L90 82 L88.2 77.8 L84 76 L88.2 74.2 Z" fill="#0E7EB3"></path>
+  <path d="M320 100 L322.1 104.9 L327 107 L322.1 109.1 L320 114 L317.9 109.1 L313 107 L317.9 104.9 Z" fill="#C78A04"></path>
+  <path d="M310 50 L311.5 53.5 L315 55 L311.5 56.5 L310 60 L308.5 56.5 L305 55 L308.5 53.5 Z" fill="#0E7EB3"></path>
+  <circle cx="120" cy="130" r="2" fill="#14171F"></circle>
+  <circle cx="350" cy="170" r="1.8" fill="#14171F"></circle>
+  <circle cx="60" cy="160" r="1.5" fill="#14171F"></circle>
 
   
-  <line x1="40" y1="240" x2="360" y2="240" stroke="#1B1B14" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 6"></line>
+  <line x1="40" y1="240" x2="360" y2="240" stroke="#14171F" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 6"></line>
 
   
   <g transform="translate(200 150)">
     
-    <path d="M-14 60 Q -8 78 0 92 Q 8 78 14 60 Z" fill="#C25A3C" stroke="#1B1B14" stroke-width="2" stroke-linejoin="round"></path>
+    <path d="M-14 60 Q -8 78 0 92 Q 8 78 14 60 Z" fill="#C78A04" stroke="#14171F" stroke-width="2" stroke-linejoin="round"></path>
     
-    <path d="M-7 60 Q -3 72 0 80 Q 3 72 7 60 Z" fill="#C9A227"></path>
+    <path d="M-7 60 Q -3 72 0 80 Q 3 72 7 60 Z" fill="#0E7EB3"></path>
 
     
-    <path d="M-18 30 L-38 60 L-18 60 Z" fill="#C9A227" stroke="#1B1B14" stroke-width="2" stroke-linejoin="round"></path>
+    <path d="M-18 30 L-38 60 L-18 60 Z" fill="#0E7EB3" stroke="#14171F" stroke-width="2" stroke-linejoin="round"></path>
     
-    <path d="M18 30 L38 60 L18 60 Z" fill="#C9A227" stroke="#1B1B14" stroke-width="2" stroke-linejoin="round"></path>
+    <path d="M18 30 L38 60 L18 60 Z" fill="#0E7EB3" stroke="#14171F" stroke-width="2" stroke-linejoin="round"></path>
 
     
-    <path d="M-18 60 L-18 -30 Q -18 -70 0 -90 Q 18 -70 18 -30 L18 60 Z" fill="#C25A3C" stroke="#1B1B14" stroke-width="2" stroke-linejoin="round"></path>
+    <path d="M-18 60 L-18 -30 Q -18 -70 0 -90 Q 18 -70 18 -30 L18 60 Z" fill="#C78A04" stroke="#14171F" stroke-width="2" stroke-linejoin="round"></path>
 
     
-    <line x1="-18" y1="30" x2="18" y2="30" stroke="#1B1B14" stroke-width="2"></line>
+    <line x1="-18" y1="30" x2="18" y2="30" stroke="#14171F" stroke-width="2"></line>
 
     
-    <circle cx="0" cy="-10" r="10" fill="#FFFDF8" stroke="#1B1B14" stroke-width="2"></circle>
-    <circle cx="0" cy="-10" r="5" fill="#2C3E7A"></circle>
+    <circle cx="0" cy="-10" r="10" fill="#FFFFFF" stroke="#14171F" stroke-width="2"></circle>
+    <circle cx="0" cy="-10" r="5" fill="#0F3F75"></circle>
   </g>
 </svg>

@@ -10,13 +10,11 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { useSidebar } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
-import { SELF_DISCOVERY_CATEGORIES, SELF_DISCOVERY_CATEGORY_ICON_BG } from "@/data/selfDiscoveryData"
+import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
 import { useContainerSize } from "@/context/container-size-context"
 import { useFocusChrome } from "@/context/focus-chrome-context"
 
 const BASE_PATH = "/self-discovery/discover"
-
-const CATEGORY_ICON_BG = SELF_DISCOVERY_CATEGORY_ICON_BG
 
 const OTHER_CATEGORY = {
     url: "other",
@@ -37,7 +35,7 @@ function NavContent({
     const isOtherActive = pathname.startsWith(`${BASE_PATH}/${OTHER_CATEGORY.url}`)
     const [openCategory, setOpenCategory] = useState<string>(activeCategoryUrl ?? "")
     const OtherIcon = getSelfDiscoveryCategoryIcon(OTHER_CATEGORY.url) ?? Compass
-    const otherBgClass = CATEGORY_ICON_BG[OTHER_CATEGORY.url] ?? "bg-primary"
+    const isIntroActive = pathname === BASE_PATH
 
     useEffect(() => {
         if (activeCategoryUrl) {
@@ -48,15 +46,23 @@ function NavContent({
     return (
         <div className="flex flex-col gap-1">
             <Button
-                variant={pathname === BASE_PATH ? "secondary" : "ghost"}
+                variant={isIntroActive ? "secondary" : "ghost"}
                 className={cn(
                     "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2 hover:text-secondary-brand",
-                    pathname === BASE_PATH && "text-secondary-brand",
+                    isIntroActive && "text-secondary-brand",
                 )}
                 onClick={() => onNavigate(BASE_PATH)}
             >
-                <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-violet-800">
-                    <Compass className="h-3.5 w-3.5 text-white" aria-hidden="true" />
+                <span
+                    className={cn(
+                        "flex items-center justify-center w-6 h-6 rounded-md shrink-0",
+                        isIntroActive ? "bg-secondary-brand" : "bg-muted",
+                    )}
+                >
+                    <Compass
+                        className={cn("h-3.5 w-3.5", isIntroActive ? "text-white" : "text-muted-foreground")}
+                        aria-hidden="true"
+                    />
                 </span>
                 <span className="flex-1 text-left">Introduction</span>
                 <ChevronDown className="h-4 w-4 shrink-0 opacity-0" aria-hidden="true" />
@@ -68,15 +74,20 @@ function NavContent({
                 onValueChange={setOpenCategory}
                 className="w-full flex flex-col gap-1"
             >
-                {SELF_DISCOVERY_CATEGORIES.map((category) => (
+                {SELF_DISCOVERY_CATEGORIES.map((category) => {
+                    const isExactActive = pathname === `${BASE_PATH}/${category.url}`
+                    const isDeepActive = pathname.startsWith(`${BASE_PATH}/${category.url}/`)
+                    return (
                     <AccordionItem key={category.url} value={category.url}>
                         <AccordionTrigger
-                            className={`w-full h-auto py-1.5 gap-4 justify-between px-3 text-sm text-left whitespace-normal rounded-md hover:no-underline ${pathname === `${BASE_PATH}/${category.url}`
-                                ? "bg-secondary text-secondary-brand"
-                                : pathname.startsWith(`${BASE_PATH}/${category.url}/`)
-                                    ? "text-foreground hover:bg-accent hover:text-secondary-brand"
-                                    : "hover:bg-accent hover:text-secondary-brand"
-                                }`}
+                            className={cn(
+                                "w-full h-auto py-1.5 gap-4 justify-between px-3 text-sm text-left whitespace-normal rounded-md hover:no-underline hover:text-secondary-brand",
+                                isExactActive
+                                    ? "bg-secondary text-secondary-brand"
+                                    : isDeepActive
+                                        ? "text-foreground hover:bg-accent"
+                                        : "hover:bg-accent",
+                            )}
                             aria-label={`${category.title} category`}
                             onClick={(e) => {
                                 e.preventDefault()
@@ -87,10 +98,20 @@ function NavContent({
                             <div className="flex items-center gap-2">
                                 {(() => {
                                     const CategoryIcon = getSelfDiscoveryCategoryIcon(category.url)
-                                    const bgClass = CATEGORY_ICON_BG[category.url] ?? "bg-primary"
                                     return CategoryIcon && (
-                                        <span className={cn("flex items-center justify-center w-6 h-6 rounded-md shrink-0", bgClass)}>
-                                            <CategoryIcon className="h-3.5 w-3.5 text-primary-foreground" aria-hidden="true" />
+                                        <span
+                                            className={cn(
+                                                "flex items-center justify-center w-6 h-6 rounded-md shrink-0",
+                                                isExactActive ? "bg-secondary-brand" : "bg-muted",
+                                            )}
+                                        >
+                                            <CategoryIcon
+                                                className={cn(
+                                                    "h-3.5 w-3.5",
+                                                    isExactActive ? "text-white" : "text-muted-foreground",
+                                                )}
+                                                aria-hidden="true"
+                                            />
                                         </span>
                                     )
                                 })()}
@@ -121,7 +142,8 @@ function NavContent({
                             </ul>
                         </AccordionContent>
                     </AccordionItem>
-                ))}
+                    )
+                })}
             </Accordion>
             <Button
                 variant={isOtherActive ? "secondary" : "ghost"}
@@ -131,8 +153,16 @@ function NavContent({
                 )}
                 onClick={() => onNavigate(`${BASE_PATH}/${OTHER_CATEGORY.url}`)}
             >
-                <span className={cn("flex items-center justify-center w-6 h-6 rounded-md shrink-0", otherBgClass)}>
-                    <OtherIcon className="h-3.5 w-3.5 text-primary-foreground" aria-hidden="true" />
+                <span
+                    className={cn(
+                        "flex items-center justify-center w-6 h-6 rounded-md shrink-0",
+                        isOtherActive ? "bg-secondary-brand" : "bg-muted",
+                    )}
+                >
+                    <OtherIcon
+                        className={cn("h-3.5 w-3.5", isOtherActive ? "text-white" : "text-muted-foreground")}
+                        aria-hidden="true"
+                    />
                 </span>
                 <span className="flex-1 text-left">{OTHER_CATEGORY.title}</span>
                 <ChevronDown className="h-4 w-4 shrink-0 opacity-0" aria-hidden="true" />
@@ -141,33 +171,24 @@ function NavContent({
     )
 }
 
-function getActiveInfo(pathname: string): { label: string; Icon: LucideIcon; bgClass: string } {
+function getActiveInfo(pathname: string): { label: string; Icon: LucideIcon } {
     if (pathname === BASE_PATH) {
-        return { label: "Introduction", Icon: Compass, bgClass: "bg-violet-800" }
+        return { label: "Introduction", Icon: Compass }
     }
     if (pathname.startsWith(`${BASE_PATH}/${OTHER_CATEGORY.url}`)) {
         const OtherIcon = getSelfDiscoveryCategoryIcon(OTHER_CATEGORY.url) ?? Compass
-        return {
-            label: OTHER_CATEGORY.title,
-            Icon: OtherIcon,
-            bgClass: CATEGORY_ICON_BG[OTHER_CATEGORY.url] ?? "bg-primary",
-        }
+        return { label: OTHER_CATEGORY.title, Icon: OtherIcon }
     }
     for (const category of SELF_DISCOVERY_CATEGORIES) {
         if (pathname.startsWith(`${BASE_PATH}/${category.url}`)) {
             const CategoryIcon = getSelfDiscoveryCategoryIcon(category.url) ?? Compass
-            const bgClass = CATEGORY_ICON_BG[category.url] ?? "bg-primary"
             const matchedQuestion = category.questions.find(q =>
                 pathname === `${BASE_PATH}/${category.url}/${q.url}`
             )
-            return {
-                label: matchedQuestion?.title ?? category.title,
-                Icon: CategoryIcon,
-                bgClass,
-            }
+            return { label: matchedQuestion?.title ?? category.title, Icon: CategoryIcon }
         }
     }
-    return { label: "Self Discovery", Icon: Compass, bgClass: "bg-primary" }
+    return { label: "Self Discovery", Icon: Compass }
 }
 
 export default function SelfDiscoveryFlowLayout({
@@ -193,7 +214,7 @@ export default function SelfDiscoveryFlowLayout({
         router.push("/self-discovery")
     }
 
-    const { label: activeLabel, Icon: ActiveIcon, bgClass: activeBgClass } = getActiveInfo(pathname)
+    const { label: activeLabel, Icon: ActiveIcon } = getActiveInfo(pathname)
 
     const chromeTriggers = (
         <div className="flex items-center gap-1 shrink-0">
@@ -220,7 +241,7 @@ export default function SelfDiscoveryFlowLayout({
 
     const inlineHeaderRow = (
         <div className="flex items-center gap-3 shrink-0">
-            <Button variant="primary-outline" onClick={handleExit} className="gap-2">
+            <Button variant="tertiary-outline" onClick={handleExit} className="gap-2">
                 <ArrowLeft className="h-4 w-4" />
                 Back
             </Button>
@@ -256,8 +277,8 @@ export default function SelfDiscoveryFlowLayout({
                                                 className="w-full justify-between h-auto py-2 px-3"
                                             >
                                                 <span className="flex items-center gap-2 text-sm font-medium min-w-0">
-                                                    <span className={cn("flex items-center justify-center w-6 h-6 rounded-md shrink-0", activeBgClass)}>
-                                                        <ActiveIcon className="h-3.5 w-3.5 text-primary-foreground" aria-hidden="true" />
+                                                    <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-secondary-brand">
+                                                        <ActiveIcon className="h-3.5 w-3.5 text-white" aria-hidden="true" />
                                                     </span>
                                                     <span className="truncate">{activeLabel}</span>
                                                 </span>
@@ -282,7 +303,7 @@ export default function SelfDiscoveryFlowLayout({
                 {isWide && (
                     <div className="w-72 shrink-0 h-full flex flex-col gap-3 min-h-0">
                         <div className="flex items-center gap-2 shrink-0">
-                            <Button variant="primary-outline" onClick={handleExit} className="gap-2">
+                            <Button variant="tertiary-outline" onClick={handleExit} className="gap-2">
                                 <ArrowLeft className="h-4 w-4" />
                                 Back
                             </Button>

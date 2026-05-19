@@ -6,18 +6,9 @@ import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { SELF_DISCOVERY_CATEGORIES, SELF_DISCOVERY_CATEGORY_ICON_BG } from "@/data/selfDiscoveryData"
 import { getSelfDiscoveryCategoryIcon } from "@/config/navigation"
-import { Compass } from "lucide-react"
+import { ChevronRight, Compass, Sparkles } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
-
-const QUESTION_COLORS = [
-    "bg-indigo-800",
-    "bg-green-800",
-    "bg-yellow-600",
-    "bg-red-800",
-    "bg-teal-700",
-    "bg-violet-800",
-]
 
 export default function CategoryPage({
     params,
@@ -75,30 +66,30 @@ export default function CategoryPage({
                     {category.description}
                 </p>
 
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-3">
                     <h3 className="text-xl font-bold text-foreground">Questions in this section</h3>
-                    <ol className="flex flex-col gap-2">
+                    <div className={cn("grid grid-cols-1 gap-3", category.questions.length > 1 && "md:grid-cols-2")}>
                         {category.questions.map((question, index) => (
-                            <li key={question.url}>
-                                <button
-                                    type="button"
-                                    onClick={() => router.push(`/self-discovery/discover/${category.url}/${question.url}`)}
-                                    className="flex items-start gap-3 w-full text-left p-3 rounded-md border bg-muted/70 hover:bg-accent hover:text-primary transition-colors"
-                                >
-                                    <span className={cn(
-                                        "flex items-center justify-center w-7 h-7 rounded-full text-white text-sm font-bold shrink-0",
-                                        QUESTION_COLORS[index % QUESTION_COLORS.length],
-                                    )}>
-                                        {index + 1}
-                                    </span>
-                                    <span className="flex flex-col gap-0.5">
-                                        <span className="font-semibold text-foreground">{question.title}</span>
-                                        <span className="text-sm">{question.description}</span>
-                                    </span>
-                                </button>
-                            </li>
+                            <button
+                                key={question.url}
+                                type="button"
+                                onClick={() => router.push(`/self-discovery/discover/${category.url}/${question.url}`)}
+                                className="text-left flex items-start gap-3 p-4 rounded-lg border hover:border-primary hover:bg-accent/40 transition-colors"
+                            >
+                                <span className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0 bg-tertiary">
+                                    <span className="text-tertiary-foreground text-base font-bold">{index + 1}</span>
+                                </span>
+                                <div className="flex-1 min-w-0">
+                                    <p className="font-semibold text-foreground">{question.title}</p>
+                                    <p className="text-base italic mt-0.5 flex items-start gap-1.5">
+                                        <Sparkles className="h-3 w-3 shrink-0 mt-1.5" aria-hidden="true" />
+                                        <span>{question.description}</span>
+                                    </p>
+                                </div>
+                                <ChevronRight className="h-4 w-4 text-primary shrink-0 mt-1" aria-hidden="true" />
+                            </button>
                         ))}
-                    </ol>
+                    </div>
                 </div>
             </CardContent>
             <CardFooter className={cn("shrink-0 flex justify-between", roomy ? "px-10 pb-6 pt-0" : "px-6 pb-4 pt-0")}>

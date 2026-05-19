@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" width="400" height="280">
+  <rect width="400" height="280" fill="#ECEBE9"></rect>
+  <path d="M60 53 L62.1 57.9 L67 60 L62.1 62.1 L60 67 L57.9 62.1 L53 60 L57.9 57.9 Z" fill="#0E7EB3"></path>
+  <circle cx="355" cy="230" r="2" fill="#14171F"></circle>
+  <path d="M120 60 L188 60 Q188 70 194 70 Q200 70 200 60 L200 140 L190 140 Q190 146 182 146 Q174 146 174 140 L120 140 Z" fill="#C78A04" stroke="#14171F" stroke-width="2" stroke-linejoin="round"></path>
+  <path d="M200 60 L280 60 L280 112 Q290 112 290 120 Q290 128 280 128 L280 140 L200 140 L200 60 Z" fill="#0F3F75" stroke="#14171F" stroke-width="2" stroke-linejoin="round"></path>
+  <path d="M120 140 L120 168 Q110 168 110 176 Q110 184 120 184 L120 220 L200 220 L200 140 Z" fill="#0E7EB3" stroke="#14171F" stroke-width="2" stroke-linejoin="round"></path>
+  <g transform="translate(28 28)">
+    <path d="M200 140 L280 140 L280 220 L200 220 L200 188 Q190 188 190 180 Q190 172 200 172 Z" fill="#1F5F6B" stroke="#14171F" stroke-width="2" stroke-linejoin="round"></path>
+  </g>
+  <path d="M240 180 L264 204" fill="none" stroke="#14171F" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 4" opacity="0.6"></path>
+  <path d="M270 170 L294 194" fill="none" stroke="#14171F" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 4" opacity="0.6"></path>
+  <path d="M200 140 L280 140 L280 220 L200 220 L200 188 Q190 188 190 180 Q190 172 200 172 Z" fill="none" stroke="#14171F" stroke-width="1.5" stroke-dasharray="3 4" opacity="0.4"></path>
+  <path d="M300 231 L302.7 237.3 L309 240 L302.7 242.7 L300 249 L297.3 242.7 L291 240 L297.3 237.3 Z" fill="#0E7EB3"></path>
+</svg>

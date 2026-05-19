@@ -2,6 +2,7 @@
 import type { RootModel } from "."
 import type { ExistingSolutionItem, ValidationAssessment, ValidationStatus } from "@/types/validation"
 import { DEFAULT_VALIDATION_ASSESSMENT } from "@/types/validation"
+import type { ReflectionCapture } from "@/types/reflection"
 import type { CustomBrainstormItem } from "./custom-brainstorm-items-model"
 import type { SelfDiscoveryItem } from "./self-discovery-items-model"
 import { resolveDimensionLabel } from "@/lib/dimension-labels"
@@ -28,9 +29,10 @@ export type Problem = {
   contextWhen: string
   segmentSize: number | null
   customerDescription: string
+  reflection: ReflectionCapture | null
 }
 
-export type ProblemPatch = Partial<Pick<Problem, "description" | "customers" | "contexts" | "problems" | "you" | "existingSolutions" | "emotionalImpact" | "validationAssessment" | "validationStatus" | "validationReason" | "contextWhen" | "segmentSize" | "customerDescription">>
+export type ProblemPatch = Partial<Pick<Problem, "description" | "customers" | "contexts" | "problems" | "you" | "existingSolutions" | "emotionalImpact" | "validationAssessment" | "validationStatus" | "validationReason" | "contextWhen" | "segmentSize" | "customerDescription" | "reflection">>
 
 /**
  * Build a short summary label for a Problem. Field values are ids, so the
@@ -147,6 +149,7 @@ export const problems = createModel<RootModel>()({
         contextWhen: payload.contextWhen ?? "",
         segmentSize: payload.segmentSize ?? null,
         customerDescription: payload.customerDescription ?? "",
+        reflection: payload.reflection ?? null,
       }
       dispatch.problems.addProblem(newProblem)
       const nextState: ProblemsState = {

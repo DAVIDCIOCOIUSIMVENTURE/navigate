@@ -1,18 +1,18 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" width="400" height="280">
-  <rect width="400" height="280" fill="#F6F2EA"></rect>
-  <circle cx="280" cy="60" r="6" fill="#C9A227"></circle>
-  <circle cx="260" cy="90" r="4" fill="#C25A3C"></circle>
-  <circle cx="290" cy="100" r="3" fill="#2C3E7A"></circle>
-  <path d="M320 44 L321.8 48.2 L326 50 L321.8 51.8 L320 56 L318.2 51.8 L314 50 L318.2 48.2 Z" fill="#C9A227"></path>
-  <line x1="40" y1="240" x2="360" y2="240" stroke="#1B1B14" stroke-width="2" stroke-linecap="round"></line>
-  <rect x="170" y="80" width="20" height="50" fill="none" stroke="#1B1B14" stroke-width="2"></rect>
-  <line x1="160" y1="80" x2="200" y2="80" stroke="#1B1B14" stroke-width="2" stroke-linecap="round"></line>
-  <path d="M170 130 L120 230 L240 230 L190 130 Z" fill="#FFFDF8" stroke="#1B1B14" stroke-width="2" stroke-linejoin="round"></path>
-  <path d="M152 195 Q 175 188 180 195 Q 195 200 208 195 L 240 230 L 120 230 Z" fill="#C25A3C"></path>
-  <path d="M152 195 Q 175 188 180 195 Q 195 200 208 195" fill="none" stroke="#A24729" stroke-width="1.5"></path>
-  <line x1="180" y1="170" x2="200" y2="170" stroke="#1B1B14" stroke-width="1.5" stroke-linecap="round"></line>
-  <circle cx="290" cy="180" r="22" fill="#1F6E48"></circle>
-  <path d="M279 180 L286 187 L301 172" fill="none" stroke="#FFFDF8" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></path>
-  <circle cx="100" cy="180" r="22" fill="#FFFDF8" stroke="#1B1B14" stroke-width="2"></circle>
-  <text x="100" y="188" text-anchor="middle" font-family="Inter, sans-serif" font-size="22" font-weight="700" fill="#1B1B14">?</text>
+  <rect width="400" height="280" fill="#FAFAF9"></rect>
+  <circle cx="280" cy="60" r="6" fill="#0E7EB3"></circle>
+  <circle cx="260" cy="90" r="4" fill="#C78A04"></circle>
+  <circle cx="290" cy="100" r="3" fill="#0F3F75"></circle>
+  <path d="M320 44 L321.8 48.2 L326 50 L321.8 51.8 L320 56 L318.2 51.8 L314 50 L318.2 48.2 Z" fill="#0E7EB3"></path>
+  <line x1="40" y1="240" x2="360" y2="240" stroke="#14171F" stroke-width="2" stroke-linecap="round"></line>
+  <rect x="170" y="80" width="20" height="50" fill="none" stroke="#14171F" stroke-width="2"></rect>
+  <line x1="160" y1="80" x2="200" y2="80" stroke="#14171F" stroke-width="2" stroke-linecap="round"></line>
+  <path d="M170 130 L120 230 L240 230 L190 130 Z" fill="#FFFFFF" stroke="#14171F" stroke-width="2" stroke-linejoin="round"></path>
+  <path d="M152 195 Q 175 188 180 195 Q 195 200 208 195 L 240 230 L 120 230 Z" fill="#C78A04"></path>
+  <path d="M152 195 Q 175 188 180 195 Q 195 200 208 195" fill="none" stroke="#8F6203" stroke-width="1.5"></path>
+  <line x1="180" y1="170" x2="200" y2="170" stroke="#14171F" stroke-width="1.5" stroke-linecap="round"></line>
+  <circle cx="290" cy="180" r="22" fill="#1F5F6B"></circle>
+  <path d="M279 180 L286 187 L301 172" fill="none" stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"></path>
+  <circle cx="100" cy="180" r="22" fill="#FFFFFF" stroke="#14171F" stroke-width="2"></circle>
+  <text x="100" y="188" text-anchor="middle" font-family="Inter, sans-serif" font-size="22" font-weight="700" fill="#14171F">?</text>
 </svg>

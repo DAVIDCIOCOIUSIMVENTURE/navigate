@@ -23,6 +23,8 @@ const buttonVariants = cva(
           "border border-input bg-card shadow-sm hover:bg-accent hover:text-accent-foreground",
         "primary-outline":
           "border border-primary text-primary hover:bg-primary/10",
+        "tertiary-outline":
+          "border border-tertiary text-tertiary hover:bg-tertiary/10",
         "on-primary":
           "border border-white text-white hover:bg-white/10",
         secondary:

@@ -43,6 +43,7 @@ import { SelfDiscoveryChips } from "@/components/reflect/self-discovery-chips"
 import { LifeExperiencesPicker } from "@/components/reflect/life-experiences-picker"
 import { BrainstormDimensionPicker } from "@/components/reflect/brainstorm-dimension-picker"
 import { useResolveOrCreate } from "@/lib/dimension-labels"
+import type { ReflectionCapture } from "@/types/reflection"
 
 type ReflectStep = "pick" | "introduction" | "prompts" | "review"
 
@@ -734,6 +735,19 @@ function ReviewPanel({
         .map((label) => resolveOrCreate("problems", label))
         .filter((id) => id.length > 0)
 
+      const reflection: ReflectionCapture = {
+        lensId: lens.id,
+        capturedAt: new Date().toISOString(),
+        prompts: lens.prompts
+          .map((p) => ({
+            promptId: p.id,
+            answers: (answers[p.id] ?? [])
+              .map((a) => a.text.trim())
+              .filter((t) => t.length > 0),
+          }))
+          .filter((p) => p.answers.length > 0),
+      }
+
       const newProblem = await dispatch.problems.create({
         source: "brainstorm",
         description: trimmedTitle,
@@ -741,6 +755,7 @@ function ReviewPanel({
         contexts: [],
         problems: problemIds,
         you: [],
+        reflection,
       })
       clearSession()
       setSaveDialogOpen(false)

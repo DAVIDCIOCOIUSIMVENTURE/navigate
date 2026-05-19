@@ -50,7 +50,7 @@ function NavContent({
                 const SectionIcon = getFoundationsSectionIcon(section.iconKey)
                 return (
                     <div key={section.url}>
-                        {renderItem(isActive, SectionIcon, section.shortTitle, `/foundations/${section.url}`)}
+                        {renderItem(isActive, SectionIcon, section.title, `/foundations/${section.url}`)}
                     </div>
                 )
             })}
@@ -65,7 +65,7 @@ function getActiveInfo(pathname: string): { label: string; Icon: LucideIcon } {
     for (const section of FOUNDATIONS_SECTIONS) {
         if (pathname === `/foundations/${section.url}`) {
             return {
-                label: section.shortTitle,
+                label: section.title,
                 Icon: getFoundationsSectionIcon(section.iconKey),
             }
         }

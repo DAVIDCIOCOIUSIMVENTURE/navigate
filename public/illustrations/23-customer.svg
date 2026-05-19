@@ -1,20 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" width="400" height="280">
-  <rect width="400" height="280" fill="#F6F2EA"></rect>
-  <path d="M70 64 L71.8 68.2 L76 70 L71.8 71.8 L70 76 L68.2 71.8 L64 70 L68.2 68.2 Z" fill="#C9A227"></path>
-  <path d="M330 215 L331.5 218.5 L335 220 L331.5 221.5 L330 225 L328.5 221.5 L325 220 L328.5 218.5 Z" fill="#C25A3C"></path>
-  <circle cx="340" cy="80" r="2" fill="#1B1B14"></circle>
-  <circle cx="60" cy="220" r="2.5" fill="#2C3E7A"></circle>
-  <path d="M40 230 Q 130 245 200 220" fill="none" stroke="#1B1B14" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="1 7"></path>
-  <circle cx="200" cy="140" r="78" fill="#FFFDF8" stroke="#1B1B14" stroke-width="2"></circle>
-  <circle cx="200" cy="140" r="64" fill="none" stroke="#1B1B14" stroke-width="1" stroke-dasharray="2 5"></circle>
-  <line x1="200" y1="62" x2="200" y2="52" stroke="#1B1B14" stroke-width="2" stroke-linecap="round"></line>
-  <line x1="278" y1="140" x2="288" y2="140" stroke="#1B1B14" stroke-width="2" stroke-linecap="round"></line>
-  <line x1="200" y1="218" x2="200" y2="228" stroke="#1B1B14" stroke-width="2" stroke-linecap="round"></line>
-  <line x1="122" y1="140" x2="112" y2="140" stroke="#1B1B14" stroke-width="2" stroke-linecap="round"></line>
+  <rect width="400" height="280" fill="#FAFAF9"></rect>
+  <path d="M70 64 L71.8 68.2 L76 70 L71.8 71.8 L70 76 L68.2 71.8 L64 70 L68.2 68.2 Z" fill="#0E7EB3"></path>
+  <path d="M330 215 L331.5 218.5 L335 220 L331.5 221.5 L330 225 L328.5 221.5 L325 220 L328.5 218.5 Z" fill="#C78A04"></path>
+  <circle cx="340" cy="80" r="2" fill="#14171F"></circle>
+  <circle cx="60" cy="220" r="2.5" fill="#0F3F75"></circle>
+  <path d="M40 230 Q 130 245 200 220" fill="none" stroke="#14171F" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="1 7"></path>
+  <circle cx="200" cy="140" r="78" fill="#FFFFFF" stroke="#14171F" stroke-width="2"></circle>
+  <circle cx="200" cy="140" r="64" fill="none" stroke="#14171F" stroke-width="1" stroke-dasharray="2 5"></circle>
+  <line x1="200" y1="62" x2="200" y2="52" stroke="#14171F" stroke-width="2" stroke-linecap="round"></line>
+  <line x1="278" y1="140" x2="288" y2="140" stroke="#14171F" stroke-width="2" stroke-linecap="round"></line>
+  <line x1="200" y1="218" x2="200" y2="228" stroke="#14171F" stroke-width="2" stroke-linecap="round"></line>
+  <line x1="122" y1="140" x2="112" y2="140" stroke="#14171F" stroke-width="2" stroke-linecap="round"></line>
   <defs><clipPath id="pclip"><circle cx="200" cy="140" r="64"></circle></clipPath></defs>
   <g clip-path="url(#pclip)">
-    <path d="M150 220 Q150 175 178 165 Q200 159 222 165 Q250 175 250 220 Z" fill="#2C3E7A"></path>
-    <circle cx="200" cy="135" r="24" fill="#C25A3C"></circle>
+    <path d="M150 220 Q150 175 178 165 Q200 159 222 165 Q250 175 250 220 Z" fill="#0F3F75"></path>
+    <circle cx="200" cy="135" r="24" fill="#C78A04"></circle>
   </g>
-  <circle cx="200" cy="62" r="5" fill="#C9A227" stroke="#1B1B14" stroke-width="1.5"></circle>
+  <circle cx="200" cy="62" r="5" fill="#0E7EB3" stroke="#14171F" stroke-width="1.5"></circle>
 </svg>
