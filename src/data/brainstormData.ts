@@ -1,102 +1,107 @@
-import type { BrainstormColumn } from "@/app/(app)/problems/brainstorm/data"
+import type { BrainstormColumn, BrainstormItem } from "@/app/(app)/problems/brainstorm/data"
+
+export const audienceGroups: BrainstormItem[] = [
+  // ── By life stage ──
+  {
+    id: "customer-life-stage",
+    label: "By Life Stage",
+    children: [
+      { id: "customer-children", label: "Children (Under 13)" },
+      { id: "customer-teenagers", label: "Teenagers (13-19)" },
+      { id: "customer-college-students", label: "College Students" },
+      { id: "customer-young-professionals", label: "Young Professionals (22-35)" },
+      { id: "customer-new-parents", label: "New Parents" },
+      { id: "customer-parents-school-age", label: "Parents of School-Age Children" },
+      { id: "customer-midlife-adults", label: "Mid-Life Adults (40-55)" },
+      { id: "customer-pre-retirees", label: "Pre-Retirees (55-65)" },
+      { id: "customer-retirees", label: "Retirees & Seniors (65+)" },
+    ],
+  },
+  // ── By lifestyle ──
+  {
+    id: "customer-lifestyle",
+    label: "By Lifestyle",
+    children: [
+      { id: "customer-health-conscious", label: "Health-Conscious Individuals" },
+      { id: "customer-budget-conscious", label: "Budget-Conscious / Frugal" },
+      { id: "customer-eco-conscious", label: "Eco-Conscious / Sustainable Living" },
+      { id: "customer-tech-enthusiasts", label: "Tech Enthusiasts / Early Adopters" },
+      { id: "customer-remote-workers", label: "Remote & Hybrid Workers" },
+      { id: "customer-digital-nomads", label: "Digital Nomads" },
+      { id: "customer-frequent-travelers", label: "Frequent Travelers" },
+      { id: "customer-pet-owners", label: "Pet Owners" },
+      { id: "customer-hobbyists", label: "Hobbyists & Creators" },
+      { id: "customer-fitness-enthusiasts", label: "Fitness Enthusiasts" },
+      { id: "customer-caregivers", label: "Caregivers (Elderly / Disabled)" },
+    ],
+  },
+  // ── Small business & freelance ──
+  {
+    id: "customer-small-business",
+    label: "Small Business & Freelance",
+    children: [
+      { id: "customer-solopreneurs", label: "Solopreneurs & Freelancers" },
+      { id: "customer-startups", label: "Startups" },
+      { id: "customer-local-retail", label: "Local Retail & Shops" },
+      { id: "customer-restaurants-food", label: "Restaurants & Food Service" },
+      { id: "customer-professional-services", label: "Professional Services (Legal, Accounting)" },
+      { id: "customer-trades-contractors", label: "Trades & Contractors (Plumbing, Electric)" },
+      { id: "customer-creative-agencies", label: "Creative & Marketing Agencies" },
+      { id: "customer-ecommerce-sellers", label: "E-Commerce Sellers" },
+    ],
+  },
+  // ── Enterprise & corporate ──
+  {
+    id: "customer-enterprise",
+    label: "Enterprise & Corporate",
+    children: [
+      { id: "customer-hr-people-ops", label: "HR & People Operations" },
+      { id: "customer-sales-teams", label: "Sales Teams" },
+      { id: "customer-marketing-teams", label: "Marketing Teams" },
+      { id: "customer-engineering-teams", label: "Engineering & IT Teams" },
+      { id: "customer-operations-logistics", label: "Operations & Logistics" },
+      { id: "customer-finance-accounting", label: "Finance & Accounting" },
+      { id: "customer-executive-leadership", label: "Executive Leadership / C-Suite" },
+    ],
+  },
+  // ── Industry verticals ──
+  {
+    id: "customer-industries",
+    label: "Industry Verticals",
+    children: [
+      { id: "customer-healthcare", label: "Healthcare & Pharma" },
+      { id: "customer-education-sector", label: "Education & EdTech" },
+      { id: "customer-financial-services", label: "Financial Services & FinTech" },
+      { id: "customer-real-estate", label: "Real Estate & PropTech" },
+      { id: "customer-agriculture", label: "Agriculture & AgTech" },
+      { id: "customer-construction", label: "Construction & Infrastructure" },
+      { id: "customer-logistics-supply", label: "Logistics & Supply Chain" },
+      { id: "customer-hospitality-tourism", label: "Hospitality & Tourism" },
+      { id: "customer-media-entertainment", label: "Media & Entertainment" },
+      { id: "customer-manufacturing", label: "Manufacturing" },
+      { id: "customer-energy-utilities", label: "Energy & Utilities" },
+      { id: "customer-legal-compliance", label: "Legal & Compliance" },
+    ],
+  },
+  // ── Public & social sector ──
+  {
+    id: "customer-public-sector",
+    label: "Public & Social Sector",
+    children: [
+      { id: "customer-government", label: "Government & Municipalities" },
+      { id: "customer-nonprofits", label: "Nonprofits & NGOs" },
+      { id: "customer-community-orgs", label: "Community Organizations" },
+      { id: "customer-religious-orgs", label: "Religious Organizations" },
+      { id: "customer-social-enterprises", label: "Social Enterprises" },
+    ],
+  },
+]
 
 export const brainstormColumns: BrainstormColumn[] = [
   {
     id: "customers",
     title: "Customer",
-    items: [
-      // ── By life stage ──
-      {
-        id: "customer-life-stage",
-        label: "By Life Stage",
-        children: [
-          { id: "customer-teenagers", label: "Teenagers (13-19)" },
-          { id: "customer-college-students", label: "College Students" },
-          { id: "customer-young-professionals", label: "Young Professionals (22-35)" },
-          { id: "customer-new-parents", label: "New Parents" },
-          { id: "customer-parents-school-age", label: "Parents of School-Age Children" },
-          { id: "customer-midlife-adults", label: "Mid-Life Adults (40-55)" },
-          { id: "customer-pre-retirees", label: "Pre-Retirees (55-65)" },
-          { id: "customer-retirees", label: "Retirees & Seniors (65+)" },
-        ],
-      },
-      // ── By lifestyle ──
-      {
-        id: "customer-lifestyle",
-        label: "By Lifestyle",
-        children: [
-          { id: "customer-health-conscious", label: "Health-Conscious Individuals" },
-          { id: "customer-budget-conscious", label: "Budget-Conscious / Frugal" },
-          { id: "customer-eco-conscious", label: "Eco-Conscious / Sustainable Living" },
-          { id: "customer-tech-enthusiasts", label: "Tech Enthusiasts / Early Adopters" },
-          { id: "customer-remote-workers", label: "Remote & Hybrid Workers" },
-          { id: "customer-digital-nomads", label: "Digital Nomads" },
-          { id: "customer-frequent-travelers", label: "Frequent Travelers" },
-          { id: "customer-pet-owners", label: "Pet Owners" },
-          { id: "customer-hobbyists", label: "Hobbyists & Creators" },
-          { id: "customer-fitness-enthusiasts", label: "Fitness Enthusiasts" },
-          { id: "customer-caregivers", label: "Caregivers (Elderly / Disabled)" },
-        ],
-      },
-      // ── Small business & freelance ──
-      {
-        id: "customer-small-business",
-        label: "Small Business & Freelance",
-        children: [
-          { id: "customer-solopreneurs", label: "Solopreneurs & Freelancers" },
-          { id: "customer-local-retail", label: "Local Retail & Shops" },
-          { id: "customer-restaurants-food", label: "Restaurants & Food Service" },
-          { id: "customer-professional-services", label: "Professional Services (Legal, Accounting)" },
-          { id: "customer-trades-contractors", label: "Trades & Contractors (Plumbing, Electric)" },
-          { id: "customer-creative-agencies", label: "Creative & Marketing Agencies" },
-          { id: "customer-ecommerce-sellers", label: "E-Commerce Sellers" },
-        ],
-      },
-      // ── Enterprise & corporate ──
-      {
-        id: "customer-enterprise",
-        label: "Enterprise & Corporate",
-        children: [
-          { id: "customer-hr-people-ops", label: "HR & People Operations" },
-          { id: "customer-sales-teams", label: "Sales Teams" },
-          { id: "customer-marketing-teams", label: "Marketing Teams" },
-          { id: "customer-engineering-teams", label: "Engineering & IT Teams" },
-          { id: "customer-operations-logistics", label: "Operations & Logistics" },
-          { id: "customer-finance-accounting", label: "Finance & Accounting" },
-          { id: "customer-executive-leadership", label: "Executive Leadership / C-Suite" },
-        ],
-      },
-      // ── Industry verticals ──
-      {
-        id: "customer-industries",
-        label: "Industry Verticals",
-        children: [
-          { id: "customer-healthcare", label: "Healthcare & Pharma" },
-          { id: "customer-education-sector", label: "Education & EdTech" },
-          { id: "customer-financial-services", label: "Financial Services & FinTech" },
-          { id: "customer-real-estate", label: "Real Estate & PropTech" },
-          { id: "customer-agriculture", label: "Agriculture & AgTech" },
-          { id: "customer-construction", label: "Construction & Infrastructure" },
-          { id: "customer-logistics-supply", label: "Logistics & Supply Chain" },
-          { id: "customer-hospitality-tourism", label: "Hospitality & Tourism" },
-          { id: "customer-media-entertainment", label: "Media & Entertainment" },
-          { id: "customer-manufacturing", label: "Manufacturing" },
-          { id: "customer-energy-utilities", label: "Energy & Utilities" },
-          { id: "customer-legal-compliance", label: "Legal & Compliance" },
-        ],
-      },
-      // ── Public & social sector ──
-      {
-        id: "customer-public-sector",
-        label: "Public & Social Sector",
-        children: [
-          { id: "customer-government", label: "Government & Municipalities" },
-          { id: "customer-nonprofits", label: "Nonprofits & NGOs" },
-          { id: "customer-community-orgs", label: "Community Organizations" },
-          { id: "customer-social-enterprises", label: "Social Enterprises" },
-        ],
-      },
-    ],
+    items: audienceGroups,
   },
   {
     id: "contexts",

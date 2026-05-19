@@ -1,3 +1,5 @@
+import { audienceGroups } from "./brainstormData"
+
 export interface SuggestionItem {
   id: string
   label: string
@@ -938,44 +940,7 @@ export const SELF_DISCOVERY_CATEGORIES: SelfDiscoveryCategory[] = [
         titleId: "target-audience",
         title: "Who is your target audience?",
         description: "Think about the people and organisations whose problems you most want to solve.",
-        suggestions: [
-          {
-            id: "ta-individuals",
-            label: "Individuals",
-            children: [
-              { id: "ta-general-consumers", label: "General Consumers" },
-              { id: "ta-professionals", label: "Professionals" },
-              { id: "ta-students", label: "Students" },
-              { id: "ta-parents-families", label: "Parents & Families" },
-              { id: "ta-children-teens", label: "Children & Teenagers" },
-              { id: "ta-seniors", label: "Seniors & Older Adults" },
-              { id: "ta-hobbyists", label: "Hobbyists & Enthusiasts" },
-            ],
-          },
-          {
-            id: "ta-businesses",
-            label: "Businesses",
-            children: [
-              { id: "ta-freelancers", label: "Freelancers & Solo Operators" },
-              { id: "ta-startups", label: "Startups" },
-              { id: "ta-small-businesses", label: "Small Businesses" },
-              { id: "ta-medium-businesses", label: "Medium-Sized Businesses" },
-              { id: "ta-large-enterprises", label: "Large Enterprises" },
-            ],
-          },
-          {
-            id: "ta-organisations",
-            label: "Organisations & Institutions",
-            children: [
-              { id: "ta-nonprofits", label: "Nonprofit Organisations" },
-              { id: "ta-charities-ngos", label: "Charities & NGOs" },
-              { id: "ta-government", label: "Government & Public Sector" },
-              { id: "ta-education", label: "Educational Institutions" },
-              { id: "ta-healthcare", label: "Healthcare Providers" },
-              { id: "ta-community-groups", label: "Religious & Community Groups" },
-            ],
-          },
-        ],
+        suggestions: audienceGroups,
       },
     ],
   },

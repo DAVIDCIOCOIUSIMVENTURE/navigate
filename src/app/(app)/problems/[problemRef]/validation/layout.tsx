@@ -4,7 +4,13 @@ import { useState } from "react"
 import { useParams, usePathname, useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { ProblemHubDialog } from "@/components/problem-hub/problem-hub-dialog"
 import { ProblemProvider, useProblem, NAV_ITEMS } from "./context"
 import {
@@ -103,37 +109,78 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     <div className={cn("flex flex-col gap-3 flex-1 w-full min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
     {!isWide && (
     <nav aria-label="Problem validation steps" className="w-full">
-      <Collapsible open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
-        <Card>
-          <CardContent className="p-2">
-            <CollapsibleTrigger asChild>
-              <Button
-                variant="ghost"
-                className="w-full justify-between h-auto py-2 px-3"
+      <DropdownMenu open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
+        <DropdownMenuTrigger asChild>
+          <Button
+            variant="outline"
+            className="w-full justify-between h-auto py-2 px-3 bg-white"
+          >
+            <span className="flex items-center gap-2 text-sm font-medium min-w-0">
+              <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-secondary-brand">
+                <ActiveIcon className="h-3.5 w-3.5 text-white" aria-hidden="true" />
+              </span>
+              <span className="truncate">{activeItem?.label ?? "Navigation"}</span>
+            </span>
+            <ChevronDown
+              className={cn(
+                "h-4 w-4 text-muted-foreground transition-transform shrink-0",
+                mobileNavOpen && "rotate-180"
+              )}
+              aria-hidden="true"
+            />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent
+          align="start"
+          className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-[16rem] p-1 bg-white"
+        >
+          {NAV_ITEMS.map((item) => {
+            const href = `${base}/${item.path}`
+            const isActive = pathname === href
+            const Icon = NAV_ICONS[item.path] ?? FileText
+            return (
+              <DropdownMenuItem
+                key={item.path}
+                onSelect={() => handleNavigate(href)}
+                aria-current={isActive ? "page" : undefined}
+                className={cn(
+                  "flex items-center gap-2 py-2 px-3 text-sm",
+                  isActive && "bg-accent text-secondary-brand"
+                )}
               >
-                <span className="flex items-center gap-2 text-sm font-medium min-w-0">
-                  <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-secondary-brand">
-                    <ActiveIcon className="h-3.5 w-3.5 text-white" aria-hidden="true" />
-                  </span>
-                  <span className="truncate">{activeItem?.label ?? "Navigation"}</span>
+                <span
+                  className={cn(
+                    "flex items-center justify-center w-6 h-6 rounded-md shrink-0",
+                    isActive ? "bg-secondary-brand" : "bg-muted"
+                  )}
+                >
+                  <Icon
+                    className={cn(
+                      "h-3.5 w-3.5",
+                      isActive ? "text-white" : "text-muted-foreground"
+                    )}
+                    aria-hidden="true"
+                  />
                 </span>
-                <ChevronDown
-                  className={`h-4 w-4 text-muted-foreground transition-transform ${
-                    mobileNavOpen ? "rotate-180" : ""
-                  }`}
-                  aria-hidden="true"
-                />
-              </Button>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="pt-1">
-              <NavItems base={base} pathname={pathname} onNavigate={handleNavigate} />
-              <div className="border-t mt-2 pt-2 px-1">
-                <ViewProblemButton onClick={() => setDialogOpen(true)} />
-              </div>
-            </CollapsibleContent>
-          </CardContent>
-        </Card>
-      </Collapsible>
+                <span className="flex-1 text-left whitespace-normal">
+                  {item.label}
+                </span>
+              </DropdownMenuItem>
+            )
+          })}
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onSelect={() => {
+              setMobileNavOpen(false)
+              setDialogOpen(true)
+            }}
+            className="flex items-center gap-2 py-2 px-3 text-sm"
+          >
+            <Eye className="h-3.5 w-3.5" />
+            <span>View Problem</span>
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
     </nav>
     )}
 

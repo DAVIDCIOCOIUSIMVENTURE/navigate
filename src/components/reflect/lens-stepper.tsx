@@ -121,7 +121,7 @@ export function LensMobileStepper({
       <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          className="w-full justify-between h-auto py-2 px-3"
+          className="w-full justify-between h-auto py-2 px-3 bg-white"
         >
           <span className="flex items-center gap-2 text-base font-medium min-w-0">
             <StepBadge
@@ -145,7 +145,7 @@ export function LensMobileStepper({
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="start"
-        className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-[16rem] p-1"
+        className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-[16rem] p-1 bg-white"
       >
         {navItems.map((item, i) => {
           const state = getStepState(i, activeIdx)

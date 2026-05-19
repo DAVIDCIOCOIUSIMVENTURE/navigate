@@ -6,7 +6,12 @@ import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { DiscoveryProvider, useDiscovery, NAV_ITEMS, STEPS_REQUIRING_PROBLEM } from "./context"
 import { SolutionsDrawer } from "./solutions-drawer"
 import { Lightbulb, Lock, Check, Maximize2, Minimize2, ChevronDown, RotateCcw } from "lucide-react"
@@ -143,76 +148,75 @@ function MobileStepper({
   const activeItem = activeIdx >= 0 ? NAV_ITEMS[activeIdx] : null
 
   return (
-    <Collapsible open={open} onOpenChange={setOpen}>
-      <Card>
-        <CardContent className="p-2">
-          <CollapsibleTrigger asChild>
-            <Button
-              variant="ghost"
-              className="w-full justify-between h-auto py-2 px-3"
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="outline"
+          className="w-full justify-between h-auto py-2 px-3 bg-white"
+        >
+          <span className="flex items-center gap-2 text-sm font-medium min-w-0">
+            <StepBadge
+              index={activeIdx >= 0 ? activeIdx : 0}
+              state={activeItem ? "active" : "default"}
+            />
+            <span className="truncate">
+              {activeItem
+                ? `Step ${activeIdx + 1} of ${NAV_ITEMS.length}: ${activeItem.label}`
+                : "Solution Discovery"}
+            </span>
+          </span>
+          <ChevronDown
+            className={cn(
+              "h-4 w-4 text-muted-foreground transition-transform shrink-0",
+              open && "rotate-180"
+            )}
+            aria-hidden="true"
+          />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="start"
+        className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-[16rem] p-1 bg-white"
+      >
+        {NAV_ITEMS.map((item, i) => {
+          const locked = STEPS_REQUIRING_PROBLEM.has(item.path) && !problemSelected
+          const state = getStepState(i, activeIdx, locked)
+          const isActive = state === "active"
+          return (
+            <DropdownMenuItem
+              key={item.path}
+              disabled={locked}
+              onSelect={(e) => {
+                if (locked) {
+                  e.preventDefault()
+                  return
+                }
+                onNavigate(`/solutions/discover/${item.path}`)
+              }}
+              aria-current={isActive ? "step" : undefined}
+              className={cn(
+                "flex items-center gap-2.5 py-2 px-3 text-sm",
+                isActive && "bg-accent"
+              )}
             >
-              <span className="flex items-center gap-2 text-sm font-medium min-w-0">
-                <StepBadge
-                  index={activeIdx >= 0 ? activeIdx : 0}
-                  state={activeItem ? "active" : "default"}
-                />
-                <span className="truncate">
-                  {activeItem
-                    ? `Step ${activeIdx + 1} of ${NAV_ITEMS.length}: ${activeItem.label}`
-                    : "Solution Discovery"}
-                </span>
-              </span>
-              <ChevronDown
+              <StepBadge index={i} state={state} />
+              <span
                 className={cn(
-                  "h-4 w-4 text-muted-foreground transition-transform shrink-0",
-                  open && "rotate-180"
+                  "whitespace-normal text-left",
+                  isActive
+                    ? "font-semibold text-foreground"
+                    : locked
+                      ? "text-muted-foreground/60"
+                      : "text-muted-foreground"
                 )}
-                aria-hidden="true"
-              />
-            </Button>
-          </CollapsibleTrigger>
-          <CollapsibleContent className="pt-1">
-            <ul className="flex flex-col gap-0.5 list-none m-0 p-0" role="list">
-              {NAV_ITEMS.map((item, i) => {
-                const locked = STEPS_REQUIRING_PROBLEM.has(item.path) && !problemSelected
-                const state = getStepState(i, activeIdx, locked)
-                const isActive = state === "active"
-                return (
-                  <li key={item.path}>
-                    <Button
-                      type="button"
-                      variant={isActive ? "secondary" : "ghost"}
-                      disabled={locked}
-                      onClick={() => {
-                        if (locked) return
-                        setOpen(false)
-                        onNavigate(`/solutions/discover/${item.path}`)
-                      }}
-                      aria-current={isActive ? "step" : undefined}
-                      className="w-full justify-start h-auto py-2 px-3 gap-2.5"
-                    >
-                      <StepBadge index={i} state={state} />
-                      <span
-                        className={cn(
-                          "text-sm whitespace-normal text-left",
-                          isActive
-                            ? "font-semibold text-foreground"
-                            : locked
-                              ? "text-muted-foreground/60"
-                              : "text-muted-foreground"
-                        )}
-                      >
-                        {item.label}
-                      </span>
-                    </Button>
-                  </li>
-                )
-              })}
-            </ul>
-          </CollapsibleContent>
-        </CardContent>
-      </Card>
-    </Collapsible>
+              >
+                {item.label}
+              </span>
+            </DropdownMenuItem>
+          )
+        })}
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 
