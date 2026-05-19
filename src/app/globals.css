@@ -71,6 +71,9 @@
     --primary-dark: 41 96% 30%;
     --primary-dark-foreground: 40 60% 97%;
 
+    /* Primary outline: darkened gold (#a57610) for outline/text use on cream bg */
+    --primary-outline: 41 82% 35%;
+
     /* Primary light variant: tinted background */
     --primary-light: 41 80% 92%;
     --primary-light-foreground: 41 96% 22%;
@@ -112,6 +115,9 @@
     /* Primary dark variant */
     --primary-dark: 41 96% 35%;
     --primary-dark-foreground: 40 60% 97%;
+
+    /* Primary outline: in dark mode the brighter primary already reads well, so match it */
+    --primary-outline: 41 90% 58%;
 
     /* Primary light variant */
     --primary-light: 41 40% 22%;
