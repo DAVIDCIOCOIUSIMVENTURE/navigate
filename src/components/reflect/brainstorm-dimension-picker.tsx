@@ -14,6 +14,14 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 type Props = {
   columnId: CustomBrainstormColumnId
@@ -44,6 +52,7 @@ export function BrainstormDimensionPicker({
     (s: RootState) => s.customBrainstormItems.byColumn[columnId] ?? []
   )
   const [draft, setDraft] = useState("")
+  const [addOpen, setAddOpen] = useState(false)
   const [openGroupId, setOpenGroupId] = useState<string | null>(null)
 
   const column = useMemo(
@@ -103,6 +112,7 @@ export function BrainstormDimensionPicker({
       onChange([...selectedLabels, label])
     }
     setDraft("")
+    setAddOpen(false)
   }
 
   const groups = customGroup ? [customGroup, ...builtInGroups] : builtInGroups
@@ -114,41 +124,17 @@ export function BrainstormDimensionPicker({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
-        <label htmlFor={inputId} className="text-base font-semibold text-white">
-          Add your own
-        </label>
-        <p className="text-base text-white">
-          Anything you add joins the {column?.title ?? columnId} dimension in
-          the brainstorm canvas and the picker below.
-        </p>
-        <div className="flex gap-2">
-          <Input
-            id={inputId}
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault()
-                handleAdd()
-              }
-            }}
-            placeholder={placeholder}
-            className="text-base bg-white border-white text-foreground"
-          />
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-base font-semibold text-white">{heading}</p>
           <Button
             type="button"
-            onClick={handleAdd}
-            disabled={draft.trim().length === 0}
+            onClick={() => setAddOpen(true)}
             className="gap-1.5 shrink-0 bg-white text-foreground hover:bg-white/90"
           >
             <Plus className="h-4 w-4" />
-            Add
+            Add your own
           </Button>
         </div>
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <p className="text-base font-semibold text-white">{heading}</p>
         <div className="flex flex-col gap-2 rounded-lg bg-card p-2">
           {groups.map((group) => {
             const open = openGroupId === group.id
@@ -256,6 +242,58 @@ export function BrainstormDimensionPicker({
           </div>
         </div>
       )}
+
+      <Dialog open={addOpen} onOpenChange={setAddOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add your own</DialogTitle>
+            <DialogDescription>
+              Anything you add joins the {column?.title ?? columnId} dimension in
+              the brainstorm canvas and the picker below.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-2 py-2">
+            <label htmlFor={inputId} className="text-base font-medium">
+              {column?.title ?? "Item"}
+            </label>
+            <Input
+              id={inputId}
+              autoFocus
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault()
+                  handleAdd()
+                }
+              }}
+              placeholder={placeholder}
+              className="text-base"
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setAddOpen(false)
+                setDraft("")
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handleAdd}
+              disabled={draft.trim().length === 0}
+              className="gap-1.5"
+            >
+              <Plus className="h-4 w-4" />
+              Add
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
