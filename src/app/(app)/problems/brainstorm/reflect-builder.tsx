@@ -335,6 +335,10 @@ function IntroductionPanel({
   onStart: () => void
 }) {
   const Icon = lens.icon
+  const { answers } = useReflect()
+  const hasProgress = Object.values(answers).some((slots) =>
+    slots.some((a) => a.text.trim().length > 0)
+  )
   return (
     <div className="flex flex-col gap-6 w-full">
       <div className="flex items-center gap-3">
@@ -365,7 +369,7 @@ function IntroductionPanel({
           Choose another method
         </Button>
         <Button onClick={onStart} className="gap-2">
-          Start journey
+          {hasProgress ? "Continue journey" : "Start journey"}
           <ArrowRight className="h-4 w-4" />
         </Button>
       </div>

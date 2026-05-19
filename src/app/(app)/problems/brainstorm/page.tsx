@@ -1206,7 +1206,7 @@ export default function BrainstormPage() {
                   Reflect
                 </ToggleGroupItem>
               </ToggleGroup>
-              <p className={cn("text-sm", containerSize === "narrow" ? "hidden" : "block")}>
+              <p className={cn("text-base", containerSize === "wide" ? "block" : "hidden")}>
                 {brainstormMode === "canvas"
                   ? "Explore potential areas for innovation by navigating through the options below."
                   : brainstormMode === "builder"
