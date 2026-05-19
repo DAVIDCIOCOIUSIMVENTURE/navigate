@@ -56,10 +56,9 @@ const REFLECT_STEPS: { id: ReflectStep; label: string }[] = [
 const PICK_GUIDANCE = {
   title: "Choose your discovery method",
   description:
-    "Each method is a different angle on where problems come from. Pick one to run through guided prompts and turn your answers into a problem in your library.",
+    "Each method is a different angle on where problems come from. Pick one to run through guided prompts and turn your answers into a problem in your problem bank.",
   tips: [
-    "Life experiences: productize what you've already lived through. Friction you remember is friction others are about to hit.",
-    "More methods (work friction, insider angle, cross-context, people around you, market signals) are coming soon.",
+    "Start with the angle where you have the most lived detail. Specific beats broad.",
     "Each run focuses on a single experience or angle so the prompts stay specific. Run the tool again to explore another.",
   ],
 }
@@ -359,8 +358,8 @@ function IntroductionPanel({
         <h3 className="text-base font-semibold">What you&apos;ll get out of this</h3>
         <ul className="text-base leading-relaxed list-disc pl-5 space-y-1">
           <li>Short prompts to react to, instead of a blank canvas.</li>
-          <li>Your answers saved as a problem you can refine in the problem library.</li>
-          <li>A nudge to look at a part of your experience you may not have mined yet.</li>
+          <li>Your answers saved as a problem you can refine in the problem bank.</li>
+          <li>A prompt to revisit parts of your experience you may have overlooked.</li>
         </ul>
       </div>
       <div className="flex flex-wrap items-center justify-between gap-3">
@@ -397,7 +396,7 @@ function PromptsPanel({
     setAnswerSlots,
   } = useReflect()
   const isNarrow = useContainerSize() === "narrow"
-  const [lifeAddDialogOpen, setLifeAddDialogOpen] = useState(false)
+  const [addDialogOpen, setAddDialogOpen] = useState(false)
 
   const prompt = lens.prompts[index]
   const total = lens.prompts.length
@@ -495,10 +494,10 @@ function PromptsPanel({
         <p className="text-base font-semibold text-white">
           {prompt.multipleAllowed ? "Your answers" : "Your answer"}
         </p>
-        {useLifeExperiencesPicker && (
+        {(useLifeExperiencesPicker || dimensionPickerColumn) && (
           <Button
             type="button"
-            onClick={() => setLifeAddDialogOpen(true)}
+            onClick={() => setAddDialogOpen(true)}
             className="gap-1.5 shrink-0 bg-white text-foreground hover:bg-white/90"
           >
             <Plus className="h-4 w-4" />
@@ -514,8 +513,8 @@ function PromptsPanel({
         <LifeExperiencesPicker
           selectedTitle={selectedExperienceTitle}
           onSelect={handleSelectExperience}
-          addDialogOpen={lifeAddDialogOpen}
-          onAddDialogOpenChange={setLifeAddDialogOpen}
+          addDialogOpen={addDialogOpen}
+          onAddDialogOpenChange={setAddDialogOpen}
         />
       ) : dimensionPickerColumn ? (
         <BrainstormDimensionPicker
@@ -527,11 +526,13 @@ function PromptsPanel({
               ? "e.g. School pickup logistics, finding a trusted plumber"
               : "e.g. First-time freelancers, parents of teenagers"
           }
-          pickLabel={
+          ariaLabel={
             dimensionPickerColumn === "problems"
               ? "Pick one or more problem types"
               : "Pick one or more customer segments"
           }
+          addDialogOpen={addDialogOpen}
+          onAddDialogOpenChange={setAddDialogOpen}
         />
       ) : (
         <div className="flex flex-col gap-2">
@@ -812,7 +813,7 @@ function ReviewPanel({
             problem bank. Click any heading below to jump back to that step.
           </>
         ) : (
-          <>Add a life experience and at least one friction-prompt answer to save a problem.</>
+          <>Add a life experience and at least one friction you noticed to save it as a problem.</>
         )}
       </p>
 
@@ -867,7 +868,7 @@ function ReviewPanel({
           </TitleButton>
           <p className="text-base">
             {filledLabels.customers.length > 0
-              ? `${filledLabels.customers.length} ${filledLabels.customers.length === 1 ? "customer" : "customers"} selected. Remove anything that doesn't belong.`
+              ? `${filledLabels.customers.length} ${filledLabels.customers.length === 1 ? "customer" : "customers"} selected. Remove any segments who probably wouldn't feel this the same way.`
               : "No customers selected yet. Optional, but helps frame the problem."}
           </p>
           {filledLabels.customers.length > 0 && (
@@ -966,7 +967,7 @@ function ReviewPanel({
           Edit prompts
         </Button>
         <Button onClick={openSaveDialog} disabled={saving || totalKept === 0} className="gap-2">
-          Save Problem
+          Save problem
           <ArrowRight className="h-4 w-4" />
         </Button>
       </div>
@@ -974,7 +975,7 @@ function ReviewPanel({
       <Dialog open={saveDialogOpen} onOpenChange={setSaveDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Save Problem</DialogTitle>
+            <DialogTitle>Save problem</DialogTitle>
             <DialogDescription>
               Describe the problem in a sentence or two. You can refine it later in the problem
               bank.
@@ -989,7 +990,7 @@ function ReviewPanel({
                 id="reflect-problem-description"
                 value={dialogTitle}
                 onChange={(e) => setDialogTitle(e.target.value)}
-                placeholder="A short sentence that describes the problem"
+                placeholder="e.g. Coordinating the same form across three providers who each wanted their own copy"
                 rows={2}
                 className="text-base"
               />
@@ -997,7 +998,7 @@ function ReviewPanel({
 
             {lifeExperience.length > 0 && (
               <div className="flex flex-col gap-1.5">
-                <p className="text-base font-medium">Life experience / Context</p>
+                <p className="text-base font-medium">Life experience</p>
                 <p className="text-base">{lifeExperience}</p>
               </div>
             )}
@@ -1043,7 +1044,7 @@ function ReviewPanel({
               onClick={handleSaveAsProblem}
               disabled={saving || dialogTitle.trim().length === 0}
             >
-              {saving ? "Saving..." : "Save Problem"}
+              {saving ? "Saving..." : "Save problem"}
             </Button>
           </DialogFooter>
         </DialogContent>

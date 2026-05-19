@@ -71,16 +71,16 @@ export const REFLECT_LENSES: Lens[] = [
     longDescription:
       "Look back at one significant experience you've navigated and pull out the parts that were harder than they needed to be. You focus on a single experience per run so the prompts stay specific; to explore another, simply run this tool again and pick a different one.",
     icon: HeartHandshake,
-    tileColor: "bg-yellow-600",
+    tileColor: "bg-primary",
     estimatedMinutes: 10,
     helperText:
       "Retrospective beats current pain here. The specific things you only learned by doing are the things others are looking for.",
     prompts: [
       {
         id: "significant-experience",
-        question: "What life experiences have you acquired?",
+        question: "Which life experience do you want to reflect on?",
         helperText:
-          "Pick one from your self-discovery, or add a new one. One experience at a time keeps the next prompts specific. To explore another experience later, run this tool again. This selection sets the stage for the next prompts.",
+          "Pick one from your self-discovery, or add a new one. Keeping it to one experience makes the next prompts specific.",
         examples: [
           "Becoming a parent",
           "Moving country",
@@ -93,7 +93,7 @@ export const REFLECT_LENSES: Lens[] = [
         id: "harder-than-needed",
         question: "Looking back at that experience, what part was harder than it needed to be?",
         helperText:
-          "Friction you remember vividly is friction others are about to hit. Repeated handoffs, missing info, and time-of-day pain are good signals.",
+          "Friction you remember vividly is friction others are about to hit. Steps you had to redo, info you couldn't find, or things that always hit at the worst possible time are good signals.",
         examples: [
           "Coordinating the same form across three providers who each wanted their own copy",
           "Proving identity without a local credit history",
@@ -105,7 +105,7 @@ export const REFLECT_LENSES: Lens[] = [
         id: "wish-told",
         question: "What did you wish someone had told you upfront?",
         helperText:
-          "Not generic advice. The specific thing you only learned by doing, and only because doing it broke something.",
+          "Not generic advice: the specific thing you only figured out the hard way.",
         examples: [
           "That the visa fee was the smallest line item; translations and certifications dwarfed it",
           "That the first three months land critical paperwork in the foggiest window of your life",
@@ -141,7 +141,7 @@ export const REFLECT_LENSES: Lens[] = [
         id: "customer",
         question: "Who is this for?",
         helperText:
-          "Optional, but giving the problem a customer makes it easier to define later. You are the source of this insight; pick the customer segments who feel this problem the same way.",
+          "Optional, but adding a customer makes the problem easier to refine later. Pick the segments most likely to feel this the same way you did.",
         examples: [
           "First-time parents in the first six months",
           "Skilled immigrants in their first year in a new country",
@@ -158,7 +158,7 @@ export const REFLECT_LENSES: Lens[] = [
     longDescription:
       "Look at the things you do every week and the systems you work around. The friction you've stopped noticing is often the friction worth productizing.",
     icon: Briefcase,
-    tileColor: "bg-blue-900",
+    tileColor: "bg-primary",
     estimatedMinutes: 8,
     helperText:
       "Repeated small annoyances at work are easy to dismiss but they point to missing tools. Small, specific, and slightly weird are good signals.",
@@ -224,7 +224,7 @@ export const REFLECT_LENSES: Lens[] = [
     longDescription:
       "Pick one organization you know intimately and answer the prompts about that one place. The aim is to surface the things only an insider would notice.",
     icon: Building2,
-    tileColor: "bg-emerald-800",
+    tileColor: "bg-primary",
     estimatedMinutes: 10,
     helperText:
       "One organization is enough. If you're worried about specifics, anonymize the language; the prompts work just as well in general terms.",
@@ -278,7 +278,7 @@ export const REFLECT_LENSES: Lens[] = [
     longDescription:
       "A pattern that's normal in one context can be a fresh idea in another. The interesting question is usually why nobody has moved it yet.",
     icon: Shuffle,
-    tileColor: "bg-violet-800",
+    tileColor: "bg-primary",
     estimatedMinutes: 8,
     helperText:
       "Always ask \"why hasn't this happened yet?\". A clean answer (regulation, timing, distribution) often gates whether the transplant is a real opportunity.",
@@ -329,7 +329,7 @@ export const REFLECT_LENSES: Lens[] = [
     longDescription:
       "Pick one person you observe regularly and answer the prompts with them in mind. Then validate by actually asking them.",
     icon: Users,
-    tileColor: "bg-rose-800",
+    tileColor: "bg-primary",
     estimatedMinutes: 8,
     helperText:
       "Treat this as observation, not assumption. Anything you capture here should be confirmed by talking to the person before you commit to it.",
@@ -375,7 +375,7 @@ export const REFLECT_LENSES: Lens[] = [
     longDescription:
       "This lens doesn't ask you what to look at. It gives you a place to write down what you find when you scan low-rated tools, trend trackers, open data, and research.",
     icon: Radar,
-    tileColor: "bg-orange-700",
+    tileColor: "bg-primary",
     estimatedMinutes: 5,
     flowKind: "single-form",
     helperText:

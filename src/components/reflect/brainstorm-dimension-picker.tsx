@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Check, ChevronDown, Plus } from "lucide-react"
+import { Check, ChevronDown, ChevronRight, Plus } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { brainstormColumns } from "@/data/brainstormData"
 import type { CustomBrainstormColumnId } from "@/store/custom-brainstorm-items-model"
@@ -28,7 +28,9 @@ type Props = {
   selectedLabels: string[]
   onChange: (labels: string[]) => void
   addPlaceholder?: string
-  pickLabel?: string
+  ariaLabel?: string
+  addDialogOpen: boolean
+  onAddDialogOpenChange: (open: boolean) => void
 }
 
 type FlatItem = { id: string; label: string }
@@ -38,21 +40,23 @@ type Group = { id: string; label: string; items: FlatItem[] }
  * Multi-select picker bound to one of the brainstorm dimensions (customers,
  * contexts, or problems). Built-in categories come from `brainstormColumns`;
  * custom additions persist through `customBrainstormItems` so they show up
- * back in the brainstorm canvas too.
+ * back in the brainstorm canvas too. Visual structure mirrors
+ * `LifeExperiencesPicker` so all life-lens pickers share one look.
  */
 export function BrainstormDimensionPicker({
   columnId,
   selectedLabels,
   onChange,
   addPlaceholder,
-  pickLabel,
+  ariaLabel,
+  addDialogOpen,
+  onAddDialogOpenChange,
 }: Props) {
   const dispatch = useDispatch<AppDispatch>()
   const customItems = useSelector(
     (s: RootState) => s.customBrainstormItems.byColumn[columnId] ?? []
   )
   const [draft, setDraft] = useState("")
-  const [addOpen, setAddOpen] = useState(false)
   const [openGroupId, setOpenGroupId] = useState<string | null>(null)
 
   const column = useMemo(
@@ -112,117 +116,93 @@ export function BrainstormDimensionPicker({
       onChange([...selectedLabels, label])
     }
     setDraft("")
-    setAddOpen(false)
+    onAddDialogOpenChange(false)
   }
 
   const groups = customGroup ? [customGroup, ...builtInGroups] : builtInGroups
   const inputId = `${columnId}-dimension-new`
-  const heading =
-    pickLabel ?? `Pick one or more ${column?.title?.toLowerCase() ?? columnId}`
   const placeholder = addPlaceholder ?? "Type your own and press Add"
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between gap-2">
-          <p className="text-base font-semibold text-white">{heading}</p>
-          <Button
-            type="button"
-            onClick={() => setAddOpen(true)}
-            className="gap-1.5 shrink-0 bg-white text-foreground hover:bg-white/90"
-          >
-            <Plus className="h-4 w-4" />
-            Add your own
-          </Button>
-        </div>
-        <div className="flex flex-col gap-2 rounded-lg bg-card p-2">
-          {groups.map((group) => {
-            const open = openGroupId === group.id
-            const selectedInGroup = group.items.filter((i) =>
-              isSelected(i.label)
-            ).length
-            return (
-              <Collapsible
-                key={group.id}
-                open={open}
-                onOpenChange={(next) =>
-                  setOpenGroupId(next ? group.id : null)
-                }
-              >
-                <CollapsibleTrigger asChild>
-                  <button
-                    type="button"
-                    className="w-full flex items-center justify-between gap-2 rounded-md px-2 py-2 text-left hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                  >
-                    <span className="flex items-center gap-2">
-                      <span className="text-base font-medium">
-                        {group.label}
-                      </span>
-                      {selectedInGroup > 0 && (
-                        <span className="text-base bg-primary/15 text-primary rounded-full px-2 py-0.5">
-                          {selectedInGroup} selected
-                        </span>
-                      )}
-                    </span>
-                    <ChevronDown
-                      className={cn(
-                        "h-4 w-4 transition-transform",
-                        open && "rotate-180"
-                      )}
-                      aria-hidden="true"
-                    />
-                  </button>
-                </CollapsibleTrigger>
-                <CollapsibleContent className="pt-1">
-                  <ul
-                    role="group"
-                    aria-label={group.label}
-                    className="flex flex-col gap-1 pl-2"
-                  >
-                    {group.items.map((item) => {
-                      const checked = isSelected(item.label)
-                      return (
-                        <li key={item.id}>
-                          <button
-                            type="button"
-                            role="checkbox"
-                            aria-checked={checked}
-                            onClick={() => toggle(item.label)}
+    <div
+      role="group"
+      aria-label={ariaLabel ?? `Pick one or more ${column?.title?.toLowerCase() ?? columnId}`}
+      className="flex flex-col gap-2"
+    >
+      <div className="flex flex-col rounded-lg bg-card p-2">
+        {groups.map((group) => {
+          const open = openGroupId === group.id
+          const selectedInGroup = group.items.filter((i) => isSelected(i.label)).length
+          return (
+            <Collapsible
+              key={group.id}
+              open={open}
+              onOpenChange={(next) => setOpenGroupId(next ? group.id : null)}
+            >
+              <CollapsibleTrigger className="flex w-full items-center gap-1.5 px-1 py-1.5 rounded-md hover:bg-accent/50 transition-colors">
+                {open ? (
+                  <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                ) : (
+                  <ChevronRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                )}
+                <span className="text-sm font-semibold text-foreground tracking-wide select-none flex-1 text-left">
+                  {group.label}
+                </span>
+                {selectedInGroup > 0 && (
+                  <span className="text-sm text-secondary-brand font-medium">
+                    {selectedInGroup} selected
+                  </span>
+                )}
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <ul
+                  role="group"
+                  aria-label={group.label}
+                  className="ml-7 flex flex-col gap-1 pb-1"
+                >
+                  {group.items.map((item) => {
+                    const checked = isSelected(item.label)
+                    return (
+                      <li key={item.id}>
+                        <button
+                          type="button"
+                          role="checkbox"
+                          aria-checked={checked}
+                          onClick={() => toggle(item.label)}
+                          className={cn(
+                            "w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                            checked
+                              ? "bg-primary/10 border border-primary"
+                              : "border border-transparent hover:bg-accent/40"
+                          )}
+                        >
+                          <span
                             className={cn(
-                              "w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                              "grid place-content-center h-4 w-4 shrink-0 rounded-sm border",
                               checked
-                                ? "bg-primary/10 border border-primary"
-                                : "border border-transparent hover:bg-accent/40"
+                                ? "border-primary bg-primary text-primary-foreground"
+                                : "border-input"
                             )}
+                            aria-hidden="true"
                           >
-                            <span
-                              className={cn(
-                                "grid place-content-center h-4 w-4 shrink-0 rounded-sm border",
-                                checked
-                                  ? "border-primary bg-primary text-primary-foreground"
-                                  : "border-input"
-                              )}
-                              aria-hidden="true"
-                            >
-                              {checked && <Check className="h-3 w-3" />}
-                            </span>
-                            <span className="flex-1 text-base leading-snug">
-                              {item.label}
-                            </span>
-                          </button>
-                        </li>
-                      )
-                    })}
-                  </ul>
-                </CollapsibleContent>
-              </Collapsible>
-            )
-          })}
-        </div>
+                            {checked && <Check className="h-3 w-3" />}
+                          </span>
+                          <span className="flex-1 text-sm leading-snug">
+                            {item.label}
+                          </span>
+                        </button>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </CollapsibleContent>
+            </Collapsible>
+          )
+        })}
       </div>
 
       {selectedLabels.length > 0 && (
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 pt-2">
           <p className="text-base font-semibold text-white">
             Selected ({selectedLabels.length})
           </p>
@@ -243,7 +223,7 @@ export function BrainstormDimensionPicker({
         </div>
       )}
 
-      <Dialog open={addOpen} onOpenChange={setAddOpen}>
+      <Dialog open={addDialogOpen} onOpenChange={onAddDialogOpenChange}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Add your own</DialogTitle>
@@ -276,7 +256,7 @@ export function BrainstormDimensionPicker({
               type="button"
               variant="outline"
               onClick={() => {
-                setAddOpen(false)
+                onAddDialogOpenChange(false)
                 setDraft("")
               }}
             >
