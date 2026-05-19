@@ -13,6 +13,14 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 
 const LIFE_EXPERIENCES_QUESTION_URL = "life-experiences"
 
@@ -39,6 +47,7 @@ export function LifeExperiencesPicker({ selectedTitle, onSelect }: Props) {
     (s: RootState) => s.customBrainstormItems.byColumn.contexts ?? []
   )
   const [draft, setDraft] = useState("")
+  const [addOpen, setAddOpen] = useState(false)
   const [openGroupId, setOpenGroupId] = useState<string | null>(null)
 
   const contextGroups = useMemo(() => {
@@ -88,50 +97,27 @@ export function LifeExperiencesPicker({ selectedTitle, onSelect }: Props) {
     }
     onSelect(title)
     setDraft("")
+    setAddOpen(false)
   }
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-2">
-        <label htmlFor="life-experience-new" className="text-base font-semibold text-white">
-          Add your own
-        </label>
-        <p className="text-base text-white">
-          Anything you add is also saved to your self-discovery under
-          &quot;What life experiences have you acquired?&quot;.
-        </p>
-        <div className="flex gap-2">
-          <Input
-            id="life-experience-new"
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault()
-                handleAdd()
-              }
-            }}
-            placeholder="e.g. Moving country, becoming a parent, switching careers"
-            className="text-base bg-white border-white text-foreground"
-          />
-          <Button
-            type="button"
-            onClick={handleAdd}
-            disabled={draft.trim().length === 0}
-            className="gap-1.5 shrink-0 bg-white text-foreground hover:bg-white/90"
-          >
-            <Plus className="h-4 w-4" />
-            Add
-          </Button>
-        </div>
-      </div>
-
       <div
         role="radiogroup"
         aria-label="Pick one life experience"
         className="flex flex-col gap-2"
       >
-        <p className="text-base font-semibold text-white">From your self-discovery</p>
+        <div className="flex items-center justify-between gap-2">
+          <p className="text-base font-semibold text-white">From your self-discovery</p>
+          <Button
+            type="button"
+            onClick={() => setAddOpen(true)}
+            className="gap-1.5 shrink-0 bg-white text-foreground hover:bg-white/90"
+          >
+            <Plus className="h-4 w-4" />
+            Add your own
+          </Button>
+        </div>
         {sortedItems.length === 0 ? (
           <p className="text-base text-white">
             Nothing saved yet. Add one above or visit Self-Discovery to fill this in.
@@ -277,6 +263,58 @@ export function LifeExperiencesPicker({ selectedTitle, onSelect }: Props) {
           </div>
         </div>
       )}
+
+      <Dialog open={addOpen} onOpenChange={setAddOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Add a life experience</DialogTitle>
+            <DialogDescription>
+              Anything you add is also saved to your self-discovery under &quot;What
+              life experiences have you acquired?&quot;.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex flex-col gap-2 py-2">
+            <label htmlFor="life-experience-new" className="text-base font-medium">
+              Experience
+            </label>
+            <Input
+              id="life-experience-new"
+              autoFocus
+              value={draft}
+              onChange={(e) => setDraft(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault()
+                  handleAdd()
+                }
+              }}
+              placeholder="e.g. Moving country, becoming a parent, switching careers"
+              className="text-base"
+            />
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => {
+                setAddOpen(false)
+                setDraft("")
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              onClick={handleAdd}
+              disabled={draft.trim().length === 0}
+              className="gap-1.5"
+            >
+              <Plus className="h-4 w-4" />
+              Add
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
