@@ -392,8 +392,8 @@ function PromptsPanel({
     removeAnswerSlot,
     setAnswerSlots,
   } = useReflect()
-  const [examplesOpen, setExamplesOpen] = useState(false)
   const isNarrow = useContainerSize() === "narrow"
+  const [lifeAddDialogOpen, setLifeAddDialogOpen] = useState(false)
 
   const prompt = lens.prompts[index]
   const total = lens.prompts.length
@@ -457,10 +457,6 @@ function PromptsPanel({
     setAnswerText(prompt.id, 0, title ?? "")
   }
 
-  useEffect(() => {
-    setExamplesOpen(false)
-  }, [prompt.id])
-
   function goPrev() {
     if (index > 0) onIndexChange(index - 1)
     else onBackToIntro()
@@ -489,128 +485,159 @@ function PromptsPanel({
   const Icon = lens.icon
   const isWide = useContainerSize() === "wide"
 
-  return (
-    <div className="flex flex-col gap-6 w-full">
-      <div className={cn("flex gap-6", isWide ? "flex-row items-start" : "flex-col")}>
-        <div className={cn("flex flex-col gap-4", isWide ? "w-1/3 shrink-0" : "w-full")}>
-          <div className="flex items-center gap-3">
-            <div
-              className={cn("flex items-center justify-center w-10 h-10 rounded-lg shrink-0", lens.tileColor)}
-              aria-hidden="true"
-            >
-              <Icon className="h-5 w-5 text-white" />
-            </div>
-            <h3 className="text-xl font-bold leading-tight">{lens.title}</h3>
-          </div>
-          {chosenLifeExperience && (
-            <div className="flex items-start gap-2 rounded-md border border-yellow-600/30 bg-yellow-600/10 px-3 py-2">
-              <Icon className="h-4 w-4 text-yellow-700 shrink-0 mt-0.5" aria-hidden="true" />
-              <div className="flex flex-wrap items-baseline gap-x-2 text-base leading-snug">
-                <span className="font-medium">Reflecting on:</span>
-                <span>{chosenLifeExperience}</span>
-              </div>
-            </div>
-          )}
-          <p className="text-lg font-semibold leading-snug">{prompt.question}</p>
-          {prompt.helperText && (
-            <p className="text-base leading-relaxed">{prompt.helperText}</p>
-          )}
-        </div>
-        <div className={cn("flex flex-col gap-4 min-w-0", isWide ? "flex-1" : "w-full")}>
-          <div className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-4">
-            {prompt.examples && prompt.examples.length > 0 && (
-              <Collapsible open={examplesOpen} onOpenChange={setExamplesOpen}>
-                <CollapsibleTrigger asChild>
-                  <Button variant="outline" className="gap-2 self-start">
-                    <span>Examples</span>
-                    <ChevronDown
-                      className={cn(
-                        "h-4 w-4 transition-transform",
-                        examplesOpen && "rotate-180"
-                      )}
-                      aria-hidden="true"
-                    />
-                  </Button>
-                </CollapsibleTrigger>
-                <CollapsibleContent className="pt-3">
-                  <ul className="text-base leading-relaxed list-disc pl-5 space-y-1">
-                    {prompt.examples.map((ex) => (
-                      <li key={ex}>{ex}</li>
-                    ))}
-                  </ul>
-                </CollapsibleContent>
-              </Collapsible>
-            )}
+  const rightColumn = (
+    <div className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-4">
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-base font-semibold text-white">
+          {prompt.multipleAllowed ? "Your answers" : "Your answer"}
+        </p>
+        {useLifeExperiencesPicker && (
+          <Button
+            type="button"
+            onClick={() => setLifeAddDialogOpen(true)}
+            className="gap-1.5 shrink-0 bg-white text-foreground hover:bg-white/90"
+          >
+            <Plus className="h-4 w-4" />
+            Add your own
+          </Button>
+        )}
+      </div>
+      {chipsCategory && !useLifeExperiencesPicker && !dimensionPickerColumn && (
+        <SelfDiscoveryChips category={chipsCategory} onPick={handlePickChip} />
+      )}
 
-            {chipsCategory && !useLifeExperiencesPicker && !dimensionPickerColumn && (
-              <SelfDiscoveryChips category={chipsCategory} onPick={handlePickChip} />
-            )}
-
-            {useLifeExperiencesPicker ? (
-              <LifeExperiencesPicker
-                selectedTitle={selectedExperienceTitle}
-                onSelect={handleSelectExperience}
-              />
-            ) : dimensionPickerColumn ? (
-              <BrainstormDimensionPicker
-                columnId={dimensionPickerColumn}
-                selectedLabels={selectedDimensionLabels}
-                onChange={handleDimensionChange}
-                addPlaceholder={
-                  dimensionPickerColumn === "problems"
-                    ? "e.g. School pickup logistics, finding a trusted plumber"
-                    : "e.g. First-time freelancers, parents of teenagers"
+      {useLifeExperiencesPicker ? (
+        <LifeExperiencesPicker
+          selectedTitle={selectedExperienceTitle}
+          onSelect={handleSelectExperience}
+          addDialogOpen={lifeAddDialogOpen}
+          onAddDialogOpenChange={setLifeAddDialogOpen}
+        />
+      ) : dimensionPickerColumn ? (
+        <BrainstormDimensionPicker
+          columnId={dimensionPickerColumn}
+          selectedLabels={selectedDimensionLabels}
+          onChange={handleDimensionChange}
+          addPlaceholder={
+            dimensionPickerColumn === "problems"
+              ? "e.g. School pickup logistics, finding a trusted plumber"
+              : "e.g. First-time freelancers, parents of teenagers"
+          }
+          pickLabel={
+            dimensionPickerColumn === "problems"
+              ? "Pick one or more problem types"
+              : "Pick one or more customer segments"
+          }
+        />
+      ) : (
+        <div className="flex flex-col gap-2">
+          {promptAnswers.map((a, i) => (
+            <div key={i} className="flex items-start gap-2">
+              <Textarea
+                value={a.text}
+                onChange={(e) => setAnswerText(prompt.id, i, e.target.value)}
+                placeholder="Type your answer."
+                aria-label={
+                  prompt.multipleAllowed ? `Answer ${i + 1}` : "Your answer"
                 }
-                pickLabel={
-                  dimensionPickerColumn === "problems"
-                    ? "Pick one or more problem types"
-                    : "Pick one or more customer segments"
-                }
-              />
-            ) : (
-              <div className="flex flex-col gap-2">
-                {promptAnswers.map((a, i) => (
-                  <div key={i} className="flex items-start gap-2">
-                    <Textarea
-                      value={a.text}
-                      onChange={(e) => setAnswerText(prompt.id, i, e.target.value)}
-                      placeholder="Type your answer."
-                      className={cn(
-                        "flex-1 text-base bg-white border-white text-foreground placeholder:text-muted-foreground",
-                        isNarrow ? "min-h-[7rem]" : "min-h-[5rem]"
-                      )}
-                    />
-                    {prompt.multipleAllowed && promptAnswers.length > 1 && (
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        type="button"
-                        onClick={() => removeAnswerSlot(prompt.id, i)}
-                        aria-label="Remove this answer"
-                        className="text-white hover:bg-white/10 hover:text-white"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    )}
-                  </div>
-                ))}
-                {prompt.multipleAllowed && (
-                  <Button
-                    type="button"
-                    onClick={() => addAnswerSlot(prompt.id)}
-                    className="self-start gap-2 bg-white text-foreground hover:bg-white/90"
-                  >
-                    <Plus className="h-4 w-4" />
-                    Add another answer
-                  </Button>
+                className={cn(
+                  "flex-1 text-base bg-white border-white text-foreground placeholder:text-muted-foreground",
+                  isNarrow ? "min-h-[7rem]" : "min-h-[5rem]"
                 )}
-              </div>
-            )}
+              />
+              {prompt.multipleAllowed && promptAnswers.length > 1 && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  type="button"
+                  onClick={() => removeAnswerSlot(prompt.id, i)}
+                  aria-label="Remove this answer"
+                  className="text-white hover:bg-white/10 hover:text-white"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          ))}
+          {prompt.multipleAllowed && (
+            <Button
+              type="button"
+              onClick={() => addAnswerSlot(prompt.id)}
+              className="self-start gap-2 bg-white text-foreground hover:bg-white/90"
+            >
+              <Plus className="h-4 w-4" />
+              Add another answer
+            </Button>
+          )}
+        </div>
+      )}
+    </div>
+  )
+
+  const leftColumn = (
+    <div className="flex flex-col gap-4 pr-3">
+      <div className="flex items-center gap-3">
+        <div
+          className={cn("flex items-center justify-center w-10 h-10 rounded-lg shrink-0", lens.tileColor)}
+          aria-hidden="true"
+        >
+          <Icon className="h-5 w-5 text-white" />
+        </div>
+        <h3 className="text-xl font-bold leading-tight">{lens.title}</h3>
+      </div>
+      {chosenLifeExperience && (
+        <div className="flex items-start gap-2 rounded-md border border-yellow-600/30 bg-yellow-600/10 px-3 py-2">
+          <Icon className="h-4 w-4 text-yellow-700 shrink-0 mt-0.5" aria-hidden="true" />
+          <div className="flex flex-wrap items-baseline gap-x-2 text-base leading-snug">
+            <span className="font-medium">Reflecting on:</span>
+            <span>{chosenLifeExperience}</span>
           </div>
         </div>
+      )}
+      <p className="text-lg font-semibold leading-snug">{prompt.question}</p>
+      {prompt.helperText && (
+        <p className="text-base leading-relaxed">{prompt.helperText}</p>
+      )}
+      {prompt.examples && prompt.examples.length > 0 && (
+        <div className="flex flex-col gap-1 rounded-lg bg-accent/30 p-3">
+          <span className="text-base font-medium uppercase tracking-wide">
+            Examples
+          </span>
+          {prompt.examples.map((ex, i) => (
+            <span key={i} className="text-base italic leading-relaxed">
+              &ldquo;{ex}&rdquo;
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+
+  return (
+    <div className={cn("flex flex-col gap-6 w-full", isWide && "flex-1 min-h-0")}>
+      <div
+        className={cn(
+          "flex gap-6",
+          isWide ? "flex-row items-stretch flex-1 min-h-0" : "flex-col"
+        )}
+      >
+        {isWide ? (
+          <ScrollArea className="w-1/3 shrink-0 min-h-0">
+            {leftColumn}
+          </ScrollArea>
+        ) : (
+          <div className="w-full">{leftColumn}</div>
+        )}
+        {isWide ? (
+          <ScrollArea className="flex-1 min-h-0">
+            <div className="pr-3">{rightColumn}</div>
+          </ScrollArea>
+        ) : (
+          <div className="w-full">{rightColumn}</div>
+        )}
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 shrink-0">
         <Button
           variant="outline"
           onClick={goPrev}
@@ -1117,7 +1144,7 @@ export function ReflectBuilder({ resetRef }: { resetRef?: React.MutableRefObject
           isStepEnabled={isStepEnabled}
           promptsProgress={promptsProgress}
         />
-        <div className="flex-1 min-h-0 flex flex-col overflow-y-auto">
+        <div className={cn("flex-1 min-h-0 flex flex-col", step !== "prompts" && "overflow-y-auto")}>
           {content}
         </div>
       </CardContent>

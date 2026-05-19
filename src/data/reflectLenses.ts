@@ -80,30 +80,61 @@ export const REFLECT_LENSES: Lens[] = [
         id: "significant-experience",
         question: "What life experiences have you acquired?",
         helperText:
-          "Pick one from your self-discovery, or add a new one. One experience at a time keeps the next prompts specific. To explore another experience later, run this tool again. This selection sets the stage for the next prompts and is not saved as a candidate.",
+          "Pick one from your self-discovery, or add a new one. One experience at a time keeps the next prompts specific. To explore another experience later, run this tool again. This selection sets the stage for the next prompts.",
+        examples: [
+          "Becoming a parent",
+          "Moving country",
+          "Caring for an aging relative",
+        ],
         multipleAllowed: false,
         contextOnly: true,
       },
       {
         id: "harder-than-needed",
         question: "Looking back at that experience, what part was harder than it needed to be?",
+        helperText:
+          "Friction you remember vividly is friction others are about to hit. Repeated handoffs, missing info, and time-of-day pain are good signals.",
+        examples: [
+          "Coordinating the same form across three providers who each wanted their own copy",
+          "Proving identity without a local credit history",
+          "Finding which specialists actually had availability without a referral",
+        ],
         multipleAllowed: true,
       },
       {
         id: "wish-told",
         question: "What did you wish someone had told you upfront?",
-        helperText: "Not generic advice. The specific thing you only learned by doing.",
+        helperText:
+          "Not generic advice. The specific thing you only learned by doing, and only because doing it broke something.",
+        examples: [
+          "That the visa fee was the smallest line item; translations and certifications dwarfed it",
+          "That the first three months land critical paperwork in the foggiest window of your life",
+          "That the bottleneck isn't specialist capacity, it's knowing who is accepting referrals this month",
+        ],
         multipleAllowed: true,
       },
       {
         id: "wasted-spend",
         question: "What did you spend money on during that experience that turned out not to help?",
-        helperText: "Misallocated spend often signals a missing or misleading product.",
+        helperText:
+          "Misallocated spend often signals a missing or misleading product. The thing you paid for promised one outcome and delivered something else.",
+        examples: [
+          "An annual baby tracker subscription that died because logging a 3am feed needed too much focus",
+          "A premium credit report from home that no local bank or landlord would accept",
+          "Three private second opinions that all referred back to the first specialist",
+        ],
         multipleAllowed: true,
       },
       {
         id: "personal-workaround",
         question: "What workaround did you build for yourself that you still use?",
+        helperText:
+          "The hack you built once and never stopped using is usually a product hiding in plain sight. Spreadsheets, group chats, and phone notes are the giveaways.",
+        examples: [
+          "A running phone note logging each pediatrician visit and which form needed updating next",
+          "A spreadsheet of every document I've had translated: who, when, and where the original lives",
+          "A sibling WhatsApp group used as the daily care log: meals, meds, doctor visits",
+        ],
         multipleAllowed: true,
       },
       {
@@ -111,6 +142,11 @@ export const REFLECT_LENSES: Lens[] = [
         question: "Who is this for?",
         helperText:
           "Optional, but giving the problem a customer makes it easier to define later. You are the source of this insight; pick the customer segments who feel this problem the same way.",
+        examples: [
+          "First-time parents in the first six months",
+          "Skilled immigrants in their first year in a new country",
+          "Adult children coordinating care for a parent at a distance",
+        ],
         multipleAllowed: true,
       },
     ],
