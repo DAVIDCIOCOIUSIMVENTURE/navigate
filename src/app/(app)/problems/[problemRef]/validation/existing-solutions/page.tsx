@@ -18,7 +18,7 @@ export default function ExistingSolutionsPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={GitFork} iconBg="bg-yellow-600">Explore existing solutions &amp; shortcomings</CardTitle>
+        <CardTitle icon={GitFork} iconBg="bg-secondary-brand">Explore existing solutions &amp; shortcomings</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-base">

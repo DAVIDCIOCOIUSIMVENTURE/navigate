@@ -16,7 +16,7 @@ export default function SummaryPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0 space-y-6">
-        <CardTitle icon={LayoutTemplate} iconBg="bg-violet-800">Summary &amp; Next Steps</CardTitle>
+        <CardTitle icon={LayoutTemplate} iconBg="bg-secondary-brand">Summary &amp; Next Steps</CardTitle>
         <p className="text-base">A read-only overview of everything you have captured so far. Use <strong>Open Problem</strong> to jump to the editable problem page.</p>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
