@@ -41,6 +41,7 @@ import {
   Grid3X3,
   Layers,
   Maximize2,
+  Microscope,
   Minimize2,
   Pencil,
   Plus,
@@ -1204,6 +1205,19 @@ export default function BrainstormPage() {
                 <ToggleGroupItem value="reflect" aria-label="Reflect mode" className="gap-1.5 px-3 data-[state=on]:bg-secondary-brand data-[state=on]:text-secondary-brand-foreground">
                   <Telescope className="h-3.5 w-3.5" />
                   Reflect
+                </ToggleGroupItem>
+                <ToggleGroupItem
+                  value="research"
+                  disabled
+                  aria-label="Research mode, coming soon"
+                  title="Coming soon"
+                  className="gap-1.5 px-3"
+                >
+                  <Microscope className="h-3.5 w-3.5" />
+                  Research
+                  <span className="ml-1 inline-flex items-center rounded-full bg-muted px-1.5 py-0.5 text-base font-medium leading-none">
+                    Soon
+                  </span>
                 </ToggleGroupItem>
               </ToggleGroup>
               <p className={cn("text-base", containerSize === "wide" ? "block" : "hidden")}>

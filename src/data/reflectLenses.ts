@@ -38,6 +38,16 @@ export type LensPrompt = {
    * becomes a `ProblemCandidate`.
    */
   contextOnly?: boolean
+  /**
+   * Role in the save-as-problem flow:
+   * - "problems": answers resolve to problem dimension ids; rendered with the
+   *   brainstorm problem picker.
+   * - "customers": answers resolve to customer dimension ids; rendered with the
+   *   brainstorm customer picker.
+   * Untagged prompts (other than the contextOnly anchor) are kept as reflection
+   * context only.
+   */
+  role?: "problems" | "customers"
 }
 
 export type LensId = "work" | "life" | "insider" | "cross" | "people" | "market"
@@ -61,6 +71,12 @@ export type Lens = {
    * review flow. Mark them here so the lens layout can route differently.
    */
   flowKind?: "standard" | "single-form"
+  /**
+   * Short label for the contextOnly anchor prompt (e.g. "Life experience",
+   * "Work area"). Used in the review heading, the "Reflecting on:" badge, and
+   * the save dialog. Falls back to "Anchor" if missing.
+   */
+  anchorLabel?: string
 }
 
 export const REFLECT_LENSES: Lens[] = [
@@ -73,6 +89,7 @@ export const REFLECT_LENSES: Lens[] = [
     icon: HeartHandshake,
     tileColor: "bg-primary",
     estimatedMinutes: 10,
+    anchorLabel: "Life experience",
     helperText:
       "Retrospective beats current pain here. The specific things you only learned by doing are the things others are looking for.",
     prompts: [
@@ -100,6 +117,7 @@ export const REFLECT_LENSES: Lens[] = [
           "Finding which specialists actually had availability without a referral",
         ],
         multipleAllowed: true,
+        role: "problems",
       },
       {
         id: "wish-told",
@@ -148,72 +166,111 @@ export const REFLECT_LENSES: Lens[] = [
           "Adult children coordinating care for a parent at a distance",
         ],
         multipleAllowed: true,
+        role: "customers",
       },
     ],
   },
   {
     id: "work",
     title: "Work friction",
-    shortDescription: "Mine your own job for repeated annoyances and \"this should just exist\" thoughts.",
+    shortDescription: "Mine one of your jobs for repeated annoyances and \"this should just exist\" thoughts.",
     longDescription:
-      "Look at the things you do every week and the systems you work around. The friction you've stopped noticing is often the friction worth productizing.",
+      "Pick one job, role, or slice of work you do regularly and answer the prompts about that one place. The friction you've stopped noticing is often the friction worth productizing; focusing on a single role per run keeps the prompts specific. To explore another, run this tool again and pick a different one.",
     icon: Briefcase,
     tileColor: "bg-primary",
-    estimatedMinutes: 8,
+    estimatedMinutes: 10,
+    anchorLabel: "Work area",
     helperText:
       "Repeated small annoyances at work are easy to dismiss but they point to missing tools. Small, specific, and slightly weird are good signals.",
     selfDiscoverySources: [
-      { category: "knowledge", promptIds: ["time-consuming", "frustrating-process", "workarounds"] },
-      { category: "skills-expertise", promptIds: ["time-consuming", "frustrating-process", "workarounds"] },
+      { category: "knowledge", promptIds: ["time-consuming", "workarounds", "should-exist"] },
+      { category: "skills-expertise", promptIds: ["time-consuming", "workarounds", "should-exist"] },
     ],
     prompts: [
       {
-        id: "time-consuming",
-        question: "What's something at work you spend a surprising amount of time on each week?",
-        helperText: "Think about tasks you'd struggle to explain why they take so long.",
+        id: "work-context",
+        question: "Which job, role, or area of work do you want to reflect on?",
+        helperText:
+          "Pick one. It can be your current job, a past role, or a slice of work you do regularly (e.g. \"client onboarding at my consultancy\"). Keeping it to one role makes the next prompts specific.",
         examples: [
-          "Chasing approvals across departments",
-          "Reformatting reports for different stakeholders",
-          "Jumping between five tools to complete one task",
+          "Running the operations team at a logistics company",
+          "Onboarding new clients at my consultancy",
+          "Managing finance month-end close",
         ],
-        multipleAllowed: true,
-        capturesContext: ["who-else"],
-      },
-      {
-        id: "expensive",
-        question: "What's something you (or your team) spend money on at work that feels like more than it's worth?",
-        helperText: "Subscriptions, contractors, recurring purchases.",
-        multipleAllowed: true,
-        capturesContext: ["who-else"],
+        multipleAllowed: false,
+        contextOnly: true,
       },
       {
         id: "frustrating-process",
-        question: "What process at your job has frustrated you in the last month?",
+        question: "Looking at that role, what process has frustrated you in the last month?",
+        helperText:
+          "Recent friction is easier to describe. Steps you had to redo, info you couldn't find, or processes that always hit at the worst possible time are good signals.",
         examples: [
-          "Onboarding a new teammate",
-          "Getting access to a system",
-          "A specific recurring meeting",
+          "Chasing approvals across three departments for a routine purchase",
+          "Onboarding a new teammate without an up-to-date runbook",
+          "A weekly meeting that always overruns and never decides anything",
         ],
         multipleAllowed: true,
-        capturesContext: ["who-else"],
+        role: "problems",
+      },
+      {
+        id: "time-consuming",
+        question: "What do you spend a surprising amount of time on each week?",
+        helperText:
+          "Think about tasks you'd struggle to explain why they take so long. They're often a sign of a missing or misshaped tool.",
+        examples: [
+          "Reformatting the same report for five different stakeholders",
+          "Jumping between five tools to complete one task",
+          "Reconciling numbers between two systems that should agree",
+        ],
+        multipleAllowed: true,
+      },
+      {
+        id: "expensive",
+        question: "What does this work cost (in time, money, or tools) more than it feels worth?",
+        helperText:
+          "Subscriptions, contractors, recurring purchases. Misallocated spend often signals a missing or misleading product.",
+        examples: [
+          "A premium analytics tool nobody uses past month one",
+          "Contractor hours spent on work the team could do with the right template",
+          "Three SaaS tools that all do roughly the same thing",
+        ],
+        multipleAllowed: true,
       },
       {
         id: "workarounds",
         question: "Where do you work around a system instead of through it?",
-        helperText: "Workarounds usually point to a missing tool.",
+        helperText:
+          "The hack you built once and never stopped using is usually a product hiding in plain sight. Spreadsheets, group chats, and phone notes are the giveaways.",
         examples: [
-          "Spreadsheets that shadow an official tool",
-          "Private notes that duplicate a CRM",
+          "A spreadsheet that shadows the CRM because the CRM can't filter what we need",
+          "Private notes that duplicate what's in the project tracker",
+          "A Slack DM thread used as the real status tracker for a project",
         ],
         multipleAllowed: true,
-        capturesContext: ["who-else"],
       },
       {
         id: "should-exist",
         question: "What \"this should just exist\" thought have you had recently?",
-        helperText: "Small, specific, and slightly weird is good.",
+        helperText: "Small, specific, and slightly weird is good. The thing you wish you could install today.",
+        examples: [
+          "A way to ask everyone in a channel a question once and have it auto-collate the answers",
+          "A tool that flags when two team calendars are about to double-book a customer",
+        ],
         multipleAllowed: true,
-        capturesContext: ["who-else"],
+      },
+      {
+        id: "customer",
+        question: "Who else does this work?",
+        helperText:
+          "Other people in this role, industry, or setup who would likely feel the same friction. Optional, but adding a customer makes the problem easier to refine later.",
+        examples: [
+          "Operations leads at logistics companies of similar size",
+          "Independent consultants running solo client onboarding",
+          "Finance managers in mid-market companies",
+        ],
+        multipleAllowed: true,
+        role: "customers",
       },
     ],
   },

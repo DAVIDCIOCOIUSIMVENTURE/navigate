@@ -29,7 +29,6 @@ import {
   ChevronDown,
   ClipboardCheck,
   Clock,
-  HeartHandshake,
   Pencil,
   Plus,
   Trash2,
@@ -41,6 +40,7 @@ import { REFLECT_LENSES, LENS_CONTEXT_FIELDS, type Lens, type LensId, getReflect
 import { ReflectProvider, useReflect } from "@/components/reflect/reflect-context"
 import { SelfDiscoveryChips } from "@/components/reflect/self-discovery-chips"
 import { LifeExperiencesPicker } from "@/components/reflect/life-experiences-picker"
+import { WorkContextPicker } from "@/components/reflect/work-context-picker"
 import { BrainstormDimensionPicker } from "@/components/reflect/brainstorm-dimension-picker"
 import { useResolveOrCreate } from "@/lib/dimension-labels"
 import type { ReflectionCapture } from "@/types/reflection"
@@ -53,6 +53,16 @@ const REFLECT_STEPS: { id: ReflectStep; label: string }[] = [
   { id: "prompts", label: "Prompts" },
   { id: "review", label: "Review" },
 ]
+
+const ENABLED_LENS_IDS = new Set<LensId>(["life", "work"])
+
+function getAnchorPromptId(lens: Lens): string | null {
+  return lens.prompts.find((p) => p.contextOnly)?.id ?? null
+}
+
+function getRolePromptId(lens: Lens, role: "problems" | "customers"): string | null {
+  return lens.prompts.find((p) => p.role === role)?.id ?? null
+}
 
 const PICK_GUIDANCE = {
   title: "Choose your discovery method",
@@ -258,7 +268,7 @@ function PickMethodPanel({ onPick }: { onPick: (lensId: LensId) => void }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pr-3">
             {REFLECT_LENSES.map((lens) => {
               const Icon = lens.icon
-              const isEnabled = lens.id === "life"
+              const isEnabled = ENABLED_LENS_IDS.has(lens.id)
               const inner = (
                 <Card
                   className={cn(
@@ -414,11 +424,14 @@ function PromptsPanel({
 
   const useLifeExperiencesPicker =
     lens.id === "life" && prompt.id === "significant-experience"
+  const useWorkContextPicker =
+    lens.id === "work" && prompt.id === "work-context"
+  const useAnchorPicker = useLifeExperiencesPicker || useWorkContextPicker
 
   const dimensionPickerColumn: "problems" | "customers" | null =
-    lens.id === "life" && prompt.id === "harder-than-needed"
+    prompt.role === "problems"
       ? "problems"
-      : lens.id === "life" && prompt.id === "customer"
+      : prompt.role === "customers"
         ? "customers"
         : null
 
@@ -444,20 +457,22 @@ function PromptsPanel({
     setAnswerSlots(prompt.id, slots)
   }
 
-  const selectedExperienceTitle = useMemo(() => {
-    if (!useLifeExperiencesPicker) return null
+  const selectedAnchorTitle = useMemo(() => {
+    if (!useAnchorPicker) return null
     const firstFilled = promptAnswers.find((a) => a.text.trim().length > 0)
     return firstFilled ? firstFilled.text.trim() : null
-  }, [useLifeExperiencesPicker, promptAnswers])
+  }, [useAnchorPicker, promptAnswers])
 
-  const chosenLifeExperience = useMemo(() => {
-    if (lens.id !== "life") return null
-    const list = answers["significant-experience"] ?? []
+  const anchorPromptId = useMemo(() => getAnchorPromptId(lens), [lens])
+  const chosenAnchor = useMemo(() => {
+    if (!anchorPromptId) return null
+    const list = answers[anchorPromptId] ?? []
     const firstFilled = list.find((a) => a.text.trim().length > 0)
     return firstFilled ? firstFilled.text.trim() : null
-  }, [lens.id, answers])
+  }, [anchorPromptId, answers])
+  const isAnchorPrompt = anchorPromptId !== null && prompt.id === anchorPromptId
 
-  function handleSelectExperience(title: string | null) {
+  function handleSelectAnchor(title: string | null) {
     setAnswerText(prompt.id, 0, title ?? "")
   }
 
@@ -495,7 +510,7 @@ function PromptsPanel({
         <p className="text-base font-semibold text-white">
           {prompt.multipleAllowed ? "Your answers" : "Your answer"}
         </p>
-        {(useLifeExperiencesPicker || dimensionPickerColumn) && (
+        {(useAnchorPicker || dimensionPickerColumn) && (
           <Button
             type="button"
             onClick={() => setAddDialogOpen(true)}
@@ -506,14 +521,21 @@ function PromptsPanel({
           </Button>
         )}
       </div>
-      {chipsCategory && !useLifeExperiencesPicker && !dimensionPickerColumn && (
+      {chipsCategory && !useAnchorPicker && !dimensionPickerColumn && (
         <SelfDiscoveryChips category={chipsCategory} onPick={handlePickChip} />
       )}
 
       {useLifeExperiencesPicker ? (
         <LifeExperiencesPicker
-          selectedTitle={selectedExperienceTitle}
-          onSelect={handleSelectExperience}
+          selectedTitle={selectedAnchorTitle}
+          onSelect={handleSelectAnchor}
+          addDialogOpen={addDialogOpen}
+          onAddDialogOpenChange={setAddDialogOpen}
+        />
+      ) : useWorkContextPicker ? (
+        <WorkContextPicker
+          selectedTitle={selectedAnchorTitle}
+          onSelect={handleSelectAnchor}
           addDialogOpen={addDialogOpen}
           onAddDialogOpenChange={setAddDialogOpen}
         />
@@ -523,9 +545,11 @@ function PromptsPanel({
           selectedLabels={selectedDimensionLabels}
           onChange={handleDimensionChange}
           addPlaceholder={
-            dimensionPickerColumn === "problems"
-              ? "e.g. School pickup logistics, finding a trusted plumber"
-              : "e.g. First-time freelancers, parents of teenagers"
+            prompt.examples && prompt.examples.length > 0
+              ? `e.g. ${prompt.examples[0]}`
+              : dimensionPickerColumn === "problems"
+                ? "e.g. School pickup logistics, finding a trusted plumber"
+                : "e.g. First-time freelancers, parents of teenagers"
           }
           ariaLabel={
             dimensionPickerColumn === "problems"
@@ -591,12 +615,12 @@ function PromptsPanel({
         </div>
         <h3 className="text-xl font-bold leading-tight">{lens.title}</h3>
       </div>
-      {chosenLifeExperience && (
+      {chosenAnchor && !isAnchorPrompt && (
         <div className="flex items-start gap-2 rounded-md border border-yellow-600/30 bg-yellow-600/10 px-3 py-2">
           <Icon className="h-4 w-4 text-yellow-700 shrink-0 mt-0.5" aria-hidden="true" />
           <div className="flex flex-wrap items-baseline gap-x-2 text-base leading-snug">
             <span className="font-medium">Reflecting on:</span>
-            <span>{chosenLifeExperience}</span>
+            <span>{chosenAnchor}</span>
           </div>
         </div>
       )}
@@ -661,14 +685,6 @@ function PromptsPanel({
   )
 }
 
-const LIFE_LENS_ORDER = [
-  "harder-than-needed",
-  "wish-told",
-  "wasted-spend",
-  "personal-workaround",
-  "customer",
-] as const
-
 function ReviewPanel({
   onBack,
   onJumpToPrompt,
@@ -691,39 +707,41 @@ function ReviewPanel({
   const [saveDialogOpen, setSaveDialogOpen] = useState(false)
   const [dialogTitle, setDialogTitle] = useState("")
 
+  const anchorPromptId = useMemo(() => getAnchorPromptId(lens), [lens])
+  const problemsPromptId = useMemo(() => getRolePromptId(lens, "problems"), [lens])
+  const customersPromptId = useMemo(() => getRolePromptId(lens, "customers"), [lens])
   const candidatePrompts = lens.prompts.filter((p) => !p.contextOnly)
-  const isLifeLens = lens.id === "life"
+  const hasAnchorFlow = anchorPromptId !== null
+  const anchorLabel = lens.anchorLabel ?? "Anchor"
 
   const filledAnswers = candidatePrompts.reduce((sum, p) => {
     return sum + (answers[p.id] ?? []).filter((a) => a.text.trim().length > 0).length
   }, 0)
 
-  const lifeExperience = isLifeLens
-    ? (answers["significant-experience"]?.[0]?.text ?? "").trim()
+  const anchorValue = hasAnchorFlow
+    ? (answers[anchorPromptId!]?.[0]?.text ?? "").trim()
     : ""
-  const hasLifeCandidate = isLifeLens && lifeExperience.length > 0 && filledAnswers > 0
-  const totalKept = isLifeLens ? (hasLifeCandidate ? 1 : 0) : filledAnswers
+  const hasCandidate = hasAnchorFlow && anchorValue.length > 0 && filledAnswers > 0
+  const totalKept = hasAnchorFlow ? (hasCandidate ? 1 : 0) : filledAnswers
 
   const filledLabels = useMemo(() => {
-    function labels(promptId: string): string[] {
+    function labels(promptId: string | null): string[] {
+      if (!promptId) return []
       return (answers[promptId] ?? []).map((a) => a.text.trim()).filter((t) => t.length > 0)
     }
     return {
-      problems: labels("harder-than-needed"),
-      customers: labels("customer"),
-      wishTold: labels("wish-told"),
-      wastedSpend: labels("wasted-spend"),
-      workaround: labels("personal-workaround"),
+      problems: labels(problemsPromptId),
+      customers: labels(customersPromptId),
     }
-  }, [answers])
+  }, [answers, problemsPromptId, customersPromptId])
 
   function openSaveDialog() {
-    setDialogTitle(lifeExperience)
+    setDialogTitle(anchorValue)
     setSaveDialogOpen(true)
   }
 
   async function handleSaveAsProblem() {
-    if (!isLifeLens || !hasLifeCandidate) return
+    if (!hasAnchorFlow || !hasCandidate) return
     const trimmedTitle = dialogTitle.trim()
     if (trimmedTitle.length === 0) return
     setSaving(true)
@@ -782,7 +800,7 @@ function ReviewPanel({
     )
   }
 
-  if (!isLifeLens) {
+  if (!hasAnchorFlow) {
     return (
       <div className="flex flex-col gap-6 w-full">
         <div className="flex items-center gap-3">
@@ -792,7 +810,7 @@ function ReviewPanel({
           <h3 className="text-xl font-bold leading-tight">Review your answers</h3>
         </div>
         <p className="text-base leading-relaxed">
-          Saving as a problem is only wired up for the Life experiences method right now.
+          Saving as a problem isn&apos;t wired up for this method yet.
         </p>
         <div>
           <Button variant="outline" onClick={onBack} className="gap-2">
@@ -804,14 +822,12 @@ function ReviewPanel({
     )
   }
 
-  const orderedPrompts = LIFE_LENS_ORDER.map((id) =>
-    candidatePrompts.find((p) => p.id === id)
-  ).filter((p): p is NonNullable<typeof p> => Boolean(p))
-  const problemsPrompt = orderedPrompts.find((p) => p.id === "harder-than-needed")
-  const customerPrompt = orderedPrompts.find((p) => p.id === "customer")
-  const otherPrompts = orderedPrompts.filter(
-    (p) => p.id !== "harder-than-needed" && p.id !== "customer"
+  const problemsPrompt = candidatePrompts.find((p) => p.id === problemsPromptId)
+  const customerPrompt = candidatePrompts.find((p) => p.id === customersPromptId)
+  const otherPrompts = candidatePrompts.filter(
+    (p) => p.id !== problemsPromptId && p.id !== customersPromptId
   )
+  const AnchorIcon = lens.icon
 
   return (
     <div className="flex flex-col gap-6 w-full">
@@ -822,27 +838,29 @@ function ReviewPanel({
         <h3 className="text-xl font-bold leading-tight">Review your answers</h3>
       </div>
       <p className="text-base leading-relaxed">
-        {hasLifeCandidate ? (
+        {hasCandidate ? (
           <>
             Your answers will be saved as <span className="font-semibold">one problem</span> in your
             problem bank. Click any heading below to jump back to that step.
           </>
         ) : (
-          <>Add a life experience and at least one friction you noticed to save it as a problem.</>
+          <>
+            Add {/aeiou/i.test(anchorLabel.charAt(0)) ? "an" : "a"} {anchorLabel.toLowerCase()} and at least one friction you noticed to save it as a problem.
+          </>
         )}
       </p>
 
-      {lifeExperience.length > 0 && (
+      {anchorPromptId && anchorValue.length > 0 && (
         <section className="rounded-lg border bg-card p-4 flex flex-col gap-3">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-8 h-8 rounded-md shrink-0 bg-yellow-600" aria-hidden="true">
-              <HeartHandshake className="h-4 w-4 text-white" />
+              <AnchorIcon className="h-4 w-4 text-white" />
             </div>
-            <TitleButton onClick={() => onJumpToPrompt("significant-experience")}>
-              Life experience
+            <TitleButton onClick={() => onJumpToPrompt(anchorPromptId)}>
+              {anchorLabel}
             </TitleButton>
           </div>
-          <p className="text-base font-medium">{lifeExperience}</p>
+          <p className="text-base font-medium">{anchorValue}</p>
         </section>
       )}
 
@@ -1005,16 +1023,20 @@ function ReviewPanel({
                 id="reflect-problem-description"
                 value={dialogTitle}
                 onChange={(e) => setDialogTitle(e.target.value)}
-                placeholder="e.g. Coordinating the same form across three providers who each wanted their own copy"
+                placeholder={
+                  problemsPrompt?.examples && problemsPrompt.examples.length > 0
+                    ? `e.g. ${problemsPrompt.examples[0]}`
+                    : "Describe the problem in a sentence or two."
+                }
                 rows={2}
                 className="text-base"
               />
             </div>
 
-            {lifeExperience.length > 0 && (
+            {anchorValue.length > 0 && (
               <div className="flex flex-col gap-1.5">
-                <p className="text-base font-medium">Life experience</p>
-                <p className="text-base">{lifeExperience}</p>
+                <p className="text-base font-medium">{anchorLabel}</p>
+                <p className="text-base">{anchorValue}</p>
               </div>
             )}
 
