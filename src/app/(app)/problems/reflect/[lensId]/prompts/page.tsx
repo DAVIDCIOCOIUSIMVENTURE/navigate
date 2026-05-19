@@ -14,6 +14,7 @@ import { ArrowLeft, ArrowRight, ChevronDown, Plus, Trash2 } from "lucide-react"
 import { useReflect } from "../context"
 import { SelfDiscoveryChips } from "@/components/reflect/self-discovery-chips"
 import { LifeExperiencesPicker } from "@/components/reflect/life-experiences-picker"
+import { ProblemsDimensionPicker } from "@/components/reflect/problems-dimension-picker"
 import { PromptExamples } from "@/components/reflect/prompt-examples"
 import { LIFE_PROMPT_EXAMPLES } from "@/data/reflectLifeExamples"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -22,7 +23,14 @@ import { cn } from "@/lib/utils"
 
 export default function LensPromptsPage() {
   const router = useRouter()
-  const { lens, answers, setAnswerText, addAnswerSlot, removeAnswerSlot } = useReflect()
+  const {
+    lens,
+    answers,
+    setAnswerText,
+    addAnswerSlot,
+    removeAnswerSlot,
+    setAnswerSlots,
+  } = useReflect()
   const [index, setIndex] = useState(0)
   const [examplesOpen, setExamplesOpen] = useState(false)
   const [activeTab, setActiveTab] = useState<"strategy" | "examples">("strategy")
@@ -31,7 +39,10 @@ export default function LensPromptsPage() {
   const prompt = lens.prompts[index]
   const total = lens.prompts.length
   const isLast = index === total - 1
-  const promptAnswers = answers[prompt.id] ?? [{ text: "", context: {} }]
+  const promptAnswers = useMemo(
+    () => answers[prompt.id] ?? [{ text: "", context: {} }],
+    [answers, prompt.id]
+  )
 
   const chipsCategory = useMemo(() => {
     const src = lens.selfDiscoverySources?.find((s) => s.promptIds.includes(prompt.id))
@@ -40,6 +51,31 @@ export default function LensPromptsPage() {
 
   const useLifeExperiencesPicker =
     lens.id === "life" && prompt.id === "significant-experience"
+
+  const useProblemsPicker =
+    lens.id === "life" && prompt.id === "harder-than-needed"
+
+  const selectedProblemLabels = useMemo(() => {
+    if (!useProblemsPicker) return [] as string[]
+    return promptAnswers
+      .map((a) => a.text.trim())
+      .filter((t) => t.length > 0)
+  }, [useProblemsPicker, promptAnswers])
+
+  function handleProblemsChange(next: string[]) {
+    const byLabel = new Map<string, (typeof promptAnswers)[number]>()
+    for (const a of promptAnswers) {
+      const key = a.text.trim().toLowerCase()
+      if (key.length > 0 && !byLabel.has(key)) byLabel.set(key, a)
+    }
+    const slots = next.map((label) => {
+      const existing = byLabel.get(label.trim().toLowerCase())
+      return existing
+        ? { ...existing, text: label.trim() }
+        : { text: label.trim(), context: {} }
+    })
+    setAnswerSlots(prompt.id, slots)
+  }
 
   const selectedExperienceTitle = useMemo(() => {
     if (!useLifeExperiencesPicker) return null
@@ -175,7 +211,7 @@ export default function LensPromptsPage() {
                   </Collapsible>
                 )}
 
-                {chipsCategory && !useLifeExperiencesPicker && (
+                {chipsCategory && !useLifeExperiencesPicker && !useProblemsPicker && (
                   <SelfDiscoveryChips category={chipsCategory} onPick={handlePickChip} />
                 )}
 
@@ -183,6 +219,11 @@ export default function LensPromptsPage() {
                   <LifeExperiencesPicker
                     selectedTitle={selectedExperienceTitle}
                     onSelect={handleSelectExperience}
+                  />
+                ) : useProblemsPicker ? (
+                  <ProblemsDimensionPicker
+                    selectedLabels={selectedProblemLabels}
+                    onChange={handleProblemsChange}
                   />
                 ) : (
                   <div className="flex flex-col gap-2">
@@ -252,7 +293,7 @@ export default function LensPromptsPage() {
         <Button
           variant="outline"
           onClick={goPrev}
-          className="gap-2"
+          className="gap-2 border-primary text-primary hover:bg-primary/10 hover:text-primary"
         >
           <ArrowLeft className="h-4 w-4" />
           Back

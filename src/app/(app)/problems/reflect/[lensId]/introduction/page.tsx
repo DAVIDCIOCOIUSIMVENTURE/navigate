@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, ArrowRight, Clock } from "lucide-react"
+import { ArrowRight, Clock } from "lucide-react"
 import { useReflect } from "../context"
 
 export default function LensIntroductionPage() {
@@ -13,13 +13,6 @@ export default function LensIntroductionPage() {
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      <Button asChild variant="ghost" size="default" className="self-start gap-2">
-        <Link href="/problems/reflect">
-          <ArrowLeft className="h-4 w-4" />
-          Back to lenses
-        </Link>
-      </Button>
-
       <Card>
         <CardHeader className="space-y-6">
           <CardTitle icon={Icon} iconBg={lens.tileColor}>

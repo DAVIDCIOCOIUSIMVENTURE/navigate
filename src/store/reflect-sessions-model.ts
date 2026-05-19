@@ -183,6 +183,28 @@ export const reflectSessions = createModel<RootModel>()({
       return next
     },
 
+    setAnswerSlots(
+      state,
+      payload: { lensId: string; promptId: string; slots: ReflectAnswer[] }
+    ) {
+      const session = state.sessions[payload.lensId]
+      if (!session) return state
+      const finalList =
+        payload.slots.length === 0 ? [emptyAnswer()] : payload.slots
+      const next: ReflectSessionsState = {
+        ...state,
+        sessions: {
+          ...state.sessions,
+          [payload.lensId]: {
+            ...session,
+            answers: { ...session.answers, [payload.promptId]: finalList },
+          },
+        },
+      }
+      saveToStorage(next)
+      return next
+    },
+
     removeAnswerSlot(
       state,
       payload: { lensId: string; promptId: string; index: number }

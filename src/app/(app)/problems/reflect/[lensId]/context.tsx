@@ -29,6 +29,7 @@ type ReflectContextValue = {
   ) => void
   addAnswerSlot: (promptId: string) => void
   removeAnswerSlot: (promptId: string, index: number) => void
+  setAnswerSlots: (promptId: string, slots: ReflectAnswer[]) => void
   resetSession: () => void
   clearSession: () => void
 }
@@ -112,6 +113,13 @@ export function ReflectProvider({
     [dispatch, lens.id]
   )
 
+  const setAnswerSlots = useCallback(
+    (promptId: string, slots: ReflectAnswer[]) => {
+      dispatch.reflectSessions.setAnswerSlots({ lensId: lens.id, promptId, slots })
+    },
+    [dispatch, lens.id]
+  )
+
   const resetSession = useCallback(() => {
     dispatch.reflectSessions.resetSession({
       lensId: lens.id,
@@ -133,6 +141,7 @@ export function ReflectProvider({
       setAnswerContext,
       addAnswerSlot,
       removeAnswerSlot,
+      setAnswerSlots,
       resetSession,
       clearSession,
     }),
@@ -144,6 +153,7 @@ export function ReflectProvider({
       setAnswerContext,
       addAnswerSlot,
       removeAnswerSlot,
+      setAnswerSlots,
       resetSession,
       clearSession,
     ]

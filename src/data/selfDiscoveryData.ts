@@ -169,7 +169,7 @@ export const SELF_DISCOVERY_CATEGORIES: SelfDiscoveryCategory[] = [
       {
         url: "life-experiences",
         titleId: "life-experiences",
-        title: "What significant life experiences have shaped you?",
+        title: "What life experiences have you acquired?",
         description: "Think about important events, challenges, or achievements that changed your perspective.",
         suggestions: [
           {

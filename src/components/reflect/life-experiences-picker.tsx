@@ -5,8 +5,14 @@ import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Check, Plus } from "lucide-react"
+import { Check, ChevronDown, Plus } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { brainstormColumns } from "@/data/brainstormData"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 
 const LIFE_EXPERIENCES_QUESTION_URL = "life-experiences"
 
@@ -17,7 +23,7 @@ type Props = {
 
 /**
  * Single-select picker bound to the self-discovery
- * "What significant life experiences have shaped you?" question. The list mirrors
+ * "What life experiences have you acquired?" question. The list mirrors
  * `selfDiscoveryItems` filtered by that question, and adding a new entry here writes
  * back through the same model so the two stay in sync.
  */
@@ -26,12 +32,49 @@ export function LifeExperiencesPicker({ selectedTitle, onSelect }: Props) {
   const items = useSelector((s: RootState) =>
     s.selfDiscoveryItems.items.filter((i) => i.questionUrl === LIFE_EXPERIENCES_QUESTION_URL)
   )
+  const lifeCandidates = useSelector((s: RootState) =>
+    s.problemCandidates.items.filter((c) => c.lensId === "life")
+  )
+  const customContexts = useSelector(
+    (s: RootState) => s.customBrainstormItems.byColumn.contexts ?? []
+  )
   const [draft, setDraft] = useState("")
+  const [openGroupId, setOpenGroupId] = useState<string | null>(null)
+
+  const contextGroups = useMemo(() => {
+    const col = brainstormColumns.find((c) => c.id === "contexts")
+    const builtIn = col
+      ? col.items.map((cat) => ({
+          id: cat.id,
+          label: cat.label,
+          items: (cat.children ?? []).map((c) => ({ id: c.id, label: c.label })),
+        }))
+      : []
+    if (customContexts.length === 0) return builtIn
+    return [
+      {
+        id: "context-custom",
+        label: "Your contexts",
+        items: customContexts.map((c) => ({ id: c.id, label: c.label })),
+      },
+      ...builtIn,
+    ]
+  }, [customContexts])
 
   const sortedItems = useMemo(
     () => [...items].sort((a, b) => a.title.localeCompare(b.title)),
     [items]
   )
+
+  const usageByTitle = useMemo(() => {
+    const counts = new Map<string, number>()
+    for (const c of lifeCandidates) {
+      const key = (c.context?.experience ?? "").trim().toLowerCase()
+      if (!key) continue
+      counts.set(key, (counts.get(key) ?? 0) + 1)
+    }
+    return counts
+  }, [lifeCandidates])
 
   function handleAdd() {
     const title = draft.trim()
@@ -55,7 +98,7 @@ export function LifeExperiencesPicker({ selectedTitle, onSelect }: Props) {
         </label>
         <p className="text-base text-white">
           Anything you add is also saved to your self-discovery under
-          &quot;What significant life experiences have shaped you?&quot;.
+          &quot;What life experiences have you acquired?&quot;.
         </p>
         <div className="flex gap-2">
           <Input
@@ -85,7 +128,7 @@ export function LifeExperiencesPicker({ selectedTitle, onSelect }: Props) {
 
       <div
         role="radiogroup"
-        aria-label="Pick one significant life experience"
+        aria-label="Pick one life experience"
         className="flex flex-col gap-2"
       >
         <p className="text-base font-semibold text-white">From your self-discovery</p>
@@ -97,6 +140,7 @@ export function LifeExperiencesPicker({ selectedTitle, onSelect }: Props) {
           <ul className="flex flex-col gap-1 rounded-lg bg-card p-2">
             {sortedItems.map((item) => {
               const isSelected = selectedTitle === item.title
+              const usageCount = usageByTitle.get(item.title.trim().toLowerCase()) ?? 0
               return (
                 <li key={item.id}>
                   <button
@@ -122,7 +166,12 @@ export function LifeExperiencesPicker({ selectedTitle, onSelect }: Props) {
                     >
                       {isSelected && <Check className="h-3 w-3" />}
                     </span>
-                    <span className="text-base leading-snug">{item.title}</span>
+                    <span className="flex-1 text-base leading-snug">{item.title}</span>
+                    {usageCount > 0 && (
+                      <span className="ml-2 shrink-0 text-base bg-secondary text-secondary-foreground rounded-full px-2 py-0.5">
+                        Reflected {usageCount}x
+                      </span>
+                    )}
                   </button>
                 </li>
               )
@@ -130,6 +179,104 @@ export function LifeExperiencesPicker({ selectedTitle, onSelect }: Props) {
           </ul>
         )}
       </div>
+
+      {contextGroups.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <p className="text-base font-semibold text-white">
+            Or pick from common contexts
+          </p>
+          <p className="text-base text-white">
+            Contexts come from the brainstorm Context dimension. Picking one
+            replaces your current selection.
+          </p>
+          <div className="flex flex-col gap-2 rounded-lg bg-card p-2">
+            {contextGroups.map((group) => {
+              const open = openGroupId === group.id
+              const selectedInGroup = group.items.some(
+                (i) => selectedTitle === i.label
+              )
+              return (
+                <Collapsible
+                  key={group.id}
+                  open={open}
+                  onOpenChange={(next) =>
+                    setOpenGroupId(next ? group.id : null)
+                  }
+                >
+                  <CollapsibleTrigger asChild>
+                    <button
+                      type="button"
+                      className="w-full flex items-center justify-between gap-2 rounded-md px-2 py-2 text-left hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      <span className="flex items-center gap-2">
+                        <span className="text-base font-medium">
+                          {group.label}
+                        </span>
+                        {selectedInGroup && (
+                          <span className="text-base bg-primary/15 text-primary rounded-full px-2 py-0.5">
+                            Selected
+                          </span>
+                        )}
+                      </span>
+                      <ChevronDown
+                        className={cn(
+                          "h-4 w-4 transition-transform",
+                          open && "rotate-180"
+                        )}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="pt-1">
+                    <ul
+                      role="radiogroup"
+                      aria-label={group.label}
+                      className="flex flex-col gap-1 pl-2"
+                    >
+                      {group.items.map((item) => {
+                        const isSelected = selectedTitle === item.label
+                        return (
+                          <li key={item.id}>
+                            <button
+                              type="button"
+                              role="radio"
+                              aria-checked={isSelected}
+                              onClick={() =>
+                                onSelect(isSelected ? null : item.label)
+                              }
+                              className={cn(
+                                "w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                                isSelected
+                                  ? "bg-primary/10 border border-primary"
+                                  : "border border-transparent hover:bg-accent/40"
+                              )}
+                            >
+                              <span
+                                className={cn(
+                                  "grid place-content-center h-4 w-4 shrink-0 rounded-full border",
+                                  isSelected
+                                    ? "border-primary bg-primary text-primary-foreground"
+                                    : "border-input"
+                                )}
+                                aria-hidden="true"
+                              >
+                                {isSelected && <Check className="h-3 w-3" />}
+                              </span>
+                              <span className="flex-1 text-base leading-snug">
+                                {item.label}
+                              </span>
+                            </button>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  </CollapsibleContent>
+                </Collapsible>
+              )
+            })}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

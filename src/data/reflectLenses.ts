@@ -78,7 +78,7 @@ export const REFLECT_LENSES: Lens[] = [
     prompts: [
       {
         id: "significant-experience",
-        question: "Which significant life experience are you reflecting on?",
+        question: "What life experiences have you acquired?",
         helperText:
           "Pick one from your self-discovery, or add a new one. One experience at a time keeps the next prompts specific. To explore another experience later, run this tool again. This selection sets the stage for the next prompts and is not saved as a candidate.",
         multipleAllowed: false,
@@ -88,27 +88,23 @@ export const REFLECT_LENSES: Lens[] = [
         id: "harder-than-needed",
         question: "Looking back at that experience, what part was harder than it needed to be?",
         multipleAllowed: true,
-        capturesContext: ["who-else"],
       },
       {
         id: "wish-told",
         question: "What did you wish someone had told you upfront?",
         helperText: "Not generic advice. The specific thing you only learned by doing.",
         multipleAllowed: true,
-        capturesContext: ["who-else"],
       },
       {
         id: "wasted-spend",
         question: "What did you spend money on during that experience that turned out not to help?",
         helperText: "Misallocated spend often signals a missing or misleading product.",
         multipleAllowed: true,
-        capturesContext: ["who-else"],
       },
       {
         id: "personal-workaround",
         question: "What workaround did you build for yourself that you still use?",
         multipleAllowed: true,
-        capturesContext: ["who-else"],
       },
     ],
   },
