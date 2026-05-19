@@ -56,7 +56,7 @@ type CardTitleProps = React.HTMLAttributes<HTMLHeadingElement> & {
 }
 
 const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
-  ({ className, icon: Icon, iconBg = "bg-primary", as: Tag = "h2", children, ...props }, ref) => (
+  ({ className, icon: Icon, iconBg = "bg-tertiary", as: Tag = "h2", children, ...props }, ref) => (
     <Tag
       ref={ref}
       className={cn(
@@ -67,7 +67,7 @@ const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
     >
       {Icon && (
         <div className={cn("flex items-center justify-center w-10 h-10 rounded-lg shrink-0", iconBg)}>
-          <Icon className="h-5 w-5 text-primary-foreground" />
+          <Icon className="h-5 w-5 text-tertiary-foreground" />
         </div>
       )}
       {children}

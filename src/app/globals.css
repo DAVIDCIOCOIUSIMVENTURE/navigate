@@ -16,20 +16,20 @@
     --popover: 40 10% 98%;
     --popover-foreground: 194 80% 12%;
 
-    /* Primary: Cerulean teal (#0a7cb2) */
-    --primary: 199 89% 37%;
+    /* Primary: Mustard gold (#ca8a04) */
+    --primary: 41 96% 40%;
     --primary-foreground: 40 60% 97%;
 
     /* Secondary: soft warm-leaning neutral (UI secondary surface, not brand) */
     --secondary: 40 12% 90%;
     --secondary-foreground: 212 50% 20%;
 
-    /* Secondary brand: navy (#0f3e74) */
-    --secondary-brand: 212 77% 26%;
+    /* Secondary brand: cerulean teal (#0a7db2) */
+    --secondary-brand: 199 89% 37%;
     --secondary-brand-foreground: 40 60% 97%;
 
-    /* Tertiary: mustard gold (#C9A227) */
-    --tertiary: 46 67% 47%;
+    /* Tertiary: navy (#0f3f75) */
+    --tertiary: 212 77% 26%;
     --tertiary-foreground: 40 60% 97%;
 
     /* Success: forest green (#1F6E48) */
@@ -44,42 +44,42 @@
     --accent: 185 28% 88%;
     --accent-foreground: 199 70% 20%;
 
-    /* Destructive: deep crimson (#9F1239) */
-    --destructive: 343 80% 35%;
+    /* Destructive: pure red (#ab0d0d) */
+    --destructive: 0 86% 36%;
     --destructive-foreground: 40 60% 97%;
 
     /* Borders & Inputs */
     --border: 40 8% 84%;
     --input: 40 8% 84%;
-    --ring: 199 89% 37%;
+    --ring: 41 96% 40%;
 
-    /* Chart palette: coral primary, green, gold, blue, rose */
-    --chart-1: 199 89% 37%;
+    /* Chart palette: gold primary, green, teal, navy, rose */
+    --chart-1: 41 96% 40%;
     --chart-2: 138 32% 38%;
-    --chart-3: 43 65% 49%;
-    --chart-4: 210 45% 45%;
+    --chart-3: 199 89% 37%;
+    --chart-4: 212 77% 26%;
     --chart-5: 350 55% 50%;
 
     /* Border Radius: slightly larger for modern feel */
     --radius: 0.625rem;
 
     /* Primary dark variant */
-    --primary-dark: 199 89% 28%;
+    --primary-dark: 41 96% 30%;
     --primary-dark-foreground: 40 60% 97%;
 
     /* Primary light variant: tinted background */
-    --primary-light: 199 80% 94%;
-    --primary-light-foreground: 199 89% 22%;
+    --primary-light: 41 80% 92%;
+    --primary-light-foreground: 41 96% 22%;
 
-    /* Sidebar: deep teal-navy (#172c35) for the left-hand menu */
-    --sidebar-background: 198 40% 15%;
+    /* Sidebar: mid teal (#145e81) for the left-hand menu */
+    --sidebar-background: 199 73% 29%;
     --sidebar-foreground: 210 25% 95%;
-    --sidebar-primary: 199 89% 45%;
+    --sidebar-primary: 41 96% 55%;
     --sidebar-primary-foreground: 40 60% 97%;
-    --sidebar-accent: 199 89% 37%;
+    --sidebar-accent: 41 96% 50%;
     --sidebar-accent-foreground: 40 60% 97%;
-    --sidebar-border: 198 40% 10%;
-    --sidebar-ring: 199 89% 45%;
+    --sidebar-border: 199 73% 22%;
+    --sidebar-ring: 41 96% 55%;
 
     /* Brand: keep distinct from primary for marketing/callout use */
     --brand: 199 89% 32%;
@@ -101,29 +101,29 @@
     --popover: 200 18% 12%;
     --popover-foreground: 40 15% 92%;
 
-    /* Primary: brighter cerulean for dark backgrounds */
-    --primary: 199 85% 55%;
-    --primary-foreground: 199 50% 10%;
+    /* Primary: brighter gold for dark backgrounds */
+    --primary: 41 90% 58%;
+    --primary-foreground: 40 60% 97%;
 
     /* Primary dark variant */
-    --primary-dark: 199 89% 32%;
+    --primary-dark: 41 96% 35%;
     --primary-dark-foreground: 40 60% 97%;
 
     /* Primary light variant */
-    --primary-light: 199 40% 22%;
+    --primary-light: 41 40% 22%;
     --primary-light-foreground: 40 15% 92%;
 
     /* Secondary */
     --secondary: 200 14% 17%;
     --secondary-foreground: 40 15% 90%;
 
-    /* Secondary brand: brighter navy for dark mode (lighter variant of #0f3e74) */
-    --secondary-brand: 212 70% 65%;
-    --secondary-brand-foreground: 40 60% 97%;
+    /* Secondary brand: brighter cerulean for dark mode */
+    --secondary-brand: 199 80% 60%;
+    --secondary-brand-foreground: 199 50% 10%;
 
-    /* Tertiary: brighter mustard for dark mode */
-    --tertiary: 46 70% 58%;
-    --tertiary-foreground: 200 25% 10%;
+    /* Tertiary: brighter navy for dark mode */
+    --tertiary: 212 70% 62%;
+    --tertiary-foreground: 212 50% 10%;
 
     /* Success: brighter forest green for dark mode */
     --success: 151 50% 45%;
@@ -137,34 +137,34 @@
     --accent: 185 40% 22%;
     --accent-foreground: 185 25% 92%;
 
-    /* Destructive: brighter crimson for dark mode */
-    --destructive: 343 65% 50%;
+    /* Destructive: brighter red for dark mode */
+    --destructive: 0 75% 52%;
     --destructive-foreground: 40 60% 95%;
 
     /* Borders & Inputs */
     --border: 200 14% 20%;
     --input: 200 14% 20%;
-    --ring: 199 85% 55%;
+    --ring: 41 90% 58%;
 
     /* Chart palette: brighter for dark mode */
-    --chart-1: 199 85% 55%;
+    --chart-1: 41 90% 58%;
     --chart-2: 138 38% 52%;
-    --chart-3: 43 70% 58%;
-    --chart-4: 210 55% 58%;
+    --chart-3: 199 80% 60%;
+    --chart-4: 212 70% 62%;
     --chart-5: 350 60% 60%;
 
-    /* Sidebar: deep teal-navy (#172c35) matches light-mode sidebar */
-    --sidebar-background: 198 40% 12%;
+    /* Sidebar: darker teal for dark-mode sidebar */
+    --sidebar-background: 199 73% 22%;
     --sidebar-foreground: 210 25% 92%;
-    --sidebar-primary: 199 85% 55%;
+    --sidebar-primary: 41 90% 58%;
     --sidebar-primary-foreground: 40 60% 97%;
-    --sidebar-accent: 199 85% 55%;
+    --sidebar-accent: 41 90% 50%;
     --sidebar-accent-foreground: 40 60% 97%;
-    --sidebar-border: 198 40% 8%;
-    --sidebar-ring: 199 85% 55%;
+    --sidebar-border: 199 73% 14%;
+    --sidebar-ring: 41 90% 58%;
 
     /* Brand */
-    --brand: 199 85% 55%;
+    --brand: 199 80% 55%;
     --brand-foreground: 199 50% 10%;
 
     /* Surface: dark warm brown for case study sections */

@@ -81,11 +81,11 @@ export default function SelectProblemPage() {
                   }`}
                 >
                   <div className={`flex items-center justify-center w-8 h-8 rounded-lg shrink-0 ${
-                    selected ? "bg-primary" : "bg-primary/10"
+                    selected ? "bg-primary" : "bg-tertiary/10"
                   }`}>
                     {selected
                       ? <CheckCircle2 className="h-4 w-4 text-primary-foreground" />
-                      : <Target className="h-4 w-4 text-primary" />}
+                      : <Target className="h-4 w-4 text-tertiary" />}
                   </div>
                   <div className="flex-1 flex flex-col gap-1 min-w-0">
                     <div className="flex items-start justify-between gap-3">

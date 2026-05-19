@@ -101,7 +101,7 @@ function LinkedProblemSection({ problemId, problemDescription }: { problemId: nu
         <p className="text-sm italic">This solution is not linked to a problem.</p>
       ) : (
         <div className="flex items-start gap-3 rounded-md border bg-background p-3">
-          <Target className="h-4 w-4 text-primary shrink-0 mt-0.5" />
+          <Target className="h-4 w-4 text-tertiary shrink-0 mt-0.5" />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium">
               {problemDescription || `Problem #${problemId}`}

@@ -315,7 +315,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                       <TableCell>{originalIndex + 1}</TableCell>
                       <TableCell className="text-sm">
                         <div className="flex items-center gap-2">
-                          <Target className="h-3.5 w-3.5 text-primary shrink-0" />
+                          <Target className="h-3.5 w-3.5 text-tertiary shrink-0" />
                           {problem.description ? (
                             <span className="line-clamp-2">{problem.description}</span>
                           ) : (

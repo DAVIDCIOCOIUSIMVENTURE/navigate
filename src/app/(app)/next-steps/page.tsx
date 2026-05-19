@@ -82,7 +82,7 @@ export default function NextStepsPage() {
                 return (
                   <div key={problem.id} className="rounded-lg border overflow-hidden">
                     <div className="flex items-center gap-2 px-4 py-2.5 bg-muted/40 border-b">
-                      <Target className="h-4 w-4 text-primary shrink-0" />
+                      <Target className="h-4 w-4 text-tertiary shrink-0" />
                       <Link
                         href={`/problems/${problem.id}`}
                         className="flex-1 min-w-0 text-sm font-medium truncate hover:underline"

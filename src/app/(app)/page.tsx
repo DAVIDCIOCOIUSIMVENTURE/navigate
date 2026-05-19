@@ -184,7 +184,7 @@ export default function DashboardPage() {
                         ) : (
                           <div className="w-5 h-5 shrink-0" />
                         )}
-                        <Target className="h-4 w-4 text-primary shrink-0" />
+                        <Target className="h-4 w-4 text-tertiary shrink-0" />
                         <Link
                           href={`/problems/${p.id}`}
                           className="flex-1 min-w-0 text-sm truncate hover:underline"
