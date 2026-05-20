@@ -15,6 +15,11 @@ export const navigationItems = {
   ],
   topMenu: [
     {
+      title: "Dashboard",
+      url: "/",
+      icon: LayoutDashboard
+    },
+    {
       title: "Why It Matters",
       url: "/foundations",
       icon: BookOpen
@@ -23,11 +28,6 @@ export const navigationItems = {
       title: "Next Steps",
       url: "/next-steps",
       icon: Milestone
-    },
-    {
-      title: "Dashboard",
-      url: "/",
-      icon: LayoutDashboard
     },
   ],
 }

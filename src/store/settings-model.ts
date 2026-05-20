@@ -1,6 +1,5 @@
 import { createModel } from "@rematch/core"
 import type { RootModel } from "."
-import type { SidebarMode } from "@/components/ui/sidebar"
 
 const STORAGE_KEY = "navigate-settings"
 
@@ -8,7 +7,6 @@ export type IdentifyMode = "canvas" | "builder" | "reflect"
 export type IdentifyBuilderStep = "pick" | "category" | "choose" | "review"
 
 interface SettingsState {
-  sidebarMode: SidebarMode
   hiddenIdentifyColumns: string[]
   fullView: boolean
   identifySelected: string[]
@@ -21,7 +19,6 @@ interface SettingsState {
 }
 
 const defaultState: SettingsState = {
-  sidebarMode: "icon",
   hiddenIdentifyColumns: [],
   fullView: false,
   identifySelected: [],
@@ -46,11 +43,6 @@ export const settings = createModel<RootModel>()({
   state: defaultState,
 
   reducers: {
-    setSidebarMode(state, sidebarMode: SidebarMode) {
-      const next = { ...state, sidebarMode }
-      saveToStorage(next)
-      return next
-    },
     setHiddenIdentifyColumns(state, hiddenIdentifyColumns: string[]) {
       const next = { ...state, hiddenIdentifyColumns }
       saveToStorage(next)
@@ -115,15 +107,8 @@ export const settings = createModel<RootModel>()({
       if (typeof window === "undefined") return
       try {
         const raw = localStorage.getItem(STORAGE_KEY)
-        if (!raw) {
-          // No saved settings: expand sidebar as default first-visit experience
-          dispatch.settings.setSidebarMode("expanded")
-          return
-        }
+        if (!raw) return
         const stored: Partial<SettingsState> = JSON.parse(raw)
-        if (stored.sidebarMode) {
-          dispatch.settings.setSidebarMode(stored.sidebarMode)
-        }
         if (stored.hiddenIdentifyColumns) {
           dispatch.settings.setHiddenIdentifyColumns(stored.hiddenIdentifyColumns)
         }
