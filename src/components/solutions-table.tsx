@@ -48,7 +48,6 @@ import {
   ClipboardCheck,
 } from "lucide-react"
 import type { Solution } from "@/store/solutions-model"
-import { EditSolutionDialog } from "@/components/edit-solution-dialog"
 import { cn } from "@/lib/utils"
 import type { ValidationStatus } from "@/types/validation"
 
@@ -93,7 +92,6 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const problems = useSelector((state: RootState) => state.problems.problems)
-  const [editingSolution, setEditingSolution] = useState<Solution | null>(null)
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<"all" | ValidationStatus>("all")
   const [sortKey, setSortKey] = useState<SortKey>("index")
@@ -321,7 +319,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                                 variant="outline-card"
                                 size="icon"
                                 className="h-7 w-7"
-                                onClick={() => setEditingSolution(solution)}
+                                onClick={() => router.push(`/solutions/${solution.id}`)}
                                 aria-label="Edit solution"
                               >
                                 <Pencil className="h-3.5 w-3.5" />
@@ -369,12 +367,6 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
           </TableBody>
         </Table>
       </CardContent>
-      {showEditDelete && (
-        <EditSolutionDialog
-          solution={editingSolution}
-          onClose={() => setEditingSolution(null)}
-        />
-      )}
     </Card>
   )
 }

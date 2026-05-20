@@ -51,7 +51,6 @@ import {
   ClipboardCheck,
 } from "lucide-react"
 import type { Problem } from "@/store/problems-model"
-import { EditProblemDialog } from "@/components/edit-problem-dialog"
 import { cn } from "@/lib/utils"
 
 import type { ValidationStatus } from "@/types/validation"
@@ -98,10 +97,6 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
-  const [editingProblemId, setEditingProblemId] = useState<number | null>(null)
-  const editingProblem = useSelector((s: RootState) =>
-    editingProblemId !== null ? s.problems.problems.find((p) => p.id === editingProblemId) ?? null : null
-  )
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<"all" | ValidationStatus>("all")
   const [sortKey, setSortKey] = useState<SortKey>("index")
@@ -191,8 +186,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
   const sortableHeaderClass = "cursor-pointer select-none hover:text-foreground"
 
   return (
-    <>
-      <Card className={cn("flex flex-col overflow-hidden", className)}>
+    <Card className={cn("flex flex-col overflow-hidden", className)}>
         <CardHeader className="shrink-0 pb-3 gap-3">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <CardTitle className="text-sm font-semibold">
@@ -362,7 +356,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                   variant="outline-card"
                                   size="icon"
                                   className="h-7 w-7"
-                                  onClick={() => setEditingProblemId(problem.id)}
+                                  onClick={() => router.push(`/problems/${problem.id}`)}
                                   aria-label="Edit problem"
                                 >
                                   <Pencil className="h-3.5 w-3.5" />
@@ -455,13 +449,5 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
           </Table>
         </CardContent>
       </Card>
-
-      {showEditDelete && (
-        <EditProblemDialog
-          problem={editingProblem}
-          onClose={() => setEditingProblemId(null)}
-        />
-      )}
-    </>
   )
 }
