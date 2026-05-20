@@ -375,16 +375,6 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                               </Button>
                             </>
                           )}
-                          <Button
-                            variant="secondary-brand"
-                            size="sm"
-                            className="h-7"
-                            onClick={() => router.push(`/problems/${problem.id}/validation/introduction`)}
-                            aria-label="Validate problem"
-                          >
-                            <ArrowRight className="h-3.5 w-3.5" />
-                            <span className="hidden md:inline ml-1">Validate</span>
-                          </Button>
                         </div>
                       </TableCell>
                     </TableRow>

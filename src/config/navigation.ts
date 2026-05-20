@@ -1,4 +1,4 @@
-import { BookOpen, Compass, Heart, Book, Brain, Briefcase, Globe, Target, Lightbulb, LayoutDashboard, Search, FlaskConical, Clock, Trophy, Milestone, Hammer, Route, Users, RotateCcw, Plus, type LucideIcon } from "lucide-react"
+import { BookOpen, Compass, Heart, Book, Brain, Briefcase, Globe, Target, Lightbulb, Home, Search, FlaskConical, Clock, Trophy, Milestone, Hammer, Route, Users, RotateCcw, Plus, type LucideIcon } from "lucide-react"
 
 export const navigationItems = {
   innovation: [
@@ -15,14 +15,19 @@ export const navigationItems = {
   ],
   topMenu: [
     {
-      title: "Dashboard",
+      title: "Home",
       url: "/",
-      icon: LayoutDashboard
+      icon: Home
     },
     {
       title: "Why It Matters",
       url: "/foundations",
       icon: BookOpen
+    },
+    {
+      title: "Self Discovery",
+      url: "/self-discovery",
+      icon: Compass
     },
     {
       title: "Next Steps",

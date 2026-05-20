@@ -4,7 +4,10 @@ import React from "react"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import { Settings, HelpCircle, NotebookText, LayoutDashboard, Target, Lightbulb, Search, ClipboardCheck, BookOpen, Compass, Milestone, type LucideIcon } from "lucide-react"
+import { Settings, HelpCircle, NotebookText, Compass } from "lucide-react"
+import type { Problem } from "@/store/problems-model"
+import type { Solution } from "@/types/solution"
+import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { navigationItems } from "@/config/navigation"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
@@ -37,33 +40,73 @@ function ContentArea({ children }: { children: React.ReactNode }) {
     </div>
   )
 }
-function getSection(pathname: string): { title: string; Icon: LucideIcon } | null {
-  if (pathname === "/") return { title: "Dashboard", Icon: LayoutDashboard }
+type Crumb = { label: string; href?: string; truncate?: boolean }
 
+function getCrumbs(pathname: string, problems: Problem[], solutions: Solution[]): Crumb[] {
+  if (pathname === "/") return [{ label: "Home" }]
+  const crumbs: Crumb[] = [{ label: "Home", href: "/" }]
   const segments = pathname.split("/").filter(Boolean)
   const [first, second, third] = segments
 
-  if (first === "foundations") return { title: "Why It Matters", Icon: BookOpen }
-
-  if (first === "self-discovery") return { title: "Self Discovery", Icon: Compass }
-
-  if (first === "settings") return { title: "Settings", Icon: Settings }
-
+  if (first === "foundations") {
+    crumbs.push({ label: "Why It Matters" })
+    return crumbs
+  }
+  if (first === "self-discovery") {
+    crumbs.push({ label: "Self Discovery" })
+    return crumbs
+  }
+  if (first === "settings") {
+    crumbs.push({ label: "Settings" })
+    return crumbs
+  }
+  if (first === "next-steps") {
+    crumbs.push({ label: "Next Steps" })
+    return crumbs
+  }
   if (first === "problems") {
-    if (segments.length === 1) return { title: "Problems", Icon: Target }
-    if (second === "identify") return { title: "Identify Problems", Icon: Search }
-    return { title: "Problem Validation", Icon: ClipboardCheck }
+    if (segments.length === 1) {
+      crumbs.push({ label: "Problems" })
+      return crumbs
+    }
+    if (second === "identify") {
+      crumbs.push({ label: "Problems", href: "/problems" })
+      crumbs.push({ label: "Identify" })
+      return crumbs
+    }
+    const problem = problems.find((p) => p.id === Number(second))
+    const name = problem?.description?.trim() || `Problem #${second}`
+    crumbs.push({ label: "Problems", href: "/problems" })
+    if (third === "validation") {
+      crumbs.push({ label: name, href: `/problems/${second}`, truncate: true })
+      crumbs.push({ label: "Validation" })
+    } else {
+      crumbs.push({ label: name, truncate: true })
+    }
+    return crumbs
   }
-
   if (first === "solutions") {
-    if (segments.length === 1) return { title: "Solutions", Icon: Lightbulb }
-    if (second === "discover") return { title: "Solution Discovery", Icon: Search }
-    if (third === "validate") return { title: "Solution Validation", Icon: ClipboardCheck }
+    if (segments.length === 1) {
+      crumbs.push({ label: "Solutions" })
+      return crumbs
+    }
+    if (second === "discover") {
+      crumbs.push({ label: "Solutions", href: "/solutions" })
+      crumbs.push({ label: "Discovery" })
+      return crumbs
+    }
+    const solution = solutions.find((s) => s.id === Number(second))
+    const name = solution?.title?.trim() || `Solution #${second}`
+    crumbs.push({ label: "Solutions", href: "/solutions" })
+    if (third === "validate") {
+      crumbs.push({ label: name, href: `/solutions/${second}`, truncate: true })
+      crumbs.push({ label: "Validation" })
+    } else {
+      crumbs.push({ label: name, truncate: true })
+    }
+    return crumbs
   }
-
-  if (first === "next-steps") return { title: "Next Steps", Icon: Milestone }
-
-  return null
+  return crumbs
 }
 
 function isFocusFlowPath(pathname: string): boolean {
@@ -72,14 +115,17 @@ function isFocusFlowPath(pathname: string): boolean {
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
-  const section = getSection(pathname)
   const [guidanceOpen, setGuidanceOpen] = useState(false)
   const [guidanceTopic, setGuidanceTopic] = useState<string | undefined>(undefined)
   const isMobile = useIsMobile()
 
   const fullView = useSelector((state: RootState) => state.settings.fullView)
   const journalOpen = useSelector((state: RootState) => state.settings.journalOpen)
+  const problems = useSelector((state: RootState) => state.problems.problems)
+  const solutions = useSelector((state: RootState) => state.solutions.solutions)
   const dispatch = useDispatch<AppDispatch>()
+
+  const crumbs = getCrumbs(pathname, problems, solutions)
 
   const isFocusFlow = isFocusFlowPath(pathname)
   const [topNavOpen, setTopNavOpen] = useState(false)
@@ -132,10 +178,34 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     dispatch.reflectSessions.init()
   }, [dispatch.settings, dispatch.selfDiscoveryItems, dispatch.customDimensionItems, dispatch.problems, dispatch.accountSettings, dispatch.solutions, dispatch.solutionWorkspaces, dispatch.notes, dispatch.problemCandidates, dispatch.reflectSessions])
 
-  const headerTitle = section && (
-    <h1 className="ml-2 text-xl font-bold min-w-0 truncate">
-      {section.title}
-    </h1>
+  const headerTitle = (
+    <Breadcrumb className="ml-2 min-w-0">
+      <BreadcrumbList className="text-base font-semibold flex-nowrap">
+        {crumbs.map((crumb, idx) => {
+          const isLast = idx === crumbs.length - 1
+          const truncateClass = crumb.truncate ? "block max-w-[20ch] truncate" : ""
+          const titleAttr = crumb.truncate ? crumb.label : undefined
+          return (
+            <React.Fragment key={`${crumb.label}-${idx}`}>
+              {idx > 0 && <BreadcrumbSeparator>/</BreadcrumbSeparator>}
+              <BreadcrumbItem className="min-w-0">
+                {isLast || !crumb.href ? (
+                  <BreadcrumbPage className={`font-bold ${truncateClass}`} title={titleAttr}>
+                    {crumb.label}
+                  </BreadcrumbPage>
+                ) : (
+                  <BreadcrumbLink asChild className="font-semibold">
+                    <Link href={crumb.href} className={truncateClass} title={titleAttr}>
+                      {crumb.label}
+                    </Link>
+                  </BreadcrumbLink>
+                )}
+              </BreadcrumbItem>
+            </React.Fragment>
+          )
+        })}
+      </BreadcrumbList>
+    </Breadcrumb>
   )
 
   const headerNav = (
@@ -146,7 +216,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           <Tooltip key={item.url}>
             <TooltipTrigger asChild>
               <Button
-                variant={isActive ? "default" : "outline"}
+                variant={isActive ? "secondary-brand" : "outline"}
                 size="icon"
                 className="h-8 w-8"
                 asChild
