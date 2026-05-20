@@ -36,6 +36,7 @@ import {
   Check,
   ChevronDown,
   ChevronRight,
+  ClipboardList,
   Eye,
   EyeOff,
   Grid3X3,
@@ -1175,149 +1176,141 @@ export default function IdentifyPage() {
             : "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]"),
       )}
     >
-      <Card className="shrink-0">
-        <CardContent className="py-3">
-          {/* Mode toggle + description + action buttons */}
-          <div className={cn("flex gap-4 min-w-0", containerSize === "wide" ? "items-center justify-between" : "flex-col items-stretch")}>
-            <div className={cn(
-              "flex min-w-0",
-              containerSize === "medium"
-                ? "flex-row items-center gap-3"
-                : "flex-col items-start gap-2"
-            )}>
-              <ToggleGroup
-                type="single"
-                value={identifyMode}
-                onValueChange={(value) => {
-                  if (value) dispatch.settings.setIdentifyMode(value as IdentifyMode)
-                }}
-                size="sm"
-                className="shrink-0"
-              >
-                <ToggleGroupItem value="canvas" aria-label="Canvas mode" className="gap-1.5 px-3 data-[state=on]:bg-secondary-brand data-[state=on]:text-secondary-brand-foreground">
-                  <Grid3X3 className="h-3.5 w-3.5" />
-                  Canvas
-                </ToggleGroupItem>
-                <ToggleGroupItem value="builder" aria-label="Problem Builder mode" className="gap-1.5 px-3 data-[state=on]:bg-secondary-brand data-[state=on]:text-secondary-brand-foreground">
-                  <Layers className="h-3.5 w-3.5" />
-                  Builder
-                </ToggleGroupItem>
-                <ToggleGroupItem value="reflect" aria-label="Reflect mode" className="gap-1.5 px-3 data-[state=on]:bg-secondary-brand data-[state=on]:text-secondary-brand-foreground">
-                  <Telescope className="h-3.5 w-3.5" />
-                  Reflect
-                </ToggleGroupItem>
-                <ToggleGroupItem
-                  value="research"
-                  disabled
-                  aria-label="Research mode, coming soon"
-                  title="Coming soon"
-                  className="gap-1.5 px-3"
-                >
-                  <Microscope className="h-3.5 w-3.5" />
-                  Research
-                  <span className="ml-1 inline-flex items-center rounded-full bg-muted px-1.5 py-0.5 text-base font-medium leading-none">
-                    Soon
-                  </span>
-                </ToggleGroupItem>
-              </ToggleGroup>
-              <p className={cn("text-base", containerSize === "wide" ? "block" : "hidden")}>
-                {identifyMode === "canvas"
-                  ? "Explore potential areas for innovation by navigating through the options below."
-                  : identifyMode === "builder"
-                    ? "Build a problem step by step by selecting from each dimension."
-                    : "Reflect on your own experiences with guided prompts to surface problems worth solving."}
-              </p>
-            </div>
-            <div className={cn("flex items-center gap-2 flex-wrap", containerSize === "wide" && "ml-auto gap-3")}>
-              {identifyMode !== "reflect" && (
-                <div className={cn("relative", containerSize === "narrow" && "w-full")}>
-                  <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className={cn("pl-9 h-8 bg-white", containerSize === "narrow" ? "w-full" : "w-44")}
-                  />
-                  {searchQuery && (
-                    <button
-                      onClick={() => setSearchQuery("")}
-                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                      aria-label="Clear search"
-                    >
-                      <X className="h-3.5 w-3.5" />
-                    </button>
-                  )}
-                </div>
-              )}
-              {identifyMode !== "reflect" && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setAddCustomDialogOpen(true)}
-                  className="gap-2"
-                >
-                  <Plus className="h-3.5 w-3.5" />
-                  Add your own item
-                </Button>
-              )}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => dispatch.settings.setFullView(!fullView)}
-                className="gap-2"
-              >
-                {fullView ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
-                {fullView ? "Exit Full View" : "Full View"}
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setTableDrawerOpen(true)}
-                className="gap-2"
-              >
-                Show Saved Problems ({savedProblems.length})
-              </Button>
-              <ConfirmDialog
-                trigger={
-                  <Button variant="outline" size="sm" className="gap-2">
-                    <RotateCcw className="h-3.5 w-3.5" />
-                    Reset
-                  </Button>
-                }
-                title="Reset?"
-                description={
-                  identifyMode === "canvas"
-                    ? "This will clear your current selection across all dimensions. Saved problems are not affected."
-                    : identifyMode === "builder"
-                      ? "This will clear your in-progress problem builder. Saved problems are not affected."
-                      : "This will return you to the discovery-method picker. Your prompt answers will remain saved for next time."
-                }
-                confirmLabel="Reset"
-                onConfirm={() => {
-                  if (identifyMode === "canvas") {
-                    clearAll()
-                  } else if (identifyMode === "builder") {
-                    builderResetRef.current?.()
-                  } else if (identifyMode === "reflect") {
-                    reflectResetRef.current?.()
-                  }
-                }}
+      <div className={cn("flex gap-4 min-w-0 shrink-0", containerSize === "wide" ? "items-center justify-between" : "flex-col items-stretch")}>
+        <div className={cn(
+          "flex min-w-0",
+          containerSize === "medium"
+            ? "flex-row items-center gap-3"
+            : "flex-col items-start gap-2"
+        )}>
+          <ToggleGroup
+            type="single"
+            value={identifyMode}
+            onValueChange={(value) => {
+              if (value) dispatch.settings.setIdentifyMode(value as IdentifyMode)
+            }}
+            size="sm"
+            className="shrink-0 bg-card border-border divide-x divide-border"
+          >
+            <ToggleGroupItem value="canvas" aria-label="Canvas mode" className="gap-1.5 px-3 rounded-none bg-card data-[state=on]:bg-secondary-brand data-[state=on]:text-secondary-brand-foreground">
+              <Grid3X3 className="h-3.5 w-3.5" />
+              <span className={cn(containerSize === "narrow" && "sr-only")}>Canvas</span>
+            </ToggleGroupItem>
+            <ToggleGroupItem value="builder" aria-label="Problem Builder mode" className="gap-1.5 px-3 rounded-none bg-card data-[state=on]:bg-secondary-brand data-[state=on]:text-secondary-brand-foreground">
+              <Layers className="h-3.5 w-3.5" />
+              <span className={cn(containerSize === "narrow" && "sr-only")}>Builder</span>
+            </ToggleGroupItem>
+            <ToggleGroupItem value="reflect" aria-label="Reflect mode" className="gap-1.5 px-3 rounded-none bg-card data-[state=on]:bg-secondary-brand data-[state=on]:text-secondary-brand-foreground">
+              <Telescope className="h-3.5 w-3.5" />
+              <span className={cn(containerSize === "narrow" && "sr-only")}>Reflect</span>
+            </ToggleGroupItem>
+            <ToggleGroupItem
+              value="research"
+              disabled
+              aria-label="Research mode, coming soon"
+              title="Coming soon"
+              className="gap-1.5 px-3 rounded-none bg-card"
+            >
+              <Microscope className="h-3.5 w-3.5" />
+              <span className={cn(containerSize === "narrow" && "sr-only")}>Research</span>
+              <span className={cn(
+                "ml-1 inline-flex items-center rounded-full bg-muted px-1.5 py-0.5 text-base font-medium leading-none",
+                containerSize === "narrow" && "sr-only",
+              )}>
+                Soon
+              </span>
+            </ToggleGroupItem>
+          </ToggleGroup>
+        </div>
+        <div className={cn("flex items-center gap-2 flex-wrap", containerSize === "wide" && "ml-auto gap-3")}>
+          {identifyMode !== "reflect" && (
+            <div className={cn("relative", containerSize === "narrow" && "w-full")}>
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                placeholder="Search..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className={cn("pl-9 h-8 bg-white", containerSize === "narrow" ? "w-full" : "w-44")}
               />
-              {identifyMode === "canvas" && (
-                <Button
-                  size="sm"
-                  onClick={openSaveDialog}
-                  disabled={totalSelected === 0}
-                  className="gap-2"
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  aria-label="Clear search"
                 >
-                  <Save className="h-3.5 w-3.5" />
-                  Save Problem
-                </Button>
+                  <X className="h-3.5 w-3.5" />
+                </button>
               )}
             </div>
-          </div>
-        </CardContent>
-      </Card>
+          )}
+          {identifyMode !== "reflect" && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setAddCustomDialogOpen(true)}
+              className="gap-2 bg-card text-tertiary hover:text-tertiary"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              Add your own item
+            </Button>
+          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => dispatch.settings.setFullView(!fullView)}
+            className="gap-2 bg-card"
+          >
+            {fullView ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+            {fullView ? "Exit Full View" : "Full View"}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setTableDrawerOpen(true)}
+            className="gap-2 bg-card"
+          >
+            <ClipboardList className="h-3.5 w-3.5" />
+            Show Saved Problems ({savedProblems.length})
+          </Button>
+          <ConfirmDialog
+            trigger={
+              <Button variant="outline" size="sm" className="gap-2 bg-card">
+                <RotateCcw className="h-3.5 w-3.5" />
+                Reset
+              </Button>
+            }
+            title="Reset?"
+            description={
+              identifyMode === "canvas"
+                ? "This will clear your current selection across all dimensions. Saved problems are not affected."
+                : identifyMode === "builder"
+                  ? "This will clear your in-progress problem builder. Saved problems are not affected."
+                  : "This will return you to the discovery-method picker. Your prompt answers will remain saved for next time."
+            }
+            confirmLabel="Reset"
+            onConfirm={() => {
+              if (identifyMode === "canvas") {
+                clearAll()
+              } else if (identifyMode === "builder") {
+                builderResetRef.current?.()
+              } else if (identifyMode === "reflect") {
+                reflectResetRef.current?.()
+              }
+            }}
+          />
+          {identifyMode === "canvas" && (
+            <Button
+              size="sm"
+              onClick={openSaveDialog}
+              disabled={totalSelected === 0}
+              className="gap-2"
+            >
+              <Save className="h-3.5 w-3.5" />
+              Save Problem
+            </Button>
+          )}
+        </div>
+      </div>
 
       {identifyMode === "reflect" ? (
         <ReflectBuilder resetRef={reflectResetRef} />
