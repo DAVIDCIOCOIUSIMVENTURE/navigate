@@ -452,7 +452,7 @@ function IntroductionPanel({
     slots.some((a) => a.text.trim().length > 0)
   )
   return (
-    <div className="flex flex-col gap-6 w-full">
+    <div className="flex flex-col gap-6 w-full flex-1 min-h-0">
       <div className="flex items-center gap-3">
         <div
           className={cn("flex items-center justify-center w-10 h-10 rounded-lg shrink-0", lens.tileColor)}
@@ -475,7 +475,7 @@ function IntroductionPanel({
           <li>A prompt to revisit parts of your experience you may have overlooked.</li>
         </ul>
       </div>
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 mt-auto">
         <Button variant="outline" onClick={onBack} className="gap-2">
           <ArrowLeft className="h-4 w-4" />
           Choose another method
@@ -612,7 +612,7 @@ function PromptsPanel({
         <p className="text-base font-semibold text-white">
           {prompt.multipleAllowed ? "Your answers" : "Your answer"}
         </p>
-        {(useAnchorPicker || dimensionPickerColumn) && (
+        {useAnchorPicker || dimensionPickerColumn ? (
           <Button
             type="button"
             size="sm"
@@ -622,7 +622,17 @@ function PromptsPanel({
             <Plus className="h-3.5 w-3.5" />
             Add your own
           </Button>
-        )}
+        ) : prompt.multipleAllowed ? (
+          <Button
+            type="button"
+            size="sm"
+            onClick={() => addAnswerSlot(prompt.id)}
+            className="gap-1.5 shrink-0 bg-white text-foreground hover:bg-white/90"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            Add another answer
+          </Button>
+        ) : null}
       </div>
       {chipsCategory && !useAnchorPicker && !dimensionPickerColumn && (
         <SelfDiscoveryChips category={chipsCategory} onPick={handlePickChip} />
@@ -692,17 +702,6 @@ function PromptsPanel({
               )}
             </div>
           ))}
-          {prompt.multipleAllowed && (
-            <Button
-              type="button"
-              size="sm"
-              onClick={() => addAnswerSlot(prompt.id)}
-              className="self-start gap-1.5 bg-white text-foreground hover:bg-white/90"
-            >
-              <Plus className="h-3.5 w-3.5" />
-              Add another answer
-            </Button>
-          )}
         </div>
       )}
     </div>
