@@ -695,10 +695,11 @@ function PromptsPanel({
           {prompt.multipleAllowed && (
             <Button
               type="button"
+              size="sm"
               onClick={() => addAnswerSlot(prompt.id)}
-              className="self-start gap-2 bg-white text-foreground hover:bg-white/90"
+              className="self-start gap-1.5 bg-white text-foreground hover:bg-white/90"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="h-3.5 w-3.5" />
               Add another answer
             </Button>
           )}
