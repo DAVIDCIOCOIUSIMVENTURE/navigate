@@ -188,7 +188,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   const headerTitle = (
     <Breadcrumb className="ml-2 min-w-0">
-      <BreadcrumbList className="text-sm lg:text-base font-semibold flex-nowrap">
+      <BreadcrumbList className="text-sm lg:text-base font-semibold flex-nowrap [&_span]:text-quaternary-foreground [&_a]:text-quaternary-foreground/80 [&_a:hover]:text-quaternary-foreground [&_li[role=presentation]]:text-quaternary-foreground/60">
         {crumbs.map((crumb, idx) => {
           const isLast = idx === crumbs.length - 1
           return (
@@ -224,9 +224,9 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             <Tooltip key={item.url}>
               <TooltipTrigger asChild>
                 <Button
-                  variant={isActive ? "secondary-brand" : "outline"}
+                  variant="on-primary"
                   size="icon"
-                  className="h-8 w-8"
+                  className={cn("h-8 w-8", isActive && "bg-secondary-brand border-secondary-brand text-secondary-brand-foreground")}
                   asChild
                 >
                   <Link href={item.url} aria-label={item.title} onClick={() => setTopNavOpen(false)}>
@@ -245,9 +245,9 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             <TooltipTrigger asChild>
               <DropdownMenuTrigger asChild>
                 <Button
-                  variant={activeNavItem ? "secondary-brand" : "outline"}
+                  variant="on-primary"
                   size="icon"
-                  className="h-8 w-8"
+                  className={cn("h-8 w-8", activeNavItem && "bg-secondary-brand border-secondary-brand text-secondary-brand-foreground")}
                   aria-label="Open navigation menu"
                 >
                   {ActiveNavIcon ? <ActiveNavIcon className="h-4 w-4" /> : <Map className="h-4 w-4" />}
@@ -279,7 +279,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            variant={journalOpen ? "default" : "outline"}
+            variant={journalOpen ? "default" : "on-primary"}
             size="icon"
             className="h-8 w-8"
             onClick={toggleJournal}
@@ -294,7 +294,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       <Tooltip>
         <TooltipTrigger asChild>
           <Button
-            variant={guidanceOpen ? "default" : "outline"}
+            variant={guidanceOpen ? "default" : "on-primary"}
             size="icon"
             className="h-8 w-8"
             onClick={toggleGuidance}
@@ -317,7 +317,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             <button
               type="button"
               className={cn(
-                "h-10 w-10 rounded-full text-white flex items-center justify-center shrink-0 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-opacity",
+                "h-10 w-10 rounded-full text-white flex items-center justify-center shrink-0 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-opacity ring-2 ring-quaternary-foreground/40",
                 activeAvatarColor.bgClass,
               )}
               aria-label="Open user menu"
@@ -348,7 +348,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const brandLogo = (
     <Link
       href="/"
-      className="flex items-center gap-2 h-8 px-2 md:px-3 rounded-md bg-quaternary text-quaternary-foreground shrink-0"
+      className="flex items-center gap-2 h-8 px-2 md:px-3 rounded-md bg-white/10 text-quaternary-foreground hover:bg-white/20 transition-colors shrink-0"
       aria-label="Navigate home"
     >
       <Compass className="h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
@@ -361,10 +361,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     <div className="flex h-svh w-full flex-col overflow-hidden">
       <div className="relative flex w-full min-w-0 min-h-0 flex-1 flex-col bg-background">
         {!fullView && !isFocusFlow && (
-        <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4 justify-between">
+        <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 border-b border-quaternary/30 bg-quaternary px-4 justify-between">
           <div className="flex items-center gap-2 min-w-0">
             {brandLogo}
-            <Separator orientation="vertical" className="h-4" />
+            <Separator orientation="vertical" className="h-4 bg-quaternary-foreground/30" />
             {headerTitle}
           </div>
           <div className="flex items-center gap-2 shrink-0">
@@ -373,7 +373,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             </div>
             {headerNav}
             {panelToggles}
-            <Separator orientation="vertical" className="h-4" />
+            <Separator orientation="vertical" className="h-4 bg-quaternary-foreground/30" />
             {headerActions}
           </div>
         </header>
