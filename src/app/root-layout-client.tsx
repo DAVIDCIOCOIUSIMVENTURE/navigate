@@ -4,7 +4,8 @@ import React from "react"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import { Settings, HelpCircle, NotebookText, Compass } from "lucide-react"
+import { Settings, HelpCircle, NotebookText, Compass, MoreHorizontal } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import type { Problem } from "@/store/problems-model"
 import type { Solution } from "@/types/solution"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
@@ -180,7 +181,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   const headerTitle = (
     <Breadcrumb className="ml-2 min-w-0">
-      <BreadcrumbList className="text-base font-semibold flex-nowrap">
+      <BreadcrumbList className="text-sm font-semibold flex-nowrap">
         {crumbs.map((crumb, idx) => {
           const isLast = idx === crumbs.length - 1
           const truncateClass = crumb.truncate ? "block max-w-[20ch] truncate" : ""
@@ -208,29 +209,68 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     </Breadcrumb>
   )
 
+  const activeNavItem = navigationItems.topMenu.find((item) =>
+    item.url === "/" ? pathname === "/" : pathname.startsWith(item.url)
+  )
+  const ActiveNavIcon = activeNavItem?.icon
+
   const headerNav = (
-    <nav className="flex items-center gap-1">
-      {navigationItems.topMenu.map((item) => {
-        const isActive = item.url === "/" ? pathname === "/" : pathname.startsWith(item.url)
-        return (
-          <Tooltip key={item.url}>
+    <>
+      <nav className="hidden lg:flex items-center gap-1">
+        {navigationItems.topMenu.map((item) => {
+          const isActive = item.url === "/" ? pathname === "/" : pathname.startsWith(item.url)
+          return (
+            <Tooltip key={item.url}>
+              <TooltipTrigger asChild>
+                <Button
+                  variant={isActive ? "secondary-brand" : "outline"}
+                  size="icon"
+                  className="h-8 w-8"
+                  asChild
+                >
+                  <Link href={item.url} aria-label={item.title} onClick={() => setTopNavOpen(false)}>
+                    <item.icon className="h-4 w-4" />
+                  </Link>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{item.title}</TooltipContent>
+            </Tooltip>
+          )
+        })}
+      </nav>
+      <div className="lg:hidden">
+        <DropdownMenu>
+          <Tooltip>
             <TooltipTrigger asChild>
-              <Button
-                variant={isActive ? "secondary-brand" : "outline"}
-                size="icon"
-                className="h-8 w-8"
-                asChild
-              >
-                <Link href={item.url} aria-label={item.title} onClick={() => setTopNavOpen(false)}>
-                  <item.icon className="h-4 w-4" />
-                </Link>
-              </Button>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant={activeNavItem ? "secondary-brand" : "outline"}
+                  size="icon"
+                  className="h-8 w-8"
+                  aria-label="Open navigation menu"
+                >
+                  {ActiveNavIcon ? <ActiveNavIcon className="h-4 w-4" /> : <MoreHorizontal className="h-4 w-4" />}
+                </Button>
+              </DropdownMenuTrigger>
             </TooltipTrigger>
-            <TooltipContent>{item.title}</TooltipContent>
+            <TooltipContent>Navigation</TooltipContent>
           </Tooltip>
-        )
-      })}
-    </nav>
+          <DropdownMenuContent align="end">
+            {navigationItems.topMenu.map((item) => {
+              const isActive = item.url === "/" ? pathname === "/" : pathname.startsWith(item.url)
+              return (
+                <DropdownMenuItem key={item.url} asChild className={isActive ? "bg-accent text-accent-foreground" : ""}>
+                  <Link href={item.url} onClick={() => setTopNavOpen(false)}>
+                    <item.icon className="h-4 w-4" />
+                    {item.title}
+                  </Link>
+                </DropdownMenuItem>
+              )
+            })}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </>
   )
 
   const headerActions = (
@@ -276,11 +316,11 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const brandLogo = (
     <Link
       href="/"
-      className="flex items-center gap-2 h-8 px-3 rounded-md bg-quaternary text-quaternary-foreground shrink-0"
+      className="flex items-center gap-2 h-8 px-2 lg:px-3 rounded-md bg-quaternary text-quaternary-foreground shrink-0"
       aria-label="Navigate home"
     >
       <Compass className="h-5 w-5 shrink-0" aria-hidden="true" />
-      <span className="text-base font-semibold">Navigate</span>
+      <span className="text-base font-semibold hidden lg:inline">Navigate</span>
     </Link>
   )
 
