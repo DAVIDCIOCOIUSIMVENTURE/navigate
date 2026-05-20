@@ -188,7 +188,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   const headerTitle = (
     <Breadcrumb className="ml-2 min-w-0">
-      <BreadcrumbList className="text-sm font-semibold flex-nowrap">
+      <BreadcrumbList className="text-sm lg:text-base font-semibold flex-nowrap">
         {crumbs.map((crumb, idx) => {
           const isLast = idx === crumbs.length - 1
           return (
