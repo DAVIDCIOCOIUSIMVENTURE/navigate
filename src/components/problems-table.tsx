@@ -25,6 +25,12 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
   Pencil,
   Trash2,
   ArrowRight,
@@ -41,6 +47,8 @@ import {
   ChevronDown,
   Lightbulb,
   Target,
+  MoreHorizontal,
+  ClipboardCheck,
 } from "lucide-react"
 import type { Problem } from "@/store/problems-model"
 import { EditProblemDialog } from "@/components/edit-problem-dialog"
@@ -348,6 +356,42 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                       <TableCell>
                         <div className="flex items-center gap-1">
                           {showEditDelete && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="outline-card"
+                                  size="icon"
+                                  className="h-7 w-7"
+                                  onClick={() => setEditingProblemId(problem.id)}
+                                  aria-label="Edit problem"
+                                >
+                                  <Pencil className="h-3.5 w-3.5" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>Edit problem</TooltipContent>
+                            </Tooltip>
+                          )}
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="outline-card" size="icon" className="h-7 w-7" aria-label="Actions">
+                                <MoreHorizontal className="h-3.5 w-3.5" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => router.push(`/problems/${problem.id}/validation/introduction`)}>
+                                <ClipboardCheck className="h-3.5 w-3.5" />
+                                Open problem validation
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => {
+                                localStorage.setItem("navigate-active-discovery-problem", String(problem.id))
+                                router.push("/solutions/discover/select-problem")
+                              }}>
+                                <Lightbulb className="h-3.5 w-3.5" />
+                                Identify solutions
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                          {showEditDelete && (
                             <>
                               <ConfirmDialog
                                 tooltip="Delete problem"
@@ -364,20 +408,6 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                 description="This will permanently delete this problem and any associated data."
                                 onConfirm={() => dispatch.problems.delete(problem.id)}
                               />
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <Button
-                                    variant="outline-card"
-                                    size="icon"
-                                    className="h-7 w-7"
-                                    onClick={() => setEditingProblemId(problem.id)}
-                                    aria-label="Edit problem"
-                                  >
-                                    <Pencil className="h-3.5 w-3.5" />
-                                  </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>Edit problem</TooltipContent>
-                              </Tooltip>
                             </>
                           )}
                         </div>

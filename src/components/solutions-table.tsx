@@ -25,9 +25,14 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
   Pencil,
   Trash2,
-  ArrowRight,
   CheckCircle2,
   XCircle,
   HelpCircle,
@@ -39,6 +44,8 @@ import {
   ArrowUpDown,
   Lightbulb,
   Target,
+  MoreHorizontal,
+  ClipboardCheck,
 } from "lucide-react"
 import type { Solution } from "@/store/solutions-model"
 import { EditSolutionDialog } from "@/components/edit-solution-dialog"
@@ -308,48 +315,51 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                     <TableCell>
                       <div className="flex items-center gap-1">
                         {showEditDelete && (
-                          <>
-                            <ConfirmDialog
-                              tooltip="Delete solution"
-                              trigger={
-                                <Button
-                                  variant="destructive-outline"
-                                  size="icon"
-                                  className="h-7 w-7"
-                                  aria-label="Delete solution"
-                                >
-                                  <Trash2 className="h-3.5 w-3.5" />
-                                </Button>
-                              }
-                              description="This will permanently delete this solution and any associated validation data."
-                              onConfirm={() => dispatch.solutions.delete(solution.id)}
-                            />
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <Button
-                                  variant="outline-card"
-                                  size="icon"
-                                  className="h-7 w-7"
-                                  onClick={() => setEditingSolution(solution)}
-                                  aria-label="Edit solution"
-                                >
-                                  <Pencil className="h-3.5 w-3.5" />
-                                </Button>
-                              </TooltipTrigger>
-                              <TooltipContent>Edit solution</TooltipContent>
-                            </Tooltip>
-                          </>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="outline-card"
+                                size="icon"
+                                className="h-7 w-7"
+                                onClick={() => setEditingSolution(solution)}
+                                aria-label="Edit solution"
+                              >
+                                <Pencil className="h-3.5 w-3.5" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>Edit solution</TooltipContent>
+                          </Tooltip>
                         )}
-                        <Button
-                          variant="secondary-brand"
-                          size="sm"
-                          className="h-7"
-                          onClick={() => router.push(`/solutions/${solution.id}/validate/introduction`)}
-                          aria-label="Validate solution"
-                        >
-                          <ArrowRight className="h-3.5 w-3.5" />
-                          <span className="hidden md:inline ml-1">Validate</span>
-                        </Button>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="outline-card" size="icon" className="h-7 w-7" aria-label="Actions">
+                              <MoreHorizontal className="h-3.5 w-3.5" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => router.push(`/solutions/${solution.id}/validate/introduction`)}>
+                              <ClipboardCheck className="h-3.5 w-3.5" />
+                              Open solution validation
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                        {showEditDelete && (
+                          <ConfirmDialog
+                            tooltip="Delete solution"
+                            trigger={
+                              <Button
+                                variant="destructive-outline"
+                                size="icon"
+                                className="h-7 w-7"
+                                aria-label="Delete solution"
+                              >
+                                <Trash2 className="h-3.5 w-3.5" />
+                              </Button>
+                            }
+                            description="This will permanently delete this solution and any associated validation data."
+                            onConfirm={() => dispatch.solutions.delete(solution.id)}
+                          />
+                        )}
                       </div>
                     </TableCell>
                   </TableRow>
