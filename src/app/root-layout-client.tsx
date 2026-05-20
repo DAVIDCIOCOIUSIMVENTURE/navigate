@@ -1,11 +1,12 @@
 "use client"
 
 import React from "react"
-import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar"
-import { AppSidebar } from "@/components/app-sidebar"
+import { TooltipProvider } from "@/components/ui/tooltip"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
 import { Settings, HelpCircle, NotebookText, LayoutDashboard, Target, Lightbulb, Search, ClipboardCheck, BookOpen, Compass, Milestone, type LucideIcon } from "lucide-react"
+import { navigationItems } from "@/config/navigation"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
@@ -76,7 +77,6 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const [guidanceTopic, setGuidanceTopic] = useState<string | undefined>(undefined)
   const isMobile = useIsMobile()
 
-  const sidebarMode = useSelector((state: RootState) => state.settings.sidebarMode)
   const fullView = useSelector((state: RootState) => state.settings.fullView)
   const journalOpen = useSelector((state: RootState) => state.settings.journalOpen)
   const dispatch = useDispatch<AppDispatch>()
@@ -133,57 +133,68 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   }, [dispatch.settings, dispatch.selfDiscoveryItems, dispatch.customDimensionItems, dispatch.problems, dispatch.accountSettings, dispatch.solutions, dispatch.solutionWorkspaces, dispatch.notes, dispatch.problemCandidates, dispatch.reflectSessions])
 
   const headerTitle = section && (
-    <h1 className="flex items-center gap-2 ml-2 text-xl font-bold min-w-0">
-      <span className="flex h-7 w-7 items-center justify-center rounded-md bg-tertiary shrink-0" aria-hidden="true">
-        <section.Icon className="h-4 w-4 text-tertiary-foreground" />
-      </span>
-      <span className="truncate">{section.title}</span>
+    <h1 className="ml-2 text-xl font-bold min-w-0 truncate">
+      {section.title}
     </h1>
+  )
+
+  const headerNav = (
+    <nav className="flex items-center gap-1">
+      {navigationItems.topMenu.map((item) => {
+        const isActive = item.url === "/" ? pathname === "/" : pathname.startsWith(item.url)
+        return (
+          <Tooltip key={item.url}>
+            <TooltipTrigger asChild>
+              <Button
+                variant={isActive ? "default" : "outline"}
+                size="icon"
+                className="h-8 w-8"
+                asChild
+              >
+                <Link href={item.url} aria-label={item.title} onClick={() => setTopNavOpen(false)}>
+                  <item.icon className="h-4 w-4" />
+                </Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>{item.title}</TooltipContent>
+          </Tooltip>
+        )
+      })}
+    </nav>
   )
 
   const headerActions = (
     <>
-      <div className="hidden md:block">
-        <TeamAvatars />
-      </div>
-      <Button
-        variant={journalOpen ? "default" : "outline"}
-        size="icon"
-        className="lg:hidden"
-        onClick={toggleJournal}
-        aria-pressed={journalOpen}
-        aria-label="Toggle journal"
-      >
-        <NotebookText />
-      </Button>
-      <Button
-        variant={journalOpen ? "default" : "outline"}
-        className="hidden lg:flex flex-row items-center gap-2 justify-center"
-        onClick={toggleJournal}
-        aria-pressed={journalOpen}
-      >
-        <NotebookText />
-        <span>Journal</span>
-      </Button>
-      <Button
-        variant={guidanceOpen ? "default" : "outline"}
-        size="icon"
-        className="lg:hidden"
-        onClick={toggleGuidance}
-        aria-pressed={guidanceOpen}
-        aria-label="Toggle guidance"
-      >
-        <HelpCircle />
-      </Button>
-      <Button
-        variant={guidanceOpen ? "default" : "outline"}
-        className="hidden lg:flex flex-row items-center gap-2 justify-center"
-        onClick={toggleGuidance}
-        aria-pressed={guidanceOpen}
-      >
-        <HelpCircle />
-        <span>Guidance</span>
-      </Button>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant={journalOpen ? "default" : "outline"}
+            size="icon"
+            className="h-8 w-8"
+            onClick={toggleJournal}
+            aria-pressed={journalOpen}
+            aria-label="Toggle journal"
+          >
+            <NotebookText />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Journal</TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant={guidanceOpen ? "default" : "outline"}
+            size="icon"
+            className="h-8 w-8"
+            onClick={toggleGuidance}
+            aria-pressed={guidanceOpen}
+            aria-label="Toggle guidance"
+          >
+            <HelpCircle />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Guidance</TooltipContent>
+      </Tooltip>
       <Button variant="outline" size="icon" asChild>
         <Link href="/settings" onClick={() => setTopNavOpen(false)}>
           <Settings />
@@ -192,22 +203,34 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     </>
   )
 
-  return (
-    <SidebarProvider
-      sidebarMode={sidebarMode}
-      onSidebarModeChange={(mode) => dispatch.settings.setSidebarMode(mode)}
-      className="h-svh !min-h-0 overflow-hidden"
+  const brandLogo = (
+    <Link
+      href="/"
+      className="flex items-center gap-2 h-8 px-3 rounded-md bg-quaternary text-quaternary-foreground shrink-0"
+      aria-label="Navigate home"
     >
-      {!fullView && <AppSidebar />}
-      <SidebarInset>
+      <Compass className="h-5 w-5 shrink-0" aria-hidden="true" />
+      <span className="text-base font-semibold">Navigate</span>
+    </Link>
+  )
+
+  return (
+    <TooltipProvider delayDuration={0}>
+    <div className="flex h-svh w-full flex-col overflow-hidden">
+      <div className="relative flex w-full min-w-0 flex-1 flex-col bg-background">
         {!fullView && !isFocusFlow && (
         <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4 justify-between">
           <div className="flex items-center gap-2 min-w-0">
-            <SidebarTrigger className="-ml-1" />
+            {brandLogo}
             <Separator orientation="vertical" className="h-4" />
             {headerTitle}
           </div>
           <div className="flex items-center gap-2 shrink-0">
+            <div className="hidden md:block">
+              <TeamAvatars />
+            </div>
+            {headerNav}
+            <Separator orientation="vertical" className="h-4" />
             {headerActions}
           </div>
         </header>
@@ -267,7 +290,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           )}
         </GuidanceProvider>
         </FocusChromeContext.Provider>
-      </SidebarInset>
+      </div>
       {isMobile && (
         <Sheet open={guidanceOpen} onOpenChange={setGuidanceOpen}>
           <SheetContent side="right" className="w-full sm:max-w-xl p-0" hideClose>
@@ -296,9 +319,16 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             </VisuallyHidden>
             <header className="flex h-16 items-center justify-between gap-2 px-4 sm:px-6">
               <div className="flex items-center gap-2 min-w-0">
+                {brandLogo}
+                <Separator orientation="vertical" className="h-4" />
                 {headerTitle}
               </div>
               <div className="flex items-center gap-2 shrink-0 pr-10">
+                <div className="hidden md:block">
+                  <TeamAvatars />
+                </div>
+                {headerNav}
+                <Separator orientation="vertical" className="h-4" />
                 {headerActions}
               </div>
             </header>
@@ -306,7 +336,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         </Sheet>
       )}
       <Toaster />
-    </SidebarProvider>
+    </div>
+    </TooltipProvider>
   )
 }
 

@@ -5,10 +5,9 @@ import { getSelfDiscoveryCategoryIcon } from "@/config/navigation"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { useRouter, usePathname } from "next/navigation"
-import { ArrowLeft, ChevronDown, Compass, PanelLeft, PanelTop, type LucideIcon } from "lucide-react"
+import { ArrowLeft, ChevronDown, Compass, PanelTop, type LucideIcon } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { useSidebar } from "@/components/ui/sidebar"
 import { cn } from "@/lib/utils"
 import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
 import { useContainerSize } from "@/context/container-size-context"
@@ -199,7 +198,6 @@ export default function SelfDiscoveryFlowLayout({
     const router = useRouter()
     const pathname = usePathname()
     const [mobileNavOpen, setMobileNavOpen] = useState(false)
-    const { toggleSidebar } = useSidebar()
     const { revealTopNav } = useFocusChrome()
 
     const size = useContainerSize()
@@ -218,15 +216,6 @@ export default function SelfDiscoveryFlowLayout({
 
     const chromeTriggers = (
         <div className="flex items-center gap-1 shrink-0">
-            <Button
-                variant="outline"
-                size="icon"
-                onClick={toggleSidebar}
-                aria-label="Toggle app menu"
-                title="App menu"
-            >
-                <PanelLeft className="h-4 w-4" />
-            </Button>
             <Button
                 variant="outline"
                 size="icon"
