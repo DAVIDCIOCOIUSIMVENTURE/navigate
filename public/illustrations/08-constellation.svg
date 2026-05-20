@@ -1,36 +1,36 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" width="400" height="280">
-  <rect width="400" height="280" fill="#FAFAF9"></rect>
-  <circle cx="40" cy="40" r="1.5" fill="#14171F"></circle>
-  <circle cx="370" cy="50" r="2" fill="#14171F"></circle>
-  <circle cx="360" cy="230" r="1.5" fill="#14171F"></circle>
-  <circle cx="50" cy="250" r="2" fill="#14171F"></circle>
-  <circle cx="310" cy="245" r="1.5" fill="#14171F"></circle>
-  <line x1="110" y1="90" x2="170" y2="70" stroke="#14171F" stroke-width="1.2" stroke-dasharray="3 4"></line>
-  <line x1="170" y1="70" x2="240" y2="90" stroke="#14171F" stroke-width="1.2" stroke-dasharray="3 4"></line>
-  <line x1="240" y1="90" x2="280" y2="140" stroke="#14171F" stroke-width="1.2" stroke-dasharray="3 4"></line>
-  <line x1="280" y1="140" x2="230" y2="200" stroke="#14171F" stroke-width="1.2" stroke-dasharray="3 4"></line>
-  <line x1="230" y1="200" x2="160" y2="210" stroke="#14171F" stroke-width="1.2" stroke-dasharray="3 4"></line>
-  <line x1="160" y1="210" x2="100" y2="175" stroke="#14171F" stroke-width="1.2" stroke-dasharray="3 4"></line>
-  <line x1="100" y1="175" x2="80" y2="130" stroke="#14171F" stroke-width="1.2" stroke-dasharray="3 4"></line>
-  <line x1="80" y1="130" x2="110" y2="90" stroke="#14171F" stroke-width="1.2" stroke-dasharray="3 4"></line>
-  <line x1="170" y1="70" x2="160" y2="210" stroke="#14171F" stroke-width="1.2" stroke-dasharray="3 4" opacity="0.6"></line>
-  <line x1="280" y1="140" x2="80" y2="130" stroke="#14171F" stroke-width="1.2" stroke-dasharray="3 4" opacity="0.6"></line>
-  <circle cx="110" cy="90" r="7" fill="#C78A04" opacity="0.25"></circle>
-  <circle cx="110" cy="90" r="5" fill="#C78A04"></circle>
-  <circle cx="170" cy="70" r="8" fill="#0E7EB3" opacity="0.25"></circle>
-  <circle cx="170" cy="70" r="6" fill="#0E7EB3"></circle>
-  <circle cx="240" cy="90" r="7" fill="#0F3F75" opacity="0.25"></circle>
-  <circle cx="240" cy="90" r="5" fill="#0F3F75"></circle>
-  <circle cx="280" cy="140" r="9" fill="#C78A04" opacity="0.25"></circle>
-  <circle cx="280" cy="140" r="7" fill="#C78A04"></circle>
-  <circle cx="230" cy="200" r="7" fill="#1F5F6B" opacity="0.25"></circle>
-  <circle cx="230" cy="200" r="5" fill="#1F5F6B"></circle>
-  <circle cx="160" cy="210" r="7" fill="#0F3F75" opacity="0.25"></circle>
-  <circle cx="160" cy="210" r="5" fill="#0F3F75"></circle>
-  <circle cx="100" cy="175" r="8" fill="#0E7EB3" opacity="0.25"></circle>
-  <circle cx="100" cy="175" r="6" fill="#0E7EB3"></circle>
-  <circle cx="80" cy="130" r="6" fill="#C78A04" opacity="0.25"></circle>
-  <circle cx="80" cy="130" r="4" fill="#C78A04"></circle>
-  <circle cx="180" cy="140" r="14" fill="#0E7EB3" stroke="#14171F" stroke-width="1.5"></circle>
-  <path d="M180 132 L182.4 137.6 L188 140 L182.4 142.4 L180 148 L177.6 142.4 L172 140 L177.6 137.6 Z" fill="#FFFFFF"></path>
+  <rect width="400" height="280" fill="#F6F2EA"></rect>
+  <circle cx="40" cy="40" r="1.5" fill="#1B1B14"></circle>
+  <circle cx="370" cy="50" r="2" fill="#1B1B14"></circle>
+  <circle cx="360" cy="230" r="1.5" fill="#1B1B14"></circle>
+  <circle cx="50" cy="250" r="2" fill="#1B1B14"></circle>
+  <circle cx="310" cy="245" r="1.5" fill="#1B1B14"></circle>
+  <line x1="110" y1="90" x2="170" y2="70" stroke="#1B1B14" stroke-width="1.2" stroke-dasharray="3 4"></line>
+  <line x1="170" y1="70" x2="240" y2="90" stroke="#1B1B14" stroke-width="1.2" stroke-dasharray="3 4"></line>
+  <line x1="240" y1="90" x2="280" y2="140" stroke="#1B1B14" stroke-width="1.2" stroke-dasharray="3 4"></line>
+  <line x1="280" y1="140" x2="230" y2="200" stroke="#1B1B14" stroke-width="1.2" stroke-dasharray="3 4"></line>
+  <line x1="230" y1="200" x2="160" y2="210" stroke="#1B1B14" stroke-width="1.2" stroke-dasharray="3 4"></line>
+  <line x1="160" y1="210" x2="100" y2="175" stroke="#1B1B14" stroke-width="1.2" stroke-dasharray="3 4"></line>
+  <line x1="100" y1="175" x2="80" y2="130" stroke="#1B1B14" stroke-width="1.2" stroke-dasharray="3 4"></line>
+  <line x1="80" y1="130" x2="110" y2="90" stroke="#1B1B14" stroke-width="1.2" stroke-dasharray="3 4"></line>
+  <line x1="170" y1="70" x2="160" y2="210" stroke="#1B1B14" stroke-width="1.2" stroke-dasharray="3 4" opacity="0.6"></line>
+  <line x1="280" y1="140" x2="80" y2="130" stroke="#1B1B14" stroke-width="1.2" stroke-dasharray="3 4" opacity="0.6"></line>
+  <circle cx="110" cy="90" r="7" fill="#C25A3C" opacity="0.25"></circle>
+  <circle cx="110" cy="90" r="5" fill="#C25A3C"></circle>
+  <circle cx="170" cy="70" r="8" fill="#C9A227" opacity="0.25"></circle>
+  <circle cx="170" cy="70" r="6" fill="#C9A227"></circle>
+  <circle cx="240" cy="90" r="7" fill="#2C3E7A" opacity="0.25"></circle>
+  <circle cx="240" cy="90" r="5" fill="#2C3E7A"></circle>
+  <circle cx="280" cy="140" r="9" fill="#C25A3C" opacity="0.25"></circle>
+  <circle cx="280" cy="140" r="7" fill="#C25A3C"></circle>
+  <circle cx="230" cy="200" r="7" fill="#1F6E48" opacity="0.25"></circle>
+  <circle cx="230" cy="200" r="5" fill="#1F6E48"></circle>
+  <circle cx="160" cy="210" r="7" fill="#2C3E7A" opacity="0.25"></circle>
+  <circle cx="160" cy="210" r="5" fill="#2C3E7A"></circle>
+  <circle cx="100" cy="175" r="8" fill="#C9A227" opacity="0.25"></circle>
+  <circle cx="100" cy="175" r="6" fill="#C9A227"></circle>
+  <circle cx="80" cy="130" r="6" fill="#C25A3C" opacity="0.25"></circle>
+  <circle cx="80" cy="130" r="4" fill="#C25A3C"></circle>
+  <circle cx="180" cy="140" r="14" fill="#C9A227" stroke="#1B1B14" stroke-width="1.5"></circle>
+  <path d="M180 132 L182.4 137.6 L188 140 L182.4 142.4 L180 148 L177.6 142.4 L172 140 L177.6 137.6 Z" fill="#FFFDF8"></path>
 </svg>

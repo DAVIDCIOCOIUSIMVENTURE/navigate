@@ -1,15 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" width="400" height="280">
-  <rect width="400" height="280" fill="#ECEBE9"></rect>
-  <path d="M340 43 L342.1 47.9 L347 50 L342.1 52.1 L340 57 L337.9 52.1 L333 50 L337.9 47.9 Z" fill="#0E7EB3"></path>
-  <circle cx="50" cy="230" r="2" fill="#14171F"></circle>
-  <path d="M40 80 Q40 60 60 60 L180 60 Q200 60 200 80 L200 140 Q200 160 180 160 L100 160 L80 178 L85 160 L60 160 Q40 160 40 140 Z" fill="#C78A04"></path>
-  <line x1="60" y1="90" x2="170" y2="90" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"></line>
-  <line x1="60" y1="110" x2="150" y2="110" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.75"></line>
-  <line x1="60" y1="130" x2="135" y2="130" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" opacity="0.5"></line>
-  <path d="M210 130 Q210 110 230 110 L350 110 Q370 110 370 130 L370 200 Q370 220 350 220 L260 220 L240 240 L248 220 L230 220 Q210 220 210 200 Z" fill="#0F3F75"></path>
-  <line x1="230" y1="140" x2="350" y2="140" stroke="#FAFAF9" stroke-width="3" stroke-linecap="round"></line>
-  <line x1="230" y1="160" x2="320" y2="160" stroke="#FAFAF9" stroke-width="3" stroke-linecap="round" opacity="0.75"></line>
-  <line x1="230" y1="180" x2="335" y2="180" stroke="#FAFAF9" stroke-width="3" stroke-linecap="round" opacity="0.6"></line>
-  <path d="M205 124 L208.3 131.7 L216 135 L208.3 138.3 L205 146 L201.7 138.3 L194 135 L201.7 131.7 Z" fill="#0E7EB3"></path>
-  <path d="M205 129 L206.8 133.2 L211 135 L206.8 136.8 L205 141 L203.2 136.8 L199 135 L203.2 133.2 Z" fill="#C78A04"></path>
+  <rect width="400" height="280" fill="#F8EFE0"></rect>
+  <path d="M340 43 L342.1 47.9 L347 50 L342.1 52.1 L340 57 L337.9 52.1 L333 50 L337.9 47.9 Z" fill="#C9A227"></path>
+  <circle cx="50" cy="230" r="2" fill="#1B1B14"></circle>
+  <path d="M40 80 Q40 60 60 60 L180 60 Q200 60 200 80 L200 140 Q200 160 180 160 L100 160 L80 178 L85 160 L60 160 Q40 160 40 140 Z" fill="#C25A3C"></path>
+  <line x1="60" y1="90" x2="170" y2="90" stroke="#FFFDF8" stroke-width="3" stroke-linecap="round"></line>
+  <line x1="60" y1="110" x2="150" y2="110" stroke="#FFFDF8" stroke-width="3" stroke-linecap="round" opacity="0.75"></line>
+  <line x1="60" y1="130" x2="135" y2="130" stroke="#FFFDF8" stroke-width="3" stroke-linecap="round" opacity="0.5"></line>
+  <path d="M210 130 Q210 110 230 110 L350 110 Q370 110 370 130 L370 200 Q370 220 350 220 L260 220 L240 240 L248 220 L230 220 Q210 220 210 200 Z" fill="#2C3E7A"></path>
+  <line x1="230" y1="140" x2="350" y2="140" stroke="#F6F2EA" stroke-width="3" stroke-linecap="round"></line>
+  <line x1="230" y1="160" x2="320" y2="160" stroke="#F6F2EA" stroke-width="3" stroke-linecap="round" opacity="0.75"></line>
+  <line x1="230" y1="180" x2="335" y2="180" stroke="#F6F2EA" stroke-width="3" stroke-linecap="round" opacity="0.6"></line>
+  <path d="M205 124 L208.3 131.7 L216 135 L208.3 138.3 L205 146 L201.7 138.3 L194 135 L201.7 131.7 Z" fill="#C9A227"></path>
+  <path d="M205 129 L206.8 133.2 L211 135 L206.8 136.8 L205 141 L203.2 136.8 L199 135 L203.2 133.2 Z" fill="#C25A3C"></path>
 </svg>

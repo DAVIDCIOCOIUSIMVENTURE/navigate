@@ -6,6 +6,7 @@ import type { AppDispatch, RootState } from "@/store"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import {
@@ -349,30 +350,34 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                           {showEditDelete && (
                             <>
                               <ConfirmDialog
+                                tooltip="Delete problem"
                                 trigger={
                                   <Button
                                     variant="destructive-outline"
-                                    size="sm"
-                                    className="h-7"
+                                    size="icon"
+                                    className="h-7 w-7"
                                     aria-label="Delete problem"
                                   >
                                     <Trash2 className="h-3.5 w-3.5" />
-                                    <span className="hidden md:inline ml-1">Delete</span>
                                   </Button>
                                 }
                                 description="This will permanently delete this problem and any associated data."
                                 onConfirm={() => dispatch.problems.delete(problem.id)}
                               />
-                              <Button
-                                variant="outline-card"
-                                size="sm"
-                                className="h-7"
-                                onClick={() => setEditingProblemId(problem.id)}
-                                aria-label="Edit problem"
-                              >
-                                <Pencil className="h-3.5 w-3.5" />
-                                <span className="hidden md:inline ml-1">Edit</span>
-                              </Button>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="outline-card"
+                                    size="icon"
+                                    className="h-7 w-7"
+                                    onClick={() => setEditingProblemId(problem.id)}
+                                    aria-label="Edit problem"
+                                  >
+                                    <Pencil className="h-3.5 w-3.5" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>Edit problem</TooltipContent>
+                              </Tooltip>
                             </>
                           )}
                         </div>

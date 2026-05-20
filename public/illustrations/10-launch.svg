@@ -1,21 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" width="400" height="280">
-  <rect width="400" height="280" fill="#FAFAF9"></rect>
-  <circle cx="320" cy="70" r="24" fill="#0E7EB3"></circle>
-  <path d="M70 53 L72.1 57.9 L77 60 L72.1 62.1 L70 67 L67.9 62.1 L63 60 L67.9 57.9 Z" fill="#C78A04"></path>
-  <circle cx="120" cy="40" r="2" fill="#14171F"></circle>
-  <path d="M0 160 Q 100 130 200 145 Q 300 155 400 130 L400 180 L0 180 Z" fill="#7B8FB5" opacity="0.4"></path>
-  <path d="M0 180 Q 50 170 100 180 T 200 180 T 300 180 T 400 180 L400 280 L0 280 Z" fill="#7B8FB5" opacity="0.5"></path>
-  <path d="M0 200 Q 50 190 100 200 T 200 200 T 300 200 T 400 200 L400 280 L0 280 Z" fill="#0F3F75" opacity="0.7"></path>
-  <path d="M0 225 Q 50 215 100 225 T 200 225 T 300 225 T 400 225 L400 280 L0 280 Z" fill="#0A2A52"></path>
+  <rect width="400" height="280" fill="#F6F2EA"></rect>
+  <circle cx="320" cy="70" r="24" fill="#C9A227"></circle>
+  <path d="M70 53 L72.1 57.9 L77 60 L72.1 62.1 L70 67 L67.9 62.1 L63 60 L67.9 57.9 Z" fill="#C25A3C"></path>
+  <circle cx="120" cy="40" r="2" fill="#1B1B14"></circle>
+  <path d="M0 160 Q 100 130 200 145 Q 300 155 400 130 L400 180 L0 180 Z" fill="#7B88B5" opacity="0.4"></path>
+  <path d="M0 180 Q 50 170 100 180 T 200 180 T 300 180 T 400 180 L400 280 L0 280 Z" fill="#7B88B5" opacity="0.5"></path>
+  <path d="M0 200 Q 50 190 100 200 T 200 200 T 300 200 T 400 200 L400 280 L0 280 Z" fill="#2C3E7A" opacity="0.7"></path>
+  <path d="M0 225 Q 50 215 100 225 T 200 225 T 300 225 T 400 225 L400 280 L0 280 Z" fill="#1A2447"></path>
   <g transform="translate(180 175)">
-    <path d="M-50 0 L50 0 L36 22 L-36 22 Z" fill="#C78A04" stroke="#14171F" stroke-width="2" stroke-linejoin="round"></path>
-    <line x1="-50" y1="0" x2="50" y2="0" stroke="#14171F" stroke-width="1.5"></line>
-    <path d="M0 -50 L0 0 L30 0 Z" fill="#FFFFFF" stroke="#14171F" stroke-width="2" stroke-linejoin="round"></path>
-    <path d="M0 -50 L0 0 L-26 0 Z" fill="#0E7EB3" stroke="#14171F" stroke-width="2" stroke-linejoin="round"></path>
-    <circle cx="0" cy="-50" r="3" fill="#14171F"></circle>
+    <path d="M-50 0 L50 0 L36 22 L-36 22 Z" fill="#C25A3C" stroke="#1B1B14" stroke-width="2" stroke-linejoin="round"></path>
+    <line x1="-50" y1="0" x2="50" y2="0" stroke="#1B1B14" stroke-width="1.5"></line>
+    <path d="M0 -50 L0 0 L30 0 Z" fill="#FFFDF8" stroke="#1B1B14" stroke-width="2" stroke-linejoin="round"></path>
+    <path d="M0 -50 L0 0 L-26 0 Z" fill="#C9A227" stroke="#1B1B14" stroke-width="2" stroke-linejoin="round"></path>
+    <circle cx="0" cy="-50" r="3" fill="#1B1B14"></circle>
   </g>
-  <circle cx="90" cy="195" r="2" fill="#FFFFFF"></circle>
-  <circle cx="110" cy="200" r="1.5" fill="#FFFFFF"></circle>
-  <circle cx="130" cy="193" r="2" fill="#FFFFFF"></circle>
-  <path d="M230 180 Q 280 160 360 170" fill="none" stroke="#14171F" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 6"></path>
+  <circle cx="90" cy="195" r="2" fill="#FFFDF8"></circle>
+  <circle cx="110" cy="200" r="1.5" fill="#FFFDF8"></circle>
+  <circle cx="130" cy="193" r="2" fill="#FFFDF8"></circle>
+  <path d="M230 180 Q 280 160 360 170" fill="none" stroke="#1B1B14" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 6"></path>
 </svg>

@@ -1,25 +1,17 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
   ChevronRight,
   Lightbulb,
   Target,
-  Trophy,
-  Award,
-  Star,
-  Crown,
-  Compass,
-  Zap,
   CheckCircle2,
-  FlaskConical,
-  Crosshair,
+  Compass,
   BookOpen,
   Plus,
 } from "lucide-react"
-import { AchievementItem } from "@/components/achievement-item"
 import { SearchProblemDialog } from "@/components/search-problem-dialog"
 import { SearchSolutionDialog } from "@/components/search-solution-dialog"
 import { ProblemsTable } from "@/components/problems-table"
@@ -32,42 +24,24 @@ import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 
 export default function DashboardPage() {
-  const triggers = useSelector((state: RootState) => state.selfDiscoveryItems.items)
   const problems = useSelector((state: RootState) => state.problems.problems)
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
   const [problemDialogOpen, setProblemDialogOpen] = useState(false)
   const [solutionDialogOpen, setSolutionDialogOpen] = useState(false)
   const [view, setView] = useState<"problems" | "solutions">("problems")
 
-  const validProblems = problems.filter((p) => p.validationStatus === "valid")
   const validatedProblems = problems.filter(
     (p) => p.validationStatus === "valid" || p.validationStatus === "invalid"
   )
-  const completeSolutions = solutions.filter((s) => s.validationStatus === "valid")
   const validatedSolutions = solutions.filter(
     (s) => s.validationStatus === "valid" || s.validationStatus === "invalid"
   )
-
-  // Dynamic achievements
-  const achievements = [
-    { icon: Compass, title: "Explorer", description: "Add your first self-discovery trigger", unlocked: triggers.length >= 1, iconBgColor: "bg-teal-700", iconColor: "text-white" },
-    { icon: Zap, title: "Trigger Happy", description: "Collect 10 problem triggers", unlocked: triggers.length >= 10, iconBgColor: "bg-yellow-600", iconColor: "text-white" },
-    { icon: Target, title: "Problem Spotter", description: "Create your first problem", unlocked: problems.length >= 1, iconBgColor: "bg-blue-900", iconColor: "text-white" },
-    { icon: Crosshair, title: "Sharp Shooter", description: "Identify 5 distinct problems", unlocked: problems.length >= 5, iconBgColor: "bg-indigo-800", iconColor: "text-white" },
-    { icon: Trophy, title: "Verdict Reached", description: "Validate your first problem", unlocked: validatedProblems.length >= 1, iconBgColor: "bg-green-800", iconColor: "text-white" },
-    { icon: CheckCircle2, title: "Validated Thinker", description: "Get 3 problems to a verdict", unlocked: validatedProblems.length >= 3, iconBgColor: "bg-emerald-800", iconColor: "text-white" },
-    { icon: FlaskConical, title: "Solution Seeker", description: "Start your first solution exploration", unlocked: solutions.length >= 1, iconBgColor: "bg-violet-800", iconColor: "text-white" },
-    { icon: Award, title: "Innovator", description: "Validate a solution as valid", unlocked: completeSolutions.length >= 1, iconBgColor: "bg-rose-800", iconColor: "text-white" },
-    { icon: Star, title: "Full Cycle", description: "Trigger, problem, validation, and solution", unlocked: triggers.length >= 1 && validProblems.length >= 1 && completeSolutions.length >= 1, iconBgColor: "bg-orange-700", iconColor: "text-white" },
-    { icon: Crown, title: "Innovation Master", description: "Validate 3 or more solutions as valid", unlocked: completeSolutions.length >= 3, iconBgColor: "bg-red-800", iconColor: "text-white" },
-  ]
-  const unlockedCount = achievements.filter((a) => a.unlocked).length
 
   const isWide = useContainerSize() === "wide"
 
   return (
     <div className={cn("flex flex-col gap-4 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
-      {/* Foundations + Self Discovery prompts + action buttons */}
+      {/* Row 1: Foundations + Self Discovery prompts + action buttons */}
       <div className={cn("flex gap-3 shrink-0", isWide ? "flex-row items-stretch" : "flex-col items-stretch")}>
         <div className={cn("flex gap-3 flex-1 min-w-0", isWide ? "flex-row" : "flex-col")}>
           <Link href="/foundations" className="flex-1 min-w-0 flex">
@@ -99,7 +73,7 @@ export default function DashboardPage() {
             </Card>
           </Link>
         </div>
-        <div className={cn("flex gap-2 shrink-0", isWide ? "flex-col" : "flex-row")}>
+        <div className={cn("flex gap-2 shrink-0", isWide ? "flex-col justify-center" : "flex-row")}>
           <Button onClick={() => setProblemDialogOpen(true)} className={cn("gap-2", !isWide && "flex-1")}>
             <Plus className="h-4 w-4" />
             Identify problems
@@ -111,42 +85,19 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* Journey Overview: Problems, Validated Problems, Solutions, Validated Solutions */}
-      <div className={cn("grid gap-3 shrink-0", isWide ? "grid-cols-4" : "grid-cols-1")}>
-        <StageCard
-          icon={Target}
-          title="Problems"
-          value={problems.length}
-          href="/problems"
-          color="blue"
-        />
-        <StageCard
-          icon={CheckCircle2}
-          title="Validated Problems"
-          value={validatedProblems.length}
-          href="/problems"
-          color="green"
-        />
-        <StageCard
-          icon={Lightbulb}
-          title="Solutions"
-          value={solutions.length}
-          href="/solutions"
-          color="purple"
-        />
-        <StageCard
-          icon={CheckCircle2}
-          title="Validated Solutions"
-          value={validatedSolutions.length}
-          href="/solutions"
-          color="green"
-        />
-      </div>
+      {/* Row 2: Stats column + Problems/Solutions table column */}
+      <div className={cn("flex gap-4 flex-1 min-h-0", isWide ? "flex-row" : "flex-col")}>
+        {/* Left column: stat cards stacked vertically */}
+        <div className={cn("flex shrink-0", isWide ? "flex-col gap-3 w-56" : "grid grid-cols-2 gap-3")}>
+          <StageCard icon={Target} title="Problems" value={problems.length} href="/problems" color="blue" />
+          <StageCard icon={CheckCircle2} title="Validated Problems" value={validatedProblems.length} href="/problems" color="green" />
+          <StageCard icon={Lightbulb} title="Solutions" value={solutions.length} href="/solutions" color="purple" />
+          <StageCard icon={CheckCircle2} title="Validated Solutions" value={validatedSolutions.length} href="/solutions" color="green" />
+        </div>
 
-      {/* Problems / Solutions table (toggleable) and Achievements */}
-      <div className={cn("grid gap-4 flex-1 min-h-0", isWide ? "grid-cols-3 grid-rows-1" : "grid-cols-1")}>
+        {/* Right column: toggleable problems / solutions table */}
         {(() => {
-          const tableClassName = cn(isWide ? "min-h-0 col-span-2" : "min-h-[320px] max-h-[640px]")
+          const tableClassName = cn(isWide ? "flex-1 min-h-0 min-w-0" : "min-h-[320px] max-h-[640px]")
           const viewToggle = (
             <ToggleGroup
               type="single"
@@ -194,30 +145,6 @@ export default function DashboardPage() {
             />
           )
         })()}
-
-        <Card className={cn("flex flex-col", isWide ? "min-h-0" : "min-h-[320px] max-h-[640px]")}>
-          <CardHeader className="shrink-0">
-            <div className="flex items-center justify-between">
-              <CardTitle className="text-base">Achievements</CardTitle>
-              <span className="text-sm">{unlockedCount}/{achievements.length}</span>
-            </div>
-          </CardHeader>
-          <CardContent className="flex-1 min-h-0 overflow-y-auto">
-            <div className="space-y-3">
-              {achievements.map((a) => (
-                <AchievementItem
-                  key={a.title}
-                  icon={a.icon}
-                  title={a.title}
-                  description={a.description}
-                  iconBgColor={a.iconBgColor}
-                  iconColor={a.iconColor}
-                  unlocked={a.unlocked}
-                />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       <SearchProblemDialog open={problemDialogOpen} onOpenChange={setProblemDialogOpen} />
@@ -263,4 +190,3 @@ function StageCard({
     </Link>
   )
 }
-

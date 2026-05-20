@@ -11,6 +11,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 interface ConfirmDialogProps {
   trigger: React.ReactNode
@@ -19,6 +24,7 @@ interface ConfirmDialogProps {
   confirmLabel?: string
   cancelLabel?: string
   onConfirm: () => void
+  tooltip?: string
 }
 
 export function ConfirmDialog({
@@ -28,10 +34,20 @@ export function ConfirmDialog({
   confirmLabel = "Delete",
   cancelLabel = "Cancel",
   onConfirm,
+  tooltip,
 }: ConfirmDialogProps) {
   return (
     <AlertDialog>
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+      {tooltip ? (
+        <Tooltip>
+          <AlertDialogTrigger asChild>
+            <TooltipTrigger asChild>{trigger}</TooltipTrigger>
+          </AlertDialogTrigger>
+          <TooltipContent>{tooltip}</TooltipContent>
+        </Tooltip>
+      ) : (
+        <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+      )}
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
