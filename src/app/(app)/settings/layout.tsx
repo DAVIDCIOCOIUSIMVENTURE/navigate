@@ -7,7 +7,7 @@ import { User, Palette, Bell, Shield } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
 const SETTINGS_NAV: { path: string; label: string; icon: LucideIcon; disabled?: boolean }[] = [
-  { path: "account", label: "Account", icon: User, disabled: true },
+  { path: "account", label: "Account", icon: User },
   { path: "appearance", label: "Appearance", icon: Palette, disabled: true },
   { path: "notifications", label: "Notifications", icon: Bell, disabled: true },
   { path: "data-privacy", label: "Data & Privacy", icon: Shield },
