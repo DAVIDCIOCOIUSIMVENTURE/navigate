@@ -4,10 +4,10 @@ import React from "react"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import { Settings, HelpCircle, NotebookText, Compass, MoreHorizontal } from "lucide-react"
+import { Settings, HelpCircle, NotebookText, Compass, Map, User, UserCircle } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import type { Problem } from "@/store/problems-model"
-import type { Solution } from "@/types/solution"
+import { cn } from "@/lib/utils"
+import type { AvatarColor } from "@/store/settings-model"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { navigationItems } from "@/config/navigation"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
@@ -30,6 +30,17 @@ import { Toaster } from "@/components/ui/sonner"
 import { TeamAvatars } from "@/components/team-avatars"
 import Link from "next/link"
 
+const AVATAR_COLOR_OPTIONS: { id: AvatarColor; label: string; bgClass: string }[] = [
+  { id: "teal", label: "Teal", bgClass: "bg-quaternary" },
+  { id: "mustard", label: "Mustard", bgClass: "bg-yellow-600" },
+  { id: "navy", label: "Navy", bgClass: "bg-blue-900" },
+  { id: "forest", label: "Forest", bgClass: "bg-green-800" },
+  { id: "crimson", label: "Crimson", bgClass: "bg-red-800" },
+  { id: "indigo", label: "Indigo", bgClass: "bg-indigo-800" },
+  { id: "violet", label: "Violet", bgClass: "bg-violet-800" },
+  { id: "rose", label: "Rose", bgClass: "bg-rose-800" },
+]
+
 function ContentArea({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null)
   const size = useObserveContainerSize(ref)
@@ -41,9 +52,9 @@ function ContentArea({ children }: { children: React.ReactNode }) {
     </div>
   )
 }
-type Crumb = { label: string; href?: string; truncate?: boolean }
+type Crumb = { label: string; href?: string }
 
-function getCrumbs(pathname: string, problems: Problem[], solutions: Solution[]): Crumb[] {
+function getCrumbs(pathname: string): Crumb[] {
   if (pathname === "/") return [{ label: "Home" }]
   const crumbs: Crumb[] = [{ label: "Home", href: "/" }]
   const segments = pathname.split("/").filter(Boolean)
@@ -75,14 +86,12 @@ function getCrumbs(pathname: string, problems: Problem[], solutions: Solution[])
       crumbs.push({ label: "Identify" })
       return crumbs
     }
-    const problem = problems.find((p) => p.id === Number(second))
-    const name = problem?.description?.trim() || `Problem #${second}`
     crumbs.push({ label: "Problems", href: "/problems" })
     if (third === "validation") {
-      crumbs.push({ label: name, href: `/problems/${second}`, truncate: true })
+      crumbs.push({ label: second, href: `/problems/${second}` })
       crumbs.push({ label: "Validation" })
     } else {
-      crumbs.push({ label: name, truncate: true })
+      crumbs.push({ label: second })
     }
     return crumbs
   }
@@ -96,14 +105,12 @@ function getCrumbs(pathname: string, problems: Problem[], solutions: Solution[])
       crumbs.push({ label: "Discovery" })
       return crumbs
     }
-    const solution = solutions.find((s) => s.id === Number(second))
-    const name = solution?.title?.trim() || `Solution #${second}`
     crumbs.push({ label: "Solutions", href: "/solutions" })
     if (third === "validate") {
-      crumbs.push({ label: name, href: `/solutions/${second}`, truncate: true })
+      crumbs.push({ label: second, href: `/solutions/${second}` })
       crumbs.push({ label: "Validation" })
     } else {
-      crumbs.push({ label: name, truncate: true })
+      crumbs.push({ label: second })
     }
     return crumbs
   }
@@ -122,11 +129,11 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   const fullView = useSelector((state: RootState) => state.settings.fullView)
   const journalOpen = useSelector((state: RootState) => state.settings.journalOpen)
-  const problems = useSelector((state: RootState) => state.problems.problems)
-  const solutions = useSelector((state: RootState) => state.solutions.solutions)
+  const avatarColor = useSelector((state: RootState) => state.settings.avatarColor)
   const dispatch = useDispatch<AppDispatch>()
+  const activeAvatarColor = AVATAR_COLOR_OPTIONS.find((c) => c.id === avatarColor) ?? AVATAR_COLOR_OPTIONS[0]
 
-  const crumbs = getCrumbs(pathname, problems, solutions)
+  const crumbs = getCrumbs(pathname)
 
   const isFocusFlow = isFocusFlowPath(pathname)
   const [topNavOpen, setTopNavOpen] = useState(false)
@@ -184,21 +191,15 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       <BreadcrumbList className="text-sm font-semibold flex-nowrap">
         {crumbs.map((crumb, idx) => {
           const isLast = idx === crumbs.length - 1
-          const truncateClass = crumb.truncate ? "block max-w-[20ch] truncate" : ""
-          const titleAttr = crumb.truncate ? crumb.label : undefined
           return (
             <React.Fragment key={`${crumb.label}-${idx}`}>
               {idx > 0 && <BreadcrumbSeparator>/</BreadcrumbSeparator>}
-              <BreadcrumbItem className="min-w-0">
+              <BreadcrumbItem>
                 {isLast || !crumb.href ? (
-                  <BreadcrumbPage className={`font-bold ${truncateClass}`} title={titleAttr}>
-                    {crumb.label}
-                  </BreadcrumbPage>
+                  <BreadcrumbPage className="font-bold">{crumb.label}</BreadcrumbPage>
                 ) : (
                   <BreadcrumbLink asChild className="font-semibold">
-                    <Link href={crumb.href} className={truncateClass} title={titleAttr}>
-                      {crumb.label}
-                    </Link>
+                    <Link href={crumb.href}>{crumb.label}</Link>
                   </BreadcrumbLink>
                 )}
               </BreadcrumbItem>
@@ -216,7 +217,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   const headerNav = (
     <>
-      <nav className="hidden lg:flex items-center gap-1">
+      <nav className="hidden md:flex items-center gap-1">
         {navigationItems.topMenu.map((item) => {
           const isActive = item.url === "/" ? pathname === "/" : pathname.startsWith(item.url)
           return (
@@ -238,7 +239,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           )
         })}
       </nav>
-      <div className="lg:hidden">
+      <div className="md:hidden">
         <DropdownMenu>
           <Tooltip>
             <TooltipTrigger asChild>
@@ -249,7 +250,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                   className="h-8 w-8"
                   aria-label="Open navigation menu"
                 >
-                  {ActiveNavIcon ? <ActiveNavIcon className="h-4 w-4" /> : <MoreHorizontal className="h-4 w-4" />}
+                  {ActiveNavIcon ? <ActiveNavIcon className="h-4 w-4" /> : <Map className="h-4 w-4" />}
                 </Button>
               </DropdownMenuTrigger>
             </TooltipTrigger>
@@ -273,7 +274,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     </>
   )
 
-  const headerActions = (
+  const panelToggles = (
     <>
       <Tooltip>
         <TooltipTrigger asChild>
@@ -305,29 +306,60 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         </TooltipTrigger>
         <TooltipContent>Guidance</TooltipContent>
       </Tooltip>
-      <Button variant="outline" size="icon" asChild>
-        <Link href="/settings" onClick={() => setTopNavOpen(false)}>
-          <Settings />
-        </Link>
-      </Button>
     </>
+  )
+
+  const headerActions = (
+    <DropdownMenu>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <DropdownMenuTrigger asChild>
+            <button
+              type="button"
+              className={cn(
+                "h-10 w-10 rounded-full text-white flex items-center justify-center shrink-0 hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring transition-opacity",
+                activeAvatarColor.bgClass,
+              )}
+              aria-label="Open user menu"
+            >
+              <User className="h-5 w-5" />
+            </button>
+          </DropdownMenuTrigger>
+        </TooltipTrigger>
+        <TooltipContent>Account</TooltipContent>
+      </Tooltip>
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuItem asChild>
+          <Link href="/settings/account" onClick={() => setTopNavOpen(false)}>
+            <UserCircle className="h-4 w-4" />
+            Account
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild>
+          <Link href="/settings" onClick={() => setTopNavOpen(false)}>
+            <Settings className="h-4 w-4" />
+            Settings
+          </Link>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 
   const brandLogo = (
     <Link
       href="/"
-      className="flex items-center gap-2 h-8 px-2 lg:px-3 rounded-md bg-quaternary text-quaternary-foreground shrink-0"
+      className="flex items-center gap-2 h-8 px-2 md:px-3 rounded-md bg-quaternary text-quaternary-foreground shrink-0"
       aria-label="Navigate home"
     >
-      <Compass className="h-5 w-5 shrink-0" aria-hidden="true" />
-      <span className="text-base font-semibold hidden lg:inline">Navigate</span>
+      <Compass className="h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+      <span className="text-base font-semibold hidden md:inline">Navigate</span>
     </Link>
   )
 
   return (
     <TooltipProvider delayDuration={0}>
     <div className="flex h-svh w-full flex-col overflow-hidden">
-      <div className="relative flex w-full min-w-0 flex-1 flex-col bg-background">
+      <div className="relative flex w-full min-w-0 min-h-0 flex-1 flex-col bg-background">
         {!fullView && !isFocusFlow && (
         <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 border-b bg-background px-4 justify-between">
           <div className="flex items-center gap-2 min-w-0">
@@ -340,6 +372,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               <TeamAvatars />
             </div>
             {headerNav}
+            {panelToggles}
             <Separator orientation="vertical" className="h-4" />
             {headerActions}
           </div>
@@ -438,6 +471,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                   <TeamAvatars />
                 </div>
                 {headerNav}
+                {panelToggles}
                 <Separator orientation="vertical" className="h-4" />
                 {headerActions}
               </div>

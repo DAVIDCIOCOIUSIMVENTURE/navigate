@@ -5,6 +5,13 @@ const STORAGE_KEY = "navigate-settings"
 
 export type IdentifyMode = "canvas" | "builder" | "reflect"
 export type IdentifyBuilderStep = "pick" | "category" | "choose" | "review"
+export type AvatarColor = "teal" | "mustard" | "navy" | "forest" | "crimson" | "indigo" | "violet" | "rose"
+
+const AVATAR_COLOR_IDS: AvatarColor[] = ["teal", "mustard", "navy", "forest", "crimson", "indigo", "violet", "rose"]
+
+function isAvatarColor(value: unknown): value is AvatarColor {
+  return typeof value === "string" && (AVATAR_COLOR_IDS as string[]).includes(value)
+}
 
 interface SettingsState {
   hiddenIdentifyColumns: string[]
@@ -16,6 +23,9 @@ interface SettingsState {
   identifyBuilderActiveColumnId: string | null
   identifyBuilderActiveCategoryId: string | null
   identifyBuilderDescription: string
+  avatarColor: AvatarColor
+  nickname: string
+  bio: string
 }
 
 const defaultState: SettingsState = {
@@ -28,6 +38,9 @@ const defaultState: SettingsState = {
   identifyBuilderActiveColumnId: null,
   identifyBuilderActiveCategoryId: null,
   identifyBuilderDescription: "",
+  avatarColor: "teal",
+  nickname: "",
+  bio: "",
 }
 
 function saveToStorage(state: SettingsState) {
@@ -87,6 +100,21 @@ export const settings = createModel<RootModel>()({
       saveToStorage(next)
       return next
     },
+    setAvatarColor(state, avatarColor: AvatarColor) {
+      const next = { ...state, avatarColor }
+      saveToStorage(next)
+      return next
+    },
+    setNickname(state, nickname: string) {
+      const next = { ...state, nickname }
+      saveToStorage(next)
+      return next
+    },
+    setBio(state, bio: string) {
+      const next = { ...state, bio }
+      saveToStorage(next)
+      return next
+    },
     resetIdentifyBuilder(state) {
       const next: SettingsState = {
         ...state,
@@ -134,6 +162,15 @@ export const settings = createModel<RootModel>()({
         }
         if (typeof stored.identifyBuilderDescription === "string") {
           dispatch.settings.setIdentifyBuilderDescription(stored.identifyBuilderDescription)
+        }
+        if (isAvatarColor(stored.avatarColor)) {
+          dispatch.settings.setAvatarColor(stored.avatarColor)
+        }
+        if (typeof stored.nickname === "string") {
+          dispatch.settings.setNickname(stored.nickname)
+        }
+        if (typeof stored.bio === "string") {
+          dispatch.settings.setBio(stored.bio)
         }
       } catch {
         // ignore parse errors
