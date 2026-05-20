@@ -2,8 +2,8 @@
 
 import { useEffect, useMemo, useState, type ReactNode } from "react"
 import { useRouter } from "next/navigation"
-import { useDispatch } from "react-redux"
-import type { AppDispatch } from "@/store"
+import { useDispatch, useSelector } from "react-redux"
+import type { AppDispatch, RootState } from "@/store"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -45,8 +45,7 @@ import { WorkContextPicker } from "@/components/reflect/work-context-picker"
 import { IdentifyDimensionPicker } from "@/components/reflect/identify-dimension-picker"
 import { useResolveOrCreate } from "@/lib/dimension-labels"
 import type { ReflectionCapture } from "@/types/reflection"
-
-type ReflectStep = "pick" | "introduction" | "prompts" | "review"
+import type { ReflectStep } from "@/store/reflect-sessions-model"
 
 const REFLECT_STEPS: { id: ReflectStep; label: string }[] = [
   { id: "pick", label: "Pick a method" },
@@ -1196,10 +1195,43 @@ function ReviewPanel({
 /* ─── ReflectBuilder (main entry point) ─── */
 
 export function ReflectBuilder({ resetRef }: { resetRef?: React.MutableRefObject<(() => void) | null> }) {
+  const dispatch = useDispatch<AppDispatch>()
+  const hydrated = useSelector((s: RootState) => s.reflectSessions.hydrated)
+  const storedLensId = useSelector(
+    (s: RootState) => s.reflectSessions.lastPickedLensId
+  )
+  const storedStep = useSelector((s: RootState) => s.reflectSessions.lastStep)
+  const storedPromptIndex = useSelector(
+    (s: RootState) => s.reflectSessions.lastPromptIndex
+  )
   const [step, setStep] = useState<ReflectStep>("pick")
   const [lensId, setLensId] = useState<LensId | null>(null)
   const [promptIndex, setPromptIndex] = useState(0)
+  const [restored, setRestored] = useState(false)
   const lens = lensId ? getReflectLens(lensId) ?? null : null
+
+  useEffect(() => {
+    if (restored) return
+    if (!hydrated) return
+    setRestored(true)
+    if (storedLensId && getReflectLens(storedLensId)) {
+      setLensId(storedLensId as LensId)
+      const restoredLens = getReflectLens(storedLensId)!
+      const total = restoredLens.prompts.length
+      const safeIndex = Math.min(Math.max(storedPromptIndex, 0), Math.max(total - 1, 0))
+      setPromptIndex(safeIndex)
+      setStep(storedStep ?? "introduction")
+    }
+  }, [hydrated, storedLensId, storedStep, storedPromptIndex, restored])
+
+  useEffect(() => {
+    if (!restored) return
+    dispatch.reflectSessions.setLastPosition({
+      lensId,
+      step: lensId ? step : null,
+      promptIndex,
+    })
+  }, [restored, dispatch, lensId, step, promptIndex])
 
   function handlePick(id: LensId) {
     setLensId(id)

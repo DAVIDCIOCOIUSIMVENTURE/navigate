@@ -13,32 +13,54 @@ export type ReflectSession = {
   answers: Record<string, ReflectAnswer[]>
 }
 
+export type ReflectStep = "pick" | "introduction" | "prompts" | "review"
+
 interface ReflectSessionsState {
   sessions: Record<string, ReflectSession>
+  lastPickedLensId: string | null
+  lastStep: ReflectStep | null
+  lastPromptIndex: number
   hydrated: boolean
 }
 
 const defaultState: ReflectSessionsState = {
   sessions: {},
+  lastPickedLensId: null,
+  lastStep: null,
+  lastPromptIndex: 0,
   hydrated: false,
 }
 
 function saveToStorage(state: ReflectSessionsState) {
   if (typeof window === "undefined") return
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({ sessions: state.sessions }))
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        sessions: state.sessions,
+        lastPickedLensId: state.lastPickedLensId,
+        lastStep: state.lastStep,
+        lastPromptIndex: state.lastPromptIndex,
+      })
+    )
   } catch {
     // ignore storage errors
   }
 }
 
-function loadFromStorage(): Record<string, ReflectSession> | null {
+type StoredShape = {
+  sessions?: Record<string, ReflectSession>
+  lastPickedLensId?: string | null
+  lastStep?: ReflectStep | null
+  lastPromptIndex?: number
+}
+
+function loadFromStorage(): StoredShape | null {
   if (typeof window === "undefined") return null
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return null
-    const parsed = JSON.parse(raw) as { sessions?: Record<string, ReflectSession> }
-    return parsed.sessions ?? null
+    return JSON.parse(raw) as StoredShape
   } catch {
     return null
   }
@@ -52,12 +74,45 @@ export const reflectSessions = createModel<RootModel>()({
   state: defaultState,
 
   reducers: {
-    setAllSessions(state, sessions: Record<string, ReflectSession>) {
-      return { ...state, sessions, hydrated: true }
+    setAllSessions(
+      state,
+      payload: {
+        sessions: Record<string, ReflectSession>
+        lastPickedLensId: string | null
+        lastStep: ReflectStep | null
+        lastPromptIndex: number
+      }
+    ) {
+      return {
+        ...state,
+        sessions: payload.sessions,
+        lastPickedLensId: payload.lastPickedLensId,
+        lastStep: payload.lastStep,
+        lastPromptIndex: payload.lastPromptIndex,
+        hydrated: true,
+      }
     },
 
     markHydrated(state) {
       return { ...state, hydrated: true }
+    },
+
+    setLastPosition(
+      state,
+      payload: {
+        lensId: string | null
+        step: ReflectStep | null
+        promptIndex: number
+      }
+    ) {
+      const next: ReflectSessionsState = {
+        ...state,
+        lastPickedLensId: payload.lensId,
+        lastStep: payload.step,
+        lastPromptIndex: payload.promptIndex,
+      }
+      saveToStorage(next)
+      return next
     },
 
     ensureSession(
@@ -98,7 +153,14 @@ export const reflectSessions = createModel<RootModel>()({
     clearSession(state, lensId: string) {
       const { [lensId]: _removed, ...rest } = state.sessions
       void _removed
-      const next: ReflectSessionsState = { ...state, sessions: rest }
+      const wasActive = state.lastPickedLensId === lensId
+      const next: ReflectSessionsState = {
+        ...state,
+        sessions: rest,
+        lastPickedLensId: wasActive ? null : state.lastPickedLensId,
+        lastStep: wasActive ? null : state.lastStep,
+        lastPromptIndex: wasActive ? 0 : state.lastPromptIndex,
+      }
       saveToStorage(next)
       return next
     },
@@ -233,7 +295,12 @@ export const reflectSessions = createModel<RootModel>()({
     init() {
       const stored = loadFromStorage()
       if (stored) {
-        dispatch.reflectSessions.setAllSessions(stored)
+        dispatch.reflectSessions.setAllSessions({
+          sessions: stored.sessions ?? {},
+          lastPickedLensId: stored.lastPickedLensId ?? null,
+          lastStep: stored.lastStep ?? null,
+          lastPromptIndex: stored.lastPromptIndex ?? 0,
+        })
       } else {
         dispatch.reflectSessions.markHydrated()
       }
