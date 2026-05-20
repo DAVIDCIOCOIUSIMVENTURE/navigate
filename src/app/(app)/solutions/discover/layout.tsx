@@ -52,9 +52,9 @@ function Stepper({
                 className={cn(
                   "flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 transition-colors",
                   isActive
-                    ? "border-primary bg-primary text-primary-foreground"
+                    ? "border-secondary-brand bg-secondary-brand text-secondary-brand-foreground"
                     : isCompleted
-                      ? "border-primary bg-primary/10 text-primary"
+                      ? "border-secondary-brand bg-secondary-brand/10 text-secondary-brand"
                       : locked
                         ? "border-muted-foreground/20 bg-transparent text-muted-foreground/50"
                         : "border-muted-foreground/30 bg-transparent text-muted-foreground"
@@ -79,7 +79,7 @@ function Stepper({
               <div
                 className={cn(
                   "flex-1 h-px mx-3 min-w-3",
-                  isCompleted ? "bg-primary" : "bg-border"
+                  isCompleted ? "bg-secondary-brand" : "bg-border"
                 )}
               />
             )}
@@ -102,9 +102,9 @@ function StepBadge({
       className={cn(
         "flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 transition-colors shrink-0",
         state === "active"
-          ? "border-primary bg-primary text-primary-foreground"
+          ? "border-secondary-brand bg-secondary-brand text-secondary-brand-foreground"
           : state === "completed"
-            ? "border-primary bg-primary/10 text-primary"
+            ? "border-secondary-brand bg-secondary-brand/10 text-secondary-brand"
             : state === "locked"
               ? "border-muted-foreground/20 bg-transparent text-muted-foreground/50"
               : "border-muted-foreground/30 bg-transparent text-muted-foreground"

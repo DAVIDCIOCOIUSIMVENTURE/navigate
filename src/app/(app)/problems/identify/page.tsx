@@ -32,6 +32,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import {
+  ArrowLeft,
   ArrowRight,
   Check,
   ChevronDown,
@@ -515,9 +516,9 @@ function ProblemBuilder({
                         <span className={cn(
                           "flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 transition-colors",
                           isActive
-                            ? "border-primary bg-primary text-primary-foreground"
+                            ? "border-secondary-brand bg-secondary-brand text-secondary-brand-foreground"
                             : isCompleted
-                              ? "border-primary bg-primary/10 text-primary"
+                              ? "border-secondary-brand bg-secondary-brand/10 text-secondary-brand"
                               : "border-muted-foreground/30 bg-transparent text-muted-foreground"
                         )}>
                           {isCompleted ? <Check className="h-3.5 w-3.5" /> : i + 1}
@@ -532,7 +533,7 @@ function ProblemBuilder({
                       {i < BUILDER_STEPS.length - 1 && (
                         <div className={cn(
                           "flex-1 h-px mx-3",
-                          i < stepIndex ? "bg-primary" : "bg-border"
+                          i < stepIndex ? "bg-secondary-brand" : "bg-border"
                         )} />
                       )}
                     </div>
@@ -551,7 +552,7 @@ function ProblemBuilder({
                     className="w-full justify-between h-auto py-2 px-3"
                   >
                     <span className="flex items-center gap-2 text-sm font-medium min-w-0">
-                      <span className="flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 border-primary bg-primary text-primary-foreground shrink-0">
+                      <span className="flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 border-secondary-brand bg-secondary-brand text-secondary-brand-foreground shrink-0">
                         {stepIndex + 1}
                       </span>
                       <span className="truncate font-semibold text-foreground">
@@ -590,9 +591,9 @@ function ProblemBuilder({
                             <span className={cn(
                               "flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 transition-colors shrink-0",
                               isActive
-                                ? "border-primary bg-primary text-primary-foreground"
+                                ? "border-secondary-brand bg-secondary-brand text-secondary-brand-foreground"
                                 : isCompleted
-                                  ? "border-primary bg-primary/10 text-primary"
+                                  ? "border-secondary-brand bg-secondary-brand/10 text-secondary-brand"
                                   : "border-muted-foreground/30 bg-transparent text-muted-foreground"
                             )}>
                               {isCompleted ? <Check className="h-3.5 w-3.5" /> : i + 1}
@@ -797,6 +798,24 @@ function ProblemBuilder({
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
+                    <Button
+                      variant="secondary-brand-outline"
+                      size="sm"
+                      onClick={() => {
+                        if (hasCategories) {
+                          setActiveCategoryId(null)
+                          setStep("category")
+                        } else {
+                          setActiveColumnId(null)
+                          setActiveCategoryId(null)
+                          setStep("pick")
+                        }
+                      }}
+                      className="gap-1.5"
+                    >
+                      <ArrowLeft className="h-3.5 w-3.5" />
+                      Back
+                    </Button>
                     {hasCategories && (
                       <>
                         <Button
