@@ -46,6 +46,18 @@ const STORAGE_GROUPS: StorageGroup[] = [
     keys: ["navigate-custom-dimension-items"],
   },
   {
+    id: "reflect-sessions",
+    label: "Reflect sessions",
+    description: "In-progress answers captured while reflecting through a lens in Identify Problems.",
+    keys: ["navigate-reflect-sessions"],
+  },
+  {
+    id: "problem-candidates",
+    label: "Problem candidates",
+    description: "Problems surfaced from reflect sessions before they're promoted into your Problems list.",
+    keys: ["navigate-problem-candidates"],
+  },
+  {
     id: "solutions",
     label: "Solutions",
     description: "Solution candidates and their validation results.",
@@ -109,7 +121,7 @@ export default function DataPrivacySettingsPage() {
       : ""
 
   const dialogDescription = pending?.kind === "all"
-    ? "This will permanently delete every record this app has stored on this device, including problems, solutions, triggers, notes, and settings. This action cannot be undone."
+    ? "This will permanently delete every record this app has stored on this device, including problems, solutions, self-discovery items, reflect sessions, notes, and settings. This action cannot be undone."
     : pending?.kind === "group"
       ? `This will permanently delete ${pending.group.description.charAt(0).toLowerCase() + pending.group.description.slice(1)} This action cannot be undone.`
       : ""
