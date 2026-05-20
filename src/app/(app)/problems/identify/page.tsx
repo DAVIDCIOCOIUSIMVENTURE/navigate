@@ -1272,6 +1272,10 @@ export default function IdentifyPage() {
       size="sm"
       className="shrink-0 bg-card border-border divide-x divide-border"
     >
+      <ToggleGroupItem value="reflect" aria-label="Reflect mode" className="gap-1.5 px-3 rounded-none bg-card data-[state=on]:bg-secondary-brand data-[state=on]:text-secondary-brand-foreground">
+        <Telescope className="h-3.5 w-3.5" />
+        <span className={cn(containerSize === "narrow" && "sr-only")}>Reflect</span>
+      </ToggleGroupItem>
       <ToggleGroupItem value="canvas" aria-label="Canvas mode" className="gap-1.5 px-3 rounded-none bg-card data-[state=on]:bg-secondary-brand data-[state=on]:text-secondary-brand-foreground">
         <Grid3X3 className="h-3.5 w-3.5" />
         <span className={cn(containerSize === "narrow" && "sr-only")}>Canvas</span>
@@ -1279,10 +1283,6 @@ export default function IdentifyPage() {
       <ToggleGroupItem value="builder" aria-label="Problem Builder mode" className="gap-1.5 px-3 rounded-none bg-card data-[state=on]:bg-secondary-brand data-[state=on]:text-secondary-brand-foreground">
         <Layers className="h-3.5 w-3.5" />
         <span className={cn(containerSize === "narrow" && "sr-only")}>Builder</span>
-      </ToggleGroupItem>
-      <ToggleGroupItem value="reflect" aria-label="Reflect mode" className="gap-1.5 px-3 rounded-none bg-card data-[state=on]:bg-secondary-brand data-[state=on]:text-secondary-brand-foreground">
-        <Telescope className="h-3.5 w-3.5" />
-        <span className={cn(containerSize === "narrow" && "sr-only")}>Reflect</span>
       </ToggleGroupItem>
       <ToggleGroupItem
         value="research"

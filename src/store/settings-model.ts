@@ -32,7 +32,7 @@ const defaultState: SettingsState = {
   hiddenIdentifyColumns: [],
   fullView: false,
   identifySelected: [],
-  identifyMode: "builder",
+  identifyMode: "reflect",
   journalOpen: false,
   identifyBuilderStep: "pick",
   identifyBuilderActiveColumnId: null,
