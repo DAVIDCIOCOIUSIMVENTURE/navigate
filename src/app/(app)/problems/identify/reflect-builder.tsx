@@ -42,7 +42,7 @@ import { ReflectProvider, useReflect } from "@/components/reflect/reflect-contex
 import { SelfDiscoveryChips } from "@/components/reflect/self-discovery-chips"
 import { LifeExperiencesPicker } from "@/components/reflect/life-experiences-picker"
 import { WorkContextPicker } from "@/components/reflect/work-context-picker"
-import { BrainstormDimensionPicker } from "@/components/reflect/brainstorm-dimension-picker"
+import { IdentifyDimensionPicker } from "@/components/reflect/identify-dimension-picker"
 import { useResolveOrCreate } from "@/lib/dimension-labels"
 import type { ReflectionCapture } from "@/types/reflection"
 
@@ -332,7 +332,7 @@ function PickMethodPanel({
                   )}
                 >
                   {isSelected && (
-                    <span className="absolute -top-3 right-4 flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-base font-semibold uppercase tracking-wide text-primary-foreground shadow-sm">
+                    <span className="absolute -top-3 right-4 flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground shadow-sm">
                       <CheckCircle2 className="h-3 w-3" />
                       Selected
                     </span>
@@ -642,7 +642,7 @@ function PromptsPanel({
           onAddDialogOpenChange={setAddDialogOpen}
         />
       ) : dimensionPickerColumn ? (
-        <BrainstormDimensionPicker
+        <IdentifyDimensionPicker
           columnId={dimensionPickerColumn}
           selectedLabels={selectedDimensionLabels}
           onChange={handleDimensionChange}
@@ -869,7 +869,7 @@ function ReviewPanel({
       }
 
       const newProblem = await dispatch.problems.create({
-        source: "brainstorm",
+        source: "identify",
         description: trimmedTitle,
         customers: customerIds,
         contexts: [],

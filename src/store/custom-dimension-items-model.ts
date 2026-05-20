@@ -1,21 +1,21 @@
 import { createModel } from "@rematch/core"
 import type { RootModel } from "."
 
-const STORAGE_KEY = "navigate-custom-brainstorm-items"
+const STORAGE_KEY = "navigate-custom-dimension-items"
 
-export interface CustomBrainstormItem {
+export interface CustomDimensionItem {
   id: string
   label: string
   createdAt: string
 }
 
-export type CustomBrainstormColumnId = "customers" | "contexts" | "problems"
+export type CustomDimensionColumnId = "customers" | "contexts" | "problems"
 
-interface CustomBrainstormItemsState {
-  byColumn: Record<string, CustomBrainstormItem[]>
+interface CustomDimensionItemsState {
+  byColumn: Record<string, CustomDimensionItem[]>
 }
 
-const defaultState: CustomBrainstormItemsState = {
+const defaultState: CustomDimensionItemsState = {
   byColumn: {
     customers: [],
     contexts: [],
@@ -25,7 +25,7 @@ const defaultState: CustomBrainstormItemsState = {
   },
 }
 
-function saveToStorage(state: CustomBrainstormItemsState) {
+function saveToStorage(state: CustomDimensionItemsState) {
   if (typeof window === "undefined") return
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
@@ -46,16 +46,16 @@ export function generateCustomItemId(columnId: string): string {
   return `${singular}-user-${crypto.randomUUID().slice(0, 8)}`
 }
 
-export const customBrainstormItems = createModel<RootModel>()({
+export const customDimensionItems = createModel<RootModel>()({
   state: defaultState,
 
   reducers: {
     addItem(
       state,
-      payload: { columnId: string; item: CustomBrainstormItem }
+      payload: { columnId: string; item: CustomDimensionItem }
     ) {
       const existing = state.byColumn[payload.columnId] ?? []
-      const next: CustomBrainstormItemsState = {
+      const next: CustomDimensionItemsState = {
         ...state,
         byColumn: {
           ...state.byColumn,
@@ -71,7 +71,7 @@ export const customBrainstormItems = createModel<RootModel>()({
       payload: { columnId: string; id: string; label: string }
     ) {
       const existing = state.byColumn[payload.columnId] ?? []
-      const next: CustomBrainstormItemsState = {
+      const next: CustomDimensionItemsState = {
         ...state,
         byColumn: {
           ...state.byColumn,
@@ -86,7 +86,7 @@ export const customBrainstormItems = createModel<RootModel>()({
 
     removeItem(state, payload: { columnId: string; id: string }) {
       const existing = state.byColumn[payload.columnId] ?? []
-      const next: CustomBrainstormItemsState = {
+      const next: CustomDimensionItemsState = {
         ...state,
         byColumn: {
           ...state.byColumn,
@@ -97,7 +97,7 @@ export const customBrainstormItems = createModel<RootModel>()({
       return next
     },
 
-    setAll(_, loaded: CustomBrainstormItemsState) {
+    setAll(_, loaded: CustomDimensionItemsState) {
       return loaded
     },
   },
@@ -108,9 +108,9 @@ export const customBrainstormItems = createModel<RootModel>()({
       try {
         const raw = localStorage.getItem(STORAGE_KEY)
         if (!raw) return
-        const stored = JSON.parse(raw) as Partial<CustomBrainstormItemsState>
+        const stored = JSON.parse(raw) as Partial<CustomDimensionItemsState>
         if (stored.byColumn && typeof stored.byColumn === "object") {
-          dispatch.customBrainstormItems.setAll({
+          dispatch.customDimensionItems.setAll({
             byColumn: {
               customers: stored.byColumn.customers ?? [],
               contexts: stored.byColumn.contexts ?? [],
@@ -124,15 +124,13 @@ export const customBrainstormItems = createModel<RootModel>()({
       }
     },
 
-    // Helper effect that mints an id, dispatches the add, and returns the new id
-    // so callers can immediately tick the item.
-    create(payload: { columnId: string; label: string }): CustomBrainstormItem {
-      const item: CustomBrainstormItem = {
+    create(payload: { columnId: string; label: string }): CustomDimensionItem {
+      const item: CustomDimensionItem = {
         id: generateCustomItemId(payload.columnId),
         label: payload.label,
         createdAt: new Date().toISOString(),
       }
-      dispatch.customBrainstormItems.addItem({ columnId: payload.columnId, item })
+      dispatch.customDimensionItems.addItem({ columnId: payload.columnId, item })
       return item
     },
   }),

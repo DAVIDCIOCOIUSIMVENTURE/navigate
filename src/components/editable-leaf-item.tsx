@@ -36,7 +36,7 @@ export function EditableLeafItem({
   const commit = () => {
     const trimmed = draft.trim()
     if (customColumnId && trimmed && trimmed !== item.label) {
-      dispatch.customBrainstormItems.renameItem({
+      dispatch.customDimensionItems.renameItem({
         columnId: customColumnId,
         id: item.id,
         label: trimmed,

@@ -10,14 +10,14 @@ import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { brainstormColumns } from "@/data/brainstormData"
-import type { BrainstormItem } from "@/app/(app)/problems/brainstorm/data"
+import { dimensionColumns } from "@/data/dimensionData"
+import type { DimensionItem } from "@/app/(app)/problems/identify/data"
 import { resolveDimensionLabel } from "@/lib/dimension-labels"
 import { DIMENSION_COLORS, DIMENSION_ICONS } from "@/lib/dimension-visuals"
 import { EditableLeafItem } from "@/components/editable-leaf-item"
 import { cn } from "@/lib/utils"
 
-function findInTree(items: BrainstormItem[], id: string): BrainstormItem | null {
+function findInTree(items: DimensionItem[], id: string): DimensionItem | null {
   for (const item of items) {
     if (item.id === id) return item
     if (item.children) {
@@ -28,7 +28,7 @@ function findInTree(items: BrainstormItem[], id: string): BrainstormItem | null 
   return null
 }
 
-function filterItems(items: BrainstormItem[], query: string): BrainstormItem[] {
+function filterItems(items: DimensionItem[], query: string): DimensionItem[] {
   const lower = query.toLowerCase()
   return items.flatMap((item) => {
     if (item.children) {
@@ -49,7 +49,7 @@ function CheckTree({
   customColumnId,
   customItemIds,
 }: {
-  item: BrainstormItem
+  item: DimensionItem
   selected: Set<string>
   onToggle: (id: string) => void
   forceOpen?: boolean
@@ -117,13 +117,13 @@ export function DimensionPicker({
   label?: string
   readOnly?: boolean
 }) {
-  const customByColumn = useSelector((s: RootState) => s.customBrainstormItems.byColumn)
+  const customByColumn = useSelector((s: RootState) => s.customDimensionItems.byColumn)
   const triggers = useSelector((s: RootState) => s.selfDiscoveryItems.items)
-  const column = brainstormColumns.find((c) => c.id === columnId)
+  const column = dimensionColumns.find((c) => c.id === columnId)
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
 
-  const customItems = useMemo<BrainstormItem[]>(() => {
+  const customItems = useMemo<DimensionItem[]>(() => {
     const items = customByColumn[columnId] ?? []
     if (items.length === 0) return []
     return [{
@@ -138,7 +138,7 @@ export function DimensionPicker({
     return new Set(items.map((i) => i.id))
   }, [customByColumn, columnId])
 
-  const allItems = useMemo<BrainstormItem[]>(() => {
+  const allItems = useMemo<DimensionItem[]>(() => {
     const builtIn = column?.items ?? []
     return [...builtIn, ...customItems]
   }, [column, customItems])

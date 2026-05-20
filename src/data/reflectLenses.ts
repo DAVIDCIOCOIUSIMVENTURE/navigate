@@ -41,9 +41,9 @@ export type LensPrompt = {
   /**
    * Role in the save-as-problem flow:
    * - "problems": answers resolve to problem dimension ids; rendered with the
-   *   brainstorm problem picker.
+   *   identify problem picker.
    * - "customers": answers resolve to customer dimension ids; rendered with the
-   *   brainstorm customer picker.
+   *   identify customer picker.
    * Untagged prompts (other than the contextOnly anchor) are kept as reflection
    * context only.
    */

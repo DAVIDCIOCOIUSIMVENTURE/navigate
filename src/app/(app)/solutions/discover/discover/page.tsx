@@ -410,7 +410,7 @@ function ScamperForm() {
   )
 }
 
-/* -- Reverse Brainstorming Form -- */
+/* -- Reverse Ideation Form -- */
 
 function ReverseItemList({
   items,
@@ -502,15 +502,15 @@ function ReverseItemList({
   )
 }
 
-function ReverseBrainstormForm() {
+function ReverseIdeationForm() {
   const {
-    reverseBrainstorm,
-    setReverseBrainstorm,
+    reverseIdeation,
+    setReverseIdeation,
     reverseInversion,
     setReverseInversion,
   } = useDiscovery()
 
-  const brainstormItems = Array.isArray(reverseBrainstorm) ? reverseBrainstorm : []
+  const ideationItems = Array.isArray(reverseIdeation) ? reverseIdeation : []
   const inversionItems = Array.isArray(reverseInversion) ? reverseInversion : []
 
   return (
@@ -518,8 +518,8 @@ function ReverseBrainstormForm() {
       <div className="flex flex-col divide-y divide-white/20">
         <div className="py-5 first:pt-0 last:pb-0">
           <ReverseItemList
-            items={brainstormItems}
-            setItems={setReverseBrainstorm}
+            items={ideationItems}
+            setItems={setReverseIdeation}
             label="How could you make this problem worse?"
             description="Think of every way to aggravate the problem. Be creative, the more outlandish the better."
             placeholder="Type a way to make it worse and press Enter..."
@@ -911,7 +911,7 @@ function ImproveCaseStudies() {
   )
 }
 
-/* -- Reverse Brainstorming Case Studies -- */
+/* -- Reverse Ideation Case Studies -- */
 
 const REVERSE_CASE_STUDY_ICONS: Record<string, { icon: LucideIcon; bg: string }> = {
   "Airbnb": { icon: Home, bg: "bg-rose-800" },
@@ -1045,7 +1045,7 @@ function AnalogyCaseStudies() {
 
 const TOOL_META: Record<SaveDialogTool, { label: string; titleHint: string }> = {
   scamper: { label: "SCAMPER", titleHint: "Name your SCAMPER solution" },
-  reverse: { label: "Reverse Brainstorming", titleHint: "Name your reverse brainstorming solution" },
+  reverse: { label: "Reverse Ideation", titleHint: "Name your reverse ideation solution" },
   analogy: { label: "Analogy Thinking", titleHint: "Name your analogy solution" },
   improve: { label: "Improve Existing Solutions", titleHint: "Name your improvement solution" },
 }
@@ -1284,12 +1284,12 @@ function SolutionSavedDialog({
   open,
   onOpenChange,
   onContinue,
-  onKeepBrainstorming,
+  onKeepExploring,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
   onContinue: () => void
-  onKeepBrainstorming: () => void
+  onKeepExploring: () => void
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -1305,8 +1305,8 @@ function SolutionSavedDialog({
             <ArrowRight className="h-4 w-4" />
             Continue to Solution Validation
           </Button>
-          <Button variant="outline" onClick={onKeepBrainstorming}>
-            Keep Brainstorming
+          <Button variant="outline" onClick={onKeepExploring}>
+            Keep Exploring
           </Button>
         </div>
       </DialogContent>
@@ -1323,7 +1323,7 @@ function SaveSolutionPanel({ toolType }: { toolType: SaveDialogTool }) {
     improvementResponses,
     analogyDomain,
     analogyInsight,
-    reverseBrainstorm,
+    reverseIdeation,
     reverseInversion,
   } = useDiscovery()
 
@@ -1354,7 +1354,7 @@ function SaveSolutionPanel({ toolType }: { toolType: SaveDialogTool }) {
       }
       seed.improveItems = items
     } else if (toolType === "reverse") {
-      seed.reverseWorse = reverseBrainstorm
+      seed.reverseWorse = reverseIdeation
         .map((i) => i.text.trim())
         .filter((t): t is string => Boolean(t))
       seed.reverseInversions = reverseInversion
@@ -1405,7 +1405,7 @@ function SaveSolutionPanel({ toolType }: { toolType: SaveDialogTool }) {
     }
   }
 
-  const handleKeepBrainstorming = () => {
+  const handleKeepExploring = () => {
     setSavedOpen(false)
   }
 
@@ -1434,7 +1434,7 @@ function SaveSolutionPanel({ toolType }: { toolType: SaveDialogTool }) {
         open={savedOpen}
         onOpenChange={setSavedOpen}
         onContinue={handleContinue}
-        onKeepBrainstorming={handleKeepBrainstorming}
+        onKeepExploring={handleKeepExploring}
       />
     </>
   )
@@ -1447,7 +1447,7 @@ type ToolHint = { icon: LucideIcon; title: string; subtitle: string; bg: string 
 const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo: string; hints: ToolHint[] }> = {
   scamper: {
     title: "SCAMPER Method",
-    description: "SCAMPER is a creative thinking technique that prompts you to look at a problem from seven angles: Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate, and Reverse. Each prompt sparks ideas you wouldn't reach through normal brainstorming.",
+    description: "SCAMPER is a creative thinking technique that prompts you to look at a problem from seven angles: Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate, and Reverse. Each prompt sparks ideas you wouldn't reach through conventional ideation.",
     whatYouDo: "Work through each of the <strong>7 SCAMPER prompts</strong> below. You don't need to fill in every one, but try at least 3-4. When you find a promising idea, click <strong>Add as Candidate</strong> to save it.",
     hints: [
       { icon: Shuffle, title: "7 creative angles", subtitle: "Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate, Reverse", bg: "bg-blue-900" },
@@ -1456,8 +1456,8 @@ const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo:
     ],
   },
   reverse: {
-    title: "Reverse Brainstorming",
-    description: "Instead of solving the problem directly, first brainstorm how to make it worse. Then flip each \"make it worse\" idea to discover creative solutions you might not have considered. This counterintuitive approach breaks you out of conventional thinking patterns.",
+    title: "Reverse Ideation",
+    description: "Instead of solving the problem directly, first generate ways to make it worse. Then flip each \"make it worse\" idea to discover creative solutions you might not have considered. This counterintuitive approach breaks you out of conventional thinking patterns.",
     whatYouDo: "First, list every way to <strong>make the problem worse</strong>. Be creative, the more outlandish the better. Then <strong>flip each idea</strong> into its opposite to reveal solution ideas. Save the best flips as candidates.",
     hints: [
       { icon: RotateCcw, title: "Think backwards", subtitle: "How could you make the problem worse?", bg: "bg-red-800" },
@@ -1526,7 +1526,7 @@ export default function DiscoverPage() {
             {discoveryToolType === "scamper" && (
               <>
                 <h3 className="mt-4 text-xl font-bold text-foreground">The 7 SCAMPER Prompts</h3>
-                <p>Each letter invites you to look at your problem from a different creative angle. Work through each prompt to surface ideas you would not reach through ordinary brainstorming.</p>
+                <p>Each letter invites you to look at your problem from a different creative angle. Work through each prompt to surface ideas you would not reach through ordinary ideation.</p>
                 <div className={cn("grid gap-3 mt-1 mb-4", isNarrow ? "grid-cols-1" : "grid-cols-2")}>
                   {SCAMPER_PROMPTS.map(({ key, letter, title, prompt, color }, i) => {
                     const isLastOdd = i === SCAMPER_PROMPTS.length - 1 && SCAMPER_PROMPTS.length % 2 === 1
@@ -1548,8 +1548,8 @@ export default function DiscoverPage() {
 
             {discoveryToolType === "reverse" && (
               <>
-                <h3 className="mt-6 text-xl font-bold text-foreground">The 2 Reverse Brainstorming Steps</h3>
-                <p className="mt-1">Reverse brainstorming runs in two passes. First you deliberately generate the worst ideas possible, then you flip them to reveal strong solutions hiding in plain sight.</p>
+                <h3 className="mt-6 text-xl font-bold text-foreground">The 2 Reverse Ideation Steps</h3>
+                <p className="mt-1">Reverse ideation runs in two passes. First you deliberately generate the worst ideas possible, then you flip them to reveal strong solutions hiding in plain sight.</p>
                 <div className="flex flex-col gap-3 mt-3 mb-6">
                   <div className="flex items-start gap-3">
                     <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-rose-500 shrink-0 mt-0.5">
@@ -1629,7 +1629,7 @@ export default function DiscoverPage() {
               </TabsList>
               <TabsContent value="strategy">
                 <div className="flex flex-col gap-6">
-                  <ReverseBrainstormForm />
+                  <ReverseIdeationForm />
                 </div>
               </TabsContent>
               <TabsContent value="case-studies">

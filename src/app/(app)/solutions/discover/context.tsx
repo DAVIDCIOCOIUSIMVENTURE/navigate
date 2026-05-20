@@ -48,8 +48,8 @@ type DiscoveryContextValue = {
   setAffectedGroups: (val: AffectedGroup[]) => void
   rootCauseNotes: string
   setRootCauseNotes: (val: string) => void
-  reverseBrainstorm: ImprovementItem[]
-  setReverseBrainstorm: (val: ImprovementItem[]) => void
+  reverseIdeation: ImprovementItem[]
+  setReverseIdeation: (val: ImprovementItem[]) => void
   reverseInversion: ImprovementItem[]
   setReverseInversion: (val: ImprovementItem[]) => void
   analogyDomain: string
@@ -147,7 +147,7 @@ export function DiscoveryProvider({ children }: { children: ReactNode }) {
   const fiveWhyChains = workspace?.fiveWhyChains ?? []
   const affectedGroups = workspace?.affectedGroups ?? []
   const rootCauseNotes = workspace?.rootCauseNotes ?? ""
-  const reverseBrainstorm = workspace?.reverseBrainstorm ?? []
+  const reverseIdeation = workspace?.reverseIdeation ?? []
   const reverseInversion = workspace?.reverseInversion ?? []
   const analogyDomain = workspace?.analogyDomain ?? ""
   const analogyInsight = workspace?.analogyInsight ?? ""
@@ -160,7 +160,7 @@ export function DiscoveryProvider({ children }: { children: ReactNode }) {
   const setFiveWhyChains = useCallback((val: FiveWhyChain[]) => patch("fiveWhyChains", val), [patch])
   const setAffectedGroups = useCallback((val: AffectedGroup[]) => patch("affectedGroups", val), [patch])
   const setRootCauseNotes = useCallback((val: string) => patch("rootCauseNotes", val), [patch])
-  const setReverseBrainstorm = useCallback((val: ImprovementItem[]) => patch("reverseBrainstorm", val), [patch])
+  const setReverseIdeation = useCallback((val: ImprovementItem[]) => patch("reverseIdeation", val), [patch])
   const setReverseInversion = useCallback((val: ImprovementItem[]) => patch("reverseInversion", val), [patch])
   const setAnalogyDomain = useCallback((val: string) => patch("analogyDomain", val), [patch])
   const setAnalogyInsight = useCallback((val: string) => patch("analogyInsight", val), [patch])
@@ -203,7 +203,7 @@ export function DiscoveryProvider({ children }: { children: ReactNode }) {
       patch: {
         scamperIdeas: {},
         improvementResponses: DEFAULT_IMPROVEMENT,
-        reverseBrainstorm: [],
+        reverseIdeation: [],
         reverseInversion: [],
         analogyDomain: "",
         analogyInsight: "",
@@ -243,7 +243,7 @@ export function DiscoveryProvider({ children }: { children: ReactNode }) {
         fiveWhyChains, setFiveWhyChains,
         affectedGroups, setAffectedGroups,
         rootCauseNotes, setRootCauseNotes,
-        reverseBrainstorm, setReverseBrainstorm,
+        reverseIdeation, setReverseIdeation,
         reverseInversion, setReverseInversion,
         analogyDomain, setAnalogyDomain,
         analogyInsight, setAnalogyInsight,

@@ -36,14 +36,14 @@ const STORAGE_GROUPS: StorageGroup[] = [
   {
     id: "self-discovery-items",
     label: "Self-discovery items",
-    description: "Items captured during self-discovery; these power the You dimension in problem brainstorming.",
+    description: "Items captured during self-discovery; these power the You dimension in Identify Problems.",
     keys: ["navigate-self-discovery-items"],
   },
   {
-    id: "custom-brainstorm-items",
+    id: "custom-dimension-items",
     label: "Custom dimension items",
-    description: "Customer / Context / Problem items you've added yourself in the brainstorm.",
-    keys: ["navigate-custom-brainstorm-items"],
+    description: "Customer / Context / Problem items you've added yourself in Identify Problems.",
+    keys: ["navigate-custom-dimension-items"],
   },
   {
     id: "solutions",
@@ -72,7 +72,7 @@ const STORAGE_GROUPS: StorageGroup[] = [
   {
     id: "app-preferences",
     label: "App preferences",
-    description: "Sidebar mode, brainstorm builder draft, hidden columns, and other UI state.",
+    description: "Sidebar mode, problem builder draft, hidden columns, and other UI state.",
     keys: ["navigate-settings"],
   },
 ]

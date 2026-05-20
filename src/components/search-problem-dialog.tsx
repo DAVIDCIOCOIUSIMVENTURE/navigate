@@ -31,9 +31,9 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
     onOpenChange(false)
   }
 
-  function handleBrainstorm() {
+  function handleIdentify() {
     handleClose()
-    router.push("/problems/brainstorm")
+    router.push("/problems/identify")
   }
 
   async function handleDefine() {
@@ -69,7 +69,7 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
 
           <div className="flex flex-col gap-3 mt-2">
             <button
-              onClick={handleBrainstorm}
+              onClick={handleIdentify}
               className="flex items-start gap-4 rounded-lg border bg-card p-4 text-left transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-yellow-600 shrink-0">
@@ -77,7 +77,7 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
               </div>
               <div className="flex flex-col gap-1 flex-1">
                 <div className="flex items-center justify-between">
-                  <span className="font-semibold text-base">Brainstorming Tool</span>
+                  <span className="font-semibold text-base">Identify Problems Tool</span>
                   <ArrowRight className="h-4 w-4 text-muted-foreground" />
                 </div>
                 <span className="text-base leading-relaxed">

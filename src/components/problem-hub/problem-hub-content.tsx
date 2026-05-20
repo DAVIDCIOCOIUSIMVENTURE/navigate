@@ -248,7 +248,7 @@ function NextStepsSection({ problemRef, problemId }: { problemRef: string; probl
             <h3 className="text-lg font-semibold text-foreground">Your problem is valid</h3>
           </div>
           <p className="text-base">
-            You have confirmed that this problem is real, painful, and worth pursuing. The next step is to brainstorm and evaluate potential solutions.
+            You have confirmed that this problem is real, painful, and worth pursuing. The next step is to generate and evaluate potential solutions.
           </p>
           <Button className="self-start" onClick={goToDiscover}>
             <Lightbulb className="h-4 w-4 mr-2" />

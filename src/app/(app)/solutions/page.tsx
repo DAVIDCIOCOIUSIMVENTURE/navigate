@@ -29,7 +29,7 @@ export default function SolutionsPage() {
             <p className="flex-1 min-w-[16rem] text-base leading-relaxed">
               This is your <span className="font-bold">solution library</span>, a central place to collect, refine, and track the solutions you&apos;ve identified.
               The workflow has three steps. <span className="font-bold">Pick a problem</span> from your validated library to anchor the work.
-              Then <span className="font-bold">discover candidates</span> using guided tools (analogy, SCAMPER, reverse brainstorm, root-cause attacks) instead of jumping to the first idea.
+              Then <span className="font-bold">discover candidates</span> using guided tools (analogy, SCAMPER, reverse ideation, root-cause attacks) instead of jumping to the first idea.
               Finally, <span className="font-bold">validate</span> each candidate by scoring it on feasibility, impact, cost, and time to implement, so you can decide which one is worth pursuing.
             </p>
             <Button onClick={() => setDialogOpen(true)} className="gap-2 shrink-0">

@@ -101,7 +101,7 @@ To bypass all hooks (e.g. for WIP pushes): `git push --no-verify`
 * **Drag & Drop**: `@dnd-kit` for sortable bucket organization
 * **Tables**: `@tanstack/react-table`
 * **Notifications**: `sonner`
-* **NLP/Parsing**: `compromise` + `js-yaml` (used by problem brainstorm parsing)
+* **NLP/Parsing**: `compromise` + `js-yaml` (used by problem identify parsing)
 * **Testing**: Vitest 4 + React Testing Library + happy-dom; test files co-located as `*.test.ts(x)`
 * **CI**: GitHub Actions (`.github/workflows/ci.yml`) runs lint, type check, and tests on every push
 
@@ -125,12 +125,12 @@ DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
 * `src/app/login/`: Password-protected login page (outside the sidebar layout)
 * `src/app/api/auth/`: Login (`POST`) and logout (`POST`) API routes for cookie-based auth
 * `src/middleware.ts`: Checks for `site-auth` cookie; redirects to `/login` if missing
-* `src/lib/`: Core utilities. `prisma.ts` (unused singleton), `config.ts` (app-wide constants), `utils.ts` (`cn` helper), `dimension-labels.ts` (`resolveDimensionLabel` / `useDimensionLabel` / `resolveOrCreate` for id ↔ label translation across built-in, `customBrainstormItems`, and `selfDiscoveryItems` catalogs), `dimension-visuals.ts`, `discoveryMethods.ts`
+* `src/lib/`: Core utilities. `prisma.ts` (unused singleton), `config.ts` (app-wide constants), `utils.ts` (`cn` helper), `dimension-labels.ts` (`resolveDimensionLabel` / `useDimensionLabel` / `resolveOrCreate` for id ↔ label translation across built-in, `customDimensionItems`, and `selfDiscoveryItems` catalogs), `dimension-visuals.ts`, `discoveryMethods.ts`
 * `src/config/navigation.ts`: Centralized top-level nav items + icon resolvers for foundations, self-discovery categories, and next-steps topics
 * `src/components/ui/`: Shared Radix UI-based primitives
 * `src/store/`: Global Rematch store (see "State Management" below)
 * `src/types/`: Cross-feature TypeScript types. `validation.ts` holds validation primitives (`ValidationStatus`, `ValidationAssessment`, `ExistingSolutionItem`, `ValidationMetric`, `DEFAULT_VALIDATION_ASSESSMENT`); `solution.ts` holds `Solution`, `SolutionWorkspace`, and discovery tool types.
-* `src/data/`: Static content modules (`selfDiscoveryData.ts`, `foundationsData.ts`, `brainstormData.ts`, `nextStepsData.ts`)
+* `src/data/`: Static content modules (`selfDiscoveryData.ts`, `foundationsData.ts`, `dimensionData.ts`, `nextStepsData.ts`)
 * `src/context/`: App-wide React Context providers (`guidance-context.tsx`, `container-size-context.tsx`, `navigation-guard-context.tsx`)
 * `prisma/schema.prisma`: Database schema (kept for reference; not actively used)
 * `locales/`: i18n translations (en, es, fr) via `next-i18next`. Infrastructure exists but is not heavily used.
@@ -162,11 +162,11 @@ All state is client-side only (no database). Two patterns coexist; choose based 
 | ----- | ---------------- | ------- |
 | `settings` | `navigate-settings` | Sidebar mode, full-view toggle, journal panel open state |
 | `notes` | `navigate-notes` | Journal notes (id/title/text/createdAt/editedAt) |
-| `selfDiscoveryItems` | `navigate-self-discovery-items` | Self-discovery answers (id `you-user-<8-char>`, title, `questionUrl`, optional `suggestionId`). Drives the brainstorm "You" column. Renamed from the legacy `problemTriggers` model. |
-| `customBrainstormItems` | `navigate-custom-brainstorm-items` | Per-user catalog of dimension items (`customers` / `contexts` / `problems`) added from the brainstorm canvas/builder, keyed by ids like `customer-user-<8-char>`. Built-in items live in `src/data/brainstormData.ts` with stable slugs (`customer-teenagers`, etc.). |
+| `selfDiscoveryItems` | `navigate-self-discovery-items` | Self-discovery answers (id `you-user-<8-char>`, title, `questionUrl`, optional `suggestionId`). Drives the "You" column in Identify Problems. Renamed from the legacy `problemTriggers` model. |
+| `customDimensionItems` | `navigate-custom-dimension-items` | Per-user catalog of dimension items (`customers` / `contexts` / `problems`) added from the Identify Problems canvas/builder, keyed by ids like `customer-user-<8-char>`. Built-in items live in `src/data/dimensionData.ts` with stable slugs (`customer-teenagers`, etc.). |
 | `problems` | `navigate-problems` | Global Problem list. `customers` / `contexts` / `problems` / `you` arrays now store **ids** (built-in slugs or `*-user-*` for custom/self-discovery items), resolved to labels via `src/lib/dimension-labels.ts`. Also holds full validation state (`existingSolutions`, `validationAssessment`, `validationStatus`, `contextWhen`, `segmentSize`, `customerDescription`, `emotionalImpact`). |
 | `solutions` | `navigate-solutions` | Solution candidates linked to a `problemId`; tracks inspiration source, scoring fields (`feasibility`/`impact`/`cost`/`timeToImplement`), validation, and discovery-tool artefacts (analogy / SCAMPER / improve / reverse) |
-| `solutionWorkspaces` | `navigate-solution-workspaces` | One workspace per `problemId`, scratch space shared by problem refinement and solution discovery (analysis tool, root causes, 5-Whys chains, affected groups, reverse brainstorm, etc.). Use `dispatch.solutionWorkspaces.ensureForProblem(problemId)` to lazily create one |
+| `solutionWorkspaces` | `navigate-solution-workspaces` | One workspace per `problemId`, scratch space shared by problem refinement and solution discovery (analysis tool, root causes, 5-Whys chains, affected groups, reverse ideation, etc.). Use `dispatch.solutionWorkspaces.ensureForProblem(problemId)` to lazily create one |
 | `accountSettings` | `navigate-account-settings` | Display name, email, theme, compact mode, notification preferences |
 
 Access patterns:
@@ -196,7 +196,7 @@ Access patterns:
 
 #### Page height & internal scrolling
 
-The app fits each page within the viewport on wide containers (no full-page scroll) and lets pages scroll naturally on narrow. Internal lists (tables, achievement lists, brainstorm columns) get their own scrollbar inside a card.
+The app fits each page within the viewport on wide containers (no full-page scroll) and lets pages scroll naturally on narrow. Internal lists (tables, achievement lists, Identify Problems columns) get their own scrollbar inside a card.
 
 **The layout chain:** `SidebarInset` (`h-svh` via `SidebarProvider`) → scroll container (`flex-1 min-h-0 overflow-y-auto`) → inner wrapper (`min-h-full flex-col` + padding, in `root-layout-client.tsx`) → `ContentArea` → page/layout.
 
@@ -238,7 +238,7 @@ The provider:
 * Calls `dispatch.solutionWorkspaces.ensureForProblem(problemId)` so refinement work (analysis tool choice, root causes, 5-Whys, affected groups, root-cause notes) is captured on the per-problem `SolutionWorkspace` and surfaces later in solution discovery.
 * Standalone files `alternatives/page.tsx` and `shortcomings/page.tsx` exist alongside the named steps but are not in the stepper; they are linked from within the validate flow.
 
-The list page `/problems/page.tsx` shows all problems and is the entry point. `/problems/brainstorm/page.tsx` is a separate canvas (Customer Segments / Contexts / Problem Types columns) that creates problems via `dispatch.problems.create({ ..., source: "brainstorm" })`.
+The list page `/problems/page.tsx` shows all problems and is the entry point. `/problems/identify/page.tsx` is a separate canvas (Customer Segments / Contexts / Problem Types columns) that creates problems via `dispatch.problems.create({ ..., source: "identify" })`.
 
 #### Solution discovery: `/solutions/discover`
 

@@ -21,7 +21,7 @@ const ANALYSIS_TOOL_LABELS: Record<Exclude<AnalysisToolType, "">, { label: strin
 
 const DISCOVERY_TOOL_LABELS: Record<Exclude<DiscoveryToolType, "">, { label: string; icon: LucideIcon }> = {
   scamper: { label: "SCAMPER", icon: Lightbulb },
-  reverse: { label: "Reverse Brainstorming", icon: RotateCcw },
+  reverse: { label: "Reverse Ideation", icon: RotateCcw },
   analogy: { label: "Analogy Thinking", icon: GitCompare },
   improve: { label: "Improve Existing Solutions", icon: Wrench },
 }
@@ -59,7 +59,7 @@ export default function SummaryPage() {
     rootCauseNotes,
     fiveWhyChains,
     affectedGroups,
-    reverseBrainstorm,
+    reverseIdeation,
     reverseInversion,
     analogyDomain,
     analogyInsight,
@@ -169,10 +169,10 @@ export default function SummaryPage() {
           {discoveryToolType === "reverse" && (
             <div className="grid gap-2 md:grid-cols-2">
               <div className="rounded-md border bg-muted/40 p-3 flex flex-col gap-1">
-                <p className="text-sm font-semibold uppercase tracking-wide">Make it worse ({reverseBrainstorm.length})</p>
-                {reverseBrainstorm.length > 0 ? (
+                <p className="text-sm font-semibold uppercase tracking-wide">Make it worse ({reverseIdeation.length})</p>
+                {reverseIdeation.length > 0 ? (
                   <ul className="list-disc pl-5 text-sm flex flex-col gap-0.5">
-                    {reverseBrainstorm.map((item) => <li key={item.id}>{item.text}</li>)}
+                    {reverseIdeation.map((item) => <li key={item.id}>{item.text}</li>)}
                   </ul>
                 ) : (
                   <EmptyHint text="No items captured." />

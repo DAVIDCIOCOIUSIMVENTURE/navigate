@@ -14,7 +14,7 @@ export type WorkspacePatch = Partial<
     | "fiveWhyChains"
     | "affectedGroups"
     | "rootCauseNotes"
-    | "reverseBrainstorm"
+    | "reverseIdeation"
     | "reverseInversion"
     | "analogyDomain"
     | "analogyInsight"

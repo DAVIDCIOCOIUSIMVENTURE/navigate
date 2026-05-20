@@ -3,13 +3,13 @@ import type { RootModel } from "."
 import type { ExistingSolutionItem, ValidationAssessment, ValidationStatus } from "@/types/validation"
 import { DEFAULT_VALIDATION_ASSESSMENT } from "@/types/validation"
 import type { ReflectionCapture } from "@/types/reflection"
-import type { CustomBrainstormItem } from "./custom-brainstorm-items-model"
+import type { CustomDimensionItem } from "./custom-dimension-items-model"
 import type { SelfDiscoveryItem } from "./self-discovery-items-model"
 import { resolveDimensionLabel } from "@/lib/dimension-labels"
 
 const STORAGE_KEY = "navigate-problems"
 
-export type ProblemSource = "manual" | "brainstorm" | "reflect"
+export type ProblemSource = "manual" | "identify" | "reflect"
 
 export type Problem = {
   id: number
@@ -42,7 +42,7 @@ export type ProblemPatch = Partial<Pick<Problem, "description" | "customers" | "
  */
 export function getProblemLabel(
   problem: Problem,
-  customByColumn: Record<string, CustomBrainstormItem[]> = {},
+  customByColumn: Record<string, CustomDimensionItem[]> = {},
   selfDiscoveryItems: SelfDiscoveryItem[] = []
 ): string {
   const resolve = (columnId: string, ids: string[]) =>

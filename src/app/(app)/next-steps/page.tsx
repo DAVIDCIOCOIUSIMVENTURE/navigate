@@ -17,7 +17,7 @@ export default function NextStepsPage() {
   const router = useRouter()
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
   const problems = useSelector((state: RootState) => state.problems.problems)
-  const customByColumn = useSelector((state: RootState) => state.customBrainstormItems.byColumn)
+  const customByColumn = useSelector((state: RootState) => state.customDimensionItems.byColumn)
   const selfDiscoveryItems = useSelector((state: RootState) => state.selfDiscoveryItems.items)
   const size = useContainerSize()
   const roomy = size !== "narrow"

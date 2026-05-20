@@ -1,13 +1,13 @@
 import { Users, MapPin, TriangleAlert, Compass, type LucideIcon } from "lucide-react"
 
 /**
- * Per-dimension iconography and colour palette. Used by the brainstorming
+ * Per-dimension iconography and colour palette. Used by the identify
  * canvas, the dimension chip picker, and any other surface that renders
  * dimension chips so that "Customer", "Context", "Problem", and "You" stay
  * visually distinct everywhere they appear.
  *
  * Field names mirror the legacy local config that used to live in the
- * brainstorm page so existing call-sites can drop in this module unchanged.
+ * identify page so existing call-sites can drop in this module unchanged.
  */
 
 export type DimensionColor = {

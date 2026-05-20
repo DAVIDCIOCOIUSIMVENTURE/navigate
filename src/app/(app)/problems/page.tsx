@@ -47,7 +47,7 @@ export default function ProblemsPage() {
           <div className="text-center flex flex-col gap-2 max-w-sm">
             <h2 className="text-lg font-semibold">No problems yet</h2>
             <p className="text-sm">
-              Start by searching for problems using the brainstorming tool or define one directly.
+              Start by searching for problems using the Identify Problems tool or define one directly.
             </p>
           </div>
           <Button onClick={() => setDialogOpen(true)} size="lg" className="gap-2">

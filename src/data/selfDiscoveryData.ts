@@ -1,4 +1,4 @@
-import { audienceGroups } from "./brainstormData"
+import { audienceGroups } from "./dimensionData"
 
 export interface SuggestionItem {
   id: string

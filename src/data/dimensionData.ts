@@ -1,6 +1,6 @@
-import type { BrainstormColumn, BrainstormItem } from "@/app/(app)/problems/brainstorm/data"
+import type { DimensionColumn, DimensionItem } from "@/app/(app)/problems/identify/data"
 
-export const audienceGroups: BrainstormItem[] = [
+export const audienceGroups: DimensionItem[] = [
   // ── By life stage ──
   {
     id: "customer-life-stage",
@@ -97,7 +97,7 @@ export const audienceGroups: BrainstormItem[] = [
   },
 ]
 
-export const brainstormColumns: BrainstormColumn[] = [
+export const dimensionColumns: DimensionColumn[] = [
   {
     id: "customers",
     title: "Customer",

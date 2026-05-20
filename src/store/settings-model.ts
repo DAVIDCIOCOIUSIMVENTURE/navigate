@@ -4,33 +4,33 @@ import type { SidebarMode } from "@/components/ui/sidebar"
 
 const STORAGE_KEY = "navigate-settings"
 
-export type BrainstormMode = "canvas" | "builder" | "reflect"
-export type BrainstormBuilderStep = "pick" | "category" | "choose" | "review"
+export type IdentifyMode = "canvas" | "builder" | "reflect"
+export type IdentifyBuilderStep = "pick" | "category" | "choose" | "review"
 
 interface SettingsState {
   sidebarMode: SidebarMode
-  hiddenBrainstormColumns: string[]
+  hiddenIdentifyColumns: string[]
   fullView: boolean
-  brainstormSelected: string[]
-  brainstormMode: BrainstormMode
+  identifySelected: string[]
+  identifyMode: IdentifyMode
   journalOpen: boolean
-  brainstormBuilderStep: BrainstormBuilderStep
-  brainstormBuilderActiveColumnId: string | null
-  brainstormBuilderActiveCategoryId: string | null
-  brainstormBuilderDescription: string
+  identifyBuilderStep: IdentifyBuilderStep
+  identifyBuilderActiveColumnId: string | null
+  identifyBuilderActiveCategoryId: string | null
+  identifyBuilderDescription: string
 }
 
 const defaultState: SettingsState = {
   sidebarMode: "icon",
-  hiddenBrainstormColumns: [],
+  hiddenIdentifyColumns: [],
   fullView: false,
-  brainstormSelected: [],
-  brainstormMode: "builder",
+  identifySelected: [],
+  identifyMode: "builder",
   journalOpen: false,
-  brainstormBuilderStep: "pick",
-  brainstormBuilderActiveColumnId: null,
-  brainstormBuilderActiveCategoryId: null,
-  brainstormBuilderDescription: "",
+  identifyBuilderStep: "pick",
+  identifyBuilderActiveColumnId: null,
+  identifyBuilderActiveCategoryId: null,
+  identifyBuilderDescription: "",
 }
 
 function saveToStorage(state: SettingsState) {
@@ -51,8 +51,8 @@ export const settings = createModel<RootModel>()({
       saveToStorage(next)
       return next
     },
-    setHiddenBrainstormColumns(state, hiddenBrainstormColumns: string[]) {
-      const next = { ...state, hiddenBrainstormColumns }
+    setHiddenIdentifyColumns(state, hiddenIdentifyColumns: string[]) {
+      const next = { ...state, hiddenIdentifyColumns }
       saveToStorage(next)
       return next
     },
@@ -60,13 +60,13 @@ export const settings = createModel<RootModel>()({
       // Not persisted, resets on reload
       return { ...state, fullView }
     },
-    setBrainstormSelected(state, brainstormSelected: string[]) {
-      const next = { ...state, brainstormSelected }
+    setIdentifySelected(state, identifySelected: string[]) {
+      const next = { ...state, identifySelected }
       saveToStorage(next)
       return next
     },
-    setBrainstormMode(state, brainstormMode: BrainstormMode) {
-      const next = { ...state, brainstormMode }
+    setIdentifyMode(state, identifyMode: IdentifyMode) {
+      const next = { ...state, identifyMode }
       saveToStorage(next)
       return next
     },
@@ -75,35 +75,35 @@ export const settings = createModel<RootModel>()({
       saveToStorage(next)
       return next
     },
-    setBrainstormBuilderStep(state, brainstormBuilderStep: BrainstormBuilderStep) {
-      const next = { ...state, brainstormBuilderStep }
+    setIdentifyBuilderStep(state, identifyBuilderStep: IdentifyBuilderStep) {
+      const next = { ...state, identifyBuilderStep }
       saveToStorage(next)
       return next
     },
-    setBrainstormBuilderActiveColumnId(state, brainstormBuilderActiveColumnId: string | null) {
-      const next = { ...state, brainstormBuilderActiveColumnId }
+    setIdentifyBuilderActiveColumnId(state, identifyBuilderActiveColumnId: string | null) {
+      const next = { ...state, identifyBuilderActiveColumnId }
       saveToStorage(next)
       return next
     },
-    setBrainstormBuilderActiveCategoryId(state, brainstormBuilderActiveCategoryId: string | null) {
-      const next = { ...state, brainstormBuilderActiveCategoryId }
+    setIdentifyBuilderActiveCategoryId(state, identifyBuilderActiveCategoryId: string | null) {
+      const next = { ...state, identifyBuilderActiveCategoryId }
       saveToStorage(next)
       return next
     },
-    setBrainstormBuilderDescription(state, brainstormBuilderDescription: string) {
-      const next = { ...state, brainstormBuilderDescription }
+    setIdentifyBuilderDescription(state, identifyBuilderDescription: string) {
+      const next = { ...state, identifyBuilderDescription }
       saveToStorage(next)
       return next
     },
-    resetBrainstormBuilder(state) {
+    resetIdentifyBuilder(state) {
       const next: SettingsState = {
         ...state,
-        brainstormBuilderStep: "pick",
-        brainstormBuilderActiveColumnId: null,
-        brainstormBuilderActiveCategoryId: null,
-        brainstormBuilderDescription: "",
+        identifyBuilderStep: "pick",
+        identifyBuilderActiveColumnId: null,
+        identifyBuilderActiveCategoryId: null,
+        identifyBuilderDescription: "",
         // Selections are shared between canvas and builder; reset clears both.
-        brainstormSelected: [],
+        identifySelected: [],
       }
       saveToStorage(next)
       return next
@@ -124,35 +124,31 @@ export const settings = createModel<RootModel>()({
         if (stored.sidebarMode) {
           dispatch.settings.setSidebarMode(stored.sidebarMode)
         }
-        if (stored.hiddenBrainstormColumns) {
-          dispatch.settings.setHiddenBrainstormColumns(stored.hiddenBrainstormColumns)
+        if (stored.hiddenIdentifyColumns) {
+          dispatch.settings.setHiddenIdentifyColumns(stored.hiddenIdentifyColumns)
         }
-        if (stored.brainstormSelected) {
-          dispatch.settings.setBrainstormSelected(stored.brainstormSelected)
+        if (stored.identifySelected) {
+          dispatch.settings.setIdentifySelected(stored.identifySelected)
         }
-        if (stored.brainstormMode) {
-          // Migrate legacy "builder-v2" value to the unified "builder" mode
-          const mode = (stored.brainstormMode as string) === "builder-v2"
-            ? "builder"
-            : stored.brainstormMode
-          if (mode === "canvas" || mode === "builder" || mode === "reflect") {
-            dispatch.settings.setBrainstormMode(mode)
+        if (stored.identifyMode) {
+          if (stored.identifyMode === "canvas" || stored.identifyMode === "builder" || stored.identifyMode === "reflect") {
+            dispatch.settings.setIdentifyMode(stored.identifyMode)
           }
         }
         if (typeof stored.journalOpen === "boolean") {
           dispatch.settings.setJournalOpen(stored.journalOpen)
         }
-        if (stored.brainstormBuilderStep) {
-          dispatch.settings.setBrainstormBuilderStep(stored.brainstormBuilderStep)
+        if (stored.identifyBuilderStep) {
+          dispatch.settings.setIdentifyBuilderStep(stored.identifyBuilderStep)
         }
-        if (stored.brainstormBuilderActiveColumnId !== undefined) {
-          dispatch.settings.setBrainstormBuilderActiveColumnId(stored.brainstormBuilderActiveColumnId)
+        if (stored.identifyBuilderActiveColumnId !== undefined) {
+          dispatch.settings.setIdentifyBuilderActiveColumnId(stored.identifyBuilderActiveColumnId)
         }
-        if (stored.brainstormBuilderActiveCategoryId !== undefined) {
-          dispatch.settings.setBrainstormBuilderActiveCategoryId(stored.brainstormBuilderActiveCategoryId)
+        if (stored.identifyBuilderActiveCategoryId !== undefined) {
+          dispatch.settings.setIdentifyBuilderActiveCategoryId(stored.identifyBuilderActiveCategoryId)
         }
-        if (typeof stored.brainstormBuilderDescription === "string") {
-          dispatch.settings.setBrainstormBuilderDescription(stored.brainstormBuilderDescription)
+        if (typeof stored.identifyBuilderDescription === "string") {
+          dispatch.settings.setIdentifyBuilderDescription(stored.identifyBuilderDescription)
         }
       } catch {
         // ignore parse errors

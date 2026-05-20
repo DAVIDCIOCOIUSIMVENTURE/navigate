@@ -43,7 +43,7 @@ export const REVERSE_CASE_STUDIES: ReverseCaseStudy[] = [
       "Guarantee delivery times with refunds when missed; invest in store operations to hit them.",
       "Continuously launch new menu items driven by customer feedback loops.",
     ],
-    outcome: "Domino's turnaround is a textbook case of reverse brainstorming in action. By identifying every way they were making customers unhappy and systematically flipping each one, they tripled their stock price and became the largest pizza chain in the world.",
+    outcome: "Domino's turnaround is a textbook case of reverse ideation in action. By identifying every way they were making customers unhappy and systematically flipping each one, they tripled their stock price and became the largest pizza chain in the world.",
   },
   {
     company: "Zappos",

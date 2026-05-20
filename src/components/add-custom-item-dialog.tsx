@@ -23,7 +23,7 @@ const DIMENSIONS: { id: string; label: string; icon: React.ComponentType<{ class
 /**
  * Lets the user add a new custom item to one of the four dimensions
  * (Customer, Context, Problem, You). Items added under "You" appear in a
- * synthetic "Your items" group in the brainstorm canvas and on the
+ * synthetic "Your items" group in the identify canvas and on the
  * self-discovery "Other" page.
  *
  * On submit, mints a new id under the chosen column's user catalog and calls
@@ -56,7 +56,7 @@ export function AddCustomItemDialog({
 
   const handleSubmit = async () => {
     if (!trimmed) return
-    const item = await dispatch.customBrainstormItems.create({ columnId, label: trimmed })
+    const item = await dispatch.customDimensionItems.create({ columnId, label: trimmed })
     toast.success(`Added to ${dimension.label}: ${item.label}`)
     onCreated?.(columnId, item.id)
     onOpenChange(false)

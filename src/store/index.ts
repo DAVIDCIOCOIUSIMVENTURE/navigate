@@ -2,7 +2,7 @@ import { init, Models, RematchDispatch, RematchRootState } from "@rematch/core"
 import { notes } from "./notes-model"
 import { settings } from "./settings-model"
 import { selfDiscoveryItems } from "./self-discovery-items-model"
-import { customBrainstormItems } from "./custom-brainstorm-items-model"
+import { customDimensionItems } from "./custom-dimension-items-model"
 import { problems } from "./problems-model"
 import { accountSettings } from "./account-settings-model"
 import { solutions } from "./solutions-model"
@@ -13,7 +13,7 @@ export interface RootModel extends Models<RootModel> {
   notes: typeof notes
   settings: typeof settings
   selfDiscoveryItems: typeof selfDiscoveryItems
-  customBrainstormItems: typeof customBrainstormItems
+  customDimensionItems: typeof customDimensionItems
   problems: typeof problems
   accountSettings: typeof accountSettings
   solutions: typeof solutions
@@ -22,7 +22,7 @@ export interface RootModel extends Models<RootModel> {
   reflectSessions: typeof reflectSessions
 }
 
-const models: RootModel = { notes, settings, selfDiscoveryItems, customBrainstormItems, problems, accountSettings, solutions, solutionWorkspaces, problemCandidates, reflectSessions }
+const models: RootModel = { notes, settings, selfDiscoveryItems, customDimensionItems, problems, accountSettings, solutions, solutionWorkspaces, problemCandidates, reflectSessions }
 
 export function createStore() {
   return init<RootModel>({ models })

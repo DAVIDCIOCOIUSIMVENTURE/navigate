@@ -50,7 +50,7 @@ function getSection(pathname: string): { title: string; Icon: LucideIcon } | nul
 
   if (first === "problems") {
     if (segments.length === 1) return { title: "Problems", Icon: Target }
-    if (second === "brainstorm") return { title: "Discover Problems", Icon: Search }
+    if (second === "identify") return { title: "Identify Problems", Icon: Search }
     return { title: "Problem Validation", Icon: ClipboardCheck }
   }
 
@@ -122,7 +122,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     dispatch.settings.init()
     dispatch.selfDiscoveryItems.init()
-    dispatch.customBrainstormItems.init()
+    dispatch.customDimensionItems.init()
     dispatch.problems.init()
     dispatch.accountSettings.init()
     dispatch.solutions.init()
@@ -130,7 +130,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     dispatch.notes.init()
     dispatch.problemCandidates.init()
     dispatch.reflectSessions.init()
-  }, [dispatch.settings, dispatch.selfDiscoveryItems, dispatch.customBrainstormItems, dispatch.problems, dispatch.accountSettings, dispatch.solutions, dispatch.solutionWorkspaces, dispatch.notes, dispatch.problemCandidates, dispatch.reflectSessions])
+  }, [dispatch.settings, dispatch.selfDiscoveryItems, dispatch.customDimensionItems, dispatch.problems, dispatch.accountSettings, dispatch.solutions, dispatch.solutionWorkspaces, dispatch.notes, dispatch.problemCandidates, dispatch.reflectSessions])
 
   const headerTitle = section && (
     <h1 className="flex items-center gap-2 ml-2 text-xl font-bold min-w-0">

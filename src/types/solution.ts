@@ -59,12 +59,12 @@ export type SolutionWorkspace = {
   fiveWhyChains: FiveWhyChain[]
   affectedGroups: AffectedGroup[]
   rootCauseNotes: string
-  reverseBrainstorm: ImprovementItem[]
+  reverseIdeation: ImprovementItem[]
   reverseInversion: ImprovementItem[]
   analogyDomain: string
   analogyInsight: string
   improvementResponses: ImprovementResponses
-  // Per-prompt brainstorm ideas captured before promoting to a Solution.
+  // Per-prompt ideas captured before promoting to a Solution.
   // Keys are the SCAMPER dimension keys (substitute, combine, ...).
   scamperIdeas: Record<string, ImprovementItem[]>
 }
@@ -125,7 +125,7 @@ export const DEFAULT_WORKSPACE_FIELDS: Omit<SolutionWorkspace, "id" | "problemId
   fiveWhyChains: [],
   affectedGroups: [],
   rootCauseNotes: "",
-  reverseBrainstorm: [],
+  reverseIdeation: [],
   reverseInversion: [],
   analogyDomain: "",
   analogyInsight: "",

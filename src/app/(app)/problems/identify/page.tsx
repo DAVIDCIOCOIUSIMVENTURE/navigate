@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useMemo, useDeferredValue, useCallback, ty
 import { useRouter, usePathname } from "next/navigation"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
-import type { BrainstormMode } from "@/store/settings-model"
+import type { IdentifyMode } from "@/store/settings-model"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -55,7 +55,7 @@ import {
 } from "lucide-react"
 import { Textarea } from "@/components/ui/textarea"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
-import { brainstormColumns, type BrainstormItem, type BrainstormColumn } from "./data"
+import { dimensionColumns, type DimensionItem, type DimensionColumn } from "./data"
 import type { Problem } from "@/store/problems-model"
 import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
 import { resolveDimensionLabel } from "@/lib/dimension-labels"
@@ -91,19 +91,19 @@ const COLUMN_TO_FIELD: Record<string, keyof Pick<Problem, "customers" | "context
   "you": "you",
 }
 
-function collectAllIds(items: BrainstormItem[]): string[] {
+function collectAllIds(items: DimensionItem[]): string[] {
   return items.flatMap((item) =>
     item.children ? collectAllIds(item.children) : [item.id]
   )
 }
 
-function getSelectedForColumn(items: BrainstormItem[], selected: Set<string>): { id: string; label: string }[] {
+function getSelectedForColumn(items: DimensionItem[], selected: Set<string>): { id: string; label: string }[] {
   return collectAllIds(items)
     .filter((id) => selected.has(id))
     .map((id) => ({ id, label: findLabel(items, id)! }))
 }
 
-function findLabel(items: BrainstormItem[], id: string): string | null {
+function findLabel(items: DimensionItem[], id: string): string | null {
   for (const item of items) {
     if (item.id === id) return item.label
     if (item.children) {
@@ -114,7 +114,7 @@ function findLabel(items: BrainstormItem[], id: string): string | null {
   return null
 }
 
-function filterItems(items: BrainstormItem[], query: string): BrainstormItem[] {
+function filterItems(items: DimensionItem[], query: string): DimensionItem[] {
   const lower = query.toLowerCase()
   return items.flatMap((item) => {
     if (item.children) {
@@ -128,14 +128,14 @@ function filterItems(items: BrainstormItem[], query: string): BrainstormItem[] {
   })
 }
 
-function BrainstormCheckItem({
+function DimensionCheckItem({
   item,
   selected,
   onToggle,
   forceOpen,
   customItemColumns,
 }: {
-  item: BrainstormItem
+  item: DimensionItem
   selected: Set<string>
   onToggle: (id: string) => void
   forceOpen?: boolean
@@ -166,7 +166,7 @@ function BrainstormCheckItem({
         <CollapsibleContent>
           <div className="ml-7 flex flex-col">
             {item.children!.map((child) => (
-              <BrainstormCheckItem
+              <DimensionCheckItem
                 key={child.id}
                 item={child}
                 selected={selected}
@@ -217,7 +217,7 @@ function ProblemFormDialog({
   onDescriptionChange: (value: string) => void
   idsByColumn: Record<string, string[]>
   onColumnChange: (columnId: string, ids: string[]) => void
-  columns: BrainstormColumn[]
+  columns: DimensionColumn[]
   actions?: ReactNode
 }) {
   return (
@@ -300,7 +300,7 @@ const STEP_GUIDANCE: Record<string, { title: string; description: string; tips: 
     tips: [
       "A good description answers: \"What's the core frustration or unmet need?\"",
       "Keep it to one or two sentences. You'll flesh it out during validation.",
-      "After saving you can continue brainstorming or move straight to Problem Validation.",
+      "After saving you can keep identifying more or move straight to Problem Validation.",
     ],
   },
 }
@@ -391,28 +391,28 @@ function ProblemBuilder({
   onClearSearch,
   customItemColumns,
 }: {
-  columns: BrainstormColumn[]
+  columns: DimensionColumn[]
   onSave: (selections: Record<string, string[]>, description: string) => void
   resetRef?: React.MutableRefObject<(() => void) | null>
   onClearSearch?: () => void
   customItemColumns: Map<string, string>
 }) {
   const dispatch = useDispatch<AppDispatch>()
-  const step = useSelector((state: RootState) => state.settings.brainstormBuilderStep)
-  const activeColumnId = useSelector((state: RootState) => state.settings.brainstormBuilderActiveColumnId)
-  const activeCategoryId = useSelector((state: RootState) => state.settings.brainstormBuilderActiveCategoryId)
-  // Selections are shared with the canvas mode via state.settings.brainstormSelected
+  const step = useSelector((state: RootState) => state.settings.identifyBuilderStep)
+  const activeColumnId = useSelector((state: RootState) => state.settings.identifyBuilderActiveColumnId)
+  const activeCategoryId = useSelector((state: RootState) => state.settings.identifyBuilderActiveCategoryId)
+  // Selections are shared with the canvas mode via state.settings.identifySelected
   // so toggling an item in either mode is reflected in the other.
-  const brainstormSelectedArray = useSelector((state: RootState) => state.settings.brainstormSelected)
-  const selectedSet = useMemo(() => new Set(brainstormSelectedArray), [brainstormSelectedArray])
-  const description = useSelector((state: RootState) => state.settings.brainstormBuilderDescription)
+  const identifySelectedArray = useSelector((state: RootState) => state.settings.identifySelected)
+  const selectedSet = useMemo(() => new Set(identifySelectedArray), [identifySelectedArray])
+  const description = useSelector((state: RootState) => state.settings.identifyBuilderDescription)
   const isWide = useContainerSize() === "wide"
   const [stepperOpen, setStepperOpen] = useState(false)
 
-  const setStep = (next: BuilderStepId) => dispatch.settings.setBrainstormBuilderStep(next)
-  const setActiveColumnId = (id: string | null) => dispatch.settings.setBrainstormBuilderActiveColumnId(id)
-  const setActiveCategoryId = (id: string | null) => dispatch.settings.setBrainstormBuilderActiveCategoryId(id)
-  const setDescription = (next: string) => dispatch.settings.setBrainstormBuilderDescription(next)
+  const setStep = (next: BuilderStepId) => dispatch.settings.setIdentifyBuilderStep(next)
+  const setActiveColumnId = (id: string | null) => dispatch.settings.setIdentifyBuilderActiveColumnId(id)
+  const setActiveCategoryId = (id: string | null) => dispatch.settings.setIdentifyBuilderActiveCategoryId(id)
+  const setDescription = (next: string) => dispatch.settings.setIdentifyBuilderDescription(next)
 
   const stepIndex = BUILDER_STEPS.findIndex((s) => s.id === step)
   // Group the flat selection by column so the builder UI can show per-column
@@ -454,7 +454,7 @@ function ProblemBuilder({
     const next = new Set(selectedSet)
     if (next.has(itemId)) next.delete(itemId)
     else next.add(itemId)
-    dispatch.settings.setBrainstormSelected(Array.from(next))
+    dispatch.settings.setIdentifySelected(Array.from(next))
   }
 
   const handleSave = () => {
@@ -464,11 +464,11 @@ function ProblemBuilder({
       selections[col.id] = selectedByColumn[col.id] ?? []
     }
     onSave(selections, description)
-    dispatch.settings.resetBrainstormBuilder()
+    dispatch.settings.resetIdentifyBuilder()
   }
 
   const reset = useCallback(() => {
-    dispatch.settings.resetBrainstormBuilder()
+    dispatch.settings.resetIdentifyBuilder()
   }, [dispatch])
 
   useEffect(() => {
@@ -476,7 +476,7 @@ function ProblemBuilder({
   }, [reset, resetRef])
 
   // Items to show in the "choose" step: either the children of the active category, or all flat items
-  const chooseItems = useMemo<BrainstormItem[]>(() => {
+  const chooseItems = useMemo<DimensionItem[]>(() => {
     if (!activeColumn) return []
     if (activeCategory?.children) return activeCategory.children
     // Flat dimension (no categories): show all items directly
@@ -916,19 +916,19 @@ function ProblemBuilder({
   )
 }
 
-export default function BrainstormPage() {
+export default function IdentifyPage() {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const [mounted, setMounted] = useState(false)
   useEffect(() => { setMounted(true) }, [])
 
   const savedProblems = useSelector((state: RootState) =>
-    state.problems.problems.filter((p) => p.source === "brainstorm")
+    state.problems.problems.filter((p) => p.source === "identify")
   )
   const triggers = useSelector((state: RootState) => state.selfDiscoveryItems.items)
-  const customByColumn = useSelector((s: RootState) => s.customBrainstormItems.byColumn)
+  const customByColumn = useSelector((s: RootState) => s.customDimensionItems.byColumn)
 
-  const youColumn = useMemo<BrainstormColumn>(() => {
+  const youColumn = useMemo<DimensionColumn>(() => {
     // Map each question URL to its parent category
     const questionToCat = new Map<string, { url: string; title: string }>()
     for (const cat of SELF_DISCOVERY_CATEGORIES) {
@@ -937,7 +937,7 @@ export default function BrainstormPage() {
       }
     }
     // Group triggers by category
-    const groups = new Map<string, { title: string; children: BrainstormItem[] }>()
+    const groups = new Map<string, { title: string; children: DimensionItem[] }>()
     for (const t of triggers) {
       const cat = questionToCat.get(t.questionUrl)
       const catUrl = cat?.url ?? t.questionUrl
@@ -945,7 +945,7 @@ export default function BrainstormPage() {
       if (!groups.has(catUrl)) groups.set(catUrl, { title: catTitle, children: [] })
       groups.get(catUrl)!.children.push({ id: t.id, label: t.title })
     }
-    const items: BrainstormItem[] = Array.from(groups.entries()).map(([url, { title, children }]) => ({
+    const items: DimensionItem[] = Array.from(groups.entries()).map(([url, { title, children }]) => ({
       id: `sd-group-${url}`,
       label: title,
       children,
@@ -974,11 +974,11 @@ export default function BrainstormPage() {
   // Inject a synthetic "Your items" group into each Customer/Context/Problem
   // column whenever the user has authored at least one custom item there. The
   // group is only present at render time; nothing is persisted on the column tree.
-  const columnsWithCustomItems = useMemo<BrainstormColumn[]>(() => {
-    return brainstormColumns.map((col) => {
+  const columnsWithCustomItems = useMemo<DimensionColumn[]>(() => {
+    return dimensionColumns.map((col) => {
       const custom = customByColumn[col.id] ?? []
       if (custom.length === 0) return col
-      const yourGroup: BrainstormItem = {
+      const yourGroup: DimensionItem = {
         id: `${col.id}-user-group`,
         label: "Your items",
         children: custom.map((i) => ({ id: i.id, label: i.label })),
@@ -987,33 +987,33 @@ export default function BrainstormPage() {
     })
   }, [customByColumn])
 
-  const allColumns = useMemo<BrainstormColumn[]>(
+  const allColumns = useMemo<DimensionColumn[]>(
     () => [youColumn, ...columnsWithCustomItems],
     [youColumn, columnsWithCustomItems]
   )
 
-  const hiddenColumnsArray = useSelector((state: RootState) => state.settings.hiddenBrainstormColumns)
+  const hiddenColumnsArray = useSelector((state: RootState) => state.settings.hiddenIdentifyColumns)
   const hiddenColumns = useMemo(() => new Set(hiddenColumnsArray), [hiddenColumnsArray])
 
   const toggleColumnVisibility = (columnId: string) => {
     const next = hiddenColumns.has(columnId)
       ? hiddenColumnsArray.filter((id) => id !== columnId)
       : [...hiddenColumnsArray, columnId]
-    dispatch.settings.setHiddenBrainstormColumns(next)
+    dispatch.settings.setHiddenIdentifyColumns(next)
   }
 
-  const brainstormSelectedArray = useSelector((state: RootState) => state.settings.brainstormSelected)
-  const selected = useMemo(() => new Set(brainstormSelectedArray), [brainstormSelectedArray])
+  const identifySelectedArray = useSelector((state: RootState) => state.settings.identifySelected)
+  const selected = useMemo(() => new Set(identifySelectedArray), [identifySelectedArray])
   const setSelected = (updater: Set<string> | ((prev: Set<string>) => Set<string>)) => {
     const next = typeof updater === "function" ? updater(selected) : updater
-    dispatch.settings.setBrainstormSelected(Array.from(next))
+    dispatch.settings.setIdentifySelected(Array.from(next))
   }
   const [searchQuery, setSearchQuery] = useState("")
   const debouncedQuery = useDeferredValue(searchQuery)
 
   const filteredColumnsMap = useMemo(() => {
     if (!debouncedQuery) return null
-    const map = new Map<string, BrainstormItem[]>()
+    const map = new Map<string, DimensionItem[]>()
     for (const col of allColumns) {
       map.set(col.id, filterItems(col.items, debouncedQuery))
     }
@@ -1043,11 +1043,11 @@ export default function BrainstormPage() {
   const builderResetRef = useRef<(() => void) | null>(null)
   const reflectResetRef = useRef<(() => void) | null>(null)
   const fullView = useSelector((state: RootState) => state.settings.fullView)
-  const brainstormMode = useSelector((state: RootState) => state.settings.brainstormMode)
+  const identifyMode = useSelector((state: RootState) => state.settings.identifyMode)
   const containerSize = useContainerSize()
   // Columns the user can edit (excludes "you", which is populated only from
   // self-discovery selections).
-  const editableColumns = useMemo<BrainstormColumn[]>(
+  const editableColumns = useMemo<DimensionColumn[]>(
     () => allColumns.filter((c) => c.id !== "you"),
     [allColumns]
   )
@@ -1058,7 +1058,7 @@ export default function BrainstormPage() {
       const field = COLUMN_TO_FIELD[column.id]
       patch[field] = selections[column.id] ?? []
     }
-    const newProblem = await dispatch.problems.create({ ...patch, source: "brainstorm", description })
+    const newProblem = await dispatch.problems.create({ ...patch, source: "identify", description })
     setLastSavedProblemId(newProblem.id)
     setNextStepDialogOpen(true)
   }, [allColumns, dispatch.problems])
@@ -1066,7 +1066,7 @@ export default function BrainstormPage() {
   // Exit full view when navigating away from this page
   const pathname = usePathname()
   useEffect(() => {
-    if (!pathname.includes("/brainstorm")) {
+    if (!pathname.includes("/identify")) {
       dispatch.settings.setFullView(false)
     }
   }, [pathname, dispatch.settings])
@@ -1130,7 +1130,7 @@ export default function BrainstormPage() {
       const youIds = collectAllIds(youColumnDef.items).filter((id) => selected.has(id))
       patch.you = youIds
     }
-    const newProblem = await dispatch.problems.create({ ...patch, source: "brainstorm", description: saveDescription.trim() })
+    const newProblem = await dispatch.problems.create({ ...patch, source: "identify", description: saveDescription.trim() })
     clearAll()
     setSaveDialogOpen(false)
     setLastSavedProblemId(newProblem.id)
@@ -1187,9 +1187,9 @@ export default function BrainstormPage() {
             )}>
               <ToggleGroup
                 type="single"
-                value={brainstormMode}
+                value={identifyMode}
                 onValueChange={(value) => {
-                  if (value) dispatch.settings.setBrainstormMode(value as BrainstormMode)
+                  if (value) dispatch.settings.setIdentifyMode(value as IdentifyMode)
                 }}
                 size="sm"
                 className="shrink-0"
@@ -1221,15 +1221,15 @@ export default function BrainstormPage() {
                 </ToggleGroupItem>
               </ToggleGroup>
               <p className={cn("text-base", containerSize === "wide" ? "block" : "hidden")}>
-                {brainstormMode === "canvas"
+                {identifyMode === "canvas"
                   ? "Explore potential areas for innovation by navigating through the options below."
-                  : brainstormMode === "builder"
+                  : identifyMode === "builder"
                     ? "Build a problem step by step by selecting from each dimension."
                     : "Reflect on your own experiences with guided prompts to surface problems worth solving."}
               </p>
             </div>
             <div className={cn("flex items-center gap-2 flex-wrap", containerSize === "wide" && "ml-auto gap-3")}>
-              {brainstormMode !== "reflect" && (
+              {identifyMode !== "reflect" && (
                 <div className={cn("relative", containerSize === "narrow" && "w-full")}>
                   <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                   <Input
@@ -1249,7 +1249,7 @@ export default function BrainstormPage() {
                   )}
                 </div>
               )}
-              {brainstormMode !== "reflect" && (
+              {identifyMode !== "reflect" && (
                 <Button
                   variant="outline"
                   size="sm"
@@ -1284,26 +1284,26 @@ export default function BrainstormPage() {
                     Reset
                   </Button>
                 }
-                title="Reset brainstorm?"
+                title="Reset?"
                 description={
-                  brainstormMode === "canvas"
+                  identifyMode === "canvas"
                     ? "This will clear your current selection across all dimensions. Saved problems are not affected."
-                    : brainstormMode === "builder"
+                    : identifyMode === "builder"
                       ? "This will clear your in-progress problem builder. Saved problems are not affected."
                       : "This will return you to the discovery-method picker. Your prompt answers will remain saved for next time."
                 }
                 confirmLabel="Reset"
                 onConfirm={() => {
-                  if (brainstormMode === "canvas") {
+                  if (identifyMode === "canvas") {
                     clearAll()
-                  } else if (brainstormMode === "builder") {
+                  } else if (identifyMode === "builder") {
                     builderResetRef.current?.()
-                  } else if (brainstormMode === "reflect") {
+                  } else if (identifyMode === "reflect") {
                     reflectResetRef.current?.()
                   }
                 }}
               />
-              {brainstormMode === "canvas" && (
+              {identifyMode === "canvas" && (
                 <Button
                   size="sm"
                   onClick={openSaveDialog}
@@ -1319,9 +1319,9 @@ export default function BrainstormPage() {
         </CardContent>
       </Card>
 
-      {brainstormMode === "reflect" ? (
+      {identifyMode === "reflect" ? (
         <ReflectBuilder resetRef={reflectResetRef} />
-      ) : brainstormMode === "builder" ? (
+      ) : identifyMode === "builder" ? (
         <ProblemBuilder columns={filteredColumns} onSave={handleBuilderSave} resetRef={builderResetRef} onClearSearch={() => setSearchQuery("")} customItemColumns={customItemColumns} />
       ) : (<>
       <div className={cn(
@@ -1404,7 +1404,7 @@ export default function BrainstormPage() {
                     {(() => {
                       const items = filteredColumnsMap?.get(column.id) ?? column.items
                       return items.length > 0 ? items.map((item) => (
-                        <BrainstormCheckItem
+                        <DimensionCheckItem
                           key={item.id}
                           item={item}
                           selected={selected}
@@ -1460,7 +1460,7 @@ export default function BrainstormPage() {
         <DrawerContent className="max-h-[70vh]">
           <DrawerHeader>
             <DrawerTitle>Saved Problems ({savedProblems.length})</DrawerTitle>
-            <DrawerDescription className="sr-only">Problems saved from the brainstorming tool</DrawerDescription>
+            <DrawerDescription className="sr-only">Problems saved from the Identify Problems tool</DrawerDescription>
           </DrawerHeader>
           <div className="overflow-auto px-4 pb-6">
             <Table>
@@ -1586,7 +1586,7 @@ export default function BrainstormPage() {
         onOpenChange={setAddCustomDialogOpen}
         onCreated={(_columnId, id) => {
           // Auto-tick the new item.
-          dispatch.settings.setBrainstormSelected([...brainstormSelectedArray, id])
+          dispatch.settings.setIdentifySelected([...identifySelectedArray, id])
         }}
       />
 
@@ -1624,7 +1624,7 @@ export default function BrainstormPage() {
               variant="outline"
               onClick={() => setNextStepDialogOpen(false)}
             >
-              Keep Brainstorming
+              Keep Identifying
             </Button>
           </div>
         </DialogContent>

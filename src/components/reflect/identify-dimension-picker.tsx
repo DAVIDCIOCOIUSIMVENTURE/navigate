@@ -7,8 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Check, ChevronDown, ChevronRight, Plus } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { brainstormColumns } from "@/data/brainstormData"
-import type { CustomBrainstormColumnId } from "@/store/custom-brainstorm-items-model"
+import { dimensionColumns } from "@/data/dimensionData"
+import type { CustomDimensionColumnId } from "@/store/custom-dimension-items-model"
 import {
   Collapsible,
   CollapsibleContent,
@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/dialog"
 
 type Props = {
-  columnId: CustomBrainstormColumnId
+  columnId: CustomDimensionColumnId
   selectedLabels: string[]
   onChange: (labels: string[]) => void
   addPlaceholder?: string
@@ -37,13 +37,13 @@ type FlatItem = { id: string; label: string }
 type Group = { id: string; label: string; items: FlatItem[] }
 
 /**
- * Multi-select picker bound to one of the brainstorm dimensions (customers,
- * contexts, or problems). Built-in categories come from `brainstormColumns`;
- * custom additions persist through `customBrainstormItems` so they show up
- * back in the brainstorm canvas too. Visual structure mirrors
+ * Multi-select picker bound to one of the identify dimensions (customers,
+ * contexts, or problems). Built-in categories come from `dimensionColumns`;
+ * custom additions persist through `customDimensionItems` so they show up
+ * back in the identify canvas too. Visual structure mirrors
  * `LifeExperiencesPicker` so all life-lens pickers share one look.
  */
-export function BrainstormDimensionPicker({
+export function IdentifyDimensionPicker({
   columnId,
   selectedLabels,
   onChange,
@@ -54,13 +54,13 @@ export function BrainstormDimensionPicker({
 }: Props) {
   const dispatch = useDispatch<AppDispatch>()
   const customItems = useSelector(
-    (s: RootState) => s.customBrainstormItems.byColumn[columnId] ?? []
+    (s: RootState) => s.customDimensionItems.byColumn[columnId] ?? []
   )
   const [draft, setDraft] = useState("")
   const [openGroupId, setOpenGroupId] = useState<string | null>(null)
 
   const column = useMemo(
-    () => brainstormColumns.find((c) => c.id === columnId),
+    () => dimensionColumns.find((c) => c.id === columnId),
     [columnId]
   )
 
@@ -110,7 +110,7 @@ export function BrainstormDimensionPicker({
       ...customItems.map((i) => i.label.toLowerCase()),
     ]
     if (!allLabels.includes(label.toLowerCase())) {
-      dispatch.customBrainstormItems.create({ columnId, label })
+      dispatch.customDimensionItems.create({ columnId, label })
     }
     if (!selectedSet.has(label.toLowerCase())) {
       onChange([...selectedLabels, label])
@@ -229,7 +229,7 @@ export function BrainstormDimensionPicker({
             <DialogTitle>Add your own</DialogTitle>
             <DialogDescription>
               Anything you add joins the {column?.title ?? columnId} dimension in
-              the brainstorm canvas and the picker below.
+              the Identify Problems canvas and the picker below.
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-2 py-2">

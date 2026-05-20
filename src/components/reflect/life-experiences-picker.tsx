@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Check, ChevronDown, ChevronRight, Plus } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { brainstormColumns } from "@/data/brainstormData"
+import { dimensionColumns } from "@/data/dimensionData"
 import {
   Collapsible,
   CollapsibleContent,
@@ -51,7 +51,7 @@ export function LifeExperiencesPicker({
     s.problemCandidates.items.filter((c) => c.lensId === "life")
   )
   const customContexts = useSelector(
-    (s: RootState) => s.customBrainstormItems.byColumn.contexts ?? []
+    (s: RootState) => s.customDimensionItems.byColumn.contexts ?? []
   )
   const [draft, setDraft] = useState("")
   const [openGroupId, setOpenGroupId] = useState<string | null>(null)
@@ -62,7 +62,7 @@ export function LifeExperiencesPicker({
   )
 
   const groups = useMemo(() => {
-    const col = brainstormColumns.find((c) => c.id === "contexts")
+    const col = dimensionColumns.find((c) => c.id === "contexts")
     const contextGroups = col
       ? col.items.map((cat) => ({
           id: cat.id,

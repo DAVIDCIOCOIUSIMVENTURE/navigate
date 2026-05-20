@@ -15,7 +15,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Separator } from "@/components/ui/separator"
-import { brainstormColumns } from "@/data/brainstormData"
+import { dimensionColumns } from "@/data/dimensionData"
 import { StatusSelect } from "@/components/ui/status-select"
 import type { Problem, ProblemPatch } from "@/store/problems-model"
 import type { ValidationStatus } from "@/types/validation"
@@ -28,7 +28,7 @@ const COLUMN_TO_FIELD: Record<string, "customers" | "contexts" | "problems"> = {
   problems: "problems",
 }
 
-const EDITABLE_COLUMNS = brainstormColumns.filter((col) => col.id in COLUMN_TO_FIELD)
+const EDITABLE_COLUMNS = dimensionColumns.filter((col) => col.id in COLUMN_TO_FIELD)
 
 interface EditProblemDialogProps {
   problem: Problem | null

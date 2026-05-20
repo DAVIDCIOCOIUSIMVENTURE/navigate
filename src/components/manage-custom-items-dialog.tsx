@@ -16,7 +16,7 @@ import { Pencil, Trash2, Check, X } from "lucide-react"
 
 /**
  * List, rename, and delete the user's custom items for a single column.
- * Built-in items are NOT shown here: they're authored in brainstormData.ts and
+ * Built-in items are NOT shown here: they're authored in dimensionData.ts and
  * not user-editable.
  */
 export function ManageCustomItemsDialog({
@@ -31,7 +31,7 @@ export function ManageCustomItemsDialog({
   columnTitle: string
 }) {
   const dispatch = useDispatch<AppDispatch>()
-  const items = useSelector((s: RootState) => s.customBrainstormItems.byColumn[columnId] ?? [])
+  const items = useSelector((s: RootState) => s.customDimensionItems.byColumn[columnId] ?? [])
   const [editingId, setEditingId] = useState<string | null>(null)
   const [draftLabel, setDraftLabel] = useState("")
   const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null)
@@ -48,14 +48,14 @@ export function ManageCustomItemsDialog({
     if (!editingId) return
     const trimmed = draftLabel.trim()
     if (!trimmed) return
-    dispatch.customBrainstormItems.renameItem({ columnId, id: editingId, label: trimmed })
+    dispatch.customDimensionItems.renameItem({ columnId, id: editingId, label: trimmed })
     setEditingId(null)
     setDraftLabel("")
   }
 
   const confirmDelete = () => {
     if (!pendingDeleteId) return
-    dispatch.customBrainstormItems.removeItem({ columnId, id: pendingDeleteId })
+    dispatch.customDimensionItems.removeItem({ columnId, id: pendingDeleteId })
     setPendingDeleteId(null)
   }
 

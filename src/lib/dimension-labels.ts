@@ -1,18 +1,18 @@
 import { useMemo } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { brainstormColumns } from "@/data/brainstormData"
-import type { BrainstormItem } from "@/app/(app)/problems/brainstorm/data"
+import { dimensionColumns } from "@/data/dimensionData"
+import type { DimensionItem } from "@/app/(app)/problems/identify/data"
 import type { RootState, AppDispatch } from "@/store"
-import { generateCustomItemId, type CustomBrainstormItem } from "@/store/custom-brainstorm-items-model"
+import { generateCustomItemId, type CustomDimensionItem } from "@/store/custom-dimension-items-model"
 import type { SelfDiscoveryItem } from "@/store/self-discovery-items-model"
 
 export const DELETED_ITEM_LABEL = "(deleted item)"
 
 /**
- * Walk a tree of brainstorm items (groups + leaves) looking for a given id.
+ * Walk a tree of dimension items (groups + leaves) looking for a given id.
  * Returns the matching node or null.
  */
-export function findInTree(items: BrainstormItem[], id: string): BrainstormItem | null {
+export function findInTree(items: DimensionItem[], id: string): DimensionItem | null {
   for (const item of items) {
     if (item.id === id) return item
     if (item.children) {
@@ -28,10 +28,10 @@ export function findInTree(items: BrainstormItem[], id: string): BrainstormItem 
  * Used by resolveOrCreate when the user free-types a value that matches a built-in.
  */
 export function findBuiltInIdByLabel(columnId: string, label: string): string | null {
-  const column = brainstormColumns.find((c) => c.id === columnId)
+  const column = dimensionColumns.find((c) => c.id === columnId)
   if (!column) return null
   const trimmed = label.trim().toLowerCase()
-  function walk(items: BrainstormItem[]): string | null {
+  function walk(items: DimensionItem[]): string | null {
     for (const item of items) {
       if (item.label.trim().toLowerCase() === trimmed) return item.id
       if (item.children) {
@@ -46,19 +46,19 @@ export function findBuiltInIdByLabel(columnId: string, label: string): string | 
 
 /**
  * Resolve a saved dimension id to its display label.
- * 1. Built-in catalog (brainstormData.ts)
- * 2. User-added custom catalog (customBrainstormItems)
+ * 1. Built-in catalog (dimensionData.ts)
+ * 2. User-added custom catalog (customDimensionItems)
  * 3. Self-discovery items (only for the "you" column)
  * 4. Falls back to "(deleted item)".
  */
 export function resolveDimensionLabel(
   columnId: string,
   id: string,
-  customByColumn: Record<string, CustomBrainstormItem[]>,
+  customByColumn: Record<string, CustomDimensionItem[]>,
   selfDiscoveryItems: SelfDiscoveryItem[]
 ): string {
   // 1. Built-in tree
-  const column = brainstormColumns.find((c) => c.id === columnId)
+  const column = dimensionColumns.find((c) => c.id === columnId)
   if (column) {
     const found = findInTree(column.items, id)
     if (found) return found.label
@@ -79,7 +79,7 @@ export function resolveDimensionLabel(
  * slices and re-resolves on change.
  */
 export function useDimensionLabel(columnId: string, id: string): string {
-  const customByColumn = useSelector((s: RootState) => s.customBrainstormItems.byColumn)
+  const customByColumn = useSelector((s: RootState) => s.customDimensionItems.byColumn)
   const items = useSelector((s: RootState) => s.selfDiscoveryItems.items)
   return useMemo(
     () => resolveDimensionLabel(columnId, id, customByColumn, items),
@@ -91,7 +91,7 @@ export function useDimensionLabel(columnId: string, id: string): string {
  * Resolve a list of ids to labels in one go.
  */
 export function useDimensionLabels(columnId: string, ids: string[]): string[] {
-  const customByColumn = useSelector((s: RootState) => s.customBrainstormItems.byColumn)
+  const customByColumn = useSelector((s: RootState) => s.customDimensionItems.byColumn)
   const items = useSelector((s: RootState) => s.selfDiscoveryItems.items)
   return useMemo(
     () => ids.map((id) => resolveDimensionLabel(columnId, id, customByColumn, items)),
@@ -109,7 +109,7 @@ export function useDimensionLabels(columnId: string, ids: string[]): string[] {
  * Note: this dispatches in case 4. Only call from event handlers, never from render.
  */
 export function useResolveOrCreate() {
-  const customByColumn = useSelector((s: RootState) => s.customBrainstormItems.byColumn)
+  const customByColumn = useSelector((s: RootState) => s.customDimensionItems.byColumn)
   const dispatch = useDispatch<AppDispatch>()
 
   return (columnId: string, token: string): string => {
@@ -133,12 +133,12 @@ export function useResolveOrCreate() {
     // Mint a new custom item synchronously. We dispatch the addItem reducer
     // (sync, returns void) rather than the create effect (which would wrap the
     // value in a Promise).
-    const item: CustomBrainstormItem = {
+    const item: CustomDimensionItem = {
       id: generateCustomItemId(columnId),
       label: trimmed,
       createdAt: new Date().toISOString(),
     }
-    dispatch.customBrainstormItems.addItem({ columnId, item })
+    dispatch.customDimensionItems.addItem({ columnId, item })
     return item.id
   }
 }
@@ -146,10 +146,10 @@ export function useResolveOrCreate() {
 function isKnownId(
   columnId: string,
   token: string,
-  customByColumn: Record<string, CustomBrainstormItem[]>
+  customByColumn: Record<string, CustomDimensionItem[]>
 ): boolean {
   if (columnId === "you") return token.startsWith("you-user-")
-  const column = brainstormColumns.find((c) => c.id === columnId)
+  const column = dimensionColumns.find((c) => c.id === columnId)
   if (column && findInTree(column.items, token)) return true
   if (customByColumn[columnId]?.some((i) => i.id === token)) return true
   return false

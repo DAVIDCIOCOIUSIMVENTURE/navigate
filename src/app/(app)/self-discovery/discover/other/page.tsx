@@ -11,7 +11,7 @@ import { Plus, Trash2 } from "lucide-react"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { getSelfDiscoveryCategoryIcon } from "@/config/navigation"
 import { SELF_DISCOVERY_CATEGORIES, SELF_DISCOVERY_CATEGORY_ICON_BG } from "@/data/selfDiscoveryData"
-import type { CustomBrainstormItem } from "@/store/custom-brainstorm-items-model"
+import type { CustomDimensionItem } from "@/store/custom-dimension-items-model"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 
@@ -21,11 +21,11 @@ export default function OtherCategoryPage() {
     const size = useContainerSize()
     const roomy = size !== "narrow"
 
-    const items = useSelector((state: RootState) => state.customBrainstormItems.byColumn.you ?? [])
+    const items = useSelector((state: RootState) => state.customDimensionItems.byColumn.you ?? [])
     const allProblems = useSelector((state: RootState) => state.problems.problems)
 
     const [draft, setDraft] = useState("")
-    const [pendingDelete, setPendingDelete] = useState<CustomBrainstormItem | null>(null)
+    const [pendingDelete, setPendingDelete] = useState<CustomDimensionItem | null>(null)
     const [mounted, setMounted] = useState(false)
     useEffect(() => { setMounted(true) }, [])
 
@@ -38,12 +38,12 @@ export default function OtherCategoryPage() {
     const handleAdd = () => {
         const trimmed = draft.trim()
         if (!trimmed) return
-        dispatch.customBrainstormItems.create({ columnId: "you", label: trimmed })
+        dispatch.customDimensionItems.create({ columnId: "you", label: trimmed })
         setDraft("")
     }
 
     const handleDelete = (id: string) => {
-        dispatch.customBrainstormItems.removeItem({ columnId: "you", id })
+        dispatch.customDimensionItems.removeItem({ columnId: "you", id })
         setPendingDelete(null)
     }
 
@@ -82,7 +82,7 @@ export default function OtherCategoryPage() {
                         <div className="shrink-0">
                             <p className="text-base text-foreground">
                                 Use this section for items you&apos;ve added that don&apos;t fit the categories above.
-                                Anything you add here will appear under &ldquo;Your items&rdquo; in the brainstorm You column.
+                                Anything you add here will appear under &ldquo;Your items&rdquo; in the You column of the Identify Problems tool.
                             </p>
                         </div>
                         {items.length > 0 && (

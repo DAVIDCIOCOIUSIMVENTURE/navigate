@@ -18,7 +18,7 @@ import { SELF_DISCOVERY_CATEGORIES, SELF_DISCOVERY_CATEGORY_ICON_BG } from "@/da
 import { getSelfDiscoveryCategoryIcon } from "@/config/navigation"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import type { SelfDiscoveryItem } from "@/store/self-discovery-items-model"
-import type { CustomBrainstormItem } from "@/store/custom-brainstorm-items-model"
+import type { CustomDimensionItem } from "@/store/custom-dimension-items-model"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 
@@ -26,7 +26,7 @@ const FLOW_BASE = "/self-discovery/discover"
 
 type PendingDelete =
   | { kind: "self-discovery"; item: SelfDiscoveryItem }
-  | { kind: "custom-you"; item: CustomBrainstormItem }
+  | { kind: "custom-you"; item: CustomDimensionItem }
   | null
 
 function CategorySection({
@@ -85,7 +85,7 @@ export default function SelfDiscoveryPage() {
   const isWide = useContainerSize() === "wide"
 
   const selfDiscoveryAnswers = useSelector((state: RootState) => state.selfDiscoveryItems.items)
-  const customYouItems = useSelector((state: RootState) => state.customBrainstormItems.byColumn.you ?? [])
+  const customYouItems = useSelector((state: RootState) => state.customDimensionItems.byColumn.you ?? [])
   const allProblems = useSelector((state: RootState) => state.problems.problems)
 
   useEffect(() => { setMounted(true) }, [])
@@ -103,7 +103,7 @@ export default function SelfDiscoveryPage() {
     if (pendingDelete.kind === "self-discovery") {
       dispatch.selfDiscoveryItems.removeItem(pendingDelete.item.id)
     } else {
-      dispatch.customBrainstormItems.removeItem({ columnId: "you", id: pendingDelete.item.id })
+      dispatch.customDimensionItems.removeItem({ columnId: "you", id: pendingDelete.item.id })
     }
     setPendingDelete(null)
   }

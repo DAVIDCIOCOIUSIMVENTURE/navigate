@@ -34,7 +34,7 @@ export default function DashboardPage() {
   const triggers = useSelector((state: RootState) => state.selfDiscoveryItems.items)
   const problems = useSelector((state: RootState) => state.problems.problems)
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
-  const customByColumn = useSelector((state: RootState) => state.customBrainstormItems.byColumn)
+  const customByColumn = useSelector((state: RootState) => state.customDimensionItems.byColumn)
   const [expandedProblemIds, setExpandedProblemIds] = useState<Set<number>>(new Set())
   const [problemDialogOpen, setProblemDialogOpen] = useState(false)
   const [solutionDialogOpen, setSolutionDialogOpen] = useState(false)

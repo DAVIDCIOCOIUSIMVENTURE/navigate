@@ -20,7 +20,7 @@ export type ProblemSummaryTag = { label: string; columnId: string; ids: string[]
 export type ProblemSummaryData = {
   /** Main problem text / description */
   text: string
-  /** Brainstorm-style classification tags (customer segments, contexts, etc.) */
+  /** Dimension classification tags (customer segments, contexts, etc.) */
   tags?: ProblemSummaryTag[]
   context?: string
   emotionalImpact?: string | string[]

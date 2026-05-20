@@ -140,7 +140,7 @@ const guidanceItems: GuidanceItem[] = [
               Stress-test each candidate against alternatives, impact, and opportunity to decide if it is worth pursuing.
             </NumberedStep>
             <NumberedStep n={4} title="Solutions" accent="bg-blue-900">
-              Once a problem is validated, brainstorm and evaluate potential solutions.
+              Once a problem is validated, generate and evaluate potential solutions.
             </NumberedStep>
           </div>
         </GuidanceSection>
@@ -238,7 +238,7 @@ const guidanceItems: GuidanceItem[] = [
           <p>Click <Keyword>Identify problems</Keyword> to open the tool selector. Use one of the discovery tools to surface a problem, or define one directly if you already know what you want to explore.</p>
         </GuidanceSection>
         <GuidanceSection icon={ToggleRight} iconBg="bg-orange-700" title="Two modes">
-          <p>The brainstorming tool offers two ways to work, switchable from the toggle in the top-right corner. Choose whichever suits your thinking style; you can switch at any time and your progress is preserved.</p>
+          <p>The Identify Problems tool offers two ways to work, switchable from the toggle in the top-right corner. Choose whichever suits your thinking style; you can switch at any time and your progress is preserved.</p>
         </GuidanceSection>
         <GuidanceSection icon={Blocks} iconBg="bg-orange-700" title="Problem Builder (guided mode)">
           <p>The builder walks you through four steps to construct a problem systematically:</p>
@@ -392,7 +392,7 @@ const guidanceItems: GuidanceItem[] = [
           <p>Pick a creative method to generate solution ideas. Each candidate you capture is added to the Solution Bank so you can validate it later:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={Blocks} label="SCAMPER" description="Substitute, Combine, Adapt, Modify, Put to other use, Eliminate, Reverse. Generate ideas by transforming existing concepts." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
-            <ConceptCard icon={Repeat} label="Reverse Brainstorming" description="Instead of asking how to solve it, ask how to make it worse, then invert the answers." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
+            <ConceptCard icon={Repeat} label="Reverse Ideation" description="Instead of asking how to solve it, ask how to make it worse, then invert the answers." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
             <ConceptCard icon={Compass} label="Analogy Thinking" description="Look at how other fields have solved similar problems and adapt their approach." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
             <ConceptCard icon={ArrowRight} label="Improve Existing Solutions" description="Start from what already exists and sharpen it, removing shortcomings surfaced during validation." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
           </div>
@@ -433,7 +433,7 @@ const guidanceItems: GuidanceItem[] = [
           subtitle="A guided way to surface problems worth solving by answering short prompts about your work, life, the organizations you know, the people around you, and what you spot in the wider world."
         />
         <GuidanceSection icon={Compass} iconBg="bg-secondary-brand" title="When to use Reflect">
-          <p>Reflect lives inside Brainstorm as the third mode at <Keyword>/problems/brainstorm</Keyword>. Toggle between Canvas, Builder, and Reflect there.</p>
+          <p>Reflect lives inside Identify Problems as the third mode at <Keyword>/problems/identify</Keyword>. Toggle between Canvas, Builder, and Reflect there.</p>
           <div className="grid gap-3 pt-1 sm:grid-cols-2">
             <div className="rounded-lg border bg-card p-3">
               <h5 className="text-sm font-semibold mb-1">Use Reflect when</h5>
@@ -444,7 +444,7 @@ const guidanceItems: GuidanceItem[] = [
               </ul>
             </div>
             <div className="rounded-lg border bg-card p-3">
-              <h5 className="text-sm font-semibold mb-1">Use Brainstorm instead when</h5>
+              <h5 className="text-sm font-semibold mb-1">Use Canvas or Builder instead when</h5>
               <ul className="text-sm leading-relaxed list-disc pl-5 space-y-1">
                 <li>You already have specific customers, contexts, or pain points in mind.</li>
                 <li>You want to compose problems by combining columns on a canvas.</li>

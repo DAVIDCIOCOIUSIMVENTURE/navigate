@@ -27,7 +27,7 @@ const TOOL_CARDS: Record<ToolKey, { title: string; description: string; icon: ty
     icon: Lightbulb,
   },
   reverse: {
-    title: "Reverse Brainstorming",
+    title: "Reverse Ideation",
     description: "Generate ideas by first thinking how to make the problem worse, then flipping each idea into a creative solution.",
     icon: RotateCcw,
   },
@@ -131,7 +131,7 @@ function ScamperDialogContent() {
   return (
     <div className="flex flex-col gap-4">
       <p className="text-sm leading-relaxed text-foreground">
-        SCAMPER is a creative thinking technique that prompts you to look at a problem from seven angles: Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate, and Reverse. Each prompt sparks ideas you wouldn&apos;t reach through normal brainstorming.
+        SCAMPER is a creative thinking technique that prompts you to look at a problem from seven angles: Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate, and Reverse. Each prompt sparks ideas you wouldn&apos;t reach through conventional ideation.
       </p>
       <div className="flex flex-col gap-2">
         <SectionLabel>Example</SectionLabel>
@@ -157,7 +157,7 @@ function ReverseDialogContent() {
   return (
     <div className="flex flex-col gap-4">
       <p className="text-sm leading-relaxed text-foreground">
-        Instead of solving the problem directly, first brainstorm how to make it worse. Then flip each &quot;make it worse&quot; idea to discover creative solutions you might not have considered. This counterintuitive approach breaks you out of conventional thinking patterns.
+        Instead of solving the problem directly, first generate ways to make it worse. Then flip each &quot;make it worse&quot; idea to discover creative solutions you might not have considered. This counterintuitive approach breaks you out of conventional thinking patterns.
       </p>
       <div className="flex flex-col gap-2">
         <SectionLabel>Example</SectionLabel>
@@ -284,7 +284,7 @@ export default function ChooseDiscoveryPage() {
           )}
 
           <p className="text-base leading-relaxed">
-            Use creative brainstorming techniques to generate solution candidates.
+            Use creative ideation techniques to generate solution candidates.
             Choose a technique below to get started.
           </p>
 

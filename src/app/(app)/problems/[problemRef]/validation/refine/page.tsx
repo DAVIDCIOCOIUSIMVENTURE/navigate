@@ -283,11 +283,11 @@ const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo:
   "root-causes": {
     title: "Root Causes",
     description: "List the underlying causes of the problem. Ask yourself: \"Why does this happen?\" This technique helps you move beyond surface-level symptoms to uncover what's really driving the issue.",
-    whatYouDo: "Brainstorm every underlying reason the problem exists. Focus on the <strong>root causes</strong>, not the symptoms. Then add <strong>notes</strong> to capture any patterns or connections you spot.",
+    whatYouDo: "List every underlying reason the problem exists. Focus on the <strong>root causes</strong>, not the symptoms. Then add <strong>notes</strong> to capture any patterns or connections you spot.",
     hints: [
       { icon: Search, title: "Dig deeper", subtitle: "Go beyond surface-level symptoms", bg: "bg-blue-900" },
       { icon: Plus, title: "Capture everything", subtitle: "Don't filter yet, list all possible causes", bg: "bg-yellow-600" },
-      { icon: Trash2, title: "Refine later", subtitle: "You can remove weak causes after brainstorming", bg: "bg-emerald-800" },
+      { icon: Trash2, title: "Refine later", subtitle: "You can remove weak causes after listing them", bg: "bg-emerald-800" },
     ],
   },
   "five-whys": {
