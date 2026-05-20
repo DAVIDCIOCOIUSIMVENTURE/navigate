@@ -79,10 +79,13 @@ interface ProblemsTableProps {
   problems: Problem[]
   showStatus?: boolean
   showEditDelete?: boolean
+  showSource?: boolean
   className?: string
+  headerExtra?: React.ReactNode
+  title?: string
 }
 
-export function ProblemsTable({ problems, showStatus = false, showEditDelete = false, className }: ProblemsTableProps) {
+export function ProblemsTable({ problems, showStatus = false, showEditDelete = false, showSource = true, className, headerExtra, title }: ProblemsTableProps) {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
@@ -184,16 +187,17 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
         <CardHeader className="shrink-0 pb-3 gap-3">
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <CardTitle className="text-sm font-semibold">
-              Problems ({sortedProblems.length}
+              {title ?? "Problems"} ({sortedProblems.length}
               {sortedProblems.length !== problems.length ? ` of ${problems.length}` : ""})
             </CardTitle>
             <div className="flex items-center gap-2 flex-wrap">
+              {headerExtra}
               <div className="relative">
                 <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
                 <Input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Search descriptions"
+                  placeholder="Search problems"
                   className="h-8 pl-8 w-56 text-sm"
                 />
               </div>
@@ -221,7 +225,6 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-8" />
                 <TableHead className="w-10">
                   <button
                     type="button"
@@ -240,15 +243,17 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                     Description{renderSortIcon("description")}
                   </button>
                 </TableHead>
-                <TableHead className="w-24">
-                  <button
-                    type="button"
-                    onClick={() => handleSort("source")}
-                    className={cn("flex items-center gap-1", sortableHeaderClass)}
-                  >
-                    Source{renderSortIcon("source")}
-                  </button>
-                </TableHead>
+                {showSource && (
+                  <TableHead className="w-24">
+                    <button
+                      type="button"
+                      onClick={() => handleSort("source")}
+                      className={cn("flex items-center gap-1", sortableHeaderClass)}
+                    >
+                      Source{renderSortIcon("source")}
+                    </button>
+                  </TableHead>
+                )}
                 <TableHead className="w-28">
                   <button
                     type="button"
@@ -276,7 +281,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
               {sortedProblems.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={showStatus ? 7 : 6}
+                    colSpan={4 + (showStatus ? 1 : 0) + (showSource ? 1 : 0)}
                     className="text-center text-sm py-8"
                   >
                     No problems match the current filters.
@@ -293,44 +298,39 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                   return (
                     <Fragment key={problem.id}>
                     <TableRow className={cn(zebra, expanded && hasSolutions && "border-b-0")}>
-                      <TableCell className="pr-0">
-                        {hasSolutions ? (
-                          <button
-                            type="button"
-                            onClick={() => toggleExpanded(problem.id)}
-                            className="flex items-center justify-center w-6 h-6 rounded hover:bg-muted text-muted-foreground"
-                            aria-label={expanded ? "Collapse solutions" : "Expand solutions"}
-                            aria-expanded={expanded}
-                          >
-                            {expanded ? (
-                              <ChevronDown className="h-3.5 w-3.5" />
-                            ) : (
-                              <ChevronRight className="h-3.5 w-3.5" />
-                            )}
-                          </button>
-                        ) : (
-                          <div className="w-6 h-6" />
-                        )}
-                      </TableCell>
                       <TableCell>{originalIndex + 1}</TableCell>
                       <TableCell className="text-sm">
                         <div className="flex items-center gap-2">
+                          {hasSolutions ? (
+                            <button
+                              type="button"
+                              onClick={() => toggleExpanded(problem.id)}
+                              className="flex items-center justify-center w-6 h-6 rounded border border-tertiary text-tertiary hover:bg-tertiary/10 shrink-0"
+                              aria-label={expanded ? "Hide solutions" : `View ${linkedSolutions.length} solution${linkedSolutions.length === 1 ? "" : "s"}`}
+                              aria-expanded={expanded}
+                            >
+                              {expanded ? (
+                                <ChevronDown className="h-3.5 w-3.5" />
+                              ) : (
+                                <ChevronRight className="h-3.5 w-3.5" />
+                              )}
+                            </button>
+                          ) : (
+                            <div className="w-6 h-6 shrink-0" />
+                          )}
                           <Target className="h-3.5 w-3.5 text-tertiary shrink-0" />
                           {problem.description ? (
                             <span className="line-clamp-2">{problem.description}</span>
                           ) : (
                             <span className="text-muted-foreground">-</span>
                           )}
-                          {hasSolutions && (
-                            <span className="ml-1 text-sm whitespace-nowrap">
-                              {linkedSolutions.length} solution{linkedSolutions.length === 1 ? "" : "s"}
-                            </span>
-                          )}
                         </div>
                       </TableCell>
-                      <TableCell className="text-sm capitalize">
-                        {problem.source}
-                      </TableCell>
+                      {showSource && (
+                        <TableCell className="text-sm capitalize">
+                          {problem.source}
+                        </TableCell>
+                      )}
                       <TableCell className="text-sm whitespace-nowrap">
                         {new Date(problem.createdAt).toLocaleDateString("en-GB", {
                           day: "numeric", month: "short", year: "numeric",
@@ -391,7 +391,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                     {hasSolutions && expanded && (
                       <TableRow className="bg-muted/30 hover:bg-muted/30">
                         <TableCell />
-                        <TableCell colSpan={showStatus ? 6 : 5} className="py-2">
+                        <TableCell colSpan={3 + (showStatus ? 1 : 0) + (showSource ? 1 : 0)} className="py-2">
                           <div className="flex flex-col gap-1.5">
                             {linkedSolutions.map((s) => {
                               const sStatus = s.validationStatus ?? "unvalidated"

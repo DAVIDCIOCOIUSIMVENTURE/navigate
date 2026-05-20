@@ -2,9 +2,9 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
   ChevronRight,
-  ChevronDown,
   Lightbulb,
   Target,
   Trophy,
@@ -22,11 +22,12 @@ import {
 import { AchievementItem } from "@/components/achievement-item"
 import { SearchProblemDialog } from "@/components/search-problem-dialog"
 import { SearchSolutionDialog } from "@/components/search-solution-dialog"
+import { ProblemsTable } from "@/components/problems-table"
+import { SolutionsTable } from "@/components/solutions-table"
 import Link from "next/link"
 import { useState } from "react"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
-import { getProblemLabel } from "@/store/problems-model"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 
@@ -34,10 +35,9 @@ export default function DashboardPage() {
   const triggers = useSelector((state: RootState) => state.selfDiscoveryItems.items)
   const problems = useSelector((state: RootState) => state.problems.problems)
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
-  const customByColumn = useSelector((state: RootState) => state.customDimensionItems.byColumn)
-  const [expandedProblemIds, setExpandedProblemIds] = useState<Set<number>>(new Set())
   const [problemDialogOpen, setProblemDialogOpen] = useState(false)
   const [solutionDialogOpen, setSolutionDialogOpen] = useState(false)
+  const [view, setView] = useState<"problems" | "solutions">("problems")
 
   const validProblems = problems.filter((p) => p.validationStatus === "valid")
   const validatedProblems = problems.filter(
@@ -47,21 +47,6 @@ export default function DashboardPage() {
   const validatedSolutions = solutions.filter(
     (s) => s.validationStatus === "valid" || s.validationStatus === "invalid"
   )
-
-  const sortedProblems = [...problems].sort(
-    (a, b) =>
-      new Date(b.editedAt || b.createdAt).getTime() -
-      new Date(a.editedAt || a.createdAt).getTime()
-  )
-
-  const toggleProblemExpanded = (id: number) => {
-    setExpandedProblemIds((prev) => {
-      const next = new Set(prev)
-      if (next.has(id)) next.delete(id)
-      else next.add(id)
-      return next
-    })
-  }
 
   // Dynamic achievements
   const achievements = [
@@ -82,22 +67,38 @@ export default function DashboardPage() {
 
   return (
     <div className={cn("flex flex-col gap-4 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
-      {/* Foundations prompt + action buttons */}
+      {/* Foundations + Self Discovery prompts + action buttons */}
       <div className={cn("flex gap-3 shrink-0", isWide ? "flex-row items-stretch" : "flex-col items-stretch")}>
-        <Link href="/foundations" className="flex-1 min-w-0 flex">
-          <Card className="hover:shadow-md transition-shadow w-full">
-            <CardContent className="p-4 h-full flex items-center gap-3">
-              <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 shrink-0">
-                <BookOpen className="h-4 w-4 text-primary" />
-              </div>
-              <div className="min-w-0 flex-1">
-                <p className="text-base font-semibold">New here? Start with Why It Matters</p>
-                <p className="text-sm mt-0.5">Optional reading on why validating ideas, problems, and solutions is worth the time.</p>
-              </div>
-              <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
-            </CardContent>
-          </Card>
-        </Link>
+        <div className={cn("flex gap-3 flex-1 min-w-0", isWide ? "flex-row" : "flex-col")}>
+          <Link href="/foundations" className="flex-1 min-w-0 flex">
+            <Card className="hover:shadow-md transition-shadow w-full">
+              <CardContent className="p-4 h-full flex items-center gap-3">
+                <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 shrink-0">
+                  <BookOpen className="h-4 w-4 text-primary" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-base font-semibold">New here? Start with Why It Matters</p>
+                  <p className="text-sm mt-0.5">Optional reading on why validating ideas, problems, and solutions is worth the time.</p>
+                </div>
+                <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+              </CardContent>
+            </Card>
+          </Link>
+          <Link href="/self-discovery" className="flex-1 min-w-0 flex">
+            <Card className="hover:shadow-md transition-shadow w-full">
+              <CardContent className="p-4 h-full flex items-center gap-3">
+                <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-teal-700/10 shrink-0">
+                  <Compass className="h-4 w-4 text-teal-700" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="text-base font-semibold">Explore Self Discovery</p>
+                  <p className="text-sm mt-0.5">Surface interests, skills, and experiences that point you toward problems worth solving.</p>
+                </div>
+                <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+              </CardContent>
+            </Card>
+          </Link>
+        </div>
         <div className={cn("flex gap-2 shrink-0", isWide ? "flex-col" : "flex-row")}>
           <Button onClick={() => setProblemDialogOpen(true)} className={cn("gap-2", !isWide && "flex-1")}>
             <Plus className="h-4 w-4" />
@@ -142,89 +143,57 @@ export default function DashboardPage() {
         />
       </div>
 
-      {/* Problems list (expandable) and Achievements */}
+      {/* Problems / Solutions table (toggleable) and Achievements */}
       <div className={cn("grid gap-4 flex-1 min-h-0", isWide ? "grid-cols-3 grid-rows-1" : "grid-cols-1")}>
-        <Card className={cn("flex flex-col", isWide ? "min-h-0 col-span-2" : "min-h-[320px] max-h-[640px]")}>
-          <CardHeader className="shrink-0">
-            <CardTitle className="text-base">Problems &amp; Solutions</CardTitle>
-          </CardHeader>
-          <CardContent className="flex-1 min-h-0 overflow-y-auto">
-            {sortedProblems.length === 0 ? (
-              <p className="text-sm">
-                No problems yet.{" "}
-                <Link href="/problems" className="font-medium text-foreground underline underline-offset-2">
-                  Add a problem
-                </Link>{" "}
-                to get going.
-              </p>
-            ) : (
-              <div className="space-y-2">
-                {sortedProblems.map((p) => {
-                  const linkedSolutions = solutions.filter((s) => s.problemId === p.id)
-                  const hasSolutions = linkedSolutions.length > 0
-                  const expanded = expandedProblemIds.has(p.id)
-                  const label = p.description || getProblemLabel(p, customByColumn, triggers) || `Problem #${p.id}`
-                  return (
-                    <div key={p.id} className="rounded-md border border-border">
-                      <div className="flex items-center gap-2 px-3 py-2">
-                        {hasSolutions ? (
-                          <button
-                            type="button"
-                            onClick={() => toggleProblemExpanded(p.id)}
-                            className="shrink-0 flex items-center justify-center w-5 h-5 rounded hover:bg-muted text-muted-foreground"
-                            aria-label={expanded ? "Collapse solutions" : "Expand solutions"}
-                            aria-expanded={expanded}
-                          >
-                            {expanded ? (
-                              <ChevronDown className="h-3.5 w-3.5" />
-                            ) : (
-                              <ChevronRight className="h-3.5 w-3.5" />
-                            )}
-                          </button>
-                        ) : (
-                          <div className="w-5 h-5 shrink-0" />
-                        )}
-                        <Target className="h-4 w-4 text-tertiary shrink-0" />
-                        <Link
-                          href={`/problems/${p.id}`}
-                          className="flex-1 min-w-0 text-sm truncate hover:underline"
-                        >
-                          {label}
-                        </Link>
-                        {hasSolutions && (
-                          <span className="text-sm shrink-0">
-                            {linkedSolutions.length} solution{linkedSolutions.length === 1 ? "" : "s"}
-                          </span>
-                        )}
-                        <StatusBadge status={p.validationStatus.replace("_", " ")} />
-                      </div>
-                      {hasSolutions && expanded && (
-                        <div className="border-t border-border bg-muted/30 px-3 py-2 space-y-1.5">
-                          {linkedSolutions.map((s) => {
-                            const solutionLabel = s.title || `Solution #${s.id}`
-                            return (
-                              <Link
-                                key={s.id}
-                                href={`/solutions/${s.id}`}
-                                className="flex items-center gap-2 group pl-7"
-                              >
-                                <Lightbulb className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                                <span className="flex-1 min-w-0 text-sm truncate group-hover:underline">
-                                  {solutionLabel}
-                                </span>
-                                <StatusBadge status={s.validationStatus.replace("_", " ")} />
-                              </Link>
-                            )
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  )
-                })}
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        {(() => {
+          const tableClassName = cn(isWide ? "min-h-0 col-span-2" : "min-h-[320px] max-h-[640px]")
+          const viewToggle = (
+            <ToggleGroup
+              type="single"
+              value={view}
+              onValueChange={(value) => {
+                if (value === "problems" || value === "solutions") setView(value)
+              }}
+              size="sm"
+              className="shrink-0 bg-card border-border divide-x divide-border"
+            >
+              <ToggleGroupItem
+                value="problems"
+                aria-label="Show problems"
+                className="gap-1.5 px-3 rounded-none bg-card data-[state=on]:bg-secondary-brand data-[state=on]:text-secondary-brand-foreground"
+              >
+                <Target className="h-3.5 w-3.5" />
+                <span>Problems</span>
+              </ToggleGroupItem>
+              <ToggleGroupItem
+                value="solutions"
+                aria-label="Show solutions"
+                className="gap-1.5 px-3 rounded-none bg-card data-[state=on]:bg-secondary-brand data-[state=on]:text-secondary-brand-foreground"
+              >
+                <Lightbulb className="h-3.5 w-3.5" />
+                <span>Solutions</span>
+              </ToggleGroupItem>
+            </ToggleGroup>
+          )
+          return view === "problems" ? (
+            <ProblemsTable
+              problems={problems}
+              showStatus
+              showEditDelete
+              showSource={false}
+              className={tableClassName}
+              headerExtra={viewToggle}
+            />
+          ) : (
+            <SolutionsTable
+              solutions={solutions}
+              showStatus
+              showEditDelete
+              className={tableClassName}
+              headerExtra={viewToggle}
+            />
+          )
+        })()}
 
         <Card className={cn("flex flex-col", isWide ? "min-h-0" : "min-h-[320px] max-h-[640px]")}>
           <CardHeader className="shrink-0">
@@ -295,23 +264,3 @@ function StageCard({
   )
 }
 
-const statusColors: Record<string, string> = {
-  unvalidated: "bg-muted text-muted-foreground",
-  "in progress": "bg-primary/15 text-primary",
-  valid: "bg-success/15 text-success",
-  invalid: "bg-destructive/15 text-destructive",
-  unsure: "bg-tertiary/20 text-tertiary",
-  "not started": "bg-muted text-muted-foreground",
-  pursue: "bg-success/15 text-success",
-  revisit: "bg-primary/15 text-primary",
-  abandon: "bg-destructive/15 text-destructive",
-}
-
-function StatusBadge({ status }: { status: string }) {
-  const colors = statusColors[status] ?? "bg-gray-100 text-gray-700"
-  return (
-    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium capitalize shrink-0 ${colors}`}>
-      {status}
-    </span>
-  )
-}

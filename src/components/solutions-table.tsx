@@ -77,9 +77,11 @@ interface SolutionsTableProps {
   showStatus?: boolean
   showEditDelete?: boolean
   className?: string
+  headerExtra?: React.ReactNode
+  title?: string
 }
 
-export function SolutionsTable({ solutions, showStatus = true, showEditDelete = true, className }: SolutionsTableProps) {
+export function SolutionsTable({ solutions, showStatus = true, showEditDelete = true, className, headerExtra, title }: SolutionsTableProps) {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const problems = useSelector((state: RootState) => state.problems.problems)
@@ -163,10 +165,11 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
       <CardHeader className="shrink-0 pb-3 gap-3">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           <CardTitle className="text-sm font-semibold">
-            Solutions ({sortedSolutions.length}
+            {title ?? "Solutions"} ({sortedSolutions.length}
             {sortedSolutions.length !== solutions.length ? ` of ${solutions.length}` : ""})
           </CardTitle>
           <div className="flex items-center gap-2 flex-wrap">
+            {headerExtra}
             <div className="relative">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
               <Input
