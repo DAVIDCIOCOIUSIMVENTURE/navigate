@@ -1,19 +1,19 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" width="400" height="280">
-  <rect width="400" height="280" fill="#F8EFE0"></rect>
-  <line x1="142.94" y1="181.46" x2="114.4" y2="172.19" stroke="#C9A227" stroke-width="3" stroke-linecap="round"></line>
-  <line x1="151.46" y1="164.73" x2="127.19" y2="147.1" stroke="#C9A227" stroke-width="3" stroke-linecap="round"></line>
-  <line x1="164.73" y1="151.46" x2="147.1" y2="127.19" stroke="#C9A227" stroke-width="3" stroke-linecap="round"></line>
-  <line x1="181.46" y1="142.94" x2="172.19" y2="114.4" stroke="#C9A227" stroke-width="3" stroke-linecap="round"></line>
-  <line x1="200" y1="140" x2="200" y2="110" stroke="#C9A227" stroke-width="3" stroke-linecap="round"></line>
-  <line x1="218.54" y1="142.94" x2="227.81" y2="114.4" stroke="#C9A227" stroke-width="3" stroke-linecap="round"></line>
-  <line x1="235.27" y1="151.46" x2="252.9" y2="127.19" stroke="#C9A227" stroke-width="3" stroke-linecap="round"></line>
-  <line x1="248.54" y1="164.73" x2="272.81" y2="147.1" stroke="#C9A227" stroke-width="3" stroke-linecap="round"></line>
-  <line x1="257.06" y1="181.46" x2="285.6" y2="172.19" stroke="#C9A227" stroke-width="3" stroke-linecap="round"></line>
-  <path d="M140 200 A60 60 0 0 1 260 200 Z" fill="#C25A3C"></path>
-  <line x1="20" y1="200" x2="380" y2="200" stroke="#1B1B14" stroke-width="2" stroke-linecap="round"></line>
-  <path d="M0 200 Q 90 170 160 200 T 280 200 T 400 200 L400 280 L0 280 Z" fill="#2C3E7A"></path>
-  <path d="M0 220 Q 60 200 130 220 T 250 220 T 400 220 L400 280 L0 280 Z" fill="#1A2447"></path>
-  <path d="M310 61 L312.7 67.3 L319 70 L312.7 72.7 L310 79 L307.3 72.7 L301 70 L307.3 67.3 Z" fill="#C25A3C"></path>
-  <path d="M340 105 L341.5 108.5 L345 110 L341.5 111.5 L340 115 L338.5 111.5 L335 110 L338.5 108.5 Z" fill="#C9A227"></path>
-  <path d="M70 84 L71.8 88.2 L76 90 L71.8 91.8 L70 96 L68.2 91.8 L64 90 L68.2 88.2 Z" fill="#C9A227"></path>
+  <rect width="400" height="280" fill="#ECEBE9"></rect>
+  <line x1="142.94" y1="181.46" x2="114.4" y2="172.19" stroke="#0E7EB3" stroke-width="3" stroke-linecap="round"></line>
+  <line x1="151.46" y1="164.73" x2="127.19" y2="147.1" stroke="#0E7EB3" stroke-width="3" stroke-linecap="round"></line>
+  <line x1="164.73" y1="151.46" x2="147.1" y2="127.19" stroke="#0E7EB3" stroke-width="3" stroke-linecap="round"></line>
+  <line x1="181.46" y1="142.94" x2="172.19" y2="114.4" stroke="#0E7EB3" stroke-width="3" stroke-linecap="round"></line>
+  <line x1="200" y1="140" x2="200" y2="110" stroke="#0E7EB3" stroke-width="3" stroke-linecap="round"></line>
+  <line x1="218.54" y1="142.94" x2="227.81" y2="114.4" stroke="#0E7EB3" stroke-width="3" stroke-linecap="round"></line>
+  <line x1="235.27" y1="151.46" x2="252.9" y2="127.19" stroke="#0E7EB3" stroke-width="3" stroke-linecap="round"></line>
+  <line x1="248.54" y1="164.73" x2="272.81" y2="147.1" stroke="#0E7EB3" stroke-width="3" stroke-linecap="round"></line>
+  <line x1="257.06" y1="181.46" x2="285.6" y2="172.19" stroke="#0E7EB3" stroke-width="3" stroke-linecap="round"></line>
+  <path d="M140 200 A60 60 0 0 1 260 200 Z" fill="#C78A04"></path>
+  <line x1="20" y1="200" x2="380" y2="200" stroke="#14171F" stroke-width="2" stroke-linecap="round"></line>
+  <path d="M0 200 Q 90 170 160 200 T 280 200 T 400 200 L400 280 L0 280 Z" fill="#0F3F75"></path>
+  <path d="M0 220 Q 60 200 130 220 T 250 220 T 400 220 L400 280 L0 280 Z" fill="#0A2A52"></path>
+  <path d="M310 61 L312.7 67.3 L319 70 L312.7 72.7 L310 79 L307.3 72.7 L301 70 L307.3 67.3 Z" fill="#C78A04"></path>
+  <path d="M340 105 L341.5 108.5 L345 110 L341.5 111.5 L340 115 L338.5 111.5 L335 110 L338.5 108.5 Z" fill="#0E7EB3"></path>
+  <path d="M70 84 L71.8 88.2 L76 90 L71.8 91.8 L70 96 L68.2 91.8 L64 90 L68.2 88.2 Z" fill="#0E7EB3"></path>
 </svg>
