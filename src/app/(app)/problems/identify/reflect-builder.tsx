@@ -1258,11 +1258,12 @@ export function ReflectBuilder({ resetRef }: { resetRef?: React.MutableRefObject
   useEffect(() => {
     if (!resetRef) return
     resetRef.current = () => {
+      dispatch.reflectSessions.clearAllSessions()
       setStep("pick")
       setLensId(null)
       setPromptIndex(0)
     }
-  }, [resetRef])
+  }, [resetRef, dispatch])
 
   const promptsProgress =
     step === "prompts" && lens

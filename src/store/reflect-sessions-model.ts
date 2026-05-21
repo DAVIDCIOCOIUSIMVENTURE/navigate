@@ -150,6 +150,18 @@ export const reflectSessions = createModel<RootModel>()({
       return next
     },
 
+    clearAllSessions(state) {
+      const next: ReflectSessionsState = {
+        ...state,
+        sessions: {},
+        lastPickedLensId: null,
+        lastStep: null,
+        lastPromptIndex: 0,
+      }
+      saveToStorage(next)
+      return next
+    },
+
     clearSession(state, lensId: string) {
       const { [lensId]: _removed, ...rest } = state.sessions
       void _removed
