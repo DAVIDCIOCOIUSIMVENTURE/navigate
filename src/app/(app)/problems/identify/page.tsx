@@ -24,14 +24,6 @@ import {
   DrawerDescription,
 } from "@/components/ui/drawer"
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import {
   ArrowLeft,
   ArrowRight,
   Check,
@@ -52,7 +44,6 @@ import {
   Search,
   Settings,
   Telescope,
-  Trash2,
   X,
 } from "lucide-react"
 import { Textarea } from "@/components/ui/textarea"
@@ -60,8 +51,8 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { dimensionColumns, type DimensionItem, type DimensionColumn } from "./data"
 import type { Problem } from "@/store/problems-model"
 import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
-import { resolveDimensionLabel } from "@/lib/dimension-labels"
 import { DimensionPicker } from "@/components/dimension-picker"
+import { ProblemsTable } from "@/components/problems-table"
 import { AddCustomItemDialog } from "@/components/add-custom-item-dialog"
 import { ManageCustomItemsDialog } from "@/components/manage-custom-items-dialog"
 import { EditableLeafItem } from "@/components/editable-leaf-item"
@@ -1157,18 +1148,6 @@ export default function IdentifyPage() {
     setNextStepDialogOpen(true)
   }
 
-  const openEditDialog = (problem: Problem) => {
-    initRef.current = false
-    const ids: Record<string, string[]> = {}
-    for (const column of editableColumns) {
-      const field = COLUMN_TO_FIELD[column.id]
-      ids[column.id] = [...(problem[field] as string[])]
-    }
-    setEditDescription(problem.description ?? "")
-    setEditIdsByColumn(ids)
-    setEditingProblem(problem)
-  }
-
   const updateEditColumn = (columnId: string, ids: string[]) => {
     if (!editingProblem) return
     setEditIdsByColumn((prev) => ({ ...prev, [columnId]: ids }))
@@ -1506,92 +1485,13 @@ export default function IdentifyPage() {
             <DrawerDescription className="sr-only">Problems saved from the Identify Problems tool</DrawerDescription>
           </DrawerHeader>
           <div className="overflow-auto px-4 pb-6">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead className="w-10">#</TableHead>
-                  <TableHead>Description</TableHead>
-                  {allColumns.map((column) => (
-                    <TableHead key={column.id}>{column.title}</TableHead>
-                  ))}
-                  <TableHead className="w-24" />
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {savedProblems.length === 0 ? (
-                  <TableRow>
-                    <TableCell
-                      colSpan={allColumns.length + 3}
-                      className="text-center text-muted-foreground py-8"
-                    >
-                      No problems saved yet. Select items above and click &quot;Save Problem&quot;.
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  savedProblems.map((problem, index) => (
-                    <TableRow key={problem.id}>
-                      <TableCell className="text-muted-foreground">
-                        {index + 1}
-                      </TableCell>
-                      <TableCell className="text-sm max-w-48">
-                        {problem.description ? (
-                          <span className="line-clamp-2">{problem.description}</span>
-                        ) : (
-                          <span className="text-muted-foreground">-</span>
-                        )}
-                      </TableCell>
-                      {allColumns.map((column) => {
-                        const field = COLUMN_TO_FIELD[column.id]
-                        const ids = problem[field]
-                        return (
-                          <TableCell key={column.id}>
-                            {ids.length > 0 ? (
-                              <span className="text-sm">
-                                {ids.map((id) => resolveDimensionLabel(column.id, id, customByColumn, triggers)).join(", ")}
-                              </span>
-                            ) : (
-                              <span className="text-sm">-</span>
-                            )}
-                          </TableCell>
-                        )
-                      })}
-                      <TableCell>
-                        <div className="flex items-center gap-1">
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 text-muted-foreground"
-                            onClick={() => openEditDialog(problem)}
-                            aria-label="Edit problem"
-                          >
-                            <Pencil className="h-3.5 w-3.5" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            className="h-7 w-7 text-muted-foreground hover:text-destructive"
-                            onClick={() => dispatch.problems.delete(problem.id)}
-                            aria-label="Delete problem"
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-7 text-muted-foreground hover:text-foreground"
-                            onClick={() => router.push(`/problems/${problem.id}/validation/introduction`)}
-                            aria-label="Validate problem"
-                          >
-                            <ArrowRight className="h-3.5 w-3.5" />
-                            <span className="ml-1">Validate</span>
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-            </Table>
+            <ProblemsTable
+              problems={savedProblems}
+              showStatus
+              showEditDelete
+              showSource={false}
+              title="Saved Problems"
+            />
           </div>
         </DrawerContent>
       </Drawer>
