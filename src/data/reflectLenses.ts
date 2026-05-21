@@ -97,7 +97,7 @@ export const REFLECT_LENSES: Lens[] = [
         id: "significant-experience",
         question: "Which life experience do you want to reflect on?",
         helperText:
-          "Pick one from your self-discovery, or add a new one. Keeping it to one experience makes the next prompts specific.",
+          "Pick one from your self-discovery or another context, or add a new one. Keeping it to one experience makes the next prompts specific.",
         examples: [
           "Becoming a parent",
           "Moving country",

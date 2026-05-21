@@ -228,21 +228,20 @@ max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]
 
 The app's three core flows live under `src/app/(app)/`. Each owns its own per-route context that mirrors the relevant Rematch model and exports a `NAV_ITEMS` array consumed by its sidebar/stepper.
 
-#### Problem refinement & validation: `/problems/[problemRef]`
+#### Problem refinement & validation: `/problems/[problemRef]/validation/<step>`
 
-`problemRef` is the numeric problem id as a string. The route layout (`problems/[problemRef]/layout.tsx`) wraps children in `ProblemProvider` (defined in the sibling `context.tsx`). Steps from `NAV_ITEMS`:
+`problemRef` is the numeric problem id as a string. The flow lives under `problems/[problemRef]/validation/`, whose `layout.tsx` wraps children in `ProblemProvider` (defined in the sibling `context.tsx`). Steps from `NAV_ITEMS`:
 
 ```
-introduction → customer → choose-refinement → refine → existing-solutions → validate → summary
+introduction → customer → choose-refinement → refine → existing-solutions → worth → market → competition → verdict → summary
 ```
 
 The provider:
 
 * Reads/writes the matching `Problem` via `dispatch.problems.update`.
 * Calls `dispatch.solutionWorkspaces.ensureForProblem(problemId)` so refinement work (analysis tool choice, root causes, 5-Whys, affected groups, root-cause notes) is captured on the per-problem `SolutionWorkspace` and surfaces later in solution discovery.
-* Standalone files `alternatives/page.tsx` and `shortcomings/page.tsx` exist alongside the named steps but are not in the stepper; they are linked from within the validate flow.
 
-The list page `/problems/page.tsx` shows all problems and is the entry point. `/problems/identify/page.tsx` is a separate canvas (Customer Segments / Contexts / Problem Types columns) that creates problems via `dispatch.problems.create({ ..., source: "identify" })`.
+`/problems/[problemRef]/page.tsx` is a single (non-stepper) page for direct linking to the problem itself. The list page `/problems/page.tsx` shows all problems and is the entry point. `/problems/identify/page.tsx` is a separate canvas (Customer Segments / Contexts / Problem Types columns) that creates problems via `dispatch.problems.create({ ..., source: "identify" })`.
 
 #### Solution discovery: `/solutions/discover`
 
@@ -268,9 +267,10 @@ The provider only sets fields on the `Solution` (1-5 metric scores, validation n
 
 * `/`: Dashboard (achievements, problem/solution lists, quick search dialogs)
 * `/foundations` and `/foundations/[sectionUrl]`: Static "Why It Matters" content driven by `src/data/foundationsData.ts`
-* `/self-discovery`, `/self-discovery/[categoryId]`, `/self-discovery/[categoryId]/[questionId]`: Questionnaire driven by `src/data/selfDiscoveryData.ts`
+* `/self-discovery`, `/self-discovery/discover`, `/self-discovery/discover/[categoryId]`, `/self-discovery/discover/[categoryId]/[questionId]`, `/self-discovery/discover/other`: Questionnaire driven by `src/data/selfDiscoveryData.ts`
 * `/next-steps` and `/next-steps/[topicUrl]`: Per-topic guidance pages (`src/data/nextStepsData.ts`)
 * `/settings`, `/settings/{account,appearance,notifications,data-privacy}`: User-facing settings backed by the `accountSettings` Rematch model
+* `/admin`, `/admin/users/[userId]`: Admin panel (establishments, classes, users)
 
 ### Vercel Deployment
 

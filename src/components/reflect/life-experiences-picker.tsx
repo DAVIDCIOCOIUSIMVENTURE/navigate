@@ -1,11 +1,12 @@
 "use client"
 
 import { useMemo, useState } from "react"
+import Link from "next/link"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Check, ChevronDown, ChevronRight, Plus } from "lucide-react"
+import { Check, ChevronDown, ChevronRight, Compass, Plus } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { dimensionColumns } from "@/data/dimensionData"
 import {
@@ -133,12 +134,27 @@ export function LifeExperiencesPicker({
                 setOpenGroupId(next ? group.id : null)
               }
             >
-              <CollapsibleTrigger className="flex w-full items-center gap-1.5 px-1 py-1.5 rounded-md hover:bg-accent/50 transition-colors">
+              <CollapsibleTrigger
+                className={cn(
+                  "flex w-full items-center gap-1.5 px-1 py-1.5 rounded-md transition-colors",
+                  isSelfDiscoveryGroup
+                    ? "bg-quaternary/10 hover:bg-quaternary/15"
+                    : "hover:bg-accent/50"
+                )}
+              >
                 {open
-                  ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                  : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                  ? <ChevronDown className={cn("h-3.5 w-3.5 shrink-0", isSelfDiscoveryGroup ? "text-quaternary" : "text-muted-foreground")} />
+                  : <ChevronRight className={cn("h-3.5 w-3.5 shrink-0", isSelfDiscoveryGroup ? "text-quaternary" : "text-muted-foreground")} />
                 }
-                <span className="text-sm font-semibold text-foreground tracking-wide select-none flex-1 text-left">
+                {isSelfDiscoveryGroup && (
+                  <Compass className="h-4 w-4 text-quaternary shrink-0" aria-hidden="true" />
+                )}
+                <span
+                  className={cn(
+                    "text-sm font-semibold tracking-wide select-none flex-1 text-left",
+                    isSelfDiscoveryGroup ? "text-quaternary" : "text-foreground"
+                  )}
+                >
                   {group.label}
                 </span>
                 {selectedInGroup && (
@@ -151,8 +167,14 @@ export function LifeExperiencesPicker({
                 <ul className="ml-7 flex flex-col gap-1 pb-1">
                   {group.items.length === 0 && isSelfDiscoveryGroup ? (
                     <li className="text-sm text-muted-foreground px-2 py-1.5">
-                      Nothing saved yet. Use &ldquo;Add your own&rdquo; or visit
-                      Self-Discovery to fill this in.
+                      Nothing saved yet. Use &ldquo;Add your own&rdquo; or{" "}
+                      <Link
+                        href="/self-discovery/discover/personal-interests/life-experiences"
+                        className="text-quaternary font-medium underline underline-offset-2 hover:text-quaternary/80"
+                      >
+                        visit Self-Discovery
+                      </Link>{" "}
+                      to fill this in.
                     </li>
                   ) : (
                     group.items.map((item) => {
