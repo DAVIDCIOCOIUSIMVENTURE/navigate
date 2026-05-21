@@ -47,12 +47,12 @@ export default function DashboardPage() {
           <Link href="/foundations" className="flex-1 min-w-0 flex">
             <Card className="hover:shadow-md transition-shadow w-full">
               <CardContent className="p-4 h-full flex items-center gap-3">
-                <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 shrink-0">
-                  <BookOpen className="h-4 w-4 text-primary" />
-                </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-base font-semibold">New here? Start with Why It Matters</p>
-                  <p className="text-sm mt-0.5">Optional reading on why validating ideas, problems, and solutions is worth the time.</p>
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="h-4 w-4 text-tertiary shrink-0" />
+                    <p className="text-base font-semibold">New here? Start with Why It Matters</p>
+                  </div>
+                  <p className="text-base mt-2">Optional reading on why validating ideas, problems, and solutions is worth the time.</p>
                 </div>
                 <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
               </CardContent>
@@ -61,12 +61,12 @@ export default function DashboardPage() {
           <Link href="/self-discovery" className="flex-1 min-w-0 flex">
             <Card className="hover:shadow-md transition-shadow w-full">
               <CardContent className="p-4 h-full flex items-center gap-3">
-                <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-teal-700/10 shrink-0">
-                  <Compass className="h-4 w-4 text-teal-700" />
-                </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-base font-semibold">Explore Self Discovery</p>
-                  <p className="text-sm mt-0.5">Surface interests, skills, and experiences that point you toward problems worth solving.</p>
+                  <div className="flex items-center gap-2">
+                    <Compass className="h-4 w-4 text-tertiary shrink-0" />
+                    <p className="text-base font-semibold">Explore Self Discovery</p>
+                  </div>
+                  <p className="text-base mt-2">Surface interests, skills, and experiences that point you toward problems worth solving.</p>
                 </div>
                 <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
               </CardContent>
@@ -89,10 +89,10 @@ export default function DashboardPage() {
       <div className={cn("flex gap-4 flex-1 min-h-0", isWide ? "flex-row" : "flex-col")}>
         {/* Left column: stat cards stacked vertically */}
         <div className={cn("flex shrink-0", isWide ? "flex-col gap-3 w-56" : "grid grid-cols-2 gap-3")}>
-          <StageCard icon={Target} title="Problems" value={problems.length} href="/problems" color="blue" />
-          <StageCard icon={CheckCircle2} title="Validated Problems" value={validatedProblems.length} href="/problems" color="green" />
-          <StageCard icon={Lightbulb} title="Solutions" value={solutions.length} href="/solutions" color="purple" />
-          <StageCard icon={CheckCircle2} title="Validated Solutions" value={validatedSolutions.length} href="/solutions" color="green" />
+          <StageCard icon={Target} title="Problems" value={problems.length} href="/problems" color="tertiary" />
+          <StageCard icon={CheckCircle2} title="Validated Problems" value={validatedProblems.length} href="/problems" color="tertiary" />
+          <StageCard icon={Lightbulb} title="Solutions" value={solutions.length} href="/solutions" color="tertiary" />
+          <StageCard icon={CheckCircle2} title="Validated Solutions" value={validatedSolutions.length} href="/solutions" color="tertiary" />
         </div>
 
         {/* Right column: toggleable problems / solutions table */}
@@ -167,11 +167,14 @@ function StageCard({
   color: string
 }) {
   const bgMap: Record<string, string> = {
-    teal: "bg-teal-700",
+    teal: "bg-secondary-brand",
     blue: "bg-blue-900",
     indigo: "bg-indigo-800",
     purple: "bg-violet-800",
-    green: "bg-green-800",
+    green: "bg-success",
+    tertiary: "bg-tertiary",
+    primary: "bg-primary",
+    quaternary: "bg-quaternary",
   }
 
   return (
