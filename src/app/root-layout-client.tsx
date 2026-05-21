@@ -4,7 +4,7 @@ import React from "react"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import { Settings, HelpCircle, NotebookText, Compass, Map, User, UserCircle } from "lucide-react"
+import { Settings, HelpCircle, NotebookText, Compass, Map, User, UserCircle, ShieldCheck } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 import type { AvatarColor } from "@/store/settings-model"
@@ -74,6 +74,19 @@ function getCrumbs(pathname: string): Crumb[] {
   }
   if (first === "next-steps") {
     crumbs.push({ label: "Next Steps" })
+    return crumbs
+  }
+  if (first === "admin") {
+    if (segments.length === 1) {
+      crumbs.push({ label: "Admin" })
+      return crumbs
+    }
+    crumbs.push({ label: "Admin", href: "/admin" })
+    if (second === "users" && third) {
+      crumbs.push({ label: "User" })
+    } else if (second) {
+      crumbs.push({ label: second })
+    }
     return crumbs
   }
   if (first === "problems") {
@@ -368,6 +381,22 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             {headerTitle}
           </div>
           <div className="flex items-center gap-2 shrink-0">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="on-primary"
+                  size="sm"
+                  className={cn("h-8 gap-2", pathname.startsWith("/admin") && "bg-secondary-brand border-secondary-brand text-secondary-brand-foreground")}
+                  asChild
+                >
+                  <Link href="/admin" aria-label="Admin panel">
+                    <ShieldCheck className="h-4 w-4" />
+                    <span className="hidden md:inline">Admin panel</span>
+                  </Link>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Admin panel</TooltipContent>
+            </Tooltip>
             <div className="hidden md:block">
               <TeamAvatars />
             </div>
@@ -467,6 +496,22 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                 {headerTitle}
               </div>
               <div className="flex items-center gap-2 shrink-0 pr-10">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="on-primary"
+                      size="sm"
+                      className={cn("h-8 gap-2", pathname.startsWith("/admin") && "bg-secondary-brand border-secondary-brand text-secondary-brand-foreground")}
+                      asChild
+                    >
+                      <Link href="/admin" aria-label="Admin panel" onClick={() => setTopNavOpen(false)}>
+                        <ShieldCheck className="h-4 w-4" />
+                        <span className="hidden md:inline">Admin panel</span>
+                      </Link>
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>Admin panel</TooltipContent>
+                </Tooltip>
                 <div className="hidden md:block">
                   <TeamAvatars />
                 </div>
