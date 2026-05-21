@@ -1,9 +1,10 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { Pencil, Plus, Search, X, ChevronRight, ChevronDown } from "lucide-react"
-import type { RootState } from "@/store"
+import { toast } from "sonner"
+import type { AppDispatch, RootState } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
@@ -117,11 +118,14 @@ export function DimensionPicker({
   label?: string
   readOnly?: boolean
 }) {
+  const dispatch = useDispatch<AppDispatch>()
   const customByColumn = useSelector((s: RootState) => s.customDimensionItems.byColumn)
   const triggers = useSelector((s: RootState) => s.selfDiscoveryItems.items)
   const column = dimensionColumns.find((c) => c.id === columnId)
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
+  const [newLabel, setNewLabel] = useState("")
+  const canAddCustom = columnId !== "you"
 
   const customItems = useMemo<DimensionItem[]>(() => {
     const items = customByColumn[columnId] ?? []
@@ -159,6 +163,15 @@ export function DimensionPicker({
 
   const removeOne = (id: string) => {
     onChange(ids.filter((x) => x !== id))
+  }
+
+  const addCustom = async () => {
+    const trimmed = newLabel.trim()
+    if (!trimmed || !canAddCustom) return
+    const item = await dispatch.customDimensionItems.create({ columnId, label: trimmed })
+    onChange([...ids, item.id])
+    toast.success(`Added: ${item.label}`)
+    setNewLabel("")
   }
 
   const columnTitle = column?.title ?? "Items"
@@ -250,6 +263,32 @@ export function DimensionPicker({
               className="h-8 pl-8 text-sm"
             />
           </div>
+          {canAddCustom && (
+            <div className="flex gap-2">
+              <Input
+                value={newLabel}
+                onChange={(e) => setNewLabel(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && newLabel.trim()) {
+                    e.preventDefault()
+                    addCustom()
+                  }
+                }}
+                placeholder={`Add your own ${columnTitle.toLowerCase().replace(/s$/, "")}...`}
+                className="h-8 text-sm"
+              />
+              <Button
+                type="button"
+                size="sm"
+                onClick={addCustom}
+                disabled={!newLabel.trim()}
+                className="gap-1.5 shrink-0"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                Add
+              </Button>
+            </div>
+          )}
           <ScrollArea className="h-80">
             <div className="flex flex-col pr-2">
               {filtered.length === 0 ? (
