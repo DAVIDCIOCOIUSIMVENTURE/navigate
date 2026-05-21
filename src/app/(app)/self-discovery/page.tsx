@@ -67,7 +67,7 @@ function CategorySection({
             {count} {count === 1 ? "item" : "items"}
           </span>
           <Button variant="outline" size="sm" className="bg-white gap-1.5" onClick={() => router.push(ctaUrl)}>
-            <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
+            <Pencil className="h-3 w-3" aria-hidden="true" />
             Edit
           </Button>
         </div>

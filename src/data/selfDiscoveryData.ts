@@ -22,13 +22,13 @@ export interface SelfDiscoveryCategory {
 }
 
 export const SELF_DISCOVERY_CATEGORY_ICON_BG: Record<string, string> = {
-  "personal-interests": "bg-secondary-brand",
-  "knowledge": "bg-secondary-brand",
-  "skills-expertise": "bg-secondary-brand",
-  "work-experience": "bg-secondary-brand",
-  "social-impact": "bg-secondary-brand",
-  "audience": "bg-secondary-brand",
-  "other": "bg-secondary-brand",
+  "personal-interests": "bg-tertiary",
+  "knowledge": "bg-tertiary",
+  "skills-expertise": "bg-tertiary",
+  "work-experience": "bg-tertiary",
+  "social-impact": "bg-tertiary",
+  "audience": "bg-tertiary",
+  "other": "bg-tertiary",
 }
 
 export const SELF_DISCOVERY_CATEGORIES: SelfDiscoveryCategory[] = [
