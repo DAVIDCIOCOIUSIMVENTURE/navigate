@@ -1,6 +1,9 @@
 "use client"
 
 import { useState } from "react"
+import { Textarea } from "@/components/ui/textarea"
+import { Plus, Trash2 } from "lucide-react"
+import type { ReflectionCapture } from "@/types/reflection"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { useDispatch, useSelector } from "react-redux"
@@ -91,15 +94,43 @@ function HubSection({
   )
 }
 
-function ReflectionSection({ problemId }: { problemId: number }) {
+function ReflectionSection({ problemId, readOnly = false }: { problemId: number; readOnly?: boolean }) {
+  const dispatch = useDispatch<AppDispatch>()
   const reflection = useSelector((state: RootState) =>
     state.problems.problems.find((p) => p.id === problemId)?.reflection
   )
+
   if (!reflection) return null
   const lens = getReflectLens(reflection.lensId)
   if (!lens) return null
-  const filledPrompts = reflection.prompts.filter((p) => p.answers.length > 0)
-  if (filledPrompts.length === 0) return null
+
+  const editablePrompts = lens.prompts.filter(
+    (p) => !p.contextOnly && p.role !== "customers"
+  )
+
+  function getAnswers(promptId: string): string[] {
+    const captured = reflection!.prompts.find((p) => p.promptId === promptId)
+    return captured?.answers ?? []
+  }
+
+  function commit(promptId: string, nextAnswers: string[]) {
+    if (!lens || !reflection) return
+    const cleaned = nextAnswers.map((a) => a.trim()).filter((a) => a.length > 0)
+    const others = reflection.prompts.filter((p) => p.promptId !== promptId)
+    const nextPrompts: ReflectionCapture["prompts"] = [...others]
+    if (cleaned.length > 0) {
+      nextPrompts.push({ promptId, answers: cleaned })
+    }
+    dispatch.problems.update({
+      id: problemId,
+      patch: {
+        reflection: {
+          ...reflection,
+          prompts: nextPrompts,
+        },
+      },
+    })
+  }
 
   const LensIcon = lens.icon
   return (
@@ -116,28 +147,110 @@ function ReflectionSection({ problemId }: { problemId: number }) {
           >
             <LensIcon className="h-4 w-4 text-white" />
           </div>
-          <p className="text-base font-medium">{lens.title}</p>
+          <p className="text-base font-medium flex-1">{lens.title}</p>
         </div>
         <div className="flex flex-col gap-4">
-          {filledPrompts.map((p) => {
-            const prompt = lens.prompts.find((lp) => lp.id === p.promptId)
-            if (!prompt) return null
-            return (
-              <div key={p.promptId} className="flex flex-col gap-1.5">
-                <p className="text-base font-semibold">{prompt.question}</p>
-                <ul className="list-disc pl-5 space-y-1">
-                  {p.answers.map((answer, i) => (
-                    <li key={i} className="text-base leading-relaxed">
-                      {answer}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )
-          })}
+          {editablePrompts.map((prompt) => (
+            <ReflectionPromptCard
+              key={prompt.id}
+              prompt={prompt}
+              answers={getAnswers(prompt.id)}
+              readOnly={readOnly}
+              onChange={(next) => commit(prompt.id, next)}
+            />
+          ))}
         </div>
       </div>
     </HubSection>
+  )
+}
+
+function ReflectionPromptCard({
+  prompt,
+  answers,
+  readOnly,
+  onChange,
+}: {
+  prompt: { id: string; question: string; multipleAllowed: boolean; role?: "problems" | "customers" }
+  answers: string[]
+  readOnly: boolean
+  onChange: (next: string[]) => void
+}) {
+  const slots = answers.length > 0 ? answers : [""]
+
+  function updateSlot(index: number, value: string) {
+    const next = [...slots]
+    next[index] = value
+    onChange(next)
+  }
+
+  function addSlot() {
+    onChange([...slots, ""])
+  }
+
+  function removeSlot(index: number) {
+    const next = slots.filter((_, i) => i !== index)
+    onChange(next)
+  }
+
+  if (readOnly) {
+    if (answers.length === 0) return null
+    return (
+      <div className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-3 text-white">
+        <p className="text-base font-semibold">{prompt.question}</p>
+        <ul className="list-disc pl-5 space-y-1">
+          {answers.map((answer, i) => (
+            <li key={i} className="text-base leading-relaxed">
+              {answer}
+            </li>
+          ))}
+        </ul>
+      </div>
+    )
+  }
+
+  return (
+    <div className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-3">
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-base font-semibold text-white">{prompt.question}</p>
+        {prompt.multipleAllowed && (
+          <Button
+            type="button"
+            size="sm"
+            onClick={addSlot}
+            className="gap-1.5 shrink-0 bg-white text-foreground hover:bg-white/90"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            Add another answer
+          </Button>
+        )}
+      </div>
+      <div className="flex flex-col gap-2">
+        {slots.map((answer, i) => (
+          <div key={i} className="flex items-start gap-2">
+            <Textarea
+              value={answer}
+              onChange={(e) => updateSlot(i, e.target.value)}
+              placeholder="Type your answer."
+              aria-label={prompt.multipleAllowed ? `Answer ${i + 1}` : "Your answer"}
+              className="flex-1 text-base bg-white border-white text-foreground placeholder:text-muted-foreground min-h-[4rem]"
+            />
+            {prompt.multipleAllowed && slots.length > 1 && (
+              <Button
+                variant="ghost"
+                size="icon"
+                type="button"
+                onClick={() => removeSlot(i)}
+                aria-label="Remove this answer"
+                className="text-white hover:bg-white/10 hover:text-white"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
   )
 }
 
@@ -413,7 +526,7 @@ export function ProblemHubContent({
         <CoreProblemStrategy readOnly={readOnly} />
       </HubSection>
 
-      <ReflectionSection problemId={problemId} />
+      <ReflectionSection problemId={problemId} readOnly={readOnly} />
 
       <HubSection icon={Users} label="Customer" openInStep={stepHref("customer")}>
         <CustomerStrategy readOnly={readOnly} />
