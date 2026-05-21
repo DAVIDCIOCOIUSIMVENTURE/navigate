@@ -30,6 +30,7 @@ import {
   ChevronDown,
   ClipboardCheck,
   Clock,
+  HelpCircle,
   Pencil,
   Plus,
   Trash2,
@@ -708,15 +709,6 @@ function PromptsPanel({
 
   const leftColumn = (
     <div className="flex flex-col gap-4 pr-3">
-      <div className="flex items-center gap-3">
-        <div
-          className={cn("flex items-center justify-center w-10 h-10 rounded-lg shrink-0", lens.tileColor)}
-          aria-hidden="true"
-        >
-          <Icon className="h-5 w-5 text-white" />
-        </div>
-        <h3 className="text-xl font-bold leading-tight">{lens.title}</h3>
-      </div>
       {chosenAnchor && !isAnchorPrompt && (
         <div className="flex items-start gap-2 rounded-md border border-yellow-600/30 bg-yellow-600/10 px-3 py-2">
           <Icon className="h-4 w-4 text-yellow-700 shrink-0 mt-0.5" aria-hidden="true" />
@@ -726,7 +718,6 @@ function PromptsPanel({
           </div>
         </div>
       )}
-      <p className="text-lg font-semibold leading-snug">{prompt.question}</p>
       {prompt.helperText && (
         <p className="text-base leading-relaxed">{prompt.helperText}</p>
       )}
@@ -745,8 +736,27 @@ function PromptsPanel({
     </div>
   )
 
+  const headerRow = (
+    <div className="flex items-center gap-3 shrink-0 flex-wrap">
+      <div className="flex items-center gap-3">
+        <div
+          className={cn("flex items-center justify-center w-10 h-10 rounded-lg shrink-0", lens.tileColor)}
+          aria-hidden="true"
+        >
+          <Icon className="h-5 w-5 text-white" />
+        </div>
+        <h3 className="text-xl font-bold leading-tight">{lens.title}</h3>
+      </div>
+      <div className="flex items-center gap-2 pl-3 ml-3 border-l border-border">
+        <HelpCircle className="h-5 w-5 text-secondary-brand shrink-0" aria-hidden="true" />
+        <p className="text-lg font-semibold leading-snug">{prompt.question}</p>
+      </div>
+    </div>
+  )
+
   return (
     <div className={cn("flex flex-col gap-6 w-full", isWide && "flex-1 min-h-0")}>
+      {headerRow}
       <div
         className={cn(
           "flex gap-6",
@@ -754,14 +764,14 @@ function PromptsPanel({
         )}
       >
         {isWide ? (
-          <ScrollArea className="w-1/3 shrink-0 min-h-0">
+          <ScrollArea className="w-1/2 shrink-0 min-h-0">
             {leftColumn}
           </ScrollArea>
         ) : (
           <div className="w-full">{leftColumn}</div>
         )}
         {isWide ? (
-          <ScrollArea className="flex-1 min-h-0">
+          <ScrollArea className="w-1/2 shrink-0 min-h-0">
             <div className="pr-3">{rightColumn}</div>
           </ScrollArea>
         ) : (
