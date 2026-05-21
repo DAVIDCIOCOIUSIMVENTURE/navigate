@@ -1,15 +1,13 @@
 "use client"
 
-import { useState } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import { Plus, Trash2 } from "lucide-react"
 import type { ReflectionCapture } from "@/types/reflection"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch, useSelector, useStore } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
 import { Button } from "@/components/ui/button"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
 import { CoreProblemStrategy } from "@/components/problem-strategies/core-problem-strategy"
 import { CustomerStrategy } from "@/components/problem-strategies/customer-strategy"
@@ -17,7 +15,7 @@ import { RefinementStrategy } from "@/components/problem-strategies/refinement-s
 import { ExistingSolutionsStrategy } from "@/components/problem-strategies/existing-solutions-strategy"
 import { ValidationStrategy } from "@/components/problem-strategies/validation-strategy"
 import {
-  AlertCircle, ArrowRight, ChevronDown, CheckCircle2, Copy, ExternalLink,
+  AlertCircle, ArrowRight, CheckCircle2, Copy, ExternalLink,
   GitFork, HelpCircle, Lightbulb, MessageSquare, RotateCcw, Search, ShieldCheck,
   Users, XCircle, Pencil,
 } from "lucide-react"
@@ -48,54 +46,45 @@ function IconTile({ icon: Icon, tone, size = "md" }: { icon: LucideIcon; tone: S
 }
 
 function HubSection({
-  icon, label, defaultOpen = true, openInStep, children,
+  icon, label, openInStep, children,
 }: {
   icon: LucideIcon
   label: string
+  /**
+   * Retained for backwards compatibility with call sites. Sections are no longer
+   * collapsible, so the flag is ignored.
+   */
   defaultOpen?: boolean
   openInStep?: string
   children: React.ReactNode
 }) {
-  const [open, setOpen] = useState(defaultOpen)
   const router = useRouter()
 
   return (
     <div className="rounded-xl border bg-muted/30 overflow-hidden">
-      <Collapsible open={open} onOpenChange={setOpen}>
-        <div className="flex items-center gap-3 p-4">
-          <CollapsibleTrigger className="flex flex-1 items-center gap-2.5 text-left">
-            <IconTile icon={icon} tone="tertiary" size="sm" />
-            <h3 className="flex-1 font-semibold text-base">{label}</h3>
-            <ChevronDown
-              className={cn("h-4 w-4 text-muted-foreground transition-transform", open && "rotate-180")}
-              aria-hidden="true"
-            />
-          </CollapsibleTrigger>
-          {openInStep && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 gap-1 text-sm hover:text-foreground"
-              onClick={(e) => {
-                e.stopPropagation()
-                router.push(openInStep)
-              }}
-            >
-              <ExternalLink className="h-3 w-3" />
-              Open step
-            </Button>
-          )}
-        </div>
-        <CollapsibleContent>
-          <div className="px-4 pb-4">{children}</div>
-        </CollapsibleContent>
-      </Collapsible>
+      <div className="flex items-center gap-3 p-4">
+        <IconTile icon={icon} tone="tertiary" size="sm" />
+        <h3 className="flex-1 font-semibold text-base">{label}</h3>
+        {openInStep && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 gap-1 text-sm hover:text-foreground"
+            onClick={() => router.push(openInStep)}
+          >
+            <ExternalLink className="h-3 w-3" />
+            Open step
+          </Button>
+        )}
+      </div>
+      <div className="px-4 pb-4">{children}</div>
     </div>
   )
 }
 
 function ReflectionSection({ problemId, readOnly = false }: { problemId: number; readOnly?: boolean }) {
   const dispatch = useDispatch<AppDispatch>()
+  const store = useStore<RootState>()
   const reflection = useSelector((state: RootState) =>
     state.problems.problems.find((p) => p.id === problemId)?.reflection
   )
@@ -114,18 +103,18 @@ function ReflectionSection({ problemId, readOnly = false }: { problemId: number;
   }
 
   function commit(promptId: string, nextAnswers: string[]) {
-    if (!lens || !reflection) return
-    const cleaned = nextAnswers.map((a) => a.trim()).filter((a) => a.length > 0)
-    const others = reflection.prompts.filter((p) => p.promptId !== promptId)
-    const nextPrompts: ReflectionCapture["prompts"] = [...others]
-    if (cleaned.length > 0) {
-      nextPrompts.push({ promptId, answers: cleaned })
-    }
+    const current = store.getState().problems.problems.find((p) => p.id === problemId)?.reflection
+    if (!current) return
+    const others = current.prompts.filter((p) => p.promptId !== promptId)
+    const nextPrompts: ReflectionCapture["prompts"] =
+      nextAnswers.length > 0
+        ? [...others, { promptId, answers: nextAnswers }]
+        : others
     dispatch.problems.update({
       id: problemId,
       patch: {
         reflection: {
-          ...reflection,
+          ...current,
           prompts: nextPrompts,
         },
       },
@@ -134,11 +123,7 @@ function ReflectionSection({ problemId, readOnly = false }: { problemId: number;
 
   const LensIcon = lens.icon
   return (
-    <HubSection
-      icon={MessageSquare}
-      label={`Reflection: ${lens.title}`}
-      defaultOpen={false}
-    >
+    <HubSection icon={MessageSquare} label={`Reflection: ${lens.title}`}>
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <div
