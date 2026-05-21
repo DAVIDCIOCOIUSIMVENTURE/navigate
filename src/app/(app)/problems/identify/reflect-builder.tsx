@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useMemo, useState, type ReactNode } from "react"
-import { useRouter } from "next/navigation"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
 import { Card, CardContent } from "@/components/ui/card"
@@ -45,6 +44,7 @@ import { LifeExperiencesPicker } from "@/components/reflect/life-experiences-pic
 import { WorkContextPicker } from "@/components/reflect/work-context-picker"
 import { IdentifyDimensionPicker } from "@/components/reflect/identify-dimension-picker"
 import { useResolveOrCreate } from "@/lib/dimension-labels"
+import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
 import type { ReflectionCapture } from "@/types/reflection"
 import type { ReflectStep } from "@/store/reflect-sessions-model"
 
@@ -800,11 +800,12 @@ function PromptsPanel({
 function ReviewPanel({
   onBack,
   onJumpToPrompt,
+  onKeepIdentifying,
 }: {
   onBack: () => void
   onJumpToPrompt: (promptId: string) => void
+  onKeepIdentifying: () => void
 }) {
-  const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const resolveOrCreate = useResolveOrCreate()
   const {
@@ -818,6 +819,8 @@ function ReviewPanel({
   const [saving, setSaving] = useState(false)
   const [saveDialogOpen, setSaveDialogOpen] = useState(false)
   const [dialogTitle, setDialogTitle] = useState("")
+  const [nextStepDialogOpen, setNextStepDialogOpen] = useState(false)
+  const [lastSavedProblemId, setLastSavedProblemId] = useState<number | null>(null)
 
   const anchorPromptId = useMemo(() => getAnchorPromptId(lens), [lens])
   const problemsPromptId = useMemo(() => getRolePromptId(lens, "problems"), [lens])
@@ -889,7 +892,8 @@ function ReviewPanel({
       })
       clearSession()
       setSaveDialogOpen(false)
-      router.push(`/problems/${newProblem.id}/validation/introduction`)
+      setLastSavedProblemId(newProblem.id)
+      setNextStepDialogOpen(true)
     } finally {
       setSaving(false)
     }
@@ -1198,6 +1202,13 @@ function ReviewPanel({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ProblemSavedDialog
+        open={nextStepDialogOpen}
+        onOpenChange={setNextStepDialogOpen}
+        problemId={lastSavedProblemId}
+        onKeepIdentifying={onKeepIdentifying}
+      />
     </div>
   )
 }
@@ -1317,6 +1328,11 @@ export function ReflectBuilder({ resetRef }: { resetRef?: React.MutableRefObject
           const idx = lens.prompts.findIndex((p) => p.id === promptId)
           setPromptIndex(idx >= 0 ? idx : 0)
           setStep("prompts")
+        }}
+        onKeepIdentifying={() => {
+          setStep("pick")
+          setLensId(null)
+          setPromptIndex(0)
         }}
       />
     )

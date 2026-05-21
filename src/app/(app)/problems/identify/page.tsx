@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect, useMemo, useDeferredValue, useCallback, type ReactNode } from "react"
-import { useRouter, usePathname } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import type { IdentifyMode } from "@/store/settings-model"
@@ -57,6 +57,7 @@ import { AddCustomItemDialog } from "@/components/add-custom-item-dialog"
 import { ManageCustomItemsDialog } from "@/components/manage-custom-items-dialog"
 import { EditableLeafItem } from "@/components/editable-leaf-item"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
+import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
 import { cn } from "@/lib/utils"
 import { useContainerSize } from "@/context/container-size-context"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
@@ -928,7 +929,6 @@ function ProblemBuilder({
 }
 
 export default function IdentifyPage() {
-  const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const [mounted, setMounted] = useState(false)
   useEffect(() => { setMounted(true) }, [])
@@ -1542,36 +1542,11 @@ export default function IdentifyPage() {
         />
       )}
 
-      <Dialog open={nextStepDialogOpen} onOpenChange={setNextStepDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Problem Saved</DialogTitle>
-            <DialogDescription>
-              Your problem has been saved. What would you like to do next?
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex flex-col gap-3 pt-4">
-            <Button
-              onClick={() => {
-                setNextStepDialogOpen(false)
-                if (lastSavedProblemId !== null) {
-                  router.push(`/problems/${lastSavedProblemId}/validation/introduction`)
-                }
-              }}
-              className="gap-2"
-            >
-              <ArrowRight className="h-4 w-4" />
-              Continue to Problem Validation
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => setNextStepDialogOpen(false)}
-            >
-              Keep Identifying
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <ProblemSavedDialog
+        open={nextStepDialogOpen}
+        onOpenChange={setNextStepDialogOpen}
+        problemId={lastSavedProblemId}
+      />
     </div>
   )
 
