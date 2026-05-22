@@ -12,6 +12,7 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbP
 import { navigationItems } from "@/config/navigation"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { JournalPanel } from "@/components/journal-panel"
@@ -286,39 +287,42 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     </>
   )
 
+  const activePanel = guidanceOpen ? "guidance" : journalOpen ? "journal" : ""
+  const handlePanelToggle = (value: string) => {
+    if (value === "journal") {
+      if (!journalOpen) toggleJournal()
+    } else if (value === "guidance") {
+      if (!guidanceOpen) toggleGuidance()
+    } else {
+      if (journalOpen) toggleJournal()
+      if (guidanceOpen) toggleGuidance()
+    }
+  }
   const panelToggles = (
-    <>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant={journalOpen ? "default" : "on-primary"}
-            size="icon"
-            className="h-8 w-8"
-            onClick={toggleJournal}
-            aria-pressed={journalOpen}
-            aria-label="Toggle journal"
-          >
-            <NotebookText />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Journal</TooltipContent>
-      </Tooltip>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant={guidanceOpen ? "default" : "on-primary"}
-            size="icon"
-            className="h-8 w-8"
-            onClick={toggleGuidance}
-            aria-pressed={guidanceOpen}
-            aria-label="Toggle guidance"
-          >
-            <HelpCircle />
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent>Guidance</TooltipContent>
-      </Tooltip>
-    </>
+    <ToggleGroup
+      type="single"
+      value={activePanel}
+      onValueChange={handlePanelToggle}
+      size="sm"
+      className="shrink-0 bg-card border-border"
+    >
+      <ToggleGroupItem
+        value="journal"
+        aria-label="Toggle journal"
+        title="Journal"
+        className="gap-1.5 px-2 rounded-none bg-card hover:bg-card/80 data-[state=on]:!bg-primary data-[state=on]:!text-primary-foreground data-[state=on]:shadow-sm data-[state=on]:hover:!bg-primary/90"
+      >
+        <NotebookText className="h-3.5 w-3.5" />
+      </ToggleGroupItem>
+      <ToggleGroupItem
+        value="guidance"
+        aria-label="Toggle guidance"
+        title="Guidance"
+        className="gap-1.5 px-2 rounded-none bg-card hover:bg-card/80 data-[state=on]:!bg-primary data-[state=on]:!text-primary-foreground data-[state=on]:shadow-sm data-[state=on]:hover:!bg-primary/90"
+      >
+        <HelpCircle className="h-3.5 w-3.5" />
+      </ToggleGroupItem>
+    </ToggleGroup>
   )
 
   const headerActions = (
@@ -410,7 +414,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         <GuidanceProvider onOpen={openGuidance}>
           {sidePanelOpen ? (
             <ResizablePanelGroup direction="horizontal" className="flex-1 min-h-0">
-              <ResizablePanel defaultSize={70} minSize={40}>
+              <ResizablePanel defaultSize={60} minSize={40}>
                 <div className="h-full bg-background overflow-y-auto">
                   {isFocusFlow ? (
                     <div className="flex min-h-full w-full flex-col">
@@ -432,7 +436,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                 </div>
               </ResizablePanel>
               <ResizableHandle withHandle />
-              <ResizablePanel defaultSize={30} minSize={20} maxSize={60}>
+              <ResizablePanel defaultSize={40} minSize={40} maxSize={60}>
                 {guidanceOpen ? (
                   <GuidancePanel onClose={closeGuidance} initialTopic={guidanceTopic} />
                 ) : (
