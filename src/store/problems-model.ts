@@ -22,7 +22,6 @@ export type Problem = {
   you: string[]
   source: ProblemSource
   existingSolutions: ExistingSolutionItem[]
-  emotionalImpact: string[]
   validationAssessment: ValidationAssessment
   validationStatus: ValidationStatus
   validationReason: string
@@ -32,7 +31,7 @@ export type Problem = {
   reflection: ReflectionCapture | null
 }
 
-export type ProblemPatch = Partial<Pick<Problem, "description" | "customers" | "contexts" | "problems" | "you" | "existingSolutions" | "emotionalImpact" | "validationAssessment" | "validationStatus" | "validationReason" | "contextWhen" | "segmentSize" | "customerDescription" | "reflection">>
+export type ProblemPatch = Partial<Pick<Problem, "description" | "customers" | "contexts" | "problems" | "you" | "existingSolutions" | "validationAssessment" | "validationStatus" | "validationReason" | "contextWhen" | "segmentSize" | "customerDescription" | "reflection">>
 
 /**
  * Build a short summary label for a Problem. Field values are ids, so the
@@ -142,7 +141,6 @@ export const problems = createModel<RootModel>()({
         you: payload.you ?? [],
         source: payload.source,
         existingSolutions: payload.existingSolutions ?? [],
-        emotionalImpact: payload.emotionalImpact ?? [],
         validationAssessment: payload.validationAssessment ?? DEFAULT_VALIDATION_ASSESSMENT,
         validationStatus: payload.validationStatus ?? "unvalidated",
         validationReason: payload.validationReason ?? "",

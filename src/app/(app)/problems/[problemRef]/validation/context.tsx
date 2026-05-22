@@ -46,8 +46,6 @@ type ProblemContextValue = {
   setExistingSolutions: (val: ExistingSolutionItem[]) => void
   contextWhen: string
   setContextWhen: (val: string) => void
-  emotionalImpact: string[]
-  setEmotionalImpact: (val: string[]) => void
   status: ValidationStatus
   setStatus: (val: ValidationStatus) => void
   reason: string
@@ -57,6 +55,7 @@ type ProblemContextValue = {
   setHowOften: (patch: Partial<ValidationMetric>) => void
   setWorthToThem: (patch: Partial<ValidationMetric>) => void
   setObtainableShare: (val: number) => void
+  setEmotionalImpact: (patch: Partial<ValidationMetric>) => void
   setCostOfSwitching: (patch: Partial<ValidationMetric>) => void
   setSolutionEffectiveness: (patch: Partial<ValidationMetric>) => void
   setCompetitorSize: (patch: Partial<ValidationMetric>) => void
@@ -104,7 +103,6 @@ export function ProblemProvider({
   const segmentSize = problem?.segmentSize ?? null
   const customerDescription = problem?.customerDescription ?? ""
   const existingSolutions = problem?.existingSolutions ?? []
-  const emotionalImpact = problem?.emotionalImpact ?? []
   const storedAssessment = problem?.validationAssessment
   const validationAssessment: ValidationAssessment = useMemo(() => ({
     ...DEFAULT_VALIDATION_ASSESSMENT,
@@ -131,13 +129,6 @@ export function ProblemProvider({
   const setExistingSolutions = useCallback(
     (val: ExistingSolutionItem[]) => {
       dispatch.problems.update({ id: problemId, patch: { existingSolutions: val } })
-    },
-    [dispatch, problemId]
-  )
-
-  const setEmotionalImpact = useCallback(
-    (val: string[]) => {
-      dispatch.problems.update({ id: problemId, patch: { emotionalImpact: val } })
     },
     [dispatch, problemId]
   )
@@ -216,6 +207,21 @@ export function ProblemProvider({
           validationAssessment: {
             ...validationAssessment,
             obtainableShare: val,
+          },
+        },
+      })
+    },
+    [dispatch, problemId, validationAssessment]
+  )
+
+  const setEmotionalImpact = useCallback(
+    (patch: Partial<ValidationMetric>) => {
+      dispatch.problems.update({
+        id: problemId,
+        patch: {
+          validationAssessment: {
+            ...validationAssessment,
+            emotionalImpact: { ...validationAssessment.emotionalImpact, ...patch },
           },
         },
       })
@@ -327,7 +333,6 @@ export function ProblemProvider({
         customerDescription, setCustomerDescription,
         existingSolutions, setExistingSolutions,
         contextWhen, setContextWhen,
-        emotionalImpact, setEmotionalImpact,
         status, setStatus,
         reason, setReason,
         validationAssessment,
@@ -335,6 +340,7 @@ export function ProblemProvider({
         setHowOften,
         setWorthToThem,
         setObtainableShare,
+        setEmotionalImpact,
         setCostOfSwitching,
         setSolutionEffectiveness,
         setCompetitorSize,
@@ -362,6 +368,7 @@ export const NAV_ITEMS = [
   { label: "Choose your refinement method", path: "choose-refinement" },
   { label: "Refine your problem", path: "refine" },
   { label: "Explore existing solutions & shortcomings", path: "existing-solutions" },
+  { label: "Emotional impact on the customer", path: "emotional-impact" },
   { label: "How much is it worth", path: "worth" },
   { label: "Size the market", path: "market" },
   { label: "Assess the competition", path: "competition" },

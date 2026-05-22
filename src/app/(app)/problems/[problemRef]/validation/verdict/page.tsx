@@ -31,7 +31,7 @@ export default function VerdictPage() {
                 You have done the hard work of sizing the market and reading the competitive landscape. Now step back and decide what those numbers actually mean for this problem. The point of a verdict is not to commit forever, it is to be honest with yourself today so you can spend the next month on something worth your time.
               </p>
               <p>
-                A useful verdict is grounded in evidence, not enthusiasm. Look across all six factors together: a single weak signal is rarely a deal-breaker, but two or three pointing the same direction usually is. Capture your reasoning in the notes so future-you (or a teammate) can see why you decided what you did, and revise the verdict if new evidence comes in.
+                A useful verdict is grounded in evidence, not enthusiasm. Look across all seven factors together: a single weak signal is rarely a deal-breaker, but two or three pointing the same direction usually is. Capture your reasoning in the notes so future-you (or a teammate) can see why you decided what you did, and revise the verdict if new evidence comes in.
               </p>
             </div>
             <img
@@ -42,7 +42,7 @@ export default function VerdictPage() {
           </div>
           <h3 className="mt-4 text-xl font-bold text-foreground">How to weigh the factors together</h3>
           <p>
-            The six factors split naturally into two halves. The market sizing inputs (how many, how often, how much) tell you whether the prize is worth pursuing. The competitive inputs (cost of switching, existing solution effectiveness, competitor size) tell you whether you can realistically capture it. A strong opportunity needs at least decent scores on both halves: a huge market you cannot win is no better than a small market you can dominate.
+            The seven factors split into three groups. The market sizing inputs (how many, how often, how much) tell you whether the prize is worth pursuing. Emotional impact tells you how badly the customer wants the pain to stop, which often unlocks willingness to pay that the cash number alone misses. The competitive inputs (cost of switching, existing solution effectiveness, competitor size) tell you whether you can realistically capture the market. A strong opportunity needs at least decent scores across the groups: a huge market you cannot win is no better than a small market you can dominate, and a market with no emotional pull rarely converts however large it looks.
           </p>
           <p>
             The total addressable market figure is a sanity check, not the verdict. A very large total addressable market with no demonstrated willingness to pay is a mirage, the arithmetic is real but the assumption that customers will hand over that money is not. Equally, a modest total addressable market is fine if willingness to pay is rock-solid and the competitive landscape is friendly.
@@ -59,7 +59,7 @@ export default function VerdictPage() {
               </div>
               <div>
                 <p className="font-semibold text-foreground">Lean Valid: the prize and the path both look clear</p>
-                <p className="text-base">A market in the tens of thousands or more, weekly-or-more frequency, customers already paying for workarounds, low-to-medium switching costs, average-or-worse alternatives, and competitors that are small or distracted. You should be able to point to at least four favourable signals out of six, and any negatives should be ones you can plausibly work around.</p>
+                <p className="text-base">A market in the tens of thousands or more, weekly-or-more frequency, customers already paying for workarounds, a strong emotional pull on the customer, low-to-medium switching costs, average-or-worse alternatives, and competitors that are small or distracted. You should be able to point to at least five favourable signals out of seven, and any negatives should be ones you can plausibly work around.</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -77,7 +77,7 @@ export default function VerdictPage() {
               </div>
               <div>
                 <p className="font-semibold text-foreground">Lean Invalid: the evidence is stacked against pursuing this</p>
-                <p className="text-base">A small or rare market, low willingness to pay, effective incumbents, high switching costs, or any combination thereof. A single bad signal rarely kills a problem, but four or five together usually do. Calling a problem invalid is a feature, not a failure: it frees you to look for a stronger one rather than spend months pushing uphill against the data.</p>
+                <p className="text-base">A small or rare market, low willingness to pay, mild emotional impact, effective incumbents, high switching costs, or any combination thereof. A single bad signal rarely kills a problem, but four or five together usually do. Calling a problem invalid is a feature, not a failure: it frees you to look for a stronger one rather than spend months pushing uphill against the data.</p>
               </div>
             </div>
           </div>
@@ -171,6 +171,7 @@ export default function VerdictPage() {
                       <div>
                         <span className="text-base font-semibold text-foreground">Competitive signals</span>
                         <ul className="mt-1 text-base text-foreground list-disc pl-5 space-y-1">
+                          <li>Emotional impact: <span className="capitalize">{cs.emotionalImpact.level}</span></li>
                           <li>Cost of switching: <span className="capitalize">{cs.costOfSwitching.level}</span></li>
                           <li>Solution effectiveness: <span className="capitalize">{cs.solutionEffectiveness.level}</span></li>
                           <li>Competitor size: <span className="capitalize">{cs.competitorSize.level}</span></li>

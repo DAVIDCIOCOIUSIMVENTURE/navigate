@@ -23,7 +23,6 @@ export type ProblemSummaryData = {
   /** Dimension classification tags (customer segments, contexts, etc.) */
   tags?: ProblemSummaryTag[]
   context?: string
-  emotionalImpact?: string | string[]
   existingSolutions?: ExistingSolutionItem[]
   validationStatus: ValidationStatus
   reason?: string
@@ -161,10 +160,6 @@ export function ProblemSummaryDialog({ open, onOpenChange, data }: ProblemSummar
 
   const hasTags = data.tags?.some((t) => t.ids.length > 0)
 
-  const emotionalImpactText = Array.isArray(data.emotionalImpact)
-    ? data.emotionalImpact.filter(Boolean).join(", ")
-    : data.emotionalImpact ?? ""
-
   const hasExistingSolutions = (data.existingSolutions?.length ?? 0) > 0
   const hasVerdict = data.verdict && Object.values(data.verdict).some((v) => v)
 
@@ -231,16 +226,6 @@ export function ProblemSummaryDialog({ open, onOpenChange, data }: ProblemSummar
                     </li>
                   ))}
                 </ul>
-              </Section>
-            </>
-          )}
-
-          {/* Emotional Impact */}
-          {emotionalImpactText && (
-            <>
-              <Separator />
-              <Section title="Emotional Impact">
-                <p className="text-sm">{emotionalImpactText}</p>
               </Section>
             </>
           )}

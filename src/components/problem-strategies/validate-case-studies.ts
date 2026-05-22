@@ -7,6 +7,7 @@ export type ValidateCaseStudy = {
   howManyPeople: { value: number; detail: string }
   howOften: { value: number; unit: string; detail: string }
   worthToThem: { value: number; unit: string; detail: string }
+  emotionalImpact: { level: "mild" | "moderate" | "strong" | "severe" | "unbearable"; detail: string }
   costOfSwitching: { level: "none" | "low" | "medium" | "high" | "prohibitive"; detail: string }
   solutionEffectiveness: { level: "terrible" | "poor" | "average" | "good" | "excellent"; detail: string }
   competitorSize: { level: "micro" | "small" | "medium" | "large" | "giant"; detail: string }
@@ -32,6 +33,10 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
       value: 20,
       unit: "USD per month",
       detail: "Each email campaign could drive $50-500 in direct sales for a small shop. Businesses were willing to pay $10-30/month, modest individually but massive at scale.",
+    },
+    emotionalImpact: {
+      level: "strong",
+      detail: "Owners hated the BCC-list workaround: a single mistake exposed their entire customer list, made the shop look unprofessional, and left them apologising to angry recipients. Every campaign carried a low-level dread of getting it wrong, which is exactly the kind of recurring anxiety customers will pay a small monthly fee to make disappear.",
     },
     costOfSwitching: {
       level: "none",
@@ -66,6 +71,10 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
       value: 15,
       unit: "USD per user per month",
       detail: "Teams were already paying $10-30/user/month across multiple tools (Trello, Evernote, Google Workspace). Consolidating into one tool did not necessarily cost more, the value was in time saved and reduced complexity.",
+    },
+    emotionalImpact: {
+      level: "severe",
+      detail: "Knowledge workers described the fragmentation as a constant low-grade rage: docs scattered across five tools, the same question answered three times in three places, lost work after a sync conflict. Power users were the loudest, evangelising Notion to their teams because the daily friction had become genuinely demoralising, not just inefficient.",
     },
     costOfSwitching: {
       level: "high",

@@ -13,7 +13,7 @@ import { DEFAULT_OBTAINABLE_SHARE } from "@/types/validation"
 import { cn } from "@/lib/utils"
 import {
   CheckCircle2, XCircle, HelpCircle, Users, RefreshCw, DollarSign, ArrowRightLeft, Target, Building2,
-  Calculator, AlertTriangle, PieChart,
+  Calculator, AlertTriangle, PieChart, Heart,
   type LucideIcon,
 } from "lucide-react"
 
@@ -377,6 +377,47 @@ function CompetitionSection({
   )
 }
 
+function EmotionalImpactSection({
+  emotionalImpact,
+  setEmotionalImpact,
+  readOnly,
+}: {
+  emotionalImpact: ValidationMetric
+  setEmotionalImpact: (patch: Partial<ValidationMetric>) => void
+  readOnly?: boolean
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <Heart className="h-3.5 w-3.5 text-white shrink-0" />
+        <span className="text-base font-semibold text-white">How much does this hurt the customer</span>
+      </div>
+      {!readOnly && (
+        <p className="text-base text-white">Capture the emotional weight of one occurrence: frustration, anxiety, embarrassment, dread. Money is only half the story. People will pay disproportionately to make pain stop, so a problem that lands a 4 or 5 here can carry a verdict even if the monetary worth is modest.</p>
+      )}
+      <div className="mt-2 inline-flex w-fit rounded-xl bg-white/10 p-1.5">
+        <ToggleGroup
+          className="border-none"
+          type="single"
+          value={emotionalImpact.level}
+          onValueChange={(val) => setEmotionalImpact({ level: val as typeof emotionalImpact.level })}
+          disabled={readOnly}
+        >
+          {(["mild", "moderate", "strong", "severe", "unbearable"] as const).map((level) => (
+            <ToggleGroupItem
+              key={level}
+              value={level}
+              className="px-4 py-1.5 text-base font-medium capitalize bg-transparent text-white data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 rounded-md border-none"
+            >
+              {level}
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
+      </div>
+    </div>
+  )
+}
+
 function NotesSection({
   reason,
   setReason,
@@ -638,6 +679,34 @@ export function MarketSizingStrategy({ readOnly = false }: { readOnly?: boolean 
   )
 }
 
+export function EmotionalImpactStrategy({ readOnly = false }: { readOnly?: boolean }) {
+  const { validationAssessment, setEmotionalImpact } = useProblem()
+  const { emotionalImpact } = validationAssessment
+
+  const hasAny = emotionalImpact.level !== ""
+
+  if (readOnly && !hasAny) {
+    return (
+      <div className="bg-secondary-brand rounded-xl p-8">
+        <p className="text-base text-white italic">No emotional impact captured.</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="bg-secondary-brand rounded-xl p-8">
+      <div className="flex flex-col gap-6">
+        <p className="text-base font-medium text-white">Emotional impact on the customer</p>
+        <EmotionalImpactSection
+          emotionalImpact={emotionalImpact}
+          setEmotionalImpact={setEmotionalImpact}
+          readOnly={readOnly}
+        />
+      </div>
+    </div>
+  )
+}
+
 export function CompetitionStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const {
     validationAssessment, setCostOfSwitching, setSolutionEffectiveness, setCompetitorSize,
@@ -710,6 +779,14 @@ function classifyWorth(m: ValidationMetric): Signal {
   return "negative"
 }
 
+function classifyEmotionalImpact(m: ValidationMetric): Signal {
+  if (!m.level) return "unknown"
+  if (m.level === "mild") return "negative"
+  if (m.level === "moderate") return "neutral"
+  if (m.level === "strong" || m.level === "severe" || m.level === "unbearable") return "positive"
+  return "unknown"
+}
+
 function classifyCostOfSwitching(m: ValidationMetric): Signal {
   if (!m.level) return "unknown"
   if (m.level === "none" || m.level === "low") return "positive"
@@ -773,11 +850,11 @@ function LeanIndicator({ signals }: { signals: Signal[] }) {
   const negative = captured.filter((s) => s === "negative").length
   const net = positive - negative
 
-  if (captured.length < 4) {
+  if (captured.length < 5) {
     return (
       <div className="rounded-lg border border-white/20 bg-white/10 p-4 text-base text-white">
         <p className="font-semibold">Not enough signals yet</p>
-        <p className="text-white mt-1">Capture at least four of the six factors to see how the evidence leans. You have currently filled in {captured.length} of 6.</p>
+        <p className="text-white mt-1">Capture at least five of the seven factors to see how the evidence leans. You have currently filled in {captured.length} of 7.</p>
       </div>
     )
   }
@@ -828,7 +905,7 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const {
     validationAssessment, status, setStatus, reason,
   } = useProblem()
-  const { howManyPeople, howOften, worthToThem, obtainableShare, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
+  const { howManyPeople, howOften, worthToThem, obtainableShare, emotionalImpact, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
 
   const customers = howManyPeople.value ?? 0
   const frequency = howOften.value ?? 0
@@ -845,11 +922,12 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
     howMany: classifyHowMany(howManyPeople),
     howOften: classifyHowOften(howOften),
     worth: classifyWorth(worthToThem),
+    emotional: classifyEmotionalImpact(emotionalImpact),
     cost: classifyCostOfSwitching(costOfSwitching),
     effectiveness: classifyEffectiveness(solutionEffectiveness),
     competitor: classifyCompetitorSize(competitorSize),
   }
-  const signalList: Signal[] = [signals.howMany, signals.howOften, signals.worth, signals.cost, signals.effectiveness, signals.competitor]
+  const signalList: Signal[] = [signals.howMany, signals.howOften, signals.worth, signals.emotional, signals.cost, signals.effectiveness, signals.competitor]
 
   return (
     <div className="bg-secondary-brand rounded-xl p-8">
@@ -882,6 +960,12 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
               label="Realistic share of the market you can capture"
               icon={PieChart}
               value={`${sharePct}%`}
+            />
+            <MetricRow
+              label="How much does this hurt the customer"
+              icon={Heart}
+              value={emotionalImpact.level}
+              signal={signals.emotional}
             />
             <MetricRow
               label="What is the cost of switching"
@@ -934,13 +1018,13 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
 export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const {
     status, setStatus, reason, setReason,
-    validationAssessment, setHowManyPeople, setHowOften, setWorthToThem, setObtainableShare, setCostOfSwitching,
+    validationAssessment, setHowManyPeople, setHowOften, setWorthToThem, setObtainableShare, setEmotionalImpact, setCostOfSwitching,
     setSolutionEffectiveness, setCompetitorSize,
   } = useProblem()
 
-  const { howManyPeople, howOften, worthToThem, obtainableShare, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
+  const { howManyPeople, howOften, worthToThem, obtainableShare, emotionalImpact, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
 
-  const hasAnyMetric = [howManyPeople, howOften, worthToThem, costOfSwitching, solutionEffectiveness, competitorSize]
+  const hasAnyMetric = [howManyPeople, howOften, worthToThem, emotionalImpact, costOfSwitching, solutionEffectiveness, competitorSize]
     .some((m) => m.value !== null || m.level !== "")
   const hasVerdict = status === "valid" || status === "unsure" || status === "invalid"
 
@@ -970,6 +1054,12 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
           obtainableShare={obtainableShare}
           setWorthToThem={setWorthToThem}
           setObtainableShare={setObtainableShare}
+          readOnly={readOnly}
+        />
+
+        <EmotionalImpactSection
+          emotionalImpact={emotionalImpact}
+          setEmotionalImpact={setEmotionalImpact}
           readOnly={readOnly}
         />
 
