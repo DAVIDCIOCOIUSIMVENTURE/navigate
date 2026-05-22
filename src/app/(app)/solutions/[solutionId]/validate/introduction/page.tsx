@@ -25,20 +25,22 @@ export default function IntroductionPage() {
         <CardTitle icon={ClipboardCheck} iconBg="bg-secondary-brand">Introduction</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
-        <div className="flex flex-col md:flex-row gap-6 md:items-center">
-          <div className="flex flex-col gap-4 flex-1 min-w-0">
-            <p className="text-base leading-relaxed">
-              Validation helps you decide whether this solution is worth pursuing. You&apos;ll work through four metrics one at a time, each with guidance and case studies to help you reason about it. At the end, you&apos;ll mark the solution as valid, invalid, or unsure.
-            </p>
-            <p className="text-base leading-relaxed">
-              The aim is not to fall in love with the solution; it is to stress-test it against feasibility, impact, cost, and time so you can commit to building it (or walk away) with your eyes open.
-            </p>
+        <div className="@container">
+          <div className="flex flex-col gap-6 @[800px]:flex-row @[800px]:items-center">
+            <div className="flex flex-col gap-4 flex-1 min-w-0">
+              <p className="text-base leading-relaxed">
+                Validation helps you decide whether this solution is worth pursuing. You&apos;ll work through four metrics one at a time, each with guidance and case studies to help you reason about it. At the end, you&apos;ll mark the solution as valid, invalid, or unsure.
+              </p>
+              <p className="text-base leading-relaxed">
+                The aim is not to fall in love with the solution; it is to stress-test it against feasibility, impact, cost, and time so you can commit to building it (or walk away) with your eyes open.
+              </p>
+            </div>
+            <img
+              src="/illustrations/16-success.svg"
+              alt=""
+              className="hidden @[900px]:block w-96 h-auto shrink-0 rounded-lg"
+            />
           </div>
-          <img
-            src="/illustrations/16-success.svg"
-            alt=""
-            className="hidden lg:block w-96 h-auto shrink-0 rounded-lg"
-          />
         </div>
 
         {solution && (

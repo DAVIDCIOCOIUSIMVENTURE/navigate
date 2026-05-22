@@ -25,20 +25,22 @@ export default function VerdictPage() {
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-base">
-          <div className="flex flex-col md:flex-row gap-6 md:items-center">
-            <div className="flex flex-col gap-3 flex-1 min-w-0">
-              <p>
-                You have done the hard work of sizing the market and reading the competitive landscape. Now step back and decide what those numbers actually mean for this problem. The point of a verdict is not to commit forever, it is to be honest with yourself today so you can spend the next month on something worth your time.
-              </p>
-              <p>
-                A useful verdict is grounded in evidence, not enthusiasm. Look across all seven factors together: a single weak signal is rarely a deal-breaker, but two or three pointing the same direction usually is. Capture your reasoning in the notes so future-you (or a teammate) can see why you decided what you did, and revise the verdict if new evidence comes in.
-              </p>
+          <div className="@container">
+            <div className="flex flex-col gap-6 @[800px]:flex-row @[800px]:items-center">
+              <div className="flex flex-col gap-3 flex-1 min-w-0">
+                <p>
+                  You have done the hard work of sizing the market and reading the competitive landscape. Now step back and decide what those numbers actually mean for this problem. The point of a verdict is not to commit forever, it is to be honest with yourself today so you can spend the next month on something worth your time.
+                </p>
+                <p>
+                  A useful verdict is grounded in evidence, not enthusiasm. Look across all seven factors together: a single weak signal is rarely a deal-breaker, but two or three pointing the same direction usually is. Capture your reasoning in the notes so future-you (or a teammate) can see why you decided what you did, and revise the verdict if new evidence comes in.
+                </p>
+              </div>
+              <img
+                src="/illustrations/14-validate-solution.svg"
+                alt=""
+                className="hidden @[900px]:block w-96 h-auto shrink-0 rounded-lg"
+              />
             </div>
-            <img
-              src="/illustrations/14-validate-solution.svg"
-              alt=""
-              className="hidden lg:block w-96 h-auto shrink-0 rounded-lg"
-            />
           </div>
           <h3 className="mt-4 text-xl font-bold text-foreground">How to weigh the factors together</h3>
           <p>

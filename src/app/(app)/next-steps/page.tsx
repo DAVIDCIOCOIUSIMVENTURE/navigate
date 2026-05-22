@@ -36,23 +36,25 @@ export default function NextStepsPage() {
         <CardTitle icon={Milestone} iconBg="bg-secondary-brand">Introduction</CardTitle>
       </CardHeader>
       <CardContent className={cn("flex-1 flex flex-col gap-8 overflow-y-auto min-h-0", roomy ? "p-10 pt-6" : "p-6 pt-4")}>
-        <div className="flex flex-col md:flex-row gap-6 md:items-center">
-          <div className="flex flex-col gap-2 flex-1 min-w-0">
-            <p className="text-base italic flex items-start gap-2">
-              <Sparkles className="h-3.5 w-3.5 shrink-0 mt-1" aria-hidden="true" />
-              <span>You&apos;ve found problems worth solving and solutions worth testing. Here&apos;s where most founders go next.</span>
-            </p>
-            <p className="text-base text-foreground leading-relaxed">
-              This section is for reference. There&apos;s nothing to fill in: just guidance on how to take what you&apos;ve already
-              built in Navigate and turn it into a real-world experiment, a prototype, or a commitment.
-              Use it as a checkpoint before you sink time and money into the wrong direction.
-            </p>
+        <div className="@container">
+          <div className="flex flex-col gap-6 @[800px]:flex-row @[800px]:items-center">
+            <div className="flex flex-col gap-2 flex-1 min-w-0">
+              <p className="text-base italic flex items-start gap-2">
+                <Sparkles className="h-3.5 w-3.5 shrink-0 mt-1" aria-hidden="true" />
+                <span>You&apos;ve found problems worth solving and solutions worth testing. Here&apos;s where most founders go next.</span>
+              </p>
+              <p className="text-base text-foreground leading-relaxed">
+                This section is for reference. There&apos;s nothing to fill in: just guidance on how to take what you&apos;ve already
+                built in Navigate and turn it into a real-world experiment, a prototype, or a commitment.
+                Use it as a checkpoint before you sink time and money into the wrong direction.
+              </p>
+            </div>
+            <img
+              src="/illustrations/24-rocket.svg"
+              alt=""
+              className="hidden @[900px]:block w-96 h-auto shrink-0 rounded-lg"
+            />
           </div>
-          <img
-            src="/illustrations/24-rocket.svg"
-            alt=""
-            className="hidden lg:block w-96 h-auto shrink-0 rounded-lg"
-          />
         </div>
 
         <div className="flex flex-col gap-3">
