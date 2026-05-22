@@ -748,8 +748,8 @@ function PromptsPanel({
         <h3 className="text-xl font-bold leading-tight">{lens.title}</h3>
       </div>
       <div className="flex items-center gap-2 pl-3 ml-3 border-l border-border">
-        <HelpCircle className="h-5 w-5 text-secondary-brand shrink-0" aria-hidden="true" />
-        <p className="text-lg font-semibold leading-snug">{prompt.question}</p>
+        <HelpCircle className="h-5 w-5 text-tertiary shrink-0" aria-hidden="true" />
+        <p className="text-xl font-bold leading-snug">{prompt.question}</p>
       </div>
     </div>
   )
