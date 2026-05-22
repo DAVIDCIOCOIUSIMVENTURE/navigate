@@ -275,7 +275,20 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                 const statusConfig = status ? STATUS_CONFIG[status] : null
                 const zebra = rowIndex % 2 === 1 ? "bg-muted/20" : undefined
                 return (
-                  <TableRow key={solution.id} className={cn(zebra)}>
+                  <TableRow
+                    key={solution.id}
+                    className={cn(zebra, "cursor-pointer hover:bg-muted/40")}
+                    onClick={() => router.push(`/solutions/${solution.id}`)}
+                    role="button"
+                    tabIndex={0}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault()
+                        router.push(`/solutions/${solution.id}`)
+                      }
+                    }}
+                    aria-label={`Edit solution: ${solution.title || "untitled"}`}
+                  >
                     <TableCell>{originalIndex + 1}</TableCell>
                     <TableCell className="text-sm">
                       <div className="flex items-center gap-2">
@@ -310,7 +323,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                         </div>
                       </TableCell>
                     )}
-                    <TableCell>
+                    <TableCell onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center gap-1">
                         {showEditDelete && (
                           <Tooltip>
@@ -339,6 +352,12 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                               <ClipboardCheck className="h-3.5 w-3.5" />
                               Open solution validation
                             </DropdownMenuItem>
+                            {solution.problemId != null && (
+                              <DropdownMenuItem onClick={() => router.push(`/problems/${solution.problemId}`)}>
+                                <Target className="h-3.5 w-3.5" />
+                                Open problem
+                              </DropdownMenuItem>
+                            )}
                           </DropdownMenuContent>
                         </DropdownMenu>
                         {showEditDelete && (

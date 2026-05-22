@@ -33,7 +33,6 @@ import {
 import {
   Pencil,
   Trash2,
-  ArrowRight,
   CheckCircle2,
   XCircle,
   HelpCircle,
@@ -301,14 +300,29 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                   const zebra = rowIndex % 2 === 1 ? "bg-muted/20" : undefined
                   return (
                     <Fragment key={problem.id}>
-                    <TableRow className={cn(zebra, expanded && hasSolutions && "border-b-0")}>
+                    <TableRow
+                      className={cn(zebra, expanded && hasSolutions && "border-b-0", "cursor-pointer hover:bg-muted/40")}
+                      onClick={() => router.push(`/problems/${problem.id}`)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault()
+                          router.push(`/problems/${problem.id}`)
+                        }
+                      }}
+                      aria-label={`Edit problem: ${problem.description || "untitled"}`}
+                    >
                       <TableCell>{originalIndex + 1}</TableCell>
                       <TableCell className="text-sm">
                         <div className="flex items-center gap-2">
                           {hasSolutions ? (
                             <button
                               type="button"
-                              onClick={() => toggleExpanded(problem.id)}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                toggleExpanded(problem.id)
+                              }}
                               className="flex items-center justify-center w-6 h-6 rounded border border-tertiary text-tertiary hover:bg-tertiary/10 shrink-0"
                               aria-label={expanded ? "Hide solutions" : `View ${linkedSolutions.length} solution${linkedSolutions.length === 1 ? "" : "s"}`}
                               aria-expanded={expanded}
@@ -348,7 +362,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                           </div>
                         </TableCell>
                       )}
-                      <TableCell>
+                      <TableCell onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center gap-1">
                           {showEditDelete && (
                             <Tooltip>
@@ -408,40 +422,95 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                         </div>
                       </TableCell>
                     </TableRow>
-                    {hasSolutions && expanded && (
-                      <TableRow className="bg-muted/30 hover:bg-muted/30">
-                        <TableCell />
-                        <TableCell colSpan={3 + (showStatus ? 1 : 0) + (showSource ? 1 : 0)} className="py-2">
-                          <div className="flex flex-col gap-1.5">
-                            {linkedSolutions.map((s) => {
-                              const sStatus = s.validationStatus ?? "unvalidated"
-                              const sStatusConfig = STATUS_CONFIG[sStatus]
-                              const solutionLabel = s.title || `Solution #${s.id}`
-                              return (
-                                <div key={s.id} className="flex items-center gap-2 text-sm">
-                                  <Lightbulb className="h-3.5 w-3.5 text-primary shrink-0" />
-                                  <span className="flex-1 min-w-0 truncate">{solutionLabel}</span>
-                                  <div className={`flex items-center gap-1.5 text-sm font-medium ${sStatusConfig.className}`}>
-                                    <sStatusConfig.icon className="h-3.5 w-3.5" />
-                                    {sStatusConfig.label}
-                                  </div>
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-7"
-                                    onClick={() => router.push(`/solutions/${s.id}`)}
-                                    aria-label="Open solution"
-                                  >
-                                    <ArrowRight className="h-3.5 w-3.5" />
-                                    <span className="hidden md:inline ml-1">Open</span>
-                                  </Button>
-                                </div>
-                              )
+                    {hasSolutions && expanded && linkedSolutions.map((s) => {
+                      const sStatus = s.validationStatus ?? "unvalidated"
+                      const sStatusConfig = STATUS_CONFIG[sStatus]
+                      const solutionLabel = s.title || `Solution #${s.id}`
+                      return (
+                        <TableRow
+                          key={s.id}
+                          className="bg-muted/30 cursor-pointer hover:bg-muted/50"
+                          onClick={() => router.push(`/solutions/${s.id}`)}
+                          role="button"
+                          tabIndex={0}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === " ") {
+                              e.preventDefault()
+                              router.push(`/solutions/${s.id}`)
+                            }
+                          }}
+                          aria-label={`Edit solution: ${solutionLabel}`}
+                        >
+                          <TableCell />
+                          <TableCell className="text-sm">
+                            <div className="flex items-center gap-2 pl-8">
+                              <Lightbulb className="h-3.5 w-3.5 text-primary shrink-0" />
+                              <span className="line-clamp-2">{solutionLabel}</span>
+                            </div>
+                          </TableCell>
+                          {showSource && <TableCell />}
+                          <TableCell className="text-sm whitespace-nowrap">
+                            {new Date(s.createdAt).toLocaleDateString("en-GB", {
+                              day: "numeric", month: "short", year: "numeric",
                             })}
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    )}
+                          </TableCell>
+                          {showStatus && (
+                            <TableCell>
+                              <div className={`flex items-center gap-1.5 text-sm font-medium ${sStatusConfig.className}`}>
+                                <sStatusConfig.icon className="h-3.5 w-3.5" />
+                                {sStatusConfig.label}
+                              </div>
+                            </TableCell>
+                          )}
+                          <TableCell onClick={(e) => e.stopPropagation()}>
+                            <div className="flex items-center gap-1">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="outline-card"
+                                    size="icon"
+                                    className="h-7 w-7"
+                                    onClick={() => router.push(`/solutions/${s.id}`)}
+                                    aria-label="Edit solution"
+                                  >
+                                    <Pencil className="h-3.5 w-3.5" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>Edit solution</TooltipContent>
+                              </Tooltip>
+                              <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                  <Button variant="outline-card" size="icon" className="h-7 w-7" aria-label="Actions">
+                                    <MoreHorizontal className="h-3.5 w-3.5" />
+                                  </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent align="end">
+                                  <DropdownMenuItem onClick={() => router.push(`/solutions/${s.id}/validate/introduction`)}>
+                                    <ClipboardCheck className="h-3.5 w-3.5" />
+                                    Open solution validation
+                                  </DropdownMenuItem>
+                                </DropdownMenuContent>
+                              </DropdownMenu>
+                              <ConfirmDialog
+                                tooltip="Delete solution"
+                                trigger={
+                                  <Button
+                                    variant="destructive-outline"
+                                    size="icon"
+                                    className="h-7 w-7"
+                                    aria-label="Delete solution"
+                                  >
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                  </Button>
+                                }
+                                description="This will permanently delete this solution and any associated validation data."
+                                onConfirm={() => dispatch.solutions.delete(s.id)}
+                              />
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      )
+                    })}
                     </Fragment>
                   )
                 })
