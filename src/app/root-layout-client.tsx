@@ -185,7 +185,6 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   const sidePanelOpen = !isMobile && (guidanceOpen || journalOpen)
 
-  // Load persisted settings from localStorage on mount
   useEffect(() => {
     dispatch.settings.init()
     dispatch.selfDiscoveryItems.init()
@@ -197,7 +196,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     dispatch.notes.init()
     dispatch.problemCandidates.init()
     dispatch.reflectSessions.init()
-  }, [dispatch.settings, dispatch.selfDiscoveryItems, dispatch.customDimensionItems, dispatch.problems, dispatch.accountSettings, dispatch.solutions, dispatch.solutionWorkspaces, dispatch.notes, dispatch.problemCandidates, dispatch.reflectSessions])
+  }, [dispatch])
 
   const headerTitle = (
     <Breadcrumb className="ml-2 min-w-0">
@@ -420,6 +419,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                   ) : (
                     <div className={`relative isolate mx-auto flex min-h-full w-full max-w-screen-2xl flex-col gap-4 ${fullView ? "px-6 py-6" : "px-4 py-6 sm:px-6 lg:px-8 lg:py-8"}`}>
                       <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src="/illustrations/02-compass.svg"
                           alt=""
@@ -449,6 +449,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               ) : (
                 <div className={`relative isolate mx-auto flex min-h-full w-full max-w-screen-2xl flex-col gap-4 ${fullView ? "px-6 py-6" : "px-4 py-6 sm:px-6 lg:px-8 lg:py-8"}`}>
                   <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src="/illustrations/02-compass.svg"
                       alt=""

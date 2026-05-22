@@ -1,5 +1,5 @@
-import RootLayoutClient from "@/app/root-layout-client"
+import AppShell from "./app-shell"
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
-  return <RootLayoutClient>{children}</RootLayoutClient>
+  return <AppShell>{children}</AppShell>
 }

@@ -2,21 +2,13 @@
 
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-
-const ACTIVE_PROBLEM_KEY = "navigate-active-discovery-problem"
+import { loadActiveDiscoveryProblemId } from "@/lib/active-discovery-problem"
 
 export default function DiscoverIndexPage() {
   const router = useRouter()
 
   useEffect(() => {
-    let hasActiveProblem = false
-    try {
-      const raw = localStorage.getItem(ACTIVE_PROBLEM_KEY)
-      const parsed = raw == null ? NaN : Number(raw)
-      hasActiveProblem = Number.isFinite(parsed)
-    } catch {
-      hasActiveProblem = false
-    }
+    const hasActiveProblem = loadActiveDiscoveryProblemId() !== null
     router.replace(
       hasActiveProblem
         ? "/solutions/discover/choose-discovery"

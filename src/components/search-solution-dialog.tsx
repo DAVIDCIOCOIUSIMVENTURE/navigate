@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog"
 import { Lightbulb, ArrowRight, Clock } from "lucide-react"
 import { useRouter } from "next/navigation"
+import { saveActiveDiscoveryProblemId } from "@/lib/active-discovery-problem"
 
 interface SearchSolutionDialogProps {
   open: boolean
@@ -25,9 +26,7 @@ export function SearchSolutionDialog({ open, onOpenChange }: SearchSolutionDialo
   function handleDiscover() {
     handleClose()
     // Clear any previously-active problem so the user lands on Select a Problem.
-    try {
-      localStorage.removeItem("navigate-active-discovery-problem")
-    } catch { /* ignore */ }
+    saveActiveDiscoveryProblemId(null)
     router.push("/solutions/discover/select-problem")
   }
 

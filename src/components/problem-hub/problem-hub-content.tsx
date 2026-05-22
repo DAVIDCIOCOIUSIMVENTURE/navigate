@@ -22,6 +22,7 @@ import {
 import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { getReflectLens } from "@/data/reflectLenses"
+import { saveActiveDiscoveryProblemId } from "@/lib/active-discovery-problem"
 
 type SectionTone = "indigo" | "amber" | "purple" | "emerald" | "primary" | "rose" | "tertiary"
 
@@ -257,9 +258,7 @@ function SolutionsSection({ problemId }: { problemId: number }) {
           <Button
             size="sm"
             onClick={() => {
-              try {
-                localStorage.setItem("navigate-active-discovery-problem", String(problemId))
-              } catch { /* ignore */ }
+              saveActiveDiscoveryProblemId(problemId)
               router.push("/solutions/discover/choose-discovery")
             }}
           >
@@ -304,9 +303,7 @@ function NextStepsSection({ problemRef, problemId }: { problemRef: string; probl
 
   const goToValidation = () => router.push(`/problems/${problemRef}/validation/market`)
   const goToDiscover = () => {
-    try {
-      localStorage.setItem("navigate-active-discovery-problem", String(problemRef))
-    } catch { /* ignore */ }
+    saveActiveDiscoveryProblemId(problemId)
     router.push("/solutions/discover/choose-discovery")
   }
 

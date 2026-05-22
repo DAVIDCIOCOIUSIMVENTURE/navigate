@@ -52,6 +52,7 @@ import {
 } from "lucide-react"
 import type { Problem } from "@/store/problems-model"
 import { cn } from "@/lib/utils"
+import { saveActiveDiscoveryProblemId } from "@/lib/active-discovery-problem"
 
 import type { ValidationStatus } from "@/types/validation"
 
@@ -377,7 +378,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                 Open problem validation
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => {
-                                localStorage.setItem("navigate-active-discovery-problem", String(problem.id))
+                                saveActiveDiscoveryProblemId(problem.id)
                                 router.push("/solutions/discover/select-problem")
                               }}>
                                 <Lightbulb className="h-3.5 w-3.5" />

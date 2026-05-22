@@ -28,8 +28,7 @@ type CandidateExtras = {
   reverseInversions?: string[]
 }
 import type { Problem } from "@/store/problems-model"
-
-const ACTIVE_PROBLEM_KEY = "navigate-active-discovery-problem"
+import { loadActiveDiscoveryProblemId, saveActiveDiscoveryProblemId } from "@/lib/active-discovery-problem"
 
 type DiscoveryContextValue = {
   problemId: number | null
@@ -77,35 +76,13 @@ type DiscoveryContextValue = {
 
 const DiscoveryContext = createContext<DiscoveryContextValue | null>(null)
 
-function loadActiveProblemId(): number | null {
-  if (typeof window === "undefined") return null
-  try {
-    const raw = localStorage.getItem(ACTIVE_PROBLEM_KEY)
-    if (!raw) return null
-    const parsed = Number(raw)
-    return Number.isFinite(parsed) ? parsed : null
-  } catch {
-    return null
-  }
-}
-
-function saveActiveProblemId(id: number | null) {
-  if (typeof window === "undefined") return
-  try {
-    if (id === null) localStorage.removeItem(ACTIVE_PROBLEM_KEY)
-    else localStorage.setItem(ACTIVE_PROBLEM_KEY, String(id))
-  } catch {
-    // ignore storage errors
-  }
-}
-
 export function DiscoveryProvider({ children }: { children: ReactNode }) {
   const dispatch = useDispatch<AppDispatch>()
   const [problemId, setProblemIdState] = useState<number | null>(null)
   const [hydrated, setHydrated] = useState(false)
 
   useEffect(() => {
-    setProblemIdState(loadActiveProblemId())
+    setProblemIdState(loadActiveDiscoveryProblemId())
     setHydrated(true)
   }, [])
 
@@ -127,7 +104,7 @@ export function DiscoveryProvider({ children }: { children: ReactNode }) {
 
   const setProblemId = useCallback((id: number | null) => {
     setProblemIdState(id)
-    saveActiveProblemId(id)
+    saveActiveDiscoveryProblemId(id)
     if (id != null) dispatch.solutionWorkspaces.ensureForProblem(id)
   }, [dispatch])
 
