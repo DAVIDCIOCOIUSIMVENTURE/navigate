@@ -4,7 +4,7 @@ import React from "react"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import { Settings, HelpCircle, NotebookText, Compass, Map, User, UserCircle, ShieldCheck } from "lucide-react"
+import { Settings, HelpCircle, NotebookText, Compass, MoreHorizontal, User, UserCircle, ShieldCheck } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 import type { AvatarColor } from "@/store/settings-model"
@@ -226,7 +226,6 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const activeNavItem = navigationItems.topMenu.find((item) =>
     item.url === "/" ? pathname === "/" : pathname.startsWith(item.url)
   )
-  const ActiveNavIcon = activeNavItem?.icon
 
   const headerNav = (
     <>
@@ -266,7 +265,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                   className={cn("h-8 w-8", activeNavItem && "bg-secondary-brand border-secondary-brand text-secondary-brand-foreground")}
                   aria-label="Open navigation menu"
                 >
-                  {ActiveNavIcon ? <ActiveNavIcon className="h-4 w-4" /> : <Map className="h-4 w-4" />}
+                  <MoreHorizontal className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
             </TooltipTrigger>
@@ -493,14 +492,14 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       )}
       {isFocusFlow && (
         <Sheet open={topNavOpen} onOpenChange={setTopNavOpen}>
-          <SheetContent side="top" className="p-0">
+          <SheetContent side="top" className="p-0 bg-quaternary border-b border-quaternary/30 [&>button]:text-quaternary-foreground">
             <VisuallyHidden>
               <SheetTitle>App header</SheetTitle>
             </VisuallyHidden>
             <header className="flex h-16 items-center justify-between gap-2 px-4 sm:px-6">
               <div className="flex items-center gap-2 min-w-0">
                 {brandLogo}
-                <Separator orientation="vertical" className="h-4" />
+                <Separator orientation="vertical" className="h-4 bg-quaternary-foreground/30" />
                 {headerTitle}
               </div>
               <div className="flex items-center gap-2 shrink-0 pr-10">
@@ -525,7 +524,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                 </div>
                 {headerNav}
                 {panelToggles}
-                <Separator orientation="vertical" className="h-4" />
+                <Separator orientation="vertical" className="h-4 bg-quaternary-foreground/30" />
                 {headerActions}
               </div>
             </header>
