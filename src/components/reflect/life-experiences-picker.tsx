@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Check, ChevronDown, ChevronRight, Compass, Plus } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { dimensionColumns } from "@/data/dimensionData"
+import { countAnchorUsage } from "@/lib/reflect-usage"
 import {
   Collapsible,
   CollapsibleContent,
@@ -48,9 +49,7 @@ export function LifeExperiencesPicker({
   const items = useSelector((s: RootState) =>
     s.selfDiscoveryItems.items.filter((i) => i.questionUrl === LIFE_EXPERIENCES_QUESTION_URL)
   )
-  const lifeCandidates = useSelector((s: RootState) =>
-    s.problemCandidates.items.filter((c) => c.lensId === "life")
-  )
+  const problems = useSelector((s: RootState) => s.problems.problems)
   const customContexts = useSelector(
     (s: RootState) => s.customDimensionItems.byColumn.contexts ?? []
   )
@@ -87,15 +86,10 @@ export function LifeExperiencesPicker({
     return [...result, ...contextGroups]
   }, [customContexts, sortedItems])
 
-  const usageByTitle = useMemo(() => {
-    const counts = new Map<string, number>()
-    for (const c of lifeCandidates) {
-      const key = (c.context?.experience ?? "").trim().toLowerCase()
-      if (!key) continue
-      counts.set(key, (counts.get(key) ?? 0) + 1)
-    }
-    return counts
-  }, [lifeCandidates])
+  const usageByTitle = useMemo(
+    () => countAnchorUsage(problems, "life"),
+    [problems]
+  )
 
   function handleAdd() {
     const title = draft.trim()

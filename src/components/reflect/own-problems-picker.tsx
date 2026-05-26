@@ -27,8 +27,8 @@ import {
 } from "@/components/ui/dialog"
 
 const WORK_DONE_QUESTION_URL = "work-done"
-const ORG_PROCESSES_QUESTION_URL = "organisations-processes"
-const WORK_QUESTION_URLS = [WORK_DONE_QUESTION_URL, ORG_PROCESSES_QUESTION_URL]
+const HOBBIES_QUESTION_URL = "hobbies-interests"
+const SOURCE_QUESTION_URLS = [WORK_DONE_QUESTION_URL, HOBBIES_QUESTION_URL]
 
 type Props = {
   selectedTitle: string | null
@@ -40,18 +40,7 @@ type Props = {
 type GroupItem = { id: string; label: string }
 type Group = { id: string; label: string; items: GroupItem[] }
 
-/**
- * Single-select picker for the Work friction anchor prompt
- * ("Which job, role, or area of work do you want to reflect on?"). Bound to
- * the two self-discovery questions in the Work Experience category
- * ("What kinds of work have you done?" and
- * "Which kinds of organisations have you worked in...?"). The user's saved
- * items appear first, followed by the catalog suggestions from each question
- * so the picker is useful even before any self-discovery answers exist.
- * New entries added via "Add your own" persist back to self-discovery under
- * the "What kinds of work have you done?" question.
- */
-export function WorkContextPicker({
+export function OwnProblemsPicker({
   selectedTitle,
   onSelect,
   addDialogOpen,
@@ -59,7 +48,7 @@ export function WorkContextPicker({
 }: Props) {
   const dispatch = useDispatch<AppDispatch>()
   const items = useSelector((s: RootState) =>
-    s.selfDiscoveryItems.items.filter((i) => WORK_QUESTION_URLS.includes(i.questionUrl))
+    s.selfDiscoveryItems.items.filter((i) => SOURCE_QUESTION_URLS.includes(i.questionUrl))
   )
   const problems = useSelector((s: RootState) => s.problems.problems)
   const [draft, setDraft] = useState("")
@@ -72,8 +61,9 @@ export function WorkContextPicker({
 
   const groups = useMemo<Group[]>(() => {
     const workCategory = SELF_DISCOVERY_CATEGORIES.find((c) => c.url === "work-experience")
+    const interestsCategory = SELF_DISCOVERY_CATEGORIES.find((c) => c.url === "personal-interests")
     const workDoneQuestion = workCategory?.questions.find((q) => q.url === WORK_DONE_QUESTION_URL)
-    const orgQuestion = workCategory?.questions.find((q) => q.url === ORG_PROCESSES_QUESTION_URL)
+    const hobbiesQuestion = interestsCategory?.questions.find((q) => q.url === HOBBIES_QUESTION_URL)
 
     const catalogGroupsFromQuestion = (
       question: SelfDiscoveryQuestion | undefined,
@@ -94,12 +84,12 @@ export function WorkContextPicker({
       items: sortedItems.map((i) => ({ id: i.id, label: i.title })),
     })
     result.push(...catalogGroupsFromQuestion(workDoneQuestion, "wd"))
-    result.push(...catalogGroupsFromQuestion(orgQuestion, "op"))
+    result.push(...catalogGroupsFromQuestion(hobbiesQuestion, "hi"))
     return result
   }, [sortedItems])
 
   const usageByTitle = useMemo(
-    () => countAnchorUsage(problems, "work"),
+    () => countAnchorUsage(problems, "own-problems"),
     [problems]
   )
 
@@ -121,7 +111,7 @@ export function WorkContextPicker({
   return (
     <div
       role="radiogroup"
-      aria-label="Pick one role, job, or area of work"
+      aria-label="Pick one thing you've worked on or done"
       className="flex flex-col gap-2"
     >
       <div className="flex flex-col rounded-lg bg-card p-2">
@@ -145,11 +135,11 @@ export function WorkContextPicker({
                   ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                   : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
                 }
-                <span className="text-sm font-semibold text-foreground tracking-wide select-none flex-1 text-left">
+                <span className="text-base font-semibold text-foreground tracking-wide select-none flex-1 text-left">
                   {group.label}
                 </span>
                 {selectedInGroup && (
-                  <span className="text-sm text-secondary-brand font-medium">
+                  <span className="text-base text-secondary-brand font-medium">
                     Selected
                   </span>
                 )}
@@ -157,7 +147,7 @@ export function WorkContextPicker({
               <CollapsibleContent>
                 <ul className="ml-7 flex flex-col gap-1 pb-1">
                   {group.items.length === 0 && isSelfDiscoveryGroup ? (
-                    <li className="text-sm text-muted-foreground px-2 py-1.5">
+                    <li className="text-base px-2 py-1.5">
                       Nothing saved yet. Use &ldquo;Add your own&rdquo; or visit
                       Self-Discovery to fill this in.
                     </li>
@@ -194,11 +184,11 @@ export function WorkContextPicker({
                             >
                               {isSelected && <Check className="h-3 w-3" />}
                             </span>
-                            <span className="flex-1 text-sm leading-snug">
+                            <span className="flex-1 text-base leading-snug">
                               {item.label}
                             </span>
                             {usageCount > 0 && (
-                              <span className="ml-2 shrink-0 text-sm bg-secondary text-secondary-foreground rounded-full px-2 py-0.5">
+                              <span className="ml-2 shrink-0 text-base bg-secondary text-secondary-foreground rounded-full px-2 py-0.5">
                                 Reflected {usageCount}x
                               </span>
                             )}
@@ -217,18 +207,18 @@ export function WorkContextPicker({
       <Dialog open={addDialogOpen} onOpenChange={onAddDialogOpenChange}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Add a role or work area</DialogTitle>
+            <DialogTitle>Add something you&rsquo;ve done</DialogTitle>
             <DialogDescription>
               Anything you add is also saved to your self-discovery under
-              &quot;What kinds of work have you done?&quot;.
+              &ldquo;What kinds of work have you done?&rdquo;.
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-2 py-2">
-            <label htmlFor="work-context-new" className="text-base font-medium">
-              Role or work area
+            <label htmlFor="own-anchor-new" className="text-base font-medium">
+              What you&rsquo;ve worked on or done
             </label>
             <Input
-              id="work-context-new"
+              id="own-anchor-new"
               autoFocus
               value={draft}
               onChange={(e) => setDraft(e.target.value)}
@@ -238,7 +228,7 @@ export function WorkContextPicker({
                   handleAdd()
                 }
               }}
-              placeholder="e.g. Running ops at a logistics SME, client onboarding at my consultancy"
+              placeholder="e.g. Running a small bakery, coaching a junior football team"
               className="text-base"
             />
           </div>

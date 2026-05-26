@@ -42,6 +42,7 @@ import { ReflectProvider, useReflect } from "@/components/reflect/reflect-contex
 import { SelfDiscoveryChips } from "@/components/reflect/self-discovery-chips"
 import { LifeExperiencesPicker } from "@/components/reflect/life-experiences-picker"
 import { WorkContextPicker } from "@/components/reflect/work-context-picker"
+import { OwnProblemsPicker } from "@/components/reflect/own-problems-picker"
 import { IdentifyDimensionPicker } from "@/components/reflect/identify-dimension-picker"
 import { useResolveOrCreate } from "@/lib/dimension-labels"
 import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
@@ -55,7 +56,7 @@ const REFLECT_STEPS: { id: ReflectStep; label: string }[] = [
   { id: "review", label: "Review" },
 ]
 
-const ENABLED_LENS_IDS = new Set<LensId>(["life", "work"])
+const ENABLED_LENS_IDS = new Set<LensId>(["life", "work", "own-problems"])
 
 function getAnchorPromptId(lens: Lens): string | null {
   return lens.prompts.find((p) => p.contextOnly)?.id ?? null
@@ -528,7 +529,10 @@ function PromptsPanel({
     lens.id === "life" && prompt.id === "significant-experience"
   const useWorkContextPicker =
     lens.id === "work" && prompt.id === "work-context"
-  const useAnchorPicker = useLifeExperiencesPicker || useWorkContextPicker
+  const useOwnProblemsPicker =
+    lens.id === "own-problems" && prompt.id === "own-anchor"
+  const useAnchorPicker =
+    useLifeExperiencesPicker || useWorkContextPicker || useOwnProblemsPicker
 
   const dimensionPickerColumn: "problems" | "customers" | null =
     prompt.role === "problems"
@@ -647,6 +651,13 @@ function PromptsPanel({
         />
       ) : useWorkContextPicker ? (
         <WorkContextPicker
+          selectedTitle={selectedAnchorTitle}
+          onSelect={handleSelectAnchor}
+          addDialogOpen={addDialogOpen}
+          onAddDialogOpenChange={setAddDialogOpen}
+        />
+      ) : useOwnProblemsPicker ? (
+        <OwnProblemsPicker
           selectedTitle={selectedAnchorTitle}
           onSelect={handleSelectAnchor}
           addDialogOpen={addDialogOpen}

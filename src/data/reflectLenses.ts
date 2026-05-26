@@ -5,6 +5,7 @@ import {
   Shuffle,
   Users,
   Radar,
+  Wrench,
   type LucideIcon,
 } from "lucide-react"
 
@@ -15,7 +16,7 @@ import {
 
 export type LensSelfDiscoverySource = {
   /** Self-discovery category id whose items become starter chips for the matching prompts. */
-  category: "knowledge" | "skills-expertise" | "personal-interests" | "social-impact"
+  category: "knowledge" | "skills-expertise" | "personal-interests" | "social-impact" | "work-experience"
   /** Prompt ids that should surface chips from this category. */
   promptIds: string[]
 }
@@ -50,7 +51,14 @@ export type LensPrompt = {
   role?: "problems" | "customers"
 }
 
-export type LensId = "work" | "life" | "insider" | "cross" | "people" | "market"
+export type LensId =
+  | "work"
+  | "life"
+  | "insider"
+  | "cross"
+  | "people"
+  | "market"
+  | "own-problems"
 
 export type Lens = {
   id: LensId
@@ -268,6 +276,76 @@ export const REFLECT_LENSES: Lens[] = [
           "Operations leads at logistics companies of similar size",
           "Independent consultants running solo client onboarding",
           "Finance managers in mid-market companies",
+        ],
+        multipleAllowed: true,
+        role: "customers",
+      },
+    ],
+  },
+  {
+    id: "own-problems",
+    title: "Problems you've solved yourself",
+    shortDescription: "Mine one thing you've done (a job, a hobby, a side project) for problems you hit and the fixes you cobbled together.",
+    longDescription:
+      "Pick one thing you've actually done, then describe the problems you ran into and what you did about it. The fixes you built for yourself are often the seed of a product someone else would pay for. To explore another, run this tool again and pick a different one.",
+    icon: Wrench,
+    tileColor: "bg-primary",
+    estimatedMinutes: 10,
+    anchorLabel: "What you've done",
+    helperText:
+      "Both the problem and your workaround matter. The workaround is the early prototype of the product; the problem is the reason anyone else would want it.",
+    selfDiscoverySources: [
+      { category: "work-experience", promptIds: ["own-anchor"] },
+      { category: "personal-interests", promptIds: ["own-anchor"] },
+    ],
+    prompts: [
+      {
+        id: "own-anchor",
+        question: "Pick one thing you've worked on or done.",
+        helperText:
+          "A job you've held, a hobby you keep returning to, a side project you ran. Keep it to one so the next prompts stay specific.",
+        examples: [
+          "Running a small bakery",
+          "Coaching a junior football team",
+          "Restoring vintage motorbikes",
+        ],
+        multipleAllowed: false,
+        contextOnly: true,
+      },
+      {
+        id: "problems-hit",
+        question: "What problems did you hit doing this?",
+        helperText:
+          "Concrete friction you remember: things that took longer than they should have, info that was hard to find, or moments where the obvious tool didn't exist.",
+        examples: [
+          "Forecasting how much to bake on a Saturday after a rainy Friday",
+          "Tracking which kids had paid for the tournament and which hadn't",
+          "Sourcing a discontinued part without paying collector prices",
+        ],
+        multipleAllowed: true,
+        role: "problems",
+      },
+      {
+        id: "what-you-did",
+        question: "What did you do about it? What solutions or workarounds did you build?",
+        helperText:
+          "The hack you keep using is usually a product hiding in plain sight. Spreadsheets, phone notes, group chats, and homemade jigs all count.",
+        examples: [
+          "A spreadsheet weighting last year's sales by weather to set today's bake list",
+          "A WhatsApp group used as the real payment tracker, with a pinned tally",
+          "A homemade jig for pulling bearings that I now lend to other restorers",
+        ],
+        multipleAllowed: true,
+      },
+      {
+        id: "customer",
+        question: "Who else does this?",
+        helperText:
+          "Other people doing the same work or hobby who would likely hit the same problems. Optional, but adding a customer makes the problem easier to refine later.",
+        examples: [
+          "Other independent bakers running weekend retail",
+          "Volunteer youth-sports coaches handling their own admin",
+          "Hobbyist vintage motorbike restorers",
         ],
         multipleAllowed: true,
         role: "customers",
