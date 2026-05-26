@@ -197,6 +197,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     dispatch.notes.init()
     dispatch.problemCandidates.init()
     dispatch.reflectSessions.init()
+    dispatch.researchSessions.init()
   }, [dispatch])
 
   const headerTitle = (

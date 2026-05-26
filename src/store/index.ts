@@ -9,6 +9,7 @@ import { solutions } from "./solutions-model"
 import { solutionWorkspaces } from "./solution-workspaces-model"
 import { problemCandidates } from "./problem-candidates-model"
 import { reflectSessions } from "./reflect-sessions-model"
+import { researchSessions } from "./research-sessions-model"
 export interface RootModel extends Models<RootModel> {
   notes: typeof notes
   settings: typeof settings
@@ -20,9 +21,10 @@ export interface RootModel extends Models<RootModel> {
   solutionWorkspaces: typeof solutionWorkspaces
   problemCandidates: typeof problemCandidates
   reflectSessions: typeof reflectSessions
+  researchSessions: typeof researchSessions
 }
 
-const models: RootModel = { notes, settings, selfDiscoveryItems, customDimensionItems, problems, accountSettings, solutions, solutionWorkspaces, problemCandidates, reflectSessions }
+const models: RootModel = { notes, settings, selfDiscoveryItems, customDimensionItems, problems, accountSettings, solutions, solutionWorkspaces, problemCandidates, reflectSessions, researchSessions }
 
 export function createStore() {
   return init<RootModel>({ models })

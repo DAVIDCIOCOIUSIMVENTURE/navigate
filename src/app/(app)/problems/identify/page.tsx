@@ -70,6 +70,7 @@ import {
 
 import { DIMENSION_ICONS as COLUMN_ICONS, DIMENSION_COLORS as COLUMN_COLORS } from "@/lib/dimension-visuals"
 import { ReflectBuilder } from "./reflect-builder"
+import { ResearchBuilder } from "./research-builder"
 
 const COLUMN_DESCRIPTIONS: Record<string, string> = {
   "customers": "Who experiences this problem?",
@@ -934,7 +935,7 @@ export default function IdentifyPage() {
   useEffect(() => { setMounted(true) }, [])
 
   const savedProblems = useSelector((state: RootState) =>
-    state.problems.problems.filter((p) => p.source === "identify")
+    state.problems.problems.filter((p) => p.source === "identify" || p.source === "research")
   )
   const triggers = useSelector((state: RootState) => state.selfDiscoveryItems.items)
   const customByColumn = useSelector((s: RootState) => s.customDimensionItems.byColumn)
@@ -1053,6 +1054,7 @@ export default function IdentifyPage() {
   const [managingColumnId, setManagingColumnId] = useState<string | null>(null)
   const builderResetRef = useRef<(() => void) | null>(null)
   const reflectResetRef = useRef<(() => void) | null>(null)
+  const researchResetRef = useRef<(() => void) | null>(null)
   const fullView = useSelector((state: RootState) => state.settings.fullView)
   const identifyMode = useSelector((state: RootState) => state.settings.identifyMode)
   const containerSize = useContainerSize()
@@ -1166,7 +1168,7 @@ export default function IdentifyPage() {
 
   const renderActionButtons = () => (
     <>
-      {identifyMode !== "reflect" && (
+      {identifyMode !== "reflect" && identifyMode !== "research" && (
         <Button
           variant="outline"
           size="sm"
@@ -1212,7 +1214,9 @@ export default function IdentifyPage() {
             ? "This will clear your current selection across all dimensions. Saved problems are not affected."
             : identifyMode === "builder"
               ? "This will clear your in-progress problem builder. Saved problems are not affected."
-              : "This will return you to the discovery-method picker. Your prompt answers will remain saved for next time."
+              : identifyMode === "research"
+                ? "This will return you to the research-method picker and clear in-progress capture answers. Saved problems are not affected."
+                : "This will return you to the discovery-method picker. Your prompt answers will remain saved for next time."
         }
         confirmLabel="Reset"
         onConfirm={() => {
@@ -1222,6 +1226,8 @@ export default function IdentifyPage() {
             builderResetRef.current?.()
           } else if (identifyMode === "reflect") {
             reflectResetRef.current?.()
+          } else if (identifyMode === "research") {
+            researchResetRef.current?.()
           }
         }}
       />
@@ -1239,7 +1245,7 @@ export default function IdentifyPage() {
     </>
   )
 
-  const searchInput = identifyMode !== "reflect" && (
+  const searchInput = identifyMode !== "reflect" && identifyMode !== "research" && (
     <div className={cn("relative", containerSize === "narrow" && "w-full")}>
       <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
       <Input
@@ -1284,19 +1290,11 @@ export default function IdentifyPage() {
       </ToggleGroupItem>
       <ToggleGroupItem
         value="research"
-        disabled
-        aria-label="Research mode, coming soon"
-        title="Coming soon"
-        className="gap-1.5 px-3 rounded-none bg-card"
+        aria-label="Research mode"
+        className="gap-1.5 px-3 rounded-none bg-card data-[state=on]:bg-secondary-brand data-[state=on]:text-secondary-brand-foreground"
       >
         <Microscope className="h-3.5 w-3.5" />
         <span className={cn(containerSize === "narrow" && "sr-only")}>Research</span>
-        <span className={cn(
-          "ml-1 inline-flex items-center rounded-full bg-muted px-1.5 py-0.5 text-base font-medium leading-none",
-          containerSize === "narrow" && "sr-only",
-        )}>
-          Soon
-        </span>
       </ToggleGroupItem>
     </ToggleGroup>
   )
@@ -1343,6 +1341,8 @@ export default function IdentifyPage() {
 
       {identifyMode === "reflect" ? (
         <ReflectBuilder resetRef={reflectResetRef} />
+      ) : identifyMode === "research" ? (
+        <ResearchBuilder resetRef={researchResetRef} />
       ) : identifyMode === "builder" ? (
         <ProblemBuilder columns={filteredColumns} onSave={handleBuilderSave} resetRef={builderResetRef} onClearSearch={() => setSearchQuery("")} customItemColumns={customItemColumns} />
       ) : (<>

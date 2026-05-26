@@ -3,7 +3,7 @@ import type { RootModel } from "."
 
 const STORAGE_KEY = "navigate-settings"
 
-export type IdentifyMode = "canvas" | "builder" | "reflect"
+export type IdentifyMode = "canvas" | "builder" | "reflect" | "research"
 export type IdentifyBuilderStep = "pick" | "category" | "choose" | "review"
 export type AvatarColor = "teal" | "mustard" | "navy" | "forest" | "crimson" | "indigo" | "violet" | "rose"
 
@@ -144,7 +144,7 @@ export const settings = createModel<RootModel>()({
           dispatch.settings.setIdentifySelected(stored.identifySelected)
         }
         if (stored.identifyMode) {
-          if (stored.identifyMode === "canvas" || stored.identifyMode === "builder" || stored.identifyMode === "reflect") {
+          if (stored.identifyMode === "canvas" || stored.identifyMode === "builder" || stored.identifyMode === "reflect" || stored.identifyMode === "research") {
             dispatch.settings.setIdentifyMode(stored.identifyMode)
           }
         }
