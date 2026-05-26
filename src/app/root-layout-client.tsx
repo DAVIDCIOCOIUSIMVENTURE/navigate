@@ -239,7 +239,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                 <Button
                   variant="on-primary"
                   size="icon"
-                  className={cn("h-8 w-8", isActive && "bg-secondary-brand border-secondary-brand text-secondary-brand-foreground")}
+                  className={cn(
+                    "h-8 w-8 hover:bg-secondary-brand hover:border-secondary-brand hover:text-secondary-brand-foreground",
+                    isActive && "bg-secondary-brand border-secondary-brand text-secondary-brand-foreground",
+                  )}
                   asChild
                 >
                   <Link href={item.url} aria-label={item.title} onClick={() => setTopNavOpen(false)}>
