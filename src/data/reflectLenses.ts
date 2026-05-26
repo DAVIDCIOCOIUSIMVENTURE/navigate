@@ -4,6 +4,7 @@ import {
   Building2,
   Shuffle,
   Users,
+  UsersRound,
   Radar,
   Wrench,
   type LucideIcon,
@@ -59,6 +60,7 @@ export type LensId =
   | "people"
   | "market"
   | "own-problems"
+  | "audience-problems"
 
 export type Lens = {
   id: LensId
@@ -349,6 +351,72 @@ export const REFLECT_LENSES: Lens[] = [
         ],
         multipleAllowed: true,
         role: "customers",
+      },
+    ],
+  },
+  {
+    id: "audience-problems",
+    title: "Audience problems",
+    shortDescription: "Pick one audience you know or want to serve, then dig into the problems they hit.",
+    longDescription:
+      "Choose one audience (a customer segment or a group from your self-discovery), then explore the friction, workarounds, and wasted spend that shape their day. Sticking to a single audience per run keeps the prompts specific; to explore another, run this tool again and pick a different one.",
+    icon: UsersRound,
+    tileColor: "bg-primary",
+    estimatedMinutes: 10,
+    anchorLabel: "Audience",
+    helperText:
+      "You're looking outward at one specific group. Anything you list should be something you've actually seen them deal with, not what you assume they deal with.",
+    prompts: [
+      {
+        id: "audience-anchor",
+        question: "Which audience do you want to reflect on?",
+        helperText:
+          "Pick one from your self-discovery, your existing customers, or the built-in list. Keeping it to one audience makes the next prompts specific.",
+        examples: [
+          "First-time freelancers",
+          "Parents of school-age children",
+          "Small local retailers",
+        ],
+        multipleAllowed: false,
+        contextOnly: true,
+        role: "customers",
+      },
+      {
+        id: "their-friction",
+        question: "What do they struggle with that they shouldn't have to?",
+        helperText:
+          "Specific friction beats broad pain. Steps they redo, info they can't find, or recurring problems they've learned to live with are good signals.",
+        examples: [
+          "Tracking invoices across three different clients who each want a different format",
+          "Coordinating after-school pickups when both parents work shifting hours",
+          "Keeping in-store stock counts in sync with the online shop",
+        ],
+        multipleAllowed: true,
+        role: "problems",
+      },
+      {
+        id: "their-workarounds",
+        question: "What workarounds have you seen them build for themselves?",
+        helperText:
+          "The hacks they keep using are usually products hiding in plain sight. Spreadsheets, group chats, phone notes, and homemade tools are the giveaways.",
+        examples: [
+          "A shared spreadsheet that shadows the official tool because the tool can't filter what they need",
+          "A WhatsApp group used as the real schedule, with a pinned plan everyone updates",
+          "A printed cheat sheet taped next to the till because the POS menu is too deep",
+        ],
+        multipleAllowed: true,
+      },
+      {
+        id: "wasted-spend",
+        question: "What do they spend money, time, or attention on that doesn't really help?",
+        helperText:
+          "Misallocated spend often signals a missing or misleading product. The thing they pay for promises one outcome and delivers another.",
+        examples: [
+          "Subscriptions to tools they barely use past the first month",
+          "Paid courses that cover everything except the part they actually got stuck on",
+          "Recurring contractor hours spent on work the right template would absorb",
+        ],
+        multipleAllowed: true,
       },
     ],
   },
