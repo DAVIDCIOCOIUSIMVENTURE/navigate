@@ -203,3 +203,35 @@
     @apply bg-background text-foreground;
   }
 }
+
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+  body.canvas-printing {
+    background: white !important;
+  }
+  body.canvas-printing header,
+  body.canvas-printing [data-app-chrome],
+  body.canvas-printing [data-canvas-no-print] {
+    display: none !important;
+  }
+  body.canvas-printing .canvas-print-root {
+    box-shadow: none !important;
+    border: none !important;
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  body.canvas-printing main,
+  body.canvas-printing main > * {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}

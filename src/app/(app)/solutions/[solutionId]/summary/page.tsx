@@ -1,19 +1,19 @@
 "use client"
 
-import { useParams, useRouter } from "next/navigation"
+import { useParams } from "next/navigation"
 import { useSelector } from "react-redux"
 import Link from "next/link"
 import type { RootState } from "@/store"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Lightbulb, ArrowLeft, Pencil } from "lucide-react"
-import { SolutionProvider } from "../validate/context"
-import { SolutionHubContent } from "@/components/solution-hub/solution-hub-content"
+import { ArrowLeft } from "lucide-react"
+import { SolutionCanvas } from "@/components/canvas/solution-canvas"
 
-function SummaryBody({ solutionId }: { solutionId: number }) {
-  const router = useRouter()
+export default function SolutionSummaryPage() {
+  const params = useParams()
+  const solutionId = Number(params.solutionId)
   const solution = useSelector((state: RootState) =>
-    state.solutions.solutions.find((s) => s.id === solutionId)
+    state.solutions.solutions.find((s) => s.id === solutionId),
   )
 
   if (!solution) {
@@ -35,42 +35,8 @@ function SummaryBody({ solutionId }: { solutionId: number }) {
   }
 
   return (
-    <div className="flex flex-col w-full flex-1">
-      <Card className="w-full">
-        <CardHeader className="px-10 pt-10 pb-0 space-y-6">
-          <CardTitle icon={Lightbulb}>
-            {solution.title || `Solution #${solution.id}`}
-          </CardTitle>
-          <p className="text-base">
-            A read-only overview of everything captured for this solution.
-          </p>
-        </CardHeader>
-        <CardContent className="p-10 pt-6 flex flex-col gap-6">
-          <SolutionHubContent mode="page" readOnly />
-
-          <div className="flex justify-end">
-            <Button
-              variant="outline"
-              className="bg-[#fcfbf8] border-secondary-brand/40 text-secondary-brand hover:bg-secondary-brand/5 hover:text-secondary-brand"
-              onClick={() => router.push(`/solutions/${solutionId}`)}
-            >
-              <Pencil className="h-4 w-4 mr-2" />
-              Edit solution
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="flex flex-col w-full flex-1 p-4 lg:p-6">
+      <SolutionCanvas solution={solution} editHref={`/solutions/${solutionId}`} />
     </div>
-  )
-}
-
-export default function SolutionSummaryPage() {
-  const params = useParams()
-  const solutionId = Number(params.solutionId)
-
-  return (
-    <SolutionProvider solutionId={solutionId}>
-      <SummaryBody solutionId={solutionId} />
-    </SolutionProvider>
   )
 }

@@ -324,7 +324,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                 e.stopPropagation()
                                 toggleExpanded(problem.id)
                               }}
-                              className="flex items-center justify-center w-6 h-6 rounded border border-tertiary text-tertiary hover:bg-tertiary/10 shrink-0"
+                              className="flex items-center justify-center w-6 h-6 rounded border border-muted-foreground/30 text-muted-foreground hover:bg-muted/50 shrink-0"
                               aria-label={expanded ? "Hide solutions" : `View ${linkedSolutions.length} solution${linkedSolutions.length === 1 ? "" : "s"}`}
                               aria-expanded={expanded}
                             >
@@ -447,16 +447,16 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                         <TableRow
                           key={s.id}
                           className="bg-muted/30 cursor-pointer hover:bg-muted/50"
-                          onClick={() => router.push(`/solutions/${s.id}`)}
+                          onClick={() => router.push(`/solutions/${s.id}/summary`)}
                           role="button"
                           tabIndex={0}
                           onKeyDown={(e) => {
                             if (e.key === "Enter" || e.key === " ") {
                               e.preventDefault()
-                              router.push(`/solutions/${s.id}`)
+                              router.push(`/solutions/${s.id}/summary`)
                             }
                           }}
-                          aria-label={`Edit solution: ${solutionLabel}`}
+                          aria-label={`View solution: ${solutionLabel}`}
                         >
                           <TableCell />
                           <TableCell className="text-sm">
@@ -481,6 +481,20 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                           )}
                           <TableCell onClick={(e) => e.stopPropagation()}>
                             <div className="flex items-center gap-1">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="outline-card"
+                                    size="icon"
+                                    className="h-7 w-7"
+                                    onClick={() => router.push(`/solutions/${s.id}/summary`)}
+                                    aria-label="View solution summary"
+                                  >
+                                    <Eye className="h-3.5 w-3.5" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>View summary</TooltipContent>
+                              </Tooltip>
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <Button
