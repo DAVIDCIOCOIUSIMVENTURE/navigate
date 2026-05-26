@@ -8,10 +8,13 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import { SolutionCanvas } from "@/components/canvas/solution-canvas"
+import { useContainerSize } from "@/context/container-size-context"
+import { cn } from "@/lib/utils"
 
 export default function SolutionCanvasPage() {
   const params = useParams()
   const solutionId = Number(params.solutionId)
+  const isWide = useContainerSize() === "wide"
   const solution = useSelector((state: RootState) =>
     state.solutions.solutions.find((s) => s.id === solutionId),
   )
@@ -35,7 +38,12 @@ export default function SolutionCanvasPage() {
   }
 
   return (
-    <div className="flex flex-col w-full flex-1 min-h-0 p-4 lg:p-6">
+    <div
+      className={cn(
+        "flex flex-col w-full flex-1 min-h-0",
+        isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]",
+      )}
+    >
       <SolutionCanvas solution={solution} editHref={`/solutions/${solutionId}`} />
     </div>
   )

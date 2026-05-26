@@ -2,8 +2,8 @@
 
 import { useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useSelector } from "react-redux"
-import type { RootState } from "@/store"
+import { useSelector, useDispatch } from "react-redux"
+import type { RootState, AppDispatch } from "@/store"
 import type { Solution } from "@/types/solution"
 import { Button } from "@/components/ui/button"
 import {
@@ -17,6 +17,8 @@ import {
   FileText,
   Printer,
   Pencil,
+  Maximize2,
+  Minimize2,
   CheckCircle2,
   XCircle,
   HelpCircle,
@@ -80,16 +82,18 @@ function ScoreCell({
   iconBg,
   score,
   scaleNote,
+  className,
 }: {
   icon: LucideIcon
   label: string
   iconBg: string
   score: number | null
   scaleNote: string
+  className?: string
 }) {
   const filled = score ?? 0
   return (
-    <Cell icon={icon} label={label} iconBg={iconBg} className="col-span-3" empty={score == null}>
+    <Cell icon={icon} label={label} iconBg={iconBg} className={className} empty={score == null}>
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-1">
           {[1, 2, 3, 4, 5].map((n) => (
@@ -102,7 +106,7 @@ function ScoreCell({
             />
           ))}
         </div>
-        <p className="text-base opacity-70">
+        <p className="text-base">
           {score != null ? `${score} / 5` : "Not scored"} {scaleNote}
         </p>
       </div>
@@ -112,6 +116,8 @@ function ScoreCell({
 
 export function SolutionCanvas({ solution, editHref }: { solution: Solution; editHref: string }) {
   const router = useRouter()
+  const dispatch = useDispatch<AppDispatch>()
+  const fullView = useSelector((s: RootState) => s.settings.fullView)
   const status = solution.validationStatus ?? "unvalidated"
   const statusConfig = STATUS_CONFIG[status]
 
@@ -122,8 +128,18 @@ export function SolutionCanvas({ solution, editHref }: { solution: Solution; edi
   useEffect(() => {
     return () => {
       document.body.classList.remove("canvas-printing")
+      dispatch.settings.setFullView(false)
     }
-  }, [])
+  }, [dispatch.settings])
+
+  useEffect(() => {
+    if (!fullView) return
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") dispatch.settings.setFullView(false)
+    }
+    document.addEventListener("keydown", handler)
+    return () => document.removeEventListener("keydown", handler)
+  }, [fullView, dispatch.settings])
 
   const handlePrint = () => {
     document.body.classList.add("canvas-printing")
@@ -134,48 +150,61 @@ export function SolutionCanvas({ solution, editHref }: { solution: Solution; edi
   }
 
   return (
-    <div className="canvas-print-root flex flex-col gap-4 w-full flex-1 min-h-0">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-start gap-3 flex-1 min-w-0">
-          <span className="flex items-center justify-center h-10 w-10 rounded-lg bg-primary text-primary-foreground shrink-0">
-            <Lightbulb className="h-5 w-5" />
+    <div className="canvas-print-root flex flex-col gap-3 w-full flex-1 min-h-0">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2.5 flex-1 min-w-0">
+          <span className="flex items-center justify-center h-8 w-8 rounded-lg bg-primary text-primary-foreground shrink-0">
+            <Lightbulb className="h-4 w-4" />
           </span>
-          <div className="flex-1 min-w-0">
-            <p className="text-base opacity-70">Solution canvas #{solution.id}</p>
-            <h1 className="text-2xl font-semibold leading-tight">
+          <div className="flex-1 min-w-0 flex items-baseline gap-2">
+            <p className="text-lg font-semibold leading-tight shrink-0">Solution title:</p>
+            <h1 className="text-lg font-semibold leading-tight truncate">
               {solution.title || "Untitled solution"}
             </h1>
           </div>
         </div>
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 shrink-0">
           <span
             className={cn(
-              "inline-flex items-center gap-1.5 text-base font-medium px-3 py-1.5 rounded-full border",
+              "inline-flex items-center gap-1 text-sm font-medium px-2 py-0.5 rounded-full border",
               statusConfig.className,
             )}
           >
-            <statusConfig.icon className="h-4 w-4" />
+            <statusConfig.icon className="h-3 w-3" />
             {statusConfig.label}
           </span>
           <div className="flex items-center gap-2" data-canvas-no-print>
-            <Button variant="outline" onClick={handlePrint}>
-              <Printer className="h-4 w-4 mr-2" />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => dispatch.settings.setFullView(!fullView)}
+            >
+              {fullView ? (
+                <Minimize2 className="h-3.5 w-3.5 mr-1.5" />
+              ) : (
+                <Maximize2 className="h-3.5 w-3.5 mr-1.5" />
+              )}
+              {fullView ? "Exit Full View" : "Full View"}
+            </Button>
+            <Button variant="outline" size="sm" onClick={handlePrint}>
+              <Printer className="h-3.5 w-3.5 mr-1.5" />
               Print
             </Button>
             <Button
               variant="outline"
+              size="sm"
               className="bg-[#fcfbf8] border-secondary-brand/40 text-secondary-brand hover:bg-secondary-brand/5 hover:text-secondary-brand"
               onClick={() => router.push(editHref)}
             >
-              <Pencil className="h-4 w-4 mr-2" />
+              <Pencil className="h-3.5 w-3.5 mr-1.5" />
               Edit
             </Button>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-3 auto-rows-fr flex-1 min-h-0">
-        <Cell icon={FileText} label="Description" iconBg="bg-tertiary" className="col-span-6 row-span-2" empty={!solution.description}>
+      <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 lg:grid-rows-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.7fr)] flex-1 lg:min-h-0">
+        <Cell icon={FileText} label="Description" iconBg="bg-tertiary" className="sm:col-span-12 lg:col-span-6 lg:row-span-2" empty={!solution.description}>
           {solution.description ? (
             <p className="whitespace-pre-wrap">{solution.description}</p>
           ) : (
@@ -183,7 +212,7 @@ export function SolutionCanvas({ solution, editHref }: { solution: Solution; edi
           )}
         </Cell>
 
-        <Cell icon={Target} label="Linked problem" iconBg="bg-tertiary" className="col-span-6" empty={!linkedProblem}>
+        <Cell icon={Target} label="Linked problem" iconBg="bg-tertiary" className="sm:col-span-6" empty={!linkedProblem}>
           {linkedProblem ? (
             <p>{linkedProblem.description || `Problem #${linkedProblem.id}`}</p>
           ) : (
@@ -191,13 +220,13 @@ export function SolutionCanvas({ solution, editHref }: { solution: Solution; edi
           )}
         </Cell>
 
-        <Cell icon={Sparkles} label="Inspiration" iconBg="bg-tertiary" className="col-span-6" empty={!solution.inspirationSource && !solution.inspirationDetail}>
+        <Cell icon={Sparkles} label="Inspiration" iconBg="bg-tertiary" className="sm:col-span-6" empty={!solution.inspirationSource && !solution.inspirationDetail}>
           <div className="flex flex-col gap-1">
             {solution.inspirationSource && (
               <p className="capitalize font-medium">{solution.inspirationSource.replace(/_/g, " ")}</p>
             )}
             {solution.inspirationDetail && (
-              <p className="opacity-80 whitespace-pre-wrap">{solution.inspirationDetail}</p>
+              <p className="whitespace-pre-wrap">{solution.inspirationDetail}</p>
             )}
           </div>
         </Cell>
@@ -208,6 +237,7 @@ export function SolutionCanvas({ solution, editHref }: { solution: Solution; edi
           iconBg="bg-secondary-brand"
           score={solution.feasibility}
           scaleNote="(1 hard, 5 easy)"
+          className="sm:col-span-6 lg:col-span-3"
         />
         <ScoreCell
           icon={TrendingUp}
@@ -215,6 +245,7 @@ export function SolutionCanvas({ solution, editHref }: { solution: Solution; edi
           iconBg="bg-secondary-brand"
           score={solution.impact}
           scaleNote="(1 low, 5 high)"
+          className="sm:col-span-6 lg:col-span-3"
         />
         <ScoreCell
           icon={Coins}
@@ -222,6 +253,7 @@ export function SolutionCanvas({ solution, editHref }: { solution: Solution; edi
           iconBg="bg-secondary-brand"
           score={solution.cost}
           scaleNote="(1 cheap, 5 expensive)"
+          className="sm:col-span-6 lg:col-span-3"
         />
         <ScoreCell
           icon={Hourglass}
@@ -229,6 +261,7 @@ export function SolutionCanvas({ solution, editHref }: { solution: Solution; edi
           iconBg="bg-secondary-brand"
           score={solution.timeToImplement}
           scaleNote="(1 fast, 5 slow)"
+          className="sm:col-span-6 lg:col-span-3"
         />
       </div>
     </div>

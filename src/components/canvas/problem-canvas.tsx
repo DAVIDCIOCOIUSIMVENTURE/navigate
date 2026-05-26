@@ -1,9 +1,9 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { useSelector } from "react-redux"
-import type { RootState } from "@/store"
+import { useSelector, useDispatch } from "react-redux"
+import type { RootState, AppDispatch } from "@/store"
 import type { Problem } from "@/store/problems-model"
 import { Button } from "@/components/ui/button"
 import { resolveDimensionLabel } from "@/lib/dimension-labels"
@@ -21,6 +21,9 @@ import {
   Lightbulb,
   Printer,
   Pencil,
+  Maximize2,
+  Minimize2,
+  ChevronDown,
   CheckCircle2,
   XCircle,
   HelpCircle,
@@ -29,6 +32,11 @@ import {
   type LucideIcon,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 
 const STATUS_CONFIG: Record<Problem["validationStatus"], { label: string; className: string; icon: LucideIcon }> = {
   valid: { label: "Valid", className: "bg-success text-white border-success", icon: CheckCircle2 },
@@ -116,18 +124,31 @@ function MetricRow({ label, metric }: { label: string; metric: { value: number |
 
 export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHref: string }) {
   const router = useRouter()
+  const dispatch = useDispatch<AppDispatch>()
+  const fullView = useSelector((s: RootState) => s.settings.fullView)
   const status = problem.validationStatus ?? "unvalidated"
   const statusConfig = STATUS_CONFIG[status]
   const va = problem.validationAssessment
   const linkedSolutions = useSelector((s: RootState) =>
     s.solutions.solutions.filter((sol) => sol.problemId === problem.id),
   )
+  const [solutionsOpen, setSolutionsOpen] = useState(false)
 
   useEffect(() => {
     return () => {
       document.body.classList.remove("canvas-printing")
+      dispatch.settings.setFullView(false)
     }
-  }, [])
+  }, [dispatch.settings])
+
+  useEffect(() => {
+    if (!fullView) return
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") dispatch.settings.setFullView(false)
+    }
+    document.addEventListener("keydown", handler)
+    return () => document.removeEventListener("keydown", handler)
+  }, [fullView, dispatch.settings])
 
   const handlePrint = () => {
     document.body.classList.add("canvas-printing")
@@ -138,81 +159,94 @@ export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHre
   }
 
   return (
-    <div className="canvas-print-root flex flex-col gap-4 w-full flex-1 min-h-0">
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-start gap-3 flex-1 min-w-0">
-          <span className="flex items-center justify-center h-10 w-10 rounded-lg bg-tertiary text-white shrink-0">
-            <Target className="h-5 w-5" />
+    <div className="canvas-print-root flex flex-col gap-3 w-full flex-1 min-h-0">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2.5 flex-1 min-w-0">
+          <span className="flex items-center justify-center h-8 w-8 rounded-lg bg-tertiary text-white shrink-0">
+            <Target className="h-4 w-4" />
           </span>
-          <div className="flex-1 min-w-0">
-            <p className="text-base opacity-70">Problem canvas</p>
-            <h1 className="text-2xl font-semibold leading-tight">
+          <div className="flex-1 min-w-0 flex items-baseline gap-2">
+            <p className="text-lg font-semibold leading-tight shrink-0">Problem description:</p>
+            <h1 className="text-lg font-semibold leading-tight truncate">
               {problem.description || "Untitled problem"}
             </h1>
           </div>
         </div>
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex items-center gap-2 shrink-0">
           <span
             className={cn(
-              "inline-flex items-center gap-1.5 text-base font-medium px-3 py-1.5 rounded-full border",
+              "inline-flex items-center gap-1 text-sm font-medium px-2 py-0.5 rounded-full border",
               statusConfig.className,
             )}
           >
-            <statusConfig.icon className="h-4 w-4" />
+            <statusConfig.icon className="h-3 w-3" />
             {statusConfig.label}
           </span>
           <div className="flex items-center gap-2" data-canvas-no-print>
-            <Button variant="outline" onClick={handlePrint}>
-              <Printer className="h-4 w-4 mr-2" />
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => dispatch.settings.setFullView(!fullView)}
+            >
+              {fullView ? (
+                <Minimize2 className="h-3.5 w-3.5 mr-1.5" />
+              ) : (
+                <Maximize2 className="h-3.5 w-3.5 mr-1.5" />
+              )}
+              {fullView ? "Exit Full View" : "Full View"}
+            </Button>
+            <Button variant="outline" size="sm" onClick={handlePrint}>
+              <Printer className="h-3.5 w-3.5 mr-1.5" />
               Print
             </Button>
             <Button
               variant="outline"
+              size="sm"
               className="border-secondary-brand/40 text-secondary-brand hover:bg-secondary-brand/5 hover:text-secondary-brand"
               onClick={() => router.push(editHref)}
             >
-              <Pencil className="h-4 w-4 mr-2" />
+              <Pencil className="h-3.5 w-3.5 mr-1.5" />
               Edit
             </Button>
           </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-3 auto-rows-fr flex-1 min-h-0">
-        <Cell icon={Users} label="Customer" iconBg="bg-tertiary" className="col-span-4" empty={problem.customers.length === 0 && !problem.customerDescription && !problem.segmentSize}>
+      <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 lg:grid-rows-[minmax(0,1.2fr)_minmax(0,0.95fr)_minmax(0,1.1fr)] flex-1 lg:min-h-0">
+        <Cell icon={Users} label="Customer" iconBg="bg-tertiary" className="sm:col-span-6 lg:col-span-4" empty={problem.customers.length === 0 && !problem.customerDescription && !problem.segmentSize}>
           <div className="flex flex-col gap-2">
             <DimensionList columnId="customers" ids={problem.customers} />
             {problem.customerDescription && (
-              <p className="opacity-80 whitespace-pre-wrap">{problem.customerDescription}</p>
+              <p className="whitespace-pre-wrap">{problem.customerDescription}</p>
             )}
             {problem.segmentSize != null && (
-              <p className="text-base opacity-70">Segment size: {problem.segmentSize.toLocaleString()}</p>
+              <p className="text-base">Segment size: {problem.segmentSize.toLocaleString()}</p>
             )}
           </div>
         </Cell>
 
-        <Cell icon={MapPin} label="Context" iconBg="bg-tertiary" className="col-span-4" empty={problem.contexts.length === 0 && !problem.contextWhen}>
+        <Cell icon={MapPin} label="Context" iconBg="bg-tertiary" className="sm:col-span-6 lg:col-span-4" empty={problem.contexts.length === 0 && !problem.contextWhen}>
           <div className="flex flex-col gap-2">
             <DimensionList columnId="contexts" ids={problem.contexts} />
             {problem.contextWhen && (
-              <p className="opacity-80 whitespace-pre-wrap">{problem.contextWhen}</p>
+              <p className="whitespace-pre-wrap">{problem.contextWhen}</p>
             )}
           </div>
         </Cell>
 
-        <Cell icon={TriangleAlert} label="Problem types" iconBg="bg-tertiary" className="col-span-4" empty={problem.problems.length === 0}>
+        <Cell icon={TriangleAlert} label="Problem types" iconBg="bg-tertiary" className="sm:col-span-12 lg:col-span-4" empty={problem.problems.length === 0}>
           <DimensionList columnId="problems" ids={problem.problems} />
         </Cell>
 
-        <Cell icon={Heart} label="Emotional impact" iconBg="bg-secondary-brand" className="col-span-3" empty={!va.emotionalImpact.level && va.emotionalImpact.value == null}>
+        <Cell icon={Heart} label="Emotional impact" iconBg="bg-secondary-brand" className="sm:col-span-6 lg:col-span-3" empty={!va.emotionalImpact.level && va.emotionalImpact.value == null}>
           <MetricRow label="Severity" metric={va.emotionalImpact} />
         </Cell>
 
-        <Cell icon={Repeat} label="Frequency" iconBg="bg-secondary-brand" className="col-span-3" empty={!va.howOften.level && va.howOften.value == null}>
+        <Cell icon={Repeat} label="Frequency" iconBg="bg-secondary-brand" className="sm:col-span-6 lg:col-span-3" empty={!va.howOften.level && va.howOften.value == null}>
           <MetricRow label="How often" metric={va.howOften} />
         </Cell>
 
-        <Cell icon={DollarSign} label="Worth" iconBg="bg-secondary-brand" className="col-span-3" empty={!va.worthToThem.level && va.worthToThem.value == null}>
+        <Cell icon={DollarSign} label="Worth" iconBg="bg-secondary-brand" className="sm:col-span-6 lg:col-span-3" empty={!va.worthToThem.level && va.worthToThem.value == null}>
           <div className="flex flex-col gap-1">
             <MetricRow label="Per person" metric={va.worthToThem} />
             <div className="flex justify-between gap-2">
@@ -222,17 +256,17 @@ export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHre
           </div>
         </Cell>
 
-        <Cell icon={Sparkles} label="Market reach" iconBg="bg-secondary-brand" className="col-span-3" empty={!va.howManyPeople.level && va.howManyPeople.value == null}>
+        <Cell icon={Sparkles} label="Market reach" iconBg="bg-secondary-brand" className="sm:col-span-6 lg:col-span-3" empty={!va.howManyPeople.level && va.howManyPeople.value == null}>
           <MetricRow label="People affected" metric={va.howManyPeople} />
         </Cell>
 
-        <Cell icon={GitFork} label="Existing solutions" iconBg="bg-secondary-brand" className="col-span-8" empty={problem.existingSolutions.length === 0}>
+        <Cell icon={GitFork} label="Existing solutions" iconBg="bg-secondary-brand" className="sm:col-span-12 lg:col-span-8" empty={problem.existingSolutions.length === 0}>
           <ul className="flex flex-col gap-2">
             {problem.existingSolutions.map((s) => (
               <li key={s.id}>
                 <p className="font-medium">{s.text || "Untitled solution"}</p>
                 {s.shortcomings.length > 0 && (
-                  <ul className="list-disc list-inside opacity-80">
+                  <ul className="list-disc list-inside">
                     {s.shortcomings.map((sc) => (
                       <li key={sc.id}>{sc.text}</li>
                     ))}
@@ -243,7 +277,7 @@ export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHre
           </ul>
         </Cell>
 
-        <Cell icon={Swords} label="Competition" iconBg="bg-secondary-brand" className="col-span-4" empty={!va.competitorSize.level && va.competitorSize.value == null}>
+        <Cell icon={Swords} label="Competition" iconBg="bg-secondary-brand" className="sm:col-span-12 lg:col-span-4" empty={!va.competitorSize.level && va.competitorSize.value == null}>
           <div className="flex flex-col gap-1">
             <MetricRow label="Competitor size" metric={va.competitorSize} />
             <MetricRow label="Cost of switching" metric={va.costOfSwitching} />
@@ -251,9 +285,34 @@ export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHre
           </div>
         </Cell>
 
-        <Cell icon={Lightbulb} label="Solutions" iconBg="bg-primary" className="col-span-12" empty={linkedSolutions.length === 0}>
+      </div>
+
+      <Collapsible
+        open={solutionsOpen}
+        onOpenChange={setSolutionsOpen}
+        className="rounded-xl border bg-card shadow-sm shrink-0"
+      >
+        <CollapsibleTrigger className="flex items-center gap-3 px-4 py-3 w-full text-left">
+          <span
+            className="flex items-center justify-center h-7 w-7 rounded-lg shrink-0 text-white bg-primary"
+            aria-hidden="true"
+          >
+            <Lightbulb className="h-3.5 w-3.5" />
+          </span>
+          <h3 className="flex-1 font-semibold text-base">Solutions</h3>
+          <span className="text-base">
+            {linkedSolutions.length}
+          </span>
+          <ChevronDown
+            className={cn(
+              "h-4 w-4 transition-transform",
+              solutionsOpen && "rotate-180",
+            )}
+          />
+        </CollapsibleTrigger>
+        <CollapsibleContent className="px-4 pb-4 text-base">
           {linkedSolutions.length === 0 ? (
-            <Placeholder />
+            <span className="italic opacity-60">Not yet captured</span>
           ) : (
             <ul className="flex flex-col gap-1.5">
               {linkedSolutions.map((sol) => {
@@ -263,11 +322,11 @@ export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHre
                   <li key={sol.id} className="flex items-center gap-2">
                     <span
                       className={cn(
-                        "inline-flex items-center gap-1 text-base px-2 py-0.5 rounded-full border shrink-0",
+                        "inline-flex items-center gap-1 text-sm px-2 py-0.5 rounded-full border shrink-0",
                         sCfg.className,
                       )}
                     >
-                      <sCfg.icon className="h-3.5 w-3.5" />
+                      <sCfg.icon className="h-3 w-3" />
                       {sCfg.label}
                     </span>
                     <button
@@ -286,8 +345,8 @@ export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHre
               })}
             </ul>
           )}
-        </Cell>
-      </div>
+        </CollapsibleContent>
+      </Collapsible>
     </div>
   )
 }
