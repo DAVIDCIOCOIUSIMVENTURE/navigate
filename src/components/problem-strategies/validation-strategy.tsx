@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider"
@@ -418,49 +417,6 @@ function EmotionalImpactSection({
   )
 }
 
-function NotesSection({
-  reason,
-  setReason,
-  setStatus,
-  status,
-  readOnly,
-}: {
-  reason: string
-  setReason: (val: string) => void
-  setStatus: (val: "in_progress") => void
-  status: "unvalidated" | "in_progress" | "valid" | "invalid" | "unsure"
-  readOnly?: boolean
-}) {
-  const [localReason, setLocalReason] = useState(reason)
-  const statusRef = useRef(status)
-  useEffect(() => { statusRef.current = status })
-
-  useEffect(() => {
-    if (localReason === reason) return
-    const timer = setTimeout(() => {
-      setReason(localReason)
-      if (statusRef.current === "unvalidated") setStatus("in_progress")
-    }, 600)
-    return () => clearTimeout(timer)
-  }, [localReason]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  if (readOnly && !reason) return null
-
-  return (
-    <div className="flex flex-col gap-2">
-      <p className="text-base font-medium text-white">Notes{!readOnly && " (optional)"}</p>
-      <Textarea
-        rows={3}
-        placeholder="Add any notes about your decision..."
-        value={readOnly ? reason : localReason}
-        onChange={(e) => setLocalReason(e.target.value)}
-        readOnly={readOnly}
-        className="resize-none text-base focus-visible:ring-1 bg-white border-white text-foreground read-only:cursor-default"
-      />
-    </div>
-  )
-}
-
 function VerdictButtons({
   status,
   setStatus,
@@ -710,13 +666,12 @@ export function EmotionalImpactStrategy({ readOnly = false }: { readOnly?: boole
 export function CompetitionStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const {
     validationAssessment, setCostOfSwitching, setSolutionEffectiveness, setCompetitorSize,
-    reason, setReason, status, setStatus,
   } = useProblem()
   const { costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
 
   const hasAny = [costOfSwitching, solutionEffectiveness, competitorSize].some((m) => m.level !== "")
 
-  if (readOnly && !hasAny && !reason.trim()) {
+  if (readOnly && !hasAny) {
     return (
       <div className="bg-secondary-brand rounded-xl p-8">
         <p className="text-base text-white italic">No competitive landscape captured.</p>
@@ -737,15 +692,6 @@ export function CompetitionStrategy({ readOnly = false }: { readOnly?: boolean }
           setCompetitorSize={setCompetitorSize}
           readOnly={readOnly}
         />
-        <div className="pt-2 border-t border-white/20">
-          <NotesSection
-            reason={reason}
-            setReason={setReason}
-            status={status}
-            setStatus={setStatus}
-            readOnly={readOnly}
-          />
-        </div>
       </div>
     </div>
   )
@@ -903,7 +849,7 @@ function PitfallsCallout() {
 
 export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const {
-    validationAssessment, status, setStatus, reason,
+    validationAssessment, status, setStatus,
   } = useProblem()
   const { howManyPeople, howOften, worthToThem, obtainableShare, emotionalImpact, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
 
@@ -935,7 +881,7 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
         <div className="flex flex-col gap-3">
           <p className="text-base font-medium text-white">Summary of your assessment</p>
           <p className="text-base text-white">
-            Each signal below is colour-coded against a rough heuristic: green is favourable for pursuing the problem, amber is neutral, red is unfavourable. The dot is a hint, not a rule. If you disagree with how a signal is read, say so in the notes.
+            Each signal below is colour-coded against a rough heuristic: green is favourable for pursuing the problem, amber is neutral, red is unfavourable. The dot is a hint, not a rule.
           </p>
           <div className="rounded-lg border border-white/20 bg-white/10 p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <MetricRow
@@ -995,12 +941,6 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
               <span className="text-base text-white">customers × frequency × value × factor ({factor}) × share ({sharePct}%). Gross market before the share filter: {formatNumber(grossMarket, { currency })} per year. Treat the result as a sanity check, not as proof of demand.</span>
             )}
           </div>
-          {reason.trim() && (
-            <div className="rounded-lg border border-white/20 bg-white/10 p-4 flex flex-col gap-1">
-              <span className="text-base uppercase tracking-wide text-white">Notes</span>
-              <span className="text-base text-white whitespace-pre-wrap">{reason}</span>
-            </div>
-          )}
         </div>
 
         <LeanIndicator signals={signalList} />
@@ -1017,7 +957,7 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
 
 export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const {
-    status, setStatus, reason, setReason,
+    status, setStatus,
     validationAssessment, setHowManyPeople, setHowOften, setWorthToThem, setObtainableShare, setEmotionalImpact, setCostOfSwitching,
     setSolutionEffectiveness, setCompetitorSize,
   } = useProblem()
@@ -1028,7 +968,7 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
     .some((m) => m.value !== null || m.level !== "")
   const hasVerdict = status === "valid" || status === "unsure" || status === "invalid"
 
-  if (readOnly && !hasAnyMetric && !reason.trim() && !hasVerdict) {
+  if (readOnly && !hasAnyMetric && !hasVerdict) {
     return (
       <div className="bg-secondary-brand rounded-xl p-8">
         <p className="text-base text-white italic">No validation assessment captured.</p>
@@ -1080,18 +1020,6 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
           setCompetitorSize={setCompetitorSize}
           readOnly={readOnly}
         />
-
-        {(!readOnly || reason) && (
-          <div className="pt-2 border-t border-white/20">
-            <NotesSection
-              reason={reason}
-              setReason={setReason}
-              status={status}
-              setStatus={setStatus}
-              readOnly={readOnly}
-            />
-          </div>
-        )}
 
         <div className="pt-2 border-t border-white/20">
           <VerdictButtons status={status} setStatus={setStatus} readOnly={readOnly} />

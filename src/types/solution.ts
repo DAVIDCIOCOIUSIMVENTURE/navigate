@@ -87,9 +87,7 @@ export type Solution = {
   impact: number | null // 1-5
   cost: number | null // 1-5 (1=cheap, 5=expensive)
   timeToImplement: number | null // 1-5 (1=fast, 5=slow)
-  validationNotes: string
   validationStatus: ValidationStatus
-  validationReason: string
   // Method-specific snapshots captured at save time, so each solution can be
   // re-edited later in a dialog tailored to its inspiration source.
   analogyDomain?: string
@@ -142,9 +140,7 @@ export const DEFAULT_SOLUTION_FIELDS: Omit<Solution, "id" | "problemId" | "works
   impact: null,
   cost: null,
   timeToImplement: null,
-  validationNotes: "",
   validationStatus: "unvalidated",
-  validationReason: "",
   analogyDomain: undefined,
   analogyInsight: undefined,
   scamperIdeas: undefined,

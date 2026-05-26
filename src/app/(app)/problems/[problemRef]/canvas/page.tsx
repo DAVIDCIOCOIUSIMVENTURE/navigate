@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import { ProblemCanvas } from "@/components/canvas/problem-canvas"
 
-export default function ProblemSummaryPage() {
+export default function ProblemCanvasPage() {
   const params = useParams()
   const problemRef = params.problemRef as string
   const problemId = Number(problemRef)
@@ -36,7 +36,7 @@ export default function ProblemSummaryPage() {
   }
 
   return (
-    <div className="flex flex-col w-full flex-1 p-4 lg:p-6">
+    <div className="flex flex-col w-full flex-1 min-h-0 p-4 lg:p-6">
       <ProblemCanvas problem={problem} editHref={`/problems/${problemRef}`} />
     </div>
   )

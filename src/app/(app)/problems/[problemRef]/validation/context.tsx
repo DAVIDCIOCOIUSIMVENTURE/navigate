@@ -48,8 +48,6 @@ type ProblemContextValue = {
   setContextWhen: (val: string) => void
   status: ValidationStatus
   setStatus: (val: ValidationStatus) => void
-  reason: string
-  setReason: (val: string) => void
   validationAssessment: ValidationAssessment
   setHowManyPeople: (patch: Partial<ValidationMetric>) => void
   setHowOften: (patch: Partial<ValidationMetric>) => void
@@ -110,7 +108,6 @@ export function ProblemProvider({
   }), [storedAssessment])
   const contextWhen = problem?.contextWhen ?? ""
   const status = problem?.validationStatus ?? "unvalidated"
-  const reason = problem?.validationReason ?? ""
 
   const setSegmentSize = useCallback(
     (val: number | null) => {
@@ -143,13 +140,6 @@ export function ProblemProvider({
   const setStatus = useCallback(
     (val: ValidationStatus) => {
       dispatch.problems.update({ id: problemId, patch: { validationStatus: val } })
-    },
-    [dispatch, problemId]
-  )
-
-  const setReason = useCallback(
-    (val: string) => {
-      dispatch.problems.update({ id: problemId, patch: { validationReason: val } })
     },
     [dispatch, problemId]
   )
@@ -334,7 +324,6 @@ export function ProblemProvider({
         existingSolutions, setExistingSolutions,
         contextWhen, setContextWhen,
         status, setStatus,
-        reason, setReason,
         validationAssessment,
         setHowManyPeople,
         setHowOften,

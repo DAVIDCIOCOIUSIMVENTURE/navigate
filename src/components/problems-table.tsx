@@ -303,13 +303,13 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                     <Fragment key={problem.id}>
                     <TableRow
                       className={cn(zebra, expanded && hasSolutions && "border-b-0", "cursor-pointer hover:bg-muted/40")}
-                      onClick={() => router.push(`/problems/${problem.id}/summary`)}
+                      onClick={() => router.push(`/problems/${problem.id}/canvas`)}
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => {
                         if (e.key === "Enter" || e.key === " ") {
                           e.preventDefault()
-                          router.push(`/problems/${problem.id}/summary`)
+                          router.push(`/problems/${problem.id}/canvas`)
                         }
                       }}
                       aria-label={`View problem: ${problem.description || "untitled"}`}
@@ -372,13 +372,13 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                   variant="outline-card"
                                   size="icon"
                                   className="h-7 w-7"
-                                  onClick={() => router.push(`/problems/${problem.id}/summary`)}
-                                  aria-label="View problem summary"
+                                  onClick={() => router.push(`/problems/${problem.id}/canvas`)}
+                                  aria-label="View problem canvas"
                                 >
                                   <Eye className="h-3.5 w-3.5" />
                                 </Button>
                               </TooltipTrigger>
-                              <TooltipContent>View summary</TooltipContent>
+                              <TooltipContent>View canvas</TooltipContent>
                             </Tooltip>
                           )}
                           {showEditDelete && (
@@ -447,13 +447,13 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                         <TableRow
                           key={s.id}
                           className="bg-muted/30 cursor-pointer hover:bg-muted/50"
-                          onClick={() => router.push(`/solutions/${s.id}/summary`)}
+                          onClick={() => router.push(`/solutions/${s.id}/canvas`)}
                           role="button"
                           tabIndex={0}
                           onKeyDown={(e) => {
                             if (e.key === "Enter" || e.key === " ") {
                               e.preventDefault()
-                              router.push(`/solutions/${s.id}/summary`)
+                              router.push(`/solutions/${s.id}/canvas`)
                             }
                           }}
                           aria-label={`View solution: ${solutionLabel}`}
@@ -487,13 +487,13 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                     variant="outline-card"
                                     size="icon"
                                     className="h-7 w-7"
-                                    onClick={() => router.push(`/solutions/${s.id}/summary`)}
-                                    aria-label="View solution summary"
+                                    onClick={() => router.push(`/solutions/${s.id}/canvas`)}
+                                    aria-label="View solution canvas"
                                   >
                                     <Eye className="h-3.5 w-3.5" />
                                   </Button>
                                 </TooltipTrigger>
-                                <TooltipContent>View summary</TooltipContent>
+                                <TooltipContent>View canvas</TooltipContent>
                               </Tooltip>
                               <Tooltip>
                                 <TooltipTrigger asChild>

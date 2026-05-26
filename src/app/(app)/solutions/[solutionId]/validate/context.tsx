@@ -41,12 +41,8 @@ type SolutionContextValue = {
   setCost: (val: number | null) => void
   timeToImplement: number | null
   setTimeToImplement: (val: number | null) => void
-  validationNotes: string
-  setValidationNotes: (val: string) => void
   validationStatus: ValidationStatus
   setValidationStatus: (val: ValidationStatus) => void
-  validationReason: string
-  setValidationReason: (val: string) => void
 }
 
 const SolutionContext = createContext<SolutionContextValue | null>(null)
@@ -70,9 +66,7 @@ export function SolutionProvider({
   const impact = solution?.impact ?? null
   const cost = solution?.cost ?? null
   const timeToImplement = solution?.timeToImplement ?? null
-  const validationNotes = solution?.validationNotes ?? ""
   const validationStatus = solution?.validationStatus ?? "unvalidated"
-  const validationReason = solution?.validationReason ?? ""
 
   const patch = useCallback(
     <K extends keyof Solution>(key: K, value: Solution[K]) => {
@@ -85,9 +79,7 @@ export function SolutionProvider({
   const setImpact = useCallback((val: number | null) => patch("impact", val), [patch])
   const setCost = useCallback((val: number | null) => patch("cost", val), [patch])
   const setTimeToImplement = useCallback((val: number | null) => patch("timeToImplement", val), [patch])
-  const setValidationNotes = useCallback((val: string) => patch("validationNotes", val), [patch])
   const setValidationStatus = useCallback((val: ValidationStatus) => patch("validationStatus", val), [patch])
-  const setValidationReason = useCallback((val: string) => patch("validationReason", val), [patch])
 
   return (
     <SolutionContext.Provider
@@ -97,9 +89,7 @@ export function SolutionProvider({
         impact, setImpact,
         cost, setCost,
         timeToImplement, setTimeToImplement,
-        validationNotes, setValidationNotes,
         validationStatus, setValidationStatus,
-        validationReason, setValidationReason,
       }}
     >
       {children}

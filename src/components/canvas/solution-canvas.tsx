@@ -15,7 +15,6 @@ import {
   Hourglass,
   Sparkles,
   FileText,
-  ShieldCheck,
   Printer,
   Pencil,
   CheckCircle2,
@@ -28,11 +27,11 @@ import {
 import { cn } from "@/lib/utils"
 
 const STATUS_CONFIG: Record<Solution["validationStatus"], { label: string; className: string; icon: LucideIcon }> = {
-  valid: { label: "Valid", className: "bg-green-100 text-green-800 border-green-200", icon: CheckCircle2 },
-  invalid: { label: "Invalid", className: "bg-red-100 text-red-800 border-red-200", icon: XCircle },
-  unsure: { label: "Unsure", className: "bg-amber-100 text-amber-800 border-amber-200", icon: HelpCircle },
-  in_progress: { label: "In progress", className: "bg-blue-100 text-blue-800 border-blue-200", icon: Clock },
-  unvalidated: { label: "Unvalidated", className: "bg-gray-100 text-gray-800 border-gray-200", icon: Circle },
+  valid: { label: "Valid", className: "bg-success text-white border-success", icon: CheckCircle2 },
+  invalid: { label: "Invalid", className: "bg-destructive text-white border-destructive", icon: XCircle },
+  unsure: { label: "Unsure", className: "bg-primary text-primary-foreground border-primary", icon: HelpCircle },
+  in_progress: { label: "In progress", className: "bg-secondary-brand text-white border-secondary-brand", icon: Clock },
+  unvalidated: { label: "Unvalidated", className: "bg-muted-foreground text-white border-muted-foreground", icon: Circle },
 }
 
 function Cell({
@@ -51,14 +50,20 @@ function Cell({
   children: React.ReactNode
 }) {
   return (
-    <div className={cn("flex flex-col rounded-lg border bg-card overflow-hidden", className)}>
-      <div className="flex items-center gap-2 px-3 py-2 border-b bg-muted/30">
-        <span className={cn("flex items-center justify-center h-6 w-6 rounded text-white shrink-0", iconBg)}>
+    <div className={cn("flex flex-col rounded-xl border bg-card shadow-sm overflow-hidden", className)}>
+      <div className="flex items-center gap-3 px-4 pt-4 pb-3">
+        <span
+          className={cn(
+            "flex items-center justify-center h-7 w-7 rounded-lg shrink-0 text-white",
+            iconBg,
+          )}
+          aria-hidden="true"
+        >
           <Icon className="h-3.5 w-3.5" />
         </span>
-        <h3 className="text-base font-semibold leading-none">{label}</h3>
+        <h3 className="flex-1 font-semibold text-base">{label}</h3>
       </div>
-      <div className={cn("p-3 flex-1 text-base", empty && "italic opacity-60")}>
+      <div className={cn("px-4 pb-4 flex-1 min-h-0 overflow-y-auto text-base", empty && "italic opacity-60")}>
         {children}
       </div>
     </div>
@@ -129,7 +134,7 @@ export function SolutionCanvas({ solution, editHref }: { solution: Solution; edi
   }
 
   return (
-    <div className="canvas-print-root flex flex-col gap-4 w-full">
+    <div className="canvas-print-root flex flex-col gap-4 w-full flex-1 min-h-0">
       <div className="flex items-start justify-between gap-4">
         <div className="flex items-start gap-3 flex-1 min-w-0">
           <span className="flex items-center justify-center h-10 w-10 rounded-lg bg-primary text-primary-foreground shrink-0">
@@ -169,8 +174,8 @@ export function SolutionCanvas({ solution, editHref }: { solution: Solution; edi
         </div>
       </div>
 
-      <div className="grid grid-cols-12 gap-3 auto-rows-fr">
-        <Cell icon={FileText} label="Description" iconBg="bg-primary" className="col-span-6 row-span-2" empty={!solution.description}>
+      <div className="grid grid-cols-12 gap-3 auto-rows-fr flex-1 min-h-0">
+        <Cell icon={FileText} label="Description" iconBg="bg-tertiary" className="col-span-6 row-span-2" empty={!solution.description}>
           {solution.description ? (
             <p className="whitespace-pre-wrap">{solution.description}</p>
           ) : (
@@ -186,7 +191,7 @@ export function SolutionCanvas({ solution, editHref }: { solution: Solution; edi
           )}
         </Cell>
 
-        <Cell icon={Sparkles} label="Inspiration" iconBg="bg-violet-800" className="col-span-6" empty={!solution.inspirationSource && !solution.inspirationDetail}>
+        <Cell icon={Sparkles} label="Inspiration" iconBg="bg-tertiary" className="col-span-6" empty={!solution.inspirationSource && !solution.inspirationDetail}>
           <div className="flex flex-col gap-1">
             {solution.inspirationSource && (
               <p className="capitalize font-medium">{solution.inspirationSource.replace(/_/g, " ")}</p>
@@ -200,47 +205,31 @@ export function SolutionCanvas({ solution, editHref }: { solution: Solution; edi
         <ScoreCell
           icon={Wrench}
           label="Feasibility"
-          iconBg="bg-emerald-800"
+          iconBg="bg-secondary-brand"
           score={solution.feasibility}
           scaleNote="(1 hard, 5 easy)"
         />
         <ScoreCell
           icon={TrendingUp}
           label="Impact"
-          iconBg="bg-green-800"
+          iconBg="bg-secondary-brand"
           score={solution.impact}
           scaleNote="(1 low, 5 high)"
         />
         <ScoreCell
           icon={Coins}
           label="Cost"
-          iconBg="bg-yellow-600"
+          iconBg="bg-secondary-brand"
           score={solution.cost}
           scaleNote="(1 cheap, 5 expensive)"
         />
         <ScoreCell
           icon={Hourglass}
           label="Time to implement"
-          iconBg="bg-teal-700"
+          iconBg="bg-secondary-brand"
           score={solution.timeToImplement}
           scaleNote="(1 fast, 5 slow)"
         />
-
-        <Cell icon={ShieldCheck} label="Validation notes" iconBg="bg-indigo-800" className="col-span-6" empty={!solution.validationNotes}>
-          {solution.validationNotes ? (
-            <p className="whitespace-pre-wrap">{solution.validationNotes}</p>
-          ) : (
-            <Placeholder />
-          )}
-        </Cell>
-
-        <Cell icon={ShieldCheck} label="Verdict & reasoning" iconBg="bg-tertiary" className="col-span-6" empty={!solution.validationReason}>
-          {solution.validationReason ? (
-            <p className="whitespace-pre-wrap">{solution.validationReason}</p>
-          ) : (
-            <Placeholder />
-          )}
-        </Cell>
       </div>
     </div>
   )

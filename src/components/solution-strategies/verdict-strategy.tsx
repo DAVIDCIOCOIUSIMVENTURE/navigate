@@ -1,7 +1,6 @@
 ﻿"use client"
 
 import { useEffect, useState } from "react"
-import { Textarea } from "@/components/ui/textarea"
 import { useSolution } from "@/app/(app)/solutions/[solutionId]/validate/context"
 import type { ValidationStatus } from "@/types/validation"
 import { CheckCircle2, HelpCircle, XCircle } from "lucide-react"
@@ -48,7 +47,7 @@ export const VERDICT_GUIDANCE: string[] = [
  * readOnly mode) the validation summary.
  */
 export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
-  const { validationStatus, setValidationStatus, validationReason, setValidationReason } = useSolution()
+  const { validationStatus, setValidationStatus } = useSolution()
 
   const [mounted, setMounted] = useState(false)
   useEffect(() => { setMounted(true) }, [])
@@ -58,9 +57,8 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
     : null
 
   const hasVerdict = currentKey !== null
-  const reasonText = validationReason ?? ""
 
-  if (readOnly && !hasVerdict && !reasonText.trim()) {
+  if (readOnly && !hasVerdict) {
     return (
       <div className="bg-secondary-brand rounded-xl p-8">
         <p className="text-sm text-white/70 italic">No verdict captured.</p>
@@ -85,20 +83,6 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
               </li>
             ))}
           </ul>
-        </div>
-      )}
-
-      {(!readOnly || reasonText) && (
-        <div className={cn("flex flex-col gap-2", !readOnly && "pt-2 border-t border-white/20")}>
-          <p className="text-base font-medium text-white">Reasoning{!readOnly && " (optional)"}</p>
-          <Textarea
-            rows={3}
-            placeholder="Capture the thinking behind your verdict. What clinched it? What would change your mind?"
-            value={reasonText}
-            onChange={(e) => setValidationReason(e.target.value)}
-            readOnly={readOnly}
-            className="resize-none text-base focus-visible:ring-1 bg-white border-white text-foreground read-only:cursor-default"
-          />
         </div>
       )}
 

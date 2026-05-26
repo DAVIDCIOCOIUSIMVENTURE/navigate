@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
 import { SolutionCanvas } from "@/components/canvas/solution-canvas"
 
-export default function SolutionSummaryPage() {
+export default function SolutionCanvasPage() {
   const params = useParams()
   const solutionId = Number(params.solutionId)
   const solution = useSelector((state: RootState) =>
@@ -35,7 +35,7 @@ export default function SolutionSummaryPage() {
   }
 
   return (
-    <div className="flex flex-col w-full flex-1 p-4 lg:p-6">
+    <div className="flex flex-col w-full flex-1 min-h-0 p-4 lg:p-6">
       <SolutionCanvas solution={solution} editHref={`/solutions/${solutionId}`} />
     </div>
   )

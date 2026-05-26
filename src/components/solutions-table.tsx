@@ -279,13 +279,13 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                   <TableRow
                     key={solution.id}
                     className={cn(zebra, "cursor-pointer hover:bg-muted/40")}
-                    onClick={() => router.push(`/solutions/${solution.id}/summary`)}
+                    onClick={() => router.push(`/solutions/${solution.id}/canvas`)}
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault()
-                        router.push(`/solutions/${solution.id}/summary`)
+                        router.push(`/solutions/${solution.id}/canvas`)
                       }
                     }}
                     aria-label={`View solution: ${solution.title || "untitled"}`}
@@ -333,13 +333,13 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                                 variant="outline-card"
                                 size="icon"
                                 className="h-7 w-7"
-                                onClick={() => router.push(`/solutions/${solution.id}/summary`)}
-                                aria-label="View solution summary"
+                                onClick={() => router.push(`/solutions/${solution.id}/canvas`)}
+                                aria-label="View solution canvas"
                               >
                                 <Eye className="h-3.5 w-3.5" />
                               </Button>
                             </TooltipTrigger>
-                            <TooltipContent>View summary</TooltipContent>
+                            <TooltipContent>View canvas</TooltipContent>
                           </Tooltip>
                         )}
                         {showEditDelete && (

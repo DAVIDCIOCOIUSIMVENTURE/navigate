@@ -104,6 +104,9 @@ function getCrumbs(pathname: string): Crumb[] {
     if (third === "validation") {
       crumbs.push({ label: second, href: `/problems/${second}` })
       crumbs.push({ label: "Validation" })
+    } else if (third === "canvas") {
+      crumbs.push({ label: second, href: `/problems/${second}` })
+      crumbs.push({ label: "Canvas" })
     } else {
       crumbs.push({ label: second })
     }
@@ -123,6 +126,9 @@ function getCrumbs(pathname: string): Crumb[] {
     if (third === "validate") {
       crumbs.push({ label: second, href: `/solutions/${second}` })
       crumbs.push({ label: "Validation" })
+    } else if (third === "canvas") {
+      crumbs.push({ label: second, href: `/solutions/${second}` })
+      crumbs.push({ label: "Canvas" })
     } else {
       crumbs.push({ label: second })
     }
