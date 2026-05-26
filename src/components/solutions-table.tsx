@@ -31,6 +31,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
+  Eye,
   Pencil,
   Trash2,
   CheckCircle2,
@@ -278,16 +279,16 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                   <TableRow
                     key={solution.id}
                     className={cn(zebra, "cursor-pointer hover:bg-muted/40")}
-                    onClick={() => router.push(`/solutions/${solution.id}`)}
+                    onClick={() => router.push(`/solutions/${solution.id}/summary`)}
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault()
-                        router.push(`/solutions/${solution.id}`)
+                        router.push(`/solutions/${solution.id}/summary`)
                       }
                     }}
-                    aria-label={`Edit solution: ${solution.title || "untitled"}`}
+                    aria-label={`View solution: ${solution.title || "untitled"}`}
                   >
                     <TableCell>{originalIndex + 1}</TableCell>
                     <TableCell className="text-sm">
@@ -325,6 +326,22 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                     )}
                     <TableCell onClick={(e) => e.stopPropagation()}>
                       <div className="flex items-center gap-1">
+                        {showEditDelete && (
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <Button
+                                variant="outline-card"
+                                size="icon"
+                                className="h-7 w-7"
+                                onClick={() => router.push(`/solutions/${solution.id}/summary`)}
+                                aria-label="View solution summary"
+                              >
+                                <Eye className="h-3.5 w-3.5" />
+                              </Button>
+                            </TooltipTrigger>
+                            <TooltipContent>View summary</TooltipContent>
+                          </Tooltip>
+                        )}
                         {showEditDelete && (
                           <Tooltip>
                             <TooltipTrigger asChild>

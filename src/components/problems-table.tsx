@@ -31,6 +31,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
+  Eye,
   Pencil,
   Trash2,
   CheckCircle2,
@@ -302,16 +303,16 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                     <Fragment key={problem.id}>
                     <TableRow
                       className={cn(zebra, expanded && hasSolutions && "border-b-0", "cursor-pointer hover:bg-muted/40")}
-                      onClick={() => router.push(`/problems/${problem.id}`)}
+                      onClick={() => router.push(`/problems/${problem.id}/summary`)}
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => {
                         if (e.key === "Enter" || e.key === " ") {
                           e.preventDefault()
-                          router.push(`/problems/${problem.id}`)
+                          router.push(`/problems/${problem.id}/summary`)
                         }
                       }}
-                      aria-label={`Edit problem: ${problem.description || "untitled"}`}
+                      aria-label={`View problem: ${problem.description || "untitled"}`}
                     >
                       <TableCell>{originalIndex + 1}</TableCell>
                       <TableCell className="text-sm">
@@ -364,6 +365,22 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                       )}
                       <TableCell onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center gap-1">
+                          {showEditDelete && (
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <Button
+                                  variant="outline-card"
+                                  size="icon"
+                                  className="h-7 w-7"
+                                  onClick={() => router.push(`/problems/${problem.id}/summary`)}
+                                  aria-label="View problem summary"
+                                >
+                                  <Eye className="h-3.5 w-3.5" />
+                                </Button>
+                              </TooltipTrigger>
+                              <TooltipContent>View summary</TooltipContent>
+                            </Tooltip>
+                          )}
                           {showEditDelete && (
                             <Tooltip>
                               <TooltipTrigger asChild>
