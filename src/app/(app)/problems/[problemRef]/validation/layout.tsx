@@ -186,11 +186,13 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
     <div className={cn("flex gap-6 flex-1 w-full min-h-0", isWide ? "items-stretch" : "items-start")}>
       {isWide && (
-      <nav aria-label="Problem validation steps" className="flex w-56 flex-col gap-3 shrink-0">
-        <Card>
-          <CardContent className="p-3">
-            <NavItems base={base} pathname={pathname} onNavigate={handleNavigate} />
-            <div className="border-t mt-2 pt-2">
+      <nav aria-label="Problem validation steps" className="flex w-56 flex-col gap-3 shrink-0 min-h-0">
+        <Card className="flex flex-col min-h-0 flex-1">
+          <CardContent className="p-3 flex flex-col min-h-0 flex-1">
+            <div className="flex-1 min-h-0 overflow-y-auto">
+              <NavItems base={base} pathname={pathname} onNavigate={handleNavigate} />
+            </div>
+            <div className="border-t mt-2 pt-2 shrink-0">
               <ViewProblemButton onClick={() => setDialogOpen(true)} />
             </div>
           </CardContent>
