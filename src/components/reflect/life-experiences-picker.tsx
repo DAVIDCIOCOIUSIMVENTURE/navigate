@@ -71,11 +71,6 @@ export function LifeExperiencesPicker({
         }))
       : []
     const result: { id: string; label: string; items: { id: string; label: string }[] }[] = []
-    result.push({
-      id: "self-discovery",
-      label: "From your self-discovery",
-      items: sortedItems.map((i) => ({ id: i.id, label: i.title })),
-    })
     if (customContexts.length > 0) {
       result.push({
         id: "context-custom",
@@ -83,6 +78,11 @@ export function LifeExperiencesPicker({
         items: customContexts.map((c) => ({ id: c.id, label: c.label })),
       })
     }
+    result.push({
+      id: "self-discovery",
+      label: "From your self-discovery",
+      items: sortedItems.map((i) => ({ id: i.id, label: i.title })),
+    })
     return [...result, ...contextGroups]
   }, [customContexts, sortedItems])
 

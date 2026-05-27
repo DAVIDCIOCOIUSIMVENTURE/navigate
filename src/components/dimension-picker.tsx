@@ -144,7 +144,7 @@ export function DimensionPicker({
 
   const allItems = useMemo<DimensionItem[]>(() => {
     const builtIn = column?.items ?? []
-    return [...builtIn, ...customItems]
+    return [...customItems, ...builtIn]
   }, [column, customItems])
 
   const filtered = useMemo(

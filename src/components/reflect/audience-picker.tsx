@@ -62,11 +62,6 @@ export function AudiencePicker({
 
   const groups = useMemo<Group[]>(() => {
     const result: Group[] = []
-    result.push({
-      id: "self-discovery",
-      label: "From your self-discovery",
-      items: sortedSelfDiscovery.map((i) => ({ id: i.id, label: i.title })),
-    })
     if (customCustomers.length > 0) {
       result.push({
         id: "customer-custom",
@@ -74,6 +69,11 @@ export function AudiencePicker({
         items: customCustomers.map((c) => ({ id: c.id, label: c.label })),
       })
     }
+    result.push({
+      id: "self-discovery",
+      label: "From your self-discovery",
+      items: sortedSelfDiscovery.map((i) => ({ id: i.id, label: i.title })),
+    })
     for (const cat of audienceGroups) {
       result.push({
         id: cat.id,
