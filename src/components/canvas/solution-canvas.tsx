@@ -7,7 +7,6 @@ import type { RootState, AppDispatch } from "@/store"
 import type { Solution } from "@/types/solution"
 import { Button } from "@/components/ui/button"
 import {
-  Lightbulb,
   Target,
   Wrench,
   TrendingUp,
@@ -16,6 +15,7 @@ import {
   Sparkles,
   FileText,
   Printer,
+  Download,
   Pencil,
   Maximize2,
   Minimize2,
@@ -141,21 +141,10 @@ export function SolutionCanvas({ solution, editHref }: { solution: Solution; edi
     return () => document.removeEventListener("keydown", handler)
   }, [fullView, dispatch.settings])
 
-  const handlePrint = () => {
-    document.body.classList.add("canvas-printing")
-    setTimeout(() => {
-      window.print()
-      document.body.classList.remove("canvas-printing")
-    }, 50)
-  }
-
   return (
     <div className="canvas-print-root flex flex-col gap-3 w-full flex-1 min-h-0">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2.5 flex-1 min-w-0">
-          <span className="flex items-center justify-center h-8 w-8 rounded-lg bg-primary text-primary-foreground shrink-0">
-            <Lightbulb className="h-4 w-4" />
-          </span>
           <div className="flex-1 min-w-0 flex items-baseline gap-2">
             <p className="text-lg font-semibold leading-tight shrink-0">Solution title:</p>
             <h1 className="text-lg font-semibold leading-tight truncate">
@@ -186,7 +175,11 @@ export function SolutionCanvas({ solution, editHref }: { solution: Solution; edi
               )}
               {fullView ? "Exit Full View" : "Full View"}
             </Button>
-            <Button variant="outline" size="sm" onClick={handlePrint}>
+            <Button variant="outline" size="sm" disabled title="Coming soon">
+              <Download className="h-3.5 w-3.5 mr-1.5" />
+              Download
+            </Button>
+            <Button variant="outline" size="sm" disabled title="Coming soon">
               <Printer className="h-3.5 w-3.5 mr-1.5" />
               Print
             </Button>

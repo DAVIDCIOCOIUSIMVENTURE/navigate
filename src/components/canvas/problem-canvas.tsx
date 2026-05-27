@@ -8,7 +8,6 @@ import type { Problem } from "@/store/problems-model"
 import { Button } from "@/components/ui/button"
 import { resolveDimensionLabel } from "@/lib/dimension-labels"
 import {
-  Target,
   Users,
   MapPin,
   TriangleAlert,
@@ -20,6 +19,7 @@ import {
   GitFork,
   Lightbulb,
   Printer,
+  Download,
   Pencil,
   Maximize2,
   Minimize2,
@@ -150,21 +150,10 @@ export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHre
     return () => document.removeEventListener("keydown", handler)
   }, [fullView, dispatch.settings])
 
-  const handlePrint = () => {
-    document.body.classList.add("canvas-printing")
-    setTimeout(() => {
-      window.print()
-      document.body.classList.remove("canvas-printing")
-    }, 50)
-  }
-
   return (
     <div className="canvas-print-root flex flex-col gap-3 w-full flex-1 min-h-0">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2.5 flex-1 min-w-0">
-          <span className="flex items-center justify-center h-8 w-8 rounded-lg bg-tertiary text-white shrink-0">
-            <Target className="h-4 w-4" />
-          </span>
           <div className="flex-1 min-w-0 flex items-baseline gap-2">
             <p className="text-lg font-semibold leading-tight shrink-0">Problem description:</p>
             <h1 className="text-lg font-semibold leading-tight truncate">
@@ -195,7 +184,11 @@ export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHre
               )}
               {fullView ? "Exit Full View" : "Full View"}
             </Button>
-            <Button variant="outline" size="sm" onClick={handlePrint}>
+            <Button variant="outline" size="sm" disabled title="Coming soon">
+              <Download className="h-3.5 w-3.5 mr-1.5" />
+              Download
+            </Button>
+            <Button variant="outline" size="sm" disabled title="Coming soon">
               <Printer className="h-3.5 w-3.5 mr-1.5" />
               Print
             </Button>
@@ -319,26 +312,39 @@ export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHre
                 const sStatus = sol.validationStatus ?? "unvalidated"
                 const sCfg = STATUS_CONFIG[sStatus]
                 return (
-                  <li key={sol.id} className="flex items-center gap-2">
-                    <span
-                      className={cn(
-                        "inline-flex items-center gap-1 text-sm px-2 py-0.5 rounded-full border shrink-0",
-                        sCfg.className,
-                      )}
-                    >
-                      <sCfg.icon className="h-3 w-3" />
-                      {sCfg.label}
-                    </span>
+                  <li key={sol.id}>
                     <button
                       type="button"
                       onClick={() => router.push(`/solutions/${sol.id}/canvas`)}
-                      className="text-left underline-offset-2 hover:underline truncate"
+                      className="flex items-center gap-2 w-full text-left rounded-md px-2 py-1 -mx-2 hover:bg-muted/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       data-canvas-no-print
                     >
-                      {sol.title || `Solution #${sol.id}`}
+                      <span
+                        className={cn(
+                          "inline-flex items-center gap-1 text-sm px-2 py-0.5 rounded-full border shrink-0",
+                          sCfg.className,
+                        )}
+                      >
+                        <sCfg.icon className="h-3 w-3" />
+                        {sCfg.label}
+                      </span>
+                      <span className="truncate">
+                        {sol.title || `Solution #${sol.id}`}
+                      </span>
                     </button>
-                    <span className="hidden print:inline truncate">
-                      {sol.title || `Solution #${sol.id}`}
+                    <span className="hidden print:flex items-center gap-2">
+                      <span
+                        className={cn(
+                          "inline-flex items-center gap-1 text-sm px-2 py-0.5 rounded-full border shrink-0",
+                          sCfg.className,
+                        )}
+                      >
+                        <sCfg.icon className="h-3 w-3" />
+                        {sCfg.label}
+                      </span>
+                      <span className="truncate">
+                        {sol.title || `Solution #${sol.id}`}
+                      </span>
                     </span>
                   </li>
                 )
