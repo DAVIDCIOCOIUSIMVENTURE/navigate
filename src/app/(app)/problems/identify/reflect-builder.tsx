@@ -308,10 +308,9 @@ function PickMethodPanel({
                   <Icon className="h-4 w-4 text-white" />
                 </div>
                 <div className="flex-1 min-w-0 flex flex-col gap-0.5">
-                  <h4 className="text-base font-bold leading-tight truncate">{lens.title}</h4>
-                  <span className="inline-flex items-center gap-1 text-base opacity-80 min-w-0">
-                    <Clock className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                    <span className="truncate">About {lens.estimatedMinutes} minutes</span>
+                  <h4 className="text-base font-bold leading-tight">{lens.title}</h4>
+                  <span className="text-base opacity-80 leading-snug line-clamp-2">
+                    {lens.shortDescription}
                   </span>
                 </div>
                 {!isEnabled && (
