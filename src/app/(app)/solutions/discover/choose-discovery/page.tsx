@@ -15,7 +15,6 @@ import {
 import { useDiscovery, getAdjacentSteps } from "../context"
 import type { DiscoveryToolType } from "@/types/solution"
 import { Shuffle, ArrowLeft, ArrowRight, Lightbulb, RotateCcw, GitCompare, Wrench, CheckCircle2 } from "lucide-react"
-import { cn } from "@/lib/utils"
 
 type ToolKey = "scamper" | "reverse" | "analogy" | "improve"
 
