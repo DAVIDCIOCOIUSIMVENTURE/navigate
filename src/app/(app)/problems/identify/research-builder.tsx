@@ -41,7 +41,6 @@ import {
   RESEARCH_METHODS,
   getResearchMethod,
   getToolCategoryLabel,
-  type ResearchMethod,
   type ResearchMethodId,
   type ResearchTool,
   type ResearchToolCategory,
@@ -55,7 +54,6 @@ import type { ResearchStep } from "@/store/research-sessions-model"
 
 const RESEARCH_STEPS: { id: ResearchStep; label: string }[] = [
   { id: "pick", label: "Pick a method" },
-  { id: "introduction", label: "Introduction" },
   { id: "tool", label: "Pick a tool" },
   { id: "capture", label: "Capture" },
   { id: "review", label: "Review" },
@@ -371,64 +369,6 @@ function PickMethodPanel({
           )}
         </DialogContent>
       </Dialog>
-    </div>
-  )
-}
-
-/* ─── Introduction ─── */
-
-function IntroductionPanel({
-  method,
-  onBack,
-  onStart,
-}: {
-  method: ResearchMethod
-  onBack: () => void
-  onStart: () => void
-}) {
-  const Icon = method.icon
-  const { toolId, answers } = useResearch()
-  const hasProgress =
-    toolId !== null ||
-    Object.values(answers).some((slots) => slots.some((a) => a.text.trim().length > 0))
-  return (
-    <div className="flex flex-col gap-6 w-full flex-1 min-h-0">
-      <div className="flex items-center gap-3">
-        <div
-          className={cn(
-            "flex items-center justify-center w-10 h-10 rounded-lg shrink-0",
-            method.tileColor
-          )}
-          aria-hidden="true"
-        >
-          <Icon className="h-5 w-5 text-white" />
-        </div>
-        <h3 className="text-xl font-bold leading-tight">{method.title}</h3>
-      </div>
-      <p className="text-base leading-relaxed">{method.longDescription}</p>
-      <div className="flex items-center gap-1.5 text-base">
-        <Clock className="h-4 w-4" aria-hidden="true" />
-        <span>About {method.estimatedMinutes} minutes</span>
-      </div>
-      <div className="rounded-lg border bg-card p-5 flex flex-col gap-3">
-        <h3 className="text-base font-semibold">How this works</h3>
-        <ol className="text-base leading-relaxed list-decimal pl-5 space-y-1">
-          <li>Pick one of the curated tools as your starting point.</li>
-          <li>Open the tool in a new tab and find one thing that catches your eye.</li>
-          <li>Come back and answer the guided prompts about it.</li>
-          <li>Save the result as a problem in your problem bank.</li>
-        </ol>
-      </div>
-      <div className="flex flex-wrap items-center justify-between gap-3 mt-auto">
-        <Button variant="outline" onClick={onBack} className="gap-2">
-          <ArrowLeft className="h-4 w-4" />
-          Choose another method
-        </Button>
-        <Button onClick={onStart} className="gap-2">
-          {hasProgress ? "Continue journey" : "Start journey"}
-          <ArrowRight className="h-4 w-4" />
-        </Button>
-      </div>
     </div>
   )
 }
@@ -1252,7 +1192,11 @@ export function ResearchBuilder({
       const total = restoredMethod.prompts.length
       const safeIndex = Math.min(Math.max(storedPromptIndex, 0), Math.max(total - 1, 0))
       setPromptIndex(safeIndex)
-      setStep(storedStep ?? "introduction")
+      const restoredStep: ResearchStep =
+        storedStep && storedStep !== ("introduction" as ResearchStep)
+          ? storedStep
+          : "tool"
+      setStep(restoredStep)
     }
   }, [hydrated, storedMethodId, storedStep, storedPromptIndex, restored])
 
@@ -1268,13 +1212,13 @@ export function ResearchBuilder({
   function handlePick(id: ResearchMethodId) {
     setMethodId(id)
     setPromptIndex(0)
-    setStep("introduction")
+    setStep("tool")
   }
 
   function isStepEnabled(id: ResearchStep): boolean {
     if (id === "pick") return true
     if (!method) return false
-    if (id === "introduction" || id === "tool") return true
+    if (id === "tool") return true
     // capture and review both require a selected tool
     return currentToolId !== null
   }
@@ -1309,21 +1253,14 @@ export function ResearchBuilder({
     if (step === "pick" || !method) {
       return <PickMethodPanel onPick={handlePick} selectedMethodId={methodId} />
     }
-    if (step === "introduction") {
-      return (
-        <IntroductionPanel
-          method={method}
-          onBack={() => setStep("pick")}
-          onStart={() => {
-            setStep("tool")
-          }}
-        />
-      )
-    }
     if (step === "tool") {
       return (
         <ToolPickerPanel
-          onBack={() => setStep("introduction")}
+          onBack={() => {
+            setStep("pick")
+            setMethodId(null)
+            setPromptIndex(0)
+          }}
           onContinue={() => {
             setPromptIndex(0)
             setStep("capture")

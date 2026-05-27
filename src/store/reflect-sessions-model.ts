@@ -13,7 +13,7 @@ export type ReflectSession = {
   answers: Record<string, ReflectAnswer[]>
 }
 
-export type ReflectStep = "pick" | "introduction" | "prompts" | "review"
+export type ReflectStep = "pick" | "prompts" | "review"
 
 interface ReflectSessionsState {
   sessions: Record<string, ReflectSession>

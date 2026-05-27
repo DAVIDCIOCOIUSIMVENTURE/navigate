@@ -13,7 +13,7 @@ export type ResearchSession = {
   answers: Record<string, ResearchAnswer[]>
 }
 
-export type ResearchStep = "pick" | "introduction" | "tool" | "capture" | "review"
+export type ResearchStep = "pick" | "tool" | "capture" | "review"
 
 interface ResearchSessionsState {
   sessions: Record<string, ResearchSession>

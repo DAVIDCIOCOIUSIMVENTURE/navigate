@@ -52,7 +52,6 @@ import type { ReflectStep } from "@/store/reflect-sessions-model"
 
 const REFLECT_STEPS: { id: ReflectStep; label: string }[] = [
   { id: "pick", label: "Pick a method" },
-  { id: "introduction", label: "Introduction" },
   { id: "prompts", label: "Prompts" },
   { id: "review", label: "Review" },
 ]
@@ -386,67 +385,15 @@ function PickMethodPanel({
   )
 }
 
-function IntroductionPanel({
-  lens,
-  onBack,
-  onStart,
-}: {
-  lens: Lens
-  onBack: () => void
-  onStart: () => void
-}) {
-  const Icon = lens.icon
-  const { answers } = useReflect()
-  const hasProgress = Object.values(answers).some((slots) =>
-    slots.some((a) => a.text.trim().length > 0)
-  )
-  return (
-    <div className="flex flex-col gap-6 w-full flex-1 min-h-0">
-      <div className="flex items-center gap-3">
-        <div
-          className={cn("flex items-center justify-center w-10 h-10 rounded-lg shrink-0", lens.tileColor)}
-          aria-hidden="true"
-        >
-          <Icon className="h-5 w-5 text-white" />
-        </div>
-        <h3 className="text-xl font-bold leading-tight">{lens.title}</h3>
-      </div>
-      <p className="text-base leading-relaxed">{lens.longDescription}</p>
-      <div className="flex items-center gap-1.5 text-base">
-        <Clock className="h-4 w-4" aria-hidden="true" />
-        <span>About {lens.estimatedMinutes} minutes</span>
-      </div>
-      <div className="rounded-lg border bg-card p-5 flex flex-col gap-3">
-        <h3 className="text-base font-semibold">What you&apos;ll get out of this</h3>
-        <ul className="text-base leading-relaxed list-disc pl-5 space-y-1">
-          <li>Short prompts to react to, instead of a blank canvas.</li>
-          <li>Your answers saved as a problem you can refine in the problem bank.</li>
-          <li>A prompt to revisit parts of your experience you may have overlooked.</li>
-        </ul>
-      </div>
-      <div className="flex flex-wrap items-center justify-between gap-3 mt-auto">
-        <Button variant="outline" onClick={onBack} className="gap-2">
-          <ArrowLeft className="h-4 w-4" />
-          Choose another method
-        </Button>
-        <Button onClick={onStart} className="gap-2">
-          {hasProgress ? "Continue journey" : "Start journey"}
-          <ArrowRight className="h-4 w-4" />
-        </Button>
-      </div>
-    </div>
-  )
-}
-
 function PromptsPanel({
   index,
   onIndexChange,
-  onBackToIntro,
+  onBackToPick,
   onReview,
 }: {
   index: number
   onIndexChange: (next: number) => void
-  onBackToIntro: () => void
+  onBackToPick: () => void
   onReview: () => void
 }) {
   const {
@@ -537,7 +484,7 @@ function PromptsPanel({
 
   function goPrev() {
     if (index > 0) onIndexChange(index - 1)
-    else onBackToIntro()
+    else onBackToPick()
   }
 
   function goNext() {
@@ -1212,7 +1159,11 @@ export function ReflectBuilder({ resetRef }: { resetRef?: React.MutableRefObject
       const total = restoredLens.prompts.length
       const safeIndex = Math.min(Math.max(storedPromptIndex, 0), Math.max(total - 1, 0))
       setPromptIndex(safeIndex)
-      setStep(storedStep ?? "introduction")
+      const restoredStep: ReflectStep =
+        storedStep && storedStep !== ("introduction" as ReflectStep)
+          ? storedStep
+          : "prompts"
+      setStep(restoredStep)
     }
   }, [hydrated, storedLensId, storedStep, storedPromptIndex, restored])
 
@@ -1228,7 +1179,7 @@ export function ReflectBuilder({ resetRef }: { resetRef?: React.MutableRefObject
   function handlePick(id: LensId) {
     setLensId(id)
     setPromptIndex(0)
-    setStep("introduction")
+    setStep("prompts")
   }
 
   function isStepEnabled(id: ReflectStep): boolean {
@@ -1266,24 +1217,16 @@ export function ReflectBuilder({ resetRef }: { resetRef?: React.MutableRefObject
     if (step === "pick" || !lens) {
       return <PickMethodPanel onPick={handlePick} selectedLensId={lensId} />
     }
-    if (step === "introduction") {
-      return (
-        <IntroductionPanel
-          lens={lens}
-          onBack={() => setStep("pick")}
-          onStart={() => {
-            setPromptIndex(0)
-            setStep("prompts")
-          }}
-        />
-      )
-    }
     if (step === "prompts") {
       return (
         <PromptsPanel
           index={promptIndex}
           onIndexChange={setPromptIndex}
-          onBackToIntro={() => setStep("introduction")}
+          onBackToPick={() => {
+            setStep("pick")
+            setLensId(null)
+            setPromptIndex(0)
+          }}
           onReview={() => setStep("review")}
         />
       )
