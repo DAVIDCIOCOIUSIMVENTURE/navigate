@@ -45,6 +45,7 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
   function handleDraftClose() {
     if (draftProblem) {
       const isEmpty =
+        !draftProblem.title.trim() &&
         !draftProblem.description.trim() &&
         draftProblem.customers.length === 0 &&
         draftProblem.contexts.length === 0 &&

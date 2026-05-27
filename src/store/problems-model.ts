@@ -15,6 +15,7 @@ export type Problem = {
   id: number
   createdAt: string
   editedAt: string
+  title: string
   description: string
   customers: string[]
   contexts: string[]
@@ -30,7 +31,7 @@ export type Problem = {
   reflection: ReflectionCapture | null
 }
 
-export type ProblemPatch = Partial<Pick<Problem, "description" | "customers" | "contexts" | "problems" | "you" | "existingSolutions" | "validationAssessment" | "validationStatus" | "contextWhen" | "segmentSize" | "customerDescription" | "reflection">>
+export type ProblemPatch = Partial<Pick<Problem, "title" | "description" | "customers" | "contexts" | "problems" | "you" | "existingSolutions" | "validationAssessment" | "validationStatus" | "contextWhen" | "segmentSize" | "customerDescription" | "reflection">>
 
 /**
  * Build a short summary label for a Problem. Field values are ids, so the
@@ -76,7 +77,11 @@ function loadFromStorage(): ProblemsState | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return null
-    return JSON.parse(raw) as ProblemsState
+    const parsed = JSON.parse(raw) as ProblemsState
+    return {
+      ...parsed,
+      problems: (parsed.problems ?? []).map((p) => ({ ...p, title: p.title ?? "" })),
+    }
   } catch {
     return null
   }
@@ -133,6 +138,7 @@ export const problems = createModel<RootModel>()({
         id: state.nextId,
         createdAt: now,
         editedAt: now,
+        title: payload.title ?? "",
         description: payload.description ?? "",
         customers: payload.customers ?? [],
         contexts: payload.contexts ?? [],

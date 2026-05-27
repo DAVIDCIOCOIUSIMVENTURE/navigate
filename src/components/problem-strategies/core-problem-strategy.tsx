@@ -1,16 +1,17 @@
 "use client"
 
 import { useDispatch } from "react-redux"
+import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import type { AppDispatch } from "@/store"
 import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
 import { DimensionPicker } from "@/components/dimension-picker"
 
 /**
- * Editable surface for the core problem fields: description (textarea) plus the
- * three dimension chip lists (customer / context / problem). The customers,
- * contexts, and problems columns are rendered as chip pickers - dimensions only,
- * never free text - so the only typeable field on a problem is its description.
+ * Editable surface for the core problem fields: title (short input), description
+ * (textarea), and the three dimension chip lists (customer / context / problem).
+ * The customers, contexts, and problems columns are rendered as chip pickers,
+ * dimensions only, never free text.
  */
 export function CoreProblemStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const dispatch = useDispatch<AppDispatch>()
@@ -18,12 +19,13 @@ export function CoreProblemStrategy({ readOnly = false }: { readOnly?: boolean }
 
   if (!problem) return null
 
-  const update = (patch: Partial<{ description: string; customers: string[]; contexts: string[]; problems: string[] }>) => {
+  const update = (patch: Partial<{ title: string; description: string; customers: string[]; contexts: string[]; problems: string[] }>) => {
     dispatch.problems.update({ id: problemId, patch })
   }
 
   if (
     readOnly
+    && !problem.title.trim()
     && !problem.description.trim()
     && problem.customers.length === 0
     && problem.contexts.length === 0
@@ -31,7 +33,7 @@ export function CoreProblemStrategy({ readOnly = false }: { readOnly?: boolean }
   ) {
     return (
       <div className="bg-secondary-brand rounded-xl p-8">
-        <p className="text-sm text-white/70 italic">No core problem details captured.</p>
+        <p className="text-base text-white/70 italic">No core problem details captured.</p>
       </div>
     )
   }
@@ -39,8 +41,22 @@ export function CoreProblemStrategy({ readOnly = false }: { readOnly?: boolean }
   return (
     <div className="bg-secondary-brand rounded-xl p-8 flex flex-col gap-5">
       <div className="flex flex-col gap-2">
-        <label htmlFor="core-problem-description" className="text-sm font-medium text-white">
-          Problem description
+        <label htmlFor="core-problem-title" className="text-base font-medium text-white">
+          Title
+        </label>
+        <Input
+          id="core-problem-title"
+          value={problem.title}
+          onChange={(e) => update({ title: e.target.value })}
+          placeholder="Give the problem a short, memorable name..."
+          readOnly={readOnly}
+          className="text-base bg-white border-white text-foreground read-only:cursor-default"
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label htmlFor="core-problem-description" className="text-base font-medium text-white">
+          Description
         </label>
         <Textarea
           id="core-problem-description"

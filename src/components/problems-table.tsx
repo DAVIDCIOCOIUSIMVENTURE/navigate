@@ -73,7 +73,7 @@ const STATUS_FILTER_OPTIONS: { value: "all" | ValidationStatus; label: string }[
   { value: "unsure", label: "Unsure" },
 ]
 
-type SortKey = "index" | "description" | "source" | "date" | "status"
+type SortKey = "index" | "title" | "source" | "date" | "status"
 type SortDirection = "asc" | "desc"
 
 const STATUS_ORDER: Record<ValidationStatus, number> = {
@@ -131,7 +131,10 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
   const filteredProblems = useMemo(() => {
     const query = search.trim().toLowerCase()
     return indexedProblems.filter(({ problem }) => {
-      if (query && !problem.description.toLowerCase().includes(query)) return false
+      if (query) {
+        const haystack = `${problem.title} ${problem.description}`.toLowerCase()
+        if (!haystack.includes(query)) return false
+      }
       if (showStatus && statusFilter !== "all") {
         const status = problem.validationStatus ?? "unvalidated"
         if (status !== statusFilter) return false
@@ -147,8 +150,8 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
       switch (sortKey) {
         case "index":
           return (a.originalIndex - b.originalIndex) * dir
-        case "description":
-          return a.problem.description.localeCompare(b.problem.description) * dir
+        case "title":
+          return a.problem.title.localeCompare(b.problem.title) * dir
         case "source":
           return a.problem.source.localeCompare(b.problem.source) * dir
         case "date": {
@@ -241,10 +244,10 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                 <TableHead className="w-full">
                   <button
                     type="button"
-                    onClick={() => handleSort("description")}
+                    onClick={() => handleSort("title")}
                     className={cn("flex items-center gap-1", sortableHeaderClass)}
                   >
-                    Description{renderSortIcon("description")}
+                    Title{renderSortIcon("title")}
                   </button>
                 </TableHead>
                 {showSource && (
@@ -312,7 +315,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                           router.push(`/problems/${problem.id}/canvas`)
                         }
                       }}
-                      aria-label={`View problem: ${problem.description || "untitled"}`}
+                      aria-label={`View problem: ${problem.title || "untitled"}`}
                     >
                       <TableCell>{originalIndex + 1}</TableCell>
                       <TableCell className="text-sm">
@@ -338,11 +341,16 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                             <div className="w-6 h-6 shrink-0" />
                           )}
                           <Target className="h-3.5 w-3.5 text-tertiary shrink-0" />
-                          {problem.description ? (
-                            <span className="line-clamp-2">{problem.description}</span>
-                          ) : (
-                            <span className="text-muted-foreground">-</span>
-                          )}
+                          <div className="flex flex-col min-w-0">
+                            {problem.title ? (
+                              <span className="line-clamp-1 font-medium">{problem.title}</span>
+                            ) : (
+                              <span className="italic opacity-70">Untitled problem</span>
+                            )}
+                            {problem.description && (
+                              <span className="line-clamp-2 opacity-70">{problem.description}</span>
+                            )}
+                          </div>
                         </div>
                       </TableCell>
                       {showSource && (

@@ -39,7 +39,7 @@ function HubBody({ problemRef }: { problemRef: string }) {
       <Card className="w-full">
         <CardHeader className="px-10 pt-10 pb-0 space-y-6">
           <CardTitle icon={Target}>
-            {problem.description || `Problem #${problem.id}`}
+            {problem.title || `Problem #${problem.id}`}
           </CardTitle>
           <p className="text-base">
             Edit and review every part of this problem in one place.

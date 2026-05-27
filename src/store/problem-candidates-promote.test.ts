@@ -37,7 +37,7 @@ describe("problemCandidates promote flow", () => {
     const problem = state.problems.problems.find((p) => p.id === newProblemId)
     expect(problem).toBeDefined()
     expect(problem!.source).toBe("reflect")
-    expect(problem!.description).toBe("Approvals take forever")
+    expect(problem!.title).toBe("Approvals take forever")
     expect(problem!.customers).toEqual([])
     expect(problem!.contexts).toEqual([])
     expect(problem!.problems).toEqual([])

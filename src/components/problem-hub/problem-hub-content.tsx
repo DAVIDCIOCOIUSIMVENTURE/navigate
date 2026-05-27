@@ -314,6 +314,7 @@ export function NextStepsSection({ problemRef, problemId }: { problemRef: string
     if (!original) return
     const newProblem = dispatch.problems.create({
       source: original.source,
+      title: original.title ?? "",
       description: original.description,
       customers: [...original.customers],
       contexts: [...original.contexts],

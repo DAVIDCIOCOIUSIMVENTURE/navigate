@@ -89,7 +89,12 @@ export default function SelectProblemPage() {
                   </div>
                   <div className="flex-1 flex flex-col gap-1 min-w-0">
                     <div className="flex items-start justify-between gap-3">
-                      <p className="text-sm font-medium">{problem.description || "Untitled problem"}</p>
+                      <div className="flex flex-col gap-0.5 min-w-0">
+                        <p className="text-base font-medium">{problem.title || "Untitled problem"}</p>
+                        {problem.description && (
+                          <p className="text-base line-clamp-2 opacity-70">{problem.description}</p>
+                        )}
+                      </div>
                       <Badge variant="outline" className={`shrink-0 gap-1 ${badge.className}`}>
                         <BadgeIcon className="h-3 w-3" />
                         {badge.label}

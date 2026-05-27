@@ -30,10 +30,7 @@ export function SolutionCanvas({ solution, editHref }: { solution: Solution; edi
   )
 
   const handleDownload = () => {
-    const text = buildSolutionExportText(
-      solution,
-      linkedProblem ? linkedProblem.description || `Problem #${linkedProblem.id}` : null,
-    )
+    const text = buildSolutionExportText(solution, linkedProblem ?? null)
     const name = safeFilename(solution.title || `solution-${solution.id}`, `solution-${solution.id}`)
     downloadTextFile(`${name}.txt`, text)
   }

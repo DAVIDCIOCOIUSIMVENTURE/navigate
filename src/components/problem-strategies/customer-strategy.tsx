@@ -1,6 +1,5 @@
 "use client"
 
-import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
 
@@ -33,6 +32,7 @@ export function CustomerStrategy({ readOnly = false }: { readOnly?: boolean }) {
           />
         </div>
 
+        {/* Hidden for now: estimated number of people affected
         <div className="flex flex-col gap-2">
           <label htmlFor="segment-size" className="text-sm font-medium text-white">
             Estimated number of people affected
@@ -56,6 +56,7 @@ export function CustomerStrategy({ readOnly = false }: { readOnly?: boolean }) {
             </p>
           )}
         </div>
+        */}
       </div>
     </div>
   )

@@ -88,10 +88,13 @@ export default function SummaryPage() {
           Here&apos;s everything you produced in this discovery session. Each candidate has been added to your Solution Bank; click <strong>Validate</strong> on any of them to start the validation flow.
         </p>
 
-        {problem?.description && (
+        {problem && (problem.title || problem.description) && (
           <div className="rounded-lg border-2 border-secondary-brand/20 bg-secondary-brand/5 p-4 flex flex-col gap-1">
-            <p className="text-sm font-semibold uppercase tracking-wide">Problem</p>
-            <p className="text-sm font-medium">{problem.description}</p>
+            <p className="text-base font-semibold uppercase tracking-wide">Problem</p>
+            <p className="text-base font-medium">{problem.title || "Untitled problem"}</p>
+            {problem.description && (
+              <p className="text-base">{problem.description}</p>
+            )}
           </div>
         )}
 

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 import { useDispatch } from "react-redux"
 import type { AppDispatch } from "@/store"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import {
   Dialog,
@@ -37,10 +38,11 @@ interface EditProblemDialogProps {
   showStatus?: boolean
 }
 
-export function EditProblemDialog({ problem, onClose, title = "Edit Problem", showStatus = true }: EditProblemDialogProps) {
+export function EditProblemDialog({ problem, onClose, title: dialogTitle = "Edit Problem", showStatus = true }: EditProblemDialogProps) {
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
 
+  const [problemTitle, setProblemTitle] = useState("")
   const [description, setDescription] = useState("")
   const [status, setStatus] = useState<ValidationStatus>("unvalidated")
   const initRef = useRef(false)
@@ -49,6 +51,7 @@ export function EditProblemDialog({ problem, onClose, title = "Edit Problem", sh
   useEffect(() => {
     if (!problem) return
     initRef.current = false
+    setProblemTitle(problem.title ?? "")
     setDescription(problem.description ?? "")
     setStatus(problem.validationStatus ?? "unvalidated")
   }, [problem])
@@ -58,12 +61,12 @@ export function EditProblemDialog({ problem, onClose, title = "Edit Problem", sh
     if (!initRef.current) { initRef.current = true; return }
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => {
-      dispatch.problems.update({ id: problem.id, patch: { description } })
+      dispatch.problems.update({ id: problem.id, patch: { title: problemTitle, description } })
     }, 400)
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
     }
-  }, [description, problem, dispatch])
+  }, [problemTitle, description, problem, dispatch])
 
   // Live ids for the chip pickers come straight from the redux store - the
   // chip onChange handlers below dispatch updates synchronously, so no local
@@ -79,14 +82,26 @@ export function EditProblemDialog({ problem, onClose, title = "Edit Problem", sh
     <Dialog open={problem !== null} onOpenChange={(open) => { if (!open) onClose() }}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle>{dialogTitle}</DialogTitle>
           <DialogDescription>
             Refine the problem statement and the dimensions that frame it.
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-5 py-4">
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium" htmlFor="edit-description">
+            <label className="text-base font-medium" htmlFor="edit-title">
+              Problem title
+            </label>
+            <Input
+              id="edit-title"
+              value={problemTitle}
+              onChange={(e) => setProblemTitle(e.target.value)}
+              placeholder="Give the problem a short, memorable name..."
+              className="bg-[#fcfbf8]"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-base font-medium" htmlFor="edit-description">
               Problem description
             </label>
             <Textarea
@@ -125,13 +140,14 @@ export function EditProblemDialog({ problem, onClose, title = "Edit Problem", sh
         </div>
         {problem && (() => {
           const hasContent =
+            problemTitle.trim().length > 0 ||
             description.trim().length > 0 ||
             (problem.customers?.length ?? 0) > 0 ||
             (problem.contexts?.length ?? 0) > 0 ||
             (problem.problems?.length ?? 0) > 0
           const disabledHint = hasContent
             ? undefined
-            : "Add a description or pick at least one dimension item first"
+            : "Add a title, description, or pick at least one dimension item first"
           return (
             <DialogFooter>
               <Button

@@ -101,7 +101,8 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
   const indexedSolutions = useMemo(
     () => solutions.map((solution, index) => {
       const problem = problems.find((p) => p.id === solution.problemId)
-      return { solution, originalIndex: index, problemDescription: problem?.description ?? "" }
+      const problemHaystack = `${problem?.title ?? ""} ${problem?.description ?? ""}`.trim()
+      return { solution, originalIndex: index, problemDescription: problemHaystack }
     }),
     [solutions, problems],
   )

@@ -18,6 +18,7 @@ import {
   GitFork,
   Lightbulb,
   ChevronDown,
+  FileText,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import {
@@ -80,9 +81,9 @@ export function ProblemCanvasCards({
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2.5 flex-1 min-w-0">
           <div className="flex-1 min-w-0 flex items-baseline gap-2">
-            <p className="text-lg font-semibold leading-tight shrink-0">Problem description:</p>
+            <p className="text-lg font-semibold leading-tight shrink-0">Problem title:</p>
             <h1 className="text-lg font-semibold leading-tight truncate">
-              {problem.description || "Untitled problem"}
+              {problem.title || "Untitled problem"}
             </h1>
           </div>
         </div>
@@ -104,10 +105,24 @@ export function ProblemCanvasCards({
         )}
       >
         <Cell
+          icon={FileText}
+          label="Description"
+          iconBg="bg-tertiary"
+          className="sm:col-span-12 lg:col-span-3"
+          empty={!problem.description}
+        >
+          {problem.description ? (
+            <p className="whitespace-pre-wrap">{problem.description}</p>
+          ) : (
+            <Placeholder />
+          )}
+        </Cell>
+
+        <Cell
           icon={Users}
           label="Customer"
           iconBg="bg-tertiary"
-          className="sm:col-span-6 lg:col-span-4"
+          className="sm:col-span-6 lg:col-span-3"
           empty={problem.customers.length === 0 && !problem.customerDescription && !problem.segmentSize}
         >
           <div className="flex flex-col gap-2">
@@ -125,7 +140,7 @@ export function ProblemCanvasCards({
           icon={MapPin}
           label="Context"
           iconBg="bg-tertiary"
-          className="sm:col-span-6 lg:col-span-4"
+          className="sm:col-span-6 lg:col-span-3"
           empty={problem.contexts.length === 0 && !problem.contextWhen}
         >
           <div className="flex flex-col gap-2">
@@ -140,7 +155,7 @@ export function ProblemCanvasCards({
           icon={TriangleAlert}
           label="Problem types"
           iconBg="bg-tertiary"
-          className="sm:col-span-12 lg:col-span-4"
+          className="sm:col-span-12 lg:col-span-3"
           empty={problem.problems.length === 0}
         >
           <DimensionList columnId="problems" ids={problem.problems} />

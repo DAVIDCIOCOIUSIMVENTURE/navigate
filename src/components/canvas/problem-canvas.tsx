@@ -32,7 +32,7 @@ export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHre
 
   const handleDownload = () => {
     const text = buildProblemExportText(problem, linkedSolutions, customByColumn, selfDiscoveryItems)
-    const name = safeFilename(problem.description || `problem-${problem.id}`, `problem-${problem.id}`)
+    const name = safeFilename(problem.title || `problem-${problem.id}`, `problem-${problem.id}`)
     downloadTextFile(`${name}.txt`, text)
   }
 

@@ -995,11 +995,9 @@ function ReviewPanel({
           .filter((p) => p.answers.length > 0),
       }
 
-      const description = trimmedTitle
-
       const newProblem = await dispatch.problems.create({
         source: "research",
-        description,
+        title: trimmedTitle,
         customers: customerIds,
         contexts: [],
         problems: problemIds,

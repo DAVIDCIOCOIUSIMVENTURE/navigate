@@ -90,7 +90,12 @@ export function SolutionCanvasCards({
           empty={!linkedProblem}
         >
           {linkedProblem ? (
-            <p>{linkedProblem.description || `Problem #${linkedProblem.id}`}</p>
+            <div className="flex flex-col gap-1">
+              <p className="font-medium">{linkedProblem.title || `Problem #${linkedProblem.id}`}</p>
+              {linkedProblem.description && (
+                <p className="whitespace-pre-wrap">{linkedProblem.description}</p>
+              )}
+            </div>
           ) : (
             <Placeholder />
           )}

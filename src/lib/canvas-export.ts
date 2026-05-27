@@ -46,10 +46,12 @@ export function buildProblemExportText(
   const lines: string[] = []
   lines.push(`# Problem Canvas`)
   lines.push("")
-  lines.push(`Problem description: ${problem.description || "Untitled problem"}`)
+  lines.push(`Title: ${problem.title || "Untitled problem"}`)
   lines.push(`Status: ${STATUS_LABEL[problem.validationStatus ?? "unvalidated"]}`)
   lines.push(`Created: ${problem.createdAt}`)
   lines.push(`Edited: ${problem.editedAt}`)
+  lines.push("")
+  lines.push(section("Description", problem.description || "(none)"))
   lines.push("")
 
   lines.push(section("Customer", [
@@ -122,7 +124,7 @@ function formatSolutionBlock(sol: Solution): string {
 
 export function buildSolutionExportText(
   solution: Solution,
-  linkedProblemDescription: string | null,
+  linkedProblem: Problem | null,
 ): string {
   const lines: string[] = []
   lines.push(`# Solution Canvas`)
@@ -132,7 +134,13 @@ export function buildSolutionExportText(
   lines.push(`Created: ${solution.createdAt}`)
   lines.push(`Edited: ${solution.editedAt}`)
   lines.push("")
-  lines.push(section("Linked problem", linkedProblemDescription || "(not linked)"))
+  const linkedProblemBlock = linkedProblem
+    ? [
+        `Title: ${linkedProblem.title || `Problem #${linkedProblem.id}`}`,
+        linkedProblem.description ? `Description: ${linkedProblem.description}` : null,
+      ].filter(Boolean).join("\n")
+    : "(not linked)"
+  lines.push(section("Linked problem", linkedProblemBlock))
   lines.push("")
   lines.push(section("Description", solution.description || "(none)"))
   lines.push("")

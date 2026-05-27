@@ -172,7 +172,7 @@ export const problemCandidates = createModel<RootModel>()({
       if (!existing || existing.promotedToProblemId != null) return null
       const newProblem = await dispatch.problems.create({
         source: "reflect",
-        description: existing.title,
+        title: existing.title,
       })
       const now = new Date().toISOString()
       const next: ProblemCandidate = {

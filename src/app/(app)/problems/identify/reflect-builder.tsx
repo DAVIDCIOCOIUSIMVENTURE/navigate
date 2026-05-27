@@ -912,7 +912,7 @@ function ReviewPanel({
 
       const newProblem = await dispatch.problems.create({
         source: "identify",
-        description: trimmedTitle,
+        title: trimmedTitle,
         customers: customerIds,
         contexts: [],
         problems: problemIds,

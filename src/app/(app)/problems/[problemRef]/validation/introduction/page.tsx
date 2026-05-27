@@ -76,6 +76,12 @@ export default function IntroductionPage() {
 
         {mounted && problem && (
           <div className="rounded-lg border-2 border-secondary-brand/20 bg-secondary-brand/5 p-4 flex flex-col gap-3">
+            {problem.title && (
+              <div className="flex flex-col gap-1">
+                <p className="text-base font-semibold uppercase tracking-wide">Problem Title</p>
+                <p className="text-base font-medium">{problem.title}</p>
+              </div>
+            )}
             {problem.description && (
               <div className="flex flex-col gap-1">
                 <p className="text-base font-semibold uppercase tracking-wide">Problem Description</p>

@@ -94,20 +94,23 @@ function HubSection({
   )
 }
 
-function LinkedProblemSection({ problemId, problemDescription }: { problemId: number | null; problemDescription: string | null }) {
+function LinkedProblemSection({ problemId, problemTitle, problemDescription }: { problemId: number | null; problemTitle: string | null; problemDescription: string | null }) {
   return (
     <HubSection icon={Target} label="Linked Problem" tone="amber">
       {problemId == null ? (
-        <p className="text-sm italic">This solution is not linked to a problem.</p>
+        <p className="text-base italic">This solution is not linked to a problem.</p>
       ) : (
         <div className="flex items-start gap-3 rounded-md border bg-background p-3">
           <Target className="h-4 w-4 text-tertiary shrink-0 mt-0.5" />
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium">
-              {problemDescription || `Problem #${problemId}`}
+          <div className="flex-1 min-w-0 flex flex-col gap-0.5">
+            <p className="text-base font-medium">
+              {problemTitle || `Problem #${problemId}`}
             </p>
+            {problemDescription && (
+              <p className="text-base">{problemDescription}</p>
+            )}
           </div>
-          <Button asChild variant="outline" size="sm" className="h-7 gap-1 text-sm border-secondary-brand/40 text-secondary-brand hover:bg-secondary-brand/5 hover:text-secondary-brand shrink-0">
+          <Button asChild variant="outline" size="sm" className="h-7 gap-1 text-base border-secondary-brand/40 text-secondary-brand hover:bg-secondary-brand/5 hover:text-secondary-brand shrink-0">
             <Link href={`/problems/${problemId}`}>
               <ExternalLink className="h-3 w-3" />
               Open Problem
@@ -308,6 +311,7 @@ export function SolutionHubContent({
 
       <LinkedProblemSection
         problemId={problem?.id ?? null}
+        problemTitle={problem?.title ?? null}
         problemDescription={problem?.description ?? null}
       />
 

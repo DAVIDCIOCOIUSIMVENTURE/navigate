@@ -46,7 +46,6 @@ import {
   Telescope,
   X,
 } from "lucide-react"
-import { Textarea } from "@/components/ui/textarea"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { dimensionColumns, type DimensionItem, type DimensionColumn } from "./data"
 import type { Problem } from "@/store/problems-model"
@@ -186,20 +185,12 @@ function DimensionCheckItem({
   )
 }
 
-function useDebouncedCallback<T>(callback: (value: T) => void, delay: number) {
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
-  return (value: T) => {
-    if (timer.current) clearTimeout(timer.current)
-    timer.current = setTimeout(() => callback(value), delay)
-  }
-}
-
 function ProblemFormDialog({
   open,
   onOpenChange,
   title,
-  description,
-  onDescriptionChange,
+  problemTitle,
+  onProblemTitleChange,
   idsByColumn,
   onColumnChange,
   columns,
@@ -208,8 +199,8 @@ function ProblemFormDialog({
   open: boolean
   onOpenChange: (open: boolean) => void
   title: string
-  description: string
-  onDescriptionChange: (value: string) => void
+  problemTitle: string
+  onProblemTitleChange: (value: string) => void
   idsByColumn: Record<string, string[]>
   onColumnChange: (columnId: string, ids: string[]) => void
   columns: DimensionColumn[]
@@ -224,15 +215,14 @@ function ProblemFormDialog({
         </DialogHeader>
         <div className="flex flex-col gap-4 py-4">
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium" htmlFor={`${title}-description`}>
-              Problem description
+            <label className="text-base font-medium" htmlFor={`${title}-problem-title`}>
+              Problem title
             </label>
-            <Textarea
-              id={`${title}-description`}
-              value={description}
-              onChange={(e) => onDescriptionChange(e.target.value)}
-              placeholder="Describe the problem..."
-              rows={3}
+            <Input
+              id={`${title}-problem-title`}
+              value={problemTitle}
+              onChange={(e) => onProblemTitleChange(e.target.value)}
+              placeholder="Give the problem a short, memorable name..."
             />
           </div>
           {columns.map((column) => (
@@ -400,14 +390,14 @@ function ProblemBuilder({
   // so toggling an item in either mode is reflected in the other.
   const identifySelectedArray = useSelector((state: RootState) => state.settings.identifySelected)
   const selectedSet = useMemo(() => new Set(identifySelectedArray), [identifySelectedArray])
-  const description = useSelector((state: RootState) => state.settings.identifyBuilderDescription)
+  const problemTitle = useSelector((state: RootState) => state.settings.identifyBuilderDescription)
   const isWide = useContainerSize() === "wide"
   const [stepperOpen, setStepperOpen] = useState(false)
 
   const setStep = (next: BuilderStepId) => dispatch.settings.setIdentifyBuilderStep(next)
   const setActiveColumnId = (id: string | null) => dispatch.settings.setIdentifyBuilderActiveColumnId(id)
   const setActiveCategoryId = (id: string | null) => dispatch.settings.setIdentifyBuilderActiveCategoryId(id)
-  const setDescription = (next: string) => dispatch.settings.setIdentifyBuilderDescription(next)
+  const setProblemTitle = (next: string) => dispatch.settings.setIdentifyBuilderDescription(next)
 
   const stepIndex = BUILDER_STEPS.findIndex((s) => s.id === step)
   // Group the flat selection by column so the builder UI can show per-column
@@ -458,7 +448,7 @@ function ProblemBuilder({
       // Save ids, not labels. selectedByColumn already groups ids by column.
       selections[col.id] = selectedByColumn[col.id] ?? []
     }
-    onSave(selections, description)
+    onSave(selections, problemTitle)
     dispatch.settings.resetIdentifyBuilder()
   }
 
@@ -864,12 +854,11 @@ function ProblemBuilder({
               <GuidancePanel {...STEP_GUIDANCE.review} className={isWide ? "w-1/3 shrink-0" : "w-full shrink-0"} />
               <div className={cn("flex flex-col gap-4 min-w-0", isWide && "flex-1")}>
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-medium">Problem Description</label>
-                  <Textarea
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Describe the problem you've discovered..."
-                    rows={3}
+                  <label className="text-base font-medium">Problem title</label>
+                  <Input
+                    value={problemTitle}
+                    onChange={(e) => setProblemTitle(e.target.value)}
+                    placeholder="Give the problem a short, memorable name..."
                   />
                 </div>
                 <div className="flex items-center gap-2 justify-end">
@@ -1040,12 +1029,8 @@ export default function IdentifyPage() {
     }))
   }, [allColumns, filteredColumnsMap])
 
-  const [editingProblem, setEditingProblem] = useState<Problem | null>(null)
-  const [editDescription, setEditDescription] = useState("")
-  const [editIdsByColumn, setEditIdsByColumn] = useState<Record<string, string[]>>({})
-  const initRef = useRef(false)
   const [saveDialogOpen, setSaveDialogOpen] = useState(false)
-  const [saveDescription, setSaveDescription] = useState("")
+  const [saveTitle, setSaveTitle] = useState("")
   const [saveIdsByColumn, setSaveIdsByColumn] = useState<Record<string, string[]>>({})
   const [nextStepDialogOpen, setNextStepDialogOpen] = useState(false)
   const [lastSavedProblemId, setLastSavedProblemId] = useState<number | null>(null)
@@ -1065,13 +1050,13 @@ export default function IdentifyPage() {
     [allColumns]
   )
 
-  const handleBuilderSave = useCallback(async (selections: Record<string, string[]>, description: string) => {
+  const handleBuilderSave = useCallback(async (selections: Record<string, string[]>, problemTitle: string) => {
     const patch: Partial<Pick<Problem, "customers" | "contexts" | "problems" | "you">> = {}
     for (const column of allColumns) {
       const field = COLUMN_TO_FIELD[column.id]
       patch[field] = selections[column.id] ?? []
     }
-    const newProblem = await dispatch.problems.create({ ...patch, source: "identify", description })
+    const newProblem = await dispatch.problems.create({ ...patch, source: "identify", title: problemTitle })
     setLastSavedProblemId(newProblem.id)
     setNextStepDialogOpen(true)
   }, [allColumns, dispatch.problems])
@@ -1094,17 +1079,6 @@ export default function IdentifyPage() {
     return () => document.removeEventListener("keydown", handler)
   }, [fullView, dispatch.settings])
 
-  const saveDescriptionDebounced = useDebouncedCallback((value: string) => {
-    if (!editingProblem) return
-    dispatch.problems.update({ id: editingProblem.id, patch: { description: value } })
-  }, 500)
-
-  useEffect(() => {
-    if (!initRef.current) { initRef.current = true; return }
-    saveDescriptionDebounced(editDescription)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [editDescription])
-
   const toggleItem = (id: string) => {
     setSelected((prev) => {
       const next = new Set(prev)
@@ -1126,7 +1100,7 @@ export default function IdentifyPage() {
     for (const column of editableColumns) {
       ids[column.id] = collectAllIds(column.items).filter((id) => selected.has(id))
     }
-    setSaveDescription("")
+    setSaveTitle("")
     setSaveIdsByColumn(ids)
     setSaveDialogOpen(true)
   }
@@ -1143,18 +1117,11 @@ export default function IdentifyPage() {
       const youIds = collectAllIds(youColumnDef.items).filter((id) => selected.has(id))
       patch.you = youIds
     }
-    const newProblem = await dispatch.problems.create({ ...patch, source: "identify", description: saveDescription.trim() })
+    const newProblem = await dispatch.problems.create({ ...patch, source: "identify", title: saveTitle.trim() })
     clearAll()
     setSaveDialogOpen(false)
     setLastSavedProblemId(newProblem.id)
     setNextStepDialogOpen(true)
-  }
-
-  const updateEditColumn = (columnId: string, ids: string[]) => {
-    if (!editingProblem) return
-    setEditIdsByColumn((prev) => ({ ...prev, [columnId]: ids }))
-    const field = COLUMN_TO_FIELD[columnId] as "customers" | "contexts" | "problems"
-    dispatch.problems.update({ id: editingProblem.id, patch: { [field]: ids } })
   }
 
   if (!mounted) {
@@ -1500,8 +1467,8 @@ export default function IdentifyPage() {
         open={saveDialogOpen}
         onOpenChange={(open) => { if (!open) setSaveDialogOpen(false) }}
         title="Save Problem"
-        description={saveDescription}
-        onDescriptionChange={setSaveDescription}
+        problemTitle={saveTitle}
+        onProblemTitleChange={setSaveTitle}
         idsByColumn={saveIdsByColumn}
         onColumnChange={(columnId, ids) => setSaveIdsByColumn((prev) => ({ ...prev, [columnId]: ids }))}
         columns={editableColumns}
@@ -1511,17 +1478,6 @@ export default function IdentifyPage() {
             <Button onClick={saveCombination}>Save Problem</Button>
           </>
         }
-      />
-
-      <ProblemFormDialog
-        open={editingProblem !== null}
-        onOpenChange={(open) => { if (!open) setEditingProblem(null) }}
-        title="Edit Problem"
-        description={editDescription}
-        onDescriptionChange={setEditDescription}
-        idsByColumn={editIdsByColumn}
-        onColumnChange={updateEditColumn}
-        columns={editableColumns}
       />
 
       <AddCustomItemDialog
