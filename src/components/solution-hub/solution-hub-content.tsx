@@ -318,7 +318,10 @@ export function SolutionHubContent({
         openInStep={stepHref("feasibility")}
       >
         <MetricStrategy
-          guidance={FEASIBILITY_CONTENT.guidance}
+          icon={FEASIBILITY_CONTENT.icon}
+          strategyTitle={FEASIBILITY_CONTENT.strategyTitle}
+          strategyLabel={FEASIBILITY_CONTENT.strategyLabel}
+          strategyDescription={FEASIBILITY_CONTENT.strategyDescription}
           scale={FEASIBILITY_CONTENT.scale}
           value={feasibility}
           onChange={setFeasibility}
@@ -334,7 +337,10 @@ export function SolutionHubContent({
         openInStep={stepHref("impact")}
       >
         <MetricStrategy
-          guidance={IMPACT_CONTENT.guidance}
+          icon={IMPACT_CONTENT.icon}
+          strategyTitle={IMPACT_CONTENT.strategyTitle}
+          strategyLabel={IMPACT_CONTENT.strategyLabel}
+          strategyDescription={IMPACT_CONTENT.strategyDescription}
           scale={IMPACT_CONTENT.scale}
           value={impact}
           onChange={setImpact}
@@ -350,7 +356,10 @@ export function SolutionHubContent({
         openInStep={stepHref("cost")}
       >
         <MetricStrategy
-          guidance={COST_CONTENT.guidance}
+          icon={COST_CONTENT.icon}
+          strategyTitle={COST_CONTENT.strategyTitle}
+          strategyLabel={COST_CONTENT.strategyLabel}
+          strategyDescription={COST_CONTENT.strategyDescription}
           scale={COST_CONTENT.scale}
           value={cost}
           onChange={setCost}
@@ -366,7 +375,10 @@ export function SolutionHubContent({
         openInStep={stepHref("time-to-implement")}
       >
         <MetricStrategy
-          guidance={TIME_CONTENT.guidance}
+          icon={TIME_CONTENT.icon}
+          strategyTitle={TIME_CONTENT.strategyTitle}
+          strategyLabel={TIME_CONTENT.strategyLabel}
+          strategyDescription={TIME_CONTENT.strategyDescription}
           scale={TIME_CONTENT.scale}
           value={timeToImplement}
           onChange={setTimeToImplement}

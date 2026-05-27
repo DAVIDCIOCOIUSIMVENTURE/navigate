@@ -66,7 +66,17 @@ function loadFromStorage(): SolutionsState | null {
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return null
-    return JSON.parse(raw) as SolutionsState
+    const parsed = JSON.parse(raw) as SolutionsState
+    return {
+      ...parsed,
+      solutions: parsed.solutions.map((s) => ({
+        ...s,
+        feasibility: s.feasibility ?? 3,
+        impact: s.impact ?? 3,
+        cost: s.cost ?? 3,
+        timeToImplement: s.timeToImplement ?? 3,
+      })),
+    }
   } catch {
     return null
   }

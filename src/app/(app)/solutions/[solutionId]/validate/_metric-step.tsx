@@ -24,7 +24,7 @@ export function MetricStep({ content, value, onChange, iconBg }: MetricStepProps
   const { solutionId, solution, problem } = useSolution()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, solutionId)
 
-  const { icon: Icon, title, summary, guidance, scale, caseStudies, accent } = content
+  const { icon: Icon, title, summary, intro, readFor, pickLevel, yourTurnTitle, yourTurnBody, strategyTitle, strategyLabel, strategyDescription, scale, caseStudies, accent } = content
 
   return (
     <Card className="w-full flex-1">
@@ -36,30 +36,66 @@ export function MetricStep({ content, value, onChange, iconBg }: MetricStepProps
           <div className="rounded-lg border-2 border-secondary-brand/20 bg-secondary-brand/5 p-4 flex flex-col gap-2">
             {solution?.title && (
               <div className="flex flex-col gap-0.5">
-                <p className="text-sm font-semibold uppercase tracking-wide">Solution</p>
-                <p className="text-sm font-medium">{solution.title}</p>
+                <p className="text-base font-semibold uppercase tracking-wide">Solution</p>
+                <p className="text-base font-medium">{solution.title}</p>
               </div>
             )}
             {problem?.description && (
               <div className="flex flex-col gap-0.5">
-                <p className="text-sm font-semibold uppercase tracking-wide">Problem</p>
-                <p className="text-sm">{problem.description}</p>
+                <p className="text-base font-semibold uppercase tracking-wide">Problem</p>
+                <p className="text-base">{problem.description}</p>
               </div>
             )}
           </div>
         )}
 
-        <p className="text-base leading-relaxed">{summary}</p>
+        <div className="flex flex-col gap-3 text-base">
+          <p>{summary}</p>
+          {intro.map((para) => (
+            <p key={para}>{para}</p>
+          ))}
 
-        <Tabs defaultValue="guidance" className="flex flex-col gap-4">
+          <h3 className="mt-4 text-xl font-bold text-foreground">What to read for</h3>
+          <div className="flex flex-col gap-3">
+            {readFor.map((tile) => {
+              const TileIcon = tile.icon
+              return (
+                <div key={tile.title} className="flex items-start gap-3">
+                  <div className={cn("flex items-center justify-center w-8 h-8 rounded-lg shrink-0 mt-0.5", tile.iconBg)}>
+                    <TileIcon className="h-4 w-4 text-white" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-foreground">{tile.title}</p>
+                    <p className="text-base">{tile.body}</p>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+
+          <h3 className="mt-4 text-xl font-bold text-foreground">How to pick a level</h3>
+          <p>{pickLevel}</p>
+        </div>
+
+        <hr className="border-border/40 my-4" />
+
+        <div className="flex flex-col gap-2 items-center text-center">
+          <h3 className="text-xl font-bold"><span className="text-primary">Your Turn:</span> {yourTurnTitle}</h3>
+          <p className="text-base max-w-xl">{yourTurnBody}</p>
+        </div>
+
+        <Tabs defaultValue="strategy" className="flex flex-col gap-4">
           <TabsList className="self-center">
-            <TabsTrigger value="guidance">Your Strategy</TabsTrigger>
+            <TabsTrigger value="strategy">Your Strategy</TabsTrigger>
             <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="guidance">
+          <TabsContent value="strategy">
             <MetricStrategy
-              guidance={guidance}
+              icon={Icon}
+              strategyTitle={strategyTitle}
+              strategyLabel={strategyLabel}
+              strategyDescription={strategyDescription}
               scale={scale}
               value={value}
               onChange={onChange}
@@ -147,7 +183,7 @@ function CaseStudies({
                   <span className="text-base font-semibold uppercase tracking-wide text-foreground">Context</span>
                   <p className="mt-0.5 text-base text-foreground">{cs.context}</p>
                 </div>
-                <div className={cn("rounded-md border bg-muted p-3")}>
+                <div className={cn("rounded-md border bg-card p-3")}>
                   <span className="text-base font-semibold uppercase tracking-wide text-foreground">
                     Reasoning ({scaleStop?.label ?? `Score ${cs.score}`})
                   </span>

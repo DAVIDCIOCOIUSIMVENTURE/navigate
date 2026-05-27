@@ -1,6 +1,7 @@
 "use client"
 
 import type { LucideIcon } from "lucide-react"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { cn } from "@/lib/utils"
 
 export type ScaleStop = {
@@ -19,11 +20,25 @@ export type MetricCaseStudy = {
   iconBg?: string
 }
 
+export type MetricReadTile = {
+  icon: LucideIcon
+  iconBg: string
+  title: string
+  body: string
+}
+
 export type MetricContent = {
   icon: LucideIcon
   title: string
   summary: string
-  guidance: string[]
+  intro: string[]
+  readFor: MetricReadTile[]
+  pickLevel: string
+  yourTurnTitle: string
+  yourTurnBody: string
+  strategyTitle: string
+  strategyLabel: string
+  strategyDescription: string
   scale: ScaleStop[]
   caseStudies: MetricCaseStudy[]
   accent: string
@@ -36,14 +51,20 @@ export type MetricContent = {
  * the score buttons for the summary view.
  */
 export function MetricStrategy({
-  guidance,
+  icon: Icon,
+  strategyTitle,
+  strategyLabel,
+  strategyDescription,
   scale,
   value,
   onChange,
   accent,
   readOnly = false,
 }: {
-  guidance: string[]
+  icon: LucideIcon
+  strategyTitle: string
+  strategyLabel: string
+  strategyDescription: string
   scale: ScaleStop[]
   value: number | null
   onChange: (val: number | null) => void
@@ -53,73 +74,43 @@ export function MetricStrategy({
   if (readOnly && value == null) {
     return (
       <div className={cn("rounded-xl p-8", accent)}>
-        <p className="text-sm text-white/70 italic">No score captured.</p>
+        <p className="text-base text-white italic">No score captured.</p>
       </div>
     )
   }
 
   return (
     <div className={cn("rounded-xl p-8 flex flex-col gap-6", accent)}>
-      {!readOnly && (
-        <div className="flex flex-col gap-3">
-          <h3 className="text-sm font-semibold uppercase tracking-wide text-white/80">How to think about it</h3>
-          <ul className="flex flex-col gap-2">
-            {guidance.map((g) => (
-              <li key={g} className="text-sm text-white flex items-start gap-2">
-                <span className="text-white/50 mt-0.5">&bull;</span>
-                <span>{g}</span>
-              </li>
-            ))}
-          </ul>
+      <p className="text-base font-medium text-white">{strategyTitle}</p>
+
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-2">
+          <Icon className="h-3.5 w-3.5 text-white shrink-0" />
+          <span className="text-base font-semibold text-white">{strategyLabel}</span>
         </div>
-      )}
-
-      <div className="flex flex-col gap-3">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-white/80">
-          {readOnly ? "Your score" : "Your score (1 to 5)"}
-        </h3>
         {!readOnly && (
-          <p className="text-sm text-white/80">Pick the row that best matches your situation. You can change it any time.</p>
+          <p className="text-base text-white">{strategyDescription}</p>
         )}
-
-        <div className="flex flex-col gap-2">
-          {scale
-            .filter((stop) => !readOnly || value === stop.score)
-            .map((stop) => {
-              const selected = value === stop.score
-              return (
-                <button
+        <div className="mt-2 inline-flex w-fit rounded-xl bg-white/10 p-1.5">
+          <ToggleGroup
+            className="border-none"
+            type="single"
+            value={value !== null ? String(value) : ""}
+            onValueChange={(val) => { if (!readOnly) onChange(val === "" ? null : Number(val)) }}
+            disabled={readOnly}
+          >
+            {scale
+              .filter((stop) => !readOnly || value === stop.score)
+              .map((stop) => (
+                <ToggleGroupItem
                   key={stop.score}
-                  type="button"
-                  disabled={readOnly}
-                  onClick={() => { if (!readOnly) onChange(selected ? null : stop.score) }}
-                  className={cn(
-                    "rounded-lg border-2 px-4 py-3 text-left flex items-start gap-4 transition-colors",
-                    selected
-                      ? "bg-white border-white shadow-md"
-                      : "bg-white/5 border-white/30 hover:bg-white/10 hover:border-white/60",
-                    readOnly && "cursor-default"
-                  )}
+                  value={String(stop.score)}
+                  className="px-4 py-1.5 text-base font-medium bg-transparent text-white data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 rounded-md border-none"
                 >
-                  <div
-                    className={cn(
-                      "flex h-10 w-10 shrink-0 items-center justify-center rounded-md text-xl font-bold",
-                      selected ? "bg-primary/10 text-primary" : "bg-white/10 text-white"
-                    )}
-                  >
-                    {stop.score}
-                  </div>
-                  <div className="flex flex-col gap-0.5">
-                    <p className={cn("text-sm font-semibold", selected ? "text-foreground" : "text-white")}>
-                      {stop.label}
-                    </p>
-                    <p className={cn("text-sm", selected ? "text-muted-foreground" : "text-white/70")}>
-                      {stop.description}
-                    </p>
-                  </div>
-                </button>
-              )
-            })}
+                  {stop.label}
+                </ToggleGroupItem>
+              ))}
+          </ToggleGroup>
         </div>
       </div>
     </div>
