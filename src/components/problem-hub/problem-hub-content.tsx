@@ -296,7 +296,7 @@ function SolutionsSection({ problemId }: { problemId: number }) {
   )
 }
 
-function NextStepsSection({ problemRef, problemId }: { problemRef: string; problemId: number }) {
+export function NextStepsSection({ problemRef, problemId }: { problemRef: string; problemId: number }) {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const { status } = useProblem()

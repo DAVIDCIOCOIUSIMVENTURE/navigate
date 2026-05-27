@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { ExternalLink, LayoutTemplate } from "lucide-react"
 import { useProblem, getAdjacentSteps } from "../context"
-import { ProblemHubContent } from "@/components/problem-hub/problem-hub-content"
+import { ProblemCanvasCards } from "@/components/canvas/problem-canvas-cards"
+import { NextStepsSection } from "@/components/problem-hub/problem-hub-content"
 
 export default function SummaryPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { problemRef } = useProblem()
+  const { problemRef, problemId, problem } = useProblem()
   const { prevPath } = getAdjacentSteps(pathname, problemRef)
 
   return (
@@ -20,7 +21,9 @@ export default function SummaryPage() {
         <p className="text-base">A read-only overview of everything you have captured so far. Use <strong>Open Problem</strong> to jump to the editable problem page.</p>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
-        <ProblemHubContent mode="page" readOnly />
+        {problem && <ProblemCanvasCards problem={problem} />}
+
+        <NextStepsSection problemRef={problemRef} problemId={problemId} />
 
         <div className="flex justify-between mt-2">
           {prevPath ? (

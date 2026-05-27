@@ -1,15 +1,18 @@
 "use client"
 
 import Link from "next/link"
+import { useSelector } from "react-redux"
 import { ExternalLink } from "lucide-react"
+import type { RootState } from "@/store"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { SolutionProvider } from "@/app/(app)/solutions/[solutionId]/validate/context"
-import { SolutionHubContent } from "./solution-hub-content"
+import { SolutionCanvasCards } from "@/components/canvas/solution-canvas-cards"
 
 /**
- * Hub view of a solution rendered inside a Dialog. Used by the validation
- * sidebar's "View Solution" button so users can edit a solution without
- * leaving their current step.
+ * Read-only view of a solution rendered inside a Dialog. Used by the
+ * validation sidebar's "View Solution" button. Renders the same canvas
+ * cards used by the solution canvas page and validation summary so the
+ * three surfaces stay in sync. Editing happens on the full solution page
+ * via the "Open as full page" link.
  */
 export function SolutionHubDialog({
   open,
@@ -20,9 +23,13 @@ export function SolutionHubDialog({
   onOpenChange: (open: boolean) => void
   solutionId: number | null
 }) {
+  const solution = useSelector((s: RootState) =>
+    solutionId != null ? s.solutions.solutions.find((sol) => sol.id === solutionId) : undefined,
+  )
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[90vh] flex-col sm:max-w-3xl">
+      <DialogContent className="flex max-h-[90vh] flex-col sm:max-w-5xl">
         <DialogHeader className="shrink-0">
           <div className="flex items-center gap-4 pr-8">
             <DialogTitle>Solution</DialogTitle>
@@ -37,14 +44,12 @@ export function SolutionHubDialog({
             )}
           </div>
           <DialogDescription className="sr-only">
-            Edit and review every part of this solution.
+            Review every part of this solution.
           </DialogDescription>
         </DialogHeader>
-        {solutionId != null && (
+        {solution && (
           <div className="-mx-6 -mb-6 flex-1 min-h-0 overflow-y-auto px-6 pb-6">
-            <SolutionProvider solutionId={solutionId}>
-              <SolutionHubContent mode="dialog" />
-            </SolutionProvider>
+            <SolutionCanvasCards solution={solution} />
           </div>
         )}
       </DialogContent>

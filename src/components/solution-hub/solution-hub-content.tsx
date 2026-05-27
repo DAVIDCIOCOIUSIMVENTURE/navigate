@@ -119,7 +119,7 @@ function LinkedProblemSection({ problemId, problemDescription }: { problemId: nu
   )
 }
 
-function NextStepsSection({ solutionId }: { solutionId: number }) {
+export function NextStepsSection({ solutionId }: { solutionId: number }) {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const { validationStatus, solution } = useSolution()
