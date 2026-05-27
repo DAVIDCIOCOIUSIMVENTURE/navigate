@@ -66,6 +66,7 @@ export default function IntroductionPage() {
                 The goal is not to prove yourself right; it is to gather enough to make an honest call before you invest in a solution.
               </p>
             </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/illustrations/14-validate-solution.svg"
               alt=""

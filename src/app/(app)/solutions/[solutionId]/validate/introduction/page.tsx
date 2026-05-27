@@ -35,6 +35,7 @@ export default function IntroductionPage() {
                 The aim is not to fall in love with the solution; it is to stress-test it against feasibility, impact, cost, and time so you can commit to building it (or walk away) with your eyes open.
               </p>
             </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/illustrations/16-success.svg"
               alt=""

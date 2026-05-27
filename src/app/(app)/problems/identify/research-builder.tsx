@@ -276,8 +276,15 @@ function PickMethodPanel({
                 onClick={() => setOpenMethodId(method.id)}
                 aria-pressed={isSelected}
                 className={cn(
-                  "rounded-md border border-primary bg-primary text-primary-foreground flex items-center gap-3 px-3 py-2.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  isEnabled ? "hover:bg-primary/90 cursor-pointer" : "opacity-75 cursor-not-allowed"
+                  "rounded-md border flex items-center gap-3 px-3 py-2.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  isSelected
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-secondary-brand bg-secondary-brand text-secondary-brand-foreground",
+                  isEnabled
+                    ? isSelected
+                      ? "hover:bg-primary/90 cursor-pointer"
+                      : "hover:bg-secondary-brand/90 cursor-pointer"
+                    : "opacity-75 cursor-not-allowed"
                 )}
               >
                 <div

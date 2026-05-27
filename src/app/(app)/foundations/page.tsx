@@ -33,6 +33,7 @@ export default function FoundationsPage() {
                 Why finding the right idea matters. What goes wrong when people skip validation. What went well for founders who did the work. We don&apos;t cover <span className="italic">how</span> to solve things here: that&apos;s what the Problems and Solutions sections are for.
               </p>
             </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/illustrations/13-validate-problem.svg"
               alt=""

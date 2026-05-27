@@ -47,6 +47,7 @@ export default function NextStepsTopicPage() {
               <p className="text-base text-foreground leading-relaxed">{topic.intro}</p>
             </div>
             {topic.url === "build-a-prototype" && (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src="/illustrations/21-toolbox.svg"
                 alt=""
@@ -54,6 +55,7 @@ export default function NextStepsTopicPage() {
               />
             )}
             {topic.url === "run-a-customer-test" && (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src="/illustrations/23-customer.svg"
                 alt=""
@@ -61,6 +63,7 @@ export default function NextStepsTopicPage() {
               />
             )}
             {topic.url === "map-a-learning-roadmap" && (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src="/illustrations/19-mindmap.svg"
                 alt=""
@@ -68,6 +71,7 @@ export default function NextStepsTopicPage() {
               />
             )}
             {topic.url === "decide-on-commitment" && (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src="/illustrations/04-terrain.svg"
                 alt=""

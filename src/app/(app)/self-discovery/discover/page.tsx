@@ -34,6 +34,7 @@ export default function SelfDiscoveryDiscoverIntroPage() {
                 At the end of this exercise, you&apos;ll have a set of problem triggers saved to your self discovery library. You can revisit them any time, add new ones as you go, and bring them into the Problems section as starting points for the ideas you&apos;ll explore next.
               </p>
             </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/illustrations/03-telescope.svg"
               alt=""

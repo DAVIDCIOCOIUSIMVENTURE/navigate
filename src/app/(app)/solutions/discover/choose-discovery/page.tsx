@@ -12,6 +12,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog"
+import { cn } from "@/lib/utils"
 import { useDiscovery, getAdjacentSteps } from "../context"
 import type { DiscoveryToolType } from "@/types/solution"
 import { Shuffle, ArrowLeft, ArrowRight, Lightbulb, RotateCcw, GitCompare, Wrench, CheckCircle2 } from "lucide-react"
@@ -299,7 +300,12 @@ export default function ChooseDiscoveryPage() {
                   type="button"
                   onClick={() => setOpenTool(key)}
                   aria-pressed={isSelected}
-                  className="rounded-md border border-primary bg-primary text-primary-foreground flex items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-primary/90 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className={cn(
+                    "rounded-md border flex items-center gap-3 px-3 py-2.5 text-left transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    isSelected
+                      ? "border-primary bg-primary text-primary-foreground hover:bg-primary/90"
+                      : "border-secondary-brand bg-secondary-brand text-secondary-brand-foreground hover:bg-secondary-brand/90"
+                  )}
                 >
                   <div
                     className="flex items-center justify-center w-8 h-8 rounded-md shrink-0 bg-white/20"

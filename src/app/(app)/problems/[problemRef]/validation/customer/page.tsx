@@ -44,6 +44,7 @@ export default function CustomerSegmentPage() {
                 their frustrations, habits, and the workarounds they already use.
               </p>
             </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/illustrations/23-customer.svg"
               alt=""

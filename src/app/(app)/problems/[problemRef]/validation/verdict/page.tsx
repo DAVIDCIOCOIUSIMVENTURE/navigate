@@ -35,6 +35,7 @@ export default function VerdictPage() {
                   A useful verdict is grounded in evidence, not enthusiasm. Look across all seven factors together: a single weak signal is rarely a deal-breaker, but two or three pointing the same direction usually is. Capture your reasoning in the notes so future-you (or a teammate) can see why you decided what you did, and revise the verdict if new evidence comes in.
                 </p>
               </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src="/illustrations/14-validate-solution.svg"
                 alt=""

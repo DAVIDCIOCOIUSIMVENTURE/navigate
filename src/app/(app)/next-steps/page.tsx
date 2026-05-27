@@ -49,6 +49,7 @@ export default function NextStepsPage() {
                 Use it as a checkpoint before you sink time and money into the wrong direction.
               </p>
             </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/illustrations/24-rocket.svg"
               alt=""

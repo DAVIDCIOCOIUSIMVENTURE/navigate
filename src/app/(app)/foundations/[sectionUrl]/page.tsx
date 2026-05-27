@@ -48,6 +48,7 @@ export default function FoundationsSectionPage() {
               <p className="text-base text-foreground leading-relaxed">{section.intro}</p>
             </div>
             {section.url === "why-the-right-idea" && (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src="/illustrations/18-sticky-wall.svg"
                 alt=""
@@ -55,6 +56,7 @@ export default function FoundationsSectionPage() {
               />
             )}
             {section.url === "why-validate-the-problem" && (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src="/illustrations/06-flask.svg"
                 alt=""
@@ -62,6 +64,7 @@ export default function FoundationsSectionPage() {
               />
             )}
             {section.url === "why-validate-the-solution" && (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src="/illustrations/06-flask.svg"
                 alt=""
@@ -69,6 +72,7 @@ export default function FoundationsSectionPage() {
               />
             )}
             {section.url === "the-cost-of-skipping" && (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src="/illustrations/25-cost-of-skipping.svg"
                 alt=""
@@ -76,6 +80,7 @@ export default function FoundationsSectionPage() {
               />
             )}
             {section.url === "when-it-goes-right" && (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src="/illustrations/16-success.svg"
                 alt=""
