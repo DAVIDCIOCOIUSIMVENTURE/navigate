@@ -75,16 +75,16 @@ export default function IntroductionPage() {
         </div>
 
         {mounted && problem && (
-          <div className="rounded-lg border-2 border-secondary-brand/20 bg-secondary-brand/5 p-4 flex flex-col gap-3">
+          <div className="rounded-lg border-2 border-red-800/20 bg-red-800/5 p-4 flex flex-col gap-3">
             {problem.title && (
               <div className="flex flex-col gap-1">
-                <p className="text-base font-semibold uppercase tracking-wide">Problem Title</p>
+                <p className="text-base font-semibold uppercase tracking-wide text-red-800">Problem Title</p>
                 <p className="text-base font-medium">{problem.title}</p>
               </div>
             )}
             {problem.description && (
               <div className="flex flex-col gap-1">
-                <p className="text-base font-semibold uppercase tracking-wide">Problem Description</p>
+                <p className="text-base font-semibold uppercase tracking-wide text-red-800">Problem Description</p>
                 <p className="text-base font-medium">{problem.description}</p>
               </div>
             )}

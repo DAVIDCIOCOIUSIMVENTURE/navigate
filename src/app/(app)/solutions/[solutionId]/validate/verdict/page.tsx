@@ -101,16 +101,16 @@ export default function VerdictPage() {
         </p>
 
         {(solution?.title || problem?.title || problem?.description) && (
-          <div className="rounded-lg border-2 border-secondary-brand/20 bg-secondary-brand/5 p-4 flex flex-col gap-2">
+          <div className="flex flex-col gap-2">
             {solution?.title && (
-              <div className="flex flex-col gap-0.5">
+              <div className="rounded-lg border-2 border-secondary-brand/20 bg-secondary-brand/5 p-4 flex flex-col gap-0.5">
                 <p className="text-base font-semibold uppercase tracking-wide">Solution</p>
                 <p className="text-base font-medium">{solution.title}</p>
               </div>
             )}
             {problem && (problem.title || problem.description) && (
-              <div className="flex flex-col gap-0.5">
-                <p className="text-base font-semibold uppercase tracking-wide">Problem</p>
+              <div className="rounded-lg border-2 border-red-800/20 bg-red-800/5 p-4 flex flex-col gap-0.5">
+                <p className="text-base font-semibold uppercase tracking-wide text-red-800">Problem</p>
                 <p className="text-base font-medium">{problem.title || "Untitled problem"}</p>
                 {problem.description && (
                   <p className="text-base">{problem.description}</p>

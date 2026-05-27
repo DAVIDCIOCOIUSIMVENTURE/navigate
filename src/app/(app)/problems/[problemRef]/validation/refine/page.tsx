@@ -334,8 +334,8 @@ export default function RefinePage() {
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         {problem && (problem.title || problem.description) && (
-          <div className="rounded-lg border-2 border-secondary-brand/20 bg-secondary-brand/5 px-4 py-3">
-            <p className="text-base font-semibold uppercase tracking-wide mb-1">Problem</p>
+          <div className="rounded-lg border-2 border-red-800/20 bg-red-800/5 px-4 py-3">
+            <p className="text-base font-semibold uppercase tracking-wide text-red-800 mb-1">Problem</p>
             <p className="text-base font-medium">{problem.title || "Untitled problem"}</p>
             {problem.description && (
               <p className="text-base mt-1">{problem.description}</p>

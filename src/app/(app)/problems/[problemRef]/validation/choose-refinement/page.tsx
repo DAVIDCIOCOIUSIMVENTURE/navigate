@@ -15,8 +15,6 @@ import {
 import { useProblem, getAdjacentSteps } from "../context"
 import type { AnalysisToolType } from "@/types/solution"
 import { Search, ArrowLeft, ArrowRight, TreePine, HelpCircle, Users, CheckCircle2 } from "lucide-react"
-import { useContainerSize } from "@/context/container-size-context"
-import { cn } from "@/lib/utils"
 
 type ToolKey = "root-causes" | "five-whys" | "affected-groups"
 
@@ -181,7 +179,6 @@ export default function ChooseRefinementPage() {
   const { prevPath, nextPath } = getAdjacentSteps(pathname, problemRef)
   const [openTool, setOpenTool] = useState<ToolKey | null>(null)
   const [confirmOpen, setConfirmOpen] = useState(false)
-  const isNarrow = useContainerSize() === "narrow"
 
   const selectedTool = (analysisToolType || null) as ToolKey | null
 
@@ -210,8 +207,8 @@ export default function ChooseRefinementPage() {
         </CardHeader>
         <CardContent className="p-10 pt-6 flex flex-col gap-6">
           {problem && (problem.title || problem.description) && (
-            <div className="rounded-lg border-2 border-secondary-brand/20 bg-secondary-brand/5 px-4 py-3">
-              <p className="text-base font-semibold uppercase tracking-wide mb-1">Problem</p>
+            <div className="rounded-lg border-2 border-red-800/20 bg-red-800/5 px-4 py-3">
+              <p className="text-base font-semibold uppercase tracking-wide text-red-800 mb-1">Problem</p>
               <p className="text-base font-medium">{problem.title || "Untitled problem"}</p>
               {problem.description && (
                 <p className="text-base mt-1">{problem.description}</p>
@@ -224,7 +221,7 @@ export default function ChooseRefinementPage() {
             Choose a refinement technique below to get started.
           </p>
 
-          <div className={cn("grid gap-4", isNarrow ? "grid-cols-1" : "grid-cols-3")}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {TOOL_ORDER.map((key) => {
               const tool = TOOL_CARDS[key]
               const Icon = tool.icon
@@ -235,28 +232,23 @@ export default function ChooseRefinementPage() {
                   type="button"
                   onClick={() => setOpenTool(key)}
                   aria-pressed={isSelected}
-                  className={cn(
-                    "group relative flex cursor-pointer flex-col gap-3 rounded-xl border-2 p-6 pr-8 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                    isSelected
-                      ? "border-primary bg-primary/10 ring-2 ring-primary/40 ring-offset-2"
-                      : "border-border bg-card hover:border-primary hover:bg-primary/5"
-                  )}
+                  className="rounded-md border border-primary bg-primary text-primary-foreground flex items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-primary/90 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
+                  <div
+                    className="flex items-center justify-center w-8 h-8 rounded-md shrink-0 bg-white/20"
+                    aria-hidden="true"
+                  >
+                    <Icon className="h-4 w-4 text-white" />
+                  </div>
+                  <span className="flex-1 min-w-0 text-base font-bold leading-tight truncate">
+                    {tool.title}
+                  </span>
                   {isSelected && (
-                    <span className="absolute -top-3 right-4 flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground shadow-sm">
-                      <CheckCircle2 className="h-3 w-3" />
+                    <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-base font-semibold shrink-0 bg-white text-primary">
+                      <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
                       Selected
                     </span>
                   )}
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <h3 className={cn("text-base font-semibold", isSelected && "text-primary")}>{tool.title}</h3>
-                  <p className="text-base leading-relaxed">{tool.description}</p>
-                  <div className="mt-2 flex items-center gap-1.5 text-base font-semibold text-primary">
-                    {isSelected ? "Selected method" : "Preview this method"}
-                    <ArrowRight className="h-4 w-4" />
-                  </div>
                 </button>
               )
             })}
@@ -282,7 +274,20 @@ export default function ChooseRefinementPage() {
           {openTool && (
             <>
               <DialogHeader>
-                <DialogTitle>{TOOL_CARDS[openTool].title}</DialogTitle>
+                <DialogTitle>
+                  <span className="flex items-center gap-3">
+                    <span
+                      className="flex items-center justify-center w-10 h-10 rounded-md shrink-0 bg-primary"
+                      aria-hidden="true"
+                    >
+                      {(() => {
+                        const OpenIcon = TOOL_CARDS[openTool].icon
+                        return <OpenIcon className="h-5 w-5 text-white" />
+                      })()}
+                    </span>
+                    <span>{TOOL_CARDS[openTool].title}</span>
+                  </span>
+                </DialogTitle>
                 <DialogDescription>
                   Learn how this method works, then choose it to start refining your problem.
                 </DialogDescription>
@@ -290,7 +295,9 @@ export default function ChooseRefinementPage() {
               {DialogBody && <DialogBody />}
               <DialogFooter>
                 <Button variant="outline" onClick={() => setOpenTool(null)}>Cancel</Button>
-                <Button onClick={() => handleChoose(openTool)}>Choose This Method</Button>
+                <Button onClick={() => handleChoose(openTool)}>
+                  {openTool === selectedTool ? "Continue with this method" : "Choose this method"}
+                </Button>
               </DialogFooter>
             </>
           )}

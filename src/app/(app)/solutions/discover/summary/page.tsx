@@ -89,8 +89,8 @@ export default function SummaryPage() {
         </p>
 
         {problem && (problem.title || problem.description) && (
-          <div className="rounded-lg border-2 border-secondary-brand/20 bg-secondary-brand/5 p-4 flex flex-col gap-1">
-            <p className="text-base font-semibold uppercase tracking-wide">Problem</p>
+          <div className="rounded-lg border-2 border-red-800/20 bg-red-800/5 p-4 flex flex-col gap-1">
+            <p className="text-base font-semibold uppercase tracking-wide text-red-800">Problem</p>
             <p className="text-base font-medium">{problem.title || "Untitled problem"}</p>
             {problem.description && (
               <p className="text-base">{problem.description}</p>
