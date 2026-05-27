@@ -100,6 +100,16 @@ function getCrumbs(pathname: string): Crumb[] {
       crumbs.push({ label: "Identify" })
       return crumbs
     }
+    if (second === "reflect") {
+      crumbs.push({ label: "Problems", href: "/problems" })
+      crumbs.push({ label: "Reflect" })
+      return crumbs
+    }
+    if (second === "research") {
+      crumbs.push({ label: "Problems", href: "/problems" })
+      crumbs.push({ label: "Research" })
+      return crumbs
+    }
     crumbs.push({ label: "Problems", href: "/problems" })
     if (third === "validation") {
       crumbs.push({ label: second, href: `/problems/${second}` })

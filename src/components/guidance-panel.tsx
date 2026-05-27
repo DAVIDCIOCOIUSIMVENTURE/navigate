@@ -433,7 +433,7 @@ const guidanceItems: GuidanceItem[] = [
           subtitle="A guided way to surface problems worth solving by answering short prompts about your work, life, the organizations you know, the people around you, and what you spot in the wider world."
         />
         <GuidanceSection icon={Compass} iconBg="bg-secondary-brand" title="When to use Reflect">
-          <p>Reflect lives inside Identify Problems as the third mode at <Keyword>/problems/identify</Keyword>. Toggle between Canvas, Builder, and Reflect there.</p>
+          <p>Reflect is its own tool, opened from the <Keyword>Identify problems</Keyword> selector and living at <Keyword>/problems/reflect</Keyword>.</p>
           <div className="grid gap-3 pt-1 sm:grid-cols-2">
             <div className="rounded-lg border bg-card p-3">
               <h5 className="text-sm font-semibold mb-1">Use Reflect when</h5>

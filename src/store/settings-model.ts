@@ -3,7 +3,7 @@ import type { RootModel } from "."
 
 const STORAGE_KEY = "navigate-settings"
 
-export type IdentifyMode = "canvas" | "builder" | "reflect" | "research"
+export type IdentifyMode = "canvas" | "builder"
 export type IdentifyBuilderStep = "pick" | "category" | "choose" | "review"
 export type AvatarColor = "teal" | "mustard" | "navy" | "forest" | "crimson" | "indigo" | "violet" | "rose"
 
@@ -32,7 +32,7 @@ const defaultState: SettingsState = {
   hiddenIdentifyColumns: [],
   fullView: false,
   identifySelected: [],
-  identifyMode: "reflect",
+  identifyMode: "canvas",
   journalOpen: false,
   identifyBuilderStep: "pick",
   identifyBuilderActiveColumnId: null,
@@ -144,7 +144,9 @@ export const settings = createModel<RootModel>()({
           dispatch.settings.setIdentifySelected(stored.identifySelected)
         }
         if (stored.identifyMode) {
-          if (stored.identifyMode === "canvas" || stored.identifyMode === "builder" || stored.identifyMode === "reflect" || stored.identifyMode === "research") {
+          // Reflect and research are now their own pages, not identify modes;
+          // any persisted value for them falls back to the default canvas mode.
+          if (stored.identifyMode === "canvas" || stored.identifyMode === "builder") {
             dispatch.settings.setIdentifyMode(stored.identifyMode)
           }
         }

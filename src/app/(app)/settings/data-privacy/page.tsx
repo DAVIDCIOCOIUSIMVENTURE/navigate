@@ -22,6 +22,9 @@ type StorageGroup = {
   label: string
   description: string
   keys: string[]
+  // Some state is stored under one key per record (e.g. per-problem research
+  // captures). Listing a prefix here clears every matching key.
+  keyPrefixes?: string[]
 }
 
 // Each entry maps a user-facing category to the localStorage keys it owns.
@@ -48,8 +51,15 @@ const STORAGE_GROUPS: StorageGroup[] = [
   {
     id: "reflect-sessions",
     label: "Reflect sessions",
-    description: "In-progress answers captured while reflecting through a lens in Identify Problems.",
+    description: "In-progress answers captured while reflecting through a lens in the Reflect tool.",
     keys: ["navigate-reflect-sessions"],
+  },
+  {
+    id: "research-sessions",
+    label: "Research sessions",
+    description: "In-progress capture answers from the Research tool, plus the research saved against problems you created with it.",
+    keys: ["navigate-research-sessions"],
+    keyPrefixes: ["navigate-problem-research-"],
   },
   {
     id: "problem-candidates",
@@ -100,6 +110,19 @@ function removeKeys(keys: string[]) {
   }
 }
 
+function removeGroup(group: StorageGroup) {
+  removeKeys(group.keys)
+  if (!group.keyPrefixes?.length) return
+  const matched: string[] = []
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i)
+    if (key && group.keyPrefixes.some((prefix) => key.startsWith(prefix))) {
+      matched.push(key)
+    }
+  }
+  matched.forEach((key) => localStorage.removeItem(key))
+}
+
 function removeAllNavigateKeys() {
   const keysToRemove: string[] = []
   for (let i = 0; i < localStorage.length; i++) {
@@ -121,7 +144,7 @@ export default function DataPrivacySettingsPage() {
       : ""
 
   const dialogDescription = pending?.kind === "all"
-    ? "This will permanently delete every record this app has stored on this device, including problems, solutions, self-discovery items, reflect sessions, notes, and settings. This action cannot be undone."
+    ? "This will permanently delete every record this app has stored on this device, including problems, solutions, self-discovery items, reflect and research sessions, notes, and settings. This action cannot be undone."
     : pending?.kind === "group"
       ? `This will permanently delete ${pending.group.description.charAt(0).toLowerCase() + pending.group.description.slice(1)} This action cannot be undone.`
       : ""
@@ -138,7 +161,7 @@ export default function DataPrivacySettingsPage() {
       removeAllNavigateKeys()
       toast.success("All application data has been cleared. Refreshing...")
     } else {
-      removeKeys(pending.group.keys)
+      removeGroup(pending.group)
       toast.success(`${pending.group.label} cleared. Refreshing...`)
     }
     setPending(null)

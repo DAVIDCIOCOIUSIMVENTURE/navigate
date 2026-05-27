@@ -35,7 +35,6 @@ import {
   Grid3X3,
   Layers,
   Maximize2,
-  Microscope,
   Minimize2,
   Pencil,
   Plus,
@@ -43,7 +42,6 @@ import {
   Save,
   Search,
   Settings,
-  Telescope,
   X,
 } from "lucide-react"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
@@ -68,8 +66,6 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import { DIMENSION_ICONS as COLUMN_ICONS, DIMENSION_COLORS as COLUMN_COLORS } from "@/lib/dimension-visuals"
-import { ReflectBuilder } from "./reflect-builder"
-import { ResearchBuilder } from "./research-builder"
 
 const COLUMN_DESCRIPTIONS: Record<string, string> = {
   "customers": "Who experiences this problem?",
@@ -923,8 +919,11 @@ export default function IdentifyPage() {
   const [mounted, setMounted] = useState(false)
   useEffect(() => { setMounted(true) }, [])
 
+  // Research now has its own page; the Identify drawer shows only problems
+  // produced by the Identify tool (canvas, builder, and reflect all tag
+  // their output with the "identify" source).
   const savedProblems = useSelector((state: RootState) =>
-    state.problems.problems.filter((p) => p.source === "identify" || p.source === "research")
+    state.problems.problems.filter((p) => p.source === "identify")
   )
   const triggers = useSelector((state: RootState) => state.selfDiscoveryItems.items)
   const customByColumn = useSelector((s: RootState) => s.customDimensionItems.byColumn)
@@ -1038,8 +1037,6 @@ export default function IdentifyPage() {
   const [addCustomDialogOpen, setAddCustomDialogOpen] = useState(false)
   const [managingColumnId, setManagingColumnId] = useState<string | null>(null)
   const builderResetRef = useRef<(() => void) | null>(null)
-  const reflectResetRef = useRef<(() => void) | null>(null)
-  const researchResetRef = useRef<(() => void) | null>(null)
   const fullView = useSelector((state: RootState) => state.settings.fullView)
   const identifyMode = useSelector((state: RootState) => state.settings.identifyMode)
   const containerSize = useContainerSize()
@@ -1135,17 +1132,15 @@ export default function IdentifyPage() {
 
   const renderActionButtons = () => (
     <>
-      {identifyMode !== "reflect" && identifyMode !== "research" && (
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => setAddCustomDialogOpen(true)}
-          className="gap-2 bg-card text-tertiary hover:text-tertiary"
-        >
-          <Plus className="h-3.5 w-3.5" />
-          <span className={cn(containerSize === "narrow" && "sr-only")}>Add your own item</span>
-        </Button>
-      )}
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => setAddCustomDialogOpen(true)}
+        className="gap-2 bg-card text-tertiary hover:text-tertiary"
+      >
+        <Plus className="h-3.5 w-3.5" />
+        <span className={cn(containerSize === "narrow" && "sr-only")}>Add your own item</span>
+      </Button>
       <Button
         variant="outline"
         size="sm"
@@ -1179,11 +1174,7 @@ export default function IdentifyPage() {
         description={
           identifyMode === "canvas"
             ? "This will clear your current selection across all dimensions. Saved problems are not affected."
-            : identifyMode === "builder"
-              ? "This will clear your in-progress problem builder. Saved problems are not affected."
-              : identifyMode === "research"
-                ? "This will return you to the research-method picker and clear in-progress capture answers. Saved problems are not affected."
-                : "This will return you to the discovery-method picker. Your prompt answers will remain saved for next time."
+            : "This will clear your in-progress problem builder. Saved problems are not affected."
         }
         confirmLabel="Reset"
         onConfirm={() => {
@@ -1191,10 +1182,6 @@ export default function IdentifyPage() {
             clearAll()
           } else if (identifyMode === "builder") {
             builderResetRef.current?.()
-          } else if (identifyMode === "reflect") {
-            reflectResetRef.current?.()
-          } else if (identifyMode === "research") {
-            researchResetRef.current?.()
           }
         }}
       />
@@ -1212,7 +1199,7 @@ export default function IdentifyPage() {
     </>
   )
 
-  const searchInput = identifyMode !== "reflect" && identifyMode !== "research" && (
+  const searchInput = (
     <div className={cn("relative", containerSize === "narrow" && "w-full")}>
       <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
       <Input
@@ -1243,10 +1230,6 @@ export default function IdentifyPage() {
       size="sm"
       className="shrink-0 bg-card border-border divide-x divide-border"
     >
-      <ToggleGroupItem value="reflect" aria-label="Reflect mode" className="gap-1.5 px-3 rounded-none bg-card data-[state=on]:bg-secondary-brand data-[state=on]:text-secondary-brand-foreground">
-        <Telescope className="h-3.5 w-3.5" />
-        <span className={cn(containerSize === "narrow" && "sr-only")}>Reflect</span>
-      </ToggleGroupItem>
       <ToggleGroupItem value="canvas" aria-label="Canvas mode" className="gap-1.5 px-3 rounded-none bg-card data-[state=on]:bg-secondary-brand data-[state=on]:text-secondary-brand-foreground">
         <Grid3X3 className="h-3.5 w-3.5" />
         <span className={cn(containerSize === "narrow" && "sr-only")}>Canvas</span>
@@ -1254,14 +1237,6 @@ export default function IdentifyPage() {
       <ToggleGroupItem value="builder" aria-label="Problem Builder mode" className="gap-1.5 px-3 rounded-none bg-card data-[state=on]:bg-secondary-brand data-[state=on]:text-secondary-brand-foreground">
         <Layers className="h-3.5 w-3.5" />
         <span className={cn(containerSize === "narrow" && "sr-only")}>Builder</span>
-      </ToggleGroupItem>
-      <ToggleGroupItem
-        value="research"
-        aria-label="Research mode"
-        className="gap-1.5 px-3 rounded-none bg-card data-[state=on]:bg-secondary-brand data-[state=on]:text-secondary-brand-foreground"
-      >
-        <Microscope className="h-3.5 w-3.5" />
-        <span className={cn(containerSize === "narrow" && "sr-only")}>Research</span>
       </ToggleGroupItem>
     </ToggleGroup>
   )
@@ -1306,11 +1281,7 @@ export default function IdentifyPage() {
         </div>
       )}
 
-      {identifyMode === "reflect" ? (
-        <ReflectBuilder resetRef={reflectResetRef} />
-      ) : identifyMode === "research" ? (
-        <ResearchBuilder resetRef={researchResetRef} />
-      ) : identifyMode === "builder" ? (
+      {identifyMode === "builder" ? (
         <ProblemBuilder columns={filteredColumns} onSave={handleBuilderSave} resetRef={builderResetRef} onClearSearch={() => setSearchQuery("")} customItemColumns={customItemColumns} />
       ) : (<>
       <div className={cn(
