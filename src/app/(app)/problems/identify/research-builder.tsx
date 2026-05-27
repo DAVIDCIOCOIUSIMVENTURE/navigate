@@ -6,7 +6,6 @@ import type { AppDispatch, RootState } from "@/store"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Collapsible,
   CollapsibleContent,
@@ -29,7 +28,6 @@ import {
   ClipboardCheck,
   Clock,
   ExternalLink,
-  HelpCircle,
   Pencil,
   Plus,
   Trash2,
@@ -391,7 +389,6 @@ function ToolPickerPanel({
   onContinue: () => void
 }) {
   const { method, toolId, setTool } = useResearch()
-  const isWide = useContainerSize() === "wide"
   const [openToolId, setOpenToolId] = useState<string | null>(null)
   const openTool = openToolId ? method.tools.find((t) => t.id === openToolId) ?? null : null
 
@@ -418,11 +415,11 @@ function ToolPickerPanel({
   }
 
   return (
-    <div className={cn("flex", isWide ? "flex-row gap-6 flex-1 min-h-0" : "flex-col gap-4")}>
-      <GuidancePanel {...guidance} className={isWide ? "w-1/3 shrink-0" : "w-full shrink-0"} />
-      <div className={cn("flex flex-col gap-3 min-w-0", isWide && "flex-1 min-h-0")}>
+    <div className="flex flex-col gap-6">
+      <GuidancePanel {...guidance} />
+      <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between gap-2 flex-wrap">
-          <h3 className="text-base font-semibold">Curated tools ({method.tools.length})</h3>
+          <h3 className="text-xl font-bold">Curated tools ({method.tools.length})</h3>
           {selectedTool && (
             <a
               href={selectedTool.url}
@@ -435,9 +432,8 @@ function ToolPickerPanel({
             </a>
           )}
         </div>
-        <ScrollArea className="flex-1 min-h-0">
-          <div className="flex flex-col gap-4 pr-3 pt-1">
-            {TOOL_CATEGORY_ORDER.map((category) => {
+        <div className="flex flex-col gap-4">
+          {TOOL_CATEGORY_ORDER.map((category) => {
               const list = toolsByCategory.get(category)
               if (!list || list.length === 0) return null
               return (
@@ -445,40 +441,33 @@ function ToolPickerPanel({
                   <h4 className="text-base font-semibold uppercase tracking-wide text-muted-foreground">
                     {getToolCategoryLabel(category)}
                   </h4>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                     {list.map((tool) => {
                       const isSelected = tool.id === toolId
+                      const MethodIcon = method.icon
                       return (
                         <button
                           key={tool.id}
                           type="button"
                           onClick={() => setOpenToolId(tool.id)}
                           aria-pressed={isSelected}
-                          className={cn(
-                            "group relative flex flex-col items-start gap-1 rounded-lg border-2 p-3 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                            isSelected
-                              ? "border-primary bg-primary/10"
-                              : "border-border bg-card hover:border-primary hover:bg-primary/5"
-                          )}
+                          className="rounded-md border border-primary bg-primary text-primary-foreground flex items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-primary/90 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         >
+                          <div
+                            className="flex items-center justify-center w-8 h-8 rounded-md shrink-0 bg-white/20"
+                            aria-hidden="true"
+                          >
+                            <MethodIcon className="h-4 w-4 text-white" />
+                          </div>
+                          <span className="flex-1 min-w-0 text-base font-bold leading-tight truncate">
+                            {tool.name}
+                          </span>
                           {isSelected && (
-                            <span className="absolute -top-2 right-2 inline-flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground shadow-sm">
-                              <CheckCircle2 className="h-3 w-3" />
+                            <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-base font-semibold shrink-0 bg-white text-primary">
+                              <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
                               Selected
                             </span>
                           )}
-                          <span
-                            className={cn(
-                              "text-base font-semibold leading-tight",
-                              isSelected && "text-primary"
-                            )}
-                          >
-                            {tool.name}
-                          </span>
-                          <span className="text-base text-primary inline-flex items-center gap-1">
-                            Preview
-                            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-                          </span>
                         </button>
                       )
                     })}
@@ -486,8 +475,7 @@ function ToolPickerPanel({
                 </section>
               )
             })}
-          </div>
-        </ScrollArea>
+        </div>
 
         <Dialog
           open={openToolId !== null}
@@ -525,26 +513,15 @@ function ToolPickerPanel({
                   <Button variant="outline" onClick={() => setOpenToolId(null)}>
                     Cancel
                   </Button>
-                  {openTool.id === toolId ? (
-                    <Button
-                      variant="secondary"
-                      onClick={() => {
-                        setTool(null)
-                        setOpenToolId(null)
-                      }}
-                    >
-                      Unselect
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={() => {
-                        setTool(openTool.id)
-                        setOpenToolId(null)
-                      }}
-                    >
-                      Use this tool
-                    </Button>
-                  )}
+                  <Button
+                    onClick={() => {
+                      setTool(openTool.id)
+                      setOpenToolId(null)
+                      onContinue()
+                    }}
+                  >
+                    {openTool.id === toolId ? "Continue with this tool" : "Choose this tool"}
+                  </Button>
                 </DialogFooter>
               </>
             )}
@@ -579,7 +556,6 @@ function CapturePanel({
   onReview: () => void
 }) {
   const { method, toolId, answers, setAnswerText, setAnswerSlots, addAnswerSlot, removeAnswerSlot } = useResearch()
-  const isWide = useContainerSize() === "wide"
   const isNarrow = useContainerSize() === "narrow"
   const [addDialogOpen, setAddDialogOpen] = useState(false)
 
@@ -618,7 +594,7 @@ function CapturePanel({
   }
 
   const headerRow = (
-    <div className="flex items-center gap-3 shrink-0 flex-wrap">
+    <div className="flex flex-col gap-5">
       <div className="flex items-center gap-3">
         <div
           className={cn(
@@ -631,10 +607,7 @@ function CapturePanel({
         </div>
         <h3 className="text-xl font-bold leading-tight">{method.title}</h3>
       </div>
-      <div className="flex items-center gap-2 pl-3 ml-3 border-l border-border">
-        <HelpCircle className="h-5 w-5 text-tertiary shrink-0" aria-hidden="true" />
-        <p className="text-xl font-bold leading-snug">{prompt.question}</p>
-      </div>
+      <p className="text-xl font-bold leading-snug">{prompt.question}</p>
     </div>
   )
 
@@ -658,16 +631,6 @@ function CapturePanel({
       )}
       {prompt.helperText && (
         <p className="text-base leading-relaxed">{prompt.helperText}</p>
-      )}
-      {prompt.examples && prompt.examples.length > 0 && (
-        <div className="flex flex-col gap-1 rounded-lg bg-accent/30 p-3">
-          <span className="text-base font-medium uppercase tracking-wide">Examples</span>
-          {prompt.examples.map((ex, i) => (
-            <span key={i} className="text-base italic leading-relaxed">
-              &ldquo;{ex}&rdquo;
-            </span>
-          ))}
-        </div>
       )}
     </div>
   )
@@ -754,24 +717,14 @@ function CapturePanel({
   )
 
   return (
-    <div className={cn("flex flex-col gap-6 w-full", isWide && "flex-1 min-h-0")}>
+    <div className="flex flex-col gap-6 w-full">
       {headerRow}
-      <div className={cn("flex gap-6", isWide ? "flex-row items-stretch flex-1 min-h-0" : "flex-col")}>
-        {isWide ? (
-          <ScrollArea className="w-1/2 shrink-0 min-h-0">{leftColumn}</ScrollArea>
-        ) : (
-          <div className="w-full">{leftColumn}</div>
-        )}
-        {isWide ? (
-          <ScrollArea className="w-1/2 shrink-0 min-h-0">
-            <div className="pr-3">{rightColumn}</div>
-          </ScrollArea>
-        ) : (
-          <div className="w-full">{rightColumn}</div>
-        )}
+      <div className="flex flex-col gap-6">
+        <div className="w-full">{leftColumn}</div>
+        <div className="w-full">{rightColumn}</div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 shrink-0">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <Button
           variant="outline"
           onClick={goPrev}
@@ -1309,12 +1262,7 @@ export function ResearchBuilder({
           isStepEnabled={isStepEnabled}
           promptsProgress={promptsProgress}
         />
-        <div
-          className={cn(
-            "flex-1 min-h-0 flex flex-col",
-            step !== "capture" && "overflow-y-auto"
-          )}
-        >
+        <div className="flex-1 min-h-0 flex flex-col overflow-y-auto">
           {content}
         </div>
       </CardContent>

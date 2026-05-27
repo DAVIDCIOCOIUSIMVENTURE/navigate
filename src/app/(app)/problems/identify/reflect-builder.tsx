@@ -7,7 +7,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
-import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Collapsible,
   CollapsibleContent,
@@ -29,7 +28,6 @@ import {
   ChevronDown,
   ClipboardCheck,
   Clock,
-  HelpCircle,
   Pencil,
   Plus,
   Trash2,
@@ -508,7 +506,6 @@ function PromptsPanel({
   }
 
   const Icon = lens.icon
-  const isWide = useContainerSize() === "wide"
 
   const rightColumn = (
     <div className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-4">
@@ -639,23 +636,11 @@ function PromptsPanel({
       {prompt.helperText && (
         <p className="text-base leading-relaxed">{prompt.helperText}</p>
       )}
-      {prompt.examples && prompt.examples.length > 0 && (
-        <div className="flex flex-col gap-1 rounded-lg bg-accent/30 p-3">
-          <span className="text-base font-medium uppercase tracking-wide">
-            Examples
-          </span>
-          {prompt.examples.map((ex, i) => (
-            <span key={i} className="text-base italic leading-relaxed">
-              &ldquo;{ex}&rdquo;
-            </span>
-          ))}
-        </div>
-      )}
     </div>
   )
 
   const headerRow = (
-    <div className="flex items-center gap-3 shrink-0 flex-wrap">
+    <div className="flex flex-col gap-5">
       <div className="flex items-center gap-3">
         <div
           className={cn("flex items-center justify-center w-10 h-10 rounded-lg shrink-0", lens.tileColor)}
@@ -665,39 +650,19 @@ function PromptsPanel({
         </div>
         <h3 className="text-xl font-bold leading-tight">{lens.title}</h3>
       </div>
-      <div className="flex items-center gap-2 pl-3 ml-3 border-l border-border">
-        <HelpCircle className="h-5 w-5 text-tertiary shrink-0" aria-hidden="true" />
-        <p className="text-xl font-bold leading-snug">{prompt.question}</p>
-      </div>
+      <p className="text-xl font-bold leading-snug">{prompt.question}</p>
     </div>
   )
 
   return (
-    <div className={cn("flex flex-col gap-6 w-full", isWide && "flex-1 min-h-0")}>
+    <div className="flex flex-col gap-6 w-full">
       {headerRow}
-      <div
-        className={cn(
-          "flex gap-6",
-          isWide ? "flex-row items-stretch flex-1 min-h-0" : "flex-col"
-        )}
-      >
-        {isWide ? (
-          <ScrollArea className="w-1/2 shrink-0 min-h-0">
-            {leftColumn}
-          </ScrollArea>
-        ) : (
-          <div className="w-full">{leftColumn}</div>
-        )}
-        {isWide ? (
-          <ScrollArea className="w-1/2 shrink-0 min-h-0">
-            <div className="pr-3">{rightColumn}</div>
-          </ScrollArea>
-        ) : (
-          <div className="w-full">{rightColumn}</div>
-        )}
+      <div className="flex flex-col gap-6">
+        <div className="w-full">{leftColumn}</div>
+        <div className="w-full">{rightColumn}</div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3 shrink-0">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <Button
           variant="outline"
           onClick={goPrev}
@@ -1262,7 +1227,7 @@ export function ReflectBuilder({ resetRef }: { resetRef?: React.MutableRefObject
           isStepEnabled={isStepEnabled}
           promptsProgress={promptsProgress}
         />
-        <div className={cn("flex-1 min-h-0 flex flex-col", step !== "prompts" && "overflow-y-auto")}>
+        <div className="flex-1 min-h-0 flex flex-col overflow-y-auto">
           {content}
         </div>
       </CardContent>

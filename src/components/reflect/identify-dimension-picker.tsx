@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Check, ChevronDown, ChevronRight, Plus } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { dimensionColumns } from "@/data/dimensionData"
+import { DIMENSION_ICONS } from "@/lib/dimension-visuals"
 import type { CustomDimensionColumnId } from "@/store/custom-dimension-items-model"
 import {
   Collapsible,
@@ -122,6 +123,7 @@ export function IdentifyDimensionPicker({
   const groups = customGroup ? [customGroup, ...builtInGroups] : builtInGroups
   const inputId = `${columnId}-dimension-new`
   const placeholder = addPlaceholder ?? "Type your own and press Add"
+  const DimensionIcon = DIMENSION_ICONS[columnId]
 
   return (
     <div
@@ -133,19 +135,48 @@ export function IdentifyDimensionPicker({
         {groups.map((group) => {
           const open = openGroupId === group.id
           const selectedInGroup = group.items.filter((i) => isSelected(i.label)).length
+          const isCustomGroup = group.id === `${columnId}-custom`
           return (
             <Collapsible
               key={group.id}
               open={open}
               onOpenChange={(next) => setOpenGroupId(next ? group.id : null)}
             >
-              <CollapsibleTrigger className="flex w-full items-center gap-1.5 px-1 py-1.5 rounded-md hover:bg-accent/50 transition-colors">
-                {open ? (
-                  <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                ) : (
-                  <ChevronRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+              <CollapsibleTrigger
+                className={cn(
+                  "flex w-full items-center gap-1.5 px-1 py-1.5 rounded-md transition-colors",
+                  isCustomGroup
+                    ? "bg-quaternary/10 hover:bg-quaternary/15"
+                    : "hover:bg-accent/50"
                 )}
-                <span className="text-sm font-semibold text-foreground tracking-wide select-none flex-1 text-left">
+              >
+                {open ? (
+                  <ChevronDown
+                    className={cn(
+                      "h-3.5 w-3.5 shrink-0",
+                      isCustomGroup ? "text-quaternary" : "text-muted-foreground"
+                    )}
+                  />
+                ) : (
+                  <ChevronRight
+                    className={cn(
+                      "h-3.5 w-3.5 shrink-0",
+                      isCustomGroup ? "text-quaternary" : "text-muted-foreground"
+                    )}
+                  />
+                )}
+                {isCustomGroup && DimensionIcon && (
+                  <DimensionIcon
+                    className="h-4 w-4 text-quaternary shrink-0"
+                    aria-hidden="true"
+                  />
+                )}
+                <span
+                  className={cn(
+                    "text-sm font-semibold tracking-wide select-none flex-1 text-left",
+                    isCustomGroup ? "text-quaternary" : "text-foreground"
+                  )}
+                >
                   {group.label}
                 </span>
                 {selectedInGroup > 0 && (
