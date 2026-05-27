@@ -4,7 +4,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
 
 export function CustomerStrategy({ readOnly = false }: { readOnly?: boolean }) {
-  const { segmentSize, setSegmentSize, customerDescription, setCustomerDescription } = useProblem()
+  const { segmentSize, customerDescription, setCustomerDescription } = useProblem()
 
   if (readOnly && segmentSize === null && !customerDescription.trim()) {
     return (
