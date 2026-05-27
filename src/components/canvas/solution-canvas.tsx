@@ -27,6 +27,11 @@ import {
   type LucideIcon,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import {
+  buildSolutionExportText,
+  downloadTextFile,
+  safeFilename,
+} from "@/lib/canvas-export"
 
 const STATUS_CONFIG: Record<Solution["validationStatus"], { label: string; className: string; icon: LucideIcon }> = {
   valid: { label: "Valid", className: "bg-success text-white border-success", icon: CheckCircle2 },
@@ -125,6 +130,15 @@ export function SolutionCanvas({ solution, editHref }: { solution: Solution; edi
     s.problems.problems.find((p) => p.id === solution.problemId),
   )
 
+  const handleDownload = () => {
+    const text = buildSolutionExportText(
+      solution,
+      linkedProblem ? linkedProblem.description || `Problem #${linkedProblem.id}` : null,
+    )
+    const name = safeFilename(solution.title || `solution-${solution.id}`, `solution-${solution.id}`)
+    downloadTextFile(`${name}.txt`, text)
+  }
+
   useEffect(() => {
     return () => {
       document.body.classList.remove("canvas-printing")
@@ -175,7 +189,7 @@ export function SolutionCanvas({ solution, editHref }: { solution: Solution; edi
               )}
               {fullView ? "Exit Full View" : "Full View"}
             </Button>
-            <Button variant="outline" size="sm" disabled title="Coming soon">
+            <Button variant="outline" size="sm" onClick={handleDownload} title="Download as text">
               <Download className="h-3.5 w-3.5 mr-1.5" />
               Download
             </Button>

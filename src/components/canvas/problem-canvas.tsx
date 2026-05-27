@@ -37,6 +37,11 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
+import {
+  buildProblemExportText,
+  downloadTextFile,
+  safeFilename,
+} from "@/lib/canvas-export"
 
 const STATUS_CONFIG: Record<Problem["validationStatus"], { label: string; className: string; icon: LucideIcon }> = {
   valid: { label: "Valid", className: "bg-success text-white border-success", icon: CheckCircle2 },
@@ -132,7 +137,15 @@ export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHre
   const linkedSolutions = useSelector((s: RootState) =>
     s.solutions.solutions.filter((sol) => sol.problemId === problem.id),
   )
+  const customByColumn = useSelector((s: RootState) => s.customDimensionItems.byColumn)
+  const selfDiscoveryItems = useSelector((s: RootState) => s.selfDiscoveryItems.items)
   const [solutionsOpen, setSolutionsOpen] = useState(false)
+
+  const handleDownload = () => {
+    const text = buildProblemExportText(problem, linkedSolutions, customByColumn, selfDiscoveryItems)
+    const name = safeFilename(problem.description || `problem-${problem.id}`, `problem-${problem.id}`)
+    downloadTextFile(`${name}.txt`, text)
+  }
 
   useEffect(() => {
     return () => {
@@ -184,7 +197,7 @@ export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHre
               )}
               {fullView ? "Exit Full View" : "Full View"}
             </Button>
-            <Button variant="outline" size="sm" disabled title="Coming soon">
+            <Button variant="outline" size="sm" onClick={handleDownload} title="Download as text">
               <Download className="h-3.5 w-3.5 mr-1.5" />
               Download
             </Button>
