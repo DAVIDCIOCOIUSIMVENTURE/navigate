@@ -85,20 +85,18 @@ function GuidancePanel({
   className?: string
 }) {
   return (
-    <ScrollArea className={cn("min-h-0", className)}>
-      <div className="flex flex-col gap-3 text-base pr-3">
-        <h3 className="font-semibold text-base">{title}</h3>
-        <p className="leading-relaxed">{description}</p>
-        <ul className="flex flex-col gap-1.5">
-          {tips.map((tip, i) => (
-            <li key={i} className="flex gap-2 leading-relaxed">
-              <span className="text-secondary-brand mt-0.5 shrink-0">&#8226;</span>
-              <span>{tip}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </ScrollArea>
+    <div className={cn("flex flex-col gap-3 text-base", className)}>
+      <h3 className="text-xl font-bold">{title}</h3>
+      <p className="leading-relaxed">{description}</p>
+      <ul className="flex flex-col gap-1.5">
+        {tips.map((tip, i) => (
+          <li key={i} className="flex gap-2 leading-relaxed">
+            <span className="text-secondary-brand mt-0.5 shrink-0">&#8226;</span>
+            <span>{tip}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
@@ -259,116 +257,61 @@ function PickMethodPanel({
   onPick: (methodId: ResearchMethodId) => void
   selectedMethodId: ResearchMethodId | null
 }) {
-  const isWide = useContainerSize() === "wide"
   const [openMethodId, setOpenMethodId] = useState<ResearchMethodId | null>(null)
   const openMethod = openMethodId ? getResearchMethod(openMethodId) ?? null : null
   const OpenIcon = openMethod?.icon
 
   return (
-    <div className={cn("flex", isWide ? "flex-row gap-6 flex-1 min-h-0" : "flex-col gap-4")}>
-      <GuidancePanel {...PICK_GUIDANCE} className={isWide ? "w-1/3 shrink-0" : "w-full shrink-0"} />
-      <div className={cn("flex flex-col gap-3 min-w-0", isWide && "flex-1 min-h-0")}>
-        <h3 className="text-base font-semibold">Research methods</h3>
-        <ScrollArea className="flex-1 min-h-0">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 pr-3 pt-3">
-            {RESEARCH_METHODS.map((method) => {
-              const Icon = method.icon
-              const isEnabled = ENABLED_METHOD_IDS.has(method.id)
-              const isSelected = selectedMethodId === method.id
+    <div className="flex flex-col gap-6">
+      <GuidancePanel {...PICK_GUIDANCE} />
+      <div className="flex flex-col gap-4">
+        <h3 className="text-xl font-bold">Research methods</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {RESEARCH_METHODS.map((method) => {
+            const Icon = method.icon
+            const isEnabled = ENABLED_METHOD_IDS.has(method.id)
+            const isSelected = selectedMethodId === method.id
 
-              if (!isEnabled) {
-                return (
-                  <div
-                    key={method.id}
-                    aria-disabled="true"
-                    className="block cursor-not-allowed rounded-xl"
-                  >
-                    <Card className="h-full opacity-60">
-                      <CardContent className="p-5 flex flex-col gap-3 h-full">
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex items-center gap-3 min-w-0">
-                            <div
-                              className={cn(
-                                "flex items-center justify-center w-10 h-10 rounded-lg shrink-0",
-                                method.tileColor
-                              )}
-                              aria-hidden="true"
-                            >
-                              <Icon className="h-5 w-5 text-white" />
-                            </div>
-                            <h4 className="text-base font-semibold leading-tight truncate">
-                              {method.title}
-                            </h4>
-                          </div>
-                          <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-base font-medium shrink-0">
-                            Coming soon
-                          </span>
-                        </div>
-                        <div className="mt-auto flex items-center gap-1.5 text-base">
-                          <Clock className="h-4 w-4" aria-hidden="true" />
-                          <span>About {method.estimatedMinutes} minutes</span>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </div>
-                )
-              }
-
-              return (
-                <button
-                  key={method.id}
-                  type="button"
-                  onClick={() => setOpenMethodId(method.id)}
-                  aria-pressed={isSelected}
-                  className={cn(
-                    "group relative flex h-full cursor-pointer flex-col rounded-xl border-2 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                    isSelected
-                      ? "border-primary bg-primary/10 ring-2 ring-primary/40 ring-offset-2"
-                      : "border-border bg-card hover:border-primary hover:bg-primary/5"
-                  )}
+            return (
+              <button
+                key={method.id}
+                type="button"
+                disabled={!isEnabled}
+                onClick={() => setOpenMethodId(method.id)}
+                aria-pressed={isSelected}
+                className={cn(
+                  "rounded-md border border-primary bg-primary text-primary-foreground flex items-center gap-3 px-3 py-2.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  isEnabled ? "hover:bg-primary/90 cursor-pointer" : "opacity-75 cursor-not-allowed"
+                )}
+              >
+                <div
+                  className="flex items-center justify-center w-8 h-8 rounded-md shrink-0 bg-white/20"
+                  aria-hidden="true"
                 >
-                  {isSelected && (
-                    <span className="absolute -top-3 right-4 flex items-center gap-1 rounded-full bg-primary px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-primary-foreground shadow-sm">
-                      <CheckCircle2 className="h-3 w-3" />
-                      Selected
-                    </span>
-                  )}
-                  <div className="p-5 flex flex-col gap-3 h-full">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div
-                        className={cn(
-                          "flex items-center justify-center w-10 h-10 rounded-lg shrink-0",
-                          method.tileColor
-                        )}
-                        aria-hidden="true"
-                      >
-                        <Icon className="h-5 w-5 text-white" />
-                      </div>
-                      <h4
-                        className={cn(
-                          "text-base font-semibold leading-tight truncate",
-                          isSelected && "text-primary"
-                        )}
-                      >
-                        {method.title}
-                      </h4>
-                    </div>
-                    <div className="mt-auto flex flex-col gap-1.5">
-                      <div className="flex items-center gap-1.5 text-base">
-                        <Clock className="h-4 w-4" aria-hidden="true" />
-                        <span>About {method.estimatedMinutes} minutes</span>
-                      </div>
-                      <div className="flex items-center gap-1.5 text-base font-semibold text-primary">
-                        {isSelected ? "Selected method" : "Preview this method"}
-                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                      </div>
-                    </div>
-                  </div>
-                </button>
-              )
-            })}
-          </div>
-        </ScrollArea>
+                  <Icon className="h-4 w-4 text-white" />
+                </div>
+                <div className="flex-1 min-w-0 flex flex-col gap-0.5">
+                  <h4 className="text-base font-bold leading-tight truncate">{method.title}</h4>
+                  <span className="inline-flex items-center gap-1 text-base opacity-80 min-w-0">
+                    <Clock className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                    <span className="truncate">About {method.estimatedMinutes} minutes</span>
+                  </span>
+                </div>
+                {!isEnabled && (
+                  <span className="inline-flex items-center rounded-full px-2 py-0.5 text-base font-medium shrink-0 bg-white/20">
+                    Coming soon
+                  </span>
+                )}
+                {isSelected && (
+                  <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-base font-semibold shrink-0 bg-white text-primary">
+                    <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
+                    Selected
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       <Dialog
@@ -384,10 +327,7 @@ function PickMethodPanel({
                 <DialogTitle>
                   <span className="flex items-center gap-3">
                     <span
-                      className={cn(
-                        "flex items-center justify-center w-10 h-10 rounded-lg shrink-0",
-                        openMethod.tileColor
-                      )}
+                      className="flex items-center justify-center w-10 h-10 rounded-md shrink-0 bg-primary"
                       aria-hidden="true"
                     >
                       <OpenIcon className="h-5 w-5 text-white" />
