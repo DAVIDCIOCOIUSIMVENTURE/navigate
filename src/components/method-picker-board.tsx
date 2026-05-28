@@ -50,8 +50,16 @@ export function MethodPickerBoard({
   const [activeId, setActiveId] = useState<string | null>(initialActive)
 
   useEffect(() => {
-    if (!activeId && initialActive) setActiveId(initialActive)
-  }, [activeId, initialActive])
+    if (!activeId && initialActive) {
+      setActiveId(initialActive)
+      return
+    }
+    const selectedEnabled = items.find((i) => i.id === selectedId && i.enabled)
+    if (selectedEnabled && selectedEnabled.id !== activeId) {
+      setActiveId(selectedEnabled.id)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedId])
 
   if (!isWide) {
     return (
