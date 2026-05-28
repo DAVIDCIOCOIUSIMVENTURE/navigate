@@ -1165,7 +1165,7 @@ export default function IdentifyPage() {
       </Button>
       <ConfirmDialog
         trigger={
-          <Button variant="destructive-outline" size="sm" className="gap-2 bg-card">
+          <Button variant="outline" size="sm" className="gap-2 bg-card text-destructive hover:text-destructive hover:bg-destructive/10">
             <RotateCcw className="h-3.5 w-3.5" />
             <span className={cn(containerSize === "narrow" && "sr-only")}>Reset</span>
           </Button>
