@@ -93,20 +93,13 @@ export function AudiencePicker({
   function handleAdd() {
     const title = draft.trim()
     if (!title) return
-    const existing = selfDiscoveryAudience.find(
-      (i) => i.title.trim().toLowerCase() === title.toLowerCase()
-    )
-    if (existing) {
-      onSelect(existing.id, existing.title)
-    } else {
-      const id = generateSelfDiscoveryItemId()
-      dispatch.selfDiscoveryItems.addItem({
-        id,
-        title,
-        questionUrl: TARGET_AUDIENCE_QUESTION_URL,
-      })
-      onSelect(id, title)
-    }
+    const id = generateSelfDiscoveryItemId()
+    dispatch.selfDiscoveryItems.addItem({
+      id,
+      title,
+      questionUrl: TARGET_AUDIENCE_QUESTION_URL,
+    })
+    onSelect(id, title)
     setDraft("")
     onAddDialogOpenChange(false)
   }

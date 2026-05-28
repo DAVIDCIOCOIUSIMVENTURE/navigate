@@ -100,15 +100,6 @@ export function LifeExperiencesPicker({
   function saveAndSelect(title: string) {
     const trimmed = title.trim()
     if (!trimmed) return
-    const existing = items.find(
-      (i) => i.title.trim().toLowerCase() === trimmed.toLowerCase()
-    )
-    if (existing) {
-      onSelect(existing.id, existing.title)
-      setDraft("")
-      onAddDialogOpenChange(false)
-      return
-    }
     const id = generateSelfDiscoveryItemId()
     dispatch.selfDiscoveryItems.addItem({
       id,
