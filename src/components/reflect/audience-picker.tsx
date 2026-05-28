@@ -24,6 +24,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { EditSelfDiscoveryItemsDialog } from "@/components/reflect/edit-self-discovery-items-dialog"
 
 const TARGET_AUDIENCE_QUESTION_URL = "target-audience"
 
@@ -32,6 +33,8 @@ type Props = {
   onSelect: (id: string | null, label: string | null) => void
   addDialogOpen: boolean
   onAddDialogOpenChange: (open: boolean) => void
+  editDialogOpen: boolean
+  onEditDialogOpenChange: (open: boolean) => void
 }
 
 type GroupItem = { id: string; label: string }
@@ -42,6 +45,8 @@ export function AudiencePicker({
   onSelect,
   addDialogOpen,
   onAddDialogOpenChange,
+  editDialogOpen,
+  onEditDialogOpenChange,
 }: Props) {
   const dispatch = useDispatch<AppDispatch>()
   const selfDiscoveryAudience = useSelector((s: RootState) =>
@@ -274,6 +279,14 @@ export function AudiencePicker({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <EditSelfDiscoveryItemsDialog
+        open={editDialogOpen}
+        onOpenChange={onEditDialogOpenChange}
+        title="Edit your audiences"
+        description="Rename or remove the audiences you've saved to your self-discovery."
+        questionUrls={[TARGET_AUDIENCE_QUESTION_URL]}
+      />
     </div>
   )
 }

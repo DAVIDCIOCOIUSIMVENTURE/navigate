@@ -311,6 +311,7 @@ function PromptsPanel({
   } = useReflect()
   const isNarrow = useContainerSize() === "narrow"
   const [addDialogOpen, setAddDialogOpen] = useState(false)
+  const [editDialogOpen, setEditDialogOpen] = useState(false)
 
   const prompt = lens.prompts[index]
   const total = lens.prompts.length
@@ -420,15 +421,27 @@ function PromptsPanel({
       <div className="flex items-start justify-between gap-3 shrink-0">
         <p className="text-lg font-bold leading-snug text-white">{prompt.question}</p>
         {useAnchorPicker || dimensionPickerColumn ? (
-          <Button
-            type="button"
-            size="sm"
-            onClick={() => setAddDialogOpen(true)}
-            className="gap-1.5 shrink-0 bg-white text-foreground hover:bg-white/90"
-          >
-            <Plus className="h-3.5 w-3.5" />
-            Add your own
-          </Button>
+          <div className="flex items-center gap-2 shrink-0">
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => setAddDialogOpen(true)}
+              className="gap-1.5 bg-white text-foreground hover:bg-white/90"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              Add your own
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={() => setEditDialogOpen(true)}
+              className="gap-1.5 bg-transparent border-white/40 text-white hover:bg-white/10 hover:text-white hover:border-white/60"
+            >
+              <Pencil className="h-3.5 w-3.5" />
+              <span className="font-semibold">Edit</span>
+            </Button>
+          </div>
         ) : prompt.multipleAllowed ? (
           <Button
             type="button"
@@ -452,6 +465,8 @@ function PromptsPanel({
           onSelect={handleSelectAnchor}
           addDialogOpen={addDialogOpen}
           onAddDialogOpenChange={setAddDialogOpen}
+          editDialogOpen={editDialogOpen}
+          onEditDialogOpenChange={setEditDialogOpen}
         />
       ) : useWorkContextPicker ? (
         <WorkContextPicker
@@ -459,6 +474,8 @@ function PromptsPanel({
           onSelect={handleSelectAnchor}
           addDialogOpen={addDialogOpen}
           onAddDialogOpenChange={setAddDialogOpen}
+          editDialogOpen={editDialogOpen}
+          onEditDialogOpenChange={setEditDialogOpen}
         />
       ) : useOwnProblemsPicker ? (
         <OwnProblemsPicker
@@ -466,6 +483,8 @@ function PromptsPanel({
           onSelect={handleSelectAnchor}
           addDialogOpen={addDialogOpen}
           onAddDialogOpenChange={setAddDialogOpen}
+          editDialogOpen={editDialogOpen}
+          onEditDialogOpenChange={setEditDialogOpen}
         />
       ) : useAudiencePicker ? (
         <AudiencePicker
@@ -473,6 +492,8 @@ function PromptsPanel({
           onSelect={handleSelectAnchor}
           addDialogOpen={addDialogOpen}
           onAddDialogOpenChange={setAddDialogOpen}
+          editDialogOpen={editDialogOpen}
+          onEditDialogOpenChange={setEditDialogOpen}
         />
       ) : dimensionPickerColumn ? (
         <IdentifyDimensionPicker
@@ -493,6 +514,8 @@ function PromptsPanel({
           }
           addDialogOpen={addDialogOpen}
           onAddDialogOpenChange={setAddDialogOpen}
+          editDialogOpen={editDialogOpen}
+          onEditDialogOpenChange={setEditDialogOpen}
         />
       ) : (
         <div className="flex flex-col gap-2">

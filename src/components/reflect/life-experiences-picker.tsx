@@ -24,6 +24,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { EditSelfDiscoveryItemsDialog } from "@/components/reflect/edit-self-discovery-items-dialog"
 
 const LIFE_EXPERIENCES_QUESTION_URL = "life-experiences"
 
@@ -32,6 +33,8 @@ type Props = {
   onSelect: (id: string | null, label: string | null) => void
   addDialogOpen: boolean
   onAddDialogOpenChange: (open: boolean) => void
+  editDialogOpen: boolean
+  onEditDialogOpenChange: (open: boolean) => void
 }
 
 /**
@@ -45,6 +48,8 @@ export function LifeExperiencesPicker({
   onSelect,
   addDialogOpen,
   onAddDialogOpenChange,
+  editDialogOpen,
+  onEditDialogOpenChange,
 }: Props) {
   const dispatch = useDispatch<AppDispatch>()
   const items = useSelector((s: RootState) =>
@@ -308,6 +313,14 @@ export function LifeExperiencesPicker({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <EditSelfDiscoveryItemsDialog
+        open={editDialogOpen}
+        onOpenChange={onEditDialogOpenChange}
+        title="Edit your life experiences"
+        description="Rename or remove the life experiences you've saved to your self-discovery."
+        questionUrls={[LIFE_EXPERIENCES_QUESTION_URL]}
+      />
     </div>
   )
 }

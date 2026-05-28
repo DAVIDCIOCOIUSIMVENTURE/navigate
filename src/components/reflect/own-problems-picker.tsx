@@ -26,6 +26,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { EditSelfDiscoveryItemsDialog } from "@/components/reflect/edit-self-discovery-items-dialog"
 
 const WORK_DONE_QUESTION_URL = "work-done"
 const HOBBIES_QUESTION_URL = "hobbies-interests"
@@ -36,6 +37,8 @@ type Props = {
   onSelect: (id: string | null, label: string | null) => void
   addDialogOpen: boolean
   onAddDialogOpenChange: (open: boolean) => void
+  editDialogOpen: boolean
+  onEditDialogOpenChange: (open: boolean) => void
 }
 
 type GroupItem = { id: string; label: string }
@@ -46,6 +49,8 @@ export function OwnProblemsPicker({
   onSelect,
   addDialogOpen,
   onAddDialogOpenChange,
+  editDialogOpen,
+  onEditDialogOpenChange,
 }: Props) {
   const dispatch = useDispatch<AppDispatch>()
   const items = useSelector((s: RootState) =>
@@ -272,6 +277,14 @@ export function OwnProblemsPicker({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <EditSelfDiscoveryItemsDialog
+        open={editDialogOpen}
+        onOpenChange={onEditDialogOpenChange}
+        title="Edit what you've worked on or done"
+        description="Rename or remove the work and hobby entries you've saved to your self-discovery."
+        questionUrls={SOURCE_QUESTION_URLS}
+      />
     </div>
   )
 }

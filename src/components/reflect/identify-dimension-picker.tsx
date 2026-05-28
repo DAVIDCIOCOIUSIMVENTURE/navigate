@@ -23,6 +23,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { ManageCustomItemsDialog } from "@/components/manage-custom-items-dialog"
 
 type Props = {
   columnId: CustomDimensionColumnId
@@ -32,6 +33,8 @@ type Props = {
   ariaLabel?: string
   addDialogOpen: boolean
   onAddDialogOpenChange: (open: boolean) => void
+  editDialogOpen?: boolean
+  onEditDialogOpenChange?: (open: boolean) => void
 }
 
 type FlatItem = { id: string; label: string }
@@ -52,6 +55,8 @@ export function IdentifyDimensionPicker({
   ariaLabel,
   addDialogOpen,
   onAddDialogOpenChange,
+  editDialogOpen,
+  onEditDialogOpenChange,
 }: Props) {
   const dispatch = useDispatch<AppDispatch>()
   const customItems = useSelector(
@@ -305,6 +310,15 @@ export function IdentifyDimensionPicker({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {onEditDialogOpenChange && (
+        <ManageCustomItemsDialog
+          open={editDialogOpen ?? false}
+          onOpenChange={onEditDialogOpenChange}
+          columnId={columnId}
+          columnTitle={column?.title ?? columnId}
+        />
+      )}
     </div>
   )
 }

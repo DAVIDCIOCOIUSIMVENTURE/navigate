@@ -26,6 +26,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { EditSelfDiscoveryItemsDialog } from "@/components/reflect/edit-self-discovery-items-dialog"
 
 const WORK_DONE_QUESTION_URL = "work-done"
 const ORG_PROCESSES_QUESTION_URL = "organisations-processes"
@@ -36,6 +37,8 @@ type Props = {
   onSelect: (id: string | null, label: string | null) => void
   addDialogOpen: boolean
   onAddDialogOpenChange: (open: boolean) => void
+  editDialogOpen: boolean
+  onEditDialogOpenChange: (open: boolean) => void
 }
 
 type GroupItem = { id: string; label: string }
@@ -57,6 +60,8 @@ export function WorkContextPicker({
   onSelect,
   addDialogOpen,
   onAddDialogOpenChange,
+  editDialogOpen,
+  onEditDialogOpenChange,
 }: Props) {
   const dispatch = useDispatch<AppDispatch>()
   const items = useSelector((s: RootState) =>
@@ -282,6 +287,14 @@ export function WorkContextPicker({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <EditSelfDiscoveryItemsDialog
+        open={editDialogOpen}
+        onOpenChange={onEditDialogOpenChange}
+        title="Edit your work entries"
+        description="Rename or remove the work and organisation entries you've saved to your self-discovery."
+        questionUrls={WORK_QUESTION_URLS}
+      />
     </div>
   )
 }
