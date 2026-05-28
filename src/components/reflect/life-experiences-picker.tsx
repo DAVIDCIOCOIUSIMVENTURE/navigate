@@ -54,16 +54,26 @@ export function LifeExperiencesPicker({
     (s: RootState) => s.customDimensionItems.byColumn.contexts ?? []
   )
   const [draft, setDraft] = useState("")
-  const [openGroupId, setOpenGroupId] = useState<string | null>(null)
+  const [selfDiscoveryOpen, setSelfDiscoveryOpen] = useState(true)
+  const [openContextGroupId, setOpenContextGroupId] = useState<string | null>(null)
 
   const sortedItems = useMemo(
     () => [...items].sort((a, b) => a.title.localeCompare(b.title)),
     [items]
   )
 
-  const groups = useMemo(() => {
+  const selfDiscoveryGroup = useMemo(
+    () => ({
+      id: "self-discovery",
+      label: "From your self-discovery",
+      items: sortedItems.map((i) => ({ id: i.id, label: i.title })),
+    }),
+    [sortedItems]
+  )
+
+  const contextGroups = useMemo(() => {
     const col = dimensionColumns.find((c) => c.id === "contexts")
-    const contextGroups = col
+    const builtIn = col
       ? col.items.map((cat) => ({
           id: cat.id,
           label: cat.label,
@@ -78,32 +88,28 @@ export function LifeExperiencesPicker({
         items: customContexts.map((c) => ({ id: c.id, label: c.label })),
       })
     }
-    result.push({
-      id: "self-discovery",
-      label: "From your self-discovery",
-      items: sortedItems.map((i) => ({ id: i.id, label: i.title })),
-    })
-    return [...result, ...contextGroups]
-  }, [customContexts, sortedItems])
+    return [...result, ...builtIn]
+  }, [customContexts])
 
   const usageByTitle = useMemo(
     () => countAnchorUsage(problems, "life"),
     [problems]
   )
 
-  function handleAdd() {
-    const title = draft.trim()
-    if (!title) return
-    const exists = items.some((i) => i.title.toLowerCase() === title.toLowerCase())
-    if (!exists) {
-      dispatch.selfDiscoveryItems.addItem({
-        title,
-        questionUrl: LIFE_EXPERIENCES_QUESTION_URL,
-      })
-    }
-    onSelect(title)
+  function saveAndSelect(title: string) {
+    const trimmed = title.trim()
+    if (!trimmed) return
+    dispatch.selfDiscoveryItems.addItem({
+      title: trimmed,
+      questionUrl: LIFE_EXPERIENCES_QUESTION_URL,
+    })
+    onSelect(trimmed)
     setDraft("")
     onAddDialogOpenChange(false)
+  }
+
+  function handleAdd() {
+    saveAndSelect(draft)
   }
 
   return (
@@ -113,118 +119,92 @@ export function LifeExperiencesPicker({
       className="flex flex-col gap-2"
     >
       <div className="flex flex-col rounded-lg bg-card p-2">
-        {groups.map((group) => {
-          const open = openGroupId === group.id
-          const selectedInGroup = group.items.some(
-            (i) => selectedTitle === i.label
-          )
-          const isSelfDiscoveryGroup = group.id === "self-discovery"
-          if (group.items.length === 0 && !isSelfDiscoveryGroup) return null
-          return (
-            <Collapsible
-              key={group.id}
-              open={open}
-              onOpenChange={(next) =>
-                setOpenGroupId(next ? group.id : null)
-              }
-            >
-              <CollapsibleTrigger
-                className={cn(
-                  "flex w-full items-center gap-1.5 px-1 py-1.5 rounded-md transition-colors",
-                  isSelfDiscoveryGroup
-                    ? "bg-quaternary/10 hover:bg-quaternary/15"
-                    : "hover:bg-accent/50"
-                )}
-              >
-                {open
-                  ? <ChevronDown className={cn("h-3.5 w-3.5 shrink-0", isSelfDiscoveryGroup ? "text-quaternary" : "text-muted-foreground")} />
-                  : <ChevronRight className={cn("h-3.5 w-3.5 shrink-0", isSelfDiscoveryGroup ? "text-quaternary" : "text-muted-foreground")} />
-                }
-                {isSelfDiscoveryGroup && (
-                  <Compass className="h-4 w-4 text-quaternary shrink-0" aria-hidden="true" />
-                )}
-                <span
-                  className={cn(
-                    "text-sm font-semibold tracking-wide select-none flex-1 text-left",
-                    isSelfDiscoveryGroup ? "text-quaternary" : "text-foreground"
-                  )}
-                >
-                  {group.label}
-                </span>
-                {selectedInGroup && (
-                  <span className="text-sm text-secondary-brand font-medium">
-                    Selected
-                  </span>
-                )}
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <ul className="ml-7 flex flex-col gap-1 pb-1">
-                  {group.items.length === 0 && isSelfDiscoveryGroup ? (
-                    <li className="text-sm text-muted-foreground px-2 py-1.5">
-                      Nothing saved yet. Use &ldquo;Add your own&rdquo; or{" "}
-                      <Link
-                        href="/self-discovery/discover/personal-interests/life-experiences"
-                        className="text-quaternary font-medium underline underline-offset-2 hover:text-quaternary/80"
+        <Collapsible open={selfDiscoveryOpen} onOpenChange={setSelfDiscoveryOpen}>
+          <CollapsibleTrigger
+            className={cn(
+              "flex w-full items-center gap-1.5 px-1 py-1.5 rounded-md transition-colors",
+              "bg-quaternary/10 hover:bg-quaternary/15"
+            )}
+          >
+            {selfDiscoveryOpen
+              ? <ChevronDown className="h-3.5 w-3.5 shrink-0 text-quaternary" />
+              : <ChevronRight className="h-3.5 w-3.5 shrink-0 text-quaternary" />
+            }
+            <Compass className="h-4 w-4 text-quaternary shrink-0" aria-hidden="true" />
+            <span className="text-sm font-semibold tracking-wide select-none flex-1 text-left text-quaternary">
+              {selfDiscoveryGroup.label}
+            </span>
+            {selfDiscoveryGroup.items.some((i) => selectedTitle === i.label) && (
+              <span className="text-sm text-secondary-brand font-medium">
+                Selected
+              </span>
+            )}
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <ul className="ml-7 flex flex-col gap-1 pb-1">
+              {selfDiscoveryGroup.items.length === 0 ? (
+                <li className="text-sm text-muted-foreground px-2 py-1.5">
+                  Nothing saved yet. Use &ldquo;Add your own&rdquo; or{" "}
+                  <Link
+                    href="/self-discovery/discover/personal-interests/life-experiences"
+                    className="text-quaternary font-medium underline underline-offset-2 hover:text-quaternary/80"
+                  >
+                    visit Self-Discovery
+                  </Link>{" "}
+                  to fill this in.
+                </li>
+              ) : (
+                selfDiscoveryGroup.items.map((item) => {
+                  const isSelected = selectedTitle === item.label
+                  const usageCount =
+                    usageByTitle.get(item.label.trim().toLowerCase()) ?? 0
+                  return (
+                    <li key={item.id}>
+                      <button
+                        type="button"
+                        role="radio"
+                        aria-checked={isSelected}
+                        onClick={() =>
+                          onSelect(isSelected ? null : item.label)
+                        }
+                        className={cn(
+                          "w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                          isSelected
+                            ? "bg-primary/10 border border-primary"
+                            : "border border-transparent hover:bg-accent/40"
+                        )}
                       >
-                        visit Self-Discovery
-                      </Link>{" "}
-                      to fill this in.
+                        <span
+                          className={cn(
+                            "grid place-content-center h-4 w-4 shrink-0 rounded-full border",
+                            isSelected
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-input"
+                          )}
+                          aria-hidden="true"
+                        >
+                          {isSelected && <Check className="h-3 w-3" />}
+                        </span>
+                        <span className="flex-1 text-sm leading-snug">
+                          {item.label}
+                        </span>
+                        {usageCount > 0 && (
+                          <span className="ml-2 shrink-0 text-sm bg-secondary text-secondary-foreground rounded-full px-2 py-0.5">
+                            Reflected {usageCount}x
+                          </span>
+                        )}
+                      </button>
                     </li>
-                  ) : (
-                    group.items.map((item) => {
-                      const isSelected = selectedTitle === item.label
-                      const usageCount = isSelfDiscoveryGroup
-                        ? usageByTitle.get(item.label.trim().toLowerCase()) ?? 0
-                        : 0
-                      return (
-                        <li key={item.id}>
-                          <button
-                            type="button"
-                            role="radio"
-                            aria-checked={isSelected}
-                            onClick={() =>
-                              onSelect(isSelected ? null : item.label)
-                            }
-                            className={cn(
-                              "w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                              isSelected
-                                ? "bg-primary/10 border border-primary"
-                                : "border border-transparent hover:bg-accent/40"
-                            )}
-                          >
-                            <span
-                              className={cn(
-                                "grid place-content-center h-4 w-4 shrink-0 rounded-full border",
-                                isSelected
-                                  ? "border-primary bg-primary text-primary-foreground"
-                                  : "border-input"
-                              )}
-                              aria-hidden="true"
-                            >
-                              {isSelected && <Check className="h-3 w-3" />}
-                            </span>
-                            <span className="flex-1 text-sm leading-snug">
-                              {item.label}
-                            </span>
-                            {usageCount > 0 && (
-                              <span className="ml-2 shrink-0 text-sm bg-secondary text-secondary-foreground rounded-full px-2 py-0.5">
-                                Reflected {usageCount}x
-                              </span>
-                            )}
-                          </button>
-                        </li>
-                      )
-                    })
-                  )}
-                </ul>
-              </CollapsibleContent>
-            </Collapsible>
-          )
-        })}
+                  )
+                })
+              )}
+            </ul>
+          </CollapsibleContent>
+        </Collapsible>
       </div>
 
       <Dialog open={addDialogOpen} onOpenChange={onAddDialogOpenChange}>
-        <DialogContent>
+        <DialogContent className="max-h-[85svh] flex flex-col">
           <DialogHeader>
             <DialogTitle>Add a life experience</DialogTitle>
             <DialogDescription>
@@ -250,6 +230,55 @@ export function LifeExperiencesPicker({
               placeholder="e.g. Moving country, becoming a parent, switching careers"
               className="text-base"
             />
+          </div>
+          <div className="flex flex-col gap-2 pt-2 min-h-0 flex-1">
+            <p className="text-base font-medium">Or pick from common contexts</p>
+            <p className="text-sm text-muted-foreground">
+              Picking one adds it to your self-discovery as a life experience.
+            </p>
+            <div className="flex-1 min-h-0 overflow-y-auto rounded-lg border bg-card p-2">
+              {contextGroups.map((group) => {
+                const open = openContextGroupId === group.id
+                if (group.items.length === 0) return null
+                return (
+                  <Collapsible
+                    key={group.id}
+                    open={open}
+                    onOpenChange={(next) =>
+                      setOpenContextGroupId(next ? group.id : null)
+                    }
+                  >
+                    <CollapsibleTrigger className="flex w-full items-center gap-1.5 px-1 py-1.5 rounded-md transition-colors hover:bg-accent/50">
+                      {open
+                        ? <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                        : <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                      }
+                      <span className="text-sm font-semibold tracking-wide select-none flex-1 text-left text-foreground">
+                        {group.label}
+                      </span>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent>
+                      <ul className="ml-7 flex flex-col gap-1 pb-1">
+                        {group.items.map((item) => (
+                          <li key={item.id}>
+                            <button
+                              type="button"
+                              onClick={() => saveAndSelect(item.label)}
+                              className="w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md text-left border border-transparent hover:bg-accent/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                            >
+                              <Plus className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden="true" />
+                              <span className="flex-1 text-sm leading-snug">
+                                {item.label}
+                              </span>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </CollapsibleContent>
+                  </Collapsible>
+                )
+              })}
+            </div>
           </div>
           <DialogFooter>
             <Button

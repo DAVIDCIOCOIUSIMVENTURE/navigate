@@ -76,7 +76,7 @@ function getRolePromptId(lens: Lens, role: "problems" | "customers"): string | n
 }
 
 const PICK_GUIDANCE = {
-  title: "Choose your discovery method",
+  title: "Pick a method",
   description:
     "Each method is a different angle on where problems come from. Pick one to run through guided prompts and turn your answers into a problem in your problem bank.",
   tips: [
@@ -626,7 +626,7 @@ function PromptsPanel({
   )
 
   const headerRow = (
-    <div className="flex items-center flex-wrap gap-x-4 gap-y-2">
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
       <div className="flex items-center gap-2.5">
         <div
           className={cn("flex items-center justify-center w-10 h-10 rounded-lg shrink-0", lens.tileColor)}
@@ -637,8 +637,8 @@ function PromptsPanel({
         <h2 className="text-2xl font-bold leading-none tracking-tight">{lens.title}</h2>
       </div>
       {chosenAnchor && !isAnchorPrompt && (
-        <div className="flex items-baseline gap-1.5 text-base leading-snug">
-          <span className="font-medium text-muted-foreground">Reflecting on:</span>
+        <div className="flex items-baseline gap-1.5 flex-1 basis-72 rounded-md border border-yellow-600/30 bg-yellow-600/10 px-3 py-2 text-base leading-snug">
+          <span className="font-semibold">Reflecting on:</span>
           <span className="font-medium">{chosenAnchor}</span>
         </div>
       )}

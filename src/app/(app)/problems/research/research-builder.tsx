@@ -66,7 +66,7 @@ const RESEARCH_STEPS: { id: ResearchStep; label: string }[] = [
 const ENABLED_METHOD_IDS = new Set<ResearchMethodId>(["abandoned-products"])
 
 const PICK_GUIDANCE = {
-  title: "Choose your research method",
+  title: "Pick a method",
   description:
     "Each method is a different angle for hunting problems out in the world. Pick one, then we'll walk you through curated tools and a guided capture form.",
   tips: [
@@ -602,7 +602,7 @@ function CapturePanel({
   }
 
   const headerRow = (
-    <div className="flex items-center flex-wrap gap-x-4 gap-y-2">
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
       <div className="flex items-center gap-2.5">
         <div
           className={cn(
@@ -616,8 +616,8 @@ function CapturePanel({
         <h2 className="text-2xl font-bold leading-none tracking-tight">{method.title}</h2>
       </div>
       {selectedTool && (
-        <div className="flex items-baseline gap-1.5 text-base leading-snug">
-          <span className="font-medium text-muted-foreground">Researching with:</span>
+        <div className="flex items-baseline gap-1.5 flex-1 basis-72 rounded-md border border-yellow-600/30 bg-yellow-600/10 px-3 py-2 text-base leading-snug">
+          <span className="font-semibold">Researching with:</span>
           <a
             href={selectedTool.url}
             target="_blank"
