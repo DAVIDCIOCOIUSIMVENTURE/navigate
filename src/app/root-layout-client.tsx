@@ -148,7 +148,11 @@ function getCrumbs(pathname: string): Crumb[] {
 }
 
 function isFocusFlowPath(pathname: string): boolean {
-  return pathname.startsWith("/self-discovery/discover")
+  return (
+    pathname.startsWith("/self-discovery/discover") ||
+    pathname.startsWith("/problems/reflect") ||
+    pathname.startsWith("/problems/research")
+  )
 }
 
 function LayoutContent({ children }: { children: React.ReactNode }) {

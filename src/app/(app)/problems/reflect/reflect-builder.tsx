@@ -1,10 +1,13 @@
 "use client"
 
-import { useEffect, useMemo, useState, type ReactNode } from "react"
+import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import { useRouter } from "next/navigation"
 import type { AppDispatch, RootState } from "@/store"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { ConfirmDialog } from "@/components/ui/confirm-dialog"
+import { useFocusChrome } from "@/context/focus-chrome-context"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import {
@@ -28,8 +31,11 @@ import {
   ChevronDown,
   ClipboardCheck,
   Clock,
+  PanelTop,
   Pencil,
   Plus,
+  RotateCcw,
+  Telescope,
   Trash2,
   Users,
 } from "lucide-react"
@@ -84,15 +90,27 @@ function GuidancePanel({
   description,
   tips,
   className,
+  stepNumber,
 }: {
   title: string
   description: string
   tips: string[]
   className?: string
+  stepNumber?: number
 }) {
   return (
-    <div className={cn("flex flex-col gap-3 text-base", className)}>
-      <h3 className="text-xl font-bold">{title}</h3>
+    <div className={cn("flex flex-col gap-8 text-base", className)}>
+      <h2 className="flex items-center gap-2.5 text-2xl font-bold leading-none tracking-tight">
+        {stepNumber !== undefined && (
+          <span
+            className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-secondary-brand text-secondary-brand-foreground text-lg font-bold"
+            aria-hidden="true"
+          >
+            {stepNumber}
+          </span>
+        )}
+        <span>{title}</span>
+      </h2>
       <p className="leading-relaxed">{description}</p>
       <ul className="flex flex-col gap-1.5">
         {tips.map((tip, i) => (
@@ -112,12 +130,16 @@ function Stepper({
   onStepClick,
   isStepEnabled,
   promptsProgress,
+  onReset,
+  resetDescription,
 }: {
   steps: { id: ReflectStep; label: string }[]
   activeId: ReflectStep
   onStepClick: (id: ReflectStep) => void
   isStepEnabled: (id: ReflectStep) => boolean
   promptsProgress?: { current: number; total: number } | null
+  onReset: () => void
+  resetDescription: string
 }) {
   const isWide = useContainerSize() === "wide"
   const [open, setOpen] = useState(false)
@@ -131,130 +153,105 @@ function Stepper({
     return baseLabel
   }
 
+  const resetButton = (
+    <ConfirmDialog
+      trigger={
+        <Button variant="outline" size="sm" className="w-full gap-2 bg-card">
+          <RotateCcw className="h-3.5 w-3.5" />
+          Reset
+        </Button>
+      }
+      title="Reset?"
+      description={resetDescription}
+      confirmLabel="Reset"
+      onConfirm={onReset}
+    />
+  )
+
+  const navList = (
+    <div className="flex flex-col gap-1">
+      {steps.map((s, i) => {
+        const isActive = s.id === activeId
+        const isCompleted = i < activeIdx
+        const isFilled = isActive || isCompleted
+        const enabled = isStepEnabled(s.id)
+        return (
+          <Button
+            key={s.id}
+            type="button"
+            variant={isActive ? "secondary" : "ghost"}
+            disabled={!enabled}
+            onClick={() => {
+              if (!enabled) return
+              setOpen(false)
+              onStepClick(s.id)
+            }}
+            aria-current={isActive ? "step" : undefined}
+            className={cn(
+              "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2 disabled:opacity-100 hover:text-secondary-brand",
+              isActive && "text-secondary-brand",
+            )}
+          >
+            <span
+              className={cn(
+                "flex items-center justify-center w-6 h-6 rounded-md shrink-0 text-xs font-bold transition-colors",
+                isFilled ? "bg-secondary-brand text-white" : "bg-muted text-muted-foreground",
+              )}
+            >
+              {isCompleted ? <Check className="h-3.5 w-3.5" /> : i + 1}
+            </span>
+            <span className="flex-1 text-left">{stepLabel(s.id, s.label)}</span>
+          </Button>
+        )
+      })}
+    </div>
+  )
+
   if (isWide) {
     return (
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center">
-          {steps.map((s, i) => {
-            const isActive = s.id === activeId
-            const isCompleted = i < activeIdx
-            const enabled = isStepEnabled(s.id)
-            return (
-              <div key={s.id} className="flex items-center flex-1 last:flex-none">
-                <button
-                  disabled={!enabled}
-                  onClick={() => enabled && onStepClick(s.id)}
-                  className="flex items-center gap-2 shrink-0 disabled:opacity-100"
-                >
-                  <span
-                    className={cn(
-                      "flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 transition-colors",
-                      isActive
-                        ? "border-secondary-brand bg-secondary-brand text-secondary-brand-foreground"
-                        : isCompleted
-                          ? "border-secondary-brand bg-secondary-brand/10 text-secondary-brand"
-                          : "border-muted-foreground/30 bg-transparent text-muted-foreground"
-                    )}
-                  >
-                    {isCompleted ? <Check className="h-3.5 w-3.5" /> : i + 1}
-                  </span>
-                  <span
-                    className={cn(
-                      "text-sm whitespace-nowrap",
-                      isActive ? "font-semibold text-foreground" : "text-muted-foreground"
-                    )}
-                  >
-                    {stepLabel(s.id, s.label)}
-                  </span>
-                </button>
-                {i < steps.length - 1 && (
-                  <div
-                    className={cn(
-                      "flex-1 h-px mx-3",
-                      i < activeIdx ? "bg-secondary-brand" : "bg-border"
-                    )}
-                  />
-                )}
-              </div>
-            )
-          })}
-        </div>
-      </div>
+      <Card className="flex-1 min-h-0 flex flex-col overflow-hidden">
+        <CardContent className="p-3 flex flex-col gap-3 flex-1 min-h-0">
+          <div className="flex-1 min-h-0 overflow-y-auto">{navList}</div>
+          <div className="shrink-0">{resetButton}</div>
+        </CardContent>
+      </Card>
     )
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <nav aria-label="Reflect steps" className="w-full shrink-0">
       <Collapsible open={open} onOpenChange={setOpen}>
-        <div className="rounded-lg border">
-          <CollapsibleTrigger asChild>
-            <Button variant="ghost" className="w-full justify-between h-auto py-2 px-3">
-              <span className="flex items-center gap-2 text-sm font-medium min-w-0">
-                <span className="flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 border-secondary-brand bg-secondary-brand text-secondary-brand-foreground shrink-0">
-                  {activeIdx + 1}
+        <Card>
+          <CardContent className="p-2">
+            <CollapsibleTrigger asChild>
+              <Button variant="ghost" className="w-full justify-between h-auto py-2 px-3">
+                <span className="flex items-center gap-2 text-sm font-medium min-w-0">
+                  <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-secondary-brand text-xs font-bold text-white">
+                    {activeIdx + 1}
+                  </span>
+                  <span className="truncate">
+                    Step {activeIdx + 1} of {steps.length}: {stepLabel(active.id, active.label)}
+                  </span>
                 </span>
-                <span className="truncate font-semibold text-foreground">
-                  Step {activeIdx + 1} of {steps.length}: {stepLabel(active.id, active.label)}
-                </span>
-              </span>
-              <ChevronDown
-                className={cn(
-                  "h-4 w-4 text-muted-foreground transition-transform shrink-0",
-                  open && "rotate-180"
-                )}
-                aria-hidden="true"
-              />
-            </Button>
-          </CollapsibleTrigger>
-          <CollapsibleContent>
-            <ul className="flex flex-col gap-0.5 list-none m-0 p-2 pt-0" role="list">
-              {steps.map((s, i) => {
-                const isActive = s.id === activeId
-                const isCompleted = i < activeIdx
-                const enabled = isStepEnabled(s.id)
-                return (
-                  <li key={s.id}>
-                    <Button
-                      type="button"
-                      variant={isActive ? "secondary" : "ghost"}
-                      disabled={!enabled}
-                      onClick={() => {
-                        if (!enabled) return
-                        setOpen(false)
-                        onStepClick(s.id)
-                      }}
-                      aria-current={isActive ? "step" : undefined}
-                      className="w-full justify-start h-auto py-2 px-3 gap-2.5"
-                    >
-                      <span
-                        className={cn(
-                          "flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 transition-colors shrink-0",
-                          isActive
-                            ? "border-secondary-brand bg-secondary-brand text-secondary-brand-foreground"
-                            : isCompleted
-                              ? "border-secondary-brand bg-secondary-brand/10 text-secondary-brand"
-                              : "border-muted-foreground/30 bg-transparent text-muted-foreground"
-                        )}
-                      >
-                        {isCompleted ? <Check className="h-3.5 w-3.5" /> : i + 1}
-                      </span>
-                      <span
-                        className={cn(
-                          "text-sm whitespace-normal text-left",
-                          isActive ? "font-semibold text-foreground" : "text-muted-foreground"
-                        )}
-                      >
-                        {stepLabel(s.id, s.label)}
-                      </span>
-                    </Button>
-                  </li>
-                )
-              })}
-            </ul>
-          </CollapsibleContent>
-        </div>
+                <ChevronDown
+                  className={cn(
+                    "h-4 w-4 text-muted-foreground transition-transform shrink-0",
+                    open && "rotate-180"
+                  )}
+                  aria-hidden="true"
+                />
+              </Button>
+            </CollapsibleTrigger>
+            <CollapsibleContent className="pt-2">
+              <div className="px-1 flex flex-col gap-3">
+                {navList}
+                {resetButton}
+              </div>
+            </CollapsibleContent>
+          </CardContent>
+        </Card>
       </Collapsible>
-    </div>
+    </nav>
   )
 }
 
@@ -273,7 +270,7 @@ function PickMethodPanel({
 
   return (
     <div className="flex flex-col gap-6">
-      <GuidancePanel {...PICK_GUIDANCE} />
+      <GuidancePanel {...PICK_GUIDANCE} stepNumber={1} />
       <div className="flex flex-col gap-4">
         <h3 className="text-xl font-bold">Discovery methods</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -647,14 +644,14 @@ function PromptsPanel({
 
   const headerRow = (
     <div className="flex flex-col gap-5">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-2.5">
         <div
           className={cn("flex items-center justify-center w-10 h-10 rounded-lg shrink-0", lens.tileColor)}
           aria-hidden="true"
         >
           <Icon className="h-5 w-5 text-white" />
         </div>
-        <h3 className="text-xl font-bold leading-tight">{lens.title}</h3>
+        <h2 className="text-2xl font-bold leading-none tracking-tight">{lens.title}</h2>
       </div>
       <p className="text-xl font-bold leading-snug">{prompt.question}</p>
     </div>
@@ -812,7 +809,7 @@ function ReviewPanel({
           <div className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-secondary-brand" aria-hidden="true">
             <ClipboardCheck className="h-5 w-5 text-secondary-brand-foreground" />
           </div>
-          <h3 className="text-xl font-bold leading-tight">Review your answers</h3>
+          <h2 className="text-2xl font-bold leading-none tracking-tight">Review your answers</h2>
         </div>
         <p className="text-base leading-relaxed">
           Saving as a problem isn&apos;t wired up for this method yet.
@@ -840,7 +837,7 @@ function ReviewPanel({
         <div className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-secondary-brand" aria-hidden="true">
           <ClipboardCheck className="h-5 w-5 text-secondary-brand-foreground" />
         </div>
-        <h3 className="text-xl font-bold leading-tight">Review your answers</h3>
+        <h2 className="text-2xl font-bold leading-none tracking-tight">Review your answers</h2>
       </div>
       <p className="text-base leading-relaxed">
         {hasCandidate ? (
@@ -1119,6 +1116,9 @@ export function ReflectBuilder({ resetRef }: { resetRef?: React.MutableRefObject
   const [promptIndex, setPromptIndex] = useState(0)
   const [restored, setRestored] = useState(false)
   const lens = lensId ? getReflectLens(lensId) ?? null : null
+  const isWide = useContainerSize() === "wide"
+  const router = useRouter()
+  const { revealTopNav } = useFocusChrome()
 
   useEffect(() => {
     if (restored) return
@@ -1169,15 +1169,17 @@ export function ReflectBuilder({ resetRef }: { resetRef?: React.MutableRefObject
     setStep(id)
   }
 
+  const handleReset = useCallback(() => {
+    dispatch.reflectSessions.clearAllSessions()
+    setStep("pick")
+    setLensId(null)
+    setPromptIndex(0)
+  }, [dispatch])
+
   useEffect(() => {
     if (!resetRef) return
-    resetRef.current = () => {
-      dispatch.reflectSessions.clearAllSessions()
-      setStep("pick")
-      setLensId(null)
-      setPromptIndex(0)
-    }
-  }, [resetRef, dispatch])
+    resetRef.current = handleReset
+  }, [resetRef, handleReset])
 
   const promptsProgress =
     step === "prompts" && lens
@@ -1223,21 +1225,68 @@ export function ReflectBuilder({ resetRef }: { resetRef?: React.MutableRefObject
     )
   })()
 
+  const backAndPanel = (
+    <div className="flex items-center gap-2 shrink-0">
+      <Button variant="tertiary-outline" onClick={() => router.push("/problems")} className="gap-2">
+        <ArrowLeft className="h-4 w-4" />
+        Back
+      </Button>
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={revealTopNav}
+        aria-label="Show top bar"
+        title="Top bar"
+      >
+        <PanelTop className="h-4 w-4" />
+      </Button>
+    </div>
+  )
+
+  const sectionTitle = (
+    <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0">
+      <span className="flex h-7 w-7 items-center justify-center rounded-md bg-tertiary shrink-0" aria-hidden="true">
+        <Telescope className="h-4 w-4 text-tertiary-foreground" />
+      </span>
+      <span className="truncate">Reflect</span>
+    </h1>
+  )
+
+  const stepper = (
+    <Stepper
+      steps={REFLECT_STEPS}
+      activeId={step}
+      onStepClick={handleStepClick}
+      isStepEnabled={isStepEnabled}
+      promptsProgress={promptsProgress}
+      onReset={handleReset}
+      resetDescription="This will return you to the method picker and clear in-progress answers. Saved problems are not affected."
+    />
+  )
+
   const inner = (
-    <Card className="flex flex-col flex-1 min-h-0">
-      <CardContent className="flex flex-col gap-6 pt-6 flex-1 min-h-0">
-        <Stepper
-          steps={REFLECT_STEPS}
-          activeId={step}
-          onStepClick={handleStepClick}
-          isStepEnabled={isStepEnabled}
-          promptsProgress={promptsProgress}
-        />
-        <div className="flex-1 min-h-0 flex flex-col overflow-y-auto">
-          {content}
+    <div className={cn("flex flex-1 min-h-0 w-full", isWide ? "flex-row gap-3" : "flex-col gap-3")}>
+      {isWide ? (
+        <div className="w-72 shrink-0 h-full flex flex-col gap-4 min-h-0">
+          {backAndPanel}
+          {sectionTitle}
+          {stepper}
         </div>
-      </CardContent>
-    </Card>
+      ) : (
+        <>
+          <div className="flex items-center gap-3 shrink-0">
+            {backAndPanel}
+            {sectionTitle}
+          </div>
+          {stepper}
+        </>
+      )}
+      <Card className="flex flex-col flex-1 min-h-0 min-w-0 overflow-hidden">
+        <CardContent className={cn("flex-1 flex flex-col gap-6 overflow-y-auto min-h-0", isWide ? "p-10" : "p-6")}>
+          {content}
+        </CardContent>
+      </Card>
+    </div>
   )
 
   if (step === "pick" || !lens) return inner
