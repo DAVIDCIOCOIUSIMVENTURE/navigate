@@ -36,7 +36,7 @@ export function ProblemHubDialog({
             <DialogTitle>Problem</DialogTitle>
             {problemRef && (
               <Link
-                href={`/problems/${problemRef}`}
+                href={`/problems/${problemRef}/edit`}
                 className="inline-flex items-center gap-1.5 text-base hover:text-foreground"
               >
                 <ExternalLink className="h-3.5 w-3.5" />

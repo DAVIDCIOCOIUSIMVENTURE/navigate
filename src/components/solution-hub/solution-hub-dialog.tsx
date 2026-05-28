@@ -35,7 +35,7 @@ export function SolutionHubDialog({
             <DialogTitle>Solution</DialogTitle>
             {solutionId != null && (
               <Link
-                href={`/solutions/${solutionId}`}
+                href={`/solutions/${solutionId}/edit`}
                 className="inline-flex items-center gap-1.5 text-base hover:text-foreground"
               >
                 <ExternalLink className="h-3.5 w-3.5" />

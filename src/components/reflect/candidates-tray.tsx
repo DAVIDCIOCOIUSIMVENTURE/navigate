@@ -141,7 +141,7 @@ function CandidateRow({
             size="icon"
             aria-label="Open the linked Problem"
           >
-            <Link href={`/problems/${candidate.promotedToProblemId}`}>
+            <Link href={`/problems/${candidate.promotedToProblemId}/edit`}>
               <ArrowUpRight className="h-4 w-4" />
             </Link>
           </Button>

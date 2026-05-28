@@ -5,14 +5,14 @@ import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { SearchProblemDialog } from "@/components/search-problem-dialog"
 import { ProblemsTable } from "@/components/problems-table"
 import { Plus, Target } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 
 export default function ProblemsPage() {
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const router = useRouter()
   const [mounted, setMounted] = useState(false)
   const problems = useSelector((state: RootState) => state.problems.problems)
   const isWide = useContainerSize() === "wide"
@@ -31,7 +31,7 @@ export default function ProblemsPage() {
               The workflow has two steps. First, <span className="font-bold">identify</span> problems worth solving by combining customer segments, contexts, and types of pain with what you&apos;ve learned about yourself.
               Then <span className="font-bold">validate</span> each one by refining who feels it, when it shows up, why it matters, and how today&apos;s alternatives fall short, so you can decide whether it&apos;s real and painful enough to commit to.
             </p>
-            <Button onClick={() => setDialogOpen(true)} className="gap-2 shrink-0">
+            <Button onClick={() => router.push("/problems/identify")} className="gap-2 shrink-0">
               <Plus className="h-4 w-4" />
               Identify problems
             </Button>
@@ -50,7 +50,7 @@ export default function ProblemsPage() {
               Start by searching for problems using the Identify Problems tool or define one directly.
             </p>
           </div>
-          <Button onClick={() => setDialogOpen(true)} size="lg" className="gap-2">
+          <Button onClick={() => router.push("/problems/identify")} size="lg" className="gap-2">
             <Plus className="h-4 w-4" />
             Identify problems
           </Button>
@@ -59,7 +59,6 @@ export default function ProblemsPage() {
         <ProblemsTable problems={problems} showStatus showEditDelete className={cn(isWide ? "flex-1 min-h-0" : "min-h-[320px] max-h-[640px]")} />
       )}
 
-      <SearchProblemDialog open={dialogOpen} onOpenChange={setDialogOpen} />
     </div>
   )
 }

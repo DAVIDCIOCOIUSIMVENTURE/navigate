@@ -4,16 +4,20 @@ import { useParams } from "next/navigation"
 import { useSelector } from "react-redux"
 import Link from "next/link"
 import type { RootState } from "@/store"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Target, ArrowLeft } from "lucide-react"
-import { ProblemProvider } from "./validation/context"
-import { ProblemHubContent } from "@/components/problem-hub/problem-hub-content"
+import { ArrowLeft } from "lucide-react"
+import { ProblemCanvas } from "@/components/canvas/problem-canvas"
+import { useContainerSize } from "@/context/container-size-context"
+import { cn } from "@/lib/utils"
 
-function HubBody({ problemRef }: { problemRef: string }) {
+export default function ProblemCanvasPage() {
+  const params = useParams()
+  const problemRef = params.problemRef as string
   const problemId = Number(problemRef)
+  const isWide = useContainerSize() === "wide"
   const problem = useSelector((state: RootState) =>
-    state.problems.problems.find((p) => p.id === problemId)
+    state.problems.problems.find((p) => p.id === problemId),
   )
 
   if (!problem) {
@@ -35,31 +39,13 @@ function HubBody({ problemRef }: { problemRef: string }) {
   }
 
   return (
-    <div className="flex flex-col w-full flex-1">
-      <Card className="w-full">
-        <CardHeader className="px-10 pt-10 pb-0 space-y-6">
-          <CardTitle icon={Target}>
-            {problem.title || `Problem #${problem.id}`}
-          </CardTitle>
-          <p className="text-base">
-            Edit and review every part of this problem in one place.
-          </p>
-        </CardHeader>
-        <CardContent className="p-10 pt-6">
-          <ProblemHubContent mode="page" />
-        </CardContent>
-      </Card>
+    <div
+      className={cn(
+        "flex flex-col w-full flex-1 min-h-0",
+        isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]",
+      )}
+    >
+      <ProblemCanvas problem={problem} editHref={`/problems/${problemRef}/edit`} />
     </div>
-  )
-}
-
-export default function ProblemHubPage() {
-  const params = useParams()
-  const problemRef = params.problemRef as string
-
-  return (
-    <ProblemProvider problemRef={problemRef}>
-      <HubBody problemRef={problemRef} />
-    </ProblemProvider>
   )
 }

@@ -34,7 +34,7 @@ export default function ValidationSummaryPage() {
           <Button
             variant="outline"
             className="bg-[#fcfbf8] border-secondary-brand/40 text-secondary-brand hover:bg-secondary-brand/5 hover:text-secondary-brand"
-            onClick={() => router.push(`/solutions/${solutionId}`)}
+            onClick={() => router.push(`/solutions/${solutionId}/edit`)}
           >
             <ExternalLink className="h-4 w-4 mr-2" />
             Open Solution to edit

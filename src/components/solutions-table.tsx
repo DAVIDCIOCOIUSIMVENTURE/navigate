@@ -280,13 +280,13 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                   <TableRow
                     key={solution.id}
                     className={cn(zebra, "cursor-pointer hover:bg-muted/40")}
-                    onClick={() => router.push(`/solutions/${solution.id}/canvas`)}
+                    onClick={() => router.push(`/solutions/${solution.id}/edit`)}
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault()
-                        router.push(`/solutions/${solution.id}/canvas`)
+                        router.push(`/solutions/${solution.id}/edit`)
                       }
                     }}
                     aria-label={`View solution: ${solution.title || "untitled"}`}
@@ -334,7 +334,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                                 variant="outline-card"
                                 size="icon"
                                 className="h-7 w-7"
-                                onClick={() => router.push(`/solutions/${solution.id}/canvas`)}
+                                onClick={() => router.push(`/solutions/${solution.id}`)}
                                 aria-label="View solution canvas"
                               >
                                 <Eye className="h-3.5 w-3.5 text-tertiary" />
@@ -350,7 +350,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                                 variant="outline-card"
                                 size="icon"
                                 className="h-7 w-7"
-                                onClick={() => router.push(`/solutions/${solution.id}`)}
+                                onClick={() => router.push(`/solutions/${solution.id}/edit`)}
                                 aria-label="Edit solution"
                               >
                                 <Pencil className="h-3.5 w-3.5 text-tertiary" />
@@ -371,7 +371,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                               Open solution validation
                             </DropdownMenuItem>
                             {solution.problemId != null && (
-                              <DropdownMenuItem onClick={() => router.push(`/problems/${solution.problemId}`)}>
+                              <DropdownMenuItem onClick={() => router.push(`/problems/${solution.problemId}/edit`)}>
                                 <Target className="h-3.5 w-3.5" />
                                 Open problem
                               </DropdownMenuItem>

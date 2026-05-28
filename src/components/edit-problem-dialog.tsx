@@ -157,7 +157,7 @@ export function EditProblemDialog({ problem, onClose, title: dialogTitle = "Edit
                 title={disabledHint}
                 onClick={() => {
                   onClose()
-                  router.push(`/problems/${problem.id}`)
+                  router.push(`/problems/${problem.id}/edit`)
                 }}
               >
                 <ExternalLink className="h-4 w-4 mr-2" />

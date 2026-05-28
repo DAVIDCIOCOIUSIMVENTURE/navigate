@@ -306,13 +306,13 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                     <Fragment key={problem.id}>
                     <TableRow
                       className={cn(zebra, expanded && hasSolutions && "border-b-0", "cursor-pointer hover:bg-muted/40")}
-                      onClick={() => router.push(`/problems/${problem.id}/canvas`)}
+                      onClick={() => router.push(`/problems/${problem.id}/edit`)}
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => {
                         if (e.key === "Enter" || e.key === " ") {
                           e.preventDefault()
-                          router.push(`/problems/${problem.id}/canvas`)
+                          router.push(`/problems/${problem.id}/edit`)
                         }
                       }}
                       aria-label={`View problem: ${problem.title || "untitled"}`}
@@ -380,7 +380,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                   variant="outline-card"
                                   size="icon"
                                   className="h-7 w-7"
-                                  onClick={() => router.push(`/problems/${problem.id}/canvas`)}
+                                  onClick={() => router.push(`/problems/${problem.id}`)}
                                   aria-label="View problem canvas"
                                 >
                                   <Eye className="h-3.5 w-3.5 text-tertiary" />
@@ -396,7 +396,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                   variant="outline-card"
                                   size="icon"
                                   className="h-7 w-7"
-                                  onClick={() => router.push(`/problems/${problem.id}`)}
+                                  onClick={() => router.push(`/problems/${problem.id}/edit`)}
                                   aria-label="Edit problem"
                                 >
                                   <Pencil className="h-3.5 w-3.5 text-tertiary" />
@@ -455,13 +455,13 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                         <TableRow
                           key={s.id}
                           className="bg-muted/30 cursor-pointer hover:bg-muted/50"
-                          onClick={() => router.push(`/solutions/${s.id}/canvas`)}
+                          onClick={() => router.push(`/solutions/${s.id}/edit`)}
                           role="button"
                           tabIndex={0}
                           onKeyDown={(e) => {
                             if (e.key === "Enter" || e.key === " ") {
                               e.preventDefault()
-                              router.push(`/solutions/${s.id}/canvas`)
+                              router.push(`/solutions/${s.id}/edit`)
                             }
                           }}
                           aria-label={`View solution: ${solutionLabel}`}
@@ -495,7 +495,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                     variant="outline-card"
                                     size="icon"
                                     className="h-7 w-7"
-                                    onClick={() => router.push(`/solutions/${s.id}/canvas`)}
+                                    onClick={() => router.push(`/solutions/${s.id}`)}
                                     aria-label="View solution canvas"
                                   >
                                     <Eye className="h-3.5 w-3.5 text-tertiary" />
@@ -509,7 +509,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                     variant="outline-card"
                                     size="icon"
                                     className="h-7 w-7"
-                                    onClick={() => router.push(`/solutions/${s.id}`)}
+                                    onClick={() => router.push(`/solutions/${s.id}/edit`)}
                                     aria-label="Edit solution"
                                   >
                                     <Pencil className="h-3.5 w-3.5 text-tertiary" />

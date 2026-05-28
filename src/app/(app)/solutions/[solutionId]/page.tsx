@@ -4,15 +4,19 @@ import { useParams } from "next/navigation"
 import { useSelector } from "react-redux"
 import Link from "next/link"
 import type { RootState } from "@/store"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Lightbulb, ArrowLeft } from "lucide-react"
-import { SolutionProvider } from "./validate/context"
-import { SolutionHubContent } from "@/components/solution-hub/solution-hub-content"
+import { ArrowLeft } from "lucide-react"
+import { SolutionCanvas } from "@/components/canvas/solution-canvas"
+import { useContainerSize } from "@/context/container-size-context"
+import { cn } from "@/lib/utils"
 
-function HubBody({ solutionId }: { solutionId: number }) {
+export default function SolutionCanvasPage() {
+  const params = useParams()
+  const solutionId = Number(params.solutionId)
+  const isWide = useContainerSize() === "wide"
   const solution = useSelector((state: RootState) =>
-    state.solutions.solutions.find((s) => s.id === solutionId)
+    state.solutions.solutions.find((s) => s.id === solutionId),
   )
 
   if (!solution) {
@@ -34,31 +38,13 @@ function HubBody({ solutionId }: { solutionId: number }) {
   }
 
   return (
-    <div className="flex flex-col w-full flex-1">
-      <Card className="w-full">
-        <CardHeader className="px-10 pt-10 pb-0 space-y-6">
-          <CardTitle icon={Lightbulb}>
-            {solution.title || `Solution #${solution.id}`}
-          </CardTitle>
-          <p className="text-base">
-            Edit and review every part of this solution in one place.
-          </p>
-        </CardHeader>
-        <CardContent className="p-10 pt-6">
-          <SolutionHubContent mode="page" />
-        </CardContent>
-      </Card>
+    <div
+      className={cn(
+        "flex flex-col w-full flex-1 min-h-0",
+        isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]",
+      )}
+    >
+      <SolutionCanvas solution={solution} editHref={`/solutions/${solutionId}/edit`} />
     </div>
-  )
-}
-
-export default function SolutionHubPage() {
-  const params = useParams()
-  const solutionId = Number(params.solutionId)
-
-  return (
-    <SolutionProvider solutionId={solutionId}>
-      <HubBody solutionId={solutionId} />
-    </SolutionProvider>
   )
 }

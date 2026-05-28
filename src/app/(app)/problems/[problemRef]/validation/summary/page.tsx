@@ -32,7 +32,7 @@ export default function SummaryPage() {
           <Button
             variant="outline"
             className="border-primary/40 text-primary hover:bg-primary/5 hover:text-primary"
-            onClick={() => router.push(`/problems/${problemRef}`)}
+            onClick={() => router.push(`/problems/${problemRef}/edit`)}
           >
             <ExternalLink className="h-4 w-4 mr-2" />
             Open Problem to edit

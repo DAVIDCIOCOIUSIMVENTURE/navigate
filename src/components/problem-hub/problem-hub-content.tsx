@@ -282,7 +282,7 @@ function SolutionsSection({ problemId }: { problemId: number }) {
                   variant="ghost"
                   size="sm"
                   className="h-7"
-                  onClick={() => router.push(`/solutions/${s.id}`)}
+                  onClick={() => router.push(`/solutions/${s.id}/edit`)}
                   aria-label="Open solution"
                 >
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -323,7 +323,7 @@ export function NextStepsSection({ problemRef, problemId }: { problemRef: string
       customerDescription: original.customerDescription ?? "",
     })
     if (newProblem && typeof newProblem === "object" && "id" in newProblem) {
-      router.push(`/problems/${newProblem.id}`)
+      router.push(`/problems/${newProblem.id}/edit`)
     }
   }
 

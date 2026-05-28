@@ -87,7 +87,7 @@ export default function NextStepsPage() {
                     <div className="flex items-center gap-2 px-4 py-2.5 bg-muted/40 border-b">
                       <Target className="h-4 w-4 text-tertiary shrink-0" />
                       <Link
-                        href={`/problems/${problem.id}`}
+                        href={`/problems/${problem.id}/edit`}
                         className="flex-1 min-w-0 text-sm font-medium truncate hover:underline"
                       >
                         {label}
@@ -103,7 +103,7 @@ export default function NextStepsPage() {
                         return (
                           <li key={s.id}>
                             <Link
-                              href={`/solutions/${s.id}`}
+                              href={`/solutions/${s.id}/edit`}
                               className="flex items-center gap-2 px-4 py-2 group hover:bg-accent/40 transition-colors"
                             >
                               <Lightbulb className="h-3.5 w-3.5 text-muted-foreground shrink-0" />

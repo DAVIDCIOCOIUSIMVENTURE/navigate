@@ -50,7 +50,7 @@ export function PromoteCandidateDialog({
         toast.success("Created Problem from candidate", {
           action: {
             label: "Open Problem",
-            onClick: () => router.push(`/problems/${newProblemId}`),
+            onClick: () => router.push(`/problems/${newProblemId}/edit`),
           },
         })
       }

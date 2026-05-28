@@ -111,7 +111,7 @@ function LinkedProblemSection({ problemId, problemTitle, problemDescription }: {
             )}
           </div>
           <Button asChild variant="outline" size="sm" className="h-7 gap-1 text-base border-secondary-brand/40 text-secondary-brand hover:bg-secondary-brand/5 hover:text-secondary-brand shrink-0">
-            <Link href={`/problems/${problemId}`}>
+            <Link href={`/problems/${problemId}/edit`}>
               <ExternalLink className="h-3 w-3" />
               Open Problem
             </Link>
@@ -146,7 +146,7 @@ export function NextStepsSection({ solutionId }: { solutionId: number }) {
       reverseInversions: solution.reverseInversions,
     })
     if (newSolution && typeof newSolution === "object" && "id" in newSolution) {
-      router.push(`/solutions/${newSolution.id}`)
+      router.push(`/solutions/${newSolution.id}/edit`)
     }
   }
 

@@ -12,8 +12,8 @@ import {
   BookOpen,
   Plus,
 } from "lucide-react"
-import { SearchProblemDialog } from "@/components/search-problem-dialog"
 import { SearchSolutionDialog } from "@/components/search-solution-dialog"
+import { useRouter } from "next/navigation"
 import { ProblemsTable } from "@/components/problems-table"
 import { SolutionsTable } from "@/components/solutions-table"
 import Link from "next/link"
@@ -24,9 +24,9 @@ import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 
 export default function DashboardPage() {
+  const router = useRouter()
   const problems = useSelector((state: RootState) => state.problems.problems)
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
-  const [problemDialogOpen, setProblemDialogOpen] = useState(false)
   const [solutionDialogOpen, setSolutionDialogOpen] = useState(false)
   const [view, setView] = useState<"problems" | "solutions">("problems")
 
@@ -74,7 +74,7 @@ export default function DashboardPage() {
           </Link>
         </div>
         <div className={cn("flex gap-2 shrink-0", isWide ? "flex-col justify-center" : "flex-row")}>
-          <Button onClick={() => setProblemDialogOpen(true)} className={cn("gap-2", !isWide && "flex-1")}>
+          <Button onClick={() => router.push("/problems/identify")} className={cn("gap-2", !isWide && "flex-1")}>
             <Plus className="h-4 w-4" />
             Identify problems
           </Button>
@@ -147,7 +147,6 @@ export default function DashboardPage() {
         })()}
       </div>
 
-      <SearchProblemDialog open={problemDialogOpen} onOpenChange={setProblemDialogOpen} />
       <SearchSolutionDialog open={solutionDialogOpen} onOpenChange={setSolutionDialogOpen} />
     </div>
   )

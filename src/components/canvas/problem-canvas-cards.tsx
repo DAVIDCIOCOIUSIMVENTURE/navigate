@@ -278,7 +278,7 @@ export function ProblemCanvasCards({
                   <li key={sol.id}>
                     <button
                       type="button"
-                      onClick={() => router.push(`/solutions/${sol.id}/canvas`)}
+                      onClick={() => router.push(`/solutions/${sol.id}/edit`)}
                       className="flex items-center gap-2 w-full text-left rounded-md px-2 py-1 -mx-2 hover:bg-muted/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       data-canvas-no-print
                     >
