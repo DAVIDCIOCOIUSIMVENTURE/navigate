@@ -43,17 +43,6 @@ export default function IdentifyProblemsPage() {
 
   const items: MethodPickerItem[] = [
     {
-      id: "identify-tool",
-      title: "Identify Problems Tool",
-      shortDescription: "Combine customer segments, contexts, and types of pain on a single canvas to surface problems worth solving.",
-      longDescription: "Combine customer segments, contexts, and types of pain on a single canvas to surface problems worth solving.",
-      helperText: "Best for exploring a wide space of possibilities by mixing dimensions you can choose from a curated catalog.",
-      icon: Brain,
-      tileColor: "bg-yellow-600",
-      estimatedMinutes: 15,
-      enabled: true,
-    },
-    {
       id: "reflect",
       title: "Reflect",
       shortDescription: "Turn a lived experience into a problem through guided prompts about your own life and work.",
@@ -62,6 +51,17 @@ export default function IdentifyProblemsPage() {
       icon: Glasses,
       tileColor: "bg-teal-700",
       estimatedMinutes: 10,
+      enabled: true,
+    },
+    {
+      id: "identify-tool",
+      title: "Identify Problems Tool",
+      shortDescription: "Combine customer segments, contexts, and types of pain on a single canvas to surface problems worth solving.",
+      longDescription: "Combine customer segments, contexts, and types of pain on a single canvas to surface problems worth solving.",
+      helperText: "Best for exploring a wide space of possibilities by mixing dimensions you can choose from a curated catalog.",
+      icon: Brain,
+      tileColor: "bg-yellow-600",
+      estimatedMinutes: 15,
       enabled: true,
     },
     {
