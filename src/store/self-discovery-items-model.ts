@@ -27,7 +27,7 @@ function saveToStorage(state: SelfDiscoveryItemsState) {
   }
 }
 
-function generateItemId(): string {
+export function generateSelfDiscoveryItemId(): string {
   return `you-user-${crypto.randomUUID().slice(0, 8)}`
 }
 
@@ -35,13 +35,13 @@ export const selfDiscoveryItems = createModel<RootModel>()({
   state: defaultState,
 
   reducers: {
-    addItem(state, payload: { title: string; questionUrl: string; suggestionId?: string }) {
+    addItem(state, payload: { id?: string; title: string; questionUrl: string; suggestionId?: string }) {
       const next = {
         ...state,
         items: [
           ...state.items,
           {
-            id: generateItemId(),
+            id: payload.id ?? generateSelfDiscoveryItemId(),
             title: payload.title,
             questionUrl: payload.questionUrl,
             ...(payload.suggestionId ? { suggestionId: payload.suggestionId } : {}),

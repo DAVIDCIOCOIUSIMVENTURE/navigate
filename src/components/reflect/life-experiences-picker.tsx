@@ -4,6 +4,7 @@ import { useMemo, useState } from "react"
 import Link from "next/link"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
+import { generateSelfDiscoveryItemId } from "@/store/self-discovery-items-model"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Check, ChevronDown, ChevronRight, Compass, Plus } from "lucide-react"
@@ -27,8 +28,8 @@ import {
 const LIFE_EXPERIENCES_QUESTION_URL = "life-experiences"
 
 type Props = {
-  selectedTitle: string | null
-  onSelect: (title: string | null) => void
+  selectedId: string | null
+  onSelect: (id: string | null, label: string | null) => void
   addDialogOpen: boolean
   onAddDialogOpenChange: (open: boolean) => void
 }
@@ -40,7 +41,7 @@ type Props = {
  * back through the same model so the two stay in sync.
  */
 export function LifeExperiencesPicker({
-  selectedTitle,
+  selectedId,
   onSelect,
   addDialogOpen,
   onAddDialogOpenChange,
@@ -99,11 +100,22 @@ export function LifeExperiencesPicker({
   function saveAndSelect(title: string) {
     const trimmed = title.trim()
     if (!trimmed) return
+    const existing = items.find(
+      (i) => i.title.trim().toLowerCase() === trimmed.toLowerCase()
+    )
+    if (existing) {
+      onSelect(existing.id, existing.title)
+      setDraft("")
+      onAddDialogOpenChange(false)
+      return
+    }
+    const id = generateSelfDiscoveryItemId()
     dispatch.selfDiscoveryItems.addItem({
+      id,
       title: trimmed,
       questionUrl: LIFE_EXPERIENCES_QUESTION_URL,
     })
-    onSelect(trimmed)
+    onSelect(id, trimmed)
     setDraft("")
     onAddDialogOpenChange(false)
   }
@@ -134,7 +146,7 @@ export function LifeExperiencesPicker({
             <span className="text-sm font-semibold tracking-wide select-none flex-1 text-left text-quaternary">
               {selfDiscoveryGroup.label}
             </span>
-            {selfDiscoveryGroup.items.some((i) => selectedTitle === i.label) && (
+            {selfDiscoveryGroup.items.some((i) => selectedId === i.id) && (
               <span className="text-sm text-secondary-brand font-medium">
                 Selected
               </span>
@@ -155,7 +167,7 @@ export function LifeExperiencesPicker({
                 </li>
               ) : (
                 selfDiscoveryGroup.items.map((item) => {
-                  const isSelected = selectedTitle === item.label
+                  const isSelected = selectedId === item.id
                   const usageCount =
                     usageByTitle.get(item.label.trim().toLowerCase()) ?? 0
                   return (
@@ -165,7 +177,9 @@ export function LifeExperiencesPicker({
                         role="radio"
                         aria-checked={isSelected}
                         onClick={() =>
-                          onSelect(isSelected ? null : item.label)
+                          isSelected
+                            ? onSelect(null, null)
+                            : onSelect(item.id, item.label)
                         }
                         className={cn(
                           "w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",

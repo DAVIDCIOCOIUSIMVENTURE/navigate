@@ -304,6 +304,7 @@ function PromptsPanel({
     lens,
     answers,
     setAnswerText,
+    setAnswerContext,
     addAnswerSlot,
     removeAnswerSlot,
     setAnswerSlots,
@@ -367,10 +368,10 @@ function PromptsPanel({
     setAnswerSlots(prompt.id, slots)
   }
 
-  const selectedAnchorTitle = useMemo(() => {
+  const selectedAnchorId = useMemo(() => {
     if (!useAnchorPicker) return null
-    const firstFilled = promptAnswers.find((a) => a.text.trim().length > 0)
-    return firstFilled ? firstFilled.text.trim() : null
+    const id = promptAnswers[0]?.context?.anchorItemId
+    return id && id.length > 0 ? id : null
   }, [useAnchorPicker, promptAnswers])
 
   const anchorPromptId = useMemo(() => getAnchorPromptId(lens), [lens])
@@ -382,8 +383,9 @@ function PromptsPanel({
   }, [anchorPromptId, answers])
   const isAnchorPrompt = anchorPromptId !== null && prompt.id === anchorPromptId
 
-  function handleSelectAnchor(title: string | null) {
-    setAnswerText(prompt.id, 0, title ?? "")
+  function handleSelectAnchor(id: string | null, label: string | null) {
+    setAnswerText(prompt.id, 0, label ?? "")
+    setAnswerContext(prompt.id, 0, "anchorItemId", id ?? "")
   }
 
   function goPrev() {
@@ -446,28 +448,28 @@ function PromptsPanel({
 
       {useLifeExperiencesPicker ? (
         <LifeExperiencesPicker
-          selectedTitle={selectedAnchorTitle}
+          selectedId={selectedAnchorId}
           onSelect={handleSelectAnchor}
           addDialogOpen={addDialogOpen}
           onAddDialogOpenChange={setAddDialogOpen}
         />
       ) : useWorkContextPicker ? (
         <WorkContextPicker
-          selectedTitle={selectedAnchorTitle}
+          selectedId={selectedAnchorId}
           onSelect={handleSelectAnchor}
           addDialogOpen={addDialogOpen}
           onAddDialogOpenChange={setAddDialogOpen}
         />
       ) : useOwnProblemsPicker ? (
         <OwnProblemsPicker
-          selectedTitle={selectedAnchorTitle}
+          selectedId={selectedAnchorId}
           onSelect={handleSelectAnchor}
           addDialogOpen={addDialogOpen}
           onAddDialogOpenChange={setAddDialogOpen}
         />
       ) : useAudiencePicker ? (
         <AudiencePicker
-          selectedTitle={selectedAnchorTitle}
+          selectedId={selectedAnchorId}
           onSelect={handleSelectAnchor}
           addDialogOpen={addDialogOpen}
           onAddDialogOpenChange={setAddDialogOpen}

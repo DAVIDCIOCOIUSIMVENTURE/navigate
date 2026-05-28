@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
+import { generateSelfDiscoveryItemId } from "@/store/self-discovery-items-model"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Check, ChevronDown, ChevronRight, Compass, Plus } from "lucide-react"
@@ -31,8 +32,8 @@ const ORG_PROCESSES_QUESTION_URL = "organisations-processes"
 const WORK_QUESTION_URLS = [WORK_DONE_QUESTION_URL, ORG_PROCESSES_QUESTION_URL]
 
 type Props = {
-  selectedTitle: string | null
-  onSelect: (title: string | null) => void
+  selectedId: string | null
+  onSelect: (id: string | null, label: string | null) => void
   addDialogOpen: boolean
   onAddDialogOpenChange: (open: boolean) => void
 }
@@ -52,7 +53,7 @@ type Group = { id: string; label: string; items: GroupItem[] }
  * the "What kinds of work have you done?" question.
  */
 export function WorkContextPicker({
-  selectedTitle,
+  selectedId,
   onSelect,
   addDialogOpen,
   onAddDialogOpenChange,
@@ -106,14 +107,20 @@ export function WorkContextPicker({
   function handleAdd() {
     const title = draft.trim()
     if (!title) return
-    const exists = items.some((i) => i.title.toLowerCase() === title.toLowerCase())
-    if (!exists) {
+    const existing = items.find(
+      (i) => i.title.trim().toLowerCase() === title.toLowerCase()
+    )
+    if (existing) {
+      onSelect(existing.id, existing.title)
+    } else {
+      const id = generateSelfDiscoveryItemId()
       dispatch.selfDiscoveryItems.addItem({
+        id,
         title,
         questionUrl: WORK_DONE_QUESTION_URL,
       })
+      onSelect(id, title)
     }
-    onSelect(title)
     setDraft("")
     onAddDialogOpenChange(false)
   }
@@ -128,7 +135,7 @@ export function WorkContextPicker({
         {groups.map((group) => {
           const open = openGroupId === group.id
           const selectedInGroup = group.items.some(
-            (i) => selectedTitle === i.label
+            (i) => selectedId === i.id
           )
           const isSelfDiscoveryGroup = group.id === "self-discovery"
           if (group.items.length === 0 && !isSelfDiscoveryGroup) return null
@@ -178,7 +185,7 @@ export function WorkContextPicker({
                     </li>
                   ) : (
                     group.items.map((item) => {
-                      const isSelected = selectedTitle === item.label
+                      const isSelected = selectedId === item.id
                       const usageCount = isSelfDiscoveryGroup
                         ? usageByTitle.get(item.label.trim().toLowerCase()) ?? 0
                         : 0
@@ -189,7 +196,9 @@ export function WorkContextPicker({
                             role="radio"
                             aria-checked={isSelected}
                             onClick={() =>
-                              onSelect(isSelected ? null : item.label)
+                              isSelected
+                                ? onSelect(null, null)
+                                : onSelect(item.id, item.label)
                             }
                             className={cn(
                               "w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
