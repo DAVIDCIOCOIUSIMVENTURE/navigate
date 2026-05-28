@@ -21,14 +21,14 @@ const FREQUENCY_OPTIONS = [
   "per month", "per quarter", "per year",
 ]
 
-const FREQUENCY_ANNUAL_FACTOR: Record<string, number> = {
-  "per hour": 8760,
-  "per day": 365,
-  "per week": 52,
-  "per fortnight": 26,
-  "per month": 12,
-  "per quarter": 4,
-  "per year": 1,
+const FREQUENCY_RANK: Record<string, number> = {
+  "per hour": 6,
+  "per day": 5,
+  "per week": 4,
+  "per fortnight": 3,
+  "per month": 2,
+  "per quarter": 1,
+  "per year": 0,
 }
 
 const CURRENCY_OPTIONS = [
@@ -511,12 +511,11 @@ function TamCalculation({
   const frequency = howOften.value ?? 0
   const cost = worthToThem.value ?? 0
   const unit = howOften.unit || "per day"
-  const factor = FREQUENCY_ANNUAL_FACTOR[unit] ?? 365
   const currency = worthToThem.unit || "GBP"
   const sharePct = Math.max(0, Math.min(100, obtainableShare))
   const shareFactor = sharePct / 100
 
-  const grossMarket = customers * frequency * cost * factor
+  const grossMarket = customers * frequency * cost
   const tam = grossMarket * shareFactor
   const ready = customers > 0 && frequency > 0 && cost > 0
 
@@ -530,17 +529,17 @@ function TamCalculation({
       </div>
       {!readOnly && (
         <p className="text-base text-white">
-          Multiplying customers, frequency, value, and an annualisation factor gives the gross opportunity. Applying your realistic share narrows that down to what you could plausibly capture. Treat the result as a sanity check, not a precise number.
+          Multiplying customers, frequency, and value gives the gross opportunity. Applying your realistic share narrows that down to what you could plausibly capture. Treat the result as a sanity check, not a precise number.
         </p>
       )}
       <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 flex flex-col gap-2 text-base text-white">
         <div className="text-xl font-bold">
           {ready ? formatNumber(tam, { currency }) : "Fill in the three inputs above to see your estimate"}
-          {ready && <span className="ml-2 text-base font-normal text-white">per year</span>}
+          {ready && <span className="ml-2 text-base font-normal text-white">{unit}</span>}
         </div>
         {ready && (
           <div className="text-base text-white">
-            Gross market: {formatNumber(grossMarket, { currency })} per year, before applying your {sharePct}% realistic share.
+            Gross market: {formatNumber(grossMarket, { currency })} {unit}, before applying your {sharePct}% realistic share.
           </div>
         )}
         <Accordion type="single" collapsible className="-mb-2">
@@ -549,12 +548,12 @@ function TamCalculation({
               How is it calculated?
             </AccordionTrigger>
             <AccordionContent className="pb-2 pt-0 flex flex-col gap-2 text-white">
-              <div className="font-mono text-base">customers × frequency × value × factor × share</div>
+              <div className="font-mono text-base">customers × frequency × value × share</div>
               <div className="font-mono text-base">
-                {formatNumber(customers)} × {frequency || 0} × {formatNumber(cost, { currency })} × {factor} × {sharePct}%
+                {formatNumber(customers)} × {frequency || 0} × {formatNumber(cost, { currency })} × {sharePct}%
               </div>
               <div className="text-base text-white">
-                factor = {factor} (converts &quot;{unit}&quot; into a yearly total); share = {sharePct}% of the gross market.
+                share = {sharePct}% of the gross market.
               </div>
             </AccordionContent>
           </AccordionItem>
@@ -709,11 +708,10 @@ function classifyHowMany(m: ValidationMetric): Signal {
 
 function classifyHowOften(m: ValidationMetric): Signal {
   const v = m.value ?? 0
-  const factor = FREQUENCY_ANNUAL_FACTOR[m.unit] ?? 0
-  if (v <= 0 || factor === 0) return "unknown"
-  const annualised = v * factor
-  if (annualised >= 52) return "positive"
-  if (annualised >= 12) return "neutral"
+  const rank = FREQUENCY_RANK[m.unit]
+  if (v <= 0 || rank === undefined) return "unknown"
+  if (rank >= 4) return "positive"
+  if (rank >= 2) return "neutral"
   return "negative"
 }
 
@@ -857,10 +855,9 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const frequency = howOften.value ?? 0
   const cost = worthToThem.value ?? 0
   const unit = howOften.unit || "per day"
-  const factor = FREQUENCY_ANNUAL_FACTOR[unit] ?? 365
   const currency = worthToThem.unit || "GBP"
   const sharePct = Math.max(0, Math.min(100, obtainableShare))
-  const grossMarket = customers * frequency * cost * factor
+  const grossMarket = customers * frequency * cost
   const tam = grossMarket * (sharePct / 100)
   const tamReady = customers > 0 && frequency > 0 && cost > 0
 
@@ -935,10 +932,10 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
           <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 flex flex-col gap-1 text-base text-white">
             <span className="text-base uppercase tracking-wide text-white">Total addressable market</span>
             <span className="text-xl font-bold">
-              {tamReady ? `${formatNumber(tam, { currency })} per year` : "Not enough data"}
+              {tamReady ? `${formatNumber(tam, { currency })} ${unit}` : "Not enough data"}
             </span>
             {tamReady && (
-              <span className="text-base text-white">customers × frequency × value × factor ({factor}) × share ({sharePct}%). Gross market before the share filter: {formatNumber(grossMarket, { currency })} per year. Treat the result as a sanity check, not as proof of demand.</span>
+              <span className="text-base text-white">customers × frequency × value × share ({sharePct}%). Gross market before the share filter: {formatNumber(grossMarket, { currency })} {unit}. Treat the result as a sanity check, not as proof of demand.</span>
             )}
           </div>
         </div>
