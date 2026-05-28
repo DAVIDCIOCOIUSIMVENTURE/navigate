@@ -273,7 +273,8 @@ function PickMethodPanel({
       <GuidancePanel {...PICK_GUIDANCE} stepNumber={1} />
       <div className="flex flex-col gap-4">
         <h3 className="text-xl font-bold">Discovery methods</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="@container">
+        <div className="grid grid-cols-1 @[480px]:grid-cols-2 @[800px]:grid-cols-3 gap-3">
           {REFLECT_LENSES.map((lens) => {
             const Icon = lens.icon
             const isEnabled = ENABLED_LENS_IDS.has(lens.id)
@@ -324,6 +325,7 @@ function PickMethodPanel({
               </button>
             )
           })}
+        </div>
         </div>
       </div>
 
