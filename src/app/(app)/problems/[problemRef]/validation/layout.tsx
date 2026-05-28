@@ -61,11 +61,11 @@ function NavItems({
               <span
                 className={cn(
                   "flex items-center justify-center w-6 h-6 rounded-md shrink-0",
-                  isActive ? "bg-secondary-brand" : "bg-muted",
+                  isActive ? "bg-secondary-brand" : "bg-secondary-brand/10",
                 )}
               >
                 <Icon
-                  className={cn("h-3.5 w-3.5", isActive ? "text-white" : "text-muted-foreground")}
+                  className={cn("h-3.5 w-3.5", isActive ? "text-white" : "text-secondary-brand")}
                   aria-hidden="true"
                 />
               </span>
@@ -151,13 +151,13 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                 <span
                   className={cn(
                     "flex items-center justify-center w-6 h-6 rounded-md shrink-0",
-                    isActive ? "bg-secondary-brand" : "bg-muted"
+                    isActive ? "bg-secondary-brand" : "bg-secondary-brand/10"
                   )}
                 >
                   <Icon
                     className={cn(
                       "h-3.5 w-3.5",
-                      isActive ? "text-white" : "text-muted-foreground"
+                      isActive ? "text-white" : "text-secondary-brand"
                     )}
                     aria-hidden="true"
                   />

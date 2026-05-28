@@ -14,7 +14,7 @@ import {
   Lightbulb, HelpCircle,
   BookOpen, FlaskConical, Clock, Trophy, Sparkles,
   TrendingUp, Building2, Calculator, Scale, ShieldCheck,
-  Telescope, HeartHandshake, Shuffle, Radar,
+  Glasses, HeartHandshake, Shuffle, Radar,
   X,
 } from "lucide-react"
 
@@ -422,12 +422,12 @@ const guidanceItems: GuidanceItem[] = [
   {
     id: "reflect-hub",
     title: "Reflect on Problems",
-    icon: Telescope,
+    icon: Glasses,
     iconBg: "bg-secondary-brand",
     content: (
       <div className="flex flex-col gap-5">
         <GuidanceHero
-          icon={Telescope}
+          icon={Glasses}
           tone="bg-secondary-brand"
           title="Reflect on Problems"
           subtitle="A guided way to surface problems worth solving by answering short prompts about your work, life, the organizations you know, the people around you, and what you spot in the wider world."

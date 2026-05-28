@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog"
-import { Brain, PenLine, Telescope, Microscope, ArrowRight } from "lucide-react"
+import { Brain, PenLine, Glasses, Microscope, ArrowRight } from "lucide-react"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
 import { useRouter } from "next/navigation"
@@ -110,7 +110,7 @@ export function SearchProblemDialog({ open, onOpenChange }: SearchProblemDialogP
             />
 
             <ToolCard
-              icon={Telescope}
+              icon={Glasses}
               iconBg="bg-teal-700"
               title="Reflect"
               description="Turn a lived experience into a problem through guided prompts about your own life and work."

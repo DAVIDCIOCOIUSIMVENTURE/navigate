@@ -185,7 +185,7 @@ function Stepper({
             <span
               className={cn(
                 "flex items-center justify-center w-6 h-6 rounded-md shrink-0 text-xs font-bold transition-colors",
-                isFilled ? "bg-secondary-brand text-white" : "bg-muted text-muted-foreground",
+                isFilled ? "bg-secondary-brand text-white" : "bg-secondary-brand/10 text-secondary-brand",
               )}
             >
               {isCompleted ? <Check className="h-3.5 w-3.5" /> : i + 1}

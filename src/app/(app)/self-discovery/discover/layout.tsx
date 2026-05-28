@@ -55,11 +55,11 @@ function NavContent({
                 <span
                     className={cn(
                         "flex items-center justify-center w-6 h-6 rounded-md shrink-0",
-                        isIntroActive ? "bg-secondary-brand" : "bg-muted",
+                        isIntroActive ? "bg-secondary-brand" : "bg-secondary-brand/10",
                     )}
                 >
                     <Compass
-                        className={cn("h-3.5 w-3.5", isIntroActive ? "text-white" : "text-muted-foreground")}
+                        className={cn("h-3.5 w-3.5", isIntroActive ? "text-white" : "text-secondary-brand")}
                         aria-hidden="true"
                     />
                 </span>
@@ -101,13 +101,13 @@ function NavContent({
                                         <span
                                             className={cn(
                                                 "flex items-center justify-center w-6 h-6 rounded-md shrink-0",
-                                                isExactActive ? "bg-secondary-brand" : "bg-muted",
+                                                isExactActive ? "bg-secondary-brand" : "bg-secondary-brand/10",
                                             )}
                                         >
                                             <CategoryIcon
                                                 className={cn(
                                                     "h-3.5 w-3.5",
-                                                    isExactActive ? "text-white" : "text-muted-foreground",
+                                                    isExactActive ? "text-white" : "text-secondary-brand",
                                                 )}
                                                 aria-hidden="true"
                                             />
@@ -155,11 +155,11 @@ function NavContent({
                 <span
                     className={cn(
                         "flex items-center justify-center w-6 h-6 rounded-md shrink-0",
-                        isOtherActive ? "bg-secondary-brand" : "bg-muted",
+                        isOtherActive ? "bg-secondary-brand" : "bg-secondary-brand/10",
                     )}
                 >
                     <OtherIcon
-                        className={cn("h-3.5 w-3.5", isOtherActive ? "text-white" : "text-muted-foreground")}
+                        className={cn("h-3.5 w-3.5", isOtherActive ? "text-white" : "text-secondary-brand")}
                         aria-hidden="true"
                     />
                 </span>

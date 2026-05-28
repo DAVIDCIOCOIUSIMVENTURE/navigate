@@ -35,7 +35,7 @@ import {
   Pencil,
   Plus,
   RotateCcw,
-  Telescope,
+  Glasses,
   Trash2,
   Users,
 } from "lucide-react"
@@ -195,7 +195,7 @@ function Stepper({
             <span
               className={cn(
                 "flex items-center justify-center w-6 h-6 rounded-md shrink-0 text-xs font-bold transition-colors",
-                isFilled ? "bg-secondary-brand text-white" : "bg-muted text-muted-foreground",
+                isFilled ? "bg-secondary-brand text-white" : "bg-secondary-brand/10 text-secondary-brand",
               )}
             >
               {isCompleted ? <Check className="h-3.5 w-3.5" /> : i + 1}
@@ -1233,7 +1233,7 @@ export function ReflectBuilder({ resetRef }: { resetRef?: React.MutableRefObject
   const sectionTitle = (
     <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0">
       <span className="flex h-7 w-7 items-center justify-center rounded-md bg-tertiary shrink-0" aria-hidden="true">
-        <Telescope className="h-4 w-4 text-tertiary-foreground" />
+        <Glasses className="h-4 w-4 text-tertiary-foreground" />
       </span>
       <span className="truncate">Reflect</span>
     </h1>
