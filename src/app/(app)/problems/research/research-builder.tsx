@@ -29,7 +29,6 @@ import {
   CheckCircle2,
   ChevronDown,
   ClipboardCheck,
-  Clock,
   ExternalLink,
   Microscope,
   PanelTop,
@@ -50,6 +49,7 @@ import {
   type ResearchToolCategory,
 } from "@/data/researchMethods"
 import { ResearchProvider, useResearch } from "@/components/research/research-context"
+import { MethodPickerBoard, type MethodPickerItem } from "@/components/method-picker-board"
 import { IdentifyDimensionPicker } from "@/components/reflect/identify-dimension-picker"
 import { useResolveOrCreate } from "@/lib/dimension-labels"
 import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
@@ -254,129 +254,29 @@ function PickMethodPanel({
   onPick: (methodId: ResearchMethodId) => void
   selectedMethodId: ResearchMethodId | null
 }) {
-  const [openMethodId, setOpenMethodId] = useState<ResearchMethodId | null>(null)
-  const openMethod = openMethodId ? getResearchMethod(openMethodId) ?? null : null
-  const OpenIcon = openMethod?.icon
+  const items: MethodPickerItem[] = RESEARCH_METHODS.map((method) => ({
+    id: method.id,
+    title: method.title,
+    shortDescription: method.shortDescription,
+    longDescription: method.longDescription,
+    helperText: method.helperText,
+    icon: method.icon,
+    tileColor: method.tileColor,
+    estimatedMinutes: method.estimatedMinutes,
+    enabled: ENABLED_METHOD_IDS.has(method.id),
+  }))
 
   return (
     <div className="flex flex-col gap-6 flex-1 min-h-0 overflow-y-auto">
       <GuidancePanel {...PICK_GUIDANCE} stepNumber={1} />
       <div className="flex flex-col gap-4">
         <h3 className="text-xl font-bold">Research methods</h3>
-        <div className="@container">
-        <div className="grid grid-cols-1 @[480px]:grid-cols-2 @[800px]:grid-cols-3 gap-3">
-          {RESEARCH_METHODS.map((method) => {
-            const Icon = method.icon
-            const isEnabled = ENABLED_METHOD_IDS.has(method.id)
-            const isSelected = selectedMethodId === method.id
-
-            return (
-              <button
-                key={method.id}
-                type="button"
-                disabled={!isEnabled}
-                onClick={() => setOpenMethodId(method.id)}
-                aria-pressed={isSelected}
-                className={cn(
-                  "rounded-md border flex items-center gap-3 px-3 py-2.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  isSelected
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-secondary-brand bg-secondary-brand text-secondary-brand-foreground",
-                  isEnabled
-                    ? isSelected
-                      ? "hover:bg-primary/90 cursor-pointer"
-                      : "hover:bg-secondary-brand/90 cursor-pointer"
-                    : "opacity-75 cursor-not-allowed"
-                )}
-              >
-                <div
-                  className="flex items-center justify-center w-8 h-8 rounded-md shrink-0 bg-white/20"
-                  aria-hidden="true"
-                >
-                  <Icon className="h-4 w-4 text-white" />
-                </div>
-                <div className="flex-1 min-w-0 flex flex-col gap-0.5">
-                  <h4 className="text-base font-bold leading-tight truncate">{method.title}</h4>
-                  <span className="inline-flex items-center gap-1 text-base opacity-80 min-w-0">
-                    <Clock className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                    <span className="truncate">About {method.estimatedMinutes} minutes</span>
-                  </span>
-                </div>
-                {!isEnabled && (
-                  <span className="inline-flex items-center rounded-full px-2 py-0.5 text-base font-medium shrink-0 bg-white/20">
-                    Coming soon
-                  </span>
-                )}
-                {isSelected && (
-                  <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-base font-semibold shrink-0 bg-white text-primary">
-                    <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
-                    Selected
-                  </span>
-                )}
-              </button>
-            )
-          })}
-        </div>
-        </div>
+        <MethodPickerBoard
+          items={items}
+          selectedId={selectedMethodId}
+          onPick={(id) => onPick(id as ResearchMethodId)}
+        />
       </div>
-
-      <Dialog
-        open={openMethodId !== null}
-        onOpenChange={(open) => {
-          if (!open) setOpenMethodId(null)
-        }}
-      >
-        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
-          {openMethod && OpenIcon && (
-            <>
-              <DialogHeader>
-                <DialogTitle>
-                  <span className="flex items-center gap-3">
-                    <span
-                      className="flex items-center justify-center w-10 h-10 rounded-md shrink-0 bg-primary"
-                      aria-hidden="true"
-                    >
-                      <OpenIcon className="h-5 w-5 text-white" />
-                    </span>
-                    <span>{openMethod.title}</span>
-                  </span>
-                </DialogTitle>
-                <DialogDescription>
-                  Learn how this method works, then choose it to start researching.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="flex flex-col gap-4 py-2">
-                <p className="text-base leading-relaxed">{openMethod.longDescription}</p>
-                {openMethod.helperText && (
-                  <div className="rounded-lg border bg-card p-4">
-                    <p className="text-base leading-relaxed">{openMethod.helperText}</p>
-                  </div>
-                )}
-                <div className="flex items-center gap-1.5 text-base">
-                  <Clock className="h-4 w-4" aria-hidden="true" />
-                  <span>About {openMethod.estimatedMinutes} minutes</span>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setOpenMethodId(null)}>
-                  Cancel
-                </Button>
-                <Button
-                  onClick={() => {
-                    const id = openMethod.id
-                    setOpenMethodId(null)
-                    onPick(id)
-                  }}
-                >
-                  {selectedMethodId === openMethod.id
-                    ? "Continue with this method"
-                    : "Choose this method"}
-                </Button>
-              </DialogFooter>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }
@@ -1211,8 +1111,6 @@ export function ResearchBuilder({
         <ToolPickerPanel
           onBack={() => {
             setStep("pick")
-            setMethodId(null)
-            setPromptIndex(0)
           }}
           onContinue={() => {
             setPromptIndex(0)
@@ -1245,7 +1143,6 @@ export function ResearchBuilder({
         }}
         onKeepResearching={() => {
           setStep("pick")
-          setMethodId(null)
           setPromptIndex(0)
         }}
       />

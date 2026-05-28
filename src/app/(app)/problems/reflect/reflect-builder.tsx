@@ -27,10 +27,8 @@ import {
   ArrowLeft,
   ArrowRight,
   Check,
-  CheckCircle2,
   ChevronDown,
   ClipboardCheck,
-  Clock,
   PanelTop,
   Pencil,
   Plus,
@@ -42,6 +40,7 @@ import {
 import { cn } from "@/lib/utils"
 import { useContainerSize } from "@/context/container-size-context"
 import { REFLECT_LENSES, LENS_CONTEXT_FIELDS, type Lens, type LensId, getReflectLens } from "@/data/reflectLenses"
+import { MethodPickerBoard, type MethodPickerItem } from "@/components/method-picker-board"
 import { ReflectProvider, useReflect } from "@/components/reflect/reflect-context"
 import { SelfDiscoveryChips } from "@/components/reflect/self-discovery-chips"
 import { LifeExperiencesPicker } from "@/components/reflect/life-experiences-picker"
@@ -79,10 +78,7 @@ const PICK_GUIDANCE = {
   title: "Pick a method",
   description:
     "Each method is a different angle on where problems come from. Pick one to run through guided prompts and turn your answers into a problem in your problem bank.",
-  tips: [
-    "Start with the angle where you have the most lived detail. Specific beats broad.",
-    "Each run focuses on a single experience or angle so the prompts stay specific. Run the tool again to explore another.",
-  ],
+  tips: [] as string[],
 }
 
 function GuidancePanel({
@@ -112,14 +108,16 @@ function GuidancePanel({
         <span>{title}</span>
       </h2>
       <p className="leading-relaxed">{description}</p>
-      <ul className="flex flex-col gap-1.5">
-        {tips.map((tip, i) => (
-          <li key={i} className="flex gap-2 leading-relaxed">
-            <span className="text-secondary-brand mt-0.5 shrink-0">&#8226;</span>
-            <span>{tip}</span>
-          </li>
-        ))}
-      </ul>
+      {tips.length > 0 && (
+        <ul className="flex flex-col gap-1.5">
+          {tips.map((tip, i) => (
+            <li key={i} className="flex gap-2 leading-relaxed">
+              <span className="text-secondary-brand mt-0.5 shrink-0">&#8226;</span>
+              <span>{tip}</span>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }
@@ -264,126 +262,29 @@ function PickMethodPanel({
   onPick: (lensId: LensId) => void
   selectedLensId: LensId | null
 }) {
-  const [openLensId, setOpenLensId] = useState<LensId | null>(null)
-  const openLens = openLensId ? getReflectLens(openLensId) ?? null : null
-  const OpenIcon = openLens?.icon
+  const items: MethodPickerItem[] = REFLECT_LENSES.map((lens) => ({
+    id: lens.id,
+    title: lens.title,
+    shortDescription: lens.shortDescription,
+    longDescription: lens.longDescription,
+    helperText: lens.helperText,
+    icon: lens.icon,
+    tileColor: lens.tileColor,
+    estimatedMinutes: lens.estimatedMinutes,
+    enabled: ENABLED_LENS_IDS.has(lens.id),
+  }))
 
   return (
     <div className="flex flex-col gap-6 flex-1 min-h-0 overflow-y-auto">
       <GuidancePanel {...PICK_GUIDANCE} stepNumber={1} />
       <div className="flex flex-col gap-4">
         <h3 className="text-xl font-bold">Discovery methods</h3>
-        <div className="@container">
-        <div className="grid grid-cols-1 @[480px]:grid-cols-2 @[800px]:grid-cols-3 gap-3">
-          {REFLECT_LENSES.map((lens) => {
-            const Icon = lens.icon
-            const isEnabled = ENABLED_LENS_IDS.has(lens.id)
-            const isSelected = selectedLensId === lens.id
-
-            return (
-              <button
-                key={lens.id}
-                type="button"
-                disabled={!isEnabled}
-                onClick={() => setOpenLensId(lens.id as LensId)}
-                aria-pressed={isSelected}
-                className={cn(
-                  "rounded-md border flex items-center gap-3 px-3 py-2.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  isSelected
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-secondary-brand bg-secondary-brand text-secondary-brand-foreground",
-                  isEnabled
-                    ? isSelected
-                      ? "hover:bg-primary/90 cursor-pointer"
-                      : "hover:bg-secondary-brand/90 cursor-pointer"
-                    : "opacity-75 cursor-not-allowed"
-                )}
-              >
-                <div
-                  className="flex items-center justify-center w-8 h-8 rounded-md shrink-0 bg-white/20"
-                  aria-hidden="true"
-                >
-                  <Icon className="h-4 w-4 text-white" />
-                </div>
-                <div className="flex-1 min-w-0 flex flex-col gap-0.5">
-                  <h4 className="text-base font-bold leading-tight">{lens.title}</h4>
-                  <span className="text-base opacity-80 leading-snug line-clamp-2">
-                    {lens.shortDescription}
-                  </span>
-                </div>
-                {!isEnabled && (
-                  <span className="inline-flex items-center rounded-full px-2 py-0.5 text-base font-medium shrink-0 bg-white/20">
-                    Coming soon
-                  </span>
-                )}
-                {isSelected && (
-                  <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-base font-semibold shrink-0 bg-white text-primary">
-                    <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
-                    Selected
-                  </span>
-                )}
-              </button>
-            )
-          })}
-        </div>
-        </div>
+        <MethodPickerBoard
+          items={items}
+          selectedId={selectedLensId}
+          onPick={(id) => onPick(id as LensId)}
+        />
       </div>
-
-      <Dialog
-        open={openLensId !== null}
-        onOpenChange={(open) => {
-          if (!open) setOpenLensId(null)
-        }}
-      >
-        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
-          {openLens && OpenIcon && (
-            <>
-              <DialogHeader>
-                <DialogTitle>
-                  <span className="flex items-center gap-3">
-                    <span
-                      className="flex items-center justify-center w-10 h-10 rounded-md shrink-0 bg-primary"
-                      aria-hidden="true"
-                    >
-                      <OpenIcon className="h-5 w-5 text-white" />
-                    </span>
-                    <span>{openLens.title}</span>
-                  </span>
-                </DialogTitle>
-                <DialogDescription>
-                  Learn how this method works, then choose it to start reflecting.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="flex flex-col gap-4 py-2">
-                <p className="text-base leading-relaxed">{openLens.longDescription}</p>
-                {openLens.helperText && (
-                  <div className="rounded-lg border bg-card p-4">
-                    <p className="text-base leading-relaxed">{openLens.helperText}</p>
-                  </div>
-                )}
-                <div className="flex items-center gap-1.5 text-base">
-                  <Clock className="h-4 w-4" aria-hidden="true" />
-                  <span>About {openLens.estimatedMinutes} minutes</span>
-                </div>
-              </div>
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setOpenLensId(null)}>
-                  Cancel
-                </Button>
-                <Button
-                  onClick={() => {
-                    const id = openLens.id
-                    setOpenLensId(null)
-                    onPick(id)
-                  }}
-                >
-                  {selectedLensId === openLens.id ? "Continue with this method" : "Choose this method"}
-                </Button>
-              </DialogFooter>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   )
 }
@@ -1184,8 +1085,6 @@ export function ReflectBuilder({ resetRef }: { resetRef?: React.MutableRefObject
           onIndexChange={setPromptIndex}
           onBackToPick={() => {
             setStep("pick")
-            setLensId(null)
-            setPromptIndex(0)
           }}
           onReview={() => setStep("review")}
         />
@@ -1205,7 +1104,6 @@ export function ReflectBuilder({ resetRef }: { resetRef?: React.MutableRefObject
         }}
         onKeepIdentifying={() => {
           setStep("pick")
-          setLensId(null)
           setPromptIndex(0)
         }}
       />
