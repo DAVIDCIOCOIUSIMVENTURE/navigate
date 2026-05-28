@@ -58,6 +58,17 @@ export const selfDiscoveryItems = createModel<RootModel>()({
       return next
     },
 
+    updateItem(state, payload: { id: string; title: string }) {
+      const next = {
+        ...state,
+        items: state.items.map((t) =>
+          t.id === payload.id ? { ...t, title: payload.title } : t
+        ),
+      }
+      saveToStorage(next)
+      return next
+    },
+
     setItems(state, items: SelfDiscoveryItem[]) {
       return { ...state, items }
     },

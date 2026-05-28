@@ -12,6 +12,8 @@ import {
     Plus,
     Search,
     X,
+    Check,
+    Pencil,
     ChevronsUpDown,
     ChevronsDownUp,
     Palette,
@@ -192,6 +194,8 @@ export default function QuestionPage() {
     const question = category?.questions.find(q => q.url === questionId) ?? null
     const [answers, setAnswers] = useState<{ [key: string]: string }>({})
     const [problemTriggerToDelete, setProblemTriggerToDelete] = useState<SelfDiscoveryItem | null>(null)
+    const [editingTriggerId, setEditingTriggerId] = useState<string | null>(null)
+    const [editingDraft, setEditingDraft] = useState("")
     const [mounted, setMounted] = useState(false)
     const [searchQuery, setSearchQuery] = useState("")
     const deferredQuery = useDeferredValue(searchQuery)
@@ -239,6 +243,23 @@ export default function QuestionPage() {
     const handleDeleteTrigger = (triggerId: string) => {
         dispatch.selfDiscoveryItems.removeItem(triggerId)
         setProblemTriggerToDelete(null)
+    }
+
+    const beginEditTrigger = (trigger: SelfDiscoveryItem) => {
+        setEditingTriggerId(trigger.id)
+        setEditingDraft(trigger.title)
+    }
+    const cancelEditTrigger = () => {
+        setEditingTriggerId(null)
+        setEditingDraft("")
+    }
+    const commitEditTrigger = () => {
+        if (!editingTriggerId) return
+        const trimmed = editingDraft.trim()
+        if (!trimmed) return
+        dispatch.selfDiscoveryItems.updateItem({ id: editingTriggerId, title: trimmed })
+        setEditingTriggerId(null)
+        setEditingDraft("")
     }
 
     const handleBack = () => {
@@ -340,22 +361,70 @@ export default function QuestionPage() {
                                                 <p className="text-sm text-center py-4">Your selections will appear here.</p>
                                             ) : (
                                                 <div className="flex flex-col gap-2">
-                                                    {questionTriggers.map((trigger) => (
-                                                        <div
-                                                            key={trigger.id}
-                                                            className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2 text-sm"
-                                                        >
-                                                            <span className="flex-1">{trigger.title}</span>
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                onClick={() => setProblemTriggerToDelete(trigger)}
-                                                                className="h-4 w-4 text-muted-foreground hover:text-foreground"
+                                                    {questionTriggers.map((trigger) => {
+                                                        const isEditing = editingTriggerId === trigger.id
+                                                        return (
+                                                            <div
+                                                                key={trigger.id}
+                                                                className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2 text-sm"
                                                             >
-                                                                <Trash2 className="h-3 w-3" />
-                                                            </Button>
-                                                        </div>
-                                                    ))}
+                                                                {isEditing ? (
+                                                                    <>
+                                                                        <Input
+                                                                            value={editingDraft}
+                                                                            onChange={(e) => setEditingDraft(e.target.value)}
+                                                                            onKeyDown={(e) => {
+                                                                                if (e.key === "Enter") { e.preventDefault(); commitEditTrigger() }
+                                                                                if (e.key === "Escape") { e.preventDefault(); cancelEditTrigger() }
+                                                                            }}
+                                                                            autoFocus
+                                                                            className="h-7 text-sm flex-1"
+                                                                        />
+                                                                        <Button
+                                                                            variant="ghost"
+                                                                            size="icon"
+                                                                            onClick={commitEditTrigger}
+                                                                            className="h-4 w-4 text-muted-foreground hover:text-foreground"
+                                                                            aria-label="Save"
+                                                                        >
+                                                                            <Check className="h-3 w-3" />
+                                                                        </Button>
+                                                                        <Button
+                                                                            variant="ghost"
+                                                                            size="icon"
+                                                                            onClick={cancelEditTrigger}
+                                                                            className="h-4 w-4 text-muted-foreground hover:text-foreground"
+                                                                            aria-label="Cancel"
+                                                                        >
+                                                                            <X className="h-3 w-3" />
+                                                                        </Button>
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <span className="flex-1">{trigger.title}</span>
+                                                                        <Button
+                                                                            variant="ghost"
+                                                                            size="icon"
+                                                                            onClick={() => beginEditTrigger(trigger)}
+                                                                            className="h-4 w-4 text-muted-foreground hover:text-foreground"
+                                                                            aria-label="Rename"
+                                                                        >
+                                                                            <Pencil className="h-3 w-3" />
+                                                                        </Button>
+                                                                        <Button
+                                                                            variant="ghost"
+                                                                            size="icon"
+                                                                            onClick={() => setProblemTriggerToDelete(trigger)}
+                                                                            className="h-4 w-4 text-muted-foreground hover:text-foreground"
+                                                                            aria-label="Delete"
+                                                                        >
+                                                                            <Trash2 className="h-3 w-3" />
+                                                                        </Button>
+                                                                    </>
+                                                                )}
+                                                            </div>
+                                                        )
+                                                    })}
                                                 </div>
                                             )}
                                         </ScrollArea>
@@ -450,22 +519,70 @@ export default function QuestionPage() {
                                 <>
                                     {questionTriggers.length > 0 && (
                                         <div className="flex flex-wrap gap-2 shrink-0">
-                                            {questionTriggers.map((trigger) => (
-                                                <div
-                                                    key={trigger.id}
-                                                    className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2 text-sm"
-                                                >
-                                                    <span className="flex-1">{trigger.title}</span>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        onClick={() => setProblemTriggerToDelete(trigger)}
-                                                        className="h-4 w-4 text-muted-foreground hover:text-foreground"
+                                            {questionTriggers.map((trigger) => {
+                                                const isEditing = editingTriggerId === trigger.id
+                                                return (
+                                                    <div
+                                                        key={trigger.id}
+                                                        className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2 text-sm"
                                                     >
-                                                        <Trash2 className="h-3 w-3" />
-                                                    </Button>
-                                                </div>
-                                            ))}
+                                                        {isEditing ? (
+                                                            <>
+                                                                <Input
+                                                                    value={editingDraft}
+                                                                    onChange={(e) => setEditingDraft(e.target.value)}
+                                                                    onKeyDown={(e) => {
+                                                                        if (e.key === "Enter") { e.preventDefault(); commitEditTrigger() }
+                                                                        if (e.key === "Escape") { e.preventDefault(); cancelEditTrigger() }
+                                                                    }}
+                                                                    autoFocus
+                                                                    className="h-7 text-sm flex-1"
+                                                                />
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    onClick={commitEditTrigger}
+                                                                    className="h-4 w-4 text-muted-foreground hover:text-foreground"
+                                                                    aria-label="Save"
+                                                                >
+                                                                    <Check className="h-3 w-3" />
+                                                                </Button>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    onClick={cancelEditTrigger}
+                                                                    className="h-4 w-4 text-muted-foreground hover:text-foreground"
+                                                                    aria-label="Cancel"
+                                                                >
+                                                                    <X className="h-3 w-3" />
+                                                                </Button>
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                <span className="flex-1">{trigger.title}</span>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    onClick={() => beginEditTrigger(trigger)}
+                                                                    className="h-4 w-4 text-muted-foreground hover:text-foreground"
+                                                                    aria-label="Rename"
+                                                                >
+                                                                    <Pencil className="h-3 w-3" />
+                                                                </Button>
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="icon"
+                                                                    onClick={() => setProblemTriggerToDelete(trigger)}
+                                                                    className="h-4 w-4 text-muted-foreground hover:text-foreground"
+                                                                    aria-label="Delete"
+                                                                >
+                                                                    <Trash2 className="h-3 w-3" />
+                                                                </Button>
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                )
+                                            })}
                                         </div>
                                     )}
                                     <div className="flex gap-2">
