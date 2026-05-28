@@ -259,7 +259,7 @@ function PickMethodPanel({
   const OpenIcon = openMethod?.icon
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 flex-1 min-h-0 overflow-y-auto">
       <GuidancePanel {...PICK_GUIDANCE} stepNumber={1} />
       <div className="flex flex-col gap-4">
         <h3 className="text-xl font-bold">Research methods</h3>
@@ -602,8 +602,8 @@ function CapturePanel({
   }
 
   const headerRow = (
-    <div className="flex flex-col gap-5">
-      <div className="flex items-center gap-3">
+    <div className="flex items-center flex-wrap gap-x-4 gap-y-2">
+      <div className="flex items-center gap-2.5">
         <div
           className={cn(
             "flex items-center justify-center w-10 h-10 rounded-lg shrink-0",
@@ -615,40 +615,26 @@ function CapturePanel({
         </div>
         <h2 className="text-2xl font-bold leading-none tracking-tight">{method.title}</h2>
       </div>
-      <p className="text-xl font-bold leading-snug">{prompt.question}</p>
-    </div>
-  )
-
-  const leftColumn = (
-    <div className="flex flex-col gap-4 pr-3">
       {selectedTool && (
-        <div className="flex items-start gap-2 rounded-md border border-yellow-600/30 bg-yellow-600/10 px-3 py-2">
-          <ExternalLink className="h-4 w-4 text-yellow-700 shrink-0 mt-0.5" aria-hidden="true" />
-          <div className="flex flex-col gap-1 text-base leading-snug">
-            <span className="font-medium">Researching with:</span>
-            <a
-              href={selectedTool.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline"
-            >
-              {selectedTool.name}
-            </a>
-          </div>
+        <div className="flex items-baseline gap-1.5 text-base leading-snug">
+          <span className="font-medium text-muted-foreground">Researching with:</span>
+          <a
+            href={selectedTool.url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-primary hover:underline"
+          >
+            {selectedTool.name}
+          </a>
         </div>
-      )}
-      {prompt.helperText && (
-        <p className="text-base leading-relaxed">{prompt.helperText}</p>
       )}
     </div>
   )
 
   const rightColumn = (
-    <div className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-4">
-      <div className="flex items-center justify-between gap-2">
-        <p className="text-base font-semibold text-white">
-          {prompt.multipleAllowed ? "Your answers" : "Your answer"}
-        </p>
+    <div className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-4 flex-1 min-h-0 w-full">
+      <div className="flex items-start justify-between gap-3 shrink-0">
+        <p className="text-xl font-bold leading-snug text-white">{prompt.question}</p>
         {dimensionColumn ? (
           <Button
             type="button"
@@ -671,6 +657,7 @@ function CapturePanel({
           </Button>
         ) : null}
       </div>
+      <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-4">
       {dimensionColumn ? (
         <IdentifyDimensionPicker
           columnId={dimensionColumn}
@@ -721,18 +708,16 @@ function CapturePanel({
           ))}
         </div>
       )}
+      </div>
     </div>
   )
 
   return (
-    <div className="flex flex-col gap-6 w-full">
-      {headerRow}
-      <div className="flex flex-col gap-6">
-        <div className="w-full">{leftColumn}</div>
-        <div className="w-full">{rightColumn}</div>
-      </div>
+    <div className="flex flex-col gap-6 w-full flex-1 min-h-0">
+      <div className="shrink-0">{headerRow}</div>
+      <div className="flex-1 min-h-0 flex flex-col">{rightColumn}</div>
 
-      <div className="flex flex-wrap items-center justify-between gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 shrink-0">
         <Button
           variant="outline"
           onClick={goPrev}
@@ -880,7 +865,7 @@ function ReviewPanel({
   }
 
   return (
-    <div className="flex flex-col gap-6 w-full">
+    <div className="flex flex-col gap-6 w-full flex-1 min-h-0 overflow-y-auto">
       <div className="flex items-center gap-3">
         <div
           className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-secondary-brand"
@@ -1322,7 +1307,7 @@ export function ResearchBuilder({
         </>
       )}
       <Card className="flex flex-col flex-1 min-h-0 min-w-0 overflow-hidden">
-        <CardContent className={cn("flex-1 flex flex-col gap-6 overflow-y-auto min-h-0", isWide ? "p-10" : "p-6")}>
+        <CardContent className={cn("flex-1 flex flex-col min-h-0", isWide ? "p-10" : "p-6")}>
           {content}
         </CardContent>
       </Card>
