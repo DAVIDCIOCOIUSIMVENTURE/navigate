@@ -263,7 +263,8 @@ function PickMethodPanel({
       <GuidancePanel {...PICK_GUIDANCE} stepNumber={1} />
       <div className="flex flex-col gap-4">
         <h3 className="text-xl font-bold">Research methods</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="@container">
+        <div className="grid grid-cols-1 @[480px]:grid-cols-2 @[800px]:grid-cols-3 gap-3">
           {RESEARCH_METHODS.map((method) => {
             const Icon = method.icon
             const isEnabled = ENABLED_METHOD_IDS.has(method.id)
@@ -315,6 +316,7 @@ function PickMethodPanel({
               </button>
             )
           })}
+        </div>
         </div>
       </div>
 
@@ -413,7 +415,7 @@ function ToolPickerPanel({
   const selectedTool = method.tools.find((t) => t.id === toolId) ?? null
 
   const guidance = {
-    title: "Pick where to search",
+    title: "Pick a tool",
     description:
       "Each tool is a different doorway into the same kind of research. Click a tile to preview it, then pick one to focus on for this run.",
     tips: [
@@ -440,7 +442,7 @@ function ToolPickerPanel({
             </a>
           )}
         </div>
-        <div className="flex flex-col gap-4">
+        <div className="@container flex flex-col gap-4">
           {TOOL_CATEGORY_ORDER.map((category) => {
               const list = toolsByCategory.get(category)
               if (!list || list.length === 0) return null
@@ -449,7 +451,7 @@ function ToolPickerPanel({
                   <h4 className="text-base font-semibold uppercase tracking-wide text-muted-foreground">
                     {getToolCategoryLabel(category)}
                   </h4>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 @[480px]:grid-cols-2 @[800px]:grid-cols-3 gap-3">
                     {list.map((tool) => {
                       const isSelected = tool.id === toolId
                       const MethodIcon = method.icon
