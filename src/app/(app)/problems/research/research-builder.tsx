@@ -146,7 +146,7 @@ function Stepper({
   const resetButton = (
     <ConfirmDialog
       trigger={
-        <Button variant="outline" size="sm" className="w-full gap-2 bg-card">
+        <Button variant="destructive-outline" size="sm" className="w-full gap-2 bg-card">
           <RotateCcw className="h-3.5 w-3.5" />
           Reset
         </Button>

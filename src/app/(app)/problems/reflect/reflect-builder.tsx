@@ -156,7 +156,7 @@ function Stepper({
   const resetButton = (
     <ConfirmDialog
       trigger={
-        <Button variant="outline" size="sm" className="w-full gap-2 bg-card">
+        <Button variant="destructive-outline" size="sm" className="w-full gap-2 bg-card">
           <RotateCcw className="h-3.5 w-3.5" />
           Reset
         </Button>
@@ -515,7 +515,7 @@ function PromptsPanel({
   const rightColumn = (
     <div className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-4 min-h-0 max-h-full w-full">
       <div className="flex items-start justify-between gap-3 shrink-0">
-        <p className="text-xl font-bold leading-snug text-white">{prompt.question}</p>
+        <p className="text-lg font-bold leading-snug text-white">{prompt.question}</p>
         {useAnchorPicker || dimensionPickerColumn ? (
           <Button
             type="button"

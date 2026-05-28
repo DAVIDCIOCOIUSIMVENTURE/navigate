@@ -277,7 +277,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       {problemSelected && (
         <ConfirmDialog
           trigger={
-            <Button variant="outline" size="sm" className="gap-2 shrink-0">
+            <Button variant="destructive-outline" size="sm" className="gap-2 shrink-0">
               <RotateCcw className="h-3.5 w-3.5" />
               Reset
             </Button>
