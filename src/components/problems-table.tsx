@@ -383,7 +383,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                   onClick={() => router.push(`/problems/${problem.id}/canvas`)}
                                   aria-label="View problem canvas"
                                 >
-                                  <Eye className="h-3.5 w-3.5" />
+                                  <Eye className="h-3.5 w-3.5 text-tertiary" />
                                 </Button>
                               </TooltipTrigger>
                               <TooltipContent>View canvas</TooltipContent>
@@ -399,7 +399,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                   onClick={() => router.push(`/problems/${problem.id}`)}
                                   aria-label="Edit problem"
                                 >
-                                  <Pencil className="h-3.5 w-3.5" />
+                                  <Pencil className="h-3.5 w-3.5 text-tertiary" />
                                 </Button>
                               </TooltipTrigger>
                               <TooltipContent>Edit problem</TooltipContent>
@@ -408,7 +408,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                               <Button variant="outline-card" size="icon" className="h-7 w-7" aria-label="Actions">
-                                <MoreHorizontal className="h-3.5 w-3.5" />
+                                <MoreHorizontal className="h-3.5 w-3.5 text-tertiary" />
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
@@ -498,7 +498,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                     onClick={() => router.push(`/solutions/${s.id}/canvas`)}
                                     aria-label="View solution canvas"
                                   >
-                                    <Eye className="h-3.5 w-3.5" />
+                                    <Eye className="h-3.5 w-3.5 text-tertiary" />
                                   </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>View canvas</TooltipContent>
@@ -512,7 +512,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                     onClick={() => router.push(`/solutions/${s.id}`)}
                                     aria-label="Edit solution"
                                   >
-                                    <Pencil className="h-3.5 w-3.5" />
+                                    <Pencil className="h-3.5 w-3.5 text-tertiary" />
                                   </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>Edit solution</TooltipContent>
@@ -520,7 +520,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                               <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
                                   <Button variant="outline-card" size="icon" className="h-7 w-7" aria-label="Actions">
-                                    <MoreHorizontal className="h-3.5 w-3.5" />
+                                    <MoreHorizontal className="h-3.5 w-3.5 text-tertiary" />
                                   </Button>
                                 </DropdownMenuTrigger>
                                 <DropdownMenuContent align="end">
