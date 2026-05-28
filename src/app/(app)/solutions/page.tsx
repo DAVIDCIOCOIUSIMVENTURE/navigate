@@ -1,18 +1,18 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { SearchSolutionDialog } from "@/components/search-solution-dialog"
 import { SolutionsTable } from "@/components/solutions-table"
 import { Plus, Lightbulb } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 
 export default function SolutionsPage() {
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const router = useRouter()
   const [mounted, setMounted] = useState(false)
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
   const isWide = useContainerSize() === "wide"
@@ -32,7 +32,7 @@ export default function SolutionsPage() {
               Then <span className="font-bold">discover candidates</span> using guided tools (analogy, SCAMPER, reverse ideation, root-cause attacks) instead of jumping to the first idea.
               Finally, <span className="font-bold">validate</span> each candidate by scoring it on feasibility, impact, cost, and time to implement, so you can decide which one is worth pursuing.
             </p>
-            <Button onClick={() => setDialogOpen(true)} className="gap-2 shrink-0">
+            <Button onClick={() => router.push("/solutions/identify")} className="gap-2 shrink-0">
               <Plus className="h-4 w-4" />
               Identify solutions
             </Button>
@@ -47,11 +47,11 @@ export default function SolutionsPage() {
           </div>
           <div className="text-center flex flex-col gap-2 max-w-sm">
             <h2 className="text-lg font-semibold">No solutions yet</h2>
-            <p className="text-sm">
+            <p className="text-base">
               Start by searching for a solution. Pick a validated problem and work through the discovery wizard.
             </p>
           </div>
-          <Button onClick={() => setDialogOpen(true)} size="lg" className="gap-2">
+          <Button onClick={() => router.push("/solutions/identify")} size="lg" className="gap-2">
             <Plus className="h-4 w-4" />
             Identify solutions
           </Button>
@@ -59,8 +59,6 @@ export default function SolutionsPage() {
       ) : (
         <SolutionsTable solutions={solutions} className={cn(isWide ? "flex-1 min-h-0" : "min-h-[320px] max-h-[640px]")} />
       )}
-
-      <SearchSolutionDialog open={dialogOpen} onOpenChange={setDialogOpen} />
     </div>
   )
 }

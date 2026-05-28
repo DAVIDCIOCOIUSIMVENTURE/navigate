@@ -1,48 +1,15 @@
 "use client"
 
-import { useState, type ComponentType } from "react"
+import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Brain, PenLine, Glasses, Microscope, ArrowRight, Target } from "lucide-react"
+import { Brain, PenLine, Glasses, Microscope, Target } from "lucide-react"
 import { EditProblemDialog } from "@/components/edit-problem-dialog"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
-
-type ToolOption = {
-  icon: ComponentType<{ className?: string }>
-  iconBg: string
-  title: string
-  description: string
-  bestFor: string
-  onSelect: () => void
-}
-
-function ToolCard({ option }: { option: ToolOption }) {
-  const Icon = option.icon
-  return (
-    <button
-      onClick={option.onSelect}
-      className="group flex w-full items-start gap-4 rounded-lg border bg-card p-5 text-left transition-colors hover:border-primary/40 hover:bg-primary/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-    >
-      <div className={cn("flex items-center justify-center w-12 h-12 rounded-lg shrink-0", option.iconBg)}>
-        <Icon className="h-6 w-6 text-white" />
-      </div>
-      <div className="flex flex-col gap-2 flex-1 min-w-0">
-        <div className="flex items-center justify-between gap-3">
-          <span className="font-semibold text-lg">{option.title}</span>
-          <ArrowRight className="h-5 w-5 shrink-0 transition-transform group-hover:translate-x-0.5" />
-        </div>
-        <p className="text-base leading-relaxed">{option.description}</p>
-        <p className="text-base">
-          <span className="font-semibold">Best for: </span>
-          {option.bestFor}
-        </p>
-      </div>
-    </button>
-  )
-}
+import { MethodPickerBoard, type MethodPickerItem } from "@/components/method-picker-board"
 
 export default function IdentifyProblemsPage() {
   const router = useRouter()
@@ -74,40 +41,69 @@ export default function IdentifyProblemsPage() {
     setDraftProblemId(null)
   }
 
-  const tools: ToolOption[] = [
+  const items: MethodPickerItem[] = [
     {
-      icon: Brain,
-      iconBg: "bg-yellow-600",
+      id: "identify-tool",
       title: "Identify Problems Tool",
-      description: "Combine customer segments, contexts, and types of pain on a single canvas to surface problems worth solving.",
-      bestFor: "exploring a wide space of possibilities by mixing dimensions you can choose from a curated catalog.",
-      onSelect: () => router.push("/problems/identify/canvas-builder"),
+      shortDescription: "Combine customer segments, contexts, and types of pain on a single canvas to surface problems worth solving.",
+      longDescription: "Combine customer segments, contexts, and types of pain on a single canvas to surface problems worth solving.",
+      helperText: "Best for exploring a wide space of possibilities by mixing dimensions you can choose from a curated catalog.",
+      icon: Brain,
+      tileColor: "bg-yellow-600",
+      estimatedMinutes: 15,
+      enabled: true,
     },
     {
-      icon: Glasses,
-      iconBg: "bg-teal-700",
+      id: "reflect",
       title: "Reflect",
-      description: "Turn a lived experience into a problem through guided prompts about your own life and work.",
-      bestFor: "founders who already feel a friction in their own day-to-day and want to articulate it clearly.",
-      onSelect: () => router.push("/problems/reflect"),
+      shortDescription: "Turn a lived experience into a problem through guided prompts about your own life and work.",
+      longDescription: "Turn a lived experience into a problem through guided prompts about your own life and work.",
+      helperText: "Best for founders who already feel a friction in their own day-to-day and want to articulate it clearly.",
+      icon: Glasses,
+      tileColor: "bg-teal-700",
+      estimatedMinutes: 10,
+      enabled: true,
     },
     {
-      icon: Microscope,
-      iconBg: "bg-emerald-800",
+      id: "research",
       title: "Research",
-      description: "Hunt for problems out in the world using curated tools and a guided capture form.",
-      bestFor: "looking outside your own experience: review sites, forums, communities, and conversations with strangers.",
-      onSelect: () => router.push("/problems/research"),
+      shortDescription: "Hunt for problems out in the world using curated tools and a guided capture form.",
+      longDescription: "Hunt for problems out in the world using curated tools and a guided capture form.",
+      helperText: "Best for looking outside your own experience: review sites, forums, communities, and conversations with strangers.",
+      icon: Microscope,
+      tileColor: "bg-emerald-800",
+      estimatedMinutes: 20,
+      enabled: true,
     },
     {
-      icon: PenLine,
-      iconBg: "bg-blue-900",
+      id: "define",
       title: "Define a Problem Statement",
-      description: "Already know what you want to explore? Write it directly without working through a method.",
-      bestFor: "capturing a problem you have in mind right now so you can come back and validate it later.",
-      onSelect: handleDefine,
+      shortDescription: "Already know what you want to explore? Write it directly without working through a method.",
+      longDescription: "Already know what you want to explore? Write it directly without working through a method.",
+      helperText: "Best for capturing a problem you have in mind right now so you can come back and validate it later.",
+      icon: PenLine,
+      tileColor: "bg-blue-900",
+      estimatedMinutes: 5,
+      enabled: true,
     },
   ]
+
+  function handlePick(id: string) {
+    switch (id) {
+      case "identify-tool":
+        router.push("/problems/identify/canvas-builder")
+        return
+      case "reflect":
+        router.push("/problems/reflect")
+        return
+      case "research":
+        router.push("/problems/research")
+        return
+      case "define":
+        handleDefine()
+        return
+    }
+  }
 
   return (
     <>
@@ -128,9 +124,11 @@ export default function IdentifyProblemsPage() {
             </div>
           </CardHeader>
           <CardContent className={cn("flex flex-col gap-3", isWide && "flex-1 min-h-0 overflow-y-auto")}>
-            {tools.map((tool) => (
-              <ToolCard key={tool.title} option={tool} />
-            ))}
+            <MethodPickerBoard
+              items={items}
+              selectedId={null}
+              onPick={handlePick}
+            />
           </CardContent>
         </Card>
       </div>

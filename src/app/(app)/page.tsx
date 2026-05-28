@@ -12,13 +12,13 @@ import {
   BookOpen,
   Plus,
 } from "lucide-react"
-import { SearchSolutionDialog } from "@/components/search-solution-dialog"
 import { useRouter } from "next/navigation"
 import { ProblemsTable } from "@/components/problems-table"
 import { SolutionsTable } from "@/components/solutions-table"
 import Link from "next/link"
 import { useState } from "react"
 import { useSelector } from "react-redux"
+
 import type { RootState } from "@/store"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
@@ -27,7 +27,6 @@ export default function DashboardPage() {
   const router = useRouter()
   const problems = useSelector((state: RootState) => state.problems.problems)
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
-  const [solutionDialogOpen, setSolutionDialogOpen] = useState(false)
   const [view, setView] = useState<"problems" | "solutions">("problems")
 
   const validatedProblems = problems.filter(
@@ -78,7 +77,7 @@ export default function DashboardPage() {
             <Plus className="h-4 w-4" />
             Identify problems
           </Button>
-          <Button onClick={() => setSolutionDialogOpen(true)} className={cn("gap-2", !isWide && "flex-1")}>
+          <Button onClick={() => router.push("/solutions/identify")} className={cn("gap-2", !isWide && "flex-1")}>
             <Plus className="h-4 w-4" />
             Identify solutions
           </Button>
@@ -147,7 +146,6 @@ export default function DashboardPage() {
         })()}
       </div>
 
-      <SearchSolutionDialog open={solutionDialogOpen} onOpenChange={setSolutionDialogOpen} />
     </div>
   )
 }
