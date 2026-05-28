@@ -169,7 +169,7 @@ export default function SelfDiscoveryPage() {
                             <button
                               type="button"
                               onClick={() => router.push(`${FLOW_BASE}/${category.url}/${question.url}`)}
-                              className="text-sm hover:text-primary text-left"
+                              className="text-base hover:text-secondary-brand text-left"
                             >
                               {question.title}
                             </button>
