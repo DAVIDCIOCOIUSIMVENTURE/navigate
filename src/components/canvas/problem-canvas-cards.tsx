@@ -10,11 +10,7 @@ import {
   Users,
   MapPin,
   TriangleAlert,
-  Briefcase,
-  Repeat,
-  DollarSign,
-  Sparkles,
-  Swords,
+  TrendingUp,
   GitFork,
   Lightbulb,
   ChevronDown,
@@ -33,6 +29,21 @@ import {
   StatusPill,
   STATUS_CONFIG,
 } from "./canvas-shared"
+
+function formatMoney(value: number, currency: string): string {
+  if (!Number.isFinite(value)) return "0"
+  const code = currency || "GBP"
+  try {
+    return new Intl.NumberFormat(undefined, {
+      style: "currency",
+      currency: code,
+      maximumFractionDigits: 0,
+      notation: Math.abs(value) >= 1_000_000 ? "compact" : "standard",
+    }).format(value)
+  } catch {
+    return `${code} ${Math.round(value).toLocaleString()}`
+  }
+}
 
 function DimensionList({ columnId, ids }: { columnId: string; ids: string[] }) {
   const customByColumn = useSelector((s: RootState) => s.customDimensionItems.byColumn)
@@ -76,6 +87,25 @@ export function ProblemCanvasCards({
   )
   const [solutionsOpen, setSolutionsOpen] = useState(false)
 
+  const customers = va.howManyPeople.value ?? 0
+  const frequency = va.howOften.value ?? 0
+  const price = va.worthToThem.value ?? 0
+  const currency = va.worthToThem.unit || "GBP"
+  const reachPct = Math.max(0, Math.min(100, va.reachableShare ?? 30))
+  const obtainPct = Math.max(0, Math.min(100, va.obtainableShare))
+  const totalMarket = customers * Math.max(1, frequency) * price
+  const reachableMarket = totalMarket * (reachPct / 100)
+  const realisticShareValue = reachableMarket * (obtainPct / 100)
+  const marketReady = customers > 0 && price > 0
+
+  const marketEmpty =
+    !va.howManyPeople.level && va.howManyPeople.value == null &&
+    !va.howOften.level && va.howOften.value == null &&
+    !va.worthToThem.level && va.worthToThem.value == null &&
+    !va.competitorSize.level && va.competitorSize.value == null &&
+    !va.costOfSwitching.level && va.costOfSwitching.value == null &&
+    !va.solutionEffectiveness.level && va.solutionEffectiveness.value == null
+
   return (
     <div className={cn("canvas-print-root flex flex-col gap-3 w-full", fill && "flex-1 min-h-0")}>
       <div className="flex items-center justify-between gap-4">
@@ -101,7 +131,7 @@ export function ProblemCanvasCards({
         className={cn(
           "grid grid-cols-1 sm:grid-cols-12 gap-3",
           fill &&
-            "lg:grid-rows-[minmax(0,1.2fr)_minmax(0,0.95fr)_minmax(0,1.1fr)] flex-1 lg:min-h-0",
+            "lg:grid-rows-[minmax(0,0.9fr)_minmax(0,1.2fr)_minmax(0,1.1fr)] flex-1 lg:min-h-0",
         )}
       >
         <Cell
@@ -162,69 +192,47 @@ export function ProblemCanvasCards({
         </Cell>
 
         <Cell
-          icon={Briefcase}
-          label="Jobs to be done"
+          icon={TrendingUp}
+          label="Market opportunity"
           iconBg="bg-secondary-brand"
-          className="sm:col-span-6 lg:col-span-3"
-          empty={
-            (va.jobsToBeDone?.functional.length ?? 0) +
-              (va.jobsToBeDone?.emotional.length ?? 0) +
-              (va.jobsToBeDone?.social.length ?? 0) ===
-            0
-          }
+          className="sm:col-span-12"
+          empty={marketEmpty}
         >
-          <div className="flex flex-col gap-1">
-            <div className="flex justify-between gap-2">
-              <span>Functional</span>
-              <span className="font-medium">{va.jobsToBeDone?.functional.length ?? 0}</span>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4">
+            <div className="flex flex-col gap-1">
+              <p className="text-base font-semibold uppercase tracking-wide pb-1 border-b border-border/40">Your estimates</p>
+              <MetricRow label="People affected" metric={va.howManyPeople} />
+              <MetricRow label="How often" metric={va.howOften} />
+              <MetricRow label="Price per occurrence" metric={va.worthToThem} />
+              <div className="flex justify-between gap-2">
+                <span>Reachable share</span>
+                <span className="font-medium">{reachPct}%</span>
+              </div>
+              <div className="flex justify-between gap-2">
+                <span>Realistic share</span>
+                <span className="font-medium">{obtainPct}%</span>
+              </div>
             </div>
-            <div className="flex justify-between gap-2">
-              <span>Emotional</span>
-              <span className="font-medium">{va.jobsToBeDone?.emotional.length ?? 0}</span>
+            <div className="flex flex-col gap-1">
+              <p className="text-base font-semibold uppercase tracking-wide pb-1 border-b border-border/40">Competition</p>
+              <MetricRow label="Competitor size" metric={va.competitorSize} />
+              <MetricRow label="Cost of switching" metric={va.costOfSwitching} />
+              <MetricRow label="Effectiveness" metric={va.solutionEffectiveness} />
             </div>
-            <div className="flex justify-between gap-2">
-              <span>Social</span>
-              <span className="font-medium">{va.jobsToBeDone?.social.length ?? 0}</span>
-            </div>
-          </div>
-        </Cell>
-
-        <Cell
-          icon={Repeat}
-          label="Frequency"
-          iconBg="bg-secondary-brand"
-          className="sm:col-span-6 lg:col-span-3"
-          empty={!va.howOften.level && va.howOften.value == null}
-        >
-          <MetricRow label="How often" metric={va.howOften} />
-        </Cell>
-
-        <Cell
-          icon={DollarSign}
-          label="Price they'd pay"
-          iconBg="bg-secondary-brand"
-          className="sm:col-span-6 lg:col-span-3"
-          empty={!va.worthToThem.level && va.worthToThem.value == null}
-        >
-          <MetricRow label="Per occurrence" metric={va.worthToThem} />
-        </Cell>
-
-        <Cell
-          icon={Sparkles}
-          label="Market reach"
-          iconBg="bg-secondary-brand"
-          className="sm:col-span-6 lg:col-span-3"
-          empty={!va.howManyPeople.level && va.howManyPeople.value == null}
-        >
-          <div className="flex flex-col gap-1">
-            <MetricRow label="People affected" metric={va.howManyPeople} />
-            <div className="flex justify-between gap-2">
-              <span>Reachable share</span>
-              <span className="font-medium">{va.reachableShare ?? 0}%</span>
-            </div>
-            <div className="flex justify-between gap-2">
-              <span>Realistic share</span>
-              <span className="font-medium">{va.obtainableShare}%</span>
+            <div className="flex flex-col gap-1">
+              <p className="text-base font-semibold uppercase tracking-wide pb-1 border-b border-border/40">Market size</p>
+              <div className="flex justify-between gap-2">
+                <span>Total market</span>
+                <span className="font-medium">{marketReady ? formatMoney(totalMarket, currency) : "Not captured"}</span>
+              </div>
+              <div className="flex justify-between gap-2">
+                <span>Reachable market</span>
+                <span className="font-medium">{marketReady ? formatMoney(reachableMarket, currency) : "Not captured"}</span>
+              </div>
+              <div className="flex justify-between gap-2">
+                <span>Realistic share of the market</span>
+                <span className="font-medium">{marketReady ? formatMoney(realisticShareValue, currency) : "Not captured"}</span>
+              </div>
             </div>
           </div>
         </Cell>
@@ -233,7 +241,7 @@ export function ProblemCanvasCards({
           icon={GitFork}
           label="Existing solutions"
           iconBg="bg-secondary-brand"
-          className="sm:col-span-12 lg:col-span-8"
+          className="sm:col-span-12"
           empty={problem.existingSolutions.length === 0}
         >
           <ul className="flex flex-col gap-2">
@@ -252,19 +260,6 @@ export function ProblemCanvasCards({
           </ul>
         </Cell>
 
-        <Cell
-          icon={Swords}
-          label="Competition"
-          iconBg="bg-secondary-brand"
-          className="sm:col-span-12 lg:col-span-4"
-          empty={!va.competitorSize.level && va.competitorSize.value == null}
-        >
-          <div className="flex flex-col gap-1">
-            <MetricRow label="Competitor size" metric={va.competitorSize} />
-            <MetricRow label="Cost of switching" metric={va.costOfSwitching} />
-            <MetricRow label="Effectiveness" metric={va.solutionEffectiveness} />
-          </div>
-        </Cell>
       </div>
 
       <Collapsible

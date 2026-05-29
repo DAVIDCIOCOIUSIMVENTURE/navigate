@@ -2,8 +2,9 @@
 
 import Link from "next/link"
 import { useSelector } from "react-redux"
-import { ExternalLink } from "lucide-react"
+import { ExternalLink, Pencil } from "lucide-react"
 import type { RootState } from "@/store"
+import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { ProblemCanvasCards } from "@/components/canvas/problem-canvas-cards"
 
@@ -11,8 +12,8 @@ import { ProblemCanvasCards } from "@/components/canvas/problem-canvas-cards"
  * Read-only view of a problem rendered inside a Dialog. Used by the
  * validation sidebar's "View Problem" button. Renders the same canvas
  * cards used by the problem canvas page and validation summary so the
- * three surfaces stay in sync. Editing happens on the full problem page
- * via the "Open as full page" link.
+ * three surfaces stay in sync. The header offers a link to the
+ * full-page canvas and a separate link to the edit hub.
  */
 export function ProblemHubDialog({
   open,
@@ -33,15 +34,22 @@ export function ProblemHubDialog({
       <DialogContent className="flex max-h-[90vh] flex-col sm:max-w-5xl">
         <DialogHeader className="shrink-0">
           <div className="flex items-center gap-4 pr-8">
-            <DialogTitle>Problem</DialogTitle>
+            <DialogTitle>Problem canvas</DialogTitle>
             {problemRef && (
-              <Link
-                href={`/problems/${problemRef}/edit`}
-                className="inline-flex items-center gap-1.5 text-base hover:text-foreground"
-              >
-                <ExternalLink className="h-3.5 w-3.5" />
-                Open as full page
-              </Link>
+              <div className="ml-auto flex items-center gap-2">
+                <Button variant="outline" asChild>
+                  <Link href={`/problems/${problemRef}`}>
+                    <ExternalLink />
+                    Open as full page
+                  </Link>
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link href={`/problems/${problemRef}/edit`}>
+                    <Pencil />
+                    Edit
+                  </Link>
+                </Button>
+              </div>
             )}
           </div>
           <DialogDescription className="sr-only">
