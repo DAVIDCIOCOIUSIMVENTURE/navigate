@@ -94,10 +94,10 @@ export default function IdentifyProblemsPage() {
         router.push("/problems/identify/canvas-builder")
         return
       case "reflect":
-        router.push("/problems/reflect")
+        router.push("/problems/identify/reflect")
         return
       case "research":
-        router.push("/problems/research")
+        router.push("/problems/identify/research")
         return
       case "define":
         handleDefine()

@@ -100,19 +100,15 @@ function getCrumbs(pathname: string): Crumb[] {
       if (third === "canvas-builder") {
         crumbs.push({ label: "Identify", href: "/problems/identify" })
         crumbs.push({ label: "Canvas Builder" })
+      } else if (third === "reflect") {
+        crumbs.push({ label: "Identify", href: "/problems/identify" })
+        crumbs.push({ label: "Reflect" })
+      } else if (third === "research") {
+        crumbs.push({ label: "Identify", href: "/problems/identify" })
+        crumbs.push({ label: "Research" })
       } else {
         crumbs.push({ label: "Identify" })
       }
-      return crumbs
-    }
-    if (second === "reflect") {
-      crumbs.push({ label: "Problems", href: "/problems" })
-      crumbs.push({ label: "Reflect" })
-      return crumbs
-    }
-    if (second === "research") {
-      crumbs.push({ label: "Problems", href: "/problems" })
-      crumbs.push({ label: "Research" })
       return crumbs
     }
     crumbs.push({ label: "Problems", href: "/problems" })
@@ -160,8 +156,8 @@ function getCrumbs(pathname: string): Crumb[] {
 function isFocusFlowPath(pathname: string): boolean {
   return (
     pathname.startsWith("/self-discovery/discover") ||
-    pathname.startsWith("/problems/reflect") ||
-    pathname.startsWith("/problems/research")
+    pathname.startsWith("/problems/identify/reflect") ||
+    pathname.startsWith("/problems/identify/research")
   )
 }
 
