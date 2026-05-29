@@ -93,7 +93,7 @@ function GuidancePanel({
       <h2 className="flex items-center gap-2.5 text-2xl font-bold leading-none tracking-tight">
         {stepNumber !== undefined && (
           <span
-            className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-secondary-brand text-secondary-brand-foreground text-lg font-bold"
+            className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-tertiary text-tertiary-foreground text-lg font-bold"
             aria-hidden="true"
           >
             {stepNumber}
@@ -105,7 +105,7 @@ function GuidancePanel({
       <ul className="flex flex-col gap-1.5">
         {tips.map((tip, i) => (
           <li key={i} className="flex gap-2 leading-relaxed">
-            <span className="text-secondary-brand mt-0.5 shrink-0">&#8226;</span>
+            <span className="text-tertiary mt-0.5 shrink-0">&#8226;</span>
             <span>{tip}</span>
           </li>
         ))}
@@ -178,14 +178,14 @@ function Stepper({
             }}
             aria-current={isActive ? "step" : undefined}
             className={cn(
-              "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2 disabled:opacity-100 hover:text-secondary-brand",
-              isActive && "text-secondary-brand",
+              "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2 disabled:opacity-100 hover:text-tertiary",
+              isActive && "text-tertiary",
             )}
           >
             <span
               className={cn(
                 "flex items-center justify-center w-6 h-6 rounded-md shrink-0 text-xs font-bold transition-colors",
-                isFilled ? "bg-secondary-brand text-white" : "bg-secondary-brand/10 text-secondary-brand",
+                isFilled ? "bg-tertiary text-white" : "bg-tertiary/10 text-tertiary",
               )}
             >
               {isCompleted ? <Check className="h-3.5 w-3.5" /> : i + 1}
@@ -216,7 +216,7 @@ function Stepper({
             <CollapsibleTrigger asChild>
               <Button variant="ghost" className="w-full justify-between h-auto py-2 px-3">
                 <span className="flex items-center gap-2 text-sm font-medium min-w-0">
-                  <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-secondary-brand text-xs font-bold text-white">
+                  <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-tertiary text-xs font-bold text-white">
                     {activeIdx + 1}
                   </span>
                   <span className="truncate">
@@ -770,10 +770,10 @@ function ReviewPanel({
     <div className="flex flex-col gap-6 w-full flex-1 min-h-0 overflow-y-auto">
       <div className="flex items-center gap-3">
         <div
-          className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-secondary-brand"
+          className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-tertiary"
           aria-hidden="true"
         >
-          <ClipboardCheck className="h-5 w-5 text-secondary-brand-foreground" />
+          <ClipboardCheck className="h-5 w-5 text-tertiary-foreground" />
         </div>
         <h2 className="text-2xl font-bold leading-none tracking-tight">Review your research</h2>
       </div>
