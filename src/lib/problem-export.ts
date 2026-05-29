@@ -127,6 +127,107 @@ export function buildSolutionBundle(
   }
 }
 
+export type DuplicateProblemOptions = { includeSolutions: boolean }
+export type DuplicateProblemResult = {
+  problemId: number
+  solutionCount: number
+}
+
+/**
+ * Clone a problem into a new one. Dimension and self-discovery ids point to
+ * shared catalogs, so they are copied as-is. The workspace (refinement state)
+ * is always duplicated so the new problem stands on its own. Solutions are
+ * copied only when the caller asks.
+ */
+export async function duplicateProblem(
+  state: RootState,
+  dispatch: AppDispatch,
+  problemId: number,
+  options: DuplicateProblemOptions
+): Promise<DuplicateProblemResult | null> {
+  const original = state.problems.problems.find((p) => p.id === problemId)
+  if (!original) return null
+
+  const titleSuffix = " (copy)"
+  const newProblem = (await dispatch.problems.create({
+    source: original.source,
+    title: original.title ? `${original.title}${titleSuffix}` : "Untitled problem (copy)",
+    description: original.description,
+    customers: [...original.customers],
+    contexts: [...original.contexts],
+    problems: [...original.problems],
+    you: [...original.you],
+    existingSolutions: original.existingSolutions.map((s) => ({ ...s })),
+    validationAssessment: original.validationAssessment,
+    validationStatus: original.validationStatus,
+    contextWhen: original.contextWhen,
+    segmentSize: original.segmentSize,
+    customerDescription: original.customerDescription,
+    reflection: original.reflection,
+  })) as unknown as Problem
+  if (!newProblem?.id) return null
+
+  const originalWorkspace = state.solutionWorkspaces.workspaces.find((w) => w.problemId === problemId) ?? null
+  let newWorkspaceId: number | null = null
+  if (originalWorkspace) {
+    const workspace = (await dispatch.solutionWorkspaces.ensureForProblem(newProblem.id)) as unknown as SolutionWorkspace
+    newWorkspaceId = workspace.id
+    await dispatch.solutionWorkspaces.update({
+      id: workspace.id,
+      patch: {
+        analysisToolType: originalWorkspace.analysisToolType,
+        discoveryToolType: originalWorkspace.discoveryToolType,
+        rootCauses: originalWorkspace.rootCauses,
+        fiveWhyChains: originalWorkspace.fiveWhyChains,
+        affectedGroups: originalWorkspace.affectedGroups,
+        rootCauseNotes: originalWorkspace.rootCauseNotes,
+        reverseIdeation: originalWorkspace.reverseIdeation,
+        reverseInversion: originalWorkspace.reverseInversion,
+        analogyDomain: originalWorkspace.analogyDomain,
+        analogyInsight: originalWorkspace.analogyInsight,
+        improvementResponses: originalWorkspace.improvementResponses,
+        scamperIdeas: originalWorkspace.scamperIdeas,
+      },
+    })
+  }
+
+  let solutionCount = 0
+  if (options.includeSolutions) {
+    const linked = state.solutions.solutions.filter((s) => s.problemId === problemId)
+    for (const s of linked) {
+      const created = (await dispatch.solutions.create({
+        problemId: newProblem.id,
+        workspaceId: newWorkspaceId,
+        title: s.title,
+        description: s.description,
+        inspirationSource: s.inspirationSource,
+        inspirationDetail: s.inspirationDetail,
+        analogyDomain: s.analogyDomain,
+        analogyInsight: s.analogyInsight,
+        scamperIdeas: s.scamperIdeas,
+        improveIdeas: s.improveIdeas,
+        reverseWorseIdeas: s.reverseWorseIdeas,
+        reverseInversions: s.reverseInversions,
+      })) as unknown as Solution
+      if (created?.id) {
+        await dispatch.solutions.update({
+          id: created.id,
+          patch: {
+            feasibility: s.feasibility,
+            impact: s.impact,
+            cost: s.cost,
+            timeToImplement: s.timeToImplement,
+            validationStatus: s.validationStatus,
+          },
+        })
+        solutionCount++
+      }
+    }
+  }
+
+  return { problemId: newProblem.id, solutionCount }
+}
+
 export function downloadProblemBundle(bundle: ProblemExportBundle) {
   const json = JSON.stringify(bundle, null, 2)
   const blob = new Blob([json], { type: "application/json" })

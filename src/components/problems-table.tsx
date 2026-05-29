@@ -5,8 +5,9 @@ import { useDispatch, useSelector, useStore } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { buildProblemBundle, downloadProblemBundle } from "@/lib/problem-export"
+import { buildProblemBundle, downloadProblemBundle, duplicateProblem } from "@/lib/problem-export"
 import { ExportBundleDialog } from "@/components/export-bundle-dialog"
+import { DuplicateProblemDialog } from "@/components/duplicate-problem-dialog"
 import { Button } from "@/components/ui/button"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
@@ -53,6 +54,7 @@ import {
   MoreHorizontal,
   ClipboardCheck,
   FileJson,
+  Copy,
 } from "lucide-react"
 import type { Problem } from "@/store/problems-model"
 import { cn } from "@/lib/utils"
@@ -109,6 +111,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc")
   const [expandedIds, setExpandedIds] = useState<Set<number>>(new Set())
   const [exportProblemId, setExportProblemId] = useState<number | null>(null)
+  const [duplicateProblemId, setDuplicateProblemId] = useState<number | null>(null)
 
   const runProblemExport = (problemId: number, includeSolutions: boolean) => {
     const bundle = buildProblemBundle(store.getState(), problemId, { includeSolutions })
@@ -118,6 +121,18 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
     }
     downloadProblemBundle(bundle)
     toast.success("Problem exported.")
+  }
+
+  const runProblemDuplicate = async (problemId: number, includeSolutions: boolean) => {
+    const result = await duplicateProblem(store.getState(), dispatch, problemId, { includeSolutions })
+    if (!result) {
+      toast.error("Could not duplicate this problem.")
+      return
+    }
+    const tail = includeSolutions && result.solutionCount > 0
+      ? ` with ${result.solutionCount} solution${result.solutionCount === 1 ? "" : "s"}`
+      : ""
+    toast.success(`Problem duplicated${tail}.`)
   }
 
   const solutionsByProblemId = useMemo(() => {
@@ -440,6 +455,10 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                 <Lightbulb className="h-3.5 w-3.5" />
                                 Identify solutions
                               </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => setDuplicateProblemId(problem.id)}>
+                                <Copy className="h-3.5 w-3.5" />
+                                Duplicate
+                              </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => setExportProblemId(problem.id)}>
                                 <FileJson className="h-3.5 w-3.5" />
                                 Export
@@ -585,6 +604,14 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
         kind="problem"
         onConfirm={(includeSolutions) => {
           if (exportProblemId != null) runProblemExport(exportProblemId, includeSolutions)
+        }}
+      />
+      <DuplicateProblemDialog
+        open={duplicateProblemId != null}
+        onOpenChange={(open) => { if (!open) setDuplicateProblemId(null) }}
+        linkedSolutionCount={duplicateProblemId != null ? (solutionsByProblemId.get(duplicateProblemId)?.length ?? 0) : 0}
+        onConfirm={(includeSolutions) => {
+          if (duplicateProblemId != null) runProblemDuplicate(duplicateProblemId, includeSolutions)
         }}
       />
     </>
