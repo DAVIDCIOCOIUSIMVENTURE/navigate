@@ -1,29 +1,35 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { useSelector, useDispatch } from "react-redux"
+import { useSelector, useDispatch, useStore } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import type { Solution } from "@/types/solution"
 import { Button } from "@/components/ui/button"
 import {
   Printer,
   Download,
+  FileJson,
   Pencil,
   Maximize2,
   Minimize2,
 } from "lucide-react"
+import { toast } from "sonner"
 import {
   buildSolutionExportText,
   downloadTextFile,
   safeFilename,
 } from "@/lib/canvas-export"
+import { buildSolutionBundle, downloadProblemBundle } from "@/lib/problem-export"
+import { ExportBundleDialog } from "@/components/export-bundle-dialog"
 import { SolutionCanvasCards } from "./solution-canvas-cards"
 
 export function SolutionCanvas({ solution, editHref }: { solution: Solution; editHref: string }) {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
+  const store = useStore<RootState>()
   const fullView = useSelector((s: RootState) => s.settings.fullView)
+  const [exportOpen, setExportOpen] = useState(false)
 
   const linkedProblem = useSelector((s: RootState) =>
     s.problems.problems.find((p) => p.id === solution.problemId),
@@ -33,6 +39,16 @@ export function SolutionCanvas({ solution, editHref }: { solution: Solution; edi
     const text = buildSolutionExportText(solution, linkedProblem ?? null)
     const name = safeFilename(solution.title || `solution-${solution.id}`, `solution-${solution.id}`)
     downloadTextFile(`${name}.txt`, text)
+  }
+
+  const handleExportJson = (includeProblem: boolean) => {
+    const bundle = buildSolutionBundle(store.getState(), solution.id, { includeProblem })
+    if (!bundle) {
+      toast.error("Could not export this solution.")
+      return
+    }
+    downloadProblemBundle(bundle)
+    toast.success("Solution exported.")
   }
 
   useEffect(() => {
@@ -69,6 +85,10 @@ export function SolutionCanvas({ solution, editHref }: { solution: Solution; edi
         <Download className="h-3.5 w-3.5 mr-1.5" />
         Download
       </Button>
+      <Button variant="outline" size="sm" onClick={() => setExportOpen(true)} title="Export as a re-importable JSON bundle">
+        <FileJson className="h-3.5 w-3.5 mr-1.5" />
+        Export
+      </Button>
       <Button variant="outline" size="sm" disabled title="Coming soon">
         <Printer className="h-3.5 w-3.5 mr-1.5" />
         Print
@@ -85,5 +105,15 @@ export function SolutionCanvas({ solution, editHref }: { solution: Solution; edi
     </>
   )
 
-  return <SolutionCanvasCards solution={solution} fill actions={actions} />
+  return (
+    <>
+      <SolutionCanvasCards solution={solution} fill actions={actions} />
+      <ExportBundleDialog
+        open={exportOpen}
+        onOpenChange={setExportOpen}
+        kind="solution"
+        onConfirm={handleExportJson}
+      />
+    </>
+  )
 }

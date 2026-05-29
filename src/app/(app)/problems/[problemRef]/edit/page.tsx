@@ -1,20 +1,26 @@
 "use client"
 
+import { useState } from "react"
 import { useParams } from "next/navigation"
-import { useSelector } from "react-redux"
+import { useSelector, useStore } from "react-redux"
 import Link from "next/link"
 import type { RootState } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Target, ArrowLeft } from "lucide-react"
+import { Target, ArrowLeft, Download } from "lucide-react"
+import { toast } from "sonner"
 import { ProblemProvider } from "../validation/context"
 import { ProblemHubContent } from "@/components/problem-hub/problem-hub-content"
+import { buildProblemBundle, downloadProblemBundle } from "@/lib/problem-export"
+import { ExportBundleDialog } from "@/components/export-bundle-dialog"
 
 function HubBody({ problemRef }: { problemRef: string }) {
   const problemId = Number(problemRef)
   const problem = useSelector((state: RootState) =>
     state.problems.problems.find((p) => p.id === problemId)
   )
+  const store = useStore<RootState>()
+  const [exportOpen, setExportOpen] = useState(false)
 
   if (!problem) {
     return (
@@ -34,13 +40,29 @@ function HubBody({ problemRef }: { problemRef: string }) {
     )
   }
 
+  const handleExport = (includeSolutions: boolean) => {
+    const bundle = buildProblemBundle(store.getState(), problemId, { includeSolutions })
+    if (!bundle) {
+      toast.error("Could not export this problem.")
+      return
+    }
+    downloadProblemBundle(bundle)
+    toast.success("Problem exported.")
+  }
+
   return (
     <div className="flex flex-col w-full flex-1">
       <Card className="w-full">
         <CardHeader className="px-10 pt-10 pb-0 space-y-6">
-          <CardTitle icon={Target}>
-            {problem.title || `Problem #${problem.id}`}
-          </CardTitle>
+          <div className="flex items-start justify-between gap-4">
+            <CardTitle icon={Target}>
+              {problem.title || `Problem #${problem.id}`}
+            </CardTitle>
+            <Button variant="outline" onClick={() => setExportOpen(true)} className="shrink-0">
+              <Download className="h-4 w-4 mr-2" />
+              Export
+            </Button>
+          </div>
           <p className="text-base">
             Edit and review every part of this problem in one place.
           </p>
@@ -49,6 +71,12 @@ function HubBody({ problemRef }: { problemRef: string }) {
           <ProblemHubContent mode="page" />
         </CardContent>
       </Card>
+      <ExportBundleDialog
+        open={exportOpen}
+        onOpenChange={setExportOpen}
+        kind="problem"
+        onConfirm={handleExport}
+      />
     </div>
   )
 }

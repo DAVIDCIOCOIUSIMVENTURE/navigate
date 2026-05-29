@@ -1,9 +1,12 @@
 ﻿"use client"
 
 import { Fragment, useMemo, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch, useSelector, useStore } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
+import { buildProblemBundle, downloadProblemBundle } from "@/lib/problem-export"
+import { ExportBundleDialog } from "@/components/export-bundle-dialog"
 import { Button } from "@/components/ui/button"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
@@ -49,6 +52,7 @@ import {
   Target,
   MoreHorizontal,
   ClipboardCheck,
+  FileJson,
 } from "lucide-react"
 import type { Problem } from "@/store/problems-model"
 import { cn } from "@/lib/utils"
@@ -97,12 +101,24 @@ interface ProblemsTableProps {
 export function ProblemsTable({ problems, showStatus = false, showEditDelete = false, showSource = true, className, headerExtra, title }: ProblemsTableProps) {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
+  const store = useStore<RootState>()
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<"all" | ValidationStatus>("all")
   const [sortKey, setSortKey] = useState<SortKey>("index")
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc")
   const [expandedIds, setExpandedIds] = useState<Set<number>>(new Set())
+  const [exportProblemId, setExportProblemId] = useState<number | null>(null)
+
+  const runProblemExport = (problemId: number, includeSolutions: boolean) => {
+    const bundle = buildProblemBundle(store.getState(), problemId, { includeSolutions })
+    if (!bundle) {
+      toast.error("Could not export this problem.")
+      return
+    }
+    downloadProblemBundle(bundle)
+    toast.success("Problem exported.")
+  }
 
   const solutionsByProblemId = useMemo(() => {
     const map = new Map<number, typeof solutions>()
@@ -190,6 +206,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
   const sortableHeaderClass = "cursor-pointer select-none hover:text-foreground"
 
   return (
+    <>
     <Card className={cn("flex flex-col overflow-hidden", className)}>
         <CardHeader className="shrink-0 pb-3 gap-3">
           <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -423,6 +440,10 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                 <Lightbulb className="h-3.5 w-3.5" />
                                 Identify solutions
                               </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => setExportProblemId(problem.id)}>
+                                <FileJson className="h-3.5 w-3.5" />
+                                Export
+                              </DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>
                           {showEditDelete && (
@@ -558,5 +579,14 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
           </Table>
         </CardContent>
       </Card>
+      <ExportBundleDialog
+        open={exportProblemId != null}
+        onOpenChange={(open) => { if (!open) setExportProblemId(null) }}
+        kind="problem"
+        onConfirm={(includeSolutions) => {
+          if (exportProblemId != null) runProblemExport(exportProblemId, includeSolutions)
+        }}
+      />
+    </>
   )
 }

@@ -6,6 +6,7 @@ import type { RootState } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ProblemsTable } from "@/components/problems-table"
+import { ImportBundleButton } from "@/components/import-bundle-button"
 import { Plus, Target } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useContainerSize } from "@/context/container-size-context"
@@ -31,10 +32,13 @@ export default function ProblemsPage() {
               The workflow has two steps. First, <span className="font-bold">identify</span> problems worth solving by combining customer segments, contexts, and types of pain with what you&apos;ve learned about yourself.
               Then <span className="font-bold">validate</span> each one by refining who feels it, when it shows up, why it matters, and how today&apos;s alternatives fall short, so you can decide whether it&apos;s real and painful enough to commit to.
             </p>
-            <Button onClick={() => router.push("/problems/identify")} className="gap-2 shrink-0">
-              <Plus className="h-4 w-4" />
-              Identify problems
-            </Button>
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
+              <ImportBundleButton />
+              <Button onClick={() => router.push("/problems/identify")} className="gap-2">
+                <Plus className="h-4 w-4" />
+                Identify problems
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
@@ -46,7 +50,7 @@ export default function ProblemsPage() {
           </div>
           <div className="text-center flex flex-col gap-2 max-w-sm">
             <h2 className="text-lg font-semibold">No problems yet</h2>
-            <p className="text-sm">
+            <p className="text-base">
               Start by searching for problems using the Identify Problems tool or define one directly.
             </p>
           </div>

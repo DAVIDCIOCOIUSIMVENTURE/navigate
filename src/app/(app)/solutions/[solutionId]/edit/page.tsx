@@ -1,19 +1,25 @@
 "use client"
 
+import { useState } from "react"
 import { useParams } from "next/navigation"
-import { useSelector } from "react-redux"
+import { useSelector, useStore } from "react-redux"
 import Link from "next/link"
 import type { RootState } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Lightbulb, ArrowLeft } from "lucide-react"
+import { Lightbulb, ArrowLeft, Download } from "lucide-react"
+import { toast } from "sonner"
 import { SolutionProvider } from "../validate/context"
 import { SolutionHubContent } from "@/components/solution-hub/solution-hub-content"
+import { buildSolutionBundle, downloadProblemBundle } from "@/lib/problem-export"
+import { ExportBundleDialog } from "@/components/export-bundle-dialog"
 
 function HubBody({ solutionId }: { solutionId: number }) {
   const solution = useSelector((state: RootState) =>
     state.solutions.solutions.find((s) => s.id === solutionId)
   )
+  const store = useStore<RootState>()
+  const [exportOpen, setExportOpen] = useState(false)
 
   if (!solution) {
     return (
@@ -33,13 +39,29 @@ function HubBody({ solutionId }: { solutionId: number }) {
     )
   }
 
+  const handleExport = (includeProblem: boolean) => {
+    const bundle = buildSolutionBundle(store.getState(), solutionId, { includeProblem })
+    if (!bundle) {
+      toast.error("Could not export this solution.")
+      return
+    }
+    downloadProblemBundle(bundle)
+    toast.success("Solution exported.")
+  }
+
   return (
     <div className="flex flex-col w-full flex-1">
       <Card className="w-full">
         <CardHeader className="px-10 pt-10 pb-0 space-y-6">
-          <CardTitle icon={Lightbulb}>
-            {solution.title || `Solution #${solution.id}`}
-          </CardTitle>
+          <div className="flex items-start justify-between gap-4">
+            <CardTitle icon={Lightbulb}>
+              {solution.title || `Solution #${solution.id}`}
+            </CardTitle>
+            <Button variant="outline" onClick={() => setExportOpen(true)} className="shrink-0">
+              <Download className="h-4 w-4 mr-2" />
+              Export
+            </Button>
+          </div>
           <p className="text-base">
             Edit and review every part of this solution in one place.
           </p>
@@ -48,6 +70,12 @@ function HubBody({ solutionId }: { solutionId: number }) {
           <SolutionHubContent mode="page" />
         </CardContent>
       </Card>
+      <ExportBundleDialog
+        open={exportOpen}
+        onOpenChange={setExportOpen}
+        kind="solution"
+        onConfirm={handleExport}
+      />
     </div>
   )
 }

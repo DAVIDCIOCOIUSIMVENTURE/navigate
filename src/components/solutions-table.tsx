@@ -1,9 +1,12 @@
 ﻿"use client"
 
 import { useMemo, useState } from "react"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch, useSelector, useStore } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
 import { useRouter } from "next/navigation"
+import { toast } from "sonner"
+import { buildSolutionBundle, downloadProblemBundle } from "@/lib/problem-export"
+import { ExportBundleDialog } from "@/components/export-bundle-dialog"
 import { Button } from "@/components/ui/button"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
@@ -47,6 +50,7 @@ import {
   Target,
   MoreHorizontal,
   ClipboardCheck,
+  FileJson,
 } from "lucide-react"
 import type { Solution } from "@/store/solutions-model"
 import { cn } from "@/lib/utils"
@@ -92,11 +96,23 @@ interface SolutionsTableProps {
 export function SolutionsTable({ solutions, showStatus = true, showEditDelete = true, className, headerExtra, title }: SolutionsTableProps) {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
+  const store = useStore<RootState>()
   const problems = useSelector((state: RootState) => state.problems.problems)
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<"all" | ValidationStatus>("all")
   const [sortKey, setSortKey] = useState<SortKey>("index")
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc")
+  const [exportSolutionId, setExportSolutionId] = useState<number | null>(null)
+
+  const runSolutionExport = (solutionId: number, includeProblem: boolean) => {
+    const bundle = buildSolutionBundle(store.getState(), solutionId, { includeProblem })
+    if (!bundle) {
+      toast.error("Could not export this solution.")
+      return
+    }
+    downloadProblemBundle(bundle)
+    toast.success("Solution exported.")
+  }
 
   const indexedSolutions = useMemo(
     () => solutions.map((solution, index) => {
@@ -169,6 +185,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
   const sortableHeaderClass = "cursor-pointer select-none hover:text-foreground"
 
   return (
+    <>
     <Card className={cn("flex flex-col overflow-hidden", className)}>
       <CardHeader className="shrink-0 pb-3 gap-3">
         <div className="flex items-center justify-between gap-3 flex-wrap">
@@ -376,6 +393,10 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                                 Open problem
                               </DropdownMenuItem>
                             )}
+                            <DropdownMenuItem onClick={() => setExportSolutionId(solution.id)}>
+                              <FileJson className="h-3.5 w-3.5" />
+                              Export
+                            </DropdownMenuItem>
                           </DropdownMenuContent>
                         </DropdownMenu>
                         {showEditDelete && (
@@ -405,5 +426,14 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
         </Table>
       </CardContent>
     </Card>
+    <ExportBundleDialog
+      open={exportSolutionId != null}
+      onOpenChange={(open) => { if (!open) setExportSolutionId(null) }}
+      kind="solution"
+      onConfirm={(includeProblem) => {
+        if (exportSolutionId != null) runSolutionExport(exportSolutionId, includeProblem)
+      }}
+    />
+    </>
   )
 }

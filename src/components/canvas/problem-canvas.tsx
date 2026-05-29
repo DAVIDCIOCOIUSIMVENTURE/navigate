@@ -1,29 +1,35 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { useSelector, useDispatch } from "react-redux"
+import { useSelector, useDispatch, useStore } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import type { Problem } from "@/store/problems-model"
 import { Button } from "@/components/ui/button"
 import {
   Printer,
   Download,
+  FileJson,
   Pencil,
   Maximize2,
   Minimize2,
 } from "lucide-react"
+import { toast } from "sonner"
 import {
   buildProblemExportText,
   downloadTextFile,
   safeFilename,
 } from "@/lib/canvas-export"
+import { buildProblemBundle, downloadProblemBundle } from "@/lib/problem-export"
+import { ExportBundleDialog } from "@/components/export-bundle-dialog"
 import { ProblemCanvasCards } from "./problem-canvas-cards"
 
 export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHref: string }) {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
+  const store = useStore<RootState>()
   const fullView = useSelector((s: RootState) => s.settings.fullView)
+  const [exportOpen, setExportOpen] = useState(false)
   const linkedSolutions = useSelector((s: RootState) =>
     s.solutions.solutions.filter((sol) => sol.problemId === problem.id),
   )
@@ -34,6 +40,16 @@ export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHre
     const text = buildProblemExportText(problem, linkedSolutions, customByColumn, selfDiscoveryItems)
     const name = safeFilename(problem.title || `problem-${problem.id}`, `problem-${problem.id}`)
     downloadTextFile(`${name}.txt`, text)
+  }
+
+  const handleExportJson = (includeSolutions: boolean) => {
+    const bundle = buildProblemBundle(store.getState(), problem.id, { includeSolutions })
+    if (!bundle) {
+      toast.error("Could not export this problem.")
+      return
+    }
+    downloadProblemBundle(bundle)
+    toast.success("Problem exported.")
   }
 
   useEffect(() => {
@@ -70,6 +86,10 @@ export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHre
         <Download className="h-3.5 w-3.5 mr-1.5" />
         Download
       </Button>
+      <Button variant="outline" size="sm" onClick={() => setExportOpen(true)} title="Export as a re-importable JSON bundle">
+        <FileJson className="h-3.5 w-3.5 mr-1.5" />
+        Export
+      </Button>
       <Button variant="outline" size="sm" disabled title="Coming soon">
         <Printer className="h-3.5 w-3.5 mr-1.5" />
         Print
@@ -86,5 +106,15 @@ export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHre
     </>
   )
 
-  return <ProblemCanvasCards problem={problem} fill actions={actions} />
+  return (
+    <>
+      <ProblemCanvasCards problem={problem} fill actions={actions} />
+      <ExportBundleDialog
+        open={exportOpen}
+        onOpenChange={setExportOpen}
+        kind="problem"
+        onConfirm={handleExportJson}
+      />
+    </>
+  )
 }
