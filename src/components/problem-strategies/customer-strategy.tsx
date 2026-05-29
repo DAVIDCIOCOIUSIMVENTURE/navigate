@@ -1,10 +1,12 @@
 "use client"
 
 import { Textarea } from "@/components/ui/textarea"
+import { DimensionChips } from "@/components/dimension-chips"
 import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
 
 export function CustomerStrategy({ readOnly = false }: { readOnly?: boolean }) {
-  const { segmentSize, customerDescription, setCustomerDescription } = useProblem()
+  const { problem, segmentSize, customerDescription, setCustomerDescription } = useProblem()
+  const customerSegments = problem?.customers ?? []
 
   if (readOnly && segmentSize === null && !customerDescription.trim()) {
     return (
@@ -17,6 +19,14 @@ export function CustomerStrategy({ readOnly = false }: { readOnly?: boolean }) {
   return (
     <div className="bg-secondary-brand rounded-xl p-8">
       <div className="flex flex-col gap-6">
+        {customerSegments.length > 0 && (
+          <div className="flex flex-col gap-2">
+            <p className="text-sm font-semibold uppercase tracking-wide text-white">
+              Defined Segments
+            </p>
+            <DimensionChips columnId="customers" ids={customerSegments} />
+          </div>
+        )}
         <div className="flex flex-col gap-2">
           <label htmlFor="customer-description" className="text-sm font-medium text-white">
             Describe your customer

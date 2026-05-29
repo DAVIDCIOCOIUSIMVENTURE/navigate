@@ -1,27 +1,19 @@
 "use client"
 
 import { usePathname, useRouter } from "next/navigation"
-import { useSelector } from "react-redux"
-import type { RootState } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { useProblem, getAdjacentSteps } from "../context"
 import { CUSTOMER_CASE_STUDIES } from "./case-studies"
-import { DimensionChips } from "@/components/dimension-chips"
 import { CustomerStrategy } from "@/components/problem-strategies/customer-strategy"
 import { Users, Target, MapPin, Briefcase, Filter } from "lucide-react"
 
 export default function CustomerSegmentPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { problemRef, problemId } = useProblem()
+  const { problemRef } = useProblem()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, problemRef)
-
-  const problem = useSelector((state: RootState) =>
-    state.problems.problems.find((p) => p.id === problemId)
-  )
-  const customerSegments = problem?.customers ?? []
 
   return (
     <Card className="w-full flex-1">
@@ -52,15 +44,6 @@ export default function CustomerSegmentPage() {
             />
           </div>
         </div>
-
-        {customerSegments.length > 0 && (
-          <div className="flex flex-col gap-2">
-            <p className="text-sm font-semibold uppercase tracking-wide">
-              Defined Segments
-            </p>
-            <DimensionChips columnId="customers" ids={customerSegments} />
-          </div>
-        )}
 
         <div className="flex flex-col gap-3 text-base">
           <p className="text-xl font-bold text-foreground">How to narrow down your customer</p>
@@ -108,8 +91,8 @@ export default function CustomerSegmentPage() {
           </div>
         </div>
 
-        <div className="rounded-lg border bg-muted/30 p-4 flex flex-col gap-2 text-base">
-          <p className="font-medium text-foreground">Why this matters</p>
+        <div className="flex flex-col gap-3 text-base">
+          <p className="text-xl font-bold text-foreground">Why this matters</p>
           <p>
             A vague customer means vague problems and vague solutions. When you can describe
             your customer precisely, their role, context, and pain points, you unlock sharper
