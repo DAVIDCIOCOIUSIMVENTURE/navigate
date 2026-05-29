@@ -6,7 +6,7 @@ import type { RootState } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { ProblemsTable } from "@/components/problems-table"
-import { ImportBundleButton } from "@/components/import-bundle-button"
+import { BundleMenuButton } from "@/components/bundle-menu-button"
 import { Plus, Target } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useContainerSize } from "@/context/container-size-context"
@@ -33,11 +33,11 @@ export default function ProblemsPage() {
               Then <span className="font-bold">validate</span> each one by refining who feels it, when it shows up, why it matters, and how today&apos;s alternatives fall short, so you can decide whether it&apos;s real and painful enough to commit to.
             </p>
             <div className="flex flex-wrap items-center gap-2 shrink-0">
-              <ImportBundleButton />
               <Button onClick={() => router.push("/problems/identify")} className="gap-2">
                 <Plus className="h-4 w-4" />
                 Identify problems
               </Button>
+              <BundleMenuButton kind="problem" />
             </div>
           </div>
         </CardContent>

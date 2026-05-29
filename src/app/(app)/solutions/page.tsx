@@ -7,7 +7,7 @@ import type { RootState } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { SolutionsTable } from "@/components/solutions-table"
-import { ImportBundleButton } from "@/components/import-bundle-button"
+import { BundleMenuButton } from "@/components/bundle-menu-button"
 import { Plus, Lightbulb } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
@@ -34,11 +34,11 @@ export default function SolutionsPage() {
               Finally, <span className="font-bold">validate</span> each candidate by scoring it on feasibility, impact, cost, and time to implement, so you can decide which one is worth pursuing.
             </p>
             <div className="flex flex-wrap items-center gap-2 shrink-0">
-              <ImportBundleButton />
               <Button onClick={() => router.push("/solutions/identify")} className="gap-2">
                 <Plus className="h-4 w-4" />
                 Identify solutions
               </Button>
+              <BundleMenuButton kind="solution" />
             </div>
           </div>
         </CardContent>

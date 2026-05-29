@@ -4,23 +4,31 @@ import { useRef, useState } from "react"
 import { useDispatch } from "react-redux"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
-import { Upload } from "lucide-react"
+import { MoreHorizontal, Upload, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import type { AppDispatch } from "@/store"
 import {
   BundleParseError,
   importProblemBundle,
   parseProblemBundle,
 } from "@/lib/problem-export"
+import { ExportPickerDialog } from "@/components/export-picker-dialog"
 
-// A self-contained "Import" button + hidden file input. After import it routes
-// to the problem's edit page so the user can confirm the result. Used on both
-// the problems list and the solutions list.
-export function ImportBundleButton() {
+// Page-level actions menu for the problem and solution lists. The 3-dot
+// trigger holds "Import <kind>" (file picker) and "Export <kind>" (opens a
+// dialog with a record picker plus the include-related checkbox).
+export function BundleMenuButton({ kind }: { kind: "problem" | "solution" }) {
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [importing, setImporting] = useState(false)
+  const [exportOpen, setExportOpen] = useState(false)
 
   const onFileSelected = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -60,15 +68,31 @@ export function ImportBundleButton() {
         className="hidden"
         onChange={onFileSelected}
       />
-      <Button
-        variant="outline"
-        onClick={() => fileInputRef.current?.click()}
-        disabled={importing}
-        className="gap-2"
-      >
-        <Upload className="h-4 w-4" />
-        {importing ? "Importing..." : "Import"}
-      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline" size="icon" aria-label="More actions">
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem
+            onClick={() => fileInputRef.current?.click()}
+            disabled={importing}
+          >
+            <Upload className="h-4 w-4" />
+            {importing ? "Importing..." : `Import ${kind}`}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={() => setExportOpen(true)}>
+            <Download className="h-4 w-4" />
+            Export {kind}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+      <ExportPickerDialog
+        open={exportOpen}
+        onOpenChange={setExportOpen}
+        kind={kind}
+      />
     </>
   )
 }
