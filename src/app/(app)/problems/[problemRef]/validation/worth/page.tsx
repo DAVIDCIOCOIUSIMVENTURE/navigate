@@ -21,7 +21,7 @@ export default function WorthPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={DollarSign} iconBg="bg-secondary-brand">What they would pay to solve it</CardTitle>
+        <CardTitle icon={DollarSign} iconBg="bg-tertiary">What they would pay to solve it</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-base">

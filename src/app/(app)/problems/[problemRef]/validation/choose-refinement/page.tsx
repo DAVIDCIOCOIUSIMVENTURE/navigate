@@ -30,7 +30,7 @@ const TOOL_ITEMS: MethodPickerItem[] = [
     helperText:
       "Example: \"Customers receive cold food\" maps to drivers taking multi-order routes, inaccurate prep estimates, no insulated packaging requirement, and routing that prioritises distance over delivery time.",
     icon: TreePine,
-    tileColor: "bg-secondary-brand",
+    tileColor: "bg-tertiary",
     estimatedMinutes: 10,
     enabled: true,
   },
@@ -43,7 +43,7 @@ const TOOL_ITEMS: MethodPickerItem[] = [
     helperText:
       "Example: \"High return rate\" leads to: product doesn't match expectations, photos are inaccurate, photos come from manufacturers, no in-house photography workflow, no budget because returns weren't tracked by cause.",
     icon: HelpCircle,
-    tileColor: "bg-secondary-brand",
+    tileColor: "bg-tertiary",
     estimatedMinutes: 10,
     enabled: true,
   },
@@ -56,7 +56,7 @@ const TOOL_ITEMS: MethodPickerItem[] = [
     helperText:
       "Example: \"Patients miss appointments\" affects elderly patients (critical: tech struggles, forget without reminders), working parents (high: schedule conflicts), and rural patients (medium: long travel makes rescheduling costly).",
     icon: Users,
-    tileColor: "bg-secondary-brand",
+    tileColor: "bg-tertiary",
     estimatedMinutes: 10,
     enabled: true,
   },
@@ -89,7 +89,7 @@ export default function ChooseRefinementPage() {
     <>
       <Card className="w-full flex-1">
         <CardHeader className="px-10 pt-10 pb-0">
-          <CardTitle icon={Search} iconBg="bg-secondary-brand">Choose Your Refinement Method</CardTitle>
+          <CardTitle icon={Search} iconBg="bg-tertiary">Choose Your Refinement Method</CardTitle>
         </CardHeader>
         <CardContent className="p-10 pt-6 flex flex-col gap-6">
           <ProblemContextCard problem={problem} />

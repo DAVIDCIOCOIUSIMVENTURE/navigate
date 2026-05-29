@@ -94,7 +94,7 @@ export default function VerdictPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={CheckCircle2} iconBg="bg-secondary-brand">Verdict</CardTitle>
+        <CardTitle icon={CheckCircle2} iconBg="bg-tertiary">Verdict</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <p className="text-base leading-relaxed">
@@ -104,7 +104,7 @@ export default function VerdictPage() {
         {(solution?.title || problem?.title || problem?.description) && (
           <div className="flex flex-col gap-2">
             {solution?.title && (
-              <div className="rounded-lg border-2 border-secondary-brand/20 bg-secondary-brand/5 p-4 flex flex-col gap-0.5">
+              <div className="rounded-lg border-2 border-tertiary/20 bg-tertiary/5 p-4 flex flex-col gap-0.5">
                 <p className="text-base font-semibold uppercase tracking-wide">Solution</p>
                 <p className="text-base font-medium">{solution.title}</p>
               </div>

@@ -17,7 +17,7 @@ export default function ValidationSummaryPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0 space-y-6">
-        <CardTitle icon={LayoutTemplate} iconBg="bg-secondary-brand">Summary</CardTitle>
+        <CardTitle icon={LayoutTemplate} iconBg="bg-tertiary">Summary</CardTitle>
         <p className="text-base">A read-only overview of everything you have captured for this solution. Use <strong>Open Solution</strong> to jump to the editable solution page.</p>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
@@ -33,7 +33,7 @@ export default function ValidationSummaryPage() {
           ) : <div />}
           <Button
             variant="outline"
-            className="bg-[#fcfbf8] border-secondary-brand/40 text-secondary-brand hover:bg-secondary-brand/5 hover:text-secondary-brand"
+            className="bg-[#fcfbf8] border-tertiary/40 text-tertiary hover:bg-tertiary/5 hover:text-tertiary"
             onClick={() => router.push(`/solutions/${solutionId}/edit`)}
           >
             <ExternalLink className="h-4 w-4 mr-2" />

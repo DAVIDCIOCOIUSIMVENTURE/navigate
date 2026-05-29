@@ -21,7 +21,7 @@ export default function MarketSizingPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={TrendingUp} iconBg="bg-secondary-brand">Size the market</CardTitle>
+        <CardTitle icon={TrendingUp} iconBg="bg-tertiary">Size the market</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-base">

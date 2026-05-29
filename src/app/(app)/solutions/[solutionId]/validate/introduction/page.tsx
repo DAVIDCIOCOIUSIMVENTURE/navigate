@@ -22,7 +22,7 @@ export default function IntroductionPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={ClipboardCheck} iconBg="bg-secondary-brand">Introduction</CardTitle>
+        <CardTitle icon={ClipboardCheck} iconBg="bg-tertiary">Introduction</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="@container">
@@ -45,7 +45,7 @@ export default function IntroductionPage() {
         </div>
 
         {solution && (
-          <div className="rounded-lg border-2 border-secondary-brand/20 bg-secondary-brand/5 p-4 flex flex-col gap-3">
+          <div className="rounded-lg border-2 border-tertiary/20 bg-tertiary/5 p-4 flex flex-col gap-3">
             <div className="flex flex-col gap-1">
               <p className="text-base font-semibold uppercase tracking-wide">Solution</p>
               <p className="text-base font-medium">{solution.title || "Untitled solution"}</p>
@@ -71,7 +71,7 @@ export default function IntroductionPage() {
             {METRICS.map(({ icon: Icon, title, description }, index) => (
               <div key={title} className="flex gap-4">
                 <div className="flex flex-col items-center">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary-brand">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-tertiary">
                     <Icon className="h-3.5 w-3.5 text-white" />
                   </div>
                   {index < METRICS.length - 1 && (

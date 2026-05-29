@@ -18,7 +18,7 @@ export default function ExistingSolutionsPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={GitFork} iconBg="bg-secondary-brand">Explore existing solutions &amp; shortcomings</CardTitle>
+        <CardTitle icon={GitFork} iconBg="bg-tertiary">Explore existing solutions &amp; shortcomings</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-base">
@@ -26,7 +26,7 @@ export default function ExistingSolutionsPage() {
             How are people currently solving, or living with, this problem? List every existing solution
             they reach for today, even if it&apos;s imperfect or informal.
           </p>
-          <div className="flex flex-col gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="flex items-start gap-3">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-900 shrink-0 mt-0.5">
                 <Monitor className="h-4 w-4 text-white" />

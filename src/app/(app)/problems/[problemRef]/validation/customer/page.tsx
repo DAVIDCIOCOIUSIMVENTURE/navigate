@@ -18,7 +18,7 @@ export default function CustomerSegmentPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={Users} iconBg="bg-secondary-brand">Define your customer</CardTitle>
+        <CardTitle icon={Users} iconBg="bg-tertiary">Define your customer</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="@container">
