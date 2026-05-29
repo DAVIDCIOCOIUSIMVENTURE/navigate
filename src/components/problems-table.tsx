@@ -323,13 +323,13 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                     <Fragment key={problem.id}>
                     <TableRow
                       className={cn(zebra, expanded && hasSolutions && "border-b-0", "cursor-pointer hover:bg-muted/40")}
-                      onClick={() => router.push(`/problems/${problem.id}/edit`)}
+                      onClick={() => router.push(`/problems/${problem.id}`)}
                       role="button"
                       tabIndex={0}
                       onKeyDown={(e) => {
                         if (e.key === "Enter" || e.key === " ") {
                           e.preventDefault()
-                          router.push(`/problems/${problem.id}/edit`)
+                          router.push(`/problems/${problem.id}`)
                         }
                       }}
                       aria-label={`View problem: ${problem.title || "untitled"}`}
@@ -476,13 +476,13 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                         <TableRow
                           key={s.id}
                           className="bg-muted/30 cursor-pointer hover:bg-muted/50"
-                          onClick={() => router.push(`/solutions/${s.id}/edit`)}
+                          onClick={() => router.push(`/solutions/${s.id}`)}
                           role="button"
                           tabIndex={0}
                           onKeyDown={(e) => {
                             if (e.key === "Enter" || e.key === " ") {
                               e.preventDefault()
-                              router.push(`/solutions/${s.id}/edit`)
+                              router.push(`/solutions/${s.id}`)
                             }
                           }}
                           aria-label={`View solution: ${solutionLabel}`}

@@ -297,13 +297,13 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                   <TableRow
                     key={solution.id}
                     className={cn(zebra, "cursor-pointer hover:bg-muted/40")}
-                    onClick={() => router.push(`/solutions/${solution.id}/edit`)}
+                    onClick={() => router.push(`/solutions/${solution.id}`)}
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault()
-                        router.push(`/solutions/${solution.id}/edit`)
+                        router.push(`/solutions/${solution.id}`)
                       }
                     }}
                     aria-label={`View solution: ${solution.title || "untitled"}`}
