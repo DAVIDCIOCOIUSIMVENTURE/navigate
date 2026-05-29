@@ -61,7 +61,7 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
     },
     reachableShare: {
       value: 35,
-      detail: "Initially launchable to English-speaking small businesses with internet access and a customer list, roughly a third of the global TAM.",
+      detail: "Initially launchable to English-speaking small businesses with internet access and a customer list, roughly a third of the global total market.",
     },
     obtainableShare: {
       value: 10,

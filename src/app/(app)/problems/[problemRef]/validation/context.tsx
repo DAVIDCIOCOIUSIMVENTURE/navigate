@@ -386,8 +386,8 @@ export const NAV_ITEMS = [
   { label: "Explore existing solutions & shortcomings", path: "existing-solutions" },
   { label: "Jobs your customer is trying to get done", path: "jobs-to-be-done" },
   { label: "What they would pay to solve it", path: "worth" },
-  { label: "Size the total market (TAM and SAM)", path: "market" },
-  { label: "Assess the competition (SOM)", path: "competition" },
+  { label: "Size the market", path: "market" },
+  { label: "Assess the competition", path: "competition" },
   { label: "Record your verdict", path: "verdict" },
   { label: "Summary & Next Steps", path: "summary" },
 ] as const

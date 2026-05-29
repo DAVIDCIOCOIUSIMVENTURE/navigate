@@ -9,17 +9,18 @@ import { Button } from "@/components/ui/button"
 import { getAdjacentSteps, useProblem } from "../context"
 import { DimensionChips } from "@/components/dimension-chips"
 import {
-  ClipboardCheck, GitFork, ShieldCheck, LayoutTemplate, Users, Search, TrendingUp, Building2, DollarSign,
+  ClipboardCheck, GitFork, ShieldCheck, LayoutTemplate, Users, Search, TrendingUp, Building2, DollarSign, Sparkles,
 } from "lucide-react"
 
 const STEPS = [
   { icon: Users, title: "Define your customer", description: "Pin down exactly who experiences this problem so the rest of the validation work has a real person at its centre." },
   { icon: Search, title: "Refine your problem", description: "Dig into why this problem exists and who it affects using Root Causes, 5 Whys, or Affected Groups." },
   { icon: GitFork, title: "Explore existing solutions & shortcomings", description: "Identify how customers currently deal with this problem, capture shortcomings, and measure the quantifiable impact of each solution." },
-  { icon: DollarSign, title: "How much is it worth", description: "Estimate the monetary value of solving one occurrence of the problem and the realistic share of the market you could capture." },
-  { icon: TrendingUp, title: "Size the market", description: "Estimate how many customers experience the problem and how often, then sense-check the result with a total addressable market calculation that uses the worth and share from the previous step." },
-  { icon: Building2, title: "Assess the competition", description: "Read the cost of switching, how good existing solutions actually are, and how big the incumbents are. Capture supporting notes as you go." },
-  { icon: ShieldCheck, title: "Record your verdict", description: "Weigh the six factors together against a colour-coded summary and lean indicator, then commit to Valid, Unsure, or Invalid with reasoning in the notes." },
+  { icon: Sparkles, title: "Jobs your customer is trying to get done", description: "List the tangible tasks they need to complete, how they want to feel, and how they want to be seen. The strongest pull anchors the price on the next step." },
+  { icon: DollarSign, title: "What they would pay to solve it", description: "Anchored on the strongest job from the previous step, estimate the price a single customer would happily pay each time the problem hits." },
+  { icon: TrendingUp, title: "Size the market", description: "Estimate how many customers have the problem and the share you can realistically reach in your launch. The page combines those with the price to produce a total and a reachable market figure." },
+  { icon: Building2, title: "Assess the competition", description: "Read the cost of switching, how good existing solutions are, and how big the incumbents are. Then set the realistic share you could win out of the reachable market." },
+  { icon: ShieldCheck, title: "Record your verdict", description: "Weigh the seven factors together against a colour-coded summary and lean indicator, then commit to Valid, Unsure, or Invalid with reasoning in the notes." },
   { icon: LayoutTemplate, title: "Summary", description: "Review the problem statement assembled from your discovery and validation work." },
 ]
 
@@ -60,7 +61,7 @@ export default function IntroductionPage() {
           <div className="flex flex-col gap-6 @[800px]:flex-row @[800px]:items-center">
             <div className="flex flex-col gap-4 flex-1 min-w-0">
               <p className="text-base leading-relaxed">
-                It&apos;s time to validate whether this problem is truly worth solving. You&apos;ll work through your customer, the way the problem really shows up, the alternatives people already use, the size of the market, and the competitive landscape, then commit to a verdict you can defend with the evidence in front of you.
+                It&apos;s time to validate whether this problem is truly worth solving. You&apos;ll work through your customer, the way the problem really shows up, the alternatives people already use, the jobs the customer is trying to get done, the price they would pay, the size of the market, and the competitive landscape, then commit to a verdict you can defend with the evidence in front of you.
               </p>
               <p className="text-base leading-relaxed">
                 The goal is not to prove yourself right; it is to gather enough to make an honest call before you invest in a solution.

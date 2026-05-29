@@ -125,17 +125,10 @@ export default function CustomerSegmentPage() {
         <h3 className="mt-4 text-xl font-bold text-foreground">What will you do?</h3>
         <div className="flex flex-col gap-3 text-base">
           <div className="flex items-center gap-3">
-            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-800 text-white text-sm font-bold shrink-0">1</span>
+            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-800 text-white text-base font-bold shrink-0">1</span>
             <div>
               <p className="font-semibold text-foreground">Describe your customer</p>
-              <p className="text-base">Paint a clear picture of who experiences this problem, using the filters above to be as specific as possible.</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-            <span className="flex items-center justify-center w-8 h-8 rounded-full bg-emerald-800 text-white text-sm font-bold shrink-0">2</span>
-            <div>
-              <p className="font-semibold text-foreground">Estimate the segment size</p>
-              <p className="text-base">How many people fit this description? An order-of-magnitude is fine.</p>
+              <p className="text-base">Paint a clear picture of who experiences this problem, using the filters above to be as specific as possible. You will size the population later, on the market step.</p>
             </div>
           </div>
         </div>
@@ -145,7 +138,7 @@ export default function CustomerSegmentPage() {
         <div className="flex flex-col gap-2 items-center text-center">
           <h3 className="text-xl font-bold"><span className="text-primary">Your Turn:</span> Who is your customer?</h3>
           <p className="text-base max-w-xl">
-            Complete the two boxes below to describe your customer segment. Be as specific as you can, a clearer picture here makes every later step easier.
+            Describe your customer segment in the box below. Be as specific as you can: a clearer picture here makes every later step easier.
           </p>
         </div>
 
@@ -195,10 +188,6 @@ export default function CustomerSegmentPage() {
                           <div>
                             <span className="text-base font-semibold text-foreground">Customer Description</span>
                             <p className="mt-1 text-base text-foreground">{cs.customerDescription}</p>
-                          </div>
-                          <div>
-                            <span className="text-base font-semibold text-foreground">Estimated Segment Size</span>
-                            <p className="mt-1 text-base text-foreground">{cs.segmentSize}</p>
                           </div>
                           <div>
                             <span className="text-base font-semibold text-foreground">Why This Works</span>

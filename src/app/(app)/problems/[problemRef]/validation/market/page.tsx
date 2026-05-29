@@ -21,15 +21,15 @@ export default function MarketSizingPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={TrendingUp} iconBg="bg-secondary-brand">Size the total market (TAM and SAM)</CardTitle>
+        <CardTitle icon={TrendingUp} iconBg="bg-secondary-brand">Size the market</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-base">
           <p>
-            You have the price one customer would happily pay. This step layers the population on top to produce two figures: the total market (TAM) for the whole pie, and the reachable market (SAM) for the slice you can actually serve in your launch. The third figure, your realistic capture (SOM), comes from the competition step that follows.
+            You have the price one customer would happily pay. This step layers the population on top to produce two figures: the total market for the whole pie, and the reachable market for the slice you can actually serve in your launch. The third figure, your realistic share of the market, comes from the competition step that follows.
           </p>
           <p>
-            TAM is the entire population that has the problem, multiplied by the price. SAM filters that down by what you can physically deliver to: a launch region, a language, a customer size, a platform. SAM is not yet about whether you can win against competitors. Be generous with TAM, but be honest about SAM.
+            The total market is the entire population that has the problem, multiplied by the price. The reachable market filters that down by what you can physically deliver to: a launch region, a language, a customer size, a platform. It is not yet about whether you can win against competitors. Be generous with the total, but be honest about what you can reach.
           </p>
 
           <h3 className="mt-4 text-xl font-bold text-foreground">How to estimate each input on this page</h3>
@@ -57,24 +57,24 @@ export default function MarketSizingPage() {
                 <PieChart className="h-4 w-4 text-white" />
               </div>
               <div>
-                <p className="font-semibold text-foreground">Slice you can actually reach (for SAM)</p>
-                <p className="text-base">Of the global population above, what share can you serve in your launch? Filter on geography, language, business size, distribution channel: things that gate whether your product can physically reach a customer. Do not include competition yet. A focused launch usually reaches 10 to 40 percent of the global TAM.</p>
+                <p className="font-semibold text-foreground">Slice you can actually reach</p>
+                <p className="text-base">Of the global population above, what share can you serve in your launch? Filter on geography, language, business size, distribution channel: things that gate whether your product can physically reach a customer. Do not include competition yet. A focused launch usually reaches 10 to 40 percent of the total market.</p>
               </div>
             </div>
           </div>
           <p className="mt-2 text-base">
-            The panel below combines these inputs with the price from the previous step into TAM and SAM. If either looks implausibly large or vanishingly small, one of the inputs is almost certainly off. The price and the reachable share are usually the fastest to revisit.
+            The panel below combines these inputs with the price from the previous step into the total and reachable market figures. If either looks implausibly large or vanishingly small, one of the inputs is almost certainly off. The price and the reachable share are usually the fastest to revisit.
           </p>
 
           <h3 className="mt-4 text-xl font-bold text-foreground">What will you do?</h3>
           <p>
-            Enter how many customers have the problem in total, how often each one hits it, and the share you can realistically reach in your launch. The page then combines those with the price you captured to produce TAM and SAM. Treat both as a sense check, not as proof of demand: the next step will narrow SAM down to a realistic SOM based on the competition.
+            Enter how many customers have the problem in total, how often each one hits it, and the share you can realistically reach in your launch. The page then combines those with the price you captured to produce a total and a reachable market figure. Treat both as a sense check, not as proof of demand: the next step will narrow the reachable market down to a realistic share based on the competition.
           </p>
         </div>
 
         <hr className="border-border/40 my-4" />
 
-        <h3 className="mb-2 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> Estimate TAM and SAM</h3>
+        <h3 className="mb-2 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> Estimate the total and reachable market</h3>
 
         <Tabs defaultValue="strategy" className="flex flex-col gap-4">
           <TabsList className="self-center">
@@ -137,7 +137,7 @@ export default function MarketSizingPage() {
                         </p>
                       </div>
                       <div>
-                        <span className="text-base font-semibold text-foreground">Reachable share (for SAM)</span>
+                        <span className="text-base font-semibold text-foreground">Reachable share of the market</span>
                         <p className="mt-1 text-base text-foreground">
                           <span className="inline-block rounded bg-muted px-1.5 py-0.5 text-base font-semibold text-foreground mr-1">{cs.reachableShare.value}%</span>
                           {cs.reachableShare.detail}

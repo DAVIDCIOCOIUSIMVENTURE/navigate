@@ -13,7 +13,7 @@ import { DEFAULT_OBTAINABLE_SHARE, DEFAULT_REACHABLE_SHARE } from "@/types/valid
 import { cn } from "@/lib/utils"
 import {
   CheckCircle2, XCircle, HelpCircle, Users, RefreshCw, DollarSign, ArrowRightLeft, Target, Building2,
-  Calculator, AlertTriangle, PieChart, Heart, Briefcase, Eye, Plus, Trash2,
+  Calculator, AlertTriangle, PieChart, Heart, Briefcase, Eye, Plus, Trash2, Sparkles,
   type LucideIcon,
 } from "lucide-react"
 
@@ -88,7 +88,7 @@ function HowManyInput({
         <span className="text-base font-semibold text-white">How many customers have this problem</span>
       </div>
       {!readOnly && (
-        <p className="text-base text-white">The whole population that experiences this problem, before any filtering. Start from a public statistic (e.g. number of small businesses in the UK, annual home moves) and round generously. This number feeds the total market (TAM).</p>
+        <p className="text-base text-white">The whole population that experiences this problem, before any filtering. Start from a public statistic (e.g. number of small businesses in the UK, annual home moves) and round generously. This number feeds the total market figure.</p>
       )}
       <Input
         type="number"
@@ -203,10 +203,10 @@ function ReachableShareInput({
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">
         <PieChart className="h-3.5 w-3.5 text-white shrink-0" />
-        <span className="text-base font-semibold text-white">Slice you can actually reach (for SAM)</span>
+        <span className="text-base font-semibold text-white">Slice you can actually reach</span>
       </div>
       {!readOnly && (
-        <p className="text-base text-white">Of the total market above, how much could you serve in your launch regions and customer segments? You are filtering for things like geography, language, business size, or platform: not yet for the competition. A focused launch usually reaches 10 to 40 percent of the global TAM.</p>
+        <p className="text-base text-white">Of the total market above, how much could you serve in your launch regions and customer segments? You are filtering for things like geography, language, business size, or platform: not yet for the competition. A focused launch usually reaches 10 to 40 percent of the total market.</p>
       )}
       <div className="mt-2 flex flex-col gap-2">
         <div className="flex items-center gap-3">
@@ -239,10 +239,10 @@ function ObtainableShareInput({
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">
         <PieChart className="h-3.5 w-3.5 text-white shrink-0" />
-        <span className="text-base font-semibold text-white">Realistic share of the reachable market you can win (for SOM)</span>
+        <span className="text-base font-semibold text-white">Realistic share of the reachable market you can win</span>
       </div>
       {!readOnly && (
-        <p className="text-base text-white">Given the switching costs, the quality of existing options, and the size of the incumbents, what share of the reachable market (SAM) can you realistically capture in the first one to three years? A focused niche entrant typically captures 1 to 5 percent, a strong differentiated play 5 to 20 percent, and a dominant winner 20 to 40 percent.</p>
+        <p className="text-base text-white">Given the switching costs, the quality of existing options, and the size of the incumbents, what share of the reachable market can you realistically capture in the first one to three years? A focused niche entrant typically captures 1 to 5 percent, a strong differentiated play 5 to 20 percent, and a dominant winner 20 to 40 percent.</p>
       )}
       <div className="mt-2 flex flex-col gap-2">
         <div className="flex items-center gap-3">
@@ -474,6 +474,65 @@ function JobsToBeDoneSection({
   )
 }
 
+type JobKind = "functional" | "emotional" | "social"
+
+const INTENSITY_BADGE: Record<JobIntensity, string> = {
+  "": "bg-white/20 text-white",
+  mild: "bg-yellow-600 text-white",
+  strong: "bg-orange-700 text-white",
+  unbearable: "bg-red-800 text-white",
+}
+
+const JOB_KIND_META: Record<JobKind, { label: string; icon: LucideIcon }> = {
+  functional: { label: "Functional", icon: Briefcase },
+  emotional: { label: "Emotional", icon: Heart },
+  social: { label: "Social", icon: Eye },
+}
+
+function JobLine({
+  kind,
+  job,
+  prominent = false,
+}: {
+  kind: JobKind
+  job: Job
+  prominent?: boolean
+}) {
+  const meta = JOB_KIND_META[kind]
+  const Icon = meta.icon
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2 flex-wrap">
+        {job.intensity && (
+          <span
+            className={cn(
+              "inline-block rounded px-2 py-0.5 text-base font-semibold capitalize",
+              INTENSITY_BADGE[job.intensity],
+            )}
+          >
+            {job.intensity}
+          </span>
+        )}
+        <span className="inline-flex items-center gap-1.5 text-base text-white">
+          <Icon className="h-4 w-4" />
+          <span>{meta.label} job</span>
+        </span>
+      </div>
+      <p className={cn("italic text-white", prominent ? "text-xl font-semibold" : "text-base")}>
+        &ldquo;{job.text}&rdquo;
+      </p>
+    </div>
+  )
+}
+
+function listAllJobs(jobs: JobsToBeDone): { kind: JobKind; job: Job }[] {
+  return [
+    ...jobs.emotional.map((j) => ({ kind: "emotional" as const, job: j })),
+    ...jobs.social.map((j) => ({ kind: "social" as const, job: j })),
+    ...jobs.functional.map((j) => ({ kind: "functional" as const, job: j })),
+  ].filter(({ job }) => job.text.trim().length > 0)
+}
+
 function WorthSection({
   worthToThem,
   jobs,
@@ -486,16 +545,35 @@ function WorthSection({
   readOnly?: boolean
 }) {
   const top = strongestJob(jobs)
+  const allJobs = listAllJobs(jobs)
+  const otherJobs = top
+    ? allJobs.filter(({ kind, job }) => !(kind === top.kind && job.id === top.job.id))
+    : allJobs
 
   return (
     <div className="flex flex-col gap-6">
       {top && (
-        <div className="rounded-lg border border-white/20 bg-white/10 p-4 flex flex-col gap-1 text-base text-white">
-          <span className="text-base font-semibold text-white">Strongest pull from your jobs list</span>
-          <span className="text-base text-white">
-            <span className="capitalize">{top.job.intensity}</span> {top.kind} job: &quot;{top.job.text}&quot;
-          </span>
-          <span className="text-base text-white">Anchor the price on the strongest pull, not on the cost of building a feature. The bigger the emotional or social weight, the more a customer will pay to make it stop.</span>
+        <div className="rounded-xl border border-white/20 bg-white/10 p-5 flex flex-col gap-4 text-white">
+          <div className="flex items-center gap-2">
+            <Sparkles className="h-4 w-4 text-white shrink-0" />
+            <span className="text-base font-semibold text-white">Strongest pull from your jobs list</span>
+          </div>
+          <JobLine kind={top.kind} job={top.job} prominent />
+          <p className="text-base text-white">Anchor the price on this pull, not on the cost of building a feature. The bigger the emotional or social weight, the more a customer will pay to make it stop.</p>
+          {otherJobs.length > 0 && (
+            <Accordion type="single" collapsible className="-mb-2">
+              <AccordionItem value="other-jobs" className="border-t border-white/20">
+                <AccordionTrigger className="py-2 text-base font-medium text-white hover:no-underline [&>svg]:text-white">
+                  See the other jobs you captured ({otherJobs.length})
+                </AccordionTrigger>
+                <AccordionContent className="pb-2 pt-0 flex flex-col gap-4 text-white">
+                  {otherJobs.map(({ kind, job }) => (
+                    <JobLine key={`${kind}-${job.id}`} kind={kind} job={job} />
+                  ))}
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          )}
         </div>
       )}
 
@@ -782,14 +860,14 @@ function TamSamSomPanel({
       </div>
       {!readOnly && (
         <p className="text-base text-white">
-          TAM is the whole pie. SAM is the slice you can actually reach. SOM is what you could realistically capture given the competition. Treat these as sanity checks, not proof of demand.
+          The total market is the whole pie. The reachable market is the slice you can actually serve. The realistic share is what you could win out of that slice given the competition. Treat these as sanity checks, not proof of demand.
         </p>
       )}
 
       <div className="flex flex-col gap-3">
         {show.tam && (
           <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 flex flex-col gap-1 text-base text-white">
-            <span className="text-base uppercase tracking-wide text-white">Total addressable market (TAM)</span>
+            <span className="text-base uppercase tracking-wide text-white">Total market</span>
             <span className="text-xl font-bold">
               {ready ? `${formatNumber(tam, { currency })} ${unit}` : "Fill in customers and price to see this"}
             </span>
@@ -802,23 +880,23 @@ function TamSamSomPanel({
         )}
         {show.sam && (
           <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 flex flex-col gap-1 text-base text-white">
-            <span className="text-base uppercase tracking-wide text-white">Reachable market (SAM)</span>
+            <span className="text-base uppercase tracking-wide text-white">Reachable market</span>
             <span className="text-xl font-bold">
               {ready ? `${formatNumber(sam, { currency })} ${unit}` : "Fill in the inputs to see this"}
             </span>
             {ready && (
-              <span className="text-base text-white">TAM × {reachPct}% reachable share</span>
+              <span className="text-base text-white">Total market × {reachPct}% reachable share</span>
             )}
           </div>
         )}
         {show.som && (
           <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 flex flex-col gap-1 text-base text-white">
-            <span className="text-base uppercase tracking-wide text-white">Realistic capture (SOM)</span>
+            <span className="text-base uppercase tracking-wide text-white">Realistic share of the market</span>
             <span className="text-xl font-bold">
               {ready ? `${formatNumber(som, { currency })} ${unit}` : "Fill in the inputs to see this"}
             </span>
             {ready && (
-              <span className="text-base text-white">SAM × {obtainPct}% realistic capture</span>
+              <span className="text-base text-white">Reachable market × {obtainPct}% realistic share</span>
             )}
           </div>
         )}
@@ -830,9 +908,9 @@ function TamSamSomPanel({
             How is this calculated?
           </AccordionTrigger>
           <AccordionContent className="pb-2 pt-0 flex flex-col gap-2 text-white">
-            <div className="font-mono text-base">TAM = customers × frequency × price</div>
-            <div className="font-mono text-base">SAM = TAM × reachable share</div>
-            <div className="font-mono text-base">SOM = SAM × realistic capture</div>
+            <div className="font-mono text-base">Total market = customers × frequency × price</div>
+            <div className="font-mono text-base">Reachable market = Total market × reachable share</div>
+            <div className="font-mono text-base">Realistic share of the market = Reachable market × realistic share</div>
             <div className="text-base text-white">
               If frequency is left empty, it is treated as 1 (one-off purchase, like moving house).
             </div>
@@ -889,15 +967,12 @@ export function WorthStrategy({ readOnly = false }: { readOnly?: boolean }) {
 
   return (
     <div className="bg-secondary-brand rounded-xl p-8">
-      <div className="flex flex-col gap-6">
-        <p className="text-base font-medium text-white">What they would pay each time the problem hits</p>
-        <WorthSection
-          worthToThem={worthToThem}
-          jobs={jobsToBeDone}
-          setWorthToThem={setWorthToThem}
-          readOnly={readOnly}
-        />
-      </div>
+      <WorthSection
+        worthToThem={worthToThem}
+        jobs={jobsToBeDone}
+        setWorthToThem={setWorthToThem}
+        readOnly={readOnly}
+      />
     </div>
   )
 }
@@ -922,7 +997,7 @@ export function MarketSizingStrategy({ readOnly = false }: { readOnly?: boolean 
   return (
     <div className="bg-secondary-brand rounded-xl p-8">
       <div className="flex flex-col gap-6">
-        <p className="text-base font-medium text-white">Total market (TAM) and reachable slice (SAM)</p>
+        <p className="text-base font-medium text-white">Total market and the slice you can reach</p>
         <MarketSection
           howManyPeople={howManyPeople}
           howOften={howOften}
@@ -966,7 +1041,7 @@ export function CompetitionStrategy({ readOnly = false }: { readOnly?: boolean }
   return (
     <div className="bg-secondary-brand rounded-xl p-8">
       <div className="flex flex-col gap-6">
-        <p className="text-base font-medium text-white">Competitive landscape and realistic capture (SOM)</p>
+        <p className="text-base font-medium text-white">Competitive landscape and your realistic share</p>
         <CompetitionSection
           costOfSwitching={costOfSwitching}
           solutionEffectiveness={solutionEffectiveness}
@@ -1131,7 +1206,7 @@ function PitfallsCallout() {
       <div className="flex flex-col gap-1.5">
         <p className="font-semibold">Before you commit, check yourself against the common pitfalls</p>
         <ul className="list-disc pl-5 space-y-1 text-white">
-          <li>A large TAM is not the same as proven willingness to pay. Treat the price you captured as a hypothesis to test in real conversations.</li>
+          <li>A large total market is not the same as proven willingness to pay. Treat the price you captured as a hypothesis to test in real conversations.</li>
           <li>If you cannot name a specific customer who hit this problem in the last week, it is probably not as universal as it feels.</li>
           <li>Switching costs and incumbent reactions are usually one level worse than your gut estimate.</li>
           <li>If your notes only argue for your gut verdict, write the strongest case against it before deciding.</li>
@@ -1206,12 +1281,12 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
               signal={signals.jobs}
             />
             <MetricRow
-              label="Reachable share (for SAM)"
+              label="Reachable share of the market"
               icon={PieChart}
               value={`${reachPct}%`}
             />
             <MetricRow
-              label="Realistic capture (for SOM)"
+              label="Realistic share you can win"
               icon={PieChart}
               value={`${obtainPct}%`}
             />
@@ -1236,15 +1311,15 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
           </div>
           <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-base text-white">
             <div className="flex flex-col gap-1">
-              <span className="text-base uppercase tracking-wide text-white">TAM</span>
+              <span className="text-base uppercase tracking-wide text-white">Total market</span>
               <span className="text-xl font-bold">{ready ? `${formatNumber(tam, { currency })} ${unit}` : "Not enough data"}</span>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-base uppercase tracking-wide text-white">SAM</span>
+              <span className="text-base uppercase tracking-wide text-white">Reachable market</span>
               <span className="text-xl font-bold">{ready ? `${formatNumber(sam, { currency })} ${unit}` : "Not enough data"}</span>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-base uppercase tracking-wide text-white">SOM</span>
+              <span className="text-base uppercase tracking-wide text-white">Realistic share of the market</span>
               <span className="text-xl font-bold">{ready ? `${formatNumber(som, { currency })} ${unit}` : "Not enough data"}</span>
             </div>
           </div>

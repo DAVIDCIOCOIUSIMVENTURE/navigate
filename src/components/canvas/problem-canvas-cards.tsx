@@ -219,11 +219,11 @@ export function ProblemCanvasCards({
           <div className="flex flex-col gap-1">
             <MetricRow label="People affected" metric={va.howManyPeople} />
             <div className="flex justify-between gap-2">
-              <span>Reachable share (SAM)</span>
+              <span>Reachable share</span>
               <span className="font-medium">{va.reachableShare ?? 0}%</span>
             </div>
             <div className="flex justify-between gap-2">
-              <span>Realistic capture (SOM)</span>
+              <span>Realistic share</span>
               <span className="font-medium">{va.obtainableShare}%</span>
             </div>
           </div>

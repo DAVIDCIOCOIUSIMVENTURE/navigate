@@ -68,7 +68,7 @@ export default function WorthPage() {
 
           <h3 className="mt-4 text-xl font-bold text-foreground">What will you do?</h3>
           <p>
-            Enter the price a single customer would happily pay each time the problem hits, in the currency that matches them. This figure carries forward to the next step where you multiply it by the population to produce the TAM, so capture it with the same level of honesty you would use in front of a sceptical investor.
+            Enter the price a single customer would happily pay each time the problem hits, in the currency that matches them. This figure carries forward to the next step where you multiply it by the population to produce the total market figure, so capture it with the same level of honesty you would use in front of a sceptical investor.
           </p>
         </div>
 

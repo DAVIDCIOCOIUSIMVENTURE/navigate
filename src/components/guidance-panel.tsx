@@ -9,7 +9,7 @@ import {
   FileQuestion, Pencil, Package,
   Play, ToggleRight, Blocks, LayoutGrid, FileText, ArrowRight,
   GitFork, Heart, BarChart2, Target,
-  Users, MapPin, AlertTriangle, Briefcase, Filter,
+  Users, MapPin, AlertTriangle, Briefcase, Filter, Eye,
   Repeat, DollarSign, ArrowRightLeft, Wallet, PieChart,
   Lightbulb, HelpCircle,
   BookOpen, FlaskConical, Clock, Trophy, Sparkles,
@@ -301,7 +301,7 @@ const guidanceItems: GuidanceItem[] = [
             <ConceptCard icon={Target} label="Behaviour &amp; situation" description="What triggers the problem and when it tends to happen." tile="bg-indigo-800" border="border-indigo-800/20 bg-indigo-800/5" />
             <ConceptCard icon={Filter} label="Urgency &amp; willingness" description="How badly they need a solution and whether they already spend time or money fixing it." tile="bg-indigo-800" border="border-indigo-800/20 bg-indigo-800/5" />
           </div>
-          <p className="pt-1">Capture a written description plus an order-of-magnitude estimate of the segment size. The size figure flows through to the market sizing step later.</p>
+          <p className="pt-1">Capture a written description of who experiences the problem. The population figure is captured later, on the market sizing step.</p>
         </GuidanceSection>
         <GuidanceSection icon={Search} iconBg="bg-violet-800" title="Refine the problem">
           <p>Before exploring alternatives, dig into <Keyword>why</Keyword> the problem exists and <Keyword>who</Keyword> it affects. The <Keyword>Choose your refinement method</Keyword> step lets you pick one of three techniques; the next step is where you capture the actual analysis. The refinement output also surfaces later in solution discovery, so the work is reused.</p>
@@ -315,48 +315,59 @@ const guidanceItems: GuidanceItem[] = [
           <p>List how customers handle the problem today: existing tools and software, manual workarounds, hiring or outsourcing, or simply tolerating the pain. For each one, capture its specific shortcomings: where it falls short, what it costs, or what friction it adds. This grounds the problem in reality and reveals the gap a future solution would need to fill.</p>
           <p>Each existing solution exposes an <Keyword>Impact examples</Keyword> panel listing common areas where shortcomings hurt (time lost, money wasted, errors, frustration, churn, and more). Use it to quantify how much each existing solution actually costs the customer; this is where the old <Keyword>quantifiable impact</Keyword> work now lives.</p>
         </GuidanceSection>
-        <GuidanceSection icon={DollarSign} iconBg="bg-teal-700" title="How much is it worth">
-          <p>Before counting customers or annualising frequencies, be honest about the value of solving the problem each time it happens. Two figures are captured on this step; both feed directly into the market sizing calculation that follows.</p>
+        <GuidanceSection icon={Sparkles} iconBg="bg-rose-800" title="Jobs your customer is trying to get done">
+          <p>Before guessing a price, get a clear picture of what the customer is really hiring a solution to do. People do not buy products: they buy progress on a job. Split that job into three layers, because the strongest emotional or social pull is usually what justifies the price, not the tangible task.</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
-            <ConceptCard icon={Wallet} label="Money already spent" description="Subscriptions, contractors, late fines, or replacement parts. Revealed spend is the strongest evidence the problem is worth solving." tile="bg-teal-700" border="border-teal-700/20 bg-teal-700/5" />
-            <ConceptCard icon={Scale} label="Time, risk, &amp; missed value" description="Translate the soft costs into money: an hour of professional time, a missed sale, a delayed launch, or the expected cost of a bad outcome." tile="bg-teal-700" border="border-teal-700/20 bg-teal-700/5" />
-            <ConceptCard icon={DollarSign} label="Willingness to pay" description="What a customer would happily pay to make one occurrence go away, not what it would cost you to build a solution." tile="bg-teal-700" border="border-teal-700/20 bg-teal-700/5" />
-            <ConceptCard icon={PieChart} label="Obtainable share" description="The slice of the full market you can realistically capture. Niche entrants typically reach 1 to 5 percent, differentiated plays 5 to 20 percent, category winners 20 to 40 percent." tile="bg-teal-700" border="border-teal-700/20 bg-teal-700/5" />
+            <ConceptCard icon={Briefcase} label="What they need to get done" description="The tangible tasks, phrased as outcomes (e.g. complete the sale and the purchase on the same day, find a place inside budget)." tile="bg-emerald-800" border="border-emerald-800/20 bg-emerald-800/5" />
+            <ConceptCard icon={Heart} label="How they want to feel" description="The emotional pulls, rated mild, strong, or unbearable from what real customers have said (e.g. stop lying awake worrying the chain will collapse)." tile="bg-red-800" border="border-red-800/20 bg-red-800/5" />
+            <ConceptCard icon={Eye} label="How they want to be seen" description="The social pulls, rated the same way (e.g. not look disorganised in front of the estate agent)." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
           </div>
-          <p className="pt-1">A useful sense check: pick the lowest of the first three angles. The worth figure and the obtainable share both flow into the total addressable market calculation on the next step, so any change here will move that number directly.</p>
+          <p className="pt-1">The highest-intensity emotional or social job is carried forward to the price step as the <Keyword>strongest pull</Keyword>.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={DollarSign} iconBg="bg-teal-700" title="What they would pay to solve it">
+          <p>Anchor the price on the strongest pull from the jobs list, not on the cost of building a feature. The bigger the emotional or social weight, the more a customer will pay to make it stop. Cross-check the number against three angles:</p>
+          <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
+            <ConceptCard icon={Heart} label="Strongest job pull" description="The headline anchor. Strong or unbearable pulls can carry prices an order of magnitude above the tangible task alone." tile="bg-teal-700" border="border-teal-700/20 bg-teal-700/5" />
+            <ConceptCard icon={Wallet} label="Money already spent" description="Subscriptions, contractors, late fines, chain chasers, replacement parts. Revealed spend is the strongest sanity check on a number that came out of an emotional read." tile="bg-teal-700" border="border-teal-700/20 bg-teal-700/5" />
+            <ConceptCard icon={Scale} label="Hypothesis, not fact" description="Ask real customers at different price points what they would pay; the captured number is a starting point for those conversations, not the final answer." tile="bg-teal-700" border="border-teal-700/20 bg-teal-700/5" />
+          </div>
+          <p className="pt-1">A single currency-and-amount input on the step captures the price. It feeds directly into the market sizing calculation that follows.</p>
         </GuidanceSection>
         <GuidanceSection icon={TrendingUp} iconBg="bg-emerald-800" title="Size the market">
-          <p>Layer the population on top of the worth figure you just captured. Two inputs do most of the work, captured directly on the page:</p>
+          <p>Layer the population on top of the price. The step produces two figures: the <Keyword>total addressable market (TAM)</Keyword> for the whole pie, and the <Keyword>serviceable addressable market (SAM)</Keyword> for the slice you can actually serve in your launch.</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(180px,1fr))]">
-            <ConceptCard icon={Users} label="How many customers" description="The total population that fits your customer definition. Round generously; order of magnitude matters more than precision." tile="bg-emerald-800" border="border-emerald-800/20 bg-emerald-800/5" />
-            <ConceptCard icon={Repeat} label="How often" description="The natural cadence of the problem, picked from per-hour through per-year. Daily problems compound value quickly; annual ones need unusual pain." tile="bg-emerald-800" border="border-emerald-800/20 bg-emerald-800/5" />
+            <ConceptCard icon={Users} label="How many customers" description="The total population that has the problem. Round generously; order of magnitude matters more than precision." tile="bg-emerald-800" border="border-emerald-800/20 bg-emerald-800/5" />
+            <ConceptCard icon={Repeat} label="How often" description="How often each customer hits the problem. A one-off problem (like moving house) uses 1 per year; recurring problems use the natural cadence." tile="bg-emerald-800" border="border-emerald-800/20 bg-emerald-800/5" />
+            <ConceptCard icon={PieChart} label="Reachable share" description="Of the global population, what share can you serve in your launch? Filter on geography, language, business size, distribution channel: not yet on competition. A focused launch usually reaches 10 to 40 percent." tile="bg-emerald-800" border="border-emerald-800/20 bg-emerald-800/5" />
           </div>
-          <p className="pt-1">Below the inputs a <Keyword>total addressable market</Keyword> calculation combines all four figures: <Keyword>customers × frequency × worth per occurrence × obtainable share</Keyword>. The result is in the same cadence you picked for frequency (so if you chose &ldquo;per year&rdquo;, the TAM is a yearly figure). Treat it as a sense check, not a forecast: an implausibly large or small number usually means one input is off, and the worth figure or share are usually the fastest to revisit.</p>
+          <p className="pt-1">TAM is <Keyword>customers × frequency × price</Keyword>. SAM is <Keyword>TAM × reachable share</Keyword>. The third figure, the serviceable obtainable market (SOM), comes from the competition step that follows. Treat all of these as sense checks, not forecasts.</p>
         </GuidanceSection>
         <GuidanceSection icon={Building2} iconBg="bg-yellow-600" title="Assess the competition">
-          <p>A big market alone is not enough. The next question is whether you can realistically win in it. Three signals together tell you how hard the path will be:</p>
+          <p>A big market alone is not enough. The final question is what share of SAM you can realistically win. Three signals together tell you how hard the path will be, and they feed the realistic-share slider that produces the SOM:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(180px,1fr))]">
             <ConceptCard icon={ArrowRightLeft} label="Cost of switching" description="The time, money, and habit-change a customer must give up to leave their current setup." tile="bg-yellow-600" border="border-yellow-600/20 bg-yellow-600/5" />
             <ConceptCard icon={Target} label="Existing solution effectiveness" description="How well current options actually work, from terrible through excellent." tile="bg-yellow-600" border="border-yellow-600/20 bg-yellow-600/5" />
             <ConceptCard icon={Building2} label="Competitor size" description="How well-funded the incumbents are, from micro players up to giants." tile="bg-yellow-600" border="border-yellow-600/20 bg-yellow-600/5" />
+            <ConceptCard icon={PieChart} label="Realistic share" description="Out of SAM, what share you could plausibly win in the first one to three years. Most early ventures land between 5 and 15 percent." tile="bg-yellow-600" border="border-yellow-600/20 bg-yellow-600/5" />
           </div>
-          <p className="pt-1">Strong opportunities tend to combine low or moderate switching costs, average-or-worse alternatives, and competitors that are small or distracted. Capture supporting evidence in the <Keyword>notes</Keyword> field on this step: it carries through to the verdict and into the summary.</p>
+          <p className="pt-1">Strong opportunities combine low or moderate switching costs, average-or-worse alternatives, and competitors that are small or distracted. <Keyword>SOM = SAM × realistic share</Keyword>.</p>
         </GuidanceSection>
         <GuidanceSection icon={ShieldCheck} iconBg="bg-destructive" title="Record your verdict">
-          <p>The verdict step pulls everything together. The summary card shows each captured factor (the three market signals and the three competition signals) with a colour-coded dot (green favourable, amber neutral, red unfavourable) and the total addressable market figure from the market step:</p>
+          <p>The verdict step pulls everything together. The summary card shows each captured factor (three market signals, the strongest job pull, and three competition signals) with a colour-coded dot (green favourable, amber neutral, red unfavourable) and a stack of the three market headlines (TAM, SAM, SOM) from the earlier steps:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(220px,1fr))]">
-            <ConceptCard icon={Scale} label="Lean indicator" description="Once at least four of the six signals are captured, a banner shows whether the evidence leans toward Valid, Unsure, or Invalid." tile="bg-destructive" border="border-destructive/20 bg-destructive/5" />
-            <ConceptCard icon={Calculator} label="Total addressable market is a sanity check" description="A large multiplied number is not the same as proven willingness to pay. Read the underlying signals before trusting the headline." tile="bg-destructive" border="border-destructive/20 bg-destructive/5" />
+            <ConceptCard icon={Scale} label="Lean indicator" description="Once at least five of the seven signals are captured, a banner shows whether the evidence leans toward Valid, Unsure, or Invalid." tile="bg-destructive" border="border-destructive/20 bg-destructive/5" />
+            <ConceptCard icon={Calculator} label="Market headlines are sanity checks" description="A large TAM is not the same as proven willingness to pay. Read the underlying signals before trusting the headline." tile="bg-destructive" border="border-destructive/20 bg-destructive/5" />
           </div>
           <p className="pt-1">Then commit to one of three verdicts: <Keyword>Valid</Keyword>, <Keyword>Unsure</Keyword>, or <Keyword>Invalid</Keyword>. The dot colours and lean banner are heuristics, not rules; if you disagree with how a signal is being read, override it in the notes and explain why. Use the notes to record the two or three signals that drove the call plus the strongest counter-argument you considered.</p>
         </GuidanceSection>
         <GuidanceSection icon={FileText} iconBg="bg-green-800" title="Summary &amp; next steps">
-          <p>A read-only overview of everything you have captured: the customer definition, refinement work, existing solutions and their shortcomings, the worth and market figures, the competitive picture, and your verdict with notes. Use <Keyword>Open Problem to edit</Keyword> to jump back to the editable problem page if anything needs revising before you move on to solution discovery.</p>
+          <p>A read-only overview of everything you have captured: the customer definition, refinement work, existing solutions and their shortcomings, the jobs list, the price, the market figures, the competitive picture, and your verdict with notes. Use <Keyword>Open Problem to edit</Keyword> to jump back to the editable problem page if anything needs revising before you move on to solution discovery.</p>
         </GuidanceSection>
         <TipCallout items={[
           "Be honest about the evidence: weak validation data is a signal, not a failure",
           "Existing solutions with many shortcomings suggest a genuine gap in the market",
-          "If you cannot justify the worth or obtainable share to a sceptical friend, slide them down",
+          "Anchor the price on the strongest emotional or social job, not on the cost of building a feature",
+          "If you cannot justify the reachable share or realistic share to a sceptical friend, slide them down",
           "Refinement work done here flows into solution discovery, so do not skip it",
           "You can validate multiple problems and compare verdicts before committing to one",
         ]} />

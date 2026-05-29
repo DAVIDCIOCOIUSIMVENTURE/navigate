@@ -237,7 +237,7 @@ introduction → customer → choose-refinement → refine → existing-solution
 jobs-to-be-done → worth → market → competition → verdict → summary
 ```
 
-The pricing / market-sizing arc is built around jobs-to-be-done feeding TAM / SAM / SOM:
+The pricing / market-sizing arc is built around jobs-to-be-done feeding TAM / SAM / SOM. **In the UI those acronyms are not used.** Surface them as: TAM is "total market", SAM is "reachable market", SOM is "realistic share of the market". The guidance side-panel is the one place where TAM/SAM/SOM may appear as educational reference.
 
 * `jobs-to-be-done`: three lists (functional / emotional / social) of `Job = { id, text, intensity }`. Emotional and social jobs carry a `mild | strong | unbearable` intensity. The strongest emotional or social pull anchors the price on the next step and replaces the dropped `emotional-impact` step.
 * `worth`: a single price the customer would happily pay each time the problem hits, anchored on the strongest job. Captured as `validationAssessment.worthToThem`.

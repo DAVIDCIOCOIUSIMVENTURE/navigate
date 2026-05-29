@@ -143,13 +143,13 @@ function AssessmentSection({ assessment }: { assessment: ValidationAssessment })
           ))}
           {showReach && (
             <div className="text-base">
-              <p>Reachable share (for SAM)</p>
+              <p>Reachable share of the market</p>
               <p className="font-medium">{reachPct}%</p>
             </div>
           )}
           {showObtain && (
             <div className="text-base">
-              <p>Realistic capture (for SOM)</p>
+              <p>Realistic share you can win</p>
               <p className="font-medium">{obtainPct}%</p>
             </div>
           )}

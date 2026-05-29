@@ -21,15 +21,15 @@ export default function CompetitionPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={Building2} iconBg="bg-secondary-brand">Assess the competition (SOM)</CardTitle>
+        <CardTitle icon={Building2} iconBg="bg-secondary-brand">Assess the competition</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-base">
           <p>
-            You have a reachable market (SAM). The final question is what share of it you can realistically win, given that most problems are already being addressed (well or badly) by someone, and customers have already made choices about how to live with them. The output of this step is your realistic capture (SOM).
+            You have a reachable market. The final question is what share of it you can realistically win, given that most problems are already being addressed (well or badly) by someone, and customers have already made choices about how to live with them. The output of this step is your realistic share of the market.
           </p>
           <p>
-            Three angles tell you most of what you need: how hard it is for customers to leave their current setup, how good the existing options actually are, and how much firepower the incumbents bring. Those three feed the realistic-capture slider at the bottom, which multiplies your SAM down to a SOM.
+            Three angles tell you most of what you need: how hard it is for customers to leave their current setup, how good the existing options actually are, and how much firepower the incumbents bring. Those three feed the realistic-share slider at the bottom, which multiplies the reachable market down to your realistic share.
           </p>
           <h3 className="mt-4 text-xl font-bold text-foreground">How to read each signal</h3>
           <div className={cn("grid gap-3", containerSize === "narrow" ? "grid-cols-1" : "grid-cols-3")}>
@@ -65,26 +65,26 @@ export default function CompetitionPage() {
             Strong opportunities tend to combine low or moderate switching costs, average-or-worse existing solutions, and competitors that are either small or distracted by adjacent markets. If all three signals point against you, that is your cue to rethink the problem rather than push harder.
           </p>
 
-          <h3 className="mt-4 text-xl font-bold text-foreground">Turning the three signals into a SOM</h3>
+          <h3 className="mt-4 text-xl font-bold text-foreground">Turning the three signals into a realistic share</h3>
           <div className="flex items-start gap-3">
             <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary shrink-0 mt-0.5">
               <PieChart className="h-4 w-4 text-white" />
             </div>
             <div>
               <p className="font-semibold text-foreground">Realistic share of the reachable market you can capture</p>
-              <p className="text-base">The slider on this page is your honest read of how much of SAM you can win in the first one to three years given the three signals above. A focused niche entrant typically reaches 1 to 5 percent, a strong differentiated play 5 to 20 percent, and a dominant winner 20 to 40 percent. Most early ventures land in the 5 to 15 percent band. If you cannot defend a higher number to a sceptical friend, slide it down.</p>
+              <p className="text-base">The slider on this page is your honest read of how much of the reachable market you can win in the first one to three years given the three signals above. A focused niche entrant typically reaches 1 to 5 percent, a strong differentiated play 5 to 20 percent, and a dominant winner 20 to 40 percent. Most early ventures land in the 5 to 15 percent band. If you cannot defend a higher number to a sceptical friend, slide it down.</p>
             </div>
           </div>
 
           <h3 className="mt-4 text-xl font-bold text-foreground">What will you do?</h3>
           <p>
-            Pick the level that best describes each of the three signals: cost of switching, existing solution effectiveness, and competitor size. Then set the realistic-capture slider for what you can win out of SAM. The panel below combines them into your SOM, which carries forward to the verdict step.
+            Pick the level that best describes each of the three signals: cost of switching, existing solution effectiveness, and competitor size. Then set the realistic-share slider for what you can win out of the reachable market. The panel below combines them into the realistic share of the market, which carries forward to the verdict step.
           </p>
         </div>
 
         <hr className="border-border/40 my-4" />
 
-        <h3 className="mb-2 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> Set the competitive read and SOM</h3>
+        <h3 className="mb-2 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> Set the competitive read and your realistic share</h3>
 
         <Tabs defaultValue="strategy" className="flex flex-col gap-4">
           <TabsList className="self-center">
@@ -99,7 +99,7 @@ export default function CompetitionPage() {
           <TabsContent value="case-studies">
             <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
               <p className="text-base text-foreground">
-                See how successful companies read the competitive landscape and translated it into a realistic capture share.
+                See how successful companies read the competitive landscape and translated it into a realistic share they could win.
               </p>
               <Tabs defaultValue={VALIDATE_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
                 <TabsList className="self-center bg-background">
@@ -163,7 +163,7 @@ export default function CompetitionPage() {
                         </p>
                       </div>
                       <div>
-                        <span className="text-base font-semibold text-foreground">Realistic capture (SOM)</span>
+                        <span className="text-base font-semibold text-foreground">Realistic share you can win</span>
                         <p className="mt-1 text-base text-foreground">
                           <span className="inline-block rounded bg-muted px-1.5 py-0.5 text-base font-semibold text-foreground mr-1">{cs.obtainableShare.value}%</span>
                           {cs.obtainableShare.detail}
