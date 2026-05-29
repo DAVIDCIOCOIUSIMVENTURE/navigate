@@ -1,13 +1,24 @@
 import { Mail, Notebook, type LucideIcon } from "lucide-react"
 
+export type CaseStudyJob = {
+  text: string
+  intensity: "mild" | "strong" | "unbearable"
+}
+
 export type ValidateCaseStudy = {
   company: string
   icon: LucideIcon
   iconBg: string
+  jobs: {
+    functional: string[]
+    emotional: CaseStudyJob[]
+    social: CaseStudyJob[]
+  }
   howManyPeople: { value: number; detail: string }
   howOften: { value: number; unit: string; detail: string }
   worthToThem: { value: number; unit: string; detail: string }
-  emotionalImpact: { level: "mild" | "moderate" | "strong" | "severe" | "unbearable"; detail: string }
+  reachableShare: { value: number; detail: string }
+  obtainableShare: { value: number; detail: string }
   costOfSwitching: { level: "none" | "low" | "medium" | "high" | "prohibitive"; detail: string }
   solutionEffectiveness: { level: "terrible" | "poor" | "average" | "good" | "excellent"; detail: string }
   competitorSize: { level: "micro" | "small" | "medium" | "large" | "giant"; detail: string }
@@ -20,23 +31,41 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
     company: "Mailchimp (early days)",
     icon: Mail,
     iconBg: "bg-yellow-500",
+    jobs: {
+      functional: [
+        "Send a campaign to a customer list without exposing addresses.",
+        "See whether anyone opened or clicked the last campaign.",
+        "Schedule a recurring newsletter without thinking about it each week.",
+      ],
+      emotional: [
+        { text: "Stop dreading hitting send on the next BCC list.", intensity: "strong" },
+        { text: "Feel like a legitimate business, not someone fumbling through a workaround.", intensity: "strong" },
+      ],
+      social: [
+        { text: "Not look amateur to customers when an email goes out.", intensity: "strong" },
+      ],
+    },
     howManyPeople: {
       value: 30000000,
       detail: "~30 million small businesses in the US alone, most with no email marketing tool at all.",
     },
     howOften: {
       value: 2,
-      unit: "times per week",
+      unit: "per week",
       detail: "Small business owners need to communicate with customers weekly: promotions, updates, newsletters. This is a recurring, ongoing need, not a one-off.",
     },
     worthToThem: {
       value: 20,
       unit: "USD per month",
-      detail: "Each email campaign could drive $50-500 in direct sales for a small shop. Businesses were willing to pay $10-30/month, modest individually but massive at scale.",
+      detail: "Each email campaign could drive $50-500 in direct sales for a small shop. Businesses were willing to pay $10-30/month, anchored on the strong emotional pull of not looking unprofessional.",
     },
-    emotionalImpact: {
-      level: "strong",
-      detail: "Owners hated the BCC-list workaround: a single mistake exposed their entire customer list, made the shop look unprofessional, and left them apologising to angry recipients. Every campaign carried a low-level dread of getting it wrong, which is exactly the kind of recurring anxiety customers will pay a small monthly fee to make disappear.",
+    reachableShare: {
+      value: 35,
+      detail: "Initially launchable to English-speaking small businesses with internet access and a customer list, roughly a third of the global TAM.",
+    },
+    obtainableShare: {
+      value: 10,
+      detail: "Realistic capture in the early years given that Constant Contact and AWeber already had distribution to the mid-market.",
     },
     costOfSwitching: {
       level: "none",
@@ -52,29 +81,47 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
     },
     verdict: "Valid: Worth Solving",
     reasoning:
-      "Huge underserved audience with a frequent, recurring need and clear willingness to pay a small amount. The opportunity was not in high per-customer revenue but in the sheer volume of businesses that had zero solution. Mailchimp validated this by offering a free tier and watching organic growth explode.",
+      "Huge underserved audience with a frequent, recurring need and a strong emotional pull to stop looking amateur. The opportunity was not in high per-customer revenue but in the sheer volume of businesses that had zero solution. Mailchimp validated this by offering a free tier and watching organic growth explode.",
   },
   {
     company: "Notion (early adopter phase)",
     icon: Notebook,
     iconBg: "bg-slate-700",
+    jobs: {
+      functional: [
+        "Keep notes, tasks, and docs in one place instead of five.",
+        "Share a single source of truth with the rest of the team.",
+        "Stop losing work to sync conflicts across tools.",
+      ],
+      emotional: [
+        { text: "Stop feeling overwhelmed by tool fragmentation every morning.", intensity: "unbearable" },
+        { text: "Feel in control of the team's knowledge instead of chasing it.", intensity: "strong" },
+      ],
+      social: [
+        { text: "Be seen as the person who finally fixed the team's chaos.", intensity: "strong" },
+      ],
+    },
     howManyPeople: {
       value: 50000000,
       detail: "~50 million knowledge workers globally using 3+ disconnected productivity tools daily.",
     },
     howOften: {
       value: 30,
-      unit: "times per day",
+      unit: "per day",
       detail: "Tool-switching happens dozens of times per day. The friction is constant: every time someone needs to find a note, check a task, or update a doc, they hit this problem.",
     },
     worthToThem: {
       value: 15,
       unit: "USD per user per month",
-      detail: "Teams were already paying $10-30/user/month across multiple tools (Trello, Evernote, Google Workspace). Consolidating into one tool did not necessarily cost more, the value was in time saved and reduced complexity.",
+      detail: "Teams were already paying $10-30/user/month across multiple tools (Trello, Evernote, Google Workspace). The unbearable emotional pull is what justified consolidating: the cost saving alone would not have moved them.",
     },
-    emotionalImpact: {
-      level: "severe",
-      detail: "Knowledge workers described the fragmentation as a constant low-grade rage: docs scattered across five tools, the same question answered three times in three places, lost work after a sync conflict. Power users were the loudest, evangelising Notion to their teams because the daily friction had become genuinely demoralising, not just inefficient.",
+    reachableShare: {
+      value: 25,
+      detail: "Initially launchable to English-speaking knowledge workers in mid-sized tech and creative teams. Larger enterprises had procurement cycles Notion could not crack early on.",
+    },
+    obtainableShare: {
+      value: 7,
+      detail: "A realistic capture given Google Workspace and Microsoft were already in most of those teams. Power-user evangelism made conversion cheap inside teams, but cross-team rollout was slow.",
     },
     costOfSwitching: {
       level: "high",
@@ -90,6 +137,6 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
     },
     verdict: "Valid: Worth Solving",
     reasoning:
-      "The combination of a massive audience, extremely high frequency, and clear existing spend made this a strong opportunity. Notion validated it by seeing power users organically convert their entire teams, the problem was painful enough that individuals championed the switch without top-down mandates.",
+      "The combination of a massive audience, extremely high frequency, and an unbearable emotional job made this a strong opportunity. Notion validated it by seeing power users organically convert their entire teams, the problem was painful enough that individuals championed the switch without top-down mandates.",
   },
 ]

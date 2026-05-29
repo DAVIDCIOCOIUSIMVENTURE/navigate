@@ -45,10 +45,10 @@ export default function VerdictPage() {
           </div>
           <h3 className="mt-4 text-xl font-bold text-foreground">How to weigh the factors together</h3>
           <p>
-            The seven factors split into three groups. The market sizing inputs (how many, how often, how much) tell you whether the prize is worth pursuing. Emotional impact tells you how badly the customer wants the pain to stop, which often unlocks willingness to pay that the cash number alone misses. The competitive inputs (cost of switching, existing solution effectiveness, competitor size) tell you whether you can realistically capture the market. A strong opportunity needs at least decent scores across the groups: a huge market you cannot win is no better than a small market you can dominate, and a market with no emotional pull rarely converts however large it looks.
+            The seven factors split into three groups. The market sizing inputs (how many, how often, how much) tell you whether the prize is worth pursuing. The strongest job pull tells you how badly the customer wants progress, which often unlocks willingness to pay that the cash number alone misses. The competitive inputs (cost of switching, existing solution effectiveness, competitor size) tell you whether you can realistically capture the market. A strong opportunity needs at least decent scores across the groups: a huge TAM you cannot win is no better than a small market you can dominate, and a market with no emotional or social pull rarely converts however large it looks.
           </p>
           <p>
-            The total addressable market figure is a sanity check, not the verdict. A very large total addressable market with no demonstrated willingness to pay is a mirage, the arithmetic is real but the assumption that customers will hand over that money is not. Equally, a modest total addressable market is fine if willingness to pay is rock-solid and the competitive landscape is friendly.
+            TAM, SAM, and SOM are sanity checks, not the verdict. A very large TAM with no demonstrated willingness to pay is a mirage, the arithmetic is real but the assumption that customers will hand over that money is not. Equally, a modest TAM is fine if willingness to pay is rock-solid, SAM is reachable, and SOM looks defensible against the competition.
           </p>
           <p>
             When signals point in different directions, weight evidence over guesses. A &quot;large competitor&quot; you confirmed by reading their financials is worth more than a &quot;weekly frequency&quot; you wrote down without talking to anyone. If your strongest negative signal comes from data and your strongest positive comes from intuition, the data should usually win.
@@ -62,7 +62,7 @@ export default function VerdictPage() {
               </div>
               <div>
                 <p className="font-semibold text-foreground">Lean Valid: the prize and the path both look clear</p>
-                <p className="text-base">A market in the tens of thousands or more, weekly-or-more frequency, customers already paying for workarounds, a strong emotional pull on the customer, low-to-medium switching costs, average-or-worse alternatives, and competitors that are small or distracted. You should be able to point to at least five favourable signals out of seven, and any negatives should be ones you can plausibly work around.</p>
+                <p className="text-base">A market in the tens of thousands or more, weekly-or-more frequency (or a high-value one-off), customers already paying for workarounds, at least one strong or unbearable emotional or social pull, low-to-medium switching costs, average-or-worse alternatives, and competitors that are small or distracted. You should be able to point to at least five favourable signals out of seven, and any negatives should be ones you can plausibly work around.</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -80,7 +80,7 @@ export default function VerdictPage() {
               </div>
               <div>
                 <p className="font-semibold text-foreground">Lean Invalid: the evidence is stacked against pursuing this</p>
-                <p className="text-base">A small or rare market, low willingness to pay, mild emotional impact, effective incumbents, high switching costs, or any combination thereof. A single bad signal rarely kills a problem, but four or five together usually do. Calling a problem invalid is a feature, not a failure: it frees you to look for a stronger one rather than spend months pushing uphill against the data.</p>
+                <p className="text-base">A small or rare market, low willingness to pay, only mild emotional or social pulls, effective incumbents, high switching costs, or any combination thereof. A single bad signal rarely kills a problem, but four or five together usually do. Calling a problem invalid is a feature, not a failure: it frees you to look for a stronger one rather than spend months pushing uphill against the data.</p>
               </div>
             </div>
           </div>
@@ -172,9 +172,11 @@ export default function VerdictPage() {
                         </ul>
                       </div>
                       <div>
-                        <span className="text-base font-semibold text-foreground">Competitive signals</span>
+                        <span className="text-base font-semibold text-foreground">Jobs and competitive signals</span>
                         <ul className="mt-1 text-base text-foreground list-disc pl-5 space-y-1">
-                          <li>Emotional impact: <span className="capitalize">{cs.emotionalImpact.level}</span></li>
+                          {cs.jobs.emotional[0] && (
+                            <li>Strongest emotional pull: <span className="capitalize">{cs.jobs.emotional[0].intensity}</span> ({cs.jobs.emotional[0].text})</li>
+                          )}
                           <li>Cost of switching: <span className="capitalize">{cs.costOfSwitching.level}</span></li>
                           <li>Solution effectiveness: <span className="capitalize">{cs.solutionEffectiveness.level}</span></li>
                           <li>Competitor size: <span className="capitalize">{cs.competitorSize.level}</span></li>

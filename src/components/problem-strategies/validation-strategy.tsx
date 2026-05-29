@@ -2,17 +2,18 @@
 
 import { useEffect, useRef, useState } from "react"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
-import type { ValidationMetric } from "@/types/validation"
-import { DEFAULT_OBTAINABLE_SHARE } from "@/types/validation"
+import type { Job, JobIntensity, JobsToBeDone, ValidationMetric } from "@/types/validation"
+import { DEFAULT_OBTAINABLE_SHARE, DEFAULT_REACHABLE_SHARE } from "@/types/validation"
 import { cn } from "@/lib/utils"
 import {
   CheckCircle2, XCircle, HelpCircle, Users, RefreshCw, DollarSign, ArrowRightLeft, Target, Building2,
-  Calculator, AlertTriangle, PieChart, Heart,
+  Calculator, AlertTriangle, PieChart, Heart, Briefcase, Eye, Plus, Trash2,
   type LucideIcon,
 } from "lucide-react"
 
@@ -36,6 +37,29 @@ const CURRENCY_OPTIONS = [
   "CNY", "INR", "BRL", "KRW", "SEK", "NOK", "DKK",
   "NZD", "SGD", "HKD", "MXN", "ZAR", "PLN",
 ]
+
+const INTENSITY_OPTIONS: JobIntensity[] = ["mild", "strong", "unbearable"]
+const INTENSITY_RANK: Record<JobIntensity, number> = {
+  "": 0,
+  mild: 1,
+  strong: 2,
+  unbearable: 3,
+}
+
+function nextJobId(jobs: Job[]): number {
+  return jobs.reduce((max, j) => Math.max(max, j.id), 0) + 1
+}
+
+function strongestJob(jobs: JobsToBeDone): { kind: "emotional" | "social"; job: Job } | null {
+  const candidates: { kind: "emotional" | "social"; job: Job }[] = [
+    ...jobs.emotional.map((j) => ({ kind: "emotional" as const, job: j })),
+    ...jobs.social.map((j) => ({ kind: "social" as const, job: j })),
+  ]
+  const ranked = candidates
+    .filter((c) => c.job.text.trim().length > 0 && c.job.intensity !== "")
+    .sort((a, b) => INTENSITY_RANK[b.job.intensity] - INTENSITY_RANK[a.job.intensity])
+  return ranked[0] ?? null
+}
 
 function HowManyInput({
   metric,
@@ -61,15 +85,15 @@ function HowManyInput({
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">
         <Users className="h-3.5 w-3.5 text-white shrink-0" />
-        <span className="text-base font-semibold text-white">How many customers</span>
+        <span className="text-base font-semibold text-white">How many customers have this problem</span>
       </div>
       {!readOnly && (
-        <p className="text-base text-white">Estimate the total number of people who experience this problem. Think about your target market segment and how widespread the issue is.</p>
+        <p className="text-base text-white">The whole population that experiences this problem, before any filtering. Start from a public statistic (e.g. number of small businesses in the UK, annual home moves) and round generously. This number feeds the total market (TAM).</p>
       )}
       <Input
         type="number"
-        placeholder="e.g. 10000"
-        className="mt-2 h-8 text-base w-28 bg-white border-white text-foreground read-only:cursor-default"
+        placeholder="e.g. 1100000"
+        className="mt-2 h-8 text-base w-32 bg-white border-white text-foreground read-only:cursor-default"
         value={readOnly ? (metric.value ?? "") : localValue}
         onChange={(e) => setLocalValue(e.target.value)}
         readOnly={readOnly}
@@ -102,13 +126,13 @@ function FrequencyInput({
     <div className="mt-2 flex gap-2">
       <Input
         type="number"
-        placeholder="e.g. 5"
+        placeholder="e.g. 1"
         className="h-8 text-base w-28 bg-white border-white text-foreground read-only:cursor-default"
         value={readOnly ? (metric.value ?? "") : localValue}
         onChange={(e) => setLocalValue(e.target.value)}
         readOnly={readOnly}
       />
-      <Select value={metric.unit || "per day"} onValueChange={(val) => onChange({ unit: val })} disabled={readOnly}>
+      <Select value={metric.unit || "per year"} onValueChange={(val) => onChange({ unit: val })} disabled={readOnly}>
         <SelectTrigger className="h-8 text-base w-40 bg-white border-white text-foreground">
           <SelectValue placeholder="Frequency" />
         </SelectTrigger>
@@ -146,7 +170,7 @@ function CurrencyInput({
     <div className="mt-2 flex gap-2">
       <Input
         type="number"
-        placeholder="e.g. 50"
+        placeholder="e.g. 1500"
         className="h-8 text-base w-28 bg-white border-white text-foreground read-only:cursor-default"
         value={readOnly ? (metric.value ?? "") : localValue}
         onChange={(e) => setLocalValue(e.target.value)}
@@ -166,6 +190,42 @@ function CurrencyInput({
   )
 }
 
+function ReachableShareInput({
+  value,
+  onChange,
+  readOnly,
+}: {
+  value: number
+  onChange: (val: number) => void
+  readOnly?: boolean
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <PieChart className="h-3.5 w-3.5 text-white shrink-0" />
+        <span className="text-base font-semibold text-white">Slice you can actually reach (for SAM)</span>
+      </div>
+      {!readOnly && (
+        <p className="text-base text-white">Of the total market above, how much could you serve in your launch regions and customer segments? You are filtering for things like geography, language, business size, or platform: not yet for the competition. A focused launch usually reaches 10 to 40 percent of the global TAM.</p>
+      )}
+      <div className="mt-2 flex flex-col gap-2">
+        <div className="flex items-center gap-3">
+          <Slider
+            value={[value]}
+            onValueChange={(vals) => onChange(vals[0])}
+            min={0}
+            max={100}
+            step={1}
+            disabled={readOnly}
+            className="max-w-md"
+          />
+          <span className="text-base font-semibold text-white w-14 text-right">{value}%</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function ObtainableShareInput({
   value,
   onChange,
@@ -179,10 +239,10 @@ function ObtainableShareInput({
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">
         <PieChart className="h-3.5 w-3.5 text-white shrink-0" />
-        <span className="text-base font-semibold text-white">Realistic share of the market you can capture</span>
+        <span className="text-base font-semibold text-white">Realistic share of the reachable market you can win (for SOM)</span>
       </div>
       {!readOnly && (
-        <p className="text-base text-white">Even a strong product rarely wins the whole market. Pick the slice you can realistically reach in the first few years: a focused niche entrant typically captures 1 to 5 percent, a strong differentiated play 5 to 20 percent, and a dominant winner 20 to 40 percent.</p>
+        <p className="text-base text-white">Given the switching costs, the quality of existing options, and the size of the incumbents, what share of the reachable market (SAM) can you realistically capture in the first one to three years? A focused niche entrant typically captures 1 to 5 percent, a strong differentiated play 5 to 20 percent, and a dominant winner 20 to 40 percent.</p>
       )}
       <div className="mt-2 flex flex-col gap-2">
         <div className="flex items-center gap-3">
@@ -198,40 +258,257 @@ function ObtainableShareInput({
           <span className="text-base font-semibold text-white w-14 text-right">{value}%</span>
         </div>
         {!readOnly && (
-          <p className="text-base text-white">A higher percentage means you expect to win more of the addressable market. Be conservative: most early-stage ventures land in the 5 to 15 percent range.</p>
+          <p className="text-base text-white">Most early-stage ventures land in the 5 to 15 percent range. If you cannot defend a higher number to a sceptical friend, slide it down.</p>
         )}
       </div>
     </div>
   )
 }
 
-function WorthSection({
-  worthToThem,
-  obtainableShare,
-  setWorthToThem,
-  setObtainableShare,
+function JobRow({
+  job,
+  onChange,
+  onRemove,
+  withIntensity,
+  placeholder,
   readOnly,
 }: {
-  worthToThem: ValidationMetric
-  obtainableShare: number
-  setWorthToThem: (patch: Partial<ValidationMetric>) => void
-  setObtainableShare: (val: number) => void
+  job: Job
+  onChange: (patch: Partial<Job>) => void
+  onRemove: () => void
+  withIntensity: boolean
+  placeholder: string
+  readOnly?: boolean
+}) {
+  const [localText, setLocalText] = useState(job.text)
+  const onChangeRef = useRef(onChange)
+  useEffect(() => { onChangeRef.current = onChange })
+
+  useEffect(() => {
+    if (localText === job.text) return
+    const timer = setTimeout(() => onChangeRef.current({ text: localText }), 500)
+    return () => clearTimeout(timer)
+  }, [localText]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  return (
+    <div className="flex flex-col gap-2 rounded-lg border border-white/20 bg-white/10 p-3">
+      <div className="flex gap-2 items-start">
+        <Input
+          placeholder={placeholder}
+          value={readOnly ? job.text : localText}
+          onChange={(e) => setLocalText(e.target.value)}
+          readOnly={readOnly}
+          className="flex-1 h-8 text-base bg-white border-white text-foreground read-only:cursor-default"
+        />
+        {!readOnly && (
+          <Button
+            type="button"
+            size="icon"
+            variant="ghost"
+            onClick={onRemove}
+            className="h-8 w-8 text-white hover:bg-white/15 shrink-0"
+            aria-label="Remove job"
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
+      {withIntensity && (
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-base text-white">How strong:</span>
+          <div className="inline-flex w-fit rounded-lg bg-white/10 p-1">
+            <ToggleGroup
+              className="border-none"
+              type="single"
+              value={job.intensity}
+              onValueChange={(val) => onChange({ intensity: val as JobIntensity })}
+              disabled={readOnly}
+            >
+              {INTENSITY_OPTIONS.map((level) => (
+                <ToggleGroupItem
+                  key={level}
+                  value={level}
+                  className="px-3 py-1 text-base font-medium capitalize bg-transparent text-white data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow hover:bg-white/10 rounded-md border-none"
+                >
+                  {level}
+                </ToggleGroupItem>
+              ))}
+            </ToggleGroup>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function JobsGroup({
+  title,
+  description,
+  icon: Icon,
+  iconBg,
+  jobs,
+  onChange,
+  withIntensity,
+  placeholder,
+  emptyLabel,
+  readOnly,
+}: {
+  title: string
+  description: string
+  icon: LucideIcon
+  iconBg: string
+  jobs: Job[]
+  onChange: (val: Job[]) => void
+  withIntensity: boolean
+  placeholder: string
+  emptyLabel: string
+  readOnly?: boolean
+}) {
+  const update = (id: number, patch: Partial<Job>) => {
+    onChange(jobs.map((j) => (j.id === id ? { ...j, ...patch } : j)))
+  }
+  const remove = (id: number) => onChange(jobs.filter((j) => j.id !== id))
+  const add = () => onChange([...jobs, { id: nextJobId(jobs), text: "", intensity: "" }])
+
+  if (readOnly && jobs.length === 0) {
+    return (
+      <div className="flex flex-col gap-3">
+        <div className="flex items-center gap-2">
+          <span className={cn("flex items-center justify-center h-7 w-7 rounded-lg shrink-0", iconBg)}>
+            <Icon className="h-3.5 w-3.5 text-white" />
+          </span>
+          <span className="text-base font-semibold text-white">{title}</span>
+        </div>
+        <p className="text-base text-white italic">{emptyLabel}</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center gap-2">
+        <span className={cn("flex items-center justify-center h-7 w-7 rounded-lg shrink-0", iconBg)}>
+          <Icon className="h-3.5 w-3.5 text-white" />
+        </span>
+        <span className="text-base font-semibold text-white">{title}</span>
+      </div>
+      {!readOnly && (
+        <p className="text-base text-white">{description}</p>
+      )}
+      <div className="flex flex-col gap-2">
+        {jobs.map((job) => (
+          <JobRow
+            key={job.id}
+            job={job}
+            withIntensity={withIntensity}
+            placeholder={placeholder}
+            onChange={(patch) => update(job.id, patch)}
+            onRemove={() => remove(job.id)}
+            readOnly={readOnly}
+          />
+        ))}
+      </div>
+      {!readOnly && (
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={add}
+          className="self-start text-white hover:bg-white/15"
+        >
+          <Plus className="h-4 w-4 mr-2" />
+          Add another
+        </Button>
+      )}
+    </div>
+  )
+}
+
+function JobsToBeDoneSection({
+  jobs,
+  onChange,
+  readOnly,
+}: {
+  jobs: JobsToBeDone
+  onChange: (val: JobsToBeDone) => void
   readOnly?: boolean
 }) {
   return (
     <div className="flex flex-col gap-6">
+      <JobsGroup
+        title="What they need to get done"
+        description="The tangible tasks the customer is trying to complete. Phrase them as concrete outcomes, not as your product features. For a house move: complete the sale and the purchase on the same day, find a place that fits the budget, coordinate solicitors and removals."
+        icon={Briefcase}
+        iconBg="bg-emerald-800"
+        jobs={jobs.functional}
+        onChange={(val) => onChange({ ...jobs, functional: val })}
+        withIntensity={false}
+        placeholder="e.g. Complete the sale and the purchase on the same day"
+        emptyLabel="No functional jobs captured."
+        readOnly={readOnly}
+      />
+      <JobsGroup
+        title="How they want to feel"
+        description="The emotional pulls. These usually justify the price more than the tangible tasks do, so be honest about the strongest ones. For a house move: stop lying awake worrying the chain will collapse, feel in control of an opaque process, avoid the dread of getting gazumped."
+        icon={Heart}
+        iconBg="bg-red-800"
+        jobs={jobs.emotional}
+        onChange={(val) => onChange({ ...jobs, emotional: val })}
+        withIntensity={true}
+        placeholder="e.g. Stop lying awake worrying the chain will collapse"
+        emptyLabel="No emotional jobs captured."
+        readOnly={readOnly}
+      />
+      <JobsGroup
+        title="How they want to be seen"
+        description="The social pulls: how the customer wants to be perceived by family, peers, colleagues, or counterparties. Often unspoken but real. For a house move: be seen as having made a smart move, not look disorganised in front of the estate agent."
+        icon={Eye}
+        iconBg="bg-blue-900"
+        jobs={jobs.social}
+        onChange={(val) => onChange({ ...jobs, social: val })}
+        withIntensity={true}
+        placeholder="e.g. Not look disorganised in front of the estate agent"
+        emptyLabel="No social jobs captured."
+        readOnly={readOnly}
+      />
+    </div>
+  )
+}
+
+function WorthSection({
+  worthToThem,
+  jobs,
+  setWorthToThem,
+  readOnly,
+}: {
+  worthToThem: ValidationMetric
+  jobs: JobsToBeDone
+  setWorthToThem: (patch: Partial<ValidationMetric>) => void
+  readOnly?: boolean
+}) {
+  const top = strongestJob(jobs)
+
+  return (
+    <div className="flex flex-col gap-6">
+      {top && (
+        <div className="rounded-lg border border-white/20 bg-white/10 p-4 flex flex-col gap-1 text-base text-white">
+          <span className="text-base font-semibold text-white">Strongest pull from your jobs list</span>
+          <span className="text-base text-white">
+            <span className="capitalize">{top.job.intensity}</span> {top.kind} job: &quot;{top.job.text}&quot;
+          </span>
+          <span className="text-base text-white">Anchor the price on the strongest pull, not on the cost of building a feature. The bigger the emotional or social weight, the more a customer will pay to make it stop.</span>
+        </div>
+      )}
+
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
           <DollarSign className="h-3.5 w-3.5 text-white shrink-0" />
-          <span className="text-base font-semibold text-white">How much is it worth per occurrence</span>
+          <span className="text-base font-semibold text-white">What they would pay each time the problem hits</span>
         </div>
         {!readOnly && (
-          <p className="text-base text-white">What is the monetary value of solving this problem each time it happens? Think about what customers already spend on workarounds, or the time and money they lose by leaving the problem unaddressed.</p>
+          <p className="text-base text-white">Picture the customer being asked: &quot;If a service made this problem go away cleanly, what would you happily pay?&quot; Use the strongest job above to guide the number, not the cost of building a feature. This is a hypothesis to test in real conversations, not a fact yet. If you cannot picture a customer signing off on the figure, round it down.</p>
         )}
         <CurrencyInput metric={worthToThem} onChange={setWorthToThem} readOnly={readOnly} />
       </div>
-
-      <ObtainableShareInput value={obtainableShare} onChange={setObtainableShare} readOnly={readOnly} />
     </div>
   )
 }
@@ -239,14 +516,18 @@ function WorthSection({
 function MarketSection({
   howManyPeople,
   howOften,
+  reachableShare,
   setHowManyPeople,
   setHowOften,
+  setReachableShare,
   readOnly,
 }: {
   howManyPeople: ValidationMetric
   howOften: ValidationMetric
+  reachableShare: number
   setHowManyPeople: (patch: Partial<ValidationMetric>) => void
   setHowOften: (patch: Partial<ValidationMetric>) => void
+  setReachableShare: (val: number) => void
   readOnly?: boolean
 }) {
   return (
@@ -256,13 +537,15 @@ function MarketSection({
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
           <RefreshCw className="h-3.5 w-3.5 text-white shrink-0" />
-          <span className="text-base font-semibold text-white">How often does the problem occur</span>
+          <span className="text-base font-semibold text-white">How often each customer hits the problem</span>
         </div>
         {!readOnly && (
-          <p className="text-base text-white">How frequently do customers encounter this problem? A problem that happens daily is far more urgent than one that occurs once a year.</p>
+          <p className="text-base text-white">Pick the natural cadence. A daily problem multiplies the price quickly. A one-off problem (like moving house) uses 1 per year (or per however many years it recurs). For most problems, leave this at 1 per year unless the same customer pays repeatedly.</p>
         )}
         <FrequencyInput metric={howOften} onChange={setHowOften} readOnly={readOnly} />
       </div>
+
+      <ReachableShareInput value={reachableShare} onChange={setReachableShare} readOnly={readOnly} />
     </div>
   )
 }
@@ -271,17 +554,21 @@ function CompetitionSection({
   costOfSwitching,
   solutionEffectiveness,
   competitorSize,
+  obtainableShare,
   setCostOfSwitching,
   setSolutionEffectiveness,
   setCompetitorSize,
+  setObtainableShare,
   readOnly,
 }: {
   costOfSwitching: ValidationMetric
   solutionEffectiveness: ValidationMetric
   competitorSize: ValidationMetric
+  obtainableShare: number
   setCostOfSwitching: (patch: Partial<ValidationMetric>) => void
   setSolutionEffectiveness: (patch: Partial<ValidationMetric>) => void
   setCompetitorSize: (patch: Partial<ValidationMetric>) => void
+  setObtainableShare: (val: number) => void
   readOnly?: boolean
 }) {
   return (
@@ -372,47 +659,8 @@ function CompetitionSection({
           </ToggleGroup>
         </div>
       </div>
-    </div>
-  )
-}
 
-function EmotionalImpactSection({
-  emotionalImpact,
-  setEmotionalImpact,
-  readOnly,
-}: {
-  emotionalImpact: ValidationMetric
-  setEmotionalImpact: (patch: Partial<ValidationMetric>) => void
-  readOnly?: boolean
-}) {
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-center gap-2">
-        <Heart className="h-3.5 w-3.5 text-white shrink-0" />
-        <span className="text-base font-semibold text-white">How much does this hurt the customer</span>
-      </div>
-      {!readOnly && (
-        <p className="text-base text-white">Capture the emotional weight of one occurrence: frustration, anxiety, embarrassment, dread. Money is only half the story. People will pay disproportionately to make pain stop, so a problem that lands a 4 or 5 here can carry a verdict even if the monetary worth is modest.</p>
-      )}
-      <div className="mt-2 inline-flex w-fit rounded-xl bg-white/10 p-1.5">
-        <ToggleGroup
-          className="border-none"
-          type="single"
-          value={emotionalImpact.level}
-          onValueChange={(val) => setEmotionalImpact({ level: val as typeof emotionalImpact.level })}
-          disabled={readOnly}
-        >
-          {(["mild", "moderate", "strong", "severe", "unbearable"] as const).map((level) => (
-            <ToggleGroupItem
-              key={level}
-              value={level}
-              className="px-4 py-1.5 text-base font-medium capitalize bg-transparent text-white data-[state=on]:bg-white data-[state=on]:text-primary data-[state=on]:shadow-md hover:bg-white/10 rounded-md border-none"
-            >
-              {level}
-            </ToggleGroupItem>
-          ))}
-        </ToggleGroup>
-      </div>
+      <ObtainableShareInput value={obtainableShare} onChange={setObtainableShare} readOnly={readOnly} />
     </div>
   )
 }
@@ -494,30 +742,35 @@ function formatNumber(value: number, opts: { currency?: string } = {}) {
   return Math.round(value).toLocaleString()
 }
 
-function TamCalculation({
+function TamSamSomPanel({
   howManyPeople,
   howOften,
   worthToThem,
+  reachableShare,
   obtainableShare,
+  show,
   readOnly,
 }: {
   howManyPeople: ValidationMetric
   howOften: ValidationMetric
   worthToThem: ValidationMetric
+  reachableShare: number
   obtainableShare: number
+  show: { tam: boolean; sam: boolean; som: boolean }
   readOnly?: boolean
 }) {
   const customers = howManyPeople.value ?? 0
   const frequency = howOften.value ?? 0
-  const cost = worthToThem.value ?? 0
-  const unit = howOften.unit || "per day"
+  const price = worthToThem.value ?? 0
+  const unit = howOften.unit || "per year"
   const currency = worthToThem.unit || "GBP"
-  const sharePct = Math.max(0, Math.min(100, obtainableShare))
-  const shareFactor = sharePct / 100
+  const reachPct = Math.max(0, Math.min(100, reachableShare))
+  const obtainPct = Math.max(0, Math.min(100, obtainableShare))
 
-  const grossMarket = customers * frequency * cost
-  const tam = grossMarket * shareFactor
-  const ready = customers > 0 && frequency > 0 && cost > 0
+  const tam = customers * Math.max(1, frequency) * price
+  const sam = tam * (reachPct / 100)
+  const som = sam * (obtainPct / 100)
+  const ready = customers > 0 && price > 0
 
   if (readOnly && !ready) return null
 
@@ -525,56 +778,81 @@ function TamCalculation({
     <div className="rounded-xl border border-white/20 bg-white/10 p-5 flex flex-col gap-3">
       <div className="flex items-center gap-2">
         <Calculator className="h-4 w-4 text-white shrink-0" />
-        <span className="text-base font-semibold text-white">Total addressable market</span>
+        <span className="text-base font-semibold text-white">Market size estimate</span>
       </div>
       {!readOnly && (
         <p className="text-base text-white">
-          Multiplying customers, frequency, and value gives the gross opportunity. Applying your realistic share narrows that down to what you could plausibly capture. Treat the result as a sanity check, not a precise number.
+          TAM is the whole pie. SAM is the slice you can actually reach. SOM is what you could realistically capture given the competition. Treat these as sanity checks, not proof of demand.
         </p>
       )}
-      <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 flex flex-col gap-2 text-base text-white">
-        <div className="text-xl font-bold">
-          {ready ? formatNumber(tam, { currency }) : "Fill in the three inputs above to see your estimate"}
-          {ready && <span className="ml-2 text-base font-normal text-white">{unit}</span>}
-        </div>
-        {ready && (
-          <div className="text-base text-white">
-            Gross market: {formatNumber(grossMarket, { currency })} {unit}, before applying your {sharePct}% realistic share.
+
+      <div className="flex flex-col gap-3">
+        {show.tam && (
+          <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 flex flex-col gap-1 text-base text-white">
+            <span className="text-base uppercase tracking-wide text-white">Total addressable market (TAM)</span>
+            <span className="text-xl font-bold">
+              {ready ? `${formatNumber(tam, { currency })} ${unit}` : "Fill in customers and price to see this"}
+            </span>
+            {ready && (
+              <span className="text-base text-white">
+                {formatNumber(customers)} customers × {frequency || 1} {unit} × {formatNumber(price, { currency })}
+              </span>
+            )}
           </div>
         )}
-        <Accordion type="single" collapsible className="-mb-2">
-          <AccordionItem value="how" className="border-t border-white/20">
-            <AccordionTrigger className="py-2 text-base font-medium text-white hover:no-underline [&>svg]:text-white">
-              How is it calculated?
-            </AccordionTrigger>
-            <AccordionContent className="pb-2 pt-0 flex flex-col gap-2 text-white">
-              <div className="font-mono text-base">customers × frequency × value × share</div>
-              <div className="font-mono text-base">
-                {formatNumber(customers)} × {frequency || 0} × {formatNumber(cost, { currency })} × {sharePct}%
-              </div>
-              <div className="text-base text-white">
-                share = {sharePct}% of the gross market.
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
+        {show.sam && (
+          <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 flex flex-col gap-1 text-base text-white">
+            <span className="text-base uppercase tracking-wide text-white">Reachable market (SAM)</span>
+            <span className="text-xl font-bold">
+              {ready ? `${formatNumber(sam, { currency })} ${unit}` : "Fill in the inputs to see this"}
+            </span>
+            {ready && (
+              <span className="text-base text-white">TAM × {reachPct}% reachable share</span>
+            )}
+          </div>
+        )}
+        {show.som && (
+          <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 flex flex-col gap-1 text-base text-white">
+            <span className="text-base uppercase tracking-wide text-white">Realistic capture (SOM)</span>
+            <span className="text-xl font-bold">
+              {ready ? `${formatNumber(som, { currency })} ${unit}` : "Fill in the inputs to see this"}
+            </span>
+            {ready && (
+              <span className="text-base text-white">SAM × {obtainPct}% realistic capture</span>
+            )}
+          </div>
+        )}
       </div>
+
+      <Accordion type="single" collapsible className="-mb-2">
+        <AccordionItem value="how" className="border-t border-white/20">
+          <AccordionTrigger className="py-2 text-base font-medium text-white hover:no-underline [&>svg]:text-white">
+            How is this calculated?
+          </AccordionTrigger>
+          <AccordionContent className="pb-2 pt-0 flex flex-col gap-2 text-white">
+            <div className="font-mono text-base">TAM = customers × frequency × price</div>
+            <div className="font-mono text-base">SAM = TAM × reachable share</div>
+            <div className="font-mono text-base">SOM = SAM × realistic capture</div>
+            <div className="text-base text-white">
+              If frequency is left empty, it is treated as 1 (one-off purchase, like moving house).
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   )
 }
 
-export function WorthStrategy({ readOnly = false }: { readOnly?: boolean }) {
-  const {
-    validationAssessment, setWorthToThem, setObtainableShare,
-  } = useProblem()
-  const { worthToThem, obtainableShare } = validationAssessment
+export function JobsToBeDoneStrategy({ readOnly = false }: { readOnly?: boolean }) {
+  const { validationAssessment, setJobsToBeDone } = useProblem()
+  const { jobsToBeDone } = validationAssessment
 
-  const hasAny = (worthToThem.value !== null && worthToThem.value !== 0) || obtainableShare !== DEFAULT_OBTAINABLE_SHARE
+  const hasAny = jobsToBeDone.functional.length + jobsToBeDone.emotional.length + jobsToBeDone.social.length > 0
 
   if (readOnly && !hasAny) {
     return (
       <div className="bg-secondary-brand rounded-xl p-8">
-        <p className="text-base text-white italic">No worth estimate captured.</p>
+        <p className="text-base text-white italic">No jobs captured.</p>
       </div>
     )
   }
@@ -582,12 +860,41 @@ export function WorthStrategy({ readOnly = false }: { readOnly?: boolean }) {
   return (
     <div className="bg-secondary-brand rounded-xl p-8">
       <div className="flex flex-col gap-6">
-        <p className="text-base font-medium text-white">Worth of solving the problem</p>
+        <p className="text-base font-medium text-white">Jobs your customer is trying to get done</p>
+        <JobsToBeDoneSection
+          jobs={jobsToBeDone}
+          onChange={setJobsToBeDone}
+          readOnly={readOnly}
+        />
+      </div>
+    </div>
+  )
+}
+
+export function WorthStrategy({ readOnly = false }: { readOnly?: boolean }) {
+  const {
+    validationAssessment, setWorthToThem,
+  } = useProblem()
+  const { worthToThem, jobsToBeDone } = validationAssessment
+
+  const hasAny = worthToThem.value !== null && worthToThem.value !== 0
+
+  if (readOnly && !hasAny) {
+    return (
+      <div className="bg-secondary-brand rounded-xl p-8">
+        <p className="text-base text-white italic">No price captured.</p>
+      </div>
+    )
+  }
+
+  return (
+    <div className="bg-secondary-brand rounded-xl p-8">
+      <div className="flex flex-col gap-6">
+        <p className="text-base font-medium text-white">What they would pay each time the problem hits</p>
         <WorthSection
           worthToThem={worthToThem}
-          obtainableShare={obtainableShare}
+          jobs={jobsToBeDone}
           setWorthToThem={setWorthToThem}
-          setObtainableShare={setObtainableShare}
           readOnly={readOnly}
         />
       </div>
@@ -597,11 +904,12 @@ export function WorthStrategy({ readOnly = false }: { readOnly?: boolean }) {
 
 export function MarketSizingStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const {
-    validationAssessment, setHowManyPeople, setHowOften,
+    validationAssessment, setHowManyPeople, setHowOften, setReachableShare,
   } = useProblem()
-  const { howManyPeople, howOften, worthToThem, obtainableShare } = validationAssessment
+  const { howManyPeople, howOften, worthToThem, reachableShare, obtainableShare } = validationAssessment
 
   const hasAny = [howManyPeople, howOften].some((m) => m.value !== null && m.value !== 0)
+    || reachableShare !== DEFAULT_REACHABLE_SHARE
 
   if (readOnly && !hasAny) {
     return (
@@ -614,47 +922,23 @@ export function MarketSizingStrategy({ readOnly = false }: { readOnly?: boolean 
   return (
     <div className="bg-secondary-brand rounded-xl p-8">
       <div className="flex flex-col gap-6">
-        <p className="text-base font-medium text-white">Market sizing</p>
+        <p className="text-base font-medium text-white">Total market (TAM) and reachable slice (SAM)</p>
         <MarketSection
           howManyPeople={howManyPeople}
           howOften={howOften}
+          reachableShare={reachableShare}
           setHowManyPeople={setHowManyPeople}
           setHowOften={setHowOften}
+          setReachableShare={setReachableShare}
           readOnly={readOnly}
         />
-        <TamCalculation
+        <TamSamSomPanel
           howManyPeople={howManyPeople}
           howOften={howOften}
           worthToThem={worthToThem}
+          reachableShare={reachableShare}
           obtainableShare={obtainableShare}
-          readOnly={readOnly}
-        />
-      </div>
-    </div>
-  )
-}
-
-export function EmotionalImpactStrategy({ readOnly = false }: { readOnly?: boolean }) {
-  const { validationAssessment, setEmotionalImpact } = useProblem()
-  const { emotionalImpact } = validationAssessment
-
-  const hasAny = emotionalImpact.level !== ""
-
-  if (readOnly && !hasAny) {
-    return (
-      <div className="bg-secondary-brand rounded-xl p-8">
-        <p className="text-base text-white italic">No emotional impact captured.</p>
-      </div>
-    )
-  }
-
-  return (
-    <div className="bg-secondary-brand rounded-xl p-8">
-      <div className="flex flex-col gap-6">
-        <p className="text-base font-medium text-white">Emotional impact on the customer</p>
-        <EmotionalImpactSection
-          emotionalImpact={emotionalImpact}
-          setEmotionalImpact={setEmotionalImpact}
+          show={{ tam: true, sam: true, som: false }}
           readOnly={readOnly}
         />
       </div>
@@ -664,11 +948,12 @@ export function EmotionalImpactStrategy({ readOnly = false }: { readOnly?: boole
 
 export function CompetitionStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const {
-    validationAssessment, setCostOfSwitching, setSolutionEffectiveness, setCompetitorSize,
+    validationAssessment, setCostOfSwitching, setSolutionEffectiveness, setCompetitorSize, setObtainableShare,
   } = useProblem()
-  const { costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
+  const { costOfSwitching, solutionEffectiveness, competitorSize, obtainableShare, howManyPeople, howOften, worthToThem, reachableShare } = validationAssessment
 
   const hasAny = [costOfSwitching, solutionEffectiveness, competitorSize].some((m) => m.level !== "")
+    || obtainableShare !== DEFAULT_OBTAINABLE_SHARE
 
   if (readOnly && !hasAny) {
     return (
@@ -681,14 +966,25 @@ export function CompetitionStrategy({ readOnly = false }: { readOnly?: boolean }
   return (
     <div className="bg-secondary-brand rounded-xl p-8">
       <div className="flex flex-col gap-6">
-        <p className="text-base font-medium text-white">Competitive landscape</p>
+        <p className="text-base font-medium text-white">Competitive landscape and realistic capture (SOM)</p>
         <CompetitionSection
           costOfSwitching={costOfSwitching}
           solutionEffectiveness={solutionEffectiveness}
           competitorSize={competitorSize}
+          obtainableShare={obtainableShare}
           setCostOfSwitching={setCostOfSwitching}
           setSolutionEffectiveness={setSolutionEffectiveness}
           setCompetitorSize={setCompetitorSize}
+          setObtainableShare={setObtainableShare}
+          readOnly={readOnly}
+        />
+        <TamSamSomPanel
+          howManyPeople={howManyPeople}
+          howOften={howOften}
+          worthToThem={worthToThem}
+          reachableShare={reachableShare}
+          obtainableShare={obtainableShare}
+          show={{ tam: false, sam: true, som: true }}
           readOnly={readOnly}
         />
       </div>
@@ -723,11 +1019,11 @@ function classifyWorth(m: ValidationMetric): Signal {
   return "negative"
 }
 
-function classifyEmotionalImpact(m: ValidationMetric): Signal {
-  if (!m.level) return "unknown"
-  if (m.level === "mild") return "negative"
-  if (m.level === "moderate") return "neutral"
-  if (m.level === "strong" || m.level === "severe" || m.level === "unbearable") return "positive"
+function classifyJobs(jobs: JobsToBeDone): Signal {
+  const top = strongestJob(jobs)
+  if (!top) return "unknown"
+  if (top.job.intensity === "unbearable" || top.job.intensity === "strong") return "positive"
+  if (top.job.intensity === "mild") return "negative"
   return "unknown"
 }
 
@@ -835,7 +1131,7 @@ function PitfallsCallout() {
       <div className="flex flex-col gap-1.5">
         <p className="font-semibold">Before you commit, check yourself against the common pitfalls</p>
         <ul className="list-disc pl-5 space-y-1 text-white">
-          <li>A large total addressable market is not the same as proven willingness to pay.</li>
+          <li>A large TAM is not the same as proven willingness to pay. Treat the price you captured as a hypothesis to test in real conversations.</li>
           <li>If you cannot name a specific customer who hit this problem in the last week, it is probably not as universal as it feels.</li>
           <li>Switching costs and incumbent reactions are usually one level worse than your gut estimate.</li>
           <li>If your notes only argue for your gut verdict, write the strongest case against it before deciding.</li>
@@ -849,28 +1145,32 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const {
     validationAssessment, status, setStatus,
   } = useProblem()
-  const { howManyPeople, howOften, worthToThem, obtainableShare, emotionalImpact, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
+  const { jobsToBeDone, howManyPeople, howOften, worthToThem, reachableShare, obtainableShare, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
 
   const customers = howManyPeople.value ?? 0
   const frequency = howOften.value ?? 0
-  const cost = worthToThem.value ?? 0
-  const unit = howOften.unit || "per day"
+  const price = worthToThem.value ?? 0
+  const unit = howOften.unit || "per year"
   const currency = worthToThem.unit || "GBP"
-  const sharePct = Math.max(0, Math.min(100, obtainableShare))
-  const grossMarket = customers * frequency * cost
-  const tam = grossMarket * (sharePct / 100)
-  const tamReady = customers > 0 && frequency > 0 && cost > 0
+  const reachPct = Math.max(0, Math.min(100, reachableShare))
+  const obtainPct = Math.max(0, Math.min(100, obtainableShare))
+  const tam = customers * Math.max(1, frequency) * price
+  const sam = tam * (reachPct / 100)
+  const som = sam * (obtainPct / 100)
+  const ready = customers > 0 && price > 0
+
+  const top = strongestJob(jobsToBeDone)
 
   const signals = {
     howMany: classifyHowMany(howManyPeople),
     howOften: classifyHowOften(howOften),
     worth: classifyWorth(worthToThem),
-    emotional: classifyEmotionalImpact(emotionalImpact),
+    jobs: classifyJobs(jobsToBeDone),
     cost: classifyCostOfSwitching(costOfSwitching),
     effectiveness: classifyEffectiveness(solutionEffectiveness),
     competitor: classifyCompetitorSize(competitorSize),
   }
-  const signalList: Signal[] = [signals.howMany, signals.howOften, signals.worth, signals.emotional, signals.cost, signals.effectiveness, signals.competitor]
+  const signalList: Signal[] = [signals.howMany, signals.howOften, signals.worth, signals.jobs, signals.cost, signals.effectiveness, signals.competitor]
 
   return (
     <div className="bg-secondary-brand rounded-xl p-8">
@@ -882,33 +1182,38 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
           </p>
           <div className="rounded-lg border border-white/20 bg-white/10 p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <MetricRow
-              label="How many customers"
+              label="How many customers have this problem"
               icon={Users}
               value={customers > 0 ? formatNumber(customers) : ""}
               signal={signals.howMany}
             />
             <MetricRow
-              label="How often does the problem occur"
+              label="How often each customer hits the problem"
               icon={RefreshCw}
               value={frequency > 0 ? `${frequency} ${unit}` : ""}
               signal={signals.howOften}
             />
             <MetricRow
-              label="How much is it worth per occurrence"
+              label="What they would pay each time"
               icon={DollarSign}
-              value={cost > 0 ? formatNumber(cost, { currency }) : ""}
+              value={price > 0 ? formatNumber(price, { currency }) : ""}
               signal={signals.worth}
             />
             <MetricRow
-              label="Realistic share of the market you can capture"
-              icon={PieChart}
-              value={`${sharePct}%`}
+              label="Strongest job pull"
+              icon={Heart}
+              value={top ? `${top.job.intensity} (${top.kind})` : ""}
+              signal={signals.jobs}
             />
             <MetricRow
-              label="How much does this hurt the customer"
-              icon={Heart}
-              value={emotionalImpact.level}
-              signal={signals.emotional}
+              label="Reachable share (for SAM)"
+              icon={PieChart}
+              value={`${reachPct}%`}
+            />
+            <MetricRow
+              label="Realistic capture (for SOM)"
+              icon={PieChart}
+              value={`${obtainPct}%`}
             />
             <MetricRow
               label="What is the cost of switching"
@@ -929,14 +1234,19 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
               signal={signals.competitor}
             />
           </div>
-          <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 flex flex-col gap-1 text-base text-white">
-            <span className="text-base uppercase tracking-wide text-white">Total addressable market</span>
-            <span className="text-xl font-bold">
-              {tamReady ? `${formatNumber(tam, { currency })} ${unit}` : "Not enough data"}
-            </span>
-            {tamReady && (
-              <span className="text-base text-white">customers × frequency × value × share ({sharePct}%). Gross market before the share filter: {formatNumber(grossMarket, { currency })} {unit}. Treat the result as a sanity check, not as proof of demand.</span>
-            )}
+          <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-base text-white">
+            <div className="flex flex-col gap-1">
+              <span className="text-base uppercase tracking-wide text-white">TAM</span>
+              <span className="text-xl font-bold">{ready ? `${formatNumber(tam, { currency })} ${unit}` : "Not enough data"}</span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-base uppercase tracking-wide text-white">SAM</span>
+              <span className="text-xl font-bold">{ready ? `${formatNumber(sam, { currency })} ${unit}` : "Not enough data"}</span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-base uppercase tracking-wide text-white">SOM</span>
+              <span className="text-xl font-bold">{ready ? `${formatNumber(som, { currency })} ${unit}` : "Not enough data"}</span>
+            </div>
           </div>
         </div>
 
@@ -955,14 +1265,17 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
 export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const {
     status, setStatus,
-    validationAssessment, setHowManyPeople, setHowOften, setWorthToThem, setObtainableShare, setEmotionalImpact, setCostOfSwitching,
+    validationAssessment, setJobsToBeDone, setHowManyPeople, setHowOften, setWorthToThem,
+    setReachableShare, setObtainableShare, setCostOfSwitching,
     setSolutionEffectiveness, setCompetitorSize,
   } = useProblem()
 
-  const { howManyPeople, howOften, worthToThem, obtainableShare, emotionalImpact, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
+  const { jobsToBeDone, howManyPeople, howOften, worthToThem, reachableShare, obtainableShare, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
 
-  const hasAnyMetric = [howManyPeople, howOften, worthToThem, emotionalImpact, costOfSwitching, solutionEffectiveness, competitorSize]
+  const jobsCount = jobsToBeDone.functional.length + jobsToBeDone.emotional.length + jobsToBeDone.social.length
+  const hasAnyMetric = [howManyPeople, howOften, worthToThem, costOfSwitching, solutionEffectiveness, competitorSize]
     .some((m) => m.value !== null || m.level !== "")
+    || jobsCount > 0
   const hasVerdict = status === "valid" || status === "unsure" || status === "invalid"
 
   if (readOnly && !hasAnyMetric && !hasVerdict) {
@@ -978,33 +1291,26 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
       <div className="flex flex-col gap-6">
         <p className="text-base font-medium text-white">Decision Factors</p>
 
-        <MarketSection
-          howManyPeople={howManyPeople}
-          howOften={howOften}
-          setHowManyPeople={setHowManyPeople}
-          setHowOften={setHowOften}
+        <JobsToBeDoneSection
+          jobs={jobsToBeDone}
+          onChange={setJobsToBeDone}
           readOnly={readOnly}
         />
 
         <WorthSection
           worthToThem={worthToThem}
-          obtainableShare={obtainableShare}
+          jobs={jobsToBeDone}
           setWorthToThem={setWorthToThem}
-          setObtainableShare={setObtainableShare}
           readOnly={readOnly}
         />
 
-        <EmotionalImpactSection
-          emotionalImpact={emotionalImpact}
-          setEmotionalImpact={setEmotionalImpact}
-          readOnly={readOnly}
-        />
-
-        <TamCalculation
+        <MarketSection
           howManyPeople={howManyPeople}
           howOften={howOften}
-          worthToThem={worthToThem}
-          obtainableShare={obtainableShare}
+          reachableShare={reachableShare}
+          setHowManyPeople={setHowManyPeople}
+          setHowOften={setHowOften}
+          setReachableShare={setReachableShare}
           readOnly={readOnly}
         />
 
@@ -1012,9 +1318,21 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
           costOfSwitching={costOfSwitching}
           solutionEffectiveness={solutionEffectiveness}
           competitorSize={competitorSize}
+          obtainableShare={obtainableShare}
           setCostOfSwitching={setCostOfSwitching}
           setSolutionEffectiveness={setSolutionEffectiveness}
           setCompetitorSize={setCompetitorSize}
+          setObtainableShare={setObtainableShare}
+          readOnly={readOnly}
+        />
+
+        <TamSamSomPanel
+          howManyPeople={howManyPeople}
+          howOften={howOften}
+          worthToThem={worthToThem}
+          reachableShare={reachableShare}
+          obtainableShare={obtainableShare}
+          show={{ tam: true, sam: true, som: true }}
           readOnly={readOnly}
         />
 

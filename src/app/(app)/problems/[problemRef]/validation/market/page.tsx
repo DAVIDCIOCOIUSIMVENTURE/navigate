@@ -8,7 +8,7 @@ import { useProblem, getAdjacentSteps } from "../context"
 import { VALIDATE_CASE_STUDIES } from "@/components/problem-strategies/validate-case-studies"
 import { MarketSizingStrategy } from "@/components/problem-strategies/validation-strategy"
 import { cn } from "@/lib/utils"
-import { TrendingUp, Users, RefreshCw } from "lucide-react"
+import { TrendingUp, Users, RefreshCw, PieChart } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
 
 export default function MarketSizingPage() {
@@ -21,22 +21,26 @@ export default function MarketSizingPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={TrendingUp} iconBg="bg-secondary-brand">Size the market</CardTitle>
+        <CardTitle icon={TrendingUp} iconBg="bg-secondary-brand">Size the total market (TAM and SAM)</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-base">
           <p>
-            You have already pinned down how much one occurrence of the problem is worth and the share of the market you could realistically capture. This step layers the population on top: how many customers experience the problem, and how often they hit it. Together with the worth figure, the four numbers produce a back-of-the-envelope total addressable market that is enough to tell signal from wishful thinking.
+            You have the price one customer would happily pay. This step layers the population on top to produce two figures: the total market (TAM) for the whole pie, and the reachable market (SAM) for the slice you can actually serve in your launch. The third figure, your realistic capture (SOM), comes from the competition step that follows.
           </p>
+          <p>
+            TAM is the entire population that has the problem, multiplied by the price. SAM filters that down by what you can physically deliver to: a launch region, a language, a customer size, a platform. SAM is not yet about whether you can win against competitors. Be generous with TAM, but be honest about SAM.
+          </p>
+
           <h3 className="mt-4 text-xl font-bold text-foreground">How to estimate each input on this page</h3>
-          <div className={cn("grid gap-3", containerSize === "narrow" ? "grid-cols-1" : "grid-cols-2")}>
+          <div className={cn("grid gap-3", containerSize === "narrow" ? "grid-cols-1" : "grid-cols-3")}>
             <div className="flex items-start gap-3">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-900 shrink-0 mt-0.5">
                 <Users className="h-4 w-4 text-white" />
               </div>
               <div>
-                <p className="font-semibold text-foreground">How many customers</p>
-                <p className="text-base">Start from a public statistic for your segment (e.g. number of small businesses in the UK), then narrow it down by the filters you already chose. Round generously: precision matters less than order of magnitude.</p>
+                <p className="font-semibold text-foreground">How many customers have this problem</p>
+                <p className="text-base">Start from a public statistic for your segment, e.g. annual home moves in England and Wales, or number of small businesses in the UK. Round generously: precision matters less than order of magnitude.</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -44,24 +48,33 @@ export default function MarketSizingPage() {
                 <RefreshCw className="h-4 w-4 text-white" />
               </div>
               <div>
-                <p className="font-semibold text-foreground">How often</p>
-                <p className="text-base">Pick the natural cadence: daily, weekly, monthly. A problem that recurs daily compounds value quickly; an annual one needs to be unusually painful or expensive to be worth a business.</p>
+                <p className="font-semibold text-foreground">How often each customer hits the problem</p>
+                <p className="text-base">For a recurring problem like a SaaS workflow, pick the natural cadence (per day, per month). For a one-off problem like a house move, leave this at 1 per year (or per however many years it recurs). One-off does not mean small: there are still a million-plus moves a year in the UK.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3">
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-yellow-600 shrink-0 mt-0.5">
+                <PieChart className="h-4 w-4 text-white" />
+              </div>
+              <div>
+                <p className="font-semibold text-foreground">Slice you can actually reach (for SAM)</p>
+                <p className="text-base">Of the global population above, what share can you serve in your launch? Filter on geography, language, business size, distribution channel: things that gate whether your product can physically reach a customer. Do not include competition yet. A focused launch usually reaches 10 to 40 percent of the global TAM.</p>
               </div>
             </div>
           </div>
           <p className="mt-2 text-base">
-            Below the inputs you will see the total addressable market combine all four figures (customers, frequency, worth, and your obtainable share). If the answer looks implausibly large or vanishingly small, one of the inputs is almost certainly off; the worth figure or your share are usually the fastest to revisit.
+            The panel below combines these inputs with the price from the previous step into TAM and SAM. If either looks implausibly large or vanishingly small, one of the inputs is almost certainly off. The price and the reachable share are usually the fastest to revisit.
           </p>
 
           <h3 className="mt-4 text-xl font-bold text-foreground">What will you do?</h3>
           <p>
-            Enter how many customers fit your segment and pick the cadence at which the problem hits them. The page then combines those two figures with the worth and obtainable share you captured on the previous step to produce a total addressable market estimate. Treat the resulting number as a sense check, not as proof of demand.
+            Enter how many customers have the problem in total, how often each one hits it, and the share you can realistically reach in your launch. The page then combines those with the price you captured to produce TAM and SAM. Treat both as a sense check, not as proof of demand: the next step will narrow SAM down to a realistic SOM based on the competition.
           </p>
         </div>
 
         <hr className="border-border/40 my-4" />
 
-        <h3 className="mb-2 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> Estimate the market</h3>
+        <h3 className="mb-2 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> Estimate TAM and SAM</h3>
 
         <Tabs defaultValue="strategy" className="flex flex-col gap-4">
           <TabsList className="self-center">
@@ -76,7 +89,7 @@ export default function MarketSizingPage() {
           <TabsContent value="case-studies">
             <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
               <p className="text-base text-foreground">
-                See how successful companies estimated reach, frequency, and value when sizing the opportunity behind their core problem.
+                See how successful companies estimated population, frequency, and the reachable slice before getting into the competition.
               </p>
               <Tabs defaultValue={VALIDATE_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
                 <TabsList className="self-center bg-background">
@@ -107,20 +120,27 @@ export default function MarketSizingPage() {
                     </div>
                     <div className={cn(
                       "grid gap-3 text-base",
-                      containerSize === "narrow" ? "grid-cols-1" : "grid-cols-2",
+                      containerSize === "narrow" ? "grid-cols-1" : "grid-cols-3",
                     )}>
                       <div>
-                        <span className="text-base font-semibold text-foreground">How Many Customers</span>
+                        <span className="text-base font-semibold text-foreground">How many customers</span>
                         <p className="mt-1 text-base text-foreground">
                           <span className="inline-block rounded bg-muted px-1.5 py-0.5 text-base font-semibold text-foreground mr-1">{cs.howManyPeople.value.toLocaleString()}</span>
                           {cs.howManyPeople.detail}
                         </p>
                       </div>
                       <div>
-                        <span className="text-base font-semibold text-foreground">How Often</span>
+                        <span className="text-base font-semibold text-foreground">How often</span>
                         <p className="mt-1 text-base text-foreground">
                           <span className="inline-block rounded bg-muted px-1.5 py-0.5 text-base font-semibold text-foreground mr-1">{cs.howOften.value} {cs.howOften.unit}</span>
                           {cs.howOften.detail}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-base font-semibold text-foreground">Reachable share (for SAM)</span>
+                        <p className="mt-1 text-base text-foreground">
+                          <span className="inline-block rounded bg-muted px-1.5 py-0.5 text-base font-semibold text-foreground mr-1">{cs.reachableShare.value}%</span>
+                          {cs.reachableShare.detail}
                         </p>
                       </div>
                     </div>

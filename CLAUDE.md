@@ -129,7 +129,7 @@ DATABASE_URL=postgresql://dummy:dummy@localhost:5432/dummy
 * `src/config/navigation.ts`: Centralized top-level nav items + icon resolvers for foundations, self-discovery categories, and next-steps topics
 * `src/components/ui/`: Shared Radix UI-based primitives
 * `src/store/`: Global Rematch store (see "State Management" below)
-* `src/types/`: Cross-feature TypeScript types. `validation.ts` holds validation primitives (`ValidationStatus`, `ValidationAssessment`, `ExistingSolutionItem`, `ValidationMetric`, `DEFAULT_VALIDATION_ASSESSMENT`); `solution.ts` holds `Solution`, `SolutionWorkspace`, and discovery tool types.
+* `src/types/`: Cross-feature TypeScript types. `validation.ts` holds validation primitives (`ValidationStatus`, `ValidationAssessment`, `ExistingSolutionItem`, `ValidationMetric`, `Job`, `JobsToBeDone`, `DEFAULT_VALIDATION_ASSESSMENT`); `solution.ts` holds `Solution`, `SolutionWorkspace`, and discovery tool types.
 * `src/data/`: Static content modules (`selfDiscoveryData.ts`, `foundationsData.ts`, `dimensionData.ts`, `nextStepsData.ts`)
 * `src/context/`: App-wide React Context providers (`guidance-context.tsx`, `container-size-context.tsx`, `navigation-guard-context.tsx`)
 * `prisma/schema.prisma`: Database schema (kept for reference; not actively used)
@@ -164,7 +164,7 @@ All state is client-side only (no database). Two patterns coexist; choose based 
 | `notes` | `navigate-notes` | Journal notes (id/title/text/createdAt/editedAt) |
 | `selfDiscoveryItems` | `navigate-self-discovery-items` | Self-discovery answers (id `you-user-<8-char>`, title, `questionUrl`, optional `suggestionId`). Drives the "You" column in Identify Problems. Renamed from the legacy `problemTriggers` model. |
 | `customDimensionItems` | `navigate-custom-dimension-items` | Per-user catalog of dimension items (`customers` / `contexts` / `problems`) added from the Identify Problems canvas/builder, keyed by ids like `customer-user-<8-char>`. Built-in items live in `src/data/dimensionData.ts` with stable slugs (`customer-teenagers`, etc.). |
-| `problems` | `navigate-problems` | Global Problem list. `customers` / `contexts` / `problems` / `you` arrays now store **ids** (built-in slugs or `*-user-*` for custom/self-discovery items), resolved to labels via `src/lib/dimension-labels.ts`. Also holds full validation state (`existingSolutions`, `validationAssessment`, `validationStatus`, `contextWhen`, `segmentSize`, `customerDescription`, `emotionalImpact`). |
+| `problems` | `navigate-problems` | Global Problem list. `customers` / `contexts` / `problems` / `you` arrays now store **ids** (built-in slugs or `*-user-*` for custom/self-discovery items), resolved to labels via `src/lib/dimension-labels.ts`. Also holds full validation state (`existingSolutions`, `validationAssessment`, `validationStatus`, `contextWhen`, `segmentSize`, `customerDescription`). `validationAssessment` now carries `jobsToBeDone` (three job lists) and a `reachableShare` slider for SAM in addition to the existing metrics. |
 | `solutions` | `navigate-solutions` | Solution candidates linked to a `problemId`; tracks inspiration source, scoring fields (`feasibility`/`impact`/`cost`/`timeToImplement`), validation, and discovery-tool artefacts (analogy / SCAMPER / improve / reverse) |
 | `solutionWorkspaces` | `navigate-solution-workspaces` | One workspace per `problemId`, scratch space shared by problem refinement and solution discovery (analysis tool, root causes, 5-Whys chains, affected groups, reverse ideation, etc.). Use `dispatch.solutionWorkspaces.ensureForProblem(problemId)` to lazily create one |
 | `accountSettings` | `navigate-account-settings` | Display name, email, theme, compact mode, notification preferences |
@@ -233,8 +233,16 @@ The app's three core flows live under `src/app/(app)/`. Each owns its own per-ro
 `problemRef` is the numeric problem id as a string. The flow lives under `problems/[problemRef]/validation/`, whose `layout.tsx` wraps children in `ProblemProvider` (defined in the sibling `context.tsx`). Steps from `NAV_ITEMS`:
 
 ```
-introduction → customer → choose-refinement → refine → existing-solutions → worth → market → competition → verdict → summary
+introduction → customer → choose-refinement → refine → existing-solutions →
+jobs-to-be-done → worth → market → competition → verdict → summary
 ```
+
+The pricing / market-sizing arc is built around jobs-to-be-done feeding TAM / SAM / SOM:
+
+* `jobs-to-be-done`: three lists (functional / emotional / social) of `Job = { id, text, intensity }`. Emotional and social jobs carry a `mild | strong | unbearable` intensity. The strongest emotional or social pull anchors the price on the next step and replaces the dropped `emotional-impact` step.
+* `worth`: a single price the customer would happily pay each time the problem hits, anchored on the strongest job. Captured as `validationAssessment.worthToThem`.
+* `market`: produces TAM (`customers × frequency × price`) and SAM (`TAM × reachableShare%`). The reachable share is the new field `validationAssessment.reachableShare`, distinct from `obtainableShare`.
+* `competition`: the three competitive signals (cost of switching, existing solution effectiveness, competitor size) plus the `obtainableShare` slider (relabelled as "realistic capture") which multiplies SAM down to SOM. This is the only step that produces SOM.
 
 The provider:
 

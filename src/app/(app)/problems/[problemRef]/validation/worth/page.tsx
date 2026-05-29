@@ -8,7 +8,7 @@ import { useProblem, getAdjacentSteps } from "../context"
 import { VALIDATE_CASE_STUDIES } from "@/components/problem-strategies/validate-case-studies"
 import { WorthStrategy } from "@/components/problem-strategies/validation-strategy"
 import { cn } from "@/lib/utils"
-import { DollarSign, Wallet, Scale, PieChart } from "lucide-react"
+import { DollarSign, Heart, MessagesSquare, Scale } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
 
 export default function WorthPage() {
@@ -21,26 +21,26 @@ export default function WorthPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={DollarSign} iconBg="bg-secondary-brand">How much is it worth</CardTitle>
+        <CardTitle icon={DollarSign} iconBg="bg-secondary-brand">What they would pay to solve it</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-base">
           <p>
-            Before you count customers or annualise frequencies, you need to be honest about the value of solving the problem each time it happens. The market sizing step that comes next multiplies this figure across a population, so being a few times off here compounds into a wildly misleading number.
+            Now that you have the jobs the customer is trying to get done, you can put a number on what one customer would happily pay to make the problem go away. The next step multiplies this figure across a whole population, so being a few times off here compounds into a wildly misleading market size. Honesty beats ambition.
           </p>
           <p>
-            Two questions matter on this page. First, what is one instance of the problem actually worth to a customer? Second, of the gross market that produces, how much can your venture realistically capture? A huge market you can only nibble at can still be a worse opportunity than a smaller market where you can plausibly become the default.
+            The trick is to anchor the price on the strongest pull from the jobs list, not on the cost of building a feature. People will pay disproportionately to stop a feeling, far more than they will pay for a tidy version of the tangible task. A house move with no chain anxiety is the same job functionally as one with a fragile chain, but the price someone will pay to make the chain anxiety disappear is a different number altogether.
           </p>
 
-          <h3 className="mt-4 text-xl font-bold text-foreground">How to estimate the worth per occurrence</h3>
+          <h3 className="mt-4 text-xl font-bold text-foreground">How to read a price off the jobs list</h3>
           <div className={cn("grid gap-3", containerSize === "narrow" ? "grid-cols-1" : "grid-cols-3")}>
             <div className="flex items-start gap-3">
-              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-800 shrink-0 mt-0.5">
-                <Wallet className="h-4 w-4 text-white" />
+              <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-red-800 shrink-0 mt-0.5">
+                <Heart className="h-4 w-4 text-white" />
               </div>
               <div>
-                <p className="font-semibold text-foreground">Money already spent</p>
-                <p className="text-base">Look at what customers are actively paying for today: subscriptions to weaker tools, contractor fees, late fines, replacement parts. Revealed spend is the strongest evidence that the problem is worth solving.</p>
+                <p className="font-semibold text-foreground">Lead with the strongest emotional or social pull</p>
+                <p className="text-base">Find the highest-intensity job on the previous step. The price you can support is anchored on the emotional weight of that pull, not on what it costs you to deliver. Strong or unbearable pulls can carry prices an order of magnitude above the tangible task alone.</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -48,47 +48,33 @@ export default function WorthPage() {
                 <Scale className="h-4 w-4 text-white" />
               </div>
               <div>
-                <p className="font-semibold text-foreground">Time, risk, and missed value</p>
-                <p className="text-base">Translate the soft costs into money. An hour of a professional&apos;s time, a missed sale, a delayed launch, or an avoidable refund all have a defensible monetary value. If the problem causes risk, factor in the expected cost of the bad outcome.</p>
+                <p className="font-semibold text-foreground">Cross-check against real spend</p>
+                <p className="text-base">Look at what customers are already paying for today: weaker tools, contractor fees, late fines, chain chasers, replacement parts. Revealed spend is the strongest sanity check on a number that came out of an emotional read.</p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-900 shrink-0 mt-0.5">
-                <DollarSign className="h-4 w-4 text-white" />
+                <MessagesSquare className="h-4 w-4 text-white" />
               </div>
               <div>
-                <p className="font-semibold text-foreground">Willingness to pay you</p>
-                <p className="text-base">The number you want is what a customer would happily pay to make this single occurrence go away, not what it would cost you to build a solution. If you cannot picture a customer signing off on the figure, round it down.</p>
+                <p className="font-semibold text-foreground">Treat the number as a hypothesis to test</p>
+                <p className="text-base">The price you enter is a starting point for real conversations, not a fact. Ask customers at different price points: &quot;What would you pay for a service that took this away?&quot; and watch where their answers cluster. Update the number when reality disagrees.</p>
               </div>
             </div>
           </div>
           <p className="mt-2 text-base">
-            A useful sense check: pick the lowest of the three angles above. If money already spent is small but the time cost is high, your number sits between them. Aggressive estimates feel motivating in private and embarrassing in front of investors, so err toward the conservative read.
-          </p>
-
-          <h3 className="mt-4 text-xl font-bold text-foreground">How much of the market can you realistically capture</h3>
-          <div className="flex items-start gap-3">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary shrink-0 mt-0.5">
-              <PieChart className="h-4 w-4 text-white" />
-            </div>
-            <div>
-              <p className="font-semibold text-foreground">Treat the slider as your obtainable share, not a wish</p>
-              <p className="text-base">The slider on this page lets you keep a percentage of the full addressable market: a focused niche entrant typically reaches 1 to 5 percent, a strong differentiated play 5 to 20 percent, and a dominant category winner 20 to 40 percent. Most early ventures land in the 5 to 15 percent band. Ask yourself who already owns the market, how fast you can reach customers, and how easy switching really is. If you cannot defend a higher number to a sceptical friend, slide it down.</p>
-            </div>
-          </div>
-          <p className="mt-2 text-base">
-            Your worth-per-occurrence and your obtainable share both flow into the total addressable market calculation on the next step, so any change here will move that number directly.
+            A useful sense check: pick the lowest of the three angles above. If money already spent is small but the emotional pull is strong, your number sits between them. Aggressive estimates feel motivating in private and embarrassing in front of investors, so err toward the conservative read.
           </p>
 
           <h3 className="mt-4 text-xl font-bold text-foreground">What will you do?</h3>
           <p>
-            Enter the monetary value of a single occurrence of the problem in the currency that matches your customer, then drag the slider to the share of the market you can realistically defend. Both numbers carry forward to the total addressable market calculation on the next step, so capture them with the same level of honesty you would use in front of a sceptical investor.
+            Enter the price a single customer would happily pay each time the problem hits, in the currency that matches them. This figure carries forward to the next step where you multiply it by the population to produce the TAM, so capture it with the same level of honesty you would use in front of a sceptical investor.
           </p>
         </div>
 
         <hr className="border-border/40 my-4" />
 
-        <h3 className="mb-2 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> Estimate the worth and the share you can capture</h3>
+        <h3 className="mb-2 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> Estimate what they would pay</h3>
 
         <Tabs defaultValue="strategy" className="flex flex-col gap-4">
           <TabsList className="self-center">
@@ -103,7 +89,7 @@ export default function WorthPage() {
           <TabsContent value="case-studies">
             <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
               <p className="text-base text-foreground">
-                See how successful companies reasoned about willingness to pay before working out how many customers and how often.
+                See how successful companies anchored a price on the strongest job pull, not on the cost of building the feature.
               </p>
               <Tabs defaultValue={VALIDATE_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
                 <TabsList className="self-center bg-background">
@@ -133,7 +119,7 @@ export default function WorthPage() {
                           <p className="text-base font-semibold text-foreground">{cs.company}</p>
                         </div>
                         <div>
-                          <span className="text-base font-semibold text-foreground">How Much Is It Worth</span>
+                          <span className="text-base font-semibold text-foreground">What they would pay</span>
                           <p className="mt-1 text-base text-foreground">
                             <span className="inline-block rounded bg-muted px-1.5 py-0.5 text-base font-semibold text-foreground mr-1">{cs.worthToThem.value} {cs.worthToThem.unit}</span>
                             {cs.worthToThem.detail}

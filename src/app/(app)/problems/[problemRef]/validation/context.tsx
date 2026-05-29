@@ -24,7 +24,13 @@
 import { createContext, useContext, useCallback, useEffect, useMemo, type ReactNode } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
-import type { ExistingSolutionItem, ValidationStatus, ValidationMetric, ValidationAssessment } from "@/types/validation"
+import type {
+  ExistingSolutionItem,
+  JobsToBeDone,
+  ValidationStatus,
+  ValidationMetric,
+  ValidationAssessment,
+} from "@/types/validation"
 import { DEFAULT_VALIDATION_ASSESSMENT } from "@/types/validation"
 import type { Problem } from "@/store/problems-model"
 import type {
@@ -49,11 +55,12 @@ type ProblemContextValue = {
   status: ValidationStatus
   setStatus: (val: ValidationStatus) => void
   validationAssessment: ValidationAssessment
+  setJobsToBeDone: (val: JobsToBeDone) => void
   setHowManyPeople: (patch: Partial<ValidationMetric>) => void
   setHowOften: (patch: Partial<ValidationMetric>) => void
   setWorthToThem: (patch: Partial<ValidationMetric>) => void
+  setReachableShare: (val: number) => void
   setObtainableShare: (val: number) => void
-  setEmotionalImpact: (patch: Partial<ValidationMetric>) => void
   setCostOfSwitching: (patch: Partial<ValidationMetric>) => void
   setSolutionEffectiveness: (patch: Partial<ValidationMetric>) => void
   setCompetitorSize: (patch: Partial<ValidationMetric>) => void
@@ -105,6 +112,10 @@ export function ProblemProvider({
   const validationAssessment: ValidationAssessment = useMemo(() => ({
     ...DEFAULT_VALIDATION_ASSESSMENT,
     ...(storedAssessment ?? {}),
+    jobsToBeDone: {
+      ...DEFAULT_VALIDATION_ASSESSMENT.jobsToBeDone,
+      ...(storedAssessment?.jobsToBeDone ?? {}),
+    },
   }), [storedAssessment])
   const contextWhen = problem?.contextWhen ?? ""
   const status = problem?.validationStatus ?? "unvalidated"
@@ -142,6 +153,21 @@ export function ProblemProvider({
       dispatch.problems.update({ id: problemId, patch: { validationStatus: val } })
     },
     [dispatch, problemId]
+  )
+
+  const setJobsToBeDone = useCallback(
+    (val: JobsToBeDone) => {
+      dispatch.problems.update({
+        id: problemId,
+        patch: {
+          validationAssessment: {
+            ...validationAssessment,
+            jobsToBeDone: val,
+          },
+        },
+      })
+    },
+    [dispatch, problemId, validationAssessment]
   )
 
   const setHowManyPeople = useCallback(
@@ -189,6 +215,21 @@ export function ProblemProvider({
     [dispatch, problemId, validationAssessment]
   )
 
+  const setReachableShare = useCallback(
+    (val: number) => {
+      dispatch.problems.update({
+        id: problemId,
+        patch: {
+          validationAssessment: {
+            ...validationAssessment,
+            reachableShare: val,
+          },
+        },
+      })
+    },
+    [dispatch, problemId, validationAssessment]
+  )
+
   const setObtainableShare = useCallback(
     (val: number) => {
       dispatch.problems.update({
@@ -197,21 +238,6 @@ export function ProblemProvider({
           validationAssessment: {
             ...validationAssessment,
             obtainableShare: val,
-          },
-        },
-      })
-    },
-    [dispatch, problemId, validationAssessment]
-  )
-
-  const setEmotionalImpact = useCallback(
-    (patch: Partial<ValidationMetric>) => {
-      dispatch.problems.update({
-        id: problemId,
-        patch: {
-          validationAssessment: {
-            ...validationAssessment,
-            emotionalImpact: { ...validationAssessment.emotionalImpact, ...patch },
           },
         },
       })
@@ -325,11 +351,12 @@ export function ProblemProvider({
         contextWhen, setContextWhen,
         status, setStatus,
         validationAssessment,
+        setJobsToBeDone,
         setHowManyPeople,
         setHowOften,
         setWorthToThem,
+        setReachableShare,
         setObtainableShare,
-        setEmotionalImpact,
         setCostOfSwitching,
         setSolutionEffectiveness,
         setCompetitorSize,
@@ -357,10 +384,10 @@ export const NAV_ITEMS = [
   { label: "Choose your refinement method", path: "choose-refinement" },
   { label: "Refine your problem", path: "refine" },
   { label: "Explore existing solutions & shortcomings", path: "existing-solutions" },
-  { label: "Emotional impact on the customer", path: "emotional-impact" },
-  { label: "How much is it worth", path: "worth" },
-  { label: "Size the market", path: "market" },
-  { label: "Assess the competition", path: "competition" },
+  { label: "Jobs your customer is trying to get done", path: "jobs-to-be-done" },
+  { label: "What they would pay to solve it", path: "worth" },
+  { label: "Size the total market (TAM and SAM)", path: "market" },
+  { label: "Assess the competition (SOM)", path: "competition" },
   { label: "Record your verdict", path: "verdict" },
   { label: "Summary & Next Steps", path: "summary" },
 ] as const

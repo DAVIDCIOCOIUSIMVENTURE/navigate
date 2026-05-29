@@ -104,7 +104,7 @@ type MetricKey = {
 const ASSESSMENT_FIELDS: { key: MetricKey; label: string }[] = [
   { key: "howManyPeople", label: "How many customers" },
   { key: "howOften", label: "How often" },
-  { key: "worthToThem", label: "How much is it worth" },
+  { key: "worthToThem", label: "What they would pay" },
   { key: "costOfSwitching", label: "Cost of switching" },
   { key: "solutionEffectiveness", label: "Solution effectiveness" },
   { key: "competitorSize", label: "Competitor size" },
@@ -121,10 +121,12 @@ function AssessmentSection({ assessment }: { assessment: ValidationAssessment })
     })
     .filter(Boolean) as { label: string; valueText: string | null; levelText: string | null }[]
 
-  const sharePct = Math.max(0, Math.min(100, assessment.obtainableShare))
-  const showShare = sharePct !== 10
+  const reachPct = Math.max(0, Math.min(100, assessment.reachableShare ?? 30))
+  const obtainPct = Math.max(0, Math.min(100, assessment.obtainableShare))
+  const showReach = reachPct !== 30
+  const showObtain = obtainPct !== 10
 
-  if (entries.length === 0 && !showShare) return null
+  if (entries.length === 0 && !showReach && !showObtain) return null
 
   return (
     <>
@@ -132,17 +134,23 @@ function AssessmentSection({ assessment }: { assessment: ValidationAssessment })
       <Section title="Validation Assessment">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {entries.map((entry) => (
-            <div key={entry.label} className="text-sm">
-              <p className="text-muted-foreground">{entry.label}</p>
+            <div key={entry.label} className="text-base">
+              <p>{entry.label}</p>
               <p className="font-medium">
                 {[entry.valueText, entry.levelText].filter(Boolean).join(", ")}
               </p>
             </div>
           ))}
-          {showShare && (
-            <div className="text-sm">
-              <p className="text-muted-foreground">Realistic share of market</p>
-              <p className="font-medium">{sharePct}%</p>
+          {showReach && (
+            <div className="text-base">
+              <p>Reachable share (for SAM)</p>
+              <p className="font-medium">{reachPct}%</p>
+            </div>
+          )}
+          {showObtain && (
+            <div className="text-base">
+              <p>Realistic capture (for SOM)</p>
+              <p className="font-medium">{obtainPct}%</p>
             </div>
           )}
         </div>

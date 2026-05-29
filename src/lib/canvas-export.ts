@@ -72,15 +72,28 @@ export function buildProblemExportText(
   lines.push(section("Problem types", bulletList(resolveIds("problems", problem.problems))))
   lines.push("")
 
+  const jobLine = (j: { text: string; intensity: string }) =>
+    `${j.text}${j.intensity ? ` (${j.intensity})` : ""}`
+  const jobs = va.jobsToBeDone
+  lines.push(section("Jobs to be done", [
+    "Functional:",
+    bulletList(jobs?.functional?.map((j) => j.text) ?? []),
+    "Emotional:",
+    bulletList(jobs?.emotional?.map(jobLine) ?? []),
+    "Social:",
+    bulletList(jobs?.social?.map(jobLine) ?? []),
+  ].join("\n")))
+  lines.push("")
+
   lines.push(section("Validation metrics", [
-    `Emotional impact (severity): ${formatMetric(va.emotionalImpact)}`,
+    `How many customers: ${formatMetric(va.howManyPeople)}`,
     `Frequency (how often): ${formatMetric(va.howOften)}`,
-    `Worth per person: ${formatMetric(va.worthToThem)}`,
-    `Obtainable share: ${va.obtainableShare}%`,
-    `Market reach (people affected): ${formatMetric(va.howManyPeople)}`,
-    `Competitor size: ${formatMetric(va.competitorSize)}`,
+    `Price they'd pay: ${formatMetric(va.worthToThem)}`,
+    `Reachable share (for SAM): ${va.reachableShare ?? 0}%`,
+    `Realistic capture (for SOM): ${va.obtainableShare}%`,
     `Cost of switching: ${formatMetric(va.costOfSwitching)}`,
     `Solution effectiveness: ${formatMetric(va.solutionEffectiveness)}`,
+    `Competitor size: ${formatMetric(va.competitorSize)}`,
   ].join("\n")))
   lines.push("")
 

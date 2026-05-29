@@ -10,7 +10,7 @@ import {
   Users,
   MapPin,
   TriangleAlert,
-  Heart,
+  Briefcase,
   Repeat,
   DollarSign,
   Sparkles,
@@ -162,13 +162,31 @@ export function ProblemCanvasCards({
         </Cell>
 
         <Cell
-          icon={Heart}
-          label="Emotional impact"
+          icon={Briefcase}
+          label="Jobs to be done"
           iconBg="bg-secondary-brand"
           className="sm:col-span-6 lg:col-span-3"
-          empty={!va.emotionalImpact.level && va.emotionalImpact.value == null}
+          empty={
+            (va.jobsToBeDone?.functional.length ?? 0) +
+              (va.jobsToBeDone?.emotional.length ?? 0) +
+              (va.jobsToBeDone?.social.length ?? 0) ===
+            0
+          }
         >
-          <MetricRow label="Severity" metric={va.emotionalImpact} />
+          <div className="flex flex-col gap-1">
+            <div className="flex justify-between gap-2">
+              <span>Functional</span>
+              <span className="font-medium">{va.jobsToBeDone?.functional.length ?? 0}</span>
+            </div>
+            <div className="flex justify-between gap-2">
+              <span>Emotional</span>
+              <span className="font-medium">{va.jobsToBeDone?.emotional.length ?? 0}</span>
+            </div>
+            <div className="flex justify-between gap-2">
+              <span>Social</span>
+              <span className="font-medium">{va.jobsToBeDone?.social.length ?? 0}</span>
+            </div>
+          </div>
         </Cell>
 
         <Cell
@@ -183,18 +201,12 @@ export function ProblemCanvasCards({
 
         <Cell
           icon={DollarSign}
-          label="Worth"
+          label="Price they'd pay"
           iconBg="bg-secondary-brand"
           className="sm:col-span-6 lg:col-span-3"
           empty={!va.worthToThem.level && va.worthToThem.value == null}
         >
-          <div className="flex flex-col gap-1">
-            <MetricRow label="Per person" metric={va.worthToThem} />
-            <div className="flex justify-between gap-2">
-              <span>Obtainable share</span>
-              <span className="font-medium">{va.obtainableShare}%</span>
-            </div>
-          </div>
+          <MetricRow label="Per occurrence" metric={va.worthToThem} />
         </Cell>
 
         <Cell
@@ -204,7 +216,17 @@ export function ProblemCanvasCards({
           className="sm:col-span-6 lg:col-span-3"
           empty={!va.howManyPeople.level && va.howManyPeople.value == null}
         >
-          <MetricRow label="People affected" metric={va.howManyPeople} />
+          <div className="flex flex-col gap-1">
+            <MetricRow label="People affected" metric={va.howManyPeople} />
+            <div className="flex justify-between gap-2">
+              <span>Reachable share (SAM)</span>
+              <span className="font-medium">{va.reachableShare ?? 0}%</span>
+            </div>
+            <div className="flex justify-between gap-2">
+              <span>Realistic capture (SOM)</span>
+              <span className="font-medium">{va.obtainableShare}%</span>
+            </div>
+          </div>
         </Cell>
 
         <Cell
