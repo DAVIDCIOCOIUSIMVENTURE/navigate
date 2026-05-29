@@ -14,177 +14,64 @@ import {
 } from "@/components/ui/dialog"
 import { useProblem, getAdjacentSteps } from "../context"
 import type { AnalysisToolType } from "@/types/solution"
-import { Search, ArrowLeft, ArrowRight, TreePine, HelpCircle, Users, CheckCircle2 } from "lucide-react"
+import { Search, ArrowLeft, ArrowRight, TreePine, HelpCircle, Users } from "lucide-react"
+import { MethodPickerBoard, type MethodPickerItem } from "@/components/method-picker-board"
 
 type ToolKey = "root-causes" | "five-whys" | "affected-groups"
 
-const TOOL_CARDS: Record<ToolKey, { title: string; description: string; icon: typeof Search }> = {
-  "root-causes": {
+const TOOL_ITEMS: MethodPickerItem[] = [
+  {
+    id: "root-causes",
     title: "Root Causes",
-    description: "List the underlying causes of the problem. Move beyond surface-level symptoms to uncover what is really driving the issue.",
+    shortDescription: "List the underlying causes that drive the problem.",
+    longDescription:
+      "List the underlying causes of the problem. Move beyond surface-level symptoms to uncover what is really driving the issue. Best when you have a strong sense of the problem but want to map the multiple forces feeding it.",
+    helperText:
+      "Example: \"Customers receive cold food\" maps to drivers taking multi-order routes, inaccurate prep estimates, no insulated packaging requirement, and routing that prioritises distance over delivery time.",
     icon: TreePine,
+    tileColor: "bg-secondary-brand",
+    estimatedMinutes: 10,
+    enabled: true,
   },
-  "five-whys": {
+  {
+    id: "five-whys",
     title: "5 Whys Technique",
-    description: "Ask \"Why?\" five times in succession. Each answer becomes the basis for the next question, drilling down to the fundamental root cause.",
+    shortDescription: "Ask \"Why?\" five times to drill down to the fundamental cause.",
+    longDescription:
+      "Start with the problem and ask \"Why?\" five times in succession. Each answer becomes the basis for the next question, drilling down to the fundamental root cause. Best when you suspect the obvious explanation is masking a deeper issue.",
+    helperText:
+      "Example: \"High return rate\" leads to: product doesn't match expectations, photos are inaccurate, photos come from manufacturers, no in-house photography workflow, no budget because returns weren't tracked by cause.",
     icon: HelpCircle,
+    tileColor: "bg-secondary-brand",
+    estimatedMinutes: 10,
+    enabled: true,
   },
-  "affected-groups": {
+  {
+    id: "affected-groups",
     title: "Affected Groups",
-    description: "Identify who is most affected by this problem and how severely. Understand the different groups to target the right audience.",
+    shortDescription: "Identify who is most affected by the problem and how severely.",
+    longDescription:
+      "Identify who is most affected by this problem and how severely. Understanding the different groups helps you design a solution that targets the right audience.",
+    helperText:
+      "Example: \"Patients miss appointments\" affects elderly patients (critical: tech struggles, forget without reminders), working parents (high: schedule conflicts), and rural patients (medium: long travel makes rescheduling costly).",
     icon: Users,
-  },
-}
-
-const ROOT_CAUSE_CASES = [
-  {
-    title: "Food Delivery App",
-    problem: "Customers frequently receive cold food",
-    rootCauses: [
-      "Drivers take multiple orders on different routes",
-      "Restaurant preparation time estimates are inaccurate",
-      "No insulated packaging requirements for restaurants",
-      "Routing algorithm prioritises distance over delivery time",
-    ],
-  },
-  {
-    title: "SaaS Onboarding",
-    problem: "80% of trial users never complete setup",
-    rootCauses: [
-      "Setup requires 12 steps before seeing any value",
-      "Users don't understand which features solve their problem",
-      "No guided tour or contextual help during setup",
-      "Required integrations fail silently without error messages",
-    ],
+    tileColor: "bg-secondary-brand",
+    estimatedMinutes: 10,
+    enabled: true,
   },
 ]
-
-const FIVE_WHYS_CASE = {
-  title: "E-Commerce Returns",
-  problem: "High rate of product returns",
-  chain: [
-    "Customers say the product doesn't match expectations",
-    "Product photos don't accurately represent colours and sizes",
-    "Photos are supplied by manufacturers, not shot in-house",
-    "The team lacks a product photography workflow",
-    "No budget was allocated because returns weren't tracked by cause",
-  ],
-}
-
-const AFFECTED_GROUP_CASES = [
-  {
-    title: "Healthcare Scheduling",
-    problem: "Patients miss appointments frequently",
-    groups: [
-      { name: "Elderly patients", severity: "Critical", description: "Struggle with technology, forget appointments without reminders" },
-      { name: "Working parents", severity: "High", description: "Conflicting schedules, hard to rebook during work hours" },
-      { name: "Rural patients", severity: "Medium", description: "Long travel distances make rescheduling costly" },
-    ],
-  },
-]
-
-function RootCausesDialogContent() {
-  return (
-    <div className="flex flex-col gap-4">
-      <p className="text-sm leading-relaxed">
-        List the underlying causes of the problem. Ask yourself: &quot;Why does this happen?&quot; This technique helps you move beyond surface-level symptoms to uncover what&apos;s really driving the issue.
-      </p>
-      <div className="flex flex-col gap-2">
-        <p className="text-sm font-semibold uppercase tracking-wide">Examples</p>
-        {ROOT_CAUSE_CASES.map((cs) => (
-          <div key={cs.title} className="rounded-lg border bg-muted/50 p-4 flex flex-col gap-2">
-            <p className="text-sm font-semibold">{cs.title}</p>
-            <p className="text-sm"><strong>Problem:</strong> {cs.problem}</p>
-            <ul className="list-disc pl-5 text-sm flex flex-col gap-1">
-              {cs.rootCauses.map((rc) => (
-                <li key={rc}>{rc}</li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function FiveWhysDialogContent() {
-  return (
-    <div className="flex flex-col gap-4">
-      <p className="text-sm leading-relaxed">
-        Start with the problem and ask &quot;Why?&quot; five times in succession. Each answer becomes the basis for the next question, drilling down to the fundamental root cause.
-      </p>
-      <div className="flex flex-col gap-2">
-        <p className="text-sm font-semibold uppercase tracking-wide">Example</p>
-        <div className="rounded-lg border bg-muted/50 p-4 flex flex-col gap-2">
-          <p className="text-sm font-semibold">{FIVE_WHYS_CASE.title}</p>
-          <p className="text-sm"><strong>Problem:</strong> {FIVE_WHYS_CASE.problem}</p>
-          <ul className="flex flex-col gap-1.5 mt-1">
-            {FIVE_WHYS_CASE.chain.map((step, i) => (
-              <li key={i} className="flex gap-2 items-start text-sm">
-                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">
-                  {i + 1}
-                </span>
-                {step}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function AffectedGroupsDialogContent() {
-  return (
-    <div className="flex flex-col gap-4">
-      <p className="text-sm leading-relaxed">
-        Identify who is most affected by this problem and how severely. Understanding the different groups helps you design a solution that targets the right audience.
-      </p>
-      <div className="flex flex-col gap-2">
-        <p className="text-sm font-semibold uppercase tracking-wide">Example</p>
-        {AFFECTED_GROUP_CASES.map((cs) => (
-          <div key={cs.title} className="rounded-lg border bg-muted/50 p-4 flex flex-col gap-2">
-            <p className="text-sm font-semibold">{cs.title}</p>
-            <p className="text-sm"><strong>Problem:</strong> {cs.problem}</p>
-            <div className="flex flex-col gap-2 mt-1">
-              {cs.groups.map((g) => (
-                <div key={g.name} className="flex flex-col gap-0.5 rounded bg-muted/50 p-2">
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm font-semibold">{g.name}</span>
-                    <span className="text-sm rounded bg-primary/10 text-primary px-1.5 py-0.5 font-medium">{g.severity}</span>
-                  </div>
-                  <p className="text-sm">{g.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-const DIALOG_CONTENT: Record<ToolKey, () => React.JSX.Element> = {
-  "root-causes": RootCausesDialogContent,
-  "five-whys": FiveWhysDialogContent,
-  "affected-groups": AffectedGroupsDialogContent,
-}
-
-const TOOL_ORDER: ToolKey[] = ["root-causes", "five-whys", "affected-groups"]
 
 export default function ChooseRefinementPage() {
   const router = useRouter()
   const pathname = usePathname()
   const { problem, problemRef, analysisToolType, setAnalysisToolType } = useProblem()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, problemRef)
-  const [openTool, setOpenTool] = useState<ToolKey | null>(null)
   const [confirmOpen, setConfirmOpen] = useState(false)
 
   const selectedTool = (analysisToolType || null) as ToolKey | null
 
-  const handleChoose = (tool: ToolKey) => {
-    setAnalysisToolType(tool as AnalysisToolType)
-    setOpenTool(null)
+  const handlePick = (id: string) => {
+    setAnalysisToolType(id as AnalysisToolType)
     if (nextPath) router.push(nextPath)
   }
 
@@ -196,8 +83,6 @@ export default function ChooseRefinementPage() {
     }
     router.push(nextPath)
   }
-
-  const DialogBody = openTool ? DIALOG_CONTENT[openTool] : null
 
   return (
     <>
@@ -221,38 +106,13 @@ export default function ChooseRefinementPage() {
             Choose a refinement technique below to get started.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {TOOL_ORDER.map((key) => {
-              const tool = TOOL_CARDS[key]
-              const Icon = tool.icon
-              const isSelected = selectedTool === key
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => setOpenTool(key)}
-                  aria-pressed={isSelected}
-                  className="rounded-md border border-primary bg-primary text-primary-foreground flex items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-primary/90 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                >
-                  <div
-                    className="flex items-center justify-center w-8 h-8 rounded-md shrink-0 bg-white/20"
-                    aria-hidden="true"
-                  >
-                    <Icon className="h-4 w-4 text-white" />
-                  </div>
-                  <span className="flex-1 min-w-0 text-base font-bold leading-tight truncate">
-                    {tool.title}
-                  </span>
-                  {isSelected && (
-                    <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-base font-semibold shrink-0 bg-white text-primary">
-                      <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
-                      Selected
-                    </span>
-                  )}
-                </button>
-              )
-            })}
-          </div>
+          <MethodPickerBoard
+            items={TOOL_ITEMS}
+            selectedId={selectedTool}
+            onPick={handlePick}
+            ctaLabel="Use this method"
+            reselectLabel="Continue with this method"
+          />
 
           <div className="flex justify-between mt-2">
             {prevPath ? (
@@ -268,41 +128,6 @@ export default function ChooseRefinementPage() {
           </div>
         </CardContent>
       </Card>
-
-      <Dialog open={openTool !== null} onOpenChange={(open) => { if (!open) setOpenTool(null) }}>
-        <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
-          {openTool && (
-            <>
-              <DialogHeader>
-                <DialogTitle>
-                  <span className="flex items-center gap-3">
-                    <span
-                      className="flex items-center justify-center w-10 h-10 rounded-md shrink-0 bg-primary"
-                      aria-hidden="true"
-                    >
-                      {(() => {
-                        const OpenIcon = TOOL_CARDS[openTool].icon
-                        return <OpenIcon className="h-5 w-5 text-white" />
-                      })()}
-                    </span>
-                    <span>{TOOL_CARDS[openTool].title}</span>
-                  </span>
-                </DialogTitle>
-                <DialogDescription>
-                  Learn how this method works, then choose it to start refining your problem.
-                </DialogDescription>
-              </DialogHeader>
-              {DialogBody && <DialogBody />}
-              <DialogFooter>
-                <Button variant="outline" onClick={() => setOpenTool(null)}>Cancel</Button>
-                <Button onClick={() => handleChoose(openTool)}>
-                  {openTool === selectedTool ? "Continue with this method" : "Choose this method"}
-                </Button>
-              </DialogFooter>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
 
       <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
         <DialogContent className="max-w-md">
