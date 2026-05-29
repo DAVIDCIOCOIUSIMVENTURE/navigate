@@ -87,7 +87,7 @@ export const RESEARCH_METHODS: ResearchMethod[] = [
     longDescription:
       "Every year, thousands of products are shut down, discontinued, abandoned by their owners, or quietly fade out. Many of them had real users with real problems. This method walks you through curated sources where you can hunt for an abandoned product (software, physical, service, or patent), then capture what it was, why it died, and why it might be worth bringing back, rethinking, or replacing.",
     icon: Archive,
-    tileColor: "bg-primary",
+    tileColor: "bg-tertiary",
     estimatedMinutes: 15,
     helperText:
       "Pick one tool to browse, find one product that catches your eye, and answer the prompts about that one product. Run the method again for the next idea.",
@@ -285,7 +285,7 @@ export const RESEARCH_METHODS: ResearchMethod[] = [
     longDescription:
       "Use trend trackers (Google Trends, Exploding Topics, Reddit risers) to find topics whose attention is growing fast. Each rising trend is usually a problem people are quietly trying to solve.",
     icon: Rocket,
-    tileColor: "bg-primary",
+    tileColor: "bg-tertiary",
     estimatedMinutes: 12,
     tools: [],
     prompts: [],
@@ -298,7 +298,7 @@ export const RESEARCH_METHODS: ResearchMethod[] = [
     longDescription:
       "Tools with thousands of installs and a 2-star average are a strong signal. The need is real enough to drive downloads; the existing solutions are bad enough to drive frustration. The reviews are a free corpus of problem statements.",
     icon: Star,
-    tileColor: "bg-primary",
+    tileColor: "bg-tertiary",
     estimatedMinutes: 12,
     tools: [],
     prompts: [],
@@ -311,7 +311,7 @@ export const RESEARCH_METHODS: ResearchMethod[] = [
     longDescription:
       "Open data and academic research surface problems that aren't yet on consumer radar: emerging health risks, regulatory shifts, infrastructure gaps. Use them to capture problems most builders haven't seen yet.",
     icon: Database,
-    tileColor: "bg-primary",
+    tileColor: "bg-tertiary",
     estimatedMinutes: 15,
     tools: [],
     prompts: [],
@@ -324,7 +324,7 @@ export const RESEARCH_METHODS: ResearchMethod[] = [
     longDescription:
       "Market leaders optimize for the median customer. The edges, the segments they ignore, the use cases they treat as edge cases, are usually where new products win. This method walks you through analyzing one category for gaps.",
     icon: Swords,
-    tileColor: "bg-primary",
+    tileColor: "bg-tertiary",
     estimatedMinutes: 15,
     tools: [],
     prompts: [],
@@ -337,7 +337,7 @@ export const RESEARCH_METHODS: ResearchMethod[] = [
     longDescription:
       "Read founder write-ups, shutdown letters, and 'why we failed' essays. The patterns repeat: wrong audience, wrong timing, wrong pricing. Each pattern is a doorway to a problem someone else can solve better.",
     icon: Lightbulb,
-    tileColor: "bg-primary",
+    tileColor: "bg-tertiary",
     estimatedMinutes: 12,
     tools: [],
     prompts: [],

@@ -20,7 +20,7 @@ export default function IdentifySolutionsPage() {
       longDescription: "Pick a validated problem, refine your understanding, and generate solution candidates using creative techniques.",
       helperText: "Best for working through guided tools (analogy, SCAMPER, reverse ideation, root-cause attacks) instead of jumping to the first idea that comes to mind.",
       icon: Lightbulb,
-      tileColor: "bg-violet-800",
+      tileColor: "bg-tertiary",
       estimatedMinutes: 20,
       enabled: true,
     },

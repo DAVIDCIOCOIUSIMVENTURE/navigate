@@ -81,7 +81,7 @@ export function MethodPickerBoard({
               <AccordionTrigger className="px-4 py-3 text-base font-semibold hover:no-underline">
                 <span className="flex items-center gap-3 flex-1 min-w-0">
                   <span
-                    className="flex items-center justify-center w-9 h-9 rounded-md shrink-0 bg-secondary-brand"
+                    className={cn("flex items-center justify-center w-9 h-9 rounded-md shrink-0", item.tileColor)}
                     aria-hidden="true"
                   >
                     <Icon className="h-4 w-4 text-white" />
@@ -141,7 +141,7 @@ export function MethodPickerBoard({
               )}
             >
               <span
-                className="flex items-center justify-center w-8 h-8 rounded-md shrink-0 bg-secondary-brand"
+                className={cn("flex items-center justify-center w-8 h-8 rounded-md shrink-0", item.tileColor)}
                 aria-hidden="true"
               >
                 <Icon className="h-4 w-4 text-white" />
@@ -200,7 +200,7 @@ function MethodPreview({
       {showHeader && (
         <div className="flex items-center gap-3">
           <span
-            className="flex items-center justify-center w-10 h-10 rounded-md shrink-0 bg-secondary-brand"
+            className={cn("flex items-center justify-center w-10 h-10 rounded-md shrink-0", item.tileColor)}
             aria-hidden="true"
           >
             <Icon className="h-5 w-5 text-white" />
