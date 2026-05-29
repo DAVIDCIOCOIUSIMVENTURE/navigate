@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils"
 import { useDiscovery, getAdjacentSteps } from "../context"
 import type { DiscoveryToolType } from "@/types/solution"
 import { Shuffle, ArrowLeft, ArrowRight, Lightbulb, RotateCcw, GitCompare, Wrench, CheckCircle2 } from "lucide-react"
+import { ProblemContextCard } from "@/components/problem-context-card"
 
 type ToolKey = "scamper" | "reverse" | "analogy" | "improve"
 
@@ -274,15 +275,7 @@ export default function ChooseDiscoveryPage() {
           <CardTitle icon={Shuffle}>Choose Your Discovery Method</CardTitle>
         </CardHeader>
         <CardContent className="p-10 pt-6 flex flex-col gap-6">
-          {problem && (problem.title || problem.description) && (
-            <div className="rounded-lg border-2 border-red-800/20 bg-red-800/5 px-4 py-3">
-              <p className="text-base font-semibold uppercase tracking-wide text-red-800 mb-1">Problem</p>
-              <p className="text-base font-medium">{problem.title || "Untitled problem"}</p>
-              {problem.description && (
-                <p className="text-base mt-1">{problem.description}</p>
-              )}
-            </div>
-          )}
+          <ProblemContextCard problem={problem} />
 
           <p className="text-base leading-relaxed">
             Use creative ideation techniques to generate solution candidates.

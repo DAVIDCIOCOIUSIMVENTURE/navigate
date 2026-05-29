@@ -10,6 +10,7 @@ import { ROOT_CAUSES_CASE_STUDIES } from "./root-causes-case-studies"
 import { FIVE_WHYS_CASE_STUDIES } from "./five-whys-case-studies"
 import { AFFECTED_GROUPS_CASE_STUDIES } from "./affected-groups-case-studies"
 import { RefinementStrategy } from "@/components/problem-strategies/refinement-strategy"
+import { ProblemContextCard } from "@/components/problem-context-card"
 import {
   Search, Plus, Trash2, ArrowLeft, ArrowRight,
   Car, MessageSquare, Stethoscope, Wrench, Landmark, Cloud,
@@ -333,15 +334,7 @@ export default function RefinePage() {
         <CardTitle icon={Search} iconBg="bg-secondary-brand">Refine: {toolInfo?.title ?? "-"}</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
-        {problem && (problem.title || problem.description) && (
-          <div className="rounded-lg border-2 border-red-800/20 bg-red-800/5 px-4 py-3">
-            <p className="text-base font-semibold uppercase tracking-wide text-red-800 mb-1">Problem</p>
-            <p className="text-base font-medium">{problem.title || "Untitled problem"}</p>
-            {problem.description && (
-              <p className="text-base mt-1">{problem.description}</p>
-            )}
-          </div>
-        )}
+        <ProblemContextCard problem={problem} />
 
         {toolInfo && (
           <div className="flex flex-col gap-3 text-base">

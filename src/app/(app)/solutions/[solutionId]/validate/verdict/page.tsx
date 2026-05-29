@@ -12,6 +12,7 @@ import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { getAdjacentSteps, useSolution } from "../context"
 import { VerdictStrategy } from "@/components/solution-strategies/verdict-strategy"
+import { ProblemContextCard } from "@/components/problem-context-card"
 
 type VerdictKey = "valid" | "unsure" | "invalid"
 
@@ -108,15 +109,7 @@ export default function VerdictPage() {
                 <p className="text-base font-medium">{solution.title}</p>
               </div>
             )}
-            {problem && (problem.title || problem.description) && (
-              <div className="rounded-lg border-2 border-red-800/20 bg-red-800/5 p-4 flex flex-col gap-0.5">
-                <p className="text-base font-semibold uppercase tracking-wide text-red-800">Problem</p>
-                <p className="text-base font-medium">{problem.title || "Untitled problem"}</p>
-                {problem.description && (
-                  <p className="text-base">{problem.description}</p>
-                )}
-              </div>
-            )}
+            <ProblemContextCard problem={problem} />
           </div>
         )}
 

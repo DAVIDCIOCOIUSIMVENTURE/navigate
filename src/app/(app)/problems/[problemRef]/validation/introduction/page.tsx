@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { getAdjacentSteps, useProblem } from "../context"
 import { DimensionChips } from "@/components/dimension-chips"
+import { ProblemContextCard } from "@/components/problem-context-card"
 import {
   ClipboardCheck, GitFork, ShieldCheck, LayoutTemplate, Users, Search, TrendingUp, Building2, DollarSign, Sparkles,
 } from "lucide-react"
@@ -76,24 +77,16 @@ export default function IntroductionPage() {
           </div>
         </div>
 
-        {mounted && problem && (
-          <div className="rounded-lg border-2 border-red-800/20 bg-red-800/5 p-4 flex flex-col gap-3">
-            {problem.title && (
-              <div className="flex flex-col gap-1">
-                <p className="text-base font-semibold uppercase tracking-wide text-red-800">Problem Title</p>
-                <p className="text-base font-medium">{problem.title}</p>
-              </div>
+        {mounted && (
+          <ProblemContextCard problem={problem}>
+            {problem && (
+              <>
+                <FieldRow label="Customer" columnId="customers" ids={problem.customers} />
+                <FieldRow label="Context" columnId="contexts" ids={problem.contexts} />
+                <FieldRow label="Problem" columnId="problems" ids={problem.problems} />
+              </>
             )}
-            {problem.description && (
-              <div className="flex flex-col gap-1">
-                <p className="text-base font-semibold uppercase tracking-wide text-red-800">Problem Description</p>
-                <p className="text-base font-medium">{problem.description}</p>
-              </div>
-            )}
-            <FieldRow label="Customer" columnId="customers" ids={problem.customers} />
-            <FieldRow label="Context" columnId="contexts" ids={problem.contexts} />
-            <FieldRow label="Problem" columnId="problems" ids={problem.problems} />
-          </div>
+          </ProblemContextCard>
         )}
 
         <div className="flex flex-col gap-3">

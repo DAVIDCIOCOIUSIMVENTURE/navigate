@@ -12,6 +12,7 @@ import {
   Lightbulb, RotateCcw, GitCompare, Wrench, Target,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
+import { ProblemContextCard } from "@/components/problem-context-card"
 
 const ANALYSIS_TOOL_LABELS: Record<Exclude<AnalysisToolType, "">, { label: string; icon: LucideIcon }> = {
   "root-causes": { label: "Root Causes", icon: Search },
@@ -88,15 +89,7 @@ export default function SummaryPage() {
           Here&apos;s everything you produced in this discovery session. Each candidate has been added to your Solution Bank; click <strong>Validate</strong> on any of them to start the validation flow.
         </p>
 
-        {problem && (problem.title || problem.description) && (
-          <div className="rounded-lg border-2 border-red-800/20 bg-red-800/5 p-4 flex flex-col gap-1">
-            <p className="text-base font-semibold uppercase tracking-wide text-red-800">Problem</p>
-            <p className="text-base font-medium">{problem.title || "Untitled problem"}</p>
-            {problem.description && (
-              <p className="text-base">{problem.description}</p>
-            )}
-          </div>
-        )}
+        <ProblemContextCard problem={problem} />
 
         <div className="flex flex-col gap-3">
           <SectionHeader icon={Search} label={`Refinement${analysisTool ? `: ${analysisTool.label}` : ""}`} />

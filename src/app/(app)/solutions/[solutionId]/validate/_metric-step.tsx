@@ -8,6 +8,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { getAdjacentSteps, useSolution } from "./context"
 import { MetricStrategy, type MetricContent, type MetricCaseStudy, type ScaleStop } from "@/components/solution-strategies/metric-strategy"
+import { ProblemContextCard } from "@/components/problem-context-card"
 
 export type { MetricContent, MetricCaseStudy, ScaleStop }
 
@@ -40,15 +41,7 @@ export function MetricStep({ content, value, onChange, iconBg }: MetricStepProps
                 <p className="text-base font-medium">{solution.title}</p>
               </div>
             )}
-            {problem && (problem.title || problem.description) && (
-              <div className="rounded-lg border-2 border-red-800/20 bg-red-800/5 p-4 flex flex-col gap-0.5">
-                <p className="text-base font-semibold uppercase tracking-wide text-red-800">Problem</p>
-                <p className="text-base font-medium">{problem.title || "Untitled problem"}</p>
-                {problem.description && (
-                  <p className="text-base">{problem.description}</p>
-                )}
-              </div>
-            )}
+            <ProblemContextCard problem={problem} />
           </div>
         )}
 
