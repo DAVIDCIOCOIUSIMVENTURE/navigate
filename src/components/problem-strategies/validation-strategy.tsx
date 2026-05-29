@@ -22,16 +22,6 @@ const FREQUENCY_OPTIONS = [
   "per month", "per quarter", "per year",
 ]
 
-const FREQUENCY_RANK: Record<string, number> = {
-  "per hour": 6,
-  "per day": 5,
-  "per week": 4,
-  "per fortnight": 3,
-  "per month": 2,
-  "per quarter": 1,
-  "per year": 0,
-}
-
 const CURRENCY_OPTIONS = [
   "USD", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF",
   "CNY", "INR", "BRL", "KRW", "SEK", "NOK", "DKK",
@@ -1067,134 +1057,14 @@ export function CompetitionStrategy({ readOnly = false }: { readOnly?: boolean }
   )
 }
 
-type Signal = "positive" | "neutral" | "negative" | "unknown"
-
-function classifyHowMany(m: ValidationMetric): Signal {
-  const v = m.value ?? 0
-  if (v <= 0) return "unknown"
-  if (v >= 100000) return "positive"
-  if (v >= 1000) return "neutral"
-  return "negative"
-}
-
-function classifyHowOften(m: ValidationMetric): Signal {
-  const v = m.value ?? 0
-  const rank = FREQUENCY_RANK[m.unit]
-  if (v <= 0 || rank === undefined) return "unknown"
-  if (rank >= 4) return "positive"
-  if (rank >= 2) return "neutral"
-  return "negative"
-}
-
-function classifyWorth(m: ValidationMetric): Signal {
-  const v = m.value ?? 0
-  if (v <= 0) return "unknown"
-  if (v >= 50) return "positive"
-  if (v >= 5) return "neutral"
-  return "negative"
-}
-
-function classifyJobs(jobs: JobsToBeDone): Signal {
-  const top = strongestJob(jobs)
-  if (!top) return "unknown"
-  if (top.job.intensity === "unbearable" || top.job.intensity === "strong") return "positive"
-  if (top.job.intensity === "mild") return "negative"
-  return "unknown"
-}
-
-function classifyCostOfSwitching(m: ValidationMetric): Signal {
-  if (!m.level) return "unknown"
-  if (m.level === "none" || m.level === "low") return "positive"
-  if (m.level === "medium") return "neutral"
-  if (m.level === "high" || m.level === "prohibitive") return "negative"
-  return "unknown"
-}
-
-function classifyEffectiveness(m: ValidationMetric): Signal {
-  if (!m.level) return "unknown"
-  if (m.level === "terrible" || m.level === "poor") return "positive"
-  if (m.level === "average") return "neutral"
-  if (m.level === "good" || m.level === "excellent") return "negative"
-  return "unknown"
-}
-
-function classifyCompetitorSize(m: ValidationMetric): Signal {
-  if (!m.level) return "unknown"
-  if (m.level === "micro" || m.level === "small") return "positive"
-  if (m.level === "medium") return "neutral"
-  if (m.level === "large" || m.level === "giant") return "negative"
-  return "unknown"
-}
-
-const SIGNAL_DOT: Record<Signal, string> = {
-  positive: "bg-success",
-  neutral: "bg-tertiary",
-  negative: "bg-destructive",
-  unknown: "bg-white/30",
-}
-
-const SIGNAL_LABEL: Record<Signal, string> = {
-  positive: "Favourable",
-  neutral: "Neutral",
-  negative: "Unfavourable",
-  unknown: "Not captured",
-}
-
-function MetricRow({ label, icon: Icon, value, signal }: { label: string; icon: LucideIcon; value: string; signal?: Signal }) {
+function MetricRow({ label, icon: Icon, value }: { label: string; icon: LucideIcon; value: string }) {
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-center gap-2">
-        {signal && (
-          <span
-            className={cn("inline-block h-2.5 w-2.5 rounded-full shrink-0", SIGNAL_DOT[signal])}
-            aria-label={SIGNAL_LABEL[signal]}
-            title={SIGNAL_LABEL[signal]}
-          />
-        )}
         <Icon className="h-3.5 w-3.5 text-white shrink-0" />
         <span className="text-base font-semibold text-white">{label}</span>
       </div>
       <span className="text-base font-semibold text-white">{value || "Not captured"}</span>
-    </div>
-  )
-}
-
-function LeanIndicator({ signals }: { signals: Signal[] }) {
-  const captured = signals.filter((s) => s !== "unknown")
-  const positive = captured.filter((s) => s === "positive").length
-  const negative = captured.filter((s) => s === "negative").length
-  const net = positive - negative
-
-  if (captured.length < 5) {
-    return (
-      <div className="rounded-lg border border-white/20 bg-white/10 p-4 text-base text-white">
-        <p className="font-semibold">Not enough signals yet</p>
-        <p className="text-white mt-1">Capture at least five of the seven factors to see how the evidence leans. You have currently filled in {captured.length} of 7.</p>
-      </div>
-    )
-  }
-
-  let title: string
-  let body: string
-  let tone: string
-  if (net >= 3) {
-    title = "Signals lean toward Valid"
-    body = `${positive} favourable, ${negative} unfavourable, ${captured.length - positive - negative} neutral. The evidence supports pursuing this problem, but read the notes once more before committing.`
-    tone = "border-success/40 bg-success/15"
-  } else if (net <= -3) {
-    title = "Signals lean toward Invalid"
-    body = `${positive} favourable, ${negative} unfavourable, ${captured.length - positive - negative} neutral. The evidence is stacked against this problem. Consider whether a tighter customer segment or different angle changes the picture.`
-    tone = "border-destructive/40 bg-destructive/15"
-  } else {
-    title = "Signals are mixed"
-    body = `${positive} favourable, ${negative} unfavourable, ${captured.length - positive - negative} neutral. The evidence is genuinely split. A single targeted experiment (a few customer interviews, a pricing test, a competitor audit) usually cuts through faster than another round of guessing.`
-    tone = "border-tertiary/40 bg-tertiary/15"
-  }
-
-  return (
-    <div className={cn("rounded-lg border p-4 text-base text-white", tone)}>
-      <p className="font-semibold">{title}</p>
-      <p className="text-white mt-1">{body}</p>
     </div>
   )
 }
@@ -1209,7 +1079,6 @@ function PitfallsCallout() {
           <li>A large total market is not the same as proven willingness to pay. Treat the price you captured as a hypothesis to test in real conversations.</li>
           <li>If you cannot name a specific customer who hit this problem in the last week, it is probably not as universal as it feels.</li>
           <li>Switching costs and incumbent reactions are usually one level worse than your gut estimate.</li>
-          <li>If your notes only argue for your gut verdict, write the strongest case against it before deciding.</li>
         </ul>
       </div>
     </div>
@@ -1236,49 +1105,31 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
 
   const top = strongestJob(jobsToBeDone)
 
-  const signals = {
-    howMany: classifyHowMany(howManyPeople),
-    howOften: classifyHowOften(howOften),
-    worth: classifyWorth(worthToThem),
-    jobs: classifyJobs(jobsToBeDone),
-    cost: classifyCostOfSwitching(costOfSwitching),
-    effectiveness: classifyEffectiveness(solutionEffectiveness),
-    competitor: classifyCompetitorSize(competitorSize),
-  }
-  const signalList: Signal[] = [signals.howMany, signals.howOften, signals.worth, signals.jobs, signals.cost, signals.effectiveness, signals.competitor]
-
   return (
     <div className="bg-secondary-brand rounded-xl p-8">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">
           <p className="text-base font-medium text-white">Summary of your assessment</p>
-          <p className="text-base text-white">
-            Each signal below is colour-coded against a rough heuristic: green is favourable for pursuing the problem, amber is neutral, red is unfavourable. The dot is a hint, not a rule.
-          </p>
           <div className="rounded-lg border border-white/20 bg-white/10 p-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
             <MetricRow
               label="How many customers have this problem"
               icon={Users}
               value={customers > 0 ? formatNumber(customers) : ""}
-              signal={signals.howMany}
             />
             <MetricRow
               label="How often each customer hits the problem"
               icon={RefreshCw}
               value={frequency > 0 ? `${frequency} ${unit}` : ""}
-              signal={signals.howOften}
             />
             <MetricRow
               label="What they would pay each time"
               icon={DollarSign}
               value={price > 0 ? formatNumber(price, { currency }) : ""}
-              signal={signals.worth}
             />
             <MetricRow
               label="Strongest job pull"
               icon={Heart}
               value={top ? `${top.job.intensity} (${top.kind})` : ""}
-              signal={signals.jobs}
             />
             <MetricRow
               label="Reachable share of the market"
@@ -1294,19 +1145,16 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
               label="What is the cost of switching"
               icon={ArrowRightLeft}
               value={costOfSwitching.level}
-              signal={signals.cost}
             />
             <MetricRow
               label="How effective are existing solutions"
               icon={Target}
               value={solutionEffectiveness.level}
-              signal={signals.effectiveness}
             />
             <MetricRow
               label="How big are the competitors"
               icon={Building2}
               value={competitorSize.level}
-              signal={signals.competitor}
             />
           </div>
           <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-base text-white">
@@ -1324,8 +1172,6 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
             </div>
           </div>
         </div>
-
-        <LeanIndicator signals={signalList} />
 
         {!readOnly && <PitfallsCallout />}
 
