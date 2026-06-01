@@ -22,19 +22,19 @@ function NavContent({
     <Button
       variant={isActive ? "secondary" : "ghost"}
       className={cn(
-        "w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2 hover:text-secondary-brand",
-        isActive && "text-secondary-brand",
+        "w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2 hover:text-tertiary",
+        isActive && "text-tertiary",
       )}
       onClick={() => onNavigate(href)}
     >
       <span
         className={cn(
           "flex items-center justify-center w-6 h-6 rounded-md shrink-0",
-          isActive ? "bg-secondary-brand" : "bg-secondary-brand/10",
+          isActive ? "bg-tertiary" : "bg-tertiary/10",
         )}
       >
         <Icon
-          className={cn("h-3.5 w-3.5", isActive ? "text-white" : "text-secondary-brand")}
+          className={cn("h-3.5 w-3.5", isActive ? "text-white" : "text-tertiary")}
           aria-hidden="true"
         />
       </span>
@@ -110,7 +110,7 @@ export default function NextStepsLayout({
                     className="w-full justify-between h-auto py-2 px-3"
                   >
                     <span className="flex items-center gap-2 text-sm font-medium min-w-0">
-                      <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-secondary-brand">
+                      <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-tertiary">
                         <ActiveIcon className="h-3.5 w-3.5 text-white" aria-hidden="true" />
                       </span>
                       <span className="truncate">{activeLabel}</span>

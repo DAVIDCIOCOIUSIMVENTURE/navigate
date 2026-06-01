@@ -124,8 +124,8 @@ export default function SelfDiscoveryPage() {
 
       {!mounted || totalItems === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center gap-6 py-24">
-          <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-secondary-brand">
-            <Compass className="h-8 w-8 text-secondary-brand-foreground" />
+          <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-tertiary">
+            <Compass className="h-8 w-8 text-tertiary-foreground" />
           </div>
           <div className="text-center flex flex-col gap-2 max-w-sm">
             <h2 className="text-lg font-semibold">No items yet</h2>
@@ -169,7 +169,7 @@ export default function SelfDiscoveryPage() {
                             <button
                               type="button"
                               onClick={() => router.push(`${FLOW_BASE}/${category.url}/${question.url}`)}
-                              className="text-base hover:text-secondary-brand text-left"
+                              className="text-base hover:text-tertiary text-left"
                             >
                               {question.title}
                             </button>

@@ -30,7 +30,7 @@ export default function NextStepsTopicPage() {
     <Card className="w-full h-full flex flex-col overflow-hidden">
       <CardHeader className={cn("pb-0 shrink-0", roomy ? "px-10 pt-10" : "px-6 pt-6")}>
         <CardTitle>
-          <div className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-secondary-brand">
+          <div className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-tertiary">
             <Icon className="h-5 w-5 text-white" />
           </div>
           {topic.title}

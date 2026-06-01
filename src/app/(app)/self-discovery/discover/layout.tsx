@@ -47,19 +47,19 @@ function NavContent({
             <Button
                 variant={isIntroActive ? "secondary" : "ghost"}
                 className={cn(
-                    "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2 hover:text-secondary-brand",
-                    isIntroActive && "text-secondary-brand",
+                    "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2 hover:text-tertiary",
+                    isIntroActive && "text-tertiary",
                 )}
                 onClick={() => onNavigate(BASE_PATH)}
             >
                 <span
                     className={cn(
                         "flex items-center justify-center w-6 h-6 rounded-md shrink-0",
-                        isIntroActive ? "bg-secondary-brand" : "bg-secondary-brand/10",
+                        isIntroActive ? "bg-tertiary" : "bg-tertiary/10",
                     )}
                 >
                     <Compass
-                        className={cn("h-3.5 w-3.5", isIntroActive ? "text-white" : "text-secondary-brand")}
+                        className={cn("h-3.5 w-3.5", isIntroActive ? "text-white" : "text-tertiary")}
                         aria-hidden="true"
                     />
                 </span>
@@ -80,9 +80,9 @@ function NavContent({
                     <AccordionItem key={category.url} value={category.url}>
                         <AccordionTrigger
                             className={cn(
-                                "w-full h-auto py-1.5 gap-4 justify-between px-3 text-sm text-left whitespace-normal rounded-md hover:no-underline hover:text-secondary-brand",
+                                "w-full h-auto py-1.5 gap-4 justify-between px-3 text-sm text-left whitespace-normal rounded-md hover:no-underline hover:text-tertiary",
                                 isExactActive
-                                    ? "bg-secondary text-secondary-brand"
+                                    ? "bg-secondary text-tertiary"
                                     : isDeepActive
                                         ? "text-foreground hover:bg-accent"
                                         : "hover:bg-accent",
@@ -101,13 +101,13 @@ function NavContent({
                                         <span
                                             className={cn(
                                                 "flex items-center justify-center w-6 h-6 rounded-md shrink-0",
-                                                isExactActive ? "bg-secondary-brand" : "bg-secondary-brand/10",
+                                                isExactActive ? "bg-tertiary" : "bg-tertiary/10",
                                             )}
                                         >
                                             <CategoryIcon
                                                 className={cn(
                                                     "h-3.5 w-3.5",
-                                                    isExactActive ? "text-white" : "text-secondary-brand",
+                                                    isExactActive ? "text-white" : "text-tertiary",
                                                 )}
                                                 aria-hidden="true"
                                             />
@@ -127,8 +127,8 @@ function NavContent({
                                             className={cn(
                                                 "text-sm cursor-pointer rounded-md px-2 py-1",
                                                 isActive
-                                                    ? "bg-secondary text-secondary-brand font-medium"
-                                                    : "text-foreground hover:text-secondary-brand"
+                                                    ? "bg-secondary text-tertiary font-medium"
+                                                    : "text-foreground hover:text-tertiary"
                                             )}
                                             onClick={() => onNavigate(`${BASE_PATH}/${category.url}/${question.url}`)}
                                             role="menuitem"
@@ -147,19 +147,19 @@ function NavContent({
             <Button
                 variant={isOtherActive ? "secondary" : "ghost"}
                 className={cn(
-                    "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2 hover:text-secondary-brand",
-                    isOtherActive && "text-secondary-brand",
+                    "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2 hover:text-tertiary",
+                    isOtherActive && "text-tertiary",
                 )}
                 onClick={() => onNavigate(`${BASE_PATH}/${OTHER_CATEGORY.url}`)}
             >
                 <span
                     className={cn(
                         "flex items-center justify-center w-6 h-6 rounded-md shrink-0",
-                        isOtherActive ? "bg-secondary-brand" : "bg-secondary-brand/10",
+                        isOtherActive ? "bg-tertiary" : "bg-tertiary/10",
                     )}
                 >
                     <OtherIcon
-                        className={cn("h-3.5 w-3.5", isOtherActive ? "text-white" : "text-secondary-brand")}
+                        className={cn("h-3.5 w-3.5", isOtherActive ? "text-white" : "text-tertiary")}
                         aria-hidden="true"
                     />
                 </span>
@@ -236,8 +236,8 @@ export default function SelfDiscoveryFlowLayout({
             </Button>
             {chromeTriggers}
             <h1 className="flex items-center gap-2 text-xl font-bold min-w-0">
-                <span className="flex h-7 w-7 items-center justify-center rounded-md bg-secondary-brand shrink-0" aria-hidden="true">
-                    <Compass className="h-4 w-4 text-secondary-brand-foreground" />
+                <span className="flex h-7 w-7 items-center justify-center rounded-md bg-tertiary shrink-0" aria-hidden="true">
+                    <Compass className="h-4 w-4 text-tertiary-foreground" />
                 </span>
                 <span className="truncate">Self Discovery</span>
             </h1>
@@ -266,7 +266,7 @@ export default function SelfDiscoveryFlowLayout({
                                                 className="w-full justify-between h-auto py-2 px-3"
                                             >
                                                 <span className="flex items-center gap-2 text-sm font-medium min-w-0">
-                                                    <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-secondary-brand">
+                                                    <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-tertiary">
                                                         <ActiveIcon className="h-3.5 w-3.5 text-white" aria-hidden="true" />
                                                     </span>
                                                     <span className="truncate">{activeLabel}</span>

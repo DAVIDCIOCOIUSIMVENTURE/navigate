@@ -15,6 +15,7 @@ import {
   BookOpen, FlaskConical, Clock, Trophy, Sparkles,
   TrendingUp, Building2, Calculator, Scale, ShieldCheck,
   Glasses, HeartHandshake, Shuffle, Radar,
+  Telescope,
   X,
 } from "lucide-react"
 
@@ -125,7 +126,7 @@ const guidanceItems: GuidanceItem[] = [
           subtitle="Navigate is your guide through the innovation journey, from surfacing areas of personal interest to validating problems worth solving."
         />
         <GuidanceSection icon={Compass} iconBg="bg-primary" title="The journey">
-          <p>Navigate breaks the process into four connected stages. Work through them in order; later stages build on earlier ones. An optional <Keyword>Why It Matters</Keyword> section sits before everything else for those who want the grounding before they start.</p>
+          <p>Navigate breaks the process into a sequence of connected stages. Work through them in order; later stages build on earlier ones. An optional <Keyword>Why It Matters</Keyword> section sits before everything else for those who want the grounding before they start.</p>
           <div className="flex flex-col gap-3 pt-1">
             <NumberedStep n={0} title="Why It Matters (optional)" accent="bg-violet-800">
               Short pages, videos, and case studies on why each stage exists and what happens when founders skip them.
@@ -133,20 +134,23 @@ const guidanceItems: GuidanceItem[] = [
             <NumberedStep n={1} title="Self Discovery" accent="bg-indigo-800">
               Explore your background, interests, and frustrations to surface <Keyword>problem triggers</Keyword>: seeds worth investigating.
             </NumberedStep>
-            <NumberedStep n={2} title="Problem Discovery" accent="bg-orange-700">
+            <NumberedStep n={2} title="Identify Problems" accent="bg-orange-700">
               Turn those triggers into concrete, well-framed candidate problems using guided or freeform tools.
             </NumberedStep>
-            <NumberedStep n={3} title="Problem Validation" accent="bg-green-800">
-              Stress-test each candidate against alternatives, impact, and opportunity to decide if it is worth pursuing.
+            <NumberedStep n={3} title="Explore the Problem" accent="bg-tertiary">
+              Take one candidate for a deeper dive: define the customer, refine the problem, map existing solutions, and capture the jobs to be done.
             </NumberedStep>
-            <NumberedStep n={4} title="Solutions" accent="bg-blue-900">
+            <NumberedStep n={4} title="Problem Validation" accent="bg-green-800">
+              Stress-test the explored problem against price, market size, and competition to decide if it is worth pursuing.
+            </NumberedStep>
+            <NumberedStep n={5} title="Solutions" accent="bg-blue-900">
               Once a problem is validated, generate and evaluate potential solutions.
             </NumberedStep>
           </div>
         </GuidanceSection>
         <TipCallout items={[
           "You can move between stages freely; earlier work is never locked",
-          "The sidebar on the left is your map and all progress auto-saves",
+          "Everything auto-saves as you go; there is nothing to submit",
           "Open this guidance at any time from the Guidance button in the header",
         ]} />
       </div>
@@ -185,7 +189,7 @@ const guidanceItems: GuidanceItem[] = [
         <TipCallout items={[
           "Pick the sections that match what you're unsure about; you don't have to read all five",
           "Case studies are grouped as 'what went wrong' or 'what went right'; both are worth reading",
-          "You can return at any time from the sidebar",
+          "You can return at any time from the Why It Matters button in the header",
         ]} />
       </div>
     ),
@@ -211,7 +215,7 @@ const guidanceItems: GuidanceItem[] = [
           <p>Some questions include suggestion exercises to help you generate ideas if you are unsure where to start. Use them as prompts, not constraints.</p>
         </GuidanceSection>
         <GuidanceSection icon={Package} iconBg="bg-indigo-800" title="The output">
-          <p>At the end of Self Discovery you will have a collection of problem triggers visible in the left sidebar. These are not problems yet; they are areas of interest. You carry them into Problem Discovery, where dedicated tools sharpen them into concrete, well-framed problems worth validating.</p>
+          <p>At the end of Self Discovery you will have a collection of problem triggers saved to your self-discovery library. These are not problems yet; they are areas of interest. You carry them into Identify Problems, where dedicated tools sharpen them into concrete, well-framed problems worth exploring and validating.</p>
         </GuidanceSection>
         <TipCallout items={[
           <>Be specific: <Keyword>&ldquo;healthcare admin is slow&rdquo;</Keyword> is more useful than <Keyword>&ldquo;healthcare&rdquo;</Keyword></>,
@@ -272,26 +276,26 @@ const guidanceItems: GuidanceItem[] = [
           <p>If you already have a clear problem in mind, skip the exploration tools and write it directly. Useful when you have prior knowledge of a domain or have already spoken to potential customers.</p>
         </GuidanceSection>
         <GuidanceSection icon={ArrowRight} iconBg="bg-orange-700" title="What comes next">
-          <p>Once you have a list of candidate problems, move on to Problem Validation to choose one and analyse it in depth: alternatives, shortcomings, refinement (root causes, 5 whys, affected groups), emotional and quantifiable impact, and ultimately a validated problem statement.</p>
+          <p>Once you have a list of candidate problems, pick one and take it into <Keyword>Explore the Problem</Keyword>: a deeper dive that defines the customer, refines the problem (root causes, 5 whys, affected groups), maps existing solutions and their shortcomings, and captures the jobs to be done. That work then feeds Problem Validation, where you size the market and decide whether the problem is worth pursuing.</p>
         </GuidanceSection>
       </div>
     ),
   },
   {
-    id: "problem-validation",
-    title: "Problem Validation",
-    icon: ClipboardCheck,
-    iconBg: "bg-green-800",
+    id: "explore-problem",
+    title: "Explore the Problem",
+    icon: Telescope,
+    iconBg: "bg-tertiary",
     content: (
       <div className="flex flex-col gap-5">
         <GuidanceHero
-          icon={ClipboardCheck}
-          tone="bg-green-800"
-          title="Problem Validation"
-          subtitle="Stress-test a candidate problem before investing in a solution. The goal is not to prove the problem is valid; it is to gather enough evidence to make an honest, informed decision."
+          icon={Telescope}
+          tone="bg-tertiary"
+          title="Explore the Problem"
+          subtitle="A deeper dive into a single candidate before you size any markets. Understand exactly who has the problem, why it really happens, how people cope today, and what they are trying to get done. Everything you capture here carries forward into Problem Validation."
         />
-        <GuidanceSection icon={Play} iconBg="bg-green-800" title="How it works">
-          <p>Each problem goes through a structured sequence of steps. Work through them in order; each step builds on the last, but you can return and update any step as your thinking develops.</p>
+        <GuidanceSection icon={Play} iconBg="bg-tertiary" title="How it works">
+          <p>Pick a candidate problem and open <Keyword>Explore</Keyword>. You work through a sequence of steps: define the customer, refine the problem, map existing solutions, and capture the jobs to be done. Work through them in order; each builds on the last, but you can return and update any step as your thinking develops.</p>
         </GuidanceSection>
         <GuidanceSection icon={Users} iconBg="bg-indigo-800" title="Define your customer">
           <p>Pin down exactly who experiences the problem. Vague labels like <Keyword>&ldquo;everyone&rdquo;</Keyword> or <Keyword>&ldquo;businesses&rdquo;</Keyword> lead to vague problems and vague solutions; a sharp customer definition unlocks every later step. Narrow down by:</p>
@@ -323,6 +327,33 @@ const guidanceItems: GuidanceItem[] = [
             <ConceptCard icon={Eye} label="How they want to be seen" description="The social pulls, rated the same way (e.g. not look disorganised in front of the estate agent)." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
           </div>
           <p className="pt-1">On the price step you pick one of these jobs to anchor the price on: usually the strongest emotional or social pull, but a functional job can be the <Keyword>anchor</Keyword> when it is what drives the purchase.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={FileText} iconBg="bg-tertiary" title="Summary">
+          <p>A read-only overview of everything Explore captured: the customer definition, refinement work, existing solutions and their shortcomings, and the three jobs lists. Review it, then continue to Problem Validation when you are ready.</p>
+        </GuidanceSection>
+        <TipCallout items={[
+          "A sharp customer definition unlocks every later step; resist 'everyone'",
+          "Refinement work done here flows into solution discovery later, so do not skip it",
+          "Capture the strongest emotional or social job: it usually justifies the price more than the tangible task",
+        ]} />
+      </div>
+    ),
+  },
+  {
+    id: "problem-validation",
+    title: "Problem Validation",
+    icon: ClipboardCheck,
+    iconBg: "bg-green-800",
+    content: (
+      <div className="flex flex-col gap-5">
+        <GuidanceHero
+          icon={ClipboardCheck}
+          tone="bg-green-800"
+          title="Problem Validation"
+          subtitle="Stress-test an explored problem before investing in a solution. Building on the customer, jobs, and existing solutions captured in Explore, you set a price, size the market, weigh up the competition, and reach a verdict. The goal is not to prove the problem is valid; it is to gather enough evidence to make an honest, informed decision."
+        />
+        <GuidanceSection icon={Play} iconBg="bg-green-800" title="How it works">
+          <p>Validation picks up where Explore left off. You work through a short sequence of steps: price, market size, competition, and verdict. Work through them in order; each builds on the last, but you can return and update any step as your thinking develops.</p>
         </GuidanceSection>
         <GuidanceSection icon={PoundSterling} iconBg="bg-teal-700" title="What they would pay to solve it">
           <p>A customer hires a solution for one primary job: the one that tips them into buying. The other jobs are secondary, they nudge what someone will pay rather than each adding their own price. So you set one price, anchored on that one dominant job. Pick whichever job drives the purchase, functional, emotional, or social, not the cost of building a feature, then cross-check the number against three angles:</p>
@@ -365,10 +396,9 @@ const guidanceItems: GuidanceItem[] = [
         </GuidanceSection>
         <TipCallout items={[
           "Be honest about the evidence: weak validation data is a signal, not a failure",
-          "Existing solutions with many shortcomings suggest a genuine gap in the market",
           "Anchor the price on the one job that drives the purchase, not on the cost of building a feature",
           "If you cannot justify the reachable share or realistic share to a sceptical friend, slide them down",
-          "Refinement work done here flows into solution discovery, so do not skip it",
+          "A large total market is not the same as proven willingness to pay; read the underlying signals",
           "You can validate multiple problems and compare verdicts before committing to one",
         ]} />
       </div>
