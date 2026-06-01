@@ -36,9 +36,10 @@ interface EditProblemDialogProps {
   onClose: () => void
   title?: string
   showStatus?: boolean
+  onDone?: (problemId: number) => void
 }
 
-export function EditProblemDialog({ problem, onClose, title: dialogTitle = "Edit Problem", showStatus = true }: EditProblemDialogProps) {
+export function EditProblemDialog({ problem, onClose, title: dialogTitle = "Edit Problem", showStatus = true, onDone }: EditProblemDialogProps) {
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
 
@@ -179,7 +180,10 @@ export function EditProblemDialog({ problem, onClose, title: dialogTitle = "Edit
               <Button
                 disabled={!hasContent}
                 title={disabledHint}
-                onClick={onClose}
+                onClick={() => {
+                  if (onDone) onDone(problem.id)
+                  else onClose()
+                }}
               >
                 Done
               </Button>

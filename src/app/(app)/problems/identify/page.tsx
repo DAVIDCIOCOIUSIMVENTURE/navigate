@@ -7,6 +7,7 @@ import type { AppDispatch, RootState } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Brain, PenLine, Glasses, Microscope, Target } from "lucide-react"
 import { EditProblemDialog } from "@/components/edit-problem-dialog"
+import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 import { MethodPickerBoard, type MethodPickerItem } from "@/components/method-picker-board"
@@ -20,6 +21,9 @@ export default function IdentifyProblemsPage() {
   const draftProblem = useSelector((s: RootState) =>
     draftProblemId !== null ? s.problems.problems.find((p) => p.id === draftProblemId) ?? null : null
   )
+
+  const [savedProblemId, setSavedProblemId] = useState<number | null>(null)
+  const [savedDialogOpen, setSavedDialogOpen] = useState(false)
 
   async function handleDefine() {
     const created = await dispatch.problems.create({ source: "manual" })
@@ -39,6 +43,12 @@ export default function IdentifyProblemsPage() {
       }
     }
     setDraftProblemId(null)
+  }
+
+  function handleDraftDone(problemId: number) {
+    setDraftProblemId(null)
+    setSavedProblemId(problemId)
+    setSavedDialogOpen(true)
   }
 
   const items: MethodPickerItem[] = [
@@ -136,8 +146,15 @@ export default function IdentifyProblemsPage() {
       <EditProblemDialog
         problem={draftProblem}
         onClose={handleDraftClose}
+        onDone={handleDraftDone}
         title="Define a Problem Statement"
         showStatus={false}
+      />
+
+      <ProblemSavedDialog
+        open={savedDialogOpen}
+        onOpenChange={setSavedDialogOpen}
+        problemId={savedProblemId}
       />
     </>
   )
