@@ -280,11 +280,15 @@ function AffectedGroupsCaseStudies() {
 
 type ToolHint = { icon: LucideIcon; title: string; subtitle: string; bg: string }
 
-const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo: string; hints: ToolHint[] }> = {
+const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo: string; yourTurn: { question: string; description: string }; hints: ToolHint[] }> = {
   "root-causes": {
     title: "Root Causes",
     description: "List the underlying causes of the problem. Ask yourself: \"Why does this happen?\" This technique helps you move beyond surface-level symptoms to uncover what's really driving the issue.",
     whatYouDo: "List every underlying reason the problem exists. Focus on the <strong>root causes</strong>, not the symptoms. Then add <strong>notes</strong> to capture any patterns or connections you spot.",
+    yourTurn: {
+      question: "What are the root causes?",
+      description: "List the underlying causes below, then capture any patterns or connections you notice in the notes.",
+    },
     hints: [
       { icon: Search, title: "Dig deeper", subtitle: "Go beyond surface-level symptoms", bg: "bg-blue-900" },
       { icon: Plus, title: "Capture everything", subtitle: "Don't filter yet, list all possible causes", bg: "bg-yellow-600" },
@@ -295,6 +299,10 @@ const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo:
     title: "5 Whys Technique",
     description: "Start with the problem and ask \"Why?\" five times in succession. Each answer becomes the basis for the next question, drilling down to the fundamental root cause.",
     whatYouDo: "Create a <strong>chain</strong> of five \"Why?\" questions. Each answer becomes the starting point for the next question. By the 5th why you should reach a <strong>fundamental cause</strong> that, if fixed, prevents the problem.",
+    yourTurn: {
+      question: "What's the fundamental cause?",
+      description: "Build your chain of five whys below until you reach a cause that, once fixed, stops the problem from recurring.",
+    },
     hints: [
       { icon: Search, title: "Start specific", subtitle: "Begin with a clear problem statement", bg: "bg-blue-900" },
       { icon: Plus, title: "Keep asking why", subtitle: "Each answer feeds the next question", bg: "bg-violet-800" },
@@ -305,6 +313,10 @@ const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo:
     title: "Affected Groups",
     description: "Identify who is most affected by this problem and how severely. Understanding the different groups helps you design a solution that targets the right audience.",
     whatYouDo: "List the different <strong>groups of people</strong> affected by this problem. For each group, describe <strong>how</strong> they are affected and rate the <strong>severity</strong> so you can prioritise who to solve for first.",
+    yourTurn: {
+      question: "Who is affected, and how badly?",
+      description: "List the affected groups below and rate how severely each one feels the problem so you know who to solve for first.",
+    },
     hints: [
       { icon: Search, title: "Think broadly", subtitle: "Customers, employees, stakeholders, partners", bg: "bg-blue-900" },
       { icon: Plus, title: "Describe the impact", subtitle: "What makes each group's experience unique?", bg: "bg-yellow-600" },
@@ -358,6 +370,13 @@ export default function RefinePage() {
         )}
 
         {analysisToolType && <hr className="border-border/40" />}
+
+        {toolInfo && (
+          <div className="flex flex-col gap-2 items-center text-center">
+            <h3 className="text-xl font-bold"><span className="text-primary">Your Turn:</span> {toolInfo.yourTurn.question}</h3>
+            <p className="text-base max-w-xl">{toolInfo.yourTurn.description}</p>
+          </div>
+        )}
 
         {analysisToolType && CaseStudies && (
           <Tabs defaultValue="strategy" className="flex flex-col gap-4">
