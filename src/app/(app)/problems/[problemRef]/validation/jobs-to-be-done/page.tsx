@@ -29,7 +29,7 @@ export default function JobsToBeDonePage() {
             Before you can guess what a customer would pay, you need a clear picture of what they are really hiring a solution to do. People do not buy products: they buy progress on something they are trying to get done. Some of that progress is a tangible task. Some of it is a feeling they want to have, or stop having. Some of it is how they want to be seen by others.
           </p>
           <p>
-            The trap is collapsing all of these into one short phrase like &quot;help me move house&quot;. Keep them separate. The strongest emotional or social pull is usually what sets the price on the next step, not the tangible task. A house move with no chain risk is the same job functionally as one with a fragile chain, but the price someone will pay to make the chain anxiety disappear is far higher than the price they will pay for a tidier solicitor portal.
+            The trap is collapsing all of these into one short phrase like &quot;help me move house&quot;. Keep them separate. On the next step you will pick one of these jobs to anchor the price on: usually the strongest emotional or social pull rather than the tangible task, though not always. A house move with no chain risk is the same job functionally as one with a fragile chain, but the price someone will pay to make the chain anxiety disappear is far higher than the price they will pay for a tidier solicitor portal.
           </p>
 
           <h3 className="mt-4 text-xl font-bold text-foreground">Three kinds of job to capture</h3>
@@ -70,7 +70,7 @@ export default function JobsToBeDonePage() {
 
           <h3 className="mt-4 text-xl font-bold text-foreground">What will you do?</h3>
           <p>
-            Add at least one job under each of the three headings. Lean into emotional and social jobs even if they feel softer than the tangible tasks: those are usually where the price comes from. The strongest pull you capture will be carried over to the next step, where you put a number on what a customer would pay to make the problem go away.
+            Add at least one job under each of the three headings. Lean into emotional and social jobs even if they feel softer than the tangible tasks: those are usually where the price comes from. On the next step you will choose one of these jobs as the anchor for the price, then put a number on what a customer would pay to make the problem go away. Pick whichever job truly drives the decision to buy, whatever its type.
           </p>
         </div>
 

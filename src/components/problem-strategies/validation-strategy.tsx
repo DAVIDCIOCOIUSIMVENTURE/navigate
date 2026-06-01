@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
-import type { Job, JobIntensity, JobsToBeDone, ValidationMetric } from "@/types/validation"
+import type { Job, JobAnchor, JobIntensity, JobKind, JobsToBeDone, ValidationMetric } from "@/types/validation"
 import { DEFAULT_OBTAINABLE_SHARE, DEFAULT_REACHABLE_SHARE } from "@/types/validation"
 import { cn } from "@/lib/utils"
 import {
@@ -40,15 +40,26 @@ function nextJobId(jobs: Job[]): number {
   return jobs.reduce((max, j) => Math.max(max, j.id), 0) + 1
 }
 
-function strongestJob(jobs: JobsToBeDone): { kind: "emotional" | "social"; job: Job } | null {
-  const candidates: { kind: "emotional" | "social"; job: Job }[] = [
-    ...jobs.emotional.map((j) => ({ kind: "emotional" as const, job: j })),
-    ...jobs.social.map((j) => ({ kind: "social" as const, job: j })),
-  ]
-  const ranked = candidates
-    .filter((c) => c.job.text.trim().length > 0 && c.job.intensity !== "")
+// The sensible default anchor before the user picks one: the highest-intensity
+// job across all three kinds. listAllJobs returns emotional and social before
+// functional, and the sort is stable, so a tie resolves toward the
+// emotional/social pull and falls back to a functional job only when that is
+// all there is.
+function defaultAnchorJob(jobs: JobsToBeDone): { kind: JobKind; job: Job } | null {
+  const ranked = [...listAllJobs(jobs)]
     .sort((a, b) => INTENSITY_RANK[b.job.intensity] - INTENSITY_RANK[a.job.intensity])
   return ranked[0] ?? null
+}
+
+// The job the price is anchored on: the user's explicit pick when it still
+// exists, otherwise the default. Always returns the same shape so callers do
+// not have to care which one it was.
+function resolveAnchorJob(jobs: JobsToBeDone, anchor: JobAnchor | null): { kind: JobKind; job: Job } | null {
+  if (anchor) {
+    const job = jobs[anchor.kind]?.find((j) => j.id === anchor.id)
+    if (job && job.text.trim().length > 0) return { kind: anchor.kind, job }
+  }
+  return defaultAnchorJob(jobs)
 }
 
 function HowManyInput({
@@ -464,8 +475,6 @@ function JobsToBeDoneSection({
   )
 }
 
-type JobKind = "functional" | "emotional" | "social"
-
 const INTENSITY_BADGE: Record<JobIntensity, string> = {
   "": "bg-white/20 text-white",
   mild: "bg-yellow-600 text-white",
@@ -526,43 +535,80 @@ function listAllJobs(jobs: JobsToBeDone): { kind: JobKind; job: Job }[] {
 function WorthSection({
   worthToThem,
   jobs,
+  anchorJob,
   setWorthToThem,
+  setAnchorJob,
   readOnly,
 }: {
   worthToThem: ValidationMetric
   jobs: JobsToBeDone
+  anchorJob: JobAnchor | null
   setWorthToThem: (patch: Partial<ValidationMetric>) => void
+  setAnchorJob: (val: JobAnchor | null) => void
   readOnly?: boolean
 }) {
-  const top = strongestJob(jobs)
   const allJobs = listAllJobs(jobs)
-  const otherJobs = top
-    ? allJobs.filter(({ kind, job }) => !(kind === top.kind && job.id === top.job.id))
-    : allJobs
+  const anchor = resolveAnchorJob(jobs, anchorJob)
 
   return (
     <div className="flex flex-col gap-6">
-      {top && (
+      {allJobs.length > 0 && (
         <div className="rounded-xl border border-white/20 bg-white/10 p-5 flex flex-col gap-4 text-white">
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-white shrink-0" />
-            <span className="text-base font-semibold text-white">Strongest pull from your jobs list</span>
+            <span className="text-base font-semibold text-white">
+              {readOnly ? "The job you anchored the price on" : "Pick the one job to anchor the price on"}
+            </span>
           </div>
-          <JobLine kind={top.kind} job={top.job} prominent />
-          <p className="text-base text-white">Anchor the price on this pull, not on the cost of building a feature. The bigger the emotional or social weight, the more a customer will pay to make it stop.</p>
-          {otherJobs.length > 0 && (
-            <Accordion type="single" collapsible className="-mb-2">
-              <AccordionItem value="other-jobs" className="border-t border-white/20">
-                <AccordionTrigger className="py-2 text-base font-medium text-white hover:no-underline [&>svg]:text-white">
-                  See the other jobs you captured ({otherJobs.length})
-                </AccordionTrigger>
-                <AccordionContent className="pb-2 pt-0 flex flex-col gap-4 text-white">
-                  {otherJobs.map(({ kind, job }) => (
-                    <JobLine key={`${kind}-${job.id}`} kind={kind} job={job} />
-                  ))}
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+          {!readOnly && (
+            <p className="text-base text-white">A customer hires a solution for one primary job: the one that tips them into buying. The others are secondary, they nudge what someone will pay rather than each adding their own price. So you set one price, anchored on that one dominant job. Pick whichever job below truly drives the decision to buy, whether it is functional, emotional, or social.</p>
+          )}
+          {readOnly ? (
+            anchor
+              ? <JobLine kind={anchor.kind} job={anchor.job} prominent />
+              : <p className="text-base italic text-white">No job captured.</p>
+          ) : (
+            <div role="radiogroup" aria-label="Pick the job to anchor the price on" className="flex flex-col gap-2">
+              {allJobs.map(({ kind, job }) => {
+                const selected = !!anchor && anchor.kind === kind && anchor.job.id === job.id
+                const pick = () => setAnchorJob({ kind, id: job.id })
+                return (
+                  <div
+                    key={`${kind}-${job.id}`}
+                    role="radio"
+                    aria-checked={selected}
+                    tabIndex={0}
+                    onClick={pick}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault()
+                        pick()
+                      }
+                    }}
+                    className={cn(
+                      "flex w-full cursor-pointer items-start gap-3 rounded-lg border p-3 text-left transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white",
+                      selected ? "border-white bg-white/20" : "border-white/20 hover:bg-white/10",
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "mt-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border",
+                        selected ? "border-white bg-white" : "border-white/50",
+                      )}
+                      aria-hidden="true"
+                    >
+                      {selected && <span className="h-2 w-2 rounded-full bg-secondary-brand" />}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <JobLine kind={kind} job={job} />
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+          {!readOnly && (
+            <p className="text-base text-white">Anchor the price on this pull, not on the cost of building a feature. The bigger the emotional or social weight, the more a customer will pay to make it stop.</p>
           )}
         </div>
       )}
@@ -573,7 +619,7 @@ function WorthSection({
           <span className="text-base font-semibold text-white">What they would pay each time the problem occurs</span>
         </div>
         {!readOnly && (
-          <p className="text-base text-white">Picture the customer being asked: &quot;If a service made this problem go away cleanly, what would you happily pay?&quot; Use the strongest job above to guide the number, not the cost of building a feature. This is a hypothesis to test in real conversations, not a fact yet. If you cannot picture a customer signing off on the figure, round it down.</p>
+          <p className="text-base text-white">Picture the customer being asked: &quot;If a service made this problem go away cleanly, what would you happily pay?&quot; Use your chosen anchor job above to guide the number, not the cost of building a feature. This is a hypothesis to test in real conversations, not a fact yet. If you cannot picture a customer signing off on the figure, round it down.</p>
         )}
         <CurrencyInput metric={worthToThem} onChange={setWorthToThem} readOnly={readOnly} />
       </div>
@@ -941,9 +987,9 @@ export function JobsToBeDoneStrategy({ readOnly = false }: { readOnly?: boolean 
 
 export function WorthStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const {
-    validationAssessment, setWorthToThem,
+    validationAssessment, setWorthToThem, setAnchorJob,
   } = useProblem()
-  const { worthToThem, jobsToBeDone } = validationAssessment
+  const { worthToThem, jobsToBeDone, anchorJob } = validationAssessment
 
   const hasAny = worthToThem.value !== null && worthToThem.value !== 0
 
@@ -960,7 +1006,9 @@ export function WorthStrategy({ readOnly = false }: { readOnly?: boolean }) {
       <WorthSection
         worthToThem={worthToThem}
         jobs={jobsToBeDone}
+        anchorJob={anchorJob}
         setWorthToThem={setWorthToThem}
+        setAnchorJob={setAnchorJob}
         readOnly={readOnly}
       />
     </div>
@@ -1089,7 +1137,7 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const {
     validationAssessment, status, setStatus,
   } = useProblem()
-  const { jobsToBeDone, howManyPeople, howOften, worthToThem, reachableShare, obtainableShare, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
+  const { jobsToBeDone, anchorJob, howManyPeople, howOften, worthToThem, reachableShare, obtainableShare, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
 
   const customers = howManyPeople.value ?? 0
   const frequency = howOften.value ?? 0
@@ -1103,7 +1151,7 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const som = sam * (obtainPct / 100)
   const ready = customers > 0 && price > 0
 
-  const top = strongestJob(jobsToBeDone)
+  const anchor = resolveAnchorJob(jobsToBeDone, anchorJob)
 
   return (
     <div className="bg-secondary-brand rounded-xl p-8">
@@ -1127,9 +1175,9 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
               value={price > 0 ? formatNumber(price, { currency }) : ""}
             />
             <MetricRow
-              label="Strongest job pull"
+              label="Anchor job for the price"
               icon={Heart}
-              value={top ? `${top.job.intensity} (${top.kind})` : ""}
+              value={anchor ? (anchor.job.intensity ? `${anchor.job.intensity} (${anchor.kind})` : anchor.kind) : ""}
             />
             <MetricRow
               label="Reachable share of the market"
@@ -1186,12 +1234,12 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
 export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const {
     status, setStatus,
-    validationAssessment, setJobsToBeDone, setHowManyPeople, setHowOften, setWorthToThem,
+    validationAssessment, setJobsToBeDone, setAnchorJob, setHowManyPeople, setHowOften, setWorthToThem,
     setReachableShare, setObtainableShare, setCostOfSwitching,
     setSolutionEffectiveness, setCompetitorSize,
   } = useProblem()
 
-  const { jobsToBeDone, howManyPeople, howOften, worthToThem, reachableShare, obtainableShare, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
+  const { jobsToBeDone, anchorJob, howManyPeople, howOften, worthToThem, reachableShare, obtainableShare, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
 
   const jobsCount = jobsToBeDone.functional.length + jobsToBeDone.emotional.length + jobsToBeDone.social.length
   const hasAnyMetric = [howManyPeople, howOften, worthToThem, costOfSwitching, solutionEffectiveness, competitorSize]
@@ -1221,7 +1269,9 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
         <WorthSection
           worthToThem={worthToThem}
           jobs={jobsToBeDone}
+          anchorJob={anchorJob}
           setWorthToThem={setWorthToThem}
+          setAnchorJob={setAnchorJob}
           readOnly={readOnly}
         />
 

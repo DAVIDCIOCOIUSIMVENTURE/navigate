@@ -27,6 +27,7 @@ import type { RootState, AppDispatch } from "@/store"
 import type {
   ExistingSolutionItem,
   JobsToBeDone,
+  JobAnchor,
   ValidationStatus,
   ValidationMetric,
   ValidationAssessment,
@@ -56,6 +57,7 @@ type ProblemContextValue = {
   setStatus: (val: ValidationStatus) => void
   validationAssessment: ValidationAssessment
   setJobsToBeDone: (val: JobsToBeDone) => void
+  setAnchorJob: (val: JobAnchor | null) => void
   setHowManyPeople: (patch: Partial<ValidationMetric>) => void
   setHowOften: (patch: Partial<ValidationMetric>) => void
   setWorthToThem: (patch: Partial<ValidationMetric>) => void
@@ -163,6 +165,21 @@ export function ProblemProvider({
           validationAssessment: {
             ...validationAssessment,
             jobsToBeDone: val,
+          },
+        },
+      })
+    },
+    [dispatch, problemId, validationAssessment]
+  )
+
+  const setAnchorJob = useCallback(
+    (val: JobAnchor | null) => {
+      dispatch.problems.update({
+        id: problemId,
+        patch: {
+          validationAssessment: {
+            ...validationAssessment,
+            anchorJob: val,
           },
         },
       })
@@ -352,6 +369,7 @@ export function ProblemProvider({
         status, setStatus,
         validationAssessment,
         setJobsToBeDone,
+        setAnchorJob,
         setHowManyPeople,
         setHowOften,
         setWorthToThem,

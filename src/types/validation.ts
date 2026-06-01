@@ -13,6 +13,8 @@ export type ValidationMetric = {
 
 export type JobIntensity = "" | "mild" | "strong" | "unbearable"
 
+export type JobKind = "functional" | "emotional" | "social"
+
 export type Job = {
   id: number
   text: string
@@ -25,8 +27,17 @@ export type JobsToBeDone = {
   social: Job[]
 }
 
+/**
+ * The single job the user picked to anchor the price on. A customer hires a
+ * solution for one primary job, so the price is anchored on one job, not summed
+ * across all of them. `kind` + `id` together identify it because job ids are
+ * only unique within their own list.
+ */
+export type JobAnchor = { kind: JobKind; id: number }
+
 export type ValidationAssessment = {
   jobsToBeDone: JobsToBeDone
+  anchorJob: JobAnchor | null
   howManyPeople: ValidationMetric
   howOften: ValidationMetric
   worthToThem: ValidationMetric
@@ -50,6 +61,7 @@ export const DEFAULT_JOBS_TO_BE_DONE: JobsToBeDone = {
 
 export const DEFAULT_VALIDATION_ASSESSMENT: ValidationAssessment = {
   jobsToBeDone: DEFAULT_JOBS_TO_BE_DONE,
+  anchorJob: null,
   howManyPeople: { value: 0, unit: "", level: "" },
   howOften: { value: 0, unit: "", level: "" },
   worthToThem: { value: 0, unit: "", level: "" },

@@ -322,12 +322,12 @@ const guidanceItems: GuidanceItem[] = [
             <ConceptCard icon={Heart} label="How they want to feel" description="The emotional pulls, rated mild, strong, or unbearable from what real customers have said (e.g. stop lying awake worrying the chain will collapse)." tile="bg-red-800" border="border-red-800/20 bg-red-800/5" />
             <ConceptCard icon={Eye} label="How they want to be seen" description="The social pulls, rated the same way (e.g. not look disorganised in front of the estate agent)." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
           </div>
-          <p className="pt-1">The highest-intensity emotional or social job is carried forward to the price step as the <Keyword>strongest pull</Keyword>.</p>
+          <p className="pt-1">On the price step you pick one of these jobs to anchor the price on: usually the strongest emotional or social pull, but a functional job can be the <Keyword>anchor</Keyword> when it is what drives the purchase.</p>
         </GuidanceSection>
         <GuidanceSection icon={DollarSign} iconBg="bg-teal-700" title="What they would pay to solve it">
-          <p>Anchor the price on the strongest pull from the jobs list, not on the cost of building a feature. The bigger the emotional or social weight, the more a customer will pay to make it stop. Cross-check the number against three angles:</p>
+          <p>A customer hires a solution for one primary job: the one that tips them into buying. The other jobs are secondary, they nudge what someone will pay rather than each adding their own price. So you set one price, anchored on that one dominant job. Pick whichever job drives the purchase, functional, emotional, or social, not the cost of building a feature, then cross-check the number against three angles:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
-            <ConceptCard icon={Heart} label="Strongest job pull" description="The headline anchor. Strong or unbearable pulls can carry prices an order of magnitude above the tangible task alone." tile="bg-teal-700" border="border-teal-700/20 bg-teal-700/5" />
+            <ConceptCard icon={Heart} label="The one anchor job" description="The single job that drives the purchase. Often the strongest emotional or social pull, which can carry prices an order of magnitude above the tangible task, but a functional job can anchor it too." tile="bg-teal-700" border="border-teal-700/20 bg-teal-700/5" />
             <ConceptCard icon={Wallet} label="Money already spent" description="Subscriptions, contractors, late fines, chain chasers, replacement parts. Revealed spend is the strongest sanity check on a number that came out of an emotional read." tile="bg-teal-700" border="border-teal-700/20 bg-teal-700/5" />
             <ConceptCard icon={Scale} label="Hypothesis, not fact" description="Ask real customers at different price points what they would pay; the captured number is a starting point for those conversations, not the final answer." tile="bg-teal-700" border="border-teal-700/20 bg-teal-700/5" />
           </div>
@@ -353,7 +353,7 @@ const guidanceItems: GuidanceItem[] = [
           <p className="pt-1">Strong opportunities combine low or moderate switching costs, average-or-worse alternatives, and competitors that are small or distracted. <Keyword>SOM = SAM × realistic share</Keyword>.</p>
         </GuidanceSection>
         <GuidanceSection icon={ShieldCheck} iconBg="bg-destructive" title="Record your verdict">
-          <p>The verdict step pulls everything together. The summary card shows each captured factor (three market signals, the strongest job pull, and three competition signals) with a colour-coded dot (green favourable, amber neutral, red unfavourable) and a stack of the three market headlines (TAM, SAM, SOM) from the earlier steps:</p>
+          <p>The verdict step pulls everything together. The summary card shows each captured factor (three market signals, the anchor job, and three competition signals) with a colour-coded dot (green favourable, amber neutral, red unfavourable) and a stack of the three market headlines (TAM, SAM, SOM) from the earlier steps:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(220px,1fr))]">
             <ConceptCard icon={Scale} label="Lean indicator" description="Once at least five of the seven signals are captured, a banner shows whether the evidence leans toward Valid, Unsure, or Invalid." tile="bg-destructive" border="border-destructive/20 bg-destructive/5" />
             <ConceptCard icon={Calculator} label="Market headlines are sanity checks" description="A large TAM is not the same as proven willingness to pay. Read the underlying signals before trusting the headline." tile="bg-destructive" border="border-destructive/20 bg-destructive/5" />
@@ -366,7 +366,7 @@ const guidanceItems: GuidanceItem[] = [
         <TipCallout items={[
           "Be honest about the evidence: weak validation data is a signal, not a failure",
           "Existing solutions with many shortcomings suggest a genuine gap in the market",
-          "Anchor the price on the strongest emotional or social job, not on the cost of building a feature",
+          "Anchor the price on the one job that drives the purchase, not on the cost of building a feature",
           "If you cannot justify the reachable share or realistic share to a sceptical friend, slide them down",
           "Refinement work done here flows into solution discovery, so do not skip it",
           "You can validate multiple problems and compare verdicts before committing to one",
