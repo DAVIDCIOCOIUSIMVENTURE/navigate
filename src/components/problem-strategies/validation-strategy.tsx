@@ -570,7 +570,7 @@ function WorthSection({
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
           <DollarSign className="h-3.5 w-3.5 text-white shrink-0" />
-          <span className="text-base font-semibold text-white">What they would pay each time the problem hits</span>
+          <span className="text-base font-semibold text-white">What they would pay each time the problem occurs</span>
         </div>
         {!readOnly && (
           <p className="text-base text-white">Picture the customer being asked: &quot;If a service made this problem go away cleanly, what would you happily pay?&quot; Use the strongest job above to guide the number, not the cost of building a feature. This is a hypothesis to test in real conversations, not a fact yet. If you cannot picture a customer signing off on the figure, round it down.</p>

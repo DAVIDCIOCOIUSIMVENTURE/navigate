@@ -63,12 +63,12 @@ export default function WorthPage() {
             </div>
           </div>
           <p className="mt-2 text-base">
-            A useful sense check: pick the lowest of the three angles above. If money already spent is small but the emotional pull is strong, your number sits between them. Aggressive estimates feel motivating in private and embarrassing in front of investors, so err toward the conservative read.
+            A useful sense check: let the strongest emotional pull set the ceiling and real spend set the floor, then land between them and lean toward the lower end. Aggressive estimates feel motivating in private and embarrassing in front of investors, so err toward the conservative read.
           </p>
 
           <h3 className="mt-4 text-xl font-bold text-foreground">What will you do?</h3>
           <p>
-            Enter the price a single customer would happily pay each time the problem hits, in the currency that matches them. This figure carries forward to the next step where you multiply it by the population to produce the total market figure, so capture it with the same level of honesty you would use in front of a sceptical investor.
+            Enter the price a single customer would happily pay each time the problem occurs, in the currency that matches them. This figure carries forward to the next step where you multiply it by the population to produce the total market figure, so capture it with the same level of honesty you would use in front of a sceptical investor.
           </p>
         </div>
 
