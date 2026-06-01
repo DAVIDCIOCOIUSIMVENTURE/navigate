@@ -32,9 +32,9 @@ export const CUSTOMER_CASE_STUDIES: CustomerCaseStudy[] = [
     icon: Glasses,
     iconBg: "bg-blue-900",
     customerDescription:
-      "Style-conscious adults, often younger professionals, who need prescription glasses but resent paying $300-500 at optical chains for what they see as an overpriced necessity. They shop online comfortably, care how frames look on them, and are open to buying eyewear a new way if the price and experience are better.",
+      "Style-conscious adults, often younger professionals, who need prescription glasses but resent paying £300-500 at optical chains for what they see as an overpriced necessity. They shop online comfortably, care how frames look on them, and are open to buying eyewear a new way if the price and experience are better.",
     whyThisWorks:
-      "Warby Parker didn't target everyone who needs glasses. They focused on price-aware, design-conscious online shoppers, the people most annoyed by the markup and least attached to buying in-store. That narrow focus justified the direct-to-consumer model and the home try-on program built around their one hesitation.",
+      "Warby Parker didn't target everyone who needs glasses. They focused on price-aware, design-conscious online shoppers, the people most annoyed by the markup and least attached to buying in-store. That narrow focus justified the direct-to-consumer model and the home try-on programme built around their one hesitation.",
   },
   {
     company: "Uber (launch)",

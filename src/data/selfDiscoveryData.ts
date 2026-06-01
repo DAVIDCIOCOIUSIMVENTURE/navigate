@@ -139,7 +139,7 @@ export const SELF_DISCOVERY_CATEGORIES: SelfDiscoveryCategory[] = [
             id: "hi-travel",
             label: "Travel & Culture",
             children: [
-              { id: "hi-traveling", label: "Traveling & Exploring" },
+              { id: "hi-traveling", label: "Travelling & Exploring" },
               { id: "hi-cultural-events", label: "Cultural Events & Museums" },
               { id: "hi-live-music", label: "Live Music & Concerts" },
               { id: "hi-theatre", label: "Theatre & Performing Arts" },
@@ -234,7 +234,7 @@ export const SELF_DISCOVERY_CATEGORIES: SelfDiscoveryCategory[] = [
             label: "Travel & Cultural Exposure",
             children: [
               { id: "le-living-abroad", label: "Living in Another Country" },
-              { id: "le-solo-travel", label: "Solo Traveling" },
+              { id: "le-solo-travel", label: "Solo Travelling" },
               { id: "le-culture-shock", label: "Experiencing Culture Shock" },
               { id: "le-volunteering-abroad", label: "Volunteering Abroad" },
               { id: "le-backpacking", label: "Backpacking / Long-Term Travel" },

@@ -56,8 +56,8 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
     },
     worthToThem: {
       value: 20,
-      unit: "USD per month",
-      detail: "Each email campaign could drive $50-500 in direct sales for a small shop. Businesses were willing to pay $10-30/month, anchored on the strong emotional pull of not looking unprofessional.",
+      unit: "pounds per month",
+      detail: "Each email campaign could drive £50-500 in direct sales for a small shop. Businesses were willing to pay £10-30/month, anchored on the strong emotional pull of not looking unprofessional.",
     },
     reachableShare: {
       value: 35,
@@ -112,8 +112,8 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
     },
     worthToThem: {
       value: 15,
-      unit: "USD per user per month",
-      detail: "Teams were already paying $10-30/user/month across multiple tools (Trello, Evernote, Google Workspace). The unbearable emotional pull is what justified consolidating: the cost saving alone would not have moved them.",
+      unit: "pounds per user per month",
+      detail: "Teams were already paying £10-30/user/month across multiple tools (Trello, Evernote, Google Workspace). The unbearable emotional pull is what justified consolidating: the cost saving alone would not have moved them.",
     },
     reachableShare: {
       value: 25,
@@ -145,7 +145,7 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
     iconBg: "bg-blue-900",
     jobs: {
       functional: [
-        "Get accurate prescription glasses without paying $300+ at the optician.",
+        "Get accurate prescription glasses without paying £300+ at the optician.",
         "Try frames on at home before committing to a pair.",
         "Replace or update frames as your style or prescription changes.",
       ],
@@ -168,8 +168,8 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
     },
     worthToThem: {
       value: 95,
-      unit: "USD per pair",
-      detail: "Incumbents charged $300-500 for a single pair. Warby Parker proved customers would happily pay a flat $95, anchored on the relief of not feeling ripped off rather than on the lowest possible price.",
+      unit: "pounds per pair",
+      detail: "Incumbents charged £300-500 for a single pair. Warby Parker proved customers would happily pay a flat £95, anchored on the relief of not feeling ripped off rather than on the lowest possible price.",
     },
     reachableShare: {
       value: 30,
@@ -181,7 +181,7 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
     },
     costOfSwitching: {
       level: "low",
-      detail: "Buying glasses is a fresh purchase each time, with no contract or data to migrate. The home try-on program removed the one real barrier: not being able to try frames before buying online.",
+      detail: "Buying glasses is a fresh purchase each time, with no contract or data to migrate. The home try-on programme removed the one real barrier: not being able to try frames before buying online.",
     },
     solutionEffectiveness: {
       level: "good",
@@ -193,7 +193,7 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
     },
     verdict: "Valid: Worth Solving",
     reasoning:
-      "A rare case where a huge market and very high price per purchase offset low frequency. The pain was not a broken product, it was being overcharged for a necessity by a near-monopoly. Warby Parker validated it by going direct, charging a flat $95, and using free home try-ons to remove the only real reason not to buy glasses online.",
+      "A rare case where a huge market and very high price per purchase offset low frequency. The pain was not a broken product, it was being overcharged for a necessity by a near-monopoly. Warby Parker validated it by going direct, charging a flat £95, and using free home try-ons to remove the only real reason not to buy glasses online.",
   },
   {
     company: "Uber (launch)",
@@ -224,8 +224,8 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
     },
     worthToThem: {
       value: 25,
-      unit: "USD per ride",
-      detail: "Early Uber Black cost a premium over a taxi, often $20-35 a trip. Customers happily paid more than a cab because the strong job was reliability and not being stranded, not the lowest fare.",
+      unit: "pounds per ride",
+      detail: "Early Uber Black cost a premium over a taxi, often £20-35 a trip. Customers happily paid more than a cab because the strong job was reliability and not being stranded, not the lowest fare.",
     },
     reachableShare: {
       value: 20,

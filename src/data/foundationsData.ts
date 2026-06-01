@@ -58,14 +58,14 @@ export const FOUNDATIONS_SECTIONS: FoundationsSection[] = [
         id: "quibi",
         title: "Quibi",
         summary:
-          "Raised $1.75B for short-form mobile video. Shut down within six months. The idea was built on an assumed behaviour (watching premium content in short bursts on the go) that never materialised, especially once the pandemic kept people at home.",
+          "Raised £1.75B for short-form mobile video. Shut down within six months. The idea was built on an assumed behaviour (watching premium content in short bursts on the go) that never materialised, especially once the pandemic kept people at home.",
         outcome: "went-wrong",
       },
       {
         id: "juicero",
         title: "Juicero",
         summary:
-          "A $400 Wi-Fi connected juicer pressing proprietary juice packs. The idea solved a problem nobody had; customers discovered the packs could be squeezed by hand. Closed in 16 months.",
+          "A £400 Wi-Fi connected juicer pressing proprietary juice packs. The idea solved a problem nobody had; customers discovered the packs could be squeezed by hand. Closed in 16 months.",
         outcome: "went-wrong",
       },
     ],
@@ -101,7 +101,7 @@ export const FOUNDATIONS_SECTIONS: FoundationsSection[] = [
         id: "webvan",
         title: "Webvan",
         summary:
-          "Online grocery delivery built out $1B of warehouse infrastructure before validating that customers would change shopping habits at scale. Collapsed in 2001. The problem (grocery inconvenience) was real but not urgent enough to justify the logistics.",
+          "Online grocery delivery built out £1B of warehouse infrastructure before validating that customers would change shopping habits at scale. Collapsed in 2001. The problem (grocery inconvenience) was real but not urgent enough to justify the logistics.",
         outcome: "went-wrong",
       },
       {
@@ -144,7 +144,7 @@ export const FOUNDATIONS_SECTIONS: FoundationsSection[] = [
         id: "segway",
         title: "Segway",
         summary:
-          "The product worked perfectly. The problem (short-distance urban transport) was real. But the solution (a $5,000 two-wheeled scooter requiring a learning curve and raising social friction) was not the one the market wanted. Sold far below projections.",
+          "The product worked perfectly. The problem (short-distance urban transport) was real. But the solution (a £5,000 two-wheeled scooter requiring a learning curve and raising social friction) was not the one the market wanted. Sold far below projections.",
         outcome: "went-wrong",
       },
       {
@@ -196,7 +196,7 @@ export const FOUNDATIONS_SECTIONS: FoundationsSection[] = [
         id: "wework",
         title: "WeWork",
         summary:
-          "Scaled to a $47B valuation on the framing of a 'tech company' without validating the underlying unit economics of long-term real-estate leases funded by short-term member contracts. The 2019 IPO attempt exposed the numbers; the valuation collapsed by around $39B within weeks, and the CEO was removed.",
+          "Scaled to a £47B valuation on the framing of a 'tech company' without validating the underlying unit economics of long-term real-estate leases funded by short-term member contracts. The 2019 IPO attempt exposed the numbers; the valuation collapsed by around £39B within weeks, and the CEO was removed.",
         outcome: "went-wrong",
       },
     ],

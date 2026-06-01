@@ -8,7 +8,7 @@ import { useProblem, getAdjacentSteps } from "../context"
 import { VALIDATE_CASE_STUDIES } from "@/components/problem-strategies/validate-case-studies"
 import { WorthStrategy } from "@/components/problem-strategies/validation-strategy"
 import { cn } from "@/lib/utils"
-import { DollarSign, Heart, MessagesSquare, Scale } from "lucide-react"
+import { PoundSterling, Heart, MessagesSquare, Scale } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
 
 export default function WorthPage() {
@@ -21,7 +21,7 @@ export default function WorthPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={DollarSign} iconBg="bg-tertiary">What they would pay to solve it</CardTitle>
+        <CardTitle icon={PoundSterling} iconBg="bg-tertiary">What they would pay to solve it</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-base">

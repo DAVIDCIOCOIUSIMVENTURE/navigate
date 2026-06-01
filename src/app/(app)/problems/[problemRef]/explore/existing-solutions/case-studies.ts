@@ -28,7 +28,7 @@ export const EXISTING_SOLUTIONS_CASE_STUDIES: ExistingSolutionCaseStudy[] = [
       {
         name: "Enterprise email platforms (e.g. Constant Contact, early Salesforce Marketing Cloud)",
         shortcomings: [
-          { text: "Pricing started at $100+/month, too expensive for micro-businesses who ended up paying for features they never used." },
+          { text: "Pricing started at £100+/month, too expensive for micro-businesses who ended up paying for features they never used." },
           { text: "Complex setup required technical knowledge or a consultant, costing hours that should have gone toward running the business." },
           { text: "Feature-heavy interfaces designed for marketing teams felt intimidating and exclusionary to solo operators, like 'this isn't for people like me'." },
         ],
@@ -84,7 +84,7 @@ export const EXISTING_SOLUTIONS_CASE_STUDIES: ExistingSolutionCaseStudy[] = [
       {
         name: "Optical retail chains (LensCrafters, Pearle Vision, all Luxottica-owned)",
         shortcomings: [
-          { text: "A single pair routinely cost $300-500, because the same company owned the frames, the lenses, and the stores, leaving customers no real price competition." },
+          { text: "A single pair routinely cost £300-500, because the same company owned the frames, the lenses, and the stores, leaving customers no real price competition." },
           { text: "Frame selection was dominated by a few licensed designer brands, all marked up heavily, so the apparent 'choice' was an illusion." },
           { text: "The in-store sales process pushed upsells (coatings, upgrades) that inflated the final bill well beyond the sticker price." },
         ],

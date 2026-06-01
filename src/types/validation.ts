@@ -85,7 +85,7 @@ export const FREQUENCY_OPTIONS = [
 
 // Currency codes offered on the price input.
 export const CURRENCY_OPTIONS = [
-  "USD", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF",
+  "GBP", "EUR", "USD", "AUD", "CAD", "CHF", "JPY",
   "CNY", "INR", "BRL", "KRW", "SEK", "NOK", "DKK",
   "NZD", "SGD", "HKD", "MXN", "ZAR", "PLN",
 ]

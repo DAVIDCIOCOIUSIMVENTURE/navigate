@@ -10,11 +10,11 @@ import { getAdjacentSteps, useProblem } from "../context"
 import { DimensionChips } from "@/components/dimension-chips"
 import { ProblemContextCard } from "@/components/problem-context-card"
 import {
-  ClipboardCheck, ShieldCheck, LayoutTemplate, TrendingUp, Building2, DollarSign,
+  ClipboardCheck, ShieldCheck, LayoutTemplate, TrendingUp, Building2, PoundSterling,
 } from "lucide-react"
 
 const STEPS = [
-  { icon: DollarSign, title: "What they would pay to solve it", description: "Anchored on one of the jobs you captured while exploring the problem, estimate the price a single customer would happily pay each time the problem occurs." },
+  { icon: PoundSterling, title: "What they would pay to solve it", description: "Anchored on one of the jobs you captured while exploring the problem, estimate the price a single customer would happily pay each time the problem occurs." },
   { icon: TrendingUp, title: "Size the market", description: "Estimate how many customers have the problem and the share you can realistically reach in your launch. The page combines those with the price to produce a total and a reachable market figure." },
   { icon: Building2, title: "Assess the competition", description: "Read the cost of switching, how good existing solutions are, and how big the incumbents are. Then set the realistic share you could win out of the reachable market." },
   { icon: ShieldCheck, title: "Record your verdict", description: "Weigh the factors together against a colour-coded summary and lean indicator, then commit to Valid, Unsure, or Invalid with reasoning in the notes." },

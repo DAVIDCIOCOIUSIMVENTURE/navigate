@@ -56,12 +56,12 @@ export default function AdminPage() {
           </CardTitle>
           <p className="text-base text-foreground">
             Aggregate platform usage will appear here. Sessions, time on task, active learners,
-            and license consumption trends across all establishments.
+            and licence consumption trends across all establishments.
           </p>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            {["Active learners", "Sessions this week", "Avg. minutes / session", "Licenses consumed"].map((label) => (
+            {["Active learners", "Sessions this week", "Avg. minutes / session", "Licences consumed"].map((label) => (
               <div key={label} className="rounded-md border bg-muted/30 p-4">
                 <div className="text-base font-medium">{label}</div>
                 <div className="mt-2 text-3xl font-semibold tabular-nums">--</div>
@@ -107,7 +107,7 @@ export default function AdminPage() {
                   <TableRow>
                     <TableHead>Name</TableHead>
                     <TableHead>Country</TableHead>
-                    <TableHead>License</TableHead>
+                    <TableHead>Licence</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead>Seats consumed</TableHead>
                     <TableHead>Expires</TableHead>
@@ -171,7 +171,7 @@ export default function AdminPage() {
                       <TableHead>Role</TableHead>
                       <TableHead>Establishment</TableHead>
                       {showClasses && <TableHead>Classes</TableHead>}
-                      <TableHead>License</TableHead>
+                      <TableHead>Licence</TableHead>
                       <TableHead>Problems</TableHead>
                       <TableHead>Solutions</TableHead>
                       <TableHead>Self-discovery</TableHead>

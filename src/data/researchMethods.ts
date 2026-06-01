@@ -221,7 +221,7 @@ export const RESEARCH_METHODS: ResearchMethod[] = [
           "Describe the product in plain language as if you were explaining it to someone who never used it. Note the rough size of the audience if you know.",
         examples: [
           "An RSS reader that let power users follow hundreds of sites in one inbox. Used by journalists, researchers, and developers.",
-          "A small home robot that recognized faces and reacted with personality. Bought as a companion gadget by tech enthusiasts and families.",
+          "A small home robot that recognised faces and reacted with personality. Bought as a companion gadget by tech enthusiasts and families.",
         ],
         multipleAllowed: false,
       },
@@ -245,7 +245,7 @@ export const RESEARCH_METHODS: ResearchMethod[] = [
         examples: [
           "Power readers can't follow hundreds of sources in one place without paying for an enterprise tool",
           "Families want a small home companion robot that's expressive without sending data to the cloud",
-          "Long-distance travelers in mid-size cities have no affordable inter-city options outside major routes",
+          "Long-distance travellers in mid-size cities have no affordable inter-city options outside major routes",
         ],
         multipleAllowed: true,
         role: "problems",
@@ -254,9 +254,9 @@ export const RESEARCH_METHODS: ResearchMethod[] = [
         id: "what-changed",
         question: "What's changed since it died that might make it work now?",
         helperText:
-          "Cheaper hardware, better AI, new distribution, a regulatory shift, a behavior change. If nothing has changed, that's a useful signal too.",
+          "Cheaper hardware, better AI, new distribution, a regulatory shift, a behaviour change. If nothing has changed, that's a useful signal too.",
         examples: [
-          "Edge AI now runs on $30 chips, so a privacy-respecting companion robot is finally cheap enough.",
+          "Edge AI now runs on £30 chips, so a privacy-respecting companion robot is finally cheap enough.",
           "Newsletter culture has trained millions of readers to pay for niche content directly.",
           "Remote work has created a long-distance commuting audience that didn't exist before.",
         ],
@@ -322,7 +322,7 @@ export const RESEARCH_METHODS: ResearchMethod[] = [
     shortDescription:
       "Pick a category, study the leaders, and capture the use cases they consistently ignore or handle badly.",
     longDescription:
-      "Market leaders optimize for the median customer. The edges, the segments they ignore, the use cases they treat as edge cases, are usually where new products win. This method walks you through analyzing one category for gaps.",
+      "Market leaders optimise for the median customer. The edges, the segments they ignore, the use cases they treat as edge cases, are usually where new products win. This method walks you through analysing one category for gaps.",
     icon: Swords,
     tileColor: "bg-tertiary",
     estimatedMinutes: 15,
@@ -333,7 +333,7 @@ export const RESEARCH_METHODS: ResearchMethod[] = [
     id: "failed-launches",
     title: "Failed product launches",
     shortDescription:
-      "Study post-mortems from products that launched, struggled, and pivoted or closed. The first attempt's mistakes often map to a better second attempt.",
+      "Study write-ups from products that launched, struggled, and pivoted or closed. The first attempt's mistakes often map to a better second attempt.",
     longDescription:
       "Read founder write-ups, shutdown letters, and 'why we failed' essays. The patterns repeat: wrong audience, wrong timing, wrong pricing. Each pattern is a doorway to a problem someone else can solve better.",
     icon: Lightbulb,

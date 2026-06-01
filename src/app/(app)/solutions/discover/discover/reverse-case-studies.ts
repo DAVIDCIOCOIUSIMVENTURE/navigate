@@ -24,7 +24,7 @@ export const REVERSE_CASE_STUDIES: ReverseCaseStudy[] = [
       "Require two-way reviews so both hosts and guests build a public trust score.",
       "Offer 24/7 support and a Host Guarantee covering property damage.",
     ],
-    outcome: "By flipping every trust-destroying behaviour into a trust-building feature, Airbnb turned home sharing from a sketchy idea into a $100B+ marketplace. Trust became their core product, not a side concern.",
+    outcome: "By flipping every trust-destroying behaviour into a trust-building feature, Airbnb turned home sharing from a sketchy idea into a £100B+ marketplace. Trust became their core product, not a side concern.",
   },
   {
     company: "Domino's Pizza",
@@ -62,6 +62,6 @@ export const REVERSE_CASE_STUDIES: ReverseCaseStudy[] = [
       "Empower support reps to do whatever makes the customer happy, with no call time limits.",
       "Show real-time inventory and deliver items overnight when possible as a surprise upgrade.",
     ],
-    outcome: "Zappos turned the biggest fears of online shoe shopping into the reasons to shop with them. Their radical customer service became a moat so strong that Amazon acquired them for $1.2B, and Zappos' support playbook is now studied in business schools worldwide.",
+    outcome: "Zappos turned the biggest fears of online shoe shopping into the reasons to shop with them. Their radical customer service became a moat so strong that Amazon acquired them for £1.2B, and Zappos' support playbook is now studied in business schools worldwide.",
   },
 ]

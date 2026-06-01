@@ -58,7 +58,7 @@ const SCAMPER_CASE = {
   problem: "Drivers spend 20+ minutes looking for parking",
   examples: [
     { letter: "S", idea: "Substitute car parks with shared drop-off zones (like ride-share pick-up points)" },
-    { letter: "C", idea: "Combine parking with public transit: park at hubs, take a shuttle the last mile" },
+    { letter: "C", idea: "Combine parking with public transport: park at hubs, take a shuttle the last mile" },
     { letter: "A", idea: "Adapt hotel valet concepts: app-based valet that parks your car while you shop" },
     { letter: "M", idea: "Modify parking spaces into stackable, vertical lifts so one spot fits three cars" },
     { letter: "P", idea: "Put underused spaces to other use: turn driveways and office lots into paid parking on weekends" },

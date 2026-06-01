@@ -14,6 +14,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Replace em dashes with the most fitting alternative: a colon, comma, semicolon, full stop, parentheses, or by restructuring the sentence. The only exception is CLI flags (e.g. `--noEmit`, `--no-verify`), where the double hyphen is part of the syntax.
 
+### UK English, not US English
+
+Navigate is a British product. **All user-facing copy and prose use UK English**, never US English. This applies to UI strings, descriptions, tooltips, placeholders, guidance copy, case studies, code comments, documentation (including this file), commit messages, and Claude's own chat replies.
+
+* **Spelling.** Prefer `-ise`/`-isation` over `-ize`/`-ization` (organise, customise, recognise, prioritise, optimise, specialise, categorise, summarise, standardise, anonymise, realise, emphasise). Always `analyse`/`analysing`/`analysis`, never `analyze`. Use `-our` (colour, behaviour, favour, labour, honour, neighbour), `-tre` in prose (centre, theatre, metre, litre), `licence` (noun) / `license` (verb), `practice` (noun) / `practise` (verb), `defence`, `offence`, doubled-l (travelled, labelled, modelling, cancelled, marvellous), `fulfil`/`fulfilment`, `enrolment`, `programme` (not `program`, except a computer program), `grey`, `aluminium`, `maths`.
+* **Vocabulary / concepts.** Prefer the British term: holiday (not vacation), public transport (not public transit/transportation), flat (not apartment), lift (not elevator), pavement (not sidewalk), petrol (not gas), rubbish (not trash/garbage), postcode (not zip code), mobile (not cell phone), football (not soccer), university (not college/grad school), shop (not store, in the retail sense).
+* **Currency.** Default to GBP and the `£` symbol. Currency-figure examples (including those in case studies) are denominated in pounds; the currency picker lists `GBP` first; price/cost icons use lucide's `PoundSterling`, not `DollarSign`.
+
+**Do NOT "correct" code.** These rules apply to prose only. Never touch CSS/Tailwind class names (`text-center`, `transition-colors`, `bg-gray-*`), identifiers, variable/function/type names, imports, object keys, ids, slugs, routes, localStorage keys, or external proper nouns and brand/book titles (e.g. "The Mom Test"). When a stable id reads as US English (`context-planning-vacation`), leave the id and change only its human-readable label.
+
 ## Theme
 
 The Navigate brand palette. Use these hex values as the source of truth for any new colored surface; do not invent new tones outside this set without a reason.

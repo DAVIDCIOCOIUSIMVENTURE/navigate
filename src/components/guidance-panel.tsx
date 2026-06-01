@@ -10,7 +10,7 @@ import {
   Play, ToggleRight, Blocks, LayoutGrid, FileText, ArrowRight,
   GitFork, Heart, BarChart2, Target,
   Users, MapPin, AlertTriangle, Briefcase, Filter, Eye,
-  Repeat, DollarSign, ArrowRightLeft, Wallet, PieChart,
+  Repeat, PoundSterling, ArrowRightLeft, Wallet, PieChart,
   Lightbulb, HelpCircle,
   BookOpen, FlaskConical, Clock, Trophy, Sparkles,
   TrendingUp, Building2, Calculator, Scale, ShieldCheck,
@@ -324,7 +324,7 @@ const guidanceItems: GuidanceItem[] = [
           </div>
           <p className="pt-1">On the price step you pick one of these jobs to anchor the price on: usually the strongest emotional or social pull, but a functional job can be the <Keyword>anchor</Keyword> when it is what drives the purchase.</p>
         </GuidanceSection>
-        <GuidanceSection icon={DollarSign} iconBg="bg-teal-700" title="What they would pay to solve it">
+        <GuidanceSection icon={PoundSterling} iconBg="bg-teal-700" title="What they would pay to solve it">
           <p>A customer hires a solution for one primary job: the one that tips them into buying. The other jobs are secondary, they nudge what someone will pay rather than each adding their own price. So you set one price, anchored on that one dominant job. Pick whichever job drives the purchase, functional, emotional, or social, not the cost of building a feature, then cross-check the number against three angles:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={Heart} label="The one anchor job" description="The single job that drives the purchase. Often the strongest emotional or social pull, which can carry prices an order of magnitude above the tangible task, but a functional job can anchor it too." tile="bg-teal-700" border="border-teal-700/20 bg-teal-700/5" />
@@ -415,7 +415,7 @@ const guidanceItems: GuidanceItem[] = [
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={Target} label="Feasibility" description="Can you actually build it with the resources and skills available?" tile="bg-green-800" border="border-green-800/20 bg-green-800/5" />
             <ConceptCard icon={Heart} label="Impact" description="How much value does it deliver, to the customer and the business?" tile="bg-green-800" border="border-green-800/20 bg-green-800/5" />
-            <ConceptCard icon={DollarSign} label="Cost" description="What will it take to build, run, and maintain?" tile="bg-green-800" border="border-green-800/20 bg-green-800/5" />
+            <ConceptCard icon={PoundSterling} label="Cost" description="What will it take to build, run, and maintain?" tile="bg-green-800" border="border-green-800/20 bg-green-800/5" />
             <ConceptCard icon={Repeat} label="Time to Implement" description="How long from decision to delivery, including dependencies?" tile="bg-green-800" border="border-green-800/20 bg-green-800/5" />
           </div>
           <p className="pt-1">Validation runs per solution. You can mark some candidates valid and others invalid, or come back later as you learn more.</p>
@@ -441,7 +441,7 @@ const guidanceItems: GuidanceItem[] = [
           icon={Glasses}
           tone="bg-secondary-brand"
           title="Reflect on Problems"
-          subtitle="A guided way to surface problems worth solving by answering short prompts about your work, life, the organizations you know, the people around you, and what you spot in the wider world."
+          subtitle="A guided way to surface problems worth solving by answering short prompts about your work, life, the organisations you know, the people around you, and what you spot in the wider world."
         />
         <GuidanceSection icon={Compass} iconBg="bg-secondary-brand" title="When to use Reflect">
           <p>Reflect is its own tool, opened from the <Keyword>Identify problems</Keyword> selector and living at <Keyword>/problems/identify/reflect</Keyword>.</p>
@@ -468,8 +468,8 @@ const guidanceItems: GuidanceItem[] = [
           <p>Each lens is a short Q&A focused on one source of insight. Answers are saved as <Keyword>candidates</Keyword> you can review before promoting them into your problem library.</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={Briefcase} label="Work friction" description="Repeated annoyances, expensive habits, and 'this should just exist' thoughts at your job." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
-            <ConceptCard icon={HeartHandshake} label="Life experiences" description="Productize what you have already lived through. The friction you remember is friction others are about to hit." tile="bg-yellow-600" border="border-yellow-600/20 bg-yellow-600/5" />
-            <ConceptCard icon={Building2} label="Insider angle" description="Use what you know about organizations from the inside. Outsiders cannot see what you have seen." tile="bg-emerald-800" border="border-emerald-800/20 bg-emerald-800/5" />
+            <ConceptCard icon={HeartHandshake} label="Life experiences" description="Productise what you have already lived through. The friction you remember is friction others are about to hit." tile="bg-yellow-600" border="border-yellow-600/20 bg-yellow-600/5" />
+            <ConceptCard icon={Building2} label="Insider angle" description="Use what you know about organisations from the inside. Outsiders cannot see what you have seen." tile="bg-emerald-800" border="border-emerald-800/20 bg-emerald-800/5" />
             <ConceptCard icon={Shuffle} label="Cross-context patterns" description="Spot something that works in one industry, hobby, or country and is missing in another you know." tile="bg-violet-800" border="border-violet-800/20 bg-violet-800/5" />
             <ConceptCard icon={Users} label="People around you" description="Observation, not introspection. Validate by asking the person." tile="bg-rose-800" border="border-rose-800/20 bg-rose-800/5" />
             <ConceptCard icon={Radar} label="Market signals" description="A capture form for problems you spot by looking outward: reviews, trends, public data, research." tile="bg-orange-700" border="border-orange-700/20 bg-orange-700/5" />

@@ -17,7 +17,7 @@ import { computeMarket, formatMoney } from "@/lib/market"
 import { listAllJobs, nextJobId, resolveAnchorJob } from "@/lib/jobs"
 import { cn } from "@/lib/utils"
 import {
-  CheckCircle2, XCircle, HelpCircle, Users, RefreshCw, DollarSign, ArrowRightLeft, Target, Building2,
+  CheckCircle2, XCircle, HelpCircle, Users, RefreshCw, PoundSterling, ArrowRightLeft, Target, Building2,
   Calculator, AlertTriangle, PieChart, Heart, Briefcase, Eye, Plus, Trash2, Sparkles,
   type LucideIcon,
 } from "lucide-react"
@@ -567,7 +567,7 @@ function WorthSection({
 
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
-          <DollarSign className="h-3.5 w-3.5 text-white shrink-0" />
+          <PoundSterling className="h-3.5 w-3.5 text-white shrink-0" />
           <span className="text-base font-semibold text-white">What they would pay each time the problem occurs</span>
         </div>
         {!readOnly && (
@@ -1097,7 +1097,7 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
             />
             <MetricRow
               label="What they would pay each time"
-              icon={DollarSign}
+              icon={PoundSterling}
               value={price > 0 ? formatMoney(price, { currency }) : ""}
             />
             <MetricRow

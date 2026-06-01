@@ -15,7 +15,7 @@ import { ProblemHubDialog } from "@/components/problem-hub/problem-hub-dialog"
 import { ProblemProvider, useProblem, NAV_ITEMS } from "./context"
 import {
   ShieldCheck, FileText, LayoutTemplate, ClipboardCheck, ChevronDown, Eye,
-  TrendingUp, Building2, DollarSign,
+  TrendingUp, Building2, PoundSterling,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
@@ -23,7 +23,7 @@ import { cn } from "@/lib/utils"
 
 const NAV_ICONS: Record<string, LucideIcon> = {
   introduction: ClipboardCheck,
-  worth: DollarSign,
+  worth: PoundSterling,
   market: TrendingUp,
   competition: Building2,
   verdict: ShieldCheck,

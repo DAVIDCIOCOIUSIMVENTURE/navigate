@@ -36,7 +36,7 @@ export type LensPrompt = {
   capturesContext?: string[]
   /**
    * If true, this prompt's answer is context for later prompts, not a candidate
-   * itself (e.g. "Name an organization"). Captured in session state but never
+   * itself (e.g. "Name an organisation"). Captured in session state but never
    * becomes a `ProblemCandidate`.
    */
   contextOnly?: boolean
@@ -93,7 +93,7 @@ export const REFLECT_LENSES: Lens[] = [
   {
     id: "life",
     title: "Life experiences",
-    shortDescription: "Productize what you've already lived through. The friction you remember is friction others are about to hit.",
+    shortDescription: "Productise what you've already lived through. The friction you remember is friction others are about to hit.",
     longDescription:
       "Look back at one significant experience you've navigated and pull out the parts that were harder than they needed to be. You focus on a single experience per run so the prompts stay specific; to explore another, simply run this tool again and pick a different one.",
     icon: HeartHandshake,
@@ -159,7 +159,7 @@ export const REFLECT_LENSES: Lens[] = [
         helperText:
           "The hack you built once and never stopped using is usually a product hiding in plain sight. Spreadsheets, group chats, and phone notes are the giveaways.",
         examples: [
-          "A running phone note logging each pediatrician visit and which form needed updating next",
+          "A running phone note logging each paediatrician visit and which form needed updating next",
           "A spreadsheet of every document I've had translated: who, when, and where the original lives",
           "A sibling WhatsApp group used as the daily care log: meals, meds, doctor visits",
         ],
@@ -185,7 +185,7 @@ export const REFLECT_LENSES: Lens[] = [
     title: "Work friction",
     shortDescription: "Mine one of your jobs for repeated annoyances and \"this should just exist\" thoughts.",
     longDescription:
-      "Pick one job, role, or slice of work you do regularly and answer the prompts about that one place. The friction you've stopped noticing is often the friction worth productizing; focusing on a single role per run keeps the prompts specific. To explore another, run this tool again and pick a different one.",
+      "Pick one job, role, or slice of work you do regularly and answer the prompts about that one place. The friction you've stopped noticing is often the friction worth productising; focusing on a single role per run keeps the prompts specific. To explore another, run this tool again and pick a different one.",
     icon: Briefcase,
     tileColor: "bg-tertiary",
     estimatedMinutes: 10,
@@ -423,21 +423,21 @@ export const REFLECT_LENSES: Lens[] = [
   {
     id: "insider",
     title: "Insider angle",
-    shortDescription: "Use what you know about organizations from the inside. Outsiders can't see what you've seen.",
+    shortDescription: "Use what you know about organisations from the inside. Outsiders can't see what you've seen.",
     longDescription:
-      "Pick one organization you know intimately and answer the prompts about that one place. The aim is to surface the things only an insider would notice.",
+      "Pick one organisation you know intimately and answer the prompts about that one place. The aim is to surface the things only an insider would notice.",
     icon: Building2,
     tileColor: "bg-tertiary",
     estimatedMinutes: 10,
     helperText:
-      "One organization is enough. If you're worried about specifics, anonymize the language; the prompts work just as well in general terms.",
+      "One organisation is enough. If you're worried about specifics, anonymise the language; the prompts work just as well in general terms.",
     selfDiscoverySources: [
       { category: "knowledge", promptIds: ["org-name"] },
     ],
     prompts: [
       {
         id: "org-name",
-        question: "Name an organization you've worked at or know intimately.",
+        question: "Name an organisation you've worked at or know intimately.",
         helperText: "This answer isn't a candidate. It sets context for the prompts that follow.",
         multipleAllowed: false,
         contextOnly: true,
@@ -454,7 +454,7 @@ export const REFLECT_LENSES: Lens[] = [
       },
       {
         id: "skipped-opportunity",
-        question: "What opportunity did people discuss inside but the organization never pursued?",
+        question: "What opportunity did people discuss inside but the organisation never pursued?",
         helperText: "Often this is something with the wrong owner, not the wrong idea.",
         multipleAllowed: true,
         capturesContext: ["other-orgs"],
@@ -467,7 +467,7 @@ export const REFLECT_LENSES: Lens[] = [
       },
       {
         id: "surprising-knowledge",
-        question: "What knowledge from inside that organization would surprise an outsider?",
+        question: "What knowledge from inside that organisation would surprise an outsider?",
         helperText: "Surprising knowledge is sellable knowledge.",
         multipleAllowed: true,
         capturesContext: ["other-orgs"],
@@ -621,7 +621,7 @@ export const LENS_CONTEXT_FIELDS: Record<string, { label: string; helperText?: s
     helperText: "A role, an industry, a team type.",
   },
   "other-orgs": {
-    label: "Which other organizations have the same setup?",
+    label: "Which other organisations have the same setup?",
     helperText: "A sector or a size.",
   },
   "who-benefits": {

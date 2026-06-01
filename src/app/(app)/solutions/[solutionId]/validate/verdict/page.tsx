@@ -61,7 +61,7 @@ const VERDICT_CASE_STUDIES: VerdictCaseStudy[] = [
     company: "Quibi (2018-2020)",
     icon: Film,
     iconBg: "bg-violet-800",
-    context: "A $1.75B-funded short-form premium mobile video service. The team had to decide whether to spend heavily on original content for an unproven format.",
+    context: "A £1.75B-funded short-form premium mobile video service. The team had to decide whether to spend heavily on original content for an unproven format.",
     verdict: "invalid",
     reasoning: "Impact looked high on paper (huge mobile audience) but rested on an untested assumption that people wanted premium short-form video on phones. Cost was enormous and the format was easy to copy. The verdict treated potential impact as proven.",
     outcome: "Shut down six months after launch. A more honest verdict, demanding evidence for the impact assumption first, would have saved the investment or scoped it down to a much smaller bet.",

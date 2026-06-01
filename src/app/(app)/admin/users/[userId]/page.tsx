@@ -63,7 +63,7 @@ export default function AdminUserPage({ params }: { params: Promise<{ userId: st
               <div className="mt-2 text-base">{getEstablishmentName(user.establishmentId)}</div>
             </div>
             <div className="rounded-md border p-4">
-              <div className="text-base font-medium">License</div>
+              <div className="text-base font-medium">Licence</div>
               <div className="mt-2 text-base">{getLicenseName(user.licenseId)}</div>
             </div>
             <div className="rounded-md border p-4">
