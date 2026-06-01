@@ -14,19 +14,19 @@ import {
 import { ProblemHubDialog } from "@/components/problem-hub/problem-hub-dialog"
 import { ProblemProvider, useProblem, NAV_ITEMS } from "./context"
 import {
-  ShieldCheck, FileText, LayoutTemplate, ClipboardCheck, ChevronDown, Eye,
-  TrendingUp, Building2, DollarSign,
+  GitFork, Compass, FileText, LayoutTemplate, Users, ChevronDown, Eye, Search, Sparkles,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 
 const NAV_ICONS: Record<string, LucideIcon> = {
-  introduction: ClipboardCheck,
-  worth: DollarSign,
-  market: TrendingUp,
-  competition: Building2,
-  verdict: ShieldCheck,
+  introduction: Compass,
+  customer: Users,
+  "choose-refinement": Search,
+  refine: Search,
+  "existing-solutions": GitFork,
+  "jobs-to-be-done": Sparkles,
   summary: LayoutTemplate,
 }
 
@@ -90,10 +90,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const isWide = useContainerSize() === "wide"
 
-  const base = `/problems/${problemRef}/validation`
+  const base = `/problems/${problemRef}/explore`
 
   const activeItem = NAV_ITEMS.find((item) => pathname === `${base}/${item.path}`)
-  const ActiveIcon = activeItem ? (NAV_ICONS[activeItem.path] ?? FileText) : ClipboardCheck
+  const ActiveIcon = activeItem ? (NAV_ICONS[activeItem.path] ?? FileText) : Compass
 
   const handleNavigate = (href: string) => {
     setMobileNavOpen(false)
@@ -103,7 +103,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   return (
     <div className={cn("flex flex-col gap-3 flex-1 w-full min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
     {!isWide && (
-    <nav aria-label="Problem validation steps" className="w-full">
+    <nav aria-label="Explore the problem steps" className="w-full">
       <DropdownMenu open={mobileNavOpen} onOpenChange={setMobileNavOpen} modal={false}>
         <DropdownMenuTrigger asChild>
           <Button
@@ -181,7 +181,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
     <div className={cn("flex gap-6 flex-1 w-full min-h-0", isWide ? "items-stretch" : "items-start")}>
       {isWide && (
-      <nav aria-label="Problem validation steps" className="flex w-56 flex-col gap-3 shrink-0 min-h-0">
+      <nav aria-label="Explore the problem steps" className="flex w-56 flex-col gap-3 shrink-0 min-h-0">
         <Card className="flex flex-col min-h-0 flex-1">
           <CardContent className="p-3 flex flex-col min-h-0 flex-1">
             <div className="flex-1 min-h-0 overflow-y-auto">
@@ -203,7 +203,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   )
 }
 
-export default function ProblemRefLayout({ children }: { children: React.ReactNode }) {
+export default function ProblemExploreLayout({ children }: { children: React.ReactNode }) {
   const params = useParams()
   const problemRef = params.problemRef as string
 

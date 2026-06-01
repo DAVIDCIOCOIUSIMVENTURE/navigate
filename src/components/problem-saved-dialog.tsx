@@ -40,13 +40,13 @@ export function ProblemSavedDialog({
             onClick={() => {
               onOpenChange(false)
               if (problemId !== null) {
-                router.push(`/problems/${problemId}/validation/introduction`)
+                router.push(`/problems/${problemId}/explore/introduction`)
               }
             }}
             className="gap-2"
           >
             <ArrowRight className="h-4 w-4" />
-            Continue to Problem Validation
+            Explore the Problem
           </Button>
           <Button
             variant="outline"

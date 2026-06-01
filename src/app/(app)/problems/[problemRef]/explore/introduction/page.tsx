@@ -10,15 +10,16 @@ import { getAdjacentSteps, useProblem } from "../context"
 import { DimensionChips } from "@/components/dimension-chips"
 import { ProblemContextCard } from "@/components/problem-context-card"
 import {
-  ClipboardCheck, ShieldCheck, LayoutTemplate, TrendingUp, Building2, DollarSign,
+  Compass, GitFork, LayoutTemplate, Users, Search, Sparkles,
 } from "lucide-react"
 
 const STEPS = [
-  { icon: DollarSign, title: "What they would pay to solve it", description: "Anchored on one of the jobs you captured while exploring the problem, estimate the price a single customer would happily pay each time the problem occurs." },
-  { icon: TrendingUp, title: "Size the market", description: "Estimate how many customers have the problem and the share you can realistically reach in your launch. The page combines those with the price to produce a total and a reachable market figure." },
-  { icon: Building2, title: "Assess the competition", description: "Read the cost of switching, how good existing solutions are, and how big the incumbents are. Then set the realistic share you could win out of the reachable market." },
-  { icon: ShieldCheck, title: "Record your verdict", description: "Weigh the factors together against a colour-coded summary and lean indicator, then commit to Valid, Unsure, or Invalid with reasoning in the notes." },
-  { icon: LayoutTemplate, title: "Summary", description: "Review the problem statement assembled from your exploration and validation work." },
+  { icon: Users, title: "Define your customer", description: "Pin down exactly who experiences this problem so the rest of the work has a real person at its centre." },
+  { icon: Search, title: "Choose a refinement method", description: "Pick the lens that fits: Root Causes, 5 Whys, or Affected Groups." },
+  { icon: Search, title: "Refine your problem", description: "Dig into why this problem exists and who it affects using the method you chose." },
+  { icon: GitFork, title: "Explore existing solutions & shortcomings", description: "Identify how customers currently deal with this problem and capture where each solution falls short." },
+  { icon: Sparkles, title: "Jobs your customer is trying to get done", description: "List the tangible tasks they need to complete, how they want to feel, and how they want to be seen." },
+  { icon: LayoutTemplate, title: "Summary", description: "Review what you have uncovered, then continue to Problem Validation when you are ready." },
 ]
 
 function FieldRow({ label, columnId, ids }: { label: string; columnId: string; ids: string[] }) {
@@ -31,7 +32,7 @@ function FieldRow({ label, columnId, ids }: { label: string; columnId: string; i
   )
 }
 
-export default function IntroductionPage() {
+export default function ExploreIntroductionPage() {
   const router = useRouter()
   const pathname = usePathname()
   const { problemRef, problemId } = useProblem()
@@ -50,7 +51,7 @@ export default function IntroductionPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={ClipboardCheck} iconBg="bg-tertiary">Introduction</CardTitle>
+        <CardTitle icon={Compass} iconBg="bg-tertiary">Introduction</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
 
@@ -58,15 +59,15 @@ export default function IntroductionPage() {
           <div className="flex flex-col gap-6 @[800px]:flex-row @[800px]:items-center">
             <div className="flex flex-col gap-4 flex-1 min-w-0">
               <p className="text-base leading-relaxed">
-                You have explored and defined this problem. Now it&apos;s time to validate whether it is truly worth solving. Building on the customer, jobs, and alternatives you captured while exploring, you&apos;ll put a price on the problem, size the market, and read the competitive landscape, then commit to a verdict you can defend with the evidence in front of you.
+                You have identified a problem worth a closer look. Before you start sizing markets and weighing up the competition, take time to understand it properly. Who exactly has this problem, why does it really happen, how do people cope today, and what are they actually trying to get done?
               </p>
               <p className="text-base leading-relaxed">
-                The goal is not to prove yourself right; it is to gather enough to make an honest call before you invest in a solution.
+                This is the exploring and defining stage. The clearer the picture you build here, the sharper and more honest your validation will be afterwards. Everything you capture carries forward into Problem Validation.
               </p>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/illustrations/14-validate-solution.svg"
+              src="/illustrations/23-customer.svg"
               alt=""
               className="hidden @[900px]:block w-96 h-auto shrink-0 rounded-lg"
             />

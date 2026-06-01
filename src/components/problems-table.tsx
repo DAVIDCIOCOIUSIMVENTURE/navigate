@@ -48,6 +48,7 @@ import {
   Target,
   MoreHorizontal,
   ClipboardCheck,
+  Compass,
   FileJson,
   Copy,
 } from "lucide-react"
@@ -415,6 +416,10 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => router.push(`/problems/${problem.id}/explore/introduction`)}>
+                                <Compass className="h-3.5 w-3.5" />
+                                Explore the problem
+                              </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => router.push(`/problems/${problem.id}/validation/introduction`)}>
                                 <ClipboardCheck className="h-3.5 w-3.5" />
                                 Open problem validation

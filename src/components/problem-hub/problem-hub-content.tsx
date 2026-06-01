@@ -15,7 +15,7 @@ import { RefinementStrategy } from "@/components/problem-strategies/refinement-s
 import { ExistingSolutionsStrategy } from "@/components/problem-strategies/existing-solutions-strategy"
 import { ValidationStrategy } from "@/components/problem-strategies/validation-strategy"
 import {
-  AlertCircle, ArrowRight, CheckCircle2, Copy, ExternalLink,
+  AlertCircle, ArrowRight, CheckCircle2, Compass, Copy, ExternalLink,
   GitFork, HelpCircle, Lightbulb, MessageSquare, RotateCcw, Search, ShieldCheck,
   Users, XCircle, Pencil,
 } from "lucide-react"
@@ -301,6 +301,7 @@ export function NextStepsSection({ problemRef, problemId }: { problemRef: string
   const dispatch = useDispatch<AppDispatch>()
   const { status } = useProblem()
 
+  const goToExplore = () => router.push(`/problems/${problemRef}/explore/introduction`)
   const goToValidation = () => router.push(`/problems/${problemRef}/validation/market`)
   const goToDiscover = () => {
     saveActiveDiscoveryProblemId(problemId)
@@ -436,12 +437,18 @@ export function NextStepsSection({ problemRef, problemId }: { problemRef: string
             <h3 className="text-lg font-semibold text-foreground">No verdict yet</h3>
           </div>
           <p className="text-base">
-            Complete the validation step to see your next steps.
+            Take a deeper look at the problem, then validate whether it is worth solving.
           </p>
-          <Button className="self-start" onClick={goToValidation}>
-            <RotateCcw className="h-4 w-4 mr-2" />
-            Go to Validation
-          </Button>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <Button className="self-start" onClick={goToExplore}>
+              <Compass className="h-4 w-4 mr-2" />
+              Explore the Problem
+            </Button>
+            <Button variant="outline" className="self-start" onClick={goToValidation}>
+              <RotateCcw className="h-4 w-4 mr-2" />
+              Go to Validation
+            </Button>
+          </div>
         </div>
       )}
     </div>
@@ -500,8 +507,13 @@ export function ProblemHubContent({
   readOnly?: boolean
 }) {
   const { problemRef, problemId } = useProblem()
+  const exploreBase = `/problems/${problemRef}/explore`
   const validationBase = `/problems/${problemRef}/validation`
-  const stepHref = (suffix: string) => readOnly ? undefined : `${validationBase}/${suffix}`
+  // Customer, refinement, and existing-solutions are captured in the Explore
+  // the Problem flow; the validation assessment is captured in Problem
+  // Validation. Each "Open step" link points to wherever that step now lives.
+  const exploreHref = (suffix: string) => readOnly ? undefined : `${exploreBase}/${suffix}`
+  const validationHref = (suffix: string) => readOnly ? undefined : `${validationBase}/${suffix}`
 
   return (
     <div className={cn("flex flex-col gap-4", mode === "page" && "gap-6")}>
@@ -511,14 +523,14 @@ export function ProblemHubContent({
 
       <ReflectionSection problemId={problemId} readOnly={readOnly} />
 
-      <HubSection icon={Users} label="Customer" openInStep={stepHref("customer")}>
+      <HubSection icon={Users} label="Customer" openInStep={exploreHref("customer")}>
         <CustomerStrategy readOnly={readOnly} />
       </HubSection>
 
       <HubSection
         icon={Search}
         label="Refinement"
-        openInStep={stepHref("choose-refinement")}
+        openInStep={exploreHref("choose-refinement")}
       >
         <RefinementStrategy showChooser readOnly={readOnly} />
       </HubSection>
@@ -526,7 +538,7 @@ export function ProblemHubContent({
       <HubSection
         icon={GitFork}
         label="Existing Solutions, Shortcomings & Impacts"
-        openInStep={stepHref("existing-solutions")}
+        openInStep={exploreHref("existing-solutions")}
       >
         <ExistingSolutionsStrategy readOnly={readOnly} />
       </HubSection>
@@ -534,7 +546,7 @@ export function ProblemHubContent({
       <HubSection
         icon={ShieldCheck}
         label="Validation Assessment"
-        openInStep={stepHref("market")}
+        openInStep={validationHref("market")}
       >
         <ValidationStrategy readOnly={readOnly} />
       </HubSection>
@@ -544,7 +556,13 @@ export function ProblemHubContent({
       <NextStepsSection problemRef={problemRef} problemId={problemId} />
 
       {mode === "page" && !readOnly && (
-        <div className="flex justify-end border-t pt-4">
+        <div className="flex flex-col gap-3 border-t pt-4 sm:flex-row sm:justify-end">
+          <Button variant="outline" asChild>
+            <Link href={`${exploreBase}/introduction`}>
+              <Compass className="h-4 w-4 mr-2" />
+              Walk through the problem deep dive
+            </Link>
+          </Button>
           <Button variant="outline" asChild>
             <Link href={`${validationBase}/introduction`}>
               <Pencil className="h-4 w-4 mr-2" />

@@ -21,7 +21,7 @@ import { StatusSelect } from "@/components/ui/status-select"
 import type { Problem, ProblemPatch } from "@/store/problems-model"
 import type { ValidationStatus } from "@/types/validation"
 import { DimensionPicker } from "@/components/dimension-picker"
-import { ArrowRight, ExternalLink } from "lucide-react"
+import { ArrowRight, Compass, ExternalLink } from "lucide-react"
 
 const COLUMN_TO_FIELD: Record<string, "customers" | "contexts" | "problems"> = {
   customers: "customers",
@@ -171,10 +171,11 @@ export function EditProblemDialog({ problem, onClose, title: dialogTitle = "Edit
                 title={disabledHint}
                 onClick={() => {
                   onClose()
-                  router.push(`/problems/${problem.id}/validation/introduction`)
+                  router.push(`/problems/${problem.id}/explore/introduction`)
                 }}
               >
-                Go to Validation
+                <Compass className="h-4 w-4 mr-2" />
+                Explore the Problem
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
               <Button

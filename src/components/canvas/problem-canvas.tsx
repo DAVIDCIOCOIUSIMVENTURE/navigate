@@ -13,6 +13,7 @@ import {
   Pencil,
   Maximize2,
   Minimize2,
+  Compass,
 } from "lucide-react"
 import { toast } from "sonner"
 import {
@@ -102,6 +103,13 @@ export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHre
       >
         <Pencil className="h-3.5 w-3.5 mr-1.5" />
         Edit
+      </Button>
+      <Button
+        size="sm"
+        onClick={() => router.push(`/problems/${problem.id}/explore/introduction`)}
+      >
+        <Compass className="h-3.5 w-3.5 mr-1.5" />
+        Explore
       </Button>
     </>
   )

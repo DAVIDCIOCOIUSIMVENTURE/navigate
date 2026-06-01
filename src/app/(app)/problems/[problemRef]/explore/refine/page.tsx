@@ -396,7 +396,7 @@ export default function RefinePage() {
         {!analysisToolType && (
           <div className="flex flex-col items-center justify-center gap-3 py-8 rounded-lg border border-dashed">
             <p className="text-sm">No analysis type selected.</p>
-            <Button variant="outline" onClick={() => router.push(`/problems/${problemRef}/validation/choose-refinement`)}>
+            <Button variant="outline" onClick={() => router.push(`/problems/${problemRef}/explore/choose-refinement`)}>
               <ArrowLeft className="h-4 w-4 mr-2" />Choose a Refinement Method
             </Button>
           </div>
