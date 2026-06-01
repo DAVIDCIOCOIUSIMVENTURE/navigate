@@ -74,7 +74,7 @@ export function buildProblemExportText(
 
   const jobLine = (j: { text: string; intensity: string }) =>
     `${j.text}${j.intensity ? ` (${j.intensity})` : ""}`
-  const jobs = va.jobsToBeDone
+  const jobs = problem.jobsToBeDone
   lines.push(section("Jobs to be done", [
     "Functional:",
     bulletList(jobs?.functional?.map((j) => j.text) ?? []),

@@ -164,10 +164,13 @@ All state is client-side only (no database). Two patterns coexist; choose based 
 | `notes` | `navigate-notes` | Journal notes (id/title/text/createdAt/editedAt) |
 | `selfDiscoveryItems` | `navigate-self-discovery-items` | Self-discovery answers (id `you-user-<8-char>`, title, `questionUrl`, optional `suggestionId`). Drives the "You" column in Identify Problems. Renamed from the legacy `problemTriggers` model. |
 | `customDimensionItems` | `navigate-custom-dimension-items` | Per-user catalog of dimension items (`customers` / `contexts` / `problems`) added from the Canvas Builder canvas/builder modes, keyed by ids like `customer-user-<8-char>`. Built-in items live in `src/data/dimensionData.ts` with stable slugs (`customer-teenagers`, etc.). |
-| `problems` | `navigate-problems` | Global Problem list. `customers` / `contexts` / `problems` / `you` arrays now store **ids** (built-in slugs or `*-user-*` for custom/self-discovery items), resolved to labels via `src/lib/dimension-labels.ts`. Also holds full validation state (`existingSolutions`, `validationAssessment`, `validationStatus`, `contextWhen`, `segmentSize`, `customerDescription`). `validationAssessment` now carries `jobsToBeDone` (three job lists) and a `reachableShare` slider for SAM in addition to the existing metrics. |
+| `problems` | `navigate-problems` | Global Problem list. `customers` / `contexts` / `problems` / `you` arrays now store **ids** (built-in slugs or `*-user-*` for custom/self-discovery items), resolved to labels via `src/lib/dimension-labels.ts`. Also holds full validation state (`existingSolutions`, `jobsToBeDone`, `validationAssessment`, `validationStatus`, `contextWhen`, `segmentSize`, `customerDescription`). `jobsToBeDone` (three job lists) lives directly on the Problem since it is explore-owned, not validation-owned. `validationAssessment` carries the `anchorJob` pick, the market metrics, and a `reachableShare` slider for SAM. |
 | `solutions` | `navigate-solutions` | Solution candidates linked to a `problemId`; tracks inspiration source, scoring fields (`feasibility`/`impact`/`cost`/`timeToImplement`), validation, and discovery-tool artefacts (analogy / SCAMPER / improve / reverse) |
 | `solutionWorkspaces` | `navigate-solution-workspaces` | One workspace per `problemId`, scratch space shared by problem refinement and solution discovery (analysis tool, root causes, 5-Whys chains, affected groups, reverse ideation, etc.). Use `dispatch.solutionWorkspaces.ensureForProblem(problemId)` to lazily create one |
 | `accountSettings` | `navigate-account-settings` | Display name, email, theme, compact mode, notification preferences |
+| `problemCandidates` | `navigate-problem-candidates` | Draft problems captured by the Reflect / Research identify methods before they are promoted into the `problems` list. Each `ProblemCandidate` keeps `lensId` / `promptId` / `sessionId` provenance and a `promotedToProblemId` once turned into a real Problem. |
+| `reflectSessions` | `navigate-reflect-sessions` | Per-session state for the Reflect identify method (answers keyed by prompt, last-picked lens, last step / prompt index for resume). |
+| `researchSessions` | `navigate-research-sessions` | Per-session state for the Research identify method (answers keyed by prompt, picked research tool, last step / prompt index for resume). |
 
 Access patterns:
 
@@ -179,8 +182,9 @@ Access patterns:
 **React Context** for lighter, page-scoped state without persistence side effects:
 
 * `src/context/guidance-context.tsx`: `openGuidance(topic?)` / `useGuidance()` for the guidance side-panel
-* `src/context/container-size-context.tsx`: `useContainerSize()` returns `"narrow" | "wide"` based on `ResizeObserver` on the content area; used to switch responsive layouts (mobile vs. desktop step navigators, etc.)
+* `src/context/container-size-context.tsx`: `useContainerSize()` returns `"narrow" | "medium" | "wide"` based on `ResizeObserver` on the content area; used to switch responsive layouts (mobile vs. desktop step navigators, etc.)
 * `src/context/navigation-guard-context.tsx`: registers "are you sure?" prompts for in-progress flows
+* `src/context/focus-chrome-context.tsx`: `useFocusChrome()` exposes `revealTopNav()` so a focused/full-view flow can pull the hidden top nav back into view
 * Per-route contexts (described below) wrap a Rematch model and expose a typed setter API plus `NAV_ITEMS` for the sidebar/stepper.
 
 ### Layout & Navigation Patterns
@@ -226,37 +230,51 @@ max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]
 
 ### Innovation Flows
 
-The app's three core flows live under `src/app/(app)/`. Each owns its own per-route context that mirrors the relevant Rematch model and exports a `NAV_ITEMS` array consumed by its sidebar/stepper.
+The app's core flows live under `src/app/(app)/`. Each owns its own per-route context that mirrors the relevant Rematch model and exports a `NAV_ITEMS` array consumed by its stepper.
 
-#### Problem refinement & validation: `/problems/[problemRef]/validation/<step>`
+For a single problem there are now **two separate per-problem flows**: an **Explore** deep dive (`/problems/[problemRef]/explore/<step>`) that refines the problem and gathers jobs-to-be-done, followed by **Validation** (`/problems/[problemRef]/validation/<step>`) that runs the market-sizing / verdict arc. Explore feeds Validation. Each lives in its own folder with its own `layout.tsx`, `context.tsx`, and `NAV_ITEMS`.
 
-`problemRef` is the numeric problem id as a string. The flow lives under `problems/[problemRef]/validation/`, whose `layout.tsx` wraps children in `ProblemProvider` (defined in the sibling `context.tsx`). Steps from `NAV_ITEMS`:
+#### Problem exploration (deep dive): `/problems/[problemRef]/explore/<step>`
+
+`problemRef` is the numeric problem id as a string. `layout.tsx` wraps children in the explore provider (`explore/context.tsx`). Steps from `NAV_ITEMS`:
 
 ```
-introduction → customer → choose-refinement → refine → existing-solutions →
-jobs-to-be-done → worth → market → competition → verdict → summary
+introduction → customer → choose-refinement → refine → existing-solutions → jobs-to-be-done → summary
 ```
 
-The pricing / market-sizing arc is built around jobs-to-be-done feeding TAM / SAM / SOM. **In the UI those acronyms are not used.** Surface them as: TAM is "total market", SAM is "reachable market", SOM is "realistic share of the market". The guidance side-panel is the one place where TAM/SAM/SOM may appear as educational reference.
+* `jobs-to-be-done`: three lists (functional / emotional / social) of `Job = { id, text, intensity }`, stored as `Problem.jobsToBeDone` (directly on the Problem, since the jobs are explore-owned rather than validation-owned). Emotional and social jobs carry a `mild | strong | unbearable` intensity. The jobs feed the price anchor in the Validation flow's `worth` step (replacing the dropped `emotional-impact` step), but the anchor is no longer auto-forced to emotional/social: see `worth` below.
+* The provider calls `dispatch.solutionWorkspaces.ensureForProblem(problemId)` so refinement work (analysis tool choice, root causes, 5-Whys, affected groups, root-cause notes) is captured on the per-problem `SolutionWorkspace` and surfaces later in solution discovery.
 
-* `jobs-to-be-done`: three lists (functional / emotional / social) of `Job = { id, text, intensity }`. Emotional and social jobs carry a `mild | strong | unbearable` intensity. The jobs feed the price anchor on the next step (replacing the dropped `emotional-impact` step), but the anchor is no longer auto-forced to emotional/social: see `worth`.
+#### Problem validation: `/problems/[problemRef]/validation/<step>`
+
+`layout.tsx` wraps children in `ProblemProvider` (defined in the sibling `context.tsx`). Steps from `NAV_ITEMS`:
+
+```
+introduction → worth → market → competition → verdict → summary
+```
+
+The pricing / market-sizing arc is built around the jobs-to-be-done captured during Explore, feeding TAM / SAM / SOM. **In the UI those acronyms are not used.** Surface them as: TAM is "total market", SAM is "reachable market", SOM is "realistic share of the market". The guidance side-panel is the one place where TAM/SAM/SOM may appear as educational reference.
+
 * `worth`: a single price the customer would happily pay each time the problem occurs, anchored on one job. Per jobs-to-be-done theory the customer hires a solution for one primary job, so the price is anchored on a single job rather than summed across all of them. The user picks that job on this step; it can be functional, emotional, or social. The pick is stored as `validationAssessment.anchorJob` (`{ kind, id } | null`); when unset or stale, `resolveAnchorJob` falls back to the highest-intensity job (`defaultAnchorJob`). The price itself is `validationAssessment.worthToThem`.
-* `market`: produces TAM (`customers × frequency × price`) and SAM (`TAM × reachableShare%`). The reachable share is the new field `validationAssessment.reachableShare`, distinct from `obtainableShare`.
+* `market`: produces TAM (`customers × frequency × price`) and SAM (`TAM × reachableShare%`). The reachable share is the field `validationAssessment.reachableShare`, distinct from `obtainableShare`.
 * `competition`: the three competitive signals (cost of switching, existing solution effectiveness, competitor size) plus the `obtainableShare` slider (relabelled as "realistic capture") which multiplies SAM down to SOM. This is the only step that produces SOM.
 
-The provider:
+The provider reads/writes the matching `Problem` via `dispatch.problems.update`.
 
-* Reads/writes the matching `Problem` via `dispatch.problems.update`.
-* Calls `dispatch.solutionWorkspaces.ensureForProblem(problemId)` so refinement work (analysis tool choice, root causes, 5-Whys, affected groups, root-cause notes) is captured on the per-problem `SolutionWorkspace` and surfaces later in solution discovery.
+`/problems/[problemRef]/page.tsx` is the per-problem canvas (the natural landing page when navigating to a specific problem). The hub/edit view (full title + description + dimensions + linked solutions + next-steps actions) lives at `/problems/[problemRef]/edit/page.tsx`. The list page `/problems/page.tsx` shows all problems and is the entry point. `/problems/identify/page.tsx` is the picker hub: it explains the ways to identify a problem (Canvas Builder, Reflect, Research, Define a Problem Statement) and routes to each. The dashboard "Identify problems" button and the problems-list "Identify problems" button both navigate to this hub instead of opening a dialog.
 
-`/problems/[problemRef]/page.tsx` is the per-problem canvas (the natural landing page when navigating to a specific problem). The hub/edit view (full title + description + dimensions + linked solutions + next-steps actions) lives at `/problems/[problemRef]/edit/page.tsx`. The list page `/problems/page.tsx` shows all problems and is the entry point. `/problems/identify/page.tsx` is the picker hub: it explains the four ways to identify a problem (Canvas Builder, Reflect, Research, Define a Problem Statement) and routes to each. The dashboard "Identify problems" button and the problems-list "Identify problems" button both navigate to this hub instead of opening a dialog. The Canvas Builder (Customer Segments / Contexts / Problem Types columns) lives at `/problems/identify/canvas-builder/page.tsx` and creates problems via `dispatch.problems.create({ ..., source: "identify" })`. The shared dimension type aliases stay at `src/app/(app)/problems/identify/data.ts` so existing imports under `@/app/(app)/problems/identify/data` continue to resolve. The same canvas / edit split applies to solutions: `/solutions/[solutionId]/page.tsx` is the canvas, `/solutions/[solutionId]/edit/page.tsx` is the hub/edit view.
+* **Canvas Builder** (`/problems/identify/canvas-builder/`): Customer Segments / Contexts / Problem Types columns. Creates problems directly via `dispatch.problems.create({ ..., source: "identify" })`.
+* **Reflect** (`/problems/identify/reflect/`): a lens-driven prompt flow. State lives in the `reflectSessions` model; drafts land in `problemCandidates` before being promoted to real problems.
+* **Research** (`/problems/identify/research/`): a research-tool prompt flow. State lives in the `researchSessions` model; drafts also land in `problemCandidates`.
+
+The shared dimension type aliases stay at `src/app/(app)/problems/identify/data.ts` so existing imports under `@/app/(app)/problems/identify/data` continue to resolve. The same canvas / edit split applies to solutions: `/solutions/[solutionId]/page.tsx` is the canvas, `/solutions/[solutionId]/edit/page.tsx` is the hub/edit view.
 
 #### Solution discovery: `/solutions/discover`
 
-Single multi-step flow scoped to one active problem. The layout wraps children in `DiscoveryProvider` (`solutions/discover/context.tsx`). Steps:
+Single multi-step flow scoped to one active problem. The layout wraps children in `DiscoveryProvider` (`solutions/discover/context.tsx`). Steps from `NAV_ITEMS`:
 
 ```
-introduction → choose-discovery → select-problem → discover → summary
+select-problem → choose-discovery → discover → summary
 ```
 
 The provider persists the active problem id in `localStorage["navigate-active-discovery-problem"]` (so refreshes keep their context) and otherwise reads/writes the per-problem `SolutionWorkspace`. Solution candidates accumulated in this flow are written via `dispatch.solutions.create({ problemId, workspaceId, ... })`. The drawer `solutions-drawer.tsx` lists candidates for the current workspace.

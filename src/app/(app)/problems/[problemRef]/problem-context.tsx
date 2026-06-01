@@ -38,7 +38,7 @@ import type {
   ValidationMetric,
   ValidationAssessment,
 } from "@/types/validation"
-import { DEFAULT_VALIDATION_ASSESSMENT } from "@/types/validation"
+import { DEFAULT_JOBS_TO_BE_DONE, DEFAULT_VALIDATION_ASSESSMENT } from "@/types/validation"
 import type { Problem } from "@/store/problems-model"
 import type {
   AnalysisToolType,
@@ -61,8 +61,9 @@ type ProblemContextValue = {
   setContextWhen: (val: string) => void
   status: ValidationStatus
   setStatus: (val: ValidationStatus) => void
-  validationAssessment: ValidationAssessment
+  jobsToBeDone: JobsToBeDone
   setJobsToBeDone: (val: JobsToBeDone) => void
+  validationAssessment: ValidationAssessment
   setAnchorJob: (val: JobAnchor | null) => void
   setHowManyPeople: (patch: Partial<ValidationMetric>) => void
   setHowOften: (patch: Partial<ValidationMetric>) => void
@@ -120,11 +121,12 @@ export function ProblemProvider({
   const validationAssessment: ValidationAssessment = useMemo(() => ({
     ...DEFAULT_VALIDATION_ASSESSMENT,
     ...(storedAssessment ?? {}),
-    jobsToBeDone: {
-      ...DEFAULT_VALIDATION_ASSESSMENT.jobsToBeDone,
-      ...(storedAssessment?.jobsToBeDone ?? {}),
-    },
   }), [storedAssessment])
+  const storedJobs = problem?.jobsToBeDone
+  const jobsToBeDone: JobsToBeDone = useMemo(() => ({
+    ...DEFAULT_JOBS_TO_BE_DONE,
+    ...(storedJobs ?? {}),
+  }), [storedJobs])
   const contextWhen = problem?.contextWhen ?? ""
   const status = problem?.validationStatus ?? "unvalidated"
 
@@ -165,17 +167,9 @@ export function ProblemProvider({
 
   const setJobsToBeDone = useCallback(
     (val: JobsToBeDone) => {
-      dispatch.problems.update({
-        id: problemId,
-        patch: {
-          validationAssessment: {
-            ...validationAssessment,
-            jobsToBeDone: val,
-          },
-        },
-      })
+      dispatch.problems.update({ id: problemId, patch: { jobsToBeDone: val } })
     },
-    [dispatch, problemId, validationAssessment]
+    [dispatch, problemId]
   )
 
   const setAnchorJob = useCallback(
@@ -373,8 +367,8 @@ export function ProblemProvider({
         existingSolutions, setExistingSolutions,
         contextWhen, setContextWhen,
         status, setStatus,
+        jobsToBeDone, setJobsToBeDone,
         validationAssessment,
-        setJobsToBeDone,
         setAnchorJob,
         setHowManyPeople,
         setHowOften,

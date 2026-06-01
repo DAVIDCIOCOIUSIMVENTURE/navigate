@@ -1,7 +1,7 @@
 ﻿import { createModel } from "@rematch/core"
 import type { RootModel } from "."
-import type { ExistingSolutionItem, ValidationAssessment, ValidationStatus } from "@/types/validation"
-import { DEFAULT_VALIDATION_ASSESSMENT } from "@/types/validation"
+import type { ExistingSolutionItem, JobsToBeDone, ValidationAssessment, ValidationStatus } from "@/types/validation"
+import { DEFAULT_JOBS_TO_BE_DONE, DEFAULT_VALIDATION_ASSESSMENT } from "@/types/validation"
 import type { ReflectionCapture } from "@/types/reflection"
 import type { CustomDimensionItem } from "./custom-dimension-items-model"
 import type { SelfDiscoveryItem } from "./self-discovery-items-model"
@@ -23,6 +23,7 @@ export type Problem = {
   you: string[]
   source: ProblemSource
   existingSolutions: ExistingSolutionItem[]
+  jobsToBeDone: JobsToBeDone
   validationAssessment: ValidationAssessment
   validationStatus: ValidationStatus
   contextWhen: string
@@ -31,7 +32,7 @@ export type Problem = {
   reflection: ReflectionCapture | null
 }
 
-export type ProblemPatch = Partial<Pick<Problem, "title" | "description" | "customers" | "contexts" | "problems" | "you" | "existingSolutions" | "validationAssessment" | "validationStatus" | "contextWhen" | "segmentSize" | "customerDescription" | "reflection">>
+export type ProblemPatch = Partial<Pick<Problem, "title" | "description" | "customers" | "contexts" | "problems" | "you" | "existingSolutions" | "jobsToBeDone" | "validationAssessment" | "validationStatus" | "contextWhen" | "segmentSize" | "customerDescription" | "reflection">>
 
 /**
  * Build a short summary label for a Problem. Field values are ids, so the
@@ -146,6 +147,7 @@ export const problems = createModel<RootModel>()({
         you: payload.you ?? [],
         source: payload.source,
         existingSolutions: payload.existingSolutions ?? [],
+        jobsToBeDone: payload.jobsToBeDone ?? DEFAULT_JOBS_TO_BE_DONE,
         validationAssessment: payload.validationAssessment ?? DEFAULT_VALIDATION_ASSESSMENT,
         validationStatus: payload.validationStatus ?? "unvalidated",
         contextWhen: payload.contextWhen ?? "",

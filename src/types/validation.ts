@@ -36,7 +36,6 @@ export type JobsToBeDone = {
 export type JobAnchor = { kind: JobKind; id: number }
 
 export type ValidationAssessment = {
-  jobsToBeDone: JobsToBeDone
   anchorJob: JobAnchor | null
   howManyPeople: ValidationMetric
   howOften: ValidationMetric
@@ -49,8 +48,8 @@ export type ValidationAssessment = {
 }
 
 // The keys of ValidationAssessment whose value is a ValidationMetric: the
-// number-with-unit-and-level fields, excluding the jobs, the anchor, and the
-// two share sliders. Useful for iterating over just the metric fields.
+// number-with-unit-and-level fields, excluding the anchor and the two share
+// sliders. Useful for iterating over just the metric fields.
 export type ValidationMetricKey = {
   [K in keyof ValidationAssessment]: ValidationAssessment[K] extends ValidationMetric ? K : never
 }[keyof ValidationAssessment]
@@ -67,7 +66,6 @@ export const DEFAULT_JOBS_TO_BE_DONE: JobsToBeDone = {
 }
 
 export const DEFAULT_VALIDATION_ASSESSMENT: ValidationAssessment = {
-  jobsToBeDone: DEFAULT_JOBS_TO_BE_DONE,
   anchorJob: null,
   howManyPeople: { value: 0, unit: "", level: "" },
   howOften: { value: 0, unit: "", level: "" },

@@ -889,8 +889,7 @@ function TamSamSomPanel({
 }
 
 export function JobsToBeDoneStrategy({ readOnly = false }: { readOnly?: boolean }) {
-  const { validationAssessment, setJobsToBeDone } = useProblem()
-  const { jobsToBeDone } = validationAssessment
+  const { jobsToBeDone, setJobsToBeDone } = useProblem()
 
   const hasAny = jobsToBeDone.functional.length + jobsToBeDone.emotional.length + jobsToBeDone.social.length > 0
 
@@ -918,9 +917,9 @@ export function JobsToBeDoneStrategy({ readOnly = false }: { readOnly?: boolean 
 
 export function WorthStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const {
-    validationAssessment, setWorthToThem, setAnchorJob,
+    validationAssessment, jobsToBeDone, setWorthToThem, setAnchorJob,
   } = useProblem()
-  const { worthToThem, jobsToBeDone, anchorJob } = validationAssessment
+  const { worthToThem, anchorJob } = validationAssessment
 
   const hasAny = worthToThem.value !== null && worthToThem.value !== 0
 
@@ -1066,9 +1065,9 @@ function PitfallsCallout() {
 
 export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const {
-    validationAssessment, status, setStatus,
+    validationAssessment, jobsToBeDone, status, setStatus,
   } = useProblem()
-  const { jobsToBeDone, anchorJob, howManyPeople, howOften, worthToThem, reachableShare, obtainableShare, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
+  const { anchorJob, howManyPeople, howOften, worthToThem, reachableShare, obtainableShare, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
 
   const customers = howManyPeople.value ?? 0
   const frequency = howOften.value ?? 0
@@ -1161,12 +1160,12 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
 export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const {
     status, setStatus,
-    validationAssessment, setJobsToBeDone, setAnchorJob, setHowManyPeople, setHowOften, setWorthToThem,
+    validationAssessment, jobsToBeDone, setJobsToBeDone, setAnchorJob, setHowManyPeople, setHowOften, setWorthToThem,
     setReachableShare, setObtainableShare, setCostOfSwitching,
     setSolutionEffectiveness, setCompetitorSize,
   } = useProblem()
 
-  const { jobsToBeDone, anchorJob, howManyPeople, howOften, worthToThem, reachableShare, obtainableShare, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
+  const { anchorJob, howManyPeople, howOften, worthToThem, reachableShare, obtainableShare, costOfSwitching, solutionEffectiveness, competitorSize } = validationAssessment
 
   const jobsCount = jobsToBeDone.functional.length + jobsToBeDone.emotional.length + jobsToBeDone.social.length
   const hasAnyMetric = [howManyPeople, howOften, worthToThem, costOfSwitching, solutionEffectiveness, competitorSize]
