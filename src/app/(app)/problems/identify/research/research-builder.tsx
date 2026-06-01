@@ -1151,7 +1151,7 @@ export function ResearchBuilder({
 
   const backAndPanel = (
     <div className="flex items-center gap-2 shrink-0">
-      <Button variant="tertiary-outline" onClick={() => router.push("/problems")} className="gap-2">
+      <Button variant="tertiary-outline" onClick={() => router.push("/problems/identify")} className="gap-2">
         <ArrowLeft className="h-4 w-4" />
         Back
       </Button>
