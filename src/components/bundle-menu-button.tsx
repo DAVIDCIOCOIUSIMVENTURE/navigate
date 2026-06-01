@@ -68,7 +68,7 @@ export function BundleMenuButton({ kind }: { kind: "problem" | "solution" }) {
         className="hidden"
         onChange={onFileSelected}
       />
-      <DropdownMenu>
+      <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>
           <Button variant="outline" size="icon" aria-label="More actions">
             <MoreHorizontal className="h-4 w-4" />

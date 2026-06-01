@@ -376,7 +376,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                             <TooltipContent>Edit solution</TooltipContent>
                           </Tooltip>
                         )}
-                        <DropdownMenu>
+                        <DropdownMenu modal={false}>
                           <DropdownMenuTrigger asChild>
                             <Button variant="outline-card" size="icon" className="h-7 w-7" aria-label="Actions">
                               <MoreHorizontal className="h-3.5 w-3.5 text-tertiary" />

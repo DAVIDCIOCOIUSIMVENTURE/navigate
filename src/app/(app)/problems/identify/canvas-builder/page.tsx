@@ -1338,7 +1338,7 @@ export default function IdentifyPage() {
                     <span className="text-sm text-secondary-brand font-medium tabular-nums">
                       {columnSelected.length} / {collectAllIds(column.items).length}
                     </span>
-                    <DropdownMenu>
+                    <DropdownMenu modal={false}>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" size="icon" className="h-7 w-7">
                           <Settings className="h-3.5 w-3.5" />

@@ -109,7 +109,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     <div className={cn("flex flex-col gap-3 flex-1 w-full min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
     {!isWide && (
     <nav aria-label="Problem validation steps" className="w-full">
-      <DropdownMenu open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
+      <DropdownMenu open={mobileNavOpen} onOpenChange={setMobileNavOpen} modal={false}>
         <DropdownMenuTrigger asChild>
           <Button
             variant="outline"
