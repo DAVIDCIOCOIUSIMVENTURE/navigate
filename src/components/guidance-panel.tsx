@@ -238,7 +238,7 @@ const guidanceItems: GuidanceItem[] = [
           <p>Click <Keyword>Identify problems</Keyword> to open the tool selector. Use one of the discovery tools to surface a problem, or define one directly if you already know what you want to explore.</p>
         </GuidanceSection>
         <GuidanceSection icon={ToggleRight} iconBg="bg-orange-700" title="Two modes">
-          <p>The Identify Problems tool offers two ways to work, switchable from the toggle in the top-right corner. Choose whichever suits your thinking style; you can switch at any time and your progress is preserved.</p>
+          <p>The Canvas Builder offers two ways to work, switchable from the toggle in the top-right corner. Choose whichever suits your thinking style; you can switch at any time and your progress is preserved.</p>
         </GuidanceSection>
         <GuidanceSection icon={Blocks} iconBg="bg-orange-700" title="Problem Builder (guided mode)">
           <p>The builder walks you through four steps to construct a problem systematically:</p>
@@ -447,7 +447,7 @@ const guidanceItems: GuidanceItem[] = [
           <p>Reflect is its own tool, opened from the <Keyword>Identify problems</Keyword> selector and living at <Keyword>/problems/identify/reflect</Keyword>.</p>
           <div className="grid gap-3 pt-1 sm:grid-cols-2">
             <div className="rounded-lg border bg-card p-3">
-              <h5 className="text-sm font-semibold mb-1">Use Reflect when</h5>
+              <h5 className="text-base font-semibold mb-1">Use Reflect when</h5>
               <ul className="text-sm leading-relaxed list-disc pl-5 space-y-1">
                 <li>You want a prompt to react to, not a blank canvas.</li>
                 <li>You&apos;d rather mine experience you already have than research the market.</li>
@@ -455,7 +455,7 @@ const guidanceItems: GuidanceItem[] = [
               </ul>
             </div>
             <div className="rounded-lg border bg-card p-3">
-              <h5 className="text-sm font-semibold mb-1">Use Canvas or Builder instead when</h5>
+              <h5 className="text-base font-semibold mb-1">Use the Canvas Builder instead when</h5>
               <ul className="text-sm leading-relaxed list-disc pl-5 space-y-1">
                 <li>You already have specific customers, contexts, or pain points in mind.</li>
                 <li>You want to compose problems by combining columns on a canvas.</li>

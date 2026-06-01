@@ -3,8 +3,8 @@ import type { RootModel } from "."
 
 const STORAGE_KEY = "navigate-settings"
 
-export type IdentifyMode = "canvas" | "builder"
-export type IdentifyBuilderStep = "pick" | "category" | "choose" | "review"
+export type CanvasBuilderMode = "canvas" | "builder"
+export type CanvasBuilderStep = "pick" | "category" | "choose" | "review"
 export type AvatarColor = "teal" | "mustard" | "navy" | "forest" | "crimson" | "indigo" | "violet" | "rose"
 
 const AVATAR_COLOR_IDS: AvatarColor[] = ["teal", "mustard", "navy", "forest", "crimson", "indigo", "violet", "rose"]
@@ -14,30 +14,30 @@ function isAvatarColor(value: unknown): value is AvatarColor {
 }
 
 interface SettingsState {
-  hiddenIdentifyColumns: string[]
+  hiddenCanvasBuilderColumns: string[]
   fullView: boolean
-  identifySelected: string[]
-  identifyMode: IdentifyMode
+  canvasBuilderSelected: string[]
+  canvasBuilderMode: CanvasBuilderMode
   journalOpen: boolean
-  identifyBuilderStep: IdentifyBuilderStep
-  identifyBuilderActiveColumnId: string | null
-  identifyBuilderActiveCategoryId: string | null
-  identifyBuilderDescription: string
+  canvasBuilderStep: CanvasBuilderStep
+  canvasBuilderActiveColumnId: string | null
+  canvasBuilderActiveCategoryId: string | null
+  canvasBuilderDescription: string
   avatarColor: AvatarColor
   nickname: string
   bio: string
 }
 
 const defaultState: SettingsState = {
-  hiddenIdentifyColumns: [],
+  hiddenCanvasBuilderColumns: [],
   fullView: false,
-  identifySelected: [],
-  identifyMode: "canvas",
+  canvasBuilderSelected: [],
+  canvasBuilderMode: "canvas",
   journalOpen: false,
-  identifyBuilderStep: "pick",
-  identifyBuilderActiveColumnId: null,
-  identifyBuilderActiveCategoryId: null,
-  identifyBuilderDescription: "",
+  canvasBuilderStep: "pick",
+  canvasBuilderActiveColumnId: null,
+  canvasBuilderActiveCategoryId: null,
+  canvasBuilderDescription: "",
   avatarColor: "teal",
   nickname: "",
   bio: "",
@@ -56,8 +56,8 @@ export const settings = createModel<RootModel>()({
   state: defaultState,
 
   reducers: {
-    setHiddenIdentifyColumns(state, hiddenIdentifyColumns: string[]) {
-      const next = { ...state, hiddenIdentifyColumns }
+    setHiddenCanvasBuilderColumns(state, hiddenCanvasBuilderColumns: string[]) {
+      const next = { ...state, hiddenCanvasBuilderColumns }
       saveToStorage(next)
       return next
     },
@@ -65,13 +65,13 @@ export const settings = createModel<RootModel>()({
       // Not persisted, resets on reload
       return { ...state, fullView }
     },
-    setIdentifySelected(state, identifySelected: string[]) {
-      const next = { ...state, identifySelected }
+    setCanvasBuilderSelected(state, canvasBuilderSelected: string[]) {
+      const next = { ...state, canvasBuilderSelected }
       saveToStorage(next)
       return next
     },
-    setIdentifyMode(state, identifyMode: IdentifyMode) {
-      const next = { ...state, identifyMode }
+    setCanvasBuilderMode(state, canvasBuilderMode: CanvasBuilderMode) {
+      const next = { ...state, canvasBuilderMode }
       saveToStorage(next)
       return next
     },
@@ -80,23 +80,23 @@ export const settings = createModel<RootModel>()({
       saveToStorage(next)
       return next
     },
-    setIdentifyBuilderStep(state, identifyBuilderStep: IdentifyBuilderStep) {
-      const next = { ...state, identifyBuilderStep }
+    setCanvasBuilderStep(state, canvasBuilderStep: CanvasBuilderStep) {
+      const next = { ...state, canvasBuilderStep }
       saveToStorage(next)
       return next
     },
-    setIdentifyBuilderActiveColumnId(state, identifyBuilderActiveColumnId: string | null) {
-      const next = { ...state, identifyBuilderActiveColumnId }
+    setCanvasBuilderActiveColumnId(state, canvasBuilderActiveColumnId: string | null) {
+      const next = { ...state, canvasBuilderActiveColumnId }
       saveToStorage(next)
       return next
     },
-    setIdentifyBuilderActiveCategoryId(state, identifyBuilderActiveCategoryId: string | null) {
-      const next = { ...state, identifyBuilderActiveCategoryId }
+    setCanvasBuilderActiveCategoryId(state, canvasBuilderActiveCategoryId: string | null) {
+      const next = { ...state, canvasBuilderActiveCategoryId }
       saveToStorage(next)
       return next
     },
-    setIdentifyBuilderDescription(state, identifyBuilderDescription: string) {
-      const next = { ...state, identifyBuilderDescription }
+    setCanvasBuilderDescription(state, canvasBuilderDescription: string) {
+      const next = { ...state, canvasBuilderDescription }
       saveToStorage(next)
       return next
     },
@@ -115,15 +115,15 @@ export const settings = createModel<RootModel>()({
       saveToStorage(next)
       return next
     },
-    resetIdentifyBuilder(state) {
+    resetCanvasBuilder(state) {
       const next: SettingsState = {
         ...state,
-        identifyBuilderStep: "pick",
-        identifyBuilderActiveColumnId: null,
-        identifyBuilderActiveCategoryId: null,
-        identifyBuilderDescription: "",
+        canvasBuilderStep: "pick",
+        canvasBuilderActiveColumnId: null,
+        canvasBuilderActiveCategoryId: null,
+        canvasBuilderDescription: "",
         // Selections are shared between canvas and builder; reset clears both.
-        identifySelected: [],
+        canvasBuilderSelected: [],
       }
       saveToStorage(next)
       return next
@@ -137,33 +137,33 @@ export const settings = createModel<RootModel>()({
         const raw = localStorage.getItem(STORAGE_KEY)
         if (!raw) return
         const stored: Partial<SettingsState> = JSON.parse(raw)
-        if (stored.hiddenIdentifyColumns) {
-          dispatch.settings.setHiddenIdentifyColumns(stored.hiddenIdentifyColumns)
+        if (stored.hiddenCanvasBuilderColumns) {
+          dispatch.settings.setHiddenCanvasBuilderColumns(stored.hiddenCanvasBuilderColumns)
         }
-        if (stored.identifySelected) {
-          dispatch.settings.setIdentifySelected(stored.identifySelected)
+        if (stored.canvasBuilderSelected) {
+          dispatch.settings.setCanvasBuilderSelected(stored.canvasBuilderSelected)
         }
-        if (stored.identifyMode) {
-          // Reflect and research are now their own pages, not identify modes;
+        if (stored.canvasBuilderMode) {
+          // Reflect and research are now their own pages, not canvas-builder modes;
           // any persisted value for them falls back to the default canvas mode.
-          if (stored.identifyMode === "canvas" || stored.identifyMode === "builder") {
-            dispatch.settings.setIdentifyMode(stored.identifyMode)
+          if (stored.canvasBuilderMode === "canvas" || stored.canvasBuilderMode === "builder") {
+            dispatch.settings.setCanvasBuilderMode(stored.canvasBuilderMode)
           }
         }
         if (typeof stored.journalOpen === "boolean") {
           dispatch.settings.setJournalOpen(stored.journalOpen)
         }
-        if (stored.identifyBuilderStep) {
-          dispatch.settings.setIdentifyBuilderStep(stored.identifyBuilderStep)
+        if (stored.canvasBuilderStep) {
+          dispatch.settings.setCanvasBuilderStep(stored.canvasBuilderStep)
         }
-        if (stored.identifyBuilderActiveColumnId !== undefined) {
-          dispatch.settings.setIdentifyBuilderActiveColumnId(stored.identifyBuilderActiveColumnId)
+        if (stored.canvasBuilderActiveColumnId !== undefined) {
+          dispatch.settings.setCanvasBuilderActiveColumnId(stored.canvasBuilderActiveColumnId)
         }
-        if (stored.identifyBuilderActiveCategoryId !== undefined) {
-          dispatch.settings.setIdentifyBuilderActiveCategoryId(stored.identifyBuilderActiveCategoryId)
+        if (stored.canvasBuilderActiveCategoryId !== undefined) {
+          dispatch.settings.setCanvasBuilderActiveCategoryId(stored.canvasBuilderActiveCategoryId)
         }
-        if (typeof stored.identifyBuilderDescription === "string") {
-          dispatch.settings.setIdentifyBuilderDescription(stored.identifyBuilderDescription)
+        if (typeof stored.canvasBuilderDescription === "string") {
+          dispatch.settings.setCanvasBuilderDescription(stored.canvasBuilderDescription)
         }
         if (isAvatarColor(stored.avatarColor)) {
           dispatch.settings.setAvatarColor(stored.avatarColor)

@@ -265,7 +265,7 @@ export function IdentifyDimensionPicker({
             <DialogTitle>Add your own</DialogTitle>
             <DialogDescription>
               Anything you add joins the {column?.title ?? columnId} dimension in
-              the Identify Problems canvas and the picker below.
+              the Canvas Builder and the picker below.
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-2 py-2">

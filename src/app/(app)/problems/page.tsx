@@ -51,7 +51,7 @@ export default function ProblemsPage() {
           <div className="text-center flex flex-col gap-2 max-w-sm">
             <h2 className="text-lg font-semibold">No problems yet</h2>
             <p className="text-base">
-              Start by searching for problems using the Identify Problems tool or define one directly.
+              Start by searching for problems using the Canvas Builder or define one directly.
             </p>
           </div>
           <Button onClick={() => router.push("/problems/identify")} size="lg" className="gap-2">

@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useMemo, useDeferredValue, useCallback, ty
 import { usePathname } from "next/navigation"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
-import type { IdentifyMode } from "@/store/settings-model"
+import type { CanvasBuilderMode } from "@/store/settings-model"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -379,21 +379,21 @@ function ProblemBuilder({
   customItemColumns: Map<string, string>
 }) {
   const dispatch = useDispatch<AppDispatch>()
-  const step = useSelector((state: RootState) => state.settings.identifyBuilderStep)
-  const activeColumnId = useSelector((state: RootState) => state.settings.identifyBuilderActiveColumnId)
-  const activeCategoryId = useSelector((state: RootState) => state.settings.identifyBuilderActiveCategoryId)
-  // Selections are shared with the canvas mode via state.settings.identifySelected
+  const step = useSelector((state: RootState) => state.settings.canvasBuilderStep)
+  const activeColumnId = useSelector((state: RootState) => state.settings.canvasBuilderActiveColumnId)
+  const activeCategoryId = useSelector((state: RootState) => state.settings.canvasBuilderActiveCategoryId)
+  // Selections are shared with the canvas mode via state.settings.canvasBuilderSelected
   // so toggling an item in either mode is reflected in the other.
-  const identifySelectedArray = useSelector((state: RootState) => state.settings.identifySelected)
-  const selectedSet = useMemo(() => new Set(identifySelectedArray), [identifySelectedArray])
-  const problemTitle = useSelector((state: RootState) => state.settings.identifyBuilderDescription)
+  const canvasBuilderSelectedArray = useSelector((state: RootState) => state.settings.canvasBuilderSelected)
+  const selectedSet = useMemo(() => new Set(canvasBuilderSelectedArray), [canvasBuilderSelectedArray])
+  const problemTitle = useSelector((state: RootState) => state.settings.canvasBuilderDescription)
   const isWide = useContainerSize() === "wide"
   const [stepperOpen, setStepperOpen] = useState(false)
 
-  const setStep = (next: BuilderStepId) => dispatch.settings.setIdentifyBuilderStep(next)
-  const setActiveColumnId = (id: string | null) => dispatch.settings.setIdentifyBuilderActiveColumnId(id)
-  const setActiveCategoryId = (id: string | null) => dispatch.settings.setIdentifyBuilderActiveCategoryId(id)
-  const setProblemTitle = (next: string) => dispatch.settings.setIdentifyBuilderDescription(next)
+  const setStep = (next: BuilderStepId) => dispatch.settings.setCanvasBuilderStep(next)
+  const setActiveColumnId = (id: string | null) => dispatch.settings.setCanvasBuilderActiveColumnId(id)
+  const setActiveCategoryId = (id: string | null) => dispatch.settings.setCanvasBuilderActiveCategoryId(id)
+  const setProblemTitle = (next: string) => dispatch.settings.setCanvasBuilderDescription(next)
 
   const stepIndex = BUILDER_STEPS.findIndex((s) => s.id === step)
   // Group the flat selection by column so the builder UI can show per-column
@@ -435,7 +435,7 @@ function ProblemBuilder({
     const next = new Set(selectedSet)
     if (next.has(itemId)) next.delete(itemId)
     else next.add(itemId)
-    dispatch.settings.setIdentifySelected(Array.from(next))
+    dispatch.settings.setCanvasBuilderSelected(Array.from(next))
   }
 
   const handleSave = () => {
@@ -445,11 +445,11 @@ function ProblemBuilder({
       selections[col.id] = selectedByColumn[col.id] ?? []
     }
     onSave(selections, problemTitle)
-    dispatch.settings.resetIdentifyBuilder()
+    dispatch.settings.resetCanvasBuilder()
   }
 
   const reset = useCallback(() => {
-    dispatch.settings.resetIdentifyBuilder()
+    dispatch.settings.resetCanvasBuilder()
   }, [dispatch])
 
   useEffect(() => {
@@ -920,7 +920,7 @@ export default function IdentifyPage() {
   useEffect(() => { setMounted(true) }, [])
 
   // Research now has its own page; the Identify drawer shows only problems
-  // produced by the Identify tool (canvas, builder, and reflect all tag
+  // produced by the identify methods (the Canvas Builder and Reflect both tag
   // their output with the "identify" source).
   const savedProblems = useSelector((state: RootState) =>
     state.problems.problems.filter((p) => p.source === "identify")
@@ -992,21 +992,21 @@ export default function IdentifyPage() {
     [youColumn, columnsWithCustomItems]
   )
 
-  const hiddenColumnsArray = useSelector((state: RootState) => state.settings.hiddenIdentifyColumns)
+  const hiddenColumnsArray = useSelector((state: RootState) => state.settings.hiddenCanvasBuilderColumns)
   const hiddenColumns = useMemo(() => new Set(hiddenColumnsArray), [hiddenColumnsArray])
 
   const toggleColumnVisibility = (columnId: string) => {
     const next = hiddenColumns.has(columnId)
       ? hiddenColumnsArray.filter((id) => id !== columnId)
       : [...hiddenColumnsArray, columnId]
-    dispatch.settings.setHiddenIdentifyColumns(next)
+    dispatch.settings.setHiddenCanvasBuilderColumns(next)
   }
 
-  const identifySelectedArray = useSelector((state: RootState) => state.settings.identifySelected)
-  const selected = useMemo(() => new Set(identifySelectedArray), [identifySelectedArray])
+  const canvasBuilderSelectedArray = useSelector((state: RootState) => state.settings.canvasBuilderSelected)
+  const selected = useMemo(() => new Set(canvasBuilderSelectedArray), [canvasBuilderSelectedArray])
   const setSelected = (updater: Set<string> | ((prev: Set<string>) => Set<string>)) => {
     const next = typeof updater === "function" ? updater(selected) : updater
-    dispatch.settings.setIdentifySelected(Array.from(next))
+    dispatch.settings.setCanvasBuilderSelected(Array.from(next))
   }
   const [searchQuery, setSearchQuery] = useState("")
   const debouncedQuery = useDeferredValue(searchQuery)
@@ -1038,7 +1038,7 @@ export default function IdentifyPage() {
   const [managingColumnId, setManagingColumnId] = useState<string | null>(null)
   const builderResetRef = useRef<(() => void) | null>(null)
   const fullView = useSelector((state: RootState) => state.settings.fullView)
-  const identifyMode = useSelector((state: RootState) => state.settings.identifyMode)
+  const canvasBuilderMode = useSelector((state: RootState) => state.settings.canvasBuilderMode)
   const containerSize = useContainerSize()
   // Columns the user can edit (excludes "you", which is populated only from
   // self-discovery selections).
@@ -1172,20 +1172,20 @@ export default function IdentifyPage() {
         }
         title="Reset?"
         description={
-          identifyMode === "canvas"
+          canvasBuilderMode === "canvas"
             ? "This will clear your current selection across all dimensions. Saved problems are not affected."
             : "This will clear your in-progress problem builder. Saved problems are not affected."
         }
         confirmLabel="Reset"
         onConfirm={() => {
-          if (identifyMode === "canvas") {
+          if (canvasBuilderMode === "canvas") {
             clearAll()
-          } else if (identifyMode === "builder") {
+          } else if (canvasBuilderMode === "builder") {
             builderResetRef.current?.()
           }
         }}
       />
-      {identifyMode === "canvas" && (
+      {canvasBuilderMode === "canvas" && (
         <Button
           size="sm"
           onClick={openSaveDialog}
@@ -1223,9 +1223,9 @@ export default function IdentifyPage() {
   const toggleGroupEl = (
     <ToggleGroup
       type="single"
-      value={identifyMode}
+      value={canvasBuilderMode}
       onValueChange={(value) => {
-        if (value) dispatch.settings.setIdentifyMode(value as IdentifyMode)
+        if (value) dispatch.settings.setCanvasBuilderMode(value as CanvasBuilderMode)
       }}
       size="sm"
       className="shrink-0 bg-card border-border divide-x divide-border"
@@ -1281,7 +1281,7 @@ export default function IdentifyPage() {
         </div>
       )}
 
-      {identifyMode === "builder" ? (
+      {canvasBuilderMode === "builder" ? (
         <ProblemBuilder columns={filteredColumns} onSave={handleBuilderSave} resetRef={builderResetRef} onClearSearch={() => setSearchQuery("")} customItemColumns={customItemColumns} />
       ) : (<>
       <div className={cn(
@@ -1420,7 +1420,7 @@ export default function IdentifyPage() {
         <DrawerContent className="max-h-[70vh]">
           <DrawerHeader>
             <DrawerTitle>Saved Problems ({savedProblems.length})</DrawerTitle>
-            <DrawerDescription className="sr-only">Problems saved from the Identify Problems tool</DrawerDescription>
+            <DrawerDescription className="sr-only">Problems saved from the Canvas Builder</DrawerDescription>
           </DrawerHeader>
           <div className="overflow-auto px-4 pb-6">
             <ProblemsTable
@@ -1456,7 +1456,7 @@ export default function IdentifyPage() {
         onOpenChange={setAddCustomDialogOpen}
         onCreated={(_columnId, id) => {
           // Auto-tick the new item.
-          dispatch.settings.setIdentifySelected([...identifySelectedArray, id])
+          dispatch.settings.setCanvasBuilderSelected([...canvasBuilderSelectedArray, id])
         }}
       />
 

@@ -82,7 +82,7 @@ export default function OtherCategoryPage() {
                         <div className="shrink-0">
                             <p className="text-base text-foreground">
                                 Use this section for items you&apos;ve added that don&apos;t fit the categories above.
-                                Anything you add here will appear under &ldquo;Your items&rdquo; in the You column of the Identify Problems tool.
+                                Anything you add here will appear under &ldquo;Your items&rdquo; in the You column of the Canvas Builder.
                             </p>
                         </div>
                         {items.length > 0 && (

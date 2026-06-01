@@ -39,13 +39,13 @@ const STORAGE_GROUPS: StorageGroup[] = [
   {
     id: "self-discovery-items",
     label: "Self-discovery items",
-    description: "Items captured during self-discovery; these power the You dimension in Identify Problems.",
+    description: "Items captured during self-discovery; these power the You dimension in the Canvas Builder.",
     keys: ["navigate-self-discovery-items"],
   },
   {
     id: "custom-dimension-items",
     label: "Custom dimension items",
-    description: "Customer / Context / Problem items you've added yourself in Identify Problems.",
+    description: "Customer / Context / Problem items you've added yourself in the Canvas Builder.",
     keys: ["navigate-custom-dimension-items"],
   },
   {

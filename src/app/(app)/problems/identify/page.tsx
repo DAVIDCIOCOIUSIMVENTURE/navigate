@@ -54,8 +54,8 @@ export default function IdentifyProblemsPage() {
       enabled: true,
     },
     {
-      id: "identify-tool",
-      title: "Identify Problems Tool",
+      id: "canvas-builder",
+      title: "Canvas Builder",
       shortDescription: "Combine customer segments, contexts, and types of pain on a single canvas to surface problems worth solving.",
       longDescription: "Combine customer segments, contexts, and types of pain on a single canvas to surface problems worth solving.",
       helperText: "Best for exploring a wide space of possibilities by mixing dimensions you can choose from a curated catalog.",
@@ -90,7 +90,7 @@ export default function IdentifyProblemsPage() {
 
   function handlePick(id: string) {
     switch (id) {
-      case "identify-tool":
+      case "canvas-builder":
         router.push("/problems/identify/canvas-builder")
         return
       case "reflect":
@@ -116,7 +116,7 @@ export default function IdentifyProblemsPage() {
                 Every problem you bring into your library starts here. Pick the method that fits where you are right now: each one is a different doorway into the same goal of finding a problem that&apos;s real, painful, and worth solving.
               </p>
               <p className="text-base leading-relaxed">
-                You can use more than one method over time. Many founders start with the <span className="font-semibold">Identify Problems Tool</span> to explore broadly, then return to <span className="font-semibold">Reflect</span> or <span className="font-semibold">Research</span> when they want to ground a specific candidate in lived experience or outside evidence. If you already know what you want to explore, <span className="font-semibold">Define a Problem Statement</span> lets you skip straight to capturing it.
+                You can use more than one method over time. Many founders start with the <span className="font-semibold">Canvas Builder</span> to explore broadly, then return to <span className="font-semibold">Reflect</span> or <span className="font-semibold">Research</span> when they want to ground a specific candidate in lived experience or outside evidence. If you already know what you want to explore, <span className="font-semibold">Define a Problem Statement</span> lets you skip straight to capturing it.
               </p>
               <p className="text-base leading-relaxed">
                 Whichever method you choose, the resulting problem lands in your library where you can refine and validate it.
