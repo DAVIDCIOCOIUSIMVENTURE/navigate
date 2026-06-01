@@ -401,9 +401,9 @@ function JobsGroup({
       {!readOnly && (
         <Button
           type="button"
-          variant="ghost"
+          variant="on-primary"
           onClick={add}
-          className="self-start text-white hover:bg-white/15"
+          className="w-full"
         >
           <Plus className="h-4 w-4 mr-2" />
           Add another

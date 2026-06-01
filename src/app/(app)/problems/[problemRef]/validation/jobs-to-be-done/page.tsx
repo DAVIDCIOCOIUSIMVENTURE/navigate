@@ -65,7 +65,7 @@ export default function JobsToBeDonePage() {
 
           <h3 className="mt-4 text-xl font-bold text-foreground">How to read intensity</h3>
           <p>
-            For emotional and social jobs, mark the intensity from what customers have said and done, not from how strongly you feel about it. <strong className="text-foreground">Mild</strong> is &quot;mildly annoying, forgotten within the hour&quot;. <strong className="text-foreground">Strong</strong> is &quot;makes the customer rearrange their day to avoid it&quot;. <strong className="text-foreground">Unbearable</strong> is &quot;will switch tools, jobs, or providers to make it stop&quot;. If your evidence does not match the anchor, pick the lower level.
+            For emotional and social jobs, mark the intensity from what customers have said and done, not from how strongly you feel about it. <strong className="text-foreground">Mild</strong> is &quot;mildly annoying, forgotten within the hour&quot;. <strong className="text-foreground">Strong</strong> is &quot;makes the customer rearrange their day to avoid it&quot;. <strong className="text-foreground">Unbearable</strong> is &quot;will switch tools, jobs, or providers to make it stop&quot;.
           </p>
 
           <h3 className="mt-4 text-xl font-bold text-foreground">What will you do?</h3>

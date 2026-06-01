@@ -1,4 +1,4 @@
-import { Mail, Notebook, type LucideIcon } from "lucide-react"
+import { Mail, Notebook, Glasses, Car, type LucideIcon } from "lucide-react"
 
 export type ExistingSolutionCaseStudy = {
   company: string
@@ -72,6 +72,68 @@ export const EXISTING_SOLUTIONS_CASE_STUDIES: ExistingSolutionCaseStudy[] = [
           { text: "No built-in views (kanban, calendar, timeline), so project leads spent hours each week updating and formatting cells by hand." },
           { text: "Formulas break when rows are moved or deleted, leaving status updates frequently out of date and causing duplicate or missed work." },
           { text: "No commenting or assignment features made the whole exercise feel like busywork that added no real value." },
+        ],
+      },
+    ],
+  },
+  {
+    company: "Warby Parker (launch)",
+    icon: Glasses,
+    iconBg: "bg-blue-900",
+    solutions: [
+      {
+        name: "Optical retail chains (LensCrafters, Pearle Vision, all Luxottica-owned)",
+        shortcomings: [
+          { text: "A single pair routinely cost $300-500, because the same company owned the frames, the lenses, and the stores, leaving customers no real price competition." },
+          { text: "Frame selection was dominated by a few licensed designer brands, all marked up heavily, so the apparent 'choice' was an illusion." },
+          { text: "The in-store sales process pushed upsells (coatings, upgrades) that inflated the final bill well beyond the sticker price." },
+        ],
+      },
+      {
+        name: "Independent opticians",
+        shortcomings: [
+          { text: "Personal service came at an even higher price, putting it out of reach for budget-conscious buyers." },
+          { text: "Limited frame ranges and inconsistent stock meant customers often couldn't find a style they liked locally." },
+          { text: "Restricted hours and single locations forced people to take time off work for what should be a quick purchase." },
+        ],
+      },
+      {
+        name: "Cheap online sellers (e.g. Zenni Optical)",
+        shortcomings: [
+          { text: "Rock-bottom prices came with no way to try frames on, so buyers gambled on fit and often received glasses that looked wrong." },
+          { text: "Bargain-basement branding made customers question the quality and the accuracy of the lenses." },
+          { text: "Awkward or non-existent returns meant a bad guess was money wasted, which deterred people from risking it at all." },
+        ],
+      },
+    ],
+  },
+  {
+    company: "Uber (launch)",
+    icon: Car,
+    iconBg: "bg-zinc-900",
+    solutions: [
+      {
+        name: "Traditional taxis (street hail or phone dispatch)",
+        shortcomings: [
+          { text: "No reliable ETA: you stood on a corner with no idea if or when a cab would come, and dispatchers often didn't pick up." },
+          { text: "Cash-only or clunky card machines meant fumbling for payment and arguments over broken terminals at the end of every ride." },
+          { text: "Inconsistent cars and drivers with no accountability: a bad or unsafe ride had no real way to be reported or refunded." },
+        ],
+      },
+      {
+        name: "Licensed car and limo services",
+        shortcomings: [
+          { text: "Required calling ahead and booking in advance, useless for a spontaneous trip across town." },
+          { text: "Opaque pricing quoted over the phone left customers unsure what they'd actually pay until the journey was over." },
+          { text: "Premium rates with no app, no live tracking, and no transparency about where the car actually was." },
+        ],
+      },
+      {
+        name: "Driving and parking yourself",
+        shortcomings: [
+          { text: "Parking in dense cities was expensive, scarce, and time-consuming, often costing more than the trip was worth." },
+          { text: "Drinking, working, or relaxing en route was impossible when you had to be the one behind the wheel." },
+          { text: "Traffic and navigation stress fell entirely on you, with no option to hand it off to someone else." },
         ],
       },
     ],

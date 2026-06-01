@@ -1,4 +1,4 @@
-import { Mail, Notebook, type LucideIcon } from "lucide-react"
+import { Mail, Notebook, Glasses, Car, type LucideIcon } from "lucide-react"
 
 export type CaseStudyJob = {
   text: string
@@ -138,5 +138,117 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
     verdict: "Valid: Worth Solving",
     reasoning:
       "The combination of a massive audience, extremely high frequency, and an unbearable emotional job made this a strong opportunity. Notion validated it by seeing power users organically convert their entire teams, the problem was painful enough that individuals championed the switch without top-down mandates.",
+  },
+  {
+    company: "Warby Parker (launch)",
+    icon: Glasses,
+    iconBg: "bg-blue-900",
+    jobs: {
+      functional: [
+        "Get accurate prescription glasses without paying $300+ at the optician.",
+        "Try frames on at home before committing to a pair.",
+        "Replace or update frames as your style or prescription changes.",
+      ],
+      emotional: [
+        { text: "Stop feeling ripped off by the markup on a basic necessity.", intensity: "strong" },
+        { text: "Feel confident and good-looking in frames you actually chose.", intensity: "strong" },
+      ],
+      social: [
+        { text: "Look current and put-together to the people you see every day.", intensity: "strong" },
+      ],
+    },
+    howManyPeople: {
+      value: 150000000,
+      detail: "~150 million US adults wear corrective lenses, the vast majority buying from a handful of retail chains.",
+    },
+    howOften: {
+      value: 1,
+      unit: "every 1-2 years",
+      detail: "Glasses are replaced infrequently, when a prescription changes or frames break or go out of style. Far less often than the SaaS examples, but each purchase is high-value. Low frequency does not kill an opportunity when the price per purchase is high.",
+    },
+    worthToThem: {
+      value: 95,
+      unit: "USD per pair",
+      detail: "Incumbents charged $300-500 for a single pair. Warby Parker proved customers would happily pay a flat $95, anchored on the relief of not feeling ripped off rather than on the lowest possible price.",
+    },
+    reachableShare: {
+      value: 30,
+      detail: "Initially launchable to US online shoppers comfortable buying single-vision prescription glasses without an in-store fitting, roughly a third of the total glasses-wearing market.",
+    },
+    obtainableShare: {
+      value: 5,
+      detail: "A realistic early capture given Luxottica's lock on retail shelves and most customers' habit of buying glasses wherever they get their eyes tested.",
+    },
+    costOfSwitching: {
+      level: "low",
+      detail: "Buying glasses is a fresh purchase each time, with no contract or data to migrate. The home try-on program removed the one real barrier: not being able to try frames before buying online.",
+    },
+    solutionEffectiveness: {
+      level: "good",
+      detail: "The glasses themselves worked fine and stores offered fittings, so the product was not broken. The pain was the price and the buying experience, not the function: a subtler but very real source of frustration.",
+    },
+    competitorSize: {
+      level: "giant",
+      detail: "Luxottica owned most frame brands, the major retail chains (LensCrafters, Pearle Vision, Sunglass Hut), and the lens maker, controlling pricing end to end. A vertically integrated near-monopoly.",
+    },
+    verdict: "Valid: Worth Solving",
+    reasoning:
+      "A rare case where a huge market and very high price per purchase offset low frequency. The pain was not a broken product, it was being overcharged for a necessity by a near-monopoly. Warby Parker validated it by going direct, charging a flat $95, and using free home try-ons to remove the only real reason not to buy glasses online.",
+  },
+  {
+    company: "Uber (launch)",
+    icon: Car,
+    iconBg: "bg-zinc-900",
+    jobs: {
+      functional: [
+        "Get a reliable ride within minutes without phoning a dispatcher and hoping.",
+        "Know a car is actually coming and watch it approach on a map.",
+        "Pay automatically without fumbling for cash or a card at the end of the trip.",
+      ],
+      emotional: [
+        { text: "Stop the anxiety of standing on a corner not knowing if a cab will ever come.", intensity: "strong" },
+        { text: "Feel looked-after and a bit special arriving in a clean black car.", intensity: "mild" },
+      ],
+      social: [
+        { text: "Look in-control and professional arriving on time to clients and dates.", intensity: "strong" },
+      ],
+    },
+    howManyPeople: {
+      value: 50000000,
+      detail: "~50 million urban professionals in major US cities who regularly need point-to-point transport and find taxis unreliable.",
+    },
+    howOften: {
+      value: 4,
+      unit: "per week",
+      detail: "Urban professionals take multiple paid rides a week: to meetings, airports, and nights out. A frequent, recurring need rather than a rare event.",
+    },
+    worthToThem: {
+      value: 25,
+      unit: "USD per ride",
+      detail: "Early Uber Black cost a premium over a taxi, often $20-35 a trip. Customers happily paid more than a cab because the strong job was reliability and not being stranded, not the lowest fare.",
+    },
+    reachableShare: {
+      value: 20,
+      detail: "Initially launchable to smartphone-owning professionals in a few dense cities (San Francisco first) who could afford a premium black-car fare, a small slice of the total ride market.",
+    },
+    obtainableShare: {
+      value: 8,
+      detail: "A realistic early capture given entrenched taxi fleets, medallion systems, and city-by-city regulation that limited how fast Uber could expand.",
+    },
+    costOfSwitching: {
+      level: "low",
+      detail: "Hailing a taxi or calling a car service required no commitment, so trying Uber for a single ride cost the customer nothing. The app simply made the better option one tap away.",
+    },
+    solutionEffectiveness: {
+      level: "poor",
+      detail: "Taxis and traditional car services were unreliable: no-shows, no ETA, cash-only payment, dirty cars, and dispatchers you couldn't reach. The core job of 'get me there reliably' was badly served.",
+    },
+    competitorSize: {
+      level: "large",
+      detail: "Taxi fleets and medallion owners were entrenched and politically protected city by city, but fragmented and locally run, with no national player offering a better experience.",
+    },
+    verdict: "Valid: Worth Solving",
+    reasoning:
+      "A frequent, recurring need that incumbents served badly, paired with a strong emotional job: not being stranded. Uber validated it by launching a premium black-car service in one city, proving people would happily pay more for a reliable, tracked, cashless ride before expanding down-market to UberX.",
   },
 ]
