@@ -1,13 +1,15 @@
 import { createModel } from "@rematch/core"
 import type { RootModel } from "."
+import { AVATAR_COLOR_IDS } from "@/lib/avatar-colors"
+import type { AvatarColor } from "@/lib/avatar-colors"
 
 const STORAGE_KEY = "navigate-settings"
 
 export type CanvasBuilderMode = "canvas" | "builder"
 export type CanvasBuilderStep = "pick" | "category" | "choose" | "review"
-export type AvatarColor = "teal" | "mustard" | "navy" | "forest" | "crimson" | "indigo" | "violet" | "rose"
-
-const AVATAR_COLOR_IDS: AvatarColor[] = ["teal", "mustard", "navy", "forest", "crimson", "indigo", "violet", "rose"]
+// Re-exported so existing consumers can keep importing it from the store, but
+// the canonical definition now lives alongside the colour data in lib.
+export type { AvatarColor }
 
 function isAvatarColor(value: unknown): value is AvatarColor {
   return typeof value === "string" && (AVATAR_COLOR_IDS as string[]).includes(value)

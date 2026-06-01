@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Settings, HelpCircle, NotebookText, Compass, MoreHorizontal, User, UserCircle, ShieldCheck } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
-import type { AvatarColor } from "@/store/settings-model"
+import { AVATAR_COLOR_OPTIONS } from "@/lib/avatar-colors"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { navigationItems } from "@/config/navigation"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
@@ -30,17 +30,6 @@ import type { RootState, AppDispatch } from "@/store"
 import { Toaster } from "@/components/ui/sonner"
 import { TeamAvatars } from "@/components/team-avatars"
 import Link from "next/link"
-
-const AVATAR_COLOR_OPTIONS: { id: AvatarColor; label: string; bgClass: string }[] = [
-  { id: "teal", label: "Teal", bgClass: "bg-quaternary" },
-  { id: "mustard", label: "Mustard", bgClass: "bg-yellow-600" },
-  { id: "navy", label: "Navy", bgClass: "bg-blue-900" },
-  { id: "forest", label: "Forest", bgClass: "bg-green-800" },
-  { id: "crimson", label: "Crimson", bgClass: "bg-red-800" },
-  { id: "indigo", label: "Indigo", bgClass: "bg-indigo-800" },
-  { id: "violet", label: "Violet", bgClass: "bg-violet-800" },
-  { id: "rose", label: "Rose", bgClass: "bg-rose-800" },
-]
 
 function ContentArea({ children }: { children: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null)

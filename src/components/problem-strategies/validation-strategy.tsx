@@ -9,58 +9,18 @@ import { Slider } from "@/components/ui/slider"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
 import type { Job, JobAnchor, JobIntensity, JobKind, JobsToBeDone, ValidationMetric } from "@/types/validation"
-import { DEFAULT_OBTAINABLE_SHARE, DEFAULT_REACHABLE_SHARE } from "@/types/validation"
+import {
+  CURRENCY_OPTIONS, DEFAULT_OBTAINABLE_SHARE, DEFAULT_REACHABLE_SHARE,
+  FREQUENCY_OPTIONS, INTENSITY_OPTIONS,
+} from "@/types/validation"
+import { computeMarket, formatMoney } from "@/lib/market"
+import { listAllJobs, nextJobId, resolveAnchorJob } from "@/lib/jobs"
 import { cn } from "@/lib/utils"
 import {
   CheckCircle2, XCircle, HelpCircle, Users, RefreshCw, DollarSign, ArrowRightLeft, Target, Building2,
   Calculator, AlertTriangle, PieChart, Heart, Briefcase, Eye, Plus, Trash2, Sparkles,
   type LucideIcon,
 } from "lucide-react"
-
-const FREQUENCY_OPTIONS = [
-  "per hour", "per day", "per week", "per fortnight",
-  "per month", "per quarter", "per year",
-]
-
-const CURRENCY_OPTIONS = [
-  "USD", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF",
-  "CNY", "INR", "BRL", "KRW", "SEK", "NOK", "DKK",
-  "NZD", "SGD", "HKD", "MXN", "ZAR", "PLN",
-]
-
-const INTENSITY_OPTIONS: JobIntensity[] = ["mild", "strong", "unbearable"]
-const INTENSITY_RANK: Record<JobIntensity, number> = {
-  "": 0,
-  mild: 1,
-  strong: 2,
-  unbearable: 3,
-}
-
-function nextJobId(jobs: Job[]): number {
-  return jobs.reduce((max, j) => Math.max(max, j.id), 0) + 1
-}
-
-// The sensible default anchor before the user picks one: the highest-intensity
-// job across all three kinds. listAllJobs returns emotional and social before
-// functional, and the sort is stable, so a tie resolves toward the
-// emotional/social pull and falls back to a functional job only when that is
-// all there is.
-function defaultAnchorJob(jobs: JobsToBeDone): { kind: JobKind; job: Job } | null {
-  const ranked = [...listAllJobs(jobs)]
-    .sort((a, b) => INTENSITY_RANK[b.job.intensity] - INTENSITY_RANK[a.job.intensity])
-  return ranked[0] ?? null
-}
-
-// The job the price is anchored on: the user's explicit pick when it still
-// exists, otherwise the default. Always returns the same shape so callers do
-// not have to care which one it was.
-function resolveAnchorJob(jobs: JobsToBeDone, anchor: JobAnchor | null): { kind: JobKind; job: Job } | null {
-  if (anchor) {
-    const job = jobs[anchor.kind]?.find((j) => j.id === anchor.id)
-    if (job && job.text.trim().length > 0) return { kind: anchor.kind, job }
-  }
-  return defaultAnchorJob(jobs)
-}
 
 function HowManyInput({
   metric,
@@ -524,14 +484,6 @@ function JobLine({
   )
 }
 
-function listAllJobs(jobs: JobsToBeDone): { kind: JobKind; job: Job }[] {
-  return [
-    ...jobs.emotional.map((j) => ({ kind: "emotional" as const, job: j })),
-    ...jobs.social.map((j) => ({ kind: "social" as const, job: j })),
-    ...jobs.functional.map((j) => ({ kind: "functional" as const, job: j })),
-  ].filter(({ job }) => job.text.trim().length > 0)
-}
-
 function WorthSection({
   worthToThem,
   jobs,
@@ -840,22 +792,6 @@ function VerdictButtons({
   )
 }
 
-function formatNumber(value: number, opts: { currency?: string } = {}) {
-  if (!Number.isFinite(value)) return "0"
-  if (opts.currency) {
-    try {
-      return new Intl.NumberFormat(undefined, {
-        style: "currency",
-        currency: opts.currency,
-        maximumFractionDigits: 0,
-      }).format(value)
-    } catch {
-      return `${opts.currency} ${Math.round(value).toLocaleString()}`
-    }
-  }
-  return Math.round(value).toLocaleString()
-}
-
 function TamSamSomPanel({
   howManyPeople,
   howOften,
@@ -878,13 +814,8 @@ function TamSamSomPanel({
   const price = worthToThem.value ?? 0
   const unit = howOften.unit || "per year"
   const currency = worthToThem.unit || "GBP"
-  const reachPct = Math.max(0, Math.min(100, reachableShare))
-  const obtainPct = Math.max(0, Math.min(100, obtainableShare))
-
-  const tam = customers * Math.max(1, frequency) * price
-  const sam = tam * (reachPct / 100)
-  const som = sam * (obtainPct / 100)
-  const ready = customers > 0 && price > 0
+  const { totalMarket: tam, reachableMarket: sam, realisticShare: som, reachPct, obtainPct, ready } =
+    computeMarket({ customers, frequency, price, reachableShare, obtainableShare })
 
   if (readOnly && !ready) return null
 
@@ -905,11 +836,11 @@ function TamSamSomPanel({
           <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 flex flex-col gap-1 text-base text-white">
             <span className="text-base uppercase tracking-wide text-white">Total market</span>
             <span className="text-xl font-bold">
-              {ready ? `${formatNumber(tam, { currency })} ${unit}` : "Fill in customers and price to see this"}
+              {ready ? `${formatMoney(tam, { currency })} ${unit}` : "Fill in customers and price to see this"}
             </span>
             {ready && (
               <span className="text-base text-white">
-                {formatNumber(customers)} customers × {frequency || 1} {unit} × {formatNumber(price, { currency })}
+                {formatMoney(customers)} customers × {frequency || 1} {unit} × {formatMoney(price, { currency })}
               </span>
             )}
           </div>
@@ -918,7 +849,7 @@ function TamSamSomPanel({
           <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 flex flex-col gap-1 text-base text-white">
             <span className="text-base uppercase tracking-wide text-white">Reachable market</span>
             <span className="text-xl font-bold">
-              {ready ? `${formatNumber(sam, { currency })} ${unit}` : "Fill in the inputs to see this"}
+              {ready ? `${formatMoney(sam, { currency })} ${unit}` : "Fill in the inputs to see this"}
             </span>
             {ready && (
               <span className="text-base text-white">Total market × {reachPct}% reachable share</span>
@@ -929,7 +860,7 @@ function TamSamSomPanel({
           <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 flex flex-col gap-1 text-base text-white">
             <span className="text-base uppercase tracking-wide text-white">Realistic share of the market</span>
             <span className="text-xl font-bold">
-              {ready ? `${formatNumber(som, { currency })} ${unit}` : "Fill in the inputs to see this"}
+              {ready ? `${formatMoney(som, { currency })} ${unit}` : "Fill in the inputs to see this"}
             </span>
             {ready && (
               <span className="text-base text-white">Reachable market × {obtainPct}% realistic share</span>
@@ -1144,12 +1075,8 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const price = worthToThem.value ?? 0
   const unit = howOften.unit || "per year"
   const currency = worthToThem.unit || "GBP"
-  const reachPct = Math.max(0, Math.min(100, reachableShare))
-  const obtainPct = Math.max(0, Math.min(100, obtainableShare))
-  const tam = customers * Math.max(1, frequency) * price
-  const sam = tam * (reachPct / 100)
-  const som = sam * (obtainPct / 100)
-  const ready = customers > 0 && price > 0
+  const { totalMarket: tam, reachableMarket: sam, realisticShare: som, reachPct, obtainPct, ready } =
+    computeMarket({ customers, frequency, price, reachableShare, obtainableShare })
 
   const anchor = resolveAnchorJob(jobsToBeDone, anchorJob)
 
@@ -1162,7 +1089,7 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
             <MetricRow
               label="How many customers have this problem"
               icon={Users}
-              value={customers > 0 ? formatNumber(customers) : ""}
+              value={customers > 0 ? formatMoney(customers) : ""}
             />
             <MetricRow
               label="How often each customer hits the problem"
@@ -1172,7 +1099,7 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
             <MetricRow
               label="What they would pay each time"
               icon={DollarSign}
-              value={price > 0 ? formatNumber(price, { currency }) : ""}
+              value={price > 0 ? formatMoney(price, { currency }) : ""}
             />
             <MetricRow
               label="Anchor job for the price"
@@ -1208,15 +1135,15 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
           <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-base text-white">
             <div className="flex flex-col gap-1">
               <span className="text-base uppercase tracking-wide text-white">Total market</span>
-              <span className="text-xl font-bold">{ready ? `${formatNumber(tam, { currency })} ${unit}` : "Not enough data"}</span>
+              <span className="text-xl font-bold">{ready ? `${formatMoney(tam, { currency })} ${unit}` : "Not enough data"}</span>
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-base uppercase tracking-wide text-white">Reachable market</span>
-              <span className="text-xl font-bold">{ready ? `${formatNumber(sam, { currency })} ${unit}` : "Not enough data"}</span>
+              <span className="text-xl font-bold">{ready ? `${formatMoney(sam, { currency })} ${unit}` : "Not enough data"}</span>
             </div>
             <div className="flex flex-col gap-1">
               <span className="text-base uppercase tracking-wide text-white">Realistic share of the market</span>
-              <span className="text-xl font-bold">{ready ? `${formatNumber(som, { currency })} ${unit}` : "Not enough data"}</span>
+              <span className="text-xl font-bold">{ready ? `${formatMoney(som, { currency })} ${unit}` : "Not enough data"}</span>
             </div>
           </div>
         </div>

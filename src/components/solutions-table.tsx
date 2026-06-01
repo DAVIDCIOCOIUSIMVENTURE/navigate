@@ -37,11 +37,6 @@ import {
   Eye,
   Pencil,
   Trash2,
-  CheckCircle2,
-  XCircle,
-  HelpCircle,
-  Clock,
-  Circle,
   Search,
   ArrowUp,
   ArrowDown,
@@ -54,35 +49,11 @@ import {
 } from "lucide-react"
 import type { Solution } from "@/store/solutions-model"
 import { cn } from "@/lib/utils"
+import { TABLE_STATUS_META, STATUS_FILTER_OPTIONS, STATUS_ORDER } from "@/lib/status-table"
 import type { ValidationStatus } from "@/types/validation"
-
-const STATUS_CONFIG: Record<ValidationStatus, { icon: React.ElementType; label: string; className: string }> = {
-  unvalidated: { icon: Circle, label: "Unvalidated", className: "text-muted-foreground" },
-  in_progress: { icon: Clock, label: "In Progress", className: "text-primary" },
-  valid: { icon: CheckCircle2, label: "Valid", className: "text-success" },
-  invalid: { icon: XCircle, label: "Invalid", className: "text-destructive" },
-  unsure: { icon: HelpCircle, label: "Unsure", className: "text-tertiary" },
-}
-
-const STATUS_FILTER_OPTIONS: { value: "all" | ValidationStatus; label: string }[] = [
-  { value: "all", label: "All statuses" },
-  { value: "unvalidated", label: "Unvalidated" },
-  { value: "in_progress", label: "In Progress" },
-  { value: "valid", label: "Valid" },
-  { value: "invalid", label: "Invalid" },
-  { value: "unsure", label: "Unsure" },
-]
 
 type SortKey = "index" | "title" | "problem" | "date" | "status"
 type SortDirection = "asc" | "desc"
-
-const STATUS_ORDER: Record<ValidationStatus, number> = {
-  unvalidated: 0,
-  in_progress: 1,
-  valid: 2,
-  invalid: 3,
-  unsure: 4,
-}
 
 interface SolutionsTableProps {
   solutions: Solution[]
@@ -291,7 +262,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
             ) : (
               sortedSolutions.map(({ solution, originalIndex, problemDescription }, rowIndex) => {
                 const status = showStatus ? (solution.validationStatus ?? "unvalidated") : null
-                const statusConfig = status ? STATUS_CONFIG[status] : null
+                const statusConfig = status ? TABLE_STATUS_META[status] : null
                 const zebra = rowIndex % 2 === 1 ? "bg-muted/20" : undefined
                 return (
                   <TableRow

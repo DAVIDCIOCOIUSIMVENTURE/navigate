@@ -17,6 +17,8 @@ import {
   FileText,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { computeMarket, formatMoney } from "@/lib/market"
+import { DEFAULT_REACHABLE_SHARE } from "@/types/validation"
 import {
   Collapsible,
   CollapsibleContent,
@@ -29,21 +31,6 @@ import {
   StatusPill,
   STATUS_CONFIG,
 } from "./canvas-shared"
-
-function formatMoney(value: number, currency: string): string {
-  if (!Number.isFinite(value)) return "0"
-  const code = currency || "GBP"
-  try {
-    return new Intl.NumberFormat(undefined, {
-      style: "currency",
-      currency: code,
-      maximumFractionDigits: 0,
-      notation: Math.abs(value) >= 1_000_000 ? "compact" : "standard",
-    }).format(value)
-  } catch {
-    return `${code} ${Math.round(value).toLocaleString()}`
-  }
-}
 
 function DimensionList({ columnId, ids }: { columnId: string; ids: string[] }) {
   const customByColumn = useSelector((s: RootState) => s.customDimensionItems.byColumn)
@@ -87,16 +74,17 @@ export function ProblemCanvasCards({
   )
   const [solutionsOpen, setSolutionsOpen] = useState(false)
 
-  const customers = va.howManyPeople.value ?? 0
-  const frequency = va.howOften.value ?? 0
-  const price = va.worthToThem.value ?? 0
   const currency = va.worthToThem.unit || "GBP"
-  const reachPct = Math.max(0, Math.min(100, va.reachableShare ?? 30))
-  const obtainPct = Math.max(0, Math.min(100, va.obtainableShare))
-  const totalMarket = customers * Math.max(1, frequency) * price
-  const reachableMarket = totalMarket * (reachPct / 100)
-  const realisticShareValue = reachableMarket * (obtainPct / 100)
-  const marketReady = customers > 0 && price > 0
+  const {
+    totalMarket, reachableMarket, realisticShare: realisticShareValue,
+    reachPct, obtainPct, ready: marketReady,
+  } = computeMarket({
+    customers: va.howManyPeople.value ?? 0,
+    frequency: va.howOften.value ?? 0,
+    price: va.worthToThem.value ?? 0,
+    reachableShare: va.reachableShare ?? DEFAULT_REACHABLE_SHARE,
+    obtainableShare: va.obtainableShare,
+  })
 
   const marketEmpty =
     !va.howManyPeople.level && va.howManyPeople.value == null &&
@@ -223,15 +211,15 @@ export function ProblemCanvasCards({
               <p className="text-base font-semibold uppercase tracking-wide pb-1 border-b border-border/40">Market size</p>
               <div className="flex justify-between gap-2">
                 <span>Total market</span>
-                <span className="font-medium">{marketReady ? formatMoney(totalMarket, currency) : "Not captured"}</span>
+                <span className="font-medium">{marketReady ? formatMoney(totalMarket, { currency, compact: true }) : "Not captured"}</span>
               </div>
               <div className="flex justify-between gap-2">
                 <span>Reachable market</span>
-                <span className="font-medium">{marketReady ? formatMoney(reachableMarket, currency) : "Not captured"}</span>
+                <span className="font-medium">{marketReady ? formatMoney(reachableMarket, { currency, compact: true }) : "Not captured"}</span>
               </div>
               <div className="flex justify-between gap-2">
                 <span>Realistic share of the market</span>
-                <span className="font-medium">{marketReady ? formatMoney(realisticShareValue, currency) : "Not captured"}</span>
+                <span className="font-medium">{marketReady ? formatMoney(realisticShareValue, { currency, compact: true }) : "Not captured"}</span>
               </div>
             </div>
           </div>

@@ -38,11 +38,6 @@ import {
   Eye,
   Pencil,
   Trash2,
-  CheckCircle2,
-  XCircle,
-  HelpCircle,
-  Clock,
-  Circle,
   Search,
   ArrowUp,
   ArrowDown,
@@ -59,36 +54,12 @@ import {
 import type { Problem } from "@/store/problems-model"
 import { cn } from "@/lib/utils"
 import { saveActiveDiscoveryProblemId } from "@/lib/active-discovery-problem"
+import { TABLE_STATUS_META, STATUS_FILTER_OPTIONS, STATUS_ORDER } from "@/lib/status-table"
 
 import type { ValidationStatus } from "@/types/validation"
 
-const STATUS_CONFIG: Record<ValidationStatus, { icon: React.ElementType; label: string; className: string }> = {
-  unvalidated: { icon: Circle, label: "Unvalidated", className: "text-muted-foreground" },
-  in_progress: { icon: Clock, label: "In Progress", className: "text-primary" },
-  valid: { icon: CheckCircle2, label: "Valid", className: "text-success" },
-  invalid: { icon: XCircle, label: "Invalid", className: "text-destructive" },
-  unsure: { icon: HelpCircle, label: "Unsure", className: "text-tertiary" },
-}
-
-const STATUS_FILTER_OPTIONS: { value: "all" | ValidationStatus; label: string }[] = [
-  { value: "all", label: "All statuses" },
-  { value: "unvalidated", label: "Unvalidated" },
-  { value: "in_progress", label: "In Progress" },
-  { value: "valid", label: "Valid" },
-  { value: "invalid", label: "Invalid" },
-  { value: "unsure", label: "Unsure" },
-]
-
 type SortKey = "index" | "title" | "source" | "date" | "status"
 type SortDirection = "asc" | "desc"
-
-const STATUS_ORDER: Record<ValidationStatus, number> = {
-  unvalidated: 0,
-  in_progress: 1,
-  valid: 2,
-  invalid: 3,
-  unsure: 4,
-}
 
 interface ProblemsTableProps {
   problems: Problem[]
@@ -329,7 +300,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
               ) : (
                 sortedProblems.map(({ problem, originalIndex }, rowIndex) => {
                   const status = showStatus ? (problem.validationStatus ?? "unvalidated") : null
-                  const statusConfig = status ? STATUS_CONFIG[status] : null
+                  const statusConfig = status ? TABLE_STATUS_META[status] : null
                   const linkedSolutions = solutionsByProblemId.get(problem.id) ?? []
                   const hasSolutions = linkedSolutions.length > 0
                   const expanded = expandedIds.has(problem.id)
@@ -489,7 +460,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                     </TableRow>
                     {hasSolutions && expanded && linkedSolutions.map((s) => {
                       const sStatus = s.validationStatus ?? "unvalidated"
-                      const sStatusConfig = STATUS_CONFIG[sStatus]
+                      const sStatusConfig = TABLE_STATUS_META[sStatus]
                       const solutionLabel = s.title || `Solution #${s.id}`
                       return (
                         <TableRow

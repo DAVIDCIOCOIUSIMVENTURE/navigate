@@ -48,6 +48,13 @@ export type ValidationAssessment = {
   competitorSize: ValidationMetric
 }
 
+// The keys of ValidationAssessment whose value is a ValidationMetric: the
+// number-with-unit-and-level fields, excluding the jobs, the anchor, and the
+// two share sliders. Useful for iterating over just the metric fields.
+export type ValidationMetricKey = {
+  [K in keyof ValidationAssessment]: ValidationAssessment[K] extends ValidationMetric ? K : never
+}[keyof ValidationAssessment]
+
 export const DEFAULT_VALIDATION_METRIC: ValidationMetric = { value: null, unit: "", level: "" }
 
 export const DEFAULT_REACHABLE_SHARE = 30
@@ -70,4 +77,29 @@ export const DEFAULT_VALIDATION_ASSESSMENT: ValidationAssessment = {
   costOfSwitching: { value: null, unit: "", level: "medium" },
   solutionEffectiveness: { value: null, unit: "", level: "average" },
   competitorSize: { value: null, unit: "", level: "medium" },
+}
+
+// How often the problem recurs: the unit options for the frequency input.
+export const FREQUENCY_OPTIONS = [
+  "per hour", "per day", "per week", "per fortnight",
+  "per month", "per quarter", "per year",
+]
+
+// Currency codes offered on the price input.
+export const CURRENCY_OPTIONS = [
+  "USD", "EUR", "GBP", "JPY", "AUD", "CAD", "CHF",
+  "CNY", "INR", "BRL", "KRW", "SEK", "NOK", "DKK",
+  "NZD", "SGD", "HKD", "MXN", "ZAR", "PLN",
+]
+
+// The selectable intensities for an emotional or social job (the empty string
+// is the unset default and is intentionally not selectable).
+export const INTENSITY_OPTIONS: JobIntensity[] = ["mild", "strong", "unbearable"]
+
+// Numeric rank used to sort jobs by intensity (higher is stronger).
+export const INTENSITY_RANK: Record<JobIntensity, number> = {
+  "": 0,
+  mild: 1,
+  strong: 2,
+  unbearable: 3,
 }

@@ -8,7 +8,9 @@ import { Separator } from "@/components/ui/separator"
 import {
   CheckCircle2, XCircle, Clock, AlertTriangle,
 } from "lucide-react"
-import type { ValidationStatus, ExistingSolutionItem, DecisionLevel, ValidationAssessment, ValidationMetric } from "@/types/validation"
+import type { ValidationStatus, ExistingSolutionItem, DecisionLevel, ValidationAssessment, ValidationMetricKey } from "@/types/validation"
+import { DEFAULT_REACHABLE_SHARE } from "@/types/validation"
+import { clampPercent } from "@/lib/market"
 import { useDimensionLabels } from "@/lib/dimension-labels"
 
 /* ------------------------------------------------------------------ */
@@ -97,11 +99,7 @@ function formatMetricValue(value: number | null, unit: string): string | null {
   return parts.join(" ") || null
 }
 
-type MetricKey = {
-  [K in keyof ValidationAssessment]: ValidationAssessment[K] extends ValidationMetric ? K : never
-}[keyof ValidationAssessment]
-
-const ASSESSMENT_FIELDS: { key: MetricKey; label: string }[] = [
+const ASSESSMENT_FIELDS: { key: ValidationMetricKey; label: string }[] = [
   { key: "howManyPeople", label: "How many customers" },
   { key: "howOften", label: "How often" },
   { key: "worthToThem", label: "What they would pay" },
@@ -121,8 +119,8 @@ function AssessmentSection({ assessment }: { assessment: ValidationAssessment })
     })
     .filter(Boolean) as { label: string; valueText: string | null; levelText: string | null }[]
 
-  const reachPct = Math.max(0, Math.min(100, assessment.reachableShare ?? 30))
-  const obtainPct = Math.max(0, Math.min(100, assessment.obtainableShare))
+  const reachPct = clampPercent(assessment.reachableShare ?? DEFAULT_REACHABLE_SHARE)
+  const obtainPct = clampPercent(assessment.obtainableShare)
   const showReach = reachPct !== 30
   const showObtain = obtainPct !== 10
 

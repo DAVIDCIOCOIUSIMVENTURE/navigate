@@ -2,7 +2,6 @@
 
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
-import type { AvatarColor } from "@/store/settings-model"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -11,17 +10,7 @@ import { Button } from "@/components/ui/button"
 import { useState, useEffect } from "react"
 import { toast } from "sonner"
 import { cn } from "@/lib/utils"
-
-const AVATAR_COLOR_OPTIONS: { id: AvatarColor; label: string; bgClass: string }[] = [
-  { id: "teal", label: "Teal", bgClass: "bg-quaternary" },
-  { id: "mustard", label: "Mustard", bgClass: "bg-yellow-600" },
-  { id: "navy", label: "Navy", bgClass: "bg-blue-900" },
-  { id: "forest", label: "Forest", bgClass: "bg-green-800" },
-  { id: "crimson", label: "Crimson", bgClass: "bg-red-800" },
-  { id: "indigo", label: "Indigo", bgClass: "bg-indigo-800" },
-  { id: "violet", label: "Violet", bgClass: "bg-violet-800" },
-  { id: "rose", label: "Rose", bgClass: "bg-rose-800" },
-]
+import { AVATAR_COLOR_OPTIONS } from "@/lib/avatar-colors"
 
 export default function AccountSettingsPage() {
   const { displayName: savedName, email: savedEmail } = useSelector(
