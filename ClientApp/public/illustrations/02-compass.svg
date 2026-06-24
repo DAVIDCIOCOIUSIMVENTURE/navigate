@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" width="400" height="280">
+  <rect width="400" height="280" fill="#FAFAF9"></rect>
+  <circle cx="60" cy="50" r="2" fill="#0E7EB3"></circle>
+  <circle cx="350" cy="70" r="2.5" fill="#C78A04"></circle>
+  <circle cx="330" cy="210" r="2" fill="#0F3F75"></circle>
+  <circle cx="60" cy="230" r="2.5" fill="#0E7EB3"></circle>
+  <path d="M90 205 L91.5 208.5 L95 210 L91.5 211.5 L90 215 L88.5 211.5 L85 210 L88.5 208.5 Z" fill="#C78A04"></path>
+  <path d="M320 116 L321.2 118.8 L324 120 L321.2 121.2 L320 124 L318.8 121.2 L316 120 L318.8 118.8 Z" fill="#0E7EB3"></path>
+  <path d="M40 220 Q 130 240 200 140" fill="none" stroke="#14171F" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="1 7"></path>
+  <circle cx="200" cy="140" r="78" fill="#FFFFFF" stroke="#14171F" stroke-width="2"></circle>
+  <circle cx="200" cy="140" r="64" fill="none" stroke="#14171F" stroke-width="1" stroke-dasharray="2 5"></circle>
+  <line x1="200" y1="62" x2="200" y2="52" stroke="#14171F" stroke-width="2" stroke-linecap="round"></line>
+  <line x1="278" y1="140" x2="288" y2="140" stroke="#14171F" stroke-width="2" stroke-linecap="round"></line>
+  <line x1="200" y1="218" x2="200" y2="228" stroke="#14171F" stroke-width="2" stroke-linecap="round"></line>
+  <line x1="122" y1="140" x2="112" y2="140" stroke="#14171F" stroke-width="2" stroke-linecap="round"></line>
+  <path d="M200 80 L212 140 L200 140 Z" fill="#C78A04"></path>
+  <path d="M200 200 L188 140 L200 140 Z" fill="#0F3F75"></path>
+  <path d="M200 80 L188 140 L200 140 Z" fill="#8F6203"></path>
+  <path d="M200 200 L212 140 L200 140 Z" fill="#0A2A52"></path>
+  <circle cx="200" cy="140" r="6" fill="#0E7EB3" stroke="#14171F" stroke-width="1.5"></circle>
+  <text x="200" y="56" text-anchor="middle" font-family="Inter, sans-serif" font-size="11" font-weight="700" fill="#14171F">N</text>
+</svg>

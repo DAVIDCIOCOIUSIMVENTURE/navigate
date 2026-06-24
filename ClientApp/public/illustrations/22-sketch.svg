@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" width="400" height="280">
+  <rect width="400" height="280" fill="#ECEBE9"></rect>
+  <path d="M60 44 L61.8 48.2 L66 50 L61.8 51.8 L60 56 L58.2 51.8 L54 50 L58.2 48.2 Z" fill="#0E7EB3"></path>
+  <circle cx="350" cy="230" r="2" fill="#14171F"></circle>
+  <g transform="translate(200 140) rotate(-3)">
+    <rect x="-138" y="-95" width="276" height="190" fill="#14171F" opacity="0.1" transform="translate(4 6)"></rect>
+    <rect x="-138" y="-95" width="276" height="190" fill="#FFFFFF" stroke="#14171F" stroke-width="2"></rect>
+    <line x1="-130" y1="-78" x2="130" y2="-78" stroke="#5F6470" stroke-width="1" stroke-dasharray="2 4" opacity="0.5"></line>
+    <rect x="-110" y="-65" width="220" height="14" fill="#7B8FB5" opacity="0.4"></rect>
+    <circle cx="-100" cy="-58" r="3" fill="#C78A04"></circle>
+    <circle cx="-88" cy="-58" r="3" fill="#0E7EB3"></circle>
+    <circle cx="-76" cy="-58" r="3" fill="#1F5F6B"></circle>
+    <line x1="-100" y1="-32" x2="40" y2="-32" stroke="#14171F" stroke-width="3" stroke-linecap="round"></line>
+    <line x1="-100" y1="-18" x2="80" y2="-18" stroke="#5F6470" stroke-width="2" stroke-linecap="round" opacity="0.6"></line>
+    <rect x="-100" y="0" width="92" height="50" rx="4" fill="none" stroke="#14171F" stroke-width="2"></rect>
+    <circle cx="-78" cy="20" r="8" fill="#E8C56C"></circle>
+    <line x1="-60" y1="15" x2="-20" y2="15" stroke="#14171F" stroke-width="2" stroke-linecap="round"></line>
+    <line x1="-60" y1="25" x2="-30" y2="25" stroke="#5F6470" stroke-width="1.5" stroke-linecap="round" opacity="0.6"></line>
+    <rect x="8" y="0" width="92" height="50" rx="4" fill="none" stroke="#14171F" stroke-width="2"></rect>
+    <circle cx="30" cy="20" r="8" fill="#7B8FB5"></circle>
+    <line x1="48" y1="15" x2="88" y2="15" stroke="#14171F" stroke-width="2" stroke-linecap="round"></line>
+    <line x1="48" y1="25" x2="78" y2="25" stroke="#5F6470" stroke-width="1.5" stroke-linecap="round" opacity="0.6"></line>
+    <path d="M0 70 Q 30 80 70 75" fill="none" stroke="#C78A04" stroke-width="2" stroke-linecap="round"></path>
+    <path d="M70 75 L62 70 L66 78 Z" fill="#C78A04"></path>
+    <text x="78" y="80" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#C78A04">?</text>
+    <path d="M-4 25 L4 25" stroke="#14171F" stroke-width="1.5" stroke-linecap="round"></path>
+    <path d="M4 25 L0 22 L0 28 Z" fill="#14171F"></path>
+  </g>
+  <g transform="translate(305 215) rotate(35)">
+    <rect x="-3" y="0" width="6" height="60" fill="#0E7EB3" stroke="#14171F" stroke-width="1.5"></rect>
+    <path d="M-3 0 L0 -10 L3 0 Z" fill="#14171F"></path>
+    <rect x="-3" y="60" width="6" height="8" fill="#0E7EB3" stroke="#14171F" stroke-width="1.2"></rect>
+    <rect x="-3" y="55" width="6" height="6" fill="#0A2A52"></rect>
+  </g>
+  <path d="M70 240 q 6 -8 12 0 q 6 8 12 0 q 6 -8 12 0" fill="none" stroke="#14171F" stroke-width="1.2" stroke-linecap="round" opacity="0.5"></path>
+</svg>

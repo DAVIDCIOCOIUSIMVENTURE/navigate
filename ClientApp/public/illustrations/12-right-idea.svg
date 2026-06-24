@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 280" width="400" height="280">
+  <rect width="400" height="280" fill="#ECEBE9"></rect>
+  <path d="M330 42 L332.4 47.6 L338 50 L332.4 52.4 L330 58 L327.6 52.4 L322 50 L327.6 47.6 Z" fill="#0E7EB3"></path>
+  <circle cx="60" cy="60" r="2" fill="#14171F"></circle>
+  <circle cx="355" cy="220" r="2" fill="#0F3F75"></circle>
+  <circle cx="180" cy="140" r="80" fill="#0F3F75"></circle>
+  <circle cx="180" cy="140" r="62" fill="#FFFFFF"></circle>
+  <circle cx="180" cy="140" r="46" fill="#0F3F75"></circle>
+  <circle cx="180" cy="140" r="30" fill="#FFFFFF"></circle>
+  <circle cx="180" cy="140" r="16" fill="#C78A04"></circle>
+  <circle cx="180" cy="140" r="80" fill="none" stroke="#14171F" stroke-width="2"></circle>
+  <line x1="186" y1="136" x2="320" y2="60" stroke="#8F6203" stroke-width="3.5" stroke-linecap="round"></line>
+  <path d="M313 55 L324 50 L320 60 L327 70 L316 67 Z" fill="#C78A04" stroke="#14171F" stroke-width="1.2" stroke-linejoin="round"></path>
+  <path d="M186 136 L176 146 L182 152 L194 144 Z" fill="#1F5F6B" stroke="#14171F" stroke-width="1.2" stroke-linejoin="round"></path>
+  <g transform="translate(75 235) rotate(-15)">
+    <line x1="0" y1="0" x2="60" y2="0" stroke="#5F6470" stroke-width="2.5" stroke-linecap="round"></line>
+    <path d="M60 -5 L70 0 L60 5 Z" fill="#0E7EB3" stroke="#14171F" stroke-width="1"></path>
+    <path d="M0 0 L-6 -5 L-3 0 L-6 5 Z" fill="#5F6470"></path>
+  </g>
+  <g transform="translate(60 90) rotate(35)">
+    <line x1="0" y1="0" x2="55" y2="0" stroke="#5F6470" stroke-width="2.5" stroke-linecap="round"></line>
+    <path d="M55 -5 L65 0 L55 5 Z" fill="#0E7EB3" stroke="#14171F" stroke-width="1"></path>
+    <path d="M0 0 L-8 -5 L-4 0 L-8 5 Z" fill="#BBD9E9"></path>
+  </g>
+  <line x1="20" y1="245" x2="380" y2="245" stroke="#14171F" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 5"></line>
+  <path d="M198 116 L199.8 120.2 L204 122 L199.8 123.8 L198 128 L196.2 123.8 L192 122 L196.2 120.2 Z" fill="#0E7EB3"></path>
+</svg>

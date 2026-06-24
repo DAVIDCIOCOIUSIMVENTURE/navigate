@@ -1,0 +1,337 @@
+"use client"
+
+import { Fragment, useEffect, useState } from "react"
+import { usePathname, useRouter } from "@/lib/router"
+import { useSelector, useDispatch } from "react-redux"
+import type { RootState, AppDispatch } from "@/store"
+import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { DiscoveryProvider, useDiscovery, NAV_ITEMS, STEPS_REQUIRING_PROBLEM } from "./context"
+import { SolutionsDrawer } from "./solutions-drawer"
+import { Lightbulb, Lock, Check, Maximize2, Minimize2, ChevronDown, RotateCcw } from "lucide-react"
+import { useContainerSize } from "@/context/container-size-context"
+import { cn } from "@/lib/utils"
+import { ConfirmDialog } from "@/components/ui/confirm-dialog"
+
+function Stepper({
+  pathname,
+  problemSelected,
+  onNavigate,
+}: {
+  pathname: string
+  problemSelected: boolean
+  onNavigate: (path: string) => void
+}) {
+  const activeIdx = NAV_ITEMS.findIndex(
+    (item) => pathname === `/solutions/discover/${item.path}`
+  )
+  return (
+    <div className="flex items-center w-full">
+      {NAV_ITEMS.map((item, i) => {
+        const isActive = i === activeIdx
+        const isCompleted = activeIdx >= 0 && i < activeIdx
+        const locked = STEPS_REQUIRING_PROBLEM.has(item.path) && !problemSelected
+        const isClickable = !locked
+        return (
+          <Fragment key={item.path}>
+            <button
+              type="button"
+              disabled={!isClickable}
+              onClick={() => isClickable && onNavigate(`/solutions/discover/${item.path}`)}
+              aria-current={isActive ? "step" : undefined}
+              aria-disabled={!isClickable}
+              className="flex items-center gap-2 shrink-0 disabled:cursor-not-allowed text-left"
+            >
+              <span
+                className={cn(
+                  "flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 transition-colors",
+                  isActive
+                    ? "border-tertiary bg-tertiary text-tertiary-foreground"
+                    : isCompleted
+                      ? "border-tertiary bg-tertiary/10 text-tertiary"
+                      : locked
+                        ? "border-muted-foreground/20 bg-transparent text-muted-foreground/50"
+                        : "border-muted-foreground/30 bg-transparent text-muted-foreground"
+                )}
+              >
+                {isCompleted ? <Check className="h-3.5 w-3.5" /> : locked ? <Lock className="h-3 w-3" /> : i + 1}
+              </span>
+              <span
+                className={cn(
+                  "text-sm whitespace-nowrap",
+                  isActive
+                    ? "font-semibold text-foreground"
+                    : locked
+                      ? "text-muted-foreground/60"
+                      : "text-muted-foreground"
+                )}
+              >
+                {item.label}
+              </span>
+            </button>
+            {i < NAV_ITEMS.length - 1 && (
+              <div
+                className={cn(
+                  "flex-1 h-px mx-3 min-w-3",
+                  isCompleted ? "bg-tertiary" : "bg-border"
+                )}
+              />
+            )}
+          </Fragment>
+        )
+      })}
+    </div>
+  )
+}
+
+function StepBadge({
+  index,
+  state,
+}: {
+  index: number
+  state: "active" | "completed" | "locked" | "default"
+}) {
+  return (
+    <span
+      className={cn(
+        "flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 transition-colors shrink-0",
+        state === "active"
+          ? "border-tertiary bg-tertiary text-tertiary-foreground"
+          : state === "completed"
+            ? "border-tertiary bg-tertiary/10 text-tertiary"
+            : state === "locked"
+              ? "border-muted-foreground/20 bg-transparent text-muted-foreground/50"
+              : "border-muted-foreground/30 bg-transparent text-muted-foreground"
+      )}
+    >
+      {state === "completed" ? (
+        <Check className="h-3.5 w-3.5" />
+      ) : state === "locked" ? (
+        <Lock className="h-3 w-3" />
+      ) : (
+        index + 1
+      )}
+    </span>
+  )
+}
+
+function getStepState(
+  i: number,
+  activeIdx: number,
+  locked: boolean
+): "active" | "completed" | "locked" | "default" {
+  if (i === activeIdx) return "active"
+  if (activeIdx >= 0 && i < activeIdx) return "completed"
+  if (locked) return "locked"
+  return "default"
+}
+
+function MobileStepper({
+  pathname,
+  problemSelected,
+  onNavigate,
+}: {
+  pathname: string
+  problemSelected: boolean
+  onNavigate: (path: string) => void
+}) {
+  const [open, setOpen] = useState(false)
+  const activeIdx = NAV_ITEMS.findIndex(
+    (item) => pathname === `/solutions/discover/${item.path}`
+  )
+  const activeItem = activeIdx >= 0 ? NAV_ITEMS[activeIdx] : null
+
+  return (
+    <DropdownMenu open={open} onOpenChange={setOpen}>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="outline"
+          className="w-full justify-between h-auto py-2 px-3 bg-white"
+        >
+          <span className="flex items-center gap-2 text-sm font-medium min-w-0">
+            <StepBadge
+              index={activeIdx >= 0 ? activeIdx : 0}
+              state={activeItem ? "active" : "default"}
+            />
+            <span className="truncate">
+              {activeItem
+                ? `Step ${activeIdx + 1} of ${NAV_ITEMS.length}: ${activeItem.label}`
+                : "Solution Discovery"}
+            </span>
+          </span>
+          <ChevronDown
+            className={cn(
+              "h-4 w-4 text-muted-foreground transition-transform shrink-0",
+              open && "rotate-180"
+            )}
+            aria-hidden="true"
+          />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="start"
+        className="w-[var(--radix-dropdown-menu-trigger-width)] min-w-[16rem] p-1 bg-white"
+      >
+        {NAV_ITEMS.map((item, i) => {
+          const locked = STEPS_REQUIRING_PROBLEM.has(item.path) && !problemSelected
+          const state = getStepState(i, activeIdx, locked)
+          const isActive = state === "active"
+          return (
+            <DropdownMenuItem
+              key={item.path}
+              disabled={locked}
+              onSelect={(e) => {
+                if (locked) {
+                  e.preventDefault()
+                  return
+                }
+                onNavigate(`/solutions/discover/${item.path}`)
+              }}
+              aria-current={isActive ? "step" : undefined}
+              className={cn(
+                "flex items-center gap-2.5 py-2 px-3 text-sm",
+                isActive && "bg-accent"
+              )}
+            >
+              <StepBadge index={i} state={state} />
+              <span
+                className={cn(
+                  "whitespace-normal text-left",
+                  isActive
+                    ? "font-semibold text-foreground"
+                    : locked
+                      ? "text-muted-foreground/60"
+                      : "text-muted-foreground"
+                )}
+              >
+                {item.label}
+              </span>
+            </DropdownMenuItem>
+          )
+        })}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  )
+}
+
+function LayoutContent({ children }: { children: React.ReactNode }) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const dispatch = useDispatch<AppDispatch>()
+  const { problemId, candidates, resetWorkspace } = useDiscovery()
+  const [mounted, setMounted] = useState(false)
+  const [solutionsDrawerOpen, setSolutionsDrawerOpen] = useState(false)
+  const problemSelected = problemId != null
+  const fullView = useSelector((state: RootState) => state.settings.fullView)
+  const isWide = useContainerSize() === "wide"
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Exit full view when navigating away from solution discovery
+  useEffect(() => {
+    if (!pathname.includes("/solutions/discover")) {
+      dispatch.settings.setFullView(false)
+    }
+  }, [pathname, dispatch.settings])
+
+  // Escape key exits full view
+  useEffect(() => {
+    if (!fullView) return
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") dispatch.settings.setFullView(false)
+    }
+    document.addEventListener("keydown", handler)
+    return () => document.removeEventListener("keydown", handler)
+  }, [fullView, dispatch.settings])
+
+  const actionButtons = (
+    <>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => dispatch.settings.setFullView(!fullView)}
+        className="gap-2 shrink-0"
+      >
+        {fullView ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+        {fullView ? "Exit Full View" : "Full View"}
+      </Button>
+      {problemSelected && (
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setSolutionsDrawerOpen(true)}
+          className="gap-2 shrink-0"
+        >
+          <Lightbulb className="h-3.5 w-3.5" />
+          Show All Solutions ({candidates.length})
+        </Button>
+      )}
+      {problemSelected && (
+        <ConfirmDialog
+          trigger={
+            <Button variant="outline" size="sm" className="gap-2 shrink-0 text-destructive hover:text-destructive hover:bg-destructive/10">
+              <RotateCcw className="h-3.5 w-3.5" />
+              Reset
+            </Button>
+          }
+          title="Reset solution discovery?"
+          description="This will clear your analysis tool choice, discovery method, root-cause work, and all in-progress ideas for this problem. Saved solutions are not affected."
+          confirmLabel="Reset"
+          onConfirm={resetWorkspace}
+        />
+      )}
+    </>
+  )
+
+  return (
+    <div className={cn("flex flex-col gap-3 flex-1 w-full min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
+      {isWide ? (
+        <div className="flex flex-wrap items-center gap-3">
+          <Card className="flex-1">
+            <CardContent className="px-6 py-4">
+              <Stepper
+                pathname={pathname}
+                problemSelected={problemSelected}
+                onNavigate={(path) => router.push(path)}
+              />
+            </CardContent>
+          </Card>
+          <div className="flex flex-wrap items-center gap-2">
+            {actionButtons}
+          </div>
+        </div>
+      ) : (
+        <>
+          <MobileStepper
+            pathname={pathname}
+            problemSelected={problemSelected}
+            onNavigate={(path) => router.push(path)}
+          />
+          <div className="flex flex-wrap items-center gap-2">
+            {actionButtons}
+          </div>
+        </>
+      )}
+
+      <div className="flex-1 min-w-0 min-h-0 overflow-y-auto">{mounted ? children : null}</div>
+
+      <SolutionsDrawer open={solutionsDrawerOpen} onOpenChange={setSolutionsDrawerOpen} />
+    </div>
+  )
+}
+
+export default function DiscoveryLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <DiscoveryProvider>
+      <LayoutContent>{children}</LayoutContent>
+    </DiscoveryProvider>
+  )
+}

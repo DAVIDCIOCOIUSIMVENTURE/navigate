@@ -1,0 +1,238 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+@layer base {
+  :root {
+    /* Background & Foreground: barely-warm neutral gray + dark teal text */
+    --background: 40 6% 92%;
+    --foreground: 194 80% 12%;
+
+    /* Cards & Popovers: barely-warm near-white so cards lift off the page */
+    --card: 40 10% 98%;
+    --card-foreground: 194 80% 12%;
+    --popover: 40 10% 98%;
+    --popover-foreground: 194 80% 12%;
+
+    /* Primary: Mustard gold (#ca8a04) */
+    --primary: 41 96% 40%;
+    --primary-foreground: 40 60% 97%;
+
+    /* Secondary: soft warm-leaning neutral (UI secondary surface, not brand) */
+    --secondary: 40 12% 90%;
+    --secondary-foreground: 212 50% 20%;
+
+    /* Secondary brand: cerulean teal (#0a7db2) */
+    --secondary-brand: 199 89% 37%;
+    --secondary-brand-foreground: 40 60% 97%;
+
+    /* Tertiary: navy (#0f3f75) */
+    --tertiary: 212 77% 26%;
+    --tertiary-foreground: 40 60% 97%;
+
+    /* Quaternary: deep teal (#1F5F6B), the sidebar accent */
+    --quaternary: 189 55% 27%;
+    --quaternary-foreground: 185 25% 95%;
+
+    /* Success: forest green (#1F6E48) */
+    --success: 151 56% 28%;
+    --success-foreground: 40 60% 97%;
+
+    /* Muted: neutral with the faintest warm undertone */
+    --muted: 40 8% 90%;
+    --muted-foreground: 30 8% 38%;
+
+    /* Accent: soft teal-leaning sage for hovers (still cool, but less corporate-blue) */
+    --accent: 185 28% 88%;
+    --accent-foreground: 199 70% 20%;
+
+    /* Destructive: pure red (#ab0d0d) */
+    --destructive: 0 86% 36%;
+    --destructive-foreground: 40 60% 97%;
+
+    /* Borders & Inputs */
+    --border: 40 8% 84%;
+    --input: 40 8% 84%;
+    --ring: 41 96% 40%;
+
+    /* Chart palette: gold primary, green, teal, navy, rose */
+    --chart-1: 41 96% 40%;
+    --chart-2: 138 32% 38%;
+    --chart-3: 199 89% 37%;
+    --chart-4: 212 77% 26%;
+    --chart-5: 350 55% 50%;
+
+    /* Border Radius: slightly larger for modern feel */
+    --radius: 0.625rem;
+
+    /* Primary dark variant */
+    --primary-dark: 41 96% 30%;
+    --primary-dark-foreground: 40 60% 97%;
+
+    /* Primary outline: darkened gold (#a57610) for outline/text use on cream bg */
+    --primary-outline: 41 82% 35%;
+
+    /* Primary light variant: tinted background */
+    --primary-light: 41 80% 92%;
+    --primary-light-foreground: 41 96% 22%;
+
+    /* Sidebar: uses the quaternary brand token (#145e81) */
+    --sidebar-background: var(--quaternary);
+    --sidebar-foreground: var(--quaternary-foreground);
+    --sidebar-primary: 41 96% 55%;
+    --sidebar-primary-foreground: 40 60% 97%;
+    --sidebar-accent: 41 96% 50%;
+    --sidebar-accent-foreground: 40 60% 97%;
+    --sidebar-border: 199 73% 22%;
+    --sidebar-ring: 41 96% 55%;
+
+    /* Brand: keep distinct from primary for marketing/callout use */
+    --brand: 199 89% 32%;
+    --brand-foreground: 40 60% 97%;
+
+    /* Surface: deep teal-navy for case study sections */
+    --surface: 200 25% 14%;
+    --surface-foreground: 40 15% 92%;
+  }
+
+  .dark {
+    /* Background & Foreground: deep teal-navy with reduced saturation */
+    --background: 200 22% 9%;
+    --foreground: 40 15% 92%;
+
+    /* Cards & Popovers */
+    --card: 200 18% 12%;
+    --card-foreground: 40 15% 92%;
+    --popover: 200 18% 12%;
+    --popover-foreground: 40 15% 92%;
+
+    /* Primary: brighter gold for dark backgrounds */
+    --primary: 41 90% 58%;
+    --primary-foreground: 40 60% 97%;
+
+    /* Primary dark variant */
+    --primary-dark: 41 96% 35%;
+    --primary-dark-foreground: 40 60% 97%;
+
+    /* Primary outline: in dark mode the brighter primary already reads well, so match it */
+    --primary-outline: 41 90% 58%;
+
+    /* Primary light variant */
+    --primary-light: 41 40% 22%;
+    --primary-light-foreground: 40 15% 92%;
+
+    /* Secondary */
+    --secondary: 200 14% 17%;
+    --secondary-foreground: 40 15% 90%;
+
+    /* Secondary brand: brighter cerulean for dark mode */
+    --secondary-brand: 199 80% 60%;
+    --secondary-brand-foreground: 199 50% 10%;
+
+    /* Tertiary: brighter navy for dark mode */
+    --tertiary: 212 70% 62%;
+    --tertiary-foreground: 212 50% 10%;
+
+    /* Quaternary: deeper teal (#1F5F6B family) for dark-mode surfaces */
+    --quaternary: 189 55% 20%;
+    --quaternary-foreground: 185 25% 92%;
+
+    /* Success: brighter forest green for dark mode */
+    --success: 151 50% 45%;
+    --success-foreground: 40 60% 97%;
+
+    /* Muted */
+    --muted: 200 12% 17%;
+    --muted-foreground: 30 10% 65%;
+
+    /* Accent: deep sage-teal for hovers in dark mode */
+    --accent: 185 40% 22%;
+    --accent-foreground: 185 25% 92%;
+
+    /* Destructive: brighter red for dark mode */
+    --destructive: 0 75% 52%;
+    --destructive-foreground: 40 60% 95%;
+
+    /* Borders & Inputs */
+    --border: 200 14% 20%;
+    --input: 200 14% 20%;
+    --ring: 41 90% 58%;
+
+    /* Chart palette: brighter for dark mode */
+    --chart-1: 41 90% 58%;
+    --chart-2: 138 38% 52%;
+    --chart-3: 199 80% 60%;
+    --chart-4: 212 70% 62%;
+    --chart-5: 350 60% 60%;
+
+    /* Sidebar: uses the quaternary brand token in dark mode */
+    --sidebar-background: var(--quaternary);
+    --sidebar-foreground: var(--quaternary-foreground);
+    --sidebar-primary: 41 90% 58%;
+    --sidebar-primary-foreground: 40 60% 97%;
+    --sidebar-accent: 41 90% 50%;
+    --sidebar-accent-foreground: 40 60% 97%;
+    --sidebar-border: 199 73% 14%;
+    --sidebar-ring: 41 90% 58%;
+
+    /* Brand */
+    --brand: 199 80% 55%;
+    --brand-foreground: 199 50% 10%;
+
+    /* Surface: dark warm brown for case study sections */
+    --surface: 17 30% 18%;
+    --surface-foreground: 40 25% 92%;
+  }
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  html, body {
+    height: 100%;
+  }
+  html {
+    font-size: 16px;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Nunito", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+}
+
+@media print {
+  @page {
+    size: A4 landscape;
+    margin: 10mm;
+  }
+  body.canvas-printing {
+    background: white !important;
+  }
+  body.canvas-printing header,
+  body.canvas-printing [data-app-chrome],
+  body.canvas-printing [data-canvas-no-print] {
+    display: none !important;
+  }
+  body.canvas-printing .canvas-print-root {
+    box-shadow: none !important;
+    border: none !important;
+    background: white !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  body.canvas-printing main,
+  body.canvas-printing main > * {
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
