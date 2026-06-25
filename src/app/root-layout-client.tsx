@@ -149,7 +149,8 @@ function isFocusFlowPath(pathname: string): boolean {
   return (
     pathname.startsWith("/self-discovery/discover") ||
     pathname.startsWith("/problems/identify/reflect") ||
-    pathname.startsWith("/problems/identify/research")
+    pathname.startsWith("/problems/identify/research") ||
+    pathname.startsWith("/solutions/discover")
   )
 }
 

@@ -6,19 +6,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useDiscovery, getAdjacentSteps } from "../context"
-import type { AnalysisToolType, DiscoveryToolType } from "@/types/solution"
+import type { DiscoveryToolType } from "@/types/solution"
 import {
-  LayoutTemplate, ArrowLeft, ArrowRight, Search, Users, Repeat,
+  LayoutTemplate, ArrowLeft, ArrowRight,
   Lightbulb, RotateCcw, GitCompare, Wrench, Target,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { ProblemContextCard } from "@/components/problem-context-card"
-
-const ANALYSIS_TOOL_LABELS: Record<Exclude<AnalysisToolType, "">, { label: string; icon: LucideIcon }> = {
-  "root-causes": { label: "Root Causes", icon: Search },
-  "five-whys": { label: "5 Whys", icon: Repeat },
-  "affected-groups": { label: "Affected Groups", icon: Users },
-}
 
 const DISCOVERY_TOOL_LABELS: Record<Exclude<DiscoveryToolType, "">, { label: string; icon: LucideIcon }> = {
   scamper: { label: "SCAMPER", icon: Lightbulb },
@@ -54,12 +48,7 @@ export default function SummaryPage() {
   const {
     problemId,
     problem,
-    analysisToolType,
     discoveryToolType,
-    rootCauses,
-    rootCauseNotes,
-    fiveWhyChains,
-    affectedGroups,
     reverseIdeation,
     reverseInversion,
     analogyDomain,
@@ -76,7 +65,6 @@ export default function SummaryPage() {
 
   if (problemId == null) return null
 
-  const analysisTool = analysisToolType ? ANALYSIS_TOOL_LABELS[analysisToolType] : null
   const discoveryTool = discoveryToolType ? DISCOVERY_TOOL_LABELS[discoveryToolType] : null
 
   return (
@@ -92,75 +80,9 @@ export default function SummaryPage() {
         <ProblemContextCard problem={problem} />
 
         <div className="flex flex-col gap-3">
-          <SectionHeader icon={Search} label={`Refinement${analysisTool ? `: ${analysisTool.label}` : ""}`} />
-
-          {!analysisTool && <EmptyHint text="No refinement method was chosen." />}
-
-          {analysisToolType === "root-causes" && (
-            <div className="flex flex-col gap-2">
-              {rootCauses.length > 0 ? (
-                <ul className="list-disc pl-5 text-sm flex flex-col gap-1">
-                  {rootCauses.map((rc) => <li key={rc.id}>{rc.description || <span className="italic text-muted-foreground">Empty cause</span>}</li>)}
-                </ul>
-              ) : (
-                <EmptyHint text="No root causes captured." />
-              )}
-              {rootCauseNotes && (
-                <div className="rounded-md border bg-muted/40 p-3">
-                  <p className="text-sm font-semibold uppercase tracking-wide mb-1">Notes</p>
-                  <p className="text-sm whitespace-pre-wrap">{rootCauseNotes}</p>
-                </div>
-              )}
-            </div>
-          )}
-
-          {analysisToolType === "five-whys" && (
-            <div className="flex flex-col gap-3">
-              {fiveWhyChains.length > 0 ? (
-                fiveWhyChains.map((chain, i) => {
-                  const filled = chain.whys.filter((w) => w.trim())
-                  return (
-                    <div key={chain.id} className="rounded-md border bg-muted/40 p-3 flex flex-col gap-1.5">
-                      <p className="text-sm font-semibold uppercase tracking-wide">Chain {i + 1} ({filled.length}/5 filled)</p>
-                      {filled.length === 0 ? (
-                        <EmptyHint text="No whys captured in this chain." />
-                      ) : (
-                        <ol className="list-decimal pl-5 text-sm flex flex-col gap-0.5">
-                          {chain.whys.map((w, idx) => w.trim() ? <li key={idx}>{w}</li> : null)}
-                        </ol>
-                      )}
-                    </div>
-                  )
-                })
-              ) : (
-                <EmptyHint text="No chains captured." />
-              )}
-            </div>
-          )}
-
-          {analysisToolType === "affected-groups" && (
-            <div className="flex flex-col gap-2">
-              {affectedGroups.length > 0 ? (
-                affectedGroups.map((g) => (
-                  <div key={g.id} className="rounded-md border bg-muted/40 p-3 flex flex-col gap-1">
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-semibold">{g.name || <span className="italic text-muted-foreground">Unnamed</span>}</span>
-                      {g.severity && <Badge variant="outline" className="text-[10px] capitalize">{g.severity}</Badge>}
-                    </div>
-                    {g.description && <p className="text-sm">{g.description}</p>}
-                  </div>
-                ))
-              ) : (
-                <EmptyHint text="No affected groups captured." />
-              )}
-            </div>
-          )}
-        </div>
-
-        <div className="flex flex-col gap-3">
           <SectionHeader icon={Lightbulb} label={`Discovery${discoveryTool ? `: ${discoveryTool.label}` : ""}`} />
 
-          {!discoveryTool && <EmptyHint text="No discovery method was chosen." />}
+          {!discoveryTool && <EmptyHint text="No discovery tool was chosen." />}
 
           {discoveryToolType === "reverse" && (
             <div className="grid gap-2 md:grid-cols-2">
@@ -207,7 +129,7 @@ export default function SummaryPage() {
           {(discoveryToolType === "scamper" || discoveryToolType === "improve") && (
             <p className="text-sm">
               {candidates.length > 0
-                ? `You captured ${candidates.length} candidate${candidates.length === 1 ? "" : "s"} using this method. See them below.`
+                ? `You captured ${candidates.length} candidate${candidates.length === 1 ? "" : "s"} using this tool. See them below.`
                 : "No candidates captured yet."}
             </p>
           )}

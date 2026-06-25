@@ -88,8 +88,8 @@ export default function IdentifyProblemsPage() {
     {
       id: "define",
       title: "Define a Problem Statement",
-      shortDescription: "Already know what you want to explore? Write it directly without working through a method.",
-      longDescription: "Already know what you want to explore? Write it directly without working through a method.",
+      shortDescription: "Already know what you want to explore? Write it directly without working through a tool.",
+      longDescription: "Already know what you want to explore? Write it directly without working through a tool.",
       helperText: "Best for capturing a problem you have in mind right now so you can come back and validate it later.",
       icon: PenLine,
       tileColor: "bg-tertiary",
@@ -123,13 +123,13 @@ export default function IdentifyProblemsPage() {
             <CardTitle icon={Target} iconBg="bg-tertiary">Identify a Problem</CardTitle>
             <div className="flex flex-col gap-3">
               <p className="text-base leading-relaxed">
-                Every problem you bring into your library starts here. Pick the method that fits where you are right now: each one is a different doorway into the same goal of finding a problem that&apos;s real, painful, and worth solving.
+                Every problem you bring into your library starts here. Pick the tool that fits where you are right now: each one is a different doorway into the same goal of finding a problem that&apos;s real, painful, and worth solving.
               </p>
               <p className="text-base leading-relaxed">
-                You can use more than one method over time. Many founders start with the <span className="font-semibold">Canvas Builder</span> to explore broadly, then return to <span className="font-semibold">Reflect</span> or <span className="font-semibold">Research</span> when they want to ground a specific candidate in lived experience or outside evidence. If you already know what you want to explore, <span className="font-semibold">Define a Problem Statement</span> lets you skip straight to capturing it.
+                You can use more than one tool over time. Many founders start with the <span className="font-semibold">Canvas Builder</span> to explore broadly, then return to <span className="font-semibold">Reflect</span> or <span className="font-semibold">Research</span> when they want to ground a specific candidate in lived experience or outside evidence. If you already know what you want to explore, <span className="font-semibold">Define a Problem Statement</span> lets you skip straight to capturing it.
               </p>
               <p className="text-base leading-relaxed">
-                Whichever method you choose, the resulting problem lands in your library where you can refine and validate it.
+                Whichever tool you choose, the resulting problem lands in your library where you can refine and validate it.
               </p>
             </div>
           </CardHeader>
@@ -138,6 +138,8 @@ export default function IdentifyProblemsPage() {
               items={items}
               selectedId={null}
               onPick={handlePick}
+              ctaLabel="Use this tool"
+              reselectLabel="Continue with this tool"
             />
           </CardContent>
         </Card>

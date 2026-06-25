@@ -53,13 +53,13 @@ export default function IdentifySolutionsPage() {
           <CardTitle icon={Lightbulb} iconBg="bg-tertiary">Identify Solutions</CardTitle>
           <div className="flex flex-col gap-3">
             <p className="text-base leading-relaxed">
-              Solutions answer a problem you&apos;ve already validated. Pick the method that fits where you are right now: each one is a different doorway into the same goal of finding a solution worth pursuing.
+              Solutions answer a problem you&apos;ve already validated. Pick the tool that fits where you are right now: each one is a different doorway into the same goal of finding a solution worth pursuing.
             </p>
             <p className="text-base leading-relaxed">
               <span className="font-semibold">Solution Discovery</span> walks you through creative techniques (analogy, SCAMPER, reverse ideation, root-cause attacks) to surface candidates you wouldn&apos;t reach by jumping to the first idea. <span className="font-semibold">Quick Capture</span> lets you log an idea you already have without working through the wizard.
             </p>
             <p className="text-base leading-relaxed">
-              Whichever method you choose, the resulting solution lands in your library where you can refine and validate it.
+              Whichever tool you choose, the resulting solution lands in your library where you can refine and validate it.
             </p>
           </div>
         </CardHeader>
@@ -68,6 +68,8 @@ export default function IdentifySolutionsPage() {
             items={items}
             selectedId={null}
             onPick={handlePick}
+            ctaLabel="Use this tool"
+            reselectLabel="Continue with this tool"
           />
         </CardContent>
       </Card>
