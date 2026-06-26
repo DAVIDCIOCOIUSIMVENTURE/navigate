@@ -34,6 +34,12 @@ import NextStepsLayout from "@/app/(app)/next-steps/layout"
 import NextStepsIndex from "@/app/(app)/next-steps/page"
 import NextStepsTopic from "@/app/(app)/next-steps/[topicUrl]/page"
 
+// Portfolio
+import PortfolioIndex from "@/app/(app)/portfolio/page"
+import PortfolioNew from "@/app/(app)/portfolio/new/page"
+import PortfolioDetail from "@/app/(app)/portfolio/[portfolioId]/page"
+import PortfolioEdit from "@/app/(app)/portfolio/[portfolioId]/edit/page"
+
 // Problems
 import ProblemsIndex from "@/app/(app)/problems/page"
 import ProblemsIdentify from "@/app/(app)/problems/identify/page"
@@ -129,6 +135,15 @@ export default function AppRoutes() {
         <Route path="next-steps" element={<NextStepsLayout><Outlet /></NextStepsLayout>}>
           <Route index element={<NextStepsIndex />} />
           <Route path=":topicUrl" element={<NextStepsTopic />} />
+        </Route>
+
+        <Route path="portfolio">
+          <Route index element={<PortfolioIndex />} />
+          <Route path="new" element={<PortfolioNew />} />
+          <Route path=":portfolioId">
+            <Route index element={<PortfolioDetail />} />
+            <Route path="edit" element={<PortfolioEdit />} />
+          </Route>
         </Route>
 
         <Route path="problems">
