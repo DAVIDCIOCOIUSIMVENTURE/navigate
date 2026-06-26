@@ -66,6 +66,22 @@ function getCrumbs(pathname: string): Crumb[] {
     crumbs.push({ label: "Next Steps" })
     return crumbs
   }
+  if (first === "portfolio") {
+    if (segments.length === 1) {
+      crumbs.push({ label: "Portfolio" })
+      return crumbs
+    }
+    crumbs.push({ label: "Portfolio", href: "/portfolio" })
+    if (second === "new") {
+      crumbs.push({ label: "New" })
+    } else if (third === "edit") {
+      crumbs.push({ label: second, href: `/portfolio/${second}` })
+      crumbs.push({ label: "Edit" })
+    } else {
+      crumbs.push({ label: second })
+    }
+    return crumbs
+  }
   if (first === "admin") {
     if (segments.length === 1) {
       crumbs.push({ label: "Admin" })
@@ -217,6 +233,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     dispatch.problemCandidates.init()
     dispatch.reflectSessions.init()
     dispatch.researchSessions.init()
+    dispatch.portfolios.init()
   }, [dispatch])
 
   const headerTitle = (
