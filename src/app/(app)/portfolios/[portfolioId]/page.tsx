@@ -34,7 +34,7 @@ export default function PortfolioDetailPage() {
           <CardContent className="flex flex-col items-center gap-4 p-10 text-center">
             <p className="text-base">Portfolio not found.</p>
             <Button asChild variant="outline">
-              <Link href="/portfolio">
+              <Link href="/portfolios">
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Portfolio
               </Link>
@@ -80,7 +80,7 @@ export default function PortfolioDetailPage() {
               variant="outline"
               size="sm"
               className="shrink-0 border-secondary-brand/40 text-secondary-brand hover:bg-secondary-brand/5 hover:text-secondary-brand"
-              onClick={() => router.push(`/portfolio/${portfolio.id}/edit`)}
+              onClick={() => router.push(`/portfolios/${portfolio.id}/edit`)}
             >
               <Pencil className="mr-1.5 h-3.5 w-3.5" />
               Edit
@@ -102,7 +102,7 @@ export default function PortfolioDetailPage() {
               <p className="max-w-sm text-base">
                 No problem is assigned to this portfolio yet. Assign one so its canvas and solutions appear here.
               </p>
-              <Button variant="outline" onClick={() => router.push(`/portfolio/${portfolio.id}/edit`)}>
+              <Button variant="outline" onClick={() => router.push(`/portfolios/${portfolio.id}/edit`)}>
                 <Pencil className="mr-1.5 h-3.5 w-3.5" />
                 Assign a problem
               </Button>

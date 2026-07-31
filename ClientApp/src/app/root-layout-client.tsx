@@ -4,16 +4,16 @@ import React from "react"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import { Settings, HelpCircle, NotebookText, Compass, MoreHorizontal, User, UserCircle, ShieldCheck } from "lucide-react"
+import { Settings, HelpCircle, NotebookText, Compass, User, UserCircle, ShieldCheck } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 import { AVATAR_COLOR_OPTIONS } from "@/lib/avatar-colors"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
-import { navigationItems } from "@/config/navigation"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable"
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
+import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/app-sidebar"
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden"
 import { JournalPanel } from "@/components/journal-panel"
 import { usePathname } from "@/lib/router"
@@ -66,16 +66,16 @@ function getCrumbs(pathname: string): Crumb[] {
     crumbs.push({ label: "Next Steps" })
     return crumbs
   }
-  if (first === "portfolio") {
+  if (first === "portfolios") {
     if (segments.length === 1) {
-      crumbs.push({ label: "Portfolio" })
+      crumbs.push({ label: "Portfolios" })
       return crumbs
     }
-    crumbs.push({ label: "Portfolio", href: "/portfolio" })
+    crumbs.push({ label: "Portfolios", href: "/portfolios" })
     if (second === "new") {
       crumbs.push({ label: "New" })
     } else if (third === "edit") {
-      crumbs.push({ label: second, href: `/portfolio/${second}` })
+      crumbs.push({ label: second, href: `/portfolios/${second}` })
       crumbs.push({ label: "Edit" })
     } else {
       crumbs.push({ label: second })
@@ -179,6 +179,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const fullView = useSelector((state: RootState) => state.settings.fullView)
   const journalOpen = useSelector((state: RootState) => state.settings.journalOpen)
   const avatarColor = useSelector((state: RootState) => state.settings.avatarColor)
+  const sidebarMode = useSelector((state: RootState) => state.settings.sidebarMode)
   const dispatch = useDispatch<AppDispatch>()
   const activeAvatarColor = AVATAR_COLOR_OPTIONS.find((c) => c.id === avatarColor) ?? AVATAR_COLOR_OPTIONS[0]
 
@@ -260,108 +261,44 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     </Breadcrumb>
   )
 
-  const activeNavItem = navigationItems.topMenu.find((item) =>
-    item.url === "/" ? pathname === "/" : pathname.startsWith(item.url)
-  )
-
-  const headerNav = (
-    <>
-      <nav className="hidden md:flex items-center gap-1">
-        {navigationItems.topMenu.map((item) => {
-          const isActive = item.url === "/" ? pathname === "/" : pathname.startsWith(item.url)
-          return (
-            <Tooltip key={item.url}>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="on-primary"
-                  size="icon"
-                  className={cn(
-                    "h-8 w-8 hover:bg-secondary-brand hover:border-secondary-brand hover:text-secondary-brand-foreground",
-                    isActive && "bg-secondary-brand border-secondary-brand text-secondary-brand-foreground",
-                  )}
-                  asChild
-                >
-                  <Link href={item.url} aria-label={item.title} onClick={() => setTopNavOpen(false)}>
-                    <item.icon className="h-4 w-4" />
-                  </Link>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>{item.title}</TooltipContent>
-            </Tooltip>
-          )
-        })}
-      </nav>
-      <div className="md:hidden">
-        <DropdownMenu>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="on-primary"
-                  size="icon"
-                  className={cn("h-8 w-8", activeNavItem && "bg-secondary-brand border-secondary-brand text-secondary-brand-foreground")}
-                  aria-label="Open navigation menu"
-                >
-                  <MoreHorizontal className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-            </TooltipTrigger>
-            <TooltipContent>Navigation</TooltipContent>
-          </Tooltip>
-          <DropdownMenuContent align="end">
-            {navigationItems.topMenu.map((item) => {
-              const isActive = item.url === "/" ? pathname === "/" : pathname.startsWith(item.url)
-              return (
-                <DropdownMenuItem key={item.url} asChild className={isActive ? "bg-accent text-accent-foreground" : ""}>
-                  <Link href={item.url} onClick={() => setTopNavOpen(false)}>
-                    <item.icon className="h-4 w-4" />
-                    {item.title}
-                  </Link>
-                </DropdownMenuItem>
-              )
-            })}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </>
-  )
-
-  const activePanel = guidanceOpen ? "guidance" : journalOpen ? "journal" : ""
-  const handlePanelToggle = (value: string) => {
-    if (value === "journal") {
-      if (!journalOpen) toggleJournal()
-    } else if (value === "guidance") {
-      if (!guidanceOpen) toggleGuidance()
-    } else {
-      if (journalOpen) toggleJournal()
-      if (guidanceOpen) toggleGuidance()
-    }
-  }
+  const panelButtonClass = (active: boolean) =>
+    cn(
+      "h-8 w-8 text-quaternary-foreground hover:bg-quaternary-foreground/10 hover:text-quaternary-foreground",
+      active && "bg-white text-quaternary hover:bg-white hover:text-quaternary",
+    )
   const panelToggles = (
-    <ToggleGroup
-      type="single"
-      value={activePanel}
-      onValueChange={handlePanelToggle}
-      size="sm"
-      className="shrink-0 bg-card border-border"
-    >
-      <ToggleGroupItem
-        value="journal"
-        aria-label="Toggle journal"
-        title="Journal"
-        className="gap-1.5 px-2 rounded-none bg-card hover:bg-card/80 data-[state=on]:!bg-primary data-[state=on]:!text-primary-foreground data-[state=on]:shadow-sm data-[state=on]:hover:!bg-primary/90"
-      >
-        <NotebookText className="h-3.5 w-3.5" />
-      </ToggleGroupItem>
-      <ToggleGroupItem
-        value="guidance"
-        aria-label="Toggle guidance"
-        title="Guidance"
-        className="gap-1.5 px-2 rounded-none bg-card hover:bg-card/80 data-[state=on]:!bg-primary data-[state=on]:!text-primary-foreground data-[state=on]:shadow-sm data-[state=on]:hover:!bg-primary/90"
-      >
-        <HelpCircle className="h-3.5 w-3.5" />
-      </ToggleGroupItem>
-    </ToggleGroup>
+    <div className="flex items-center gap-1 shrink-0">
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Toggle journal"
+            aria-pressed={journalOpen}
+            className={panelButtonClass(journalOpen)}
+            onClick={toggleJournal}
+          >
+            <NotebookText className="h-3.5 w-3.5" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Journal</TooltipContent>
+      </Tooltip>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Toggle guidance"
+            aria-pressed={guidanceOpen}
+            className={panelButtonClass(guidanceOpen)}
+            onClick={toggleGuidance}
+          >
+            <HelpCircle className="h-3.5 w-3.5" />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>Guidance</TooltipContent>
+      </Tooltip>
+    </div>
   )
 
   const headerActions = (
@@ -413,12 +350,16 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   return (
     <TooltipProvider delayDuration={0}>
-    <div className="flex h-svh w-full flex-col overflow-hidden">
-      <div className="relative flex w-full min-w-0 min-h-0 flex-1 flex-col bg-background">
-        {!fullView && !isFocusFlow && (
+    <SidebarProvider
+      sidebarMode={sidebarMode}
+      onSidebarModeChange={(mode) => dispatch.settings.setSidebarMode(mode)}
+      className="h-svh flex-col overflow-hidden"
+    >
+      {!fullView && !isFocusFlow && (
         <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 border-b border-quaternary/30 bg-quaternary px-4 justify-between">
           <div className="flex items-center gap-2 min-w-0">
             {brandLogo}
+            <SidebarTrigger className="shrink-0 text-quaternary-foreground hover:bg-white/10 hover:text-quaternary-foreground" />
             <Separator orientation="vertical" className="h-4 bg-quaternary-foreground/30" />
             {headerTitle}
           </div>
@@ -442,13 +383,15 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             <div className="hidden md:block">
               <TeamAvatars />
             </div>
-            {headerNav}
             {panelToggles}
             <Separator orientation="vertical" className="h-4 bg-quaternary-foreground/30" />
             {headerActions}
           </div>
         </header>
         )}
+        <div className="flex w-full min-h-0 flex-1">
+        {!fullView && !isFocusFlow && <AppSidebar />}
+        <div className="relative flex w-full min-w-0 min-h-0 flex-1 flex-col bg-background">
         <FocusChromeContext.Provider value={{ revealTopNav: () => setTopNavOpen(true) }}>
         <GuidanceProvider onOpen={openGuidance}>
           {sidePanelOpen ? (
@@ -504,6 +447,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           )}
         </GuidanceProvider>
         </FocusChromeContext.Provider>
+        </div>
       </div>
       {isMobile && (
         <Sheet open={guidanceOpen} onOpenChange={setGuidanceOpen}>
@@ -557,7 +501,6 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                 <div className="hidden md:block">
                   <TeamAvatars />
                 </div>
-                {headerNav}
                 {panelToggles}
                 <Separator orientation="vertical" className="h-4 bg-quaternary-foreground/30" />
                 {headerActions}
@@ -567,7 +510,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         </Sheet>
       )}
       <Toaster />
-    </div>
+    </SidebarProvider>
     </TooltipProvider>
   )
 }

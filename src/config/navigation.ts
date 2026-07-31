@@ -13,7 +13,7 @@ export const navigationItems = {
       icon: Lightbulb
     },
   ],
-  topMenu: [
+  sidebar: [
     {
       title: "Home",
       url: "/",
@@ -30,13 +30,23 @@ export const navigationItems = {
       icon: Compass
     },
     {
+      title: "Problems",
+      url: "/problems",
+      icon: Target
+    },
+    {
+      title: "Solutions",
+      url: "/solutions",
+      icon: Lightbulb
+    },
+    {
       title: "Next Steps",
       url: "/next-steps",
       icon: Milestone
     },
     {
-      title: "Portfolio",
-      url: "/portfolio",
+      title: "Portfolios",
+      url: "/portfolios",
       icon: FolderKanban
     },
   ],

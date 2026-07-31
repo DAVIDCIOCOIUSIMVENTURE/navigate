@@ -35,10 +35,10 @@ import NextStepsIndex from "@/app/(app)/next-steps/page"
 import NextStepsTopic from "@/app/(app)/next-steps/[topicUrl]/page"
 
 // Portfolio
-import PortfolioIndex from "@/app/(app)/portfolio/page"
-import PortfolioNew from "@/app/(app)/portfolio/new/page"
-import PortfolioDetail from "@/app/(app)/portfolio/[portfolioId]/page"
-import PortfolioEdit from "@/app/(app)/portfolio/[portfolioId]/edit/page"
+import PortfolioIndex from "@/app/(app)/portfolios/page"
+import PortfolioNew from "@/app/(app)/portfolios/new/page"
+import PortfolioDetail from "@/app/(app)/portfolios/[portfolioId]/page"
+import PortfolioEdit from "@/app/(app)/portfolios/[portfolioId]/edit/page"
 
 // Problems
 import ProblemsIndex from "@/app/(app)/problems/page"
@@ -137,7 +137,7 @@ export default function AppRoutes() {
           <Route path=":topicUrl" element={<NextStepsTopic />} />
         </Route>
 
-        <Route path="portfolio">
+        <Route path="portfolios">
           <Route index element={<PortfolioIndex />} />
           <Route path="new" element={<PortfolioNew />} />
           <Route path=":portfolioId">

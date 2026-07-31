@@ -2,6 +2,7 @@ import { createModel } from "@rematch/core"
 import type { RootModel } from "."
 import { AVATAR_COLOR_IDS } from "@/lib/avatar-colors"
 import type { AvatarColor } from "@/lib/avatar-colors"
+import type { SidebarMode } from "@/components/ui/sidebar"
 
 const STORAGE_KEY = "navigate-settings"
 
@@ -15,12 +16,17 @@ function isAvatarColor(value: unknown): value is AvatarColor {
   return typeof value === "string" && (AVATAR_COLOR_IDS as string[]).includes(value)
 }
 
+function isSidebarMode(value: unknown): value is SidebarMode {
+  return value === "expanded" || value === "icon" || value === "collapsed"
+}
+
 interface SettingsState {
   hiddenCanvasBuilderColumns: string[]
   fullView: boolean
   canvasBuilderSelected: string[]
   canvasBuilderMode: CanvasBuilderMode
   journalOpen: boolean
+  sidebarMode: SidebarMode
   canvasBuilderStep: CanvasBuilderStep
   canvasBuilderActiveColumnId: string | null
   canvasBuilderActiveCategoryId: string | null
@@ -36,6 +42,7 @@ const defaultState: SettingsState = {
   canvasBuilderSelected: [],
   canvasBuilderMode: "canvas",
   journalOpen: false,
+  sidebarMode: "expanded",
   canvasBuilderStep: "pick",
   canvasBuilderActiveColumnId: null,
   canvasBuilderActiveCategoryId: null,
@@ -79,6 +86,11 @@ export const settings = createModel<RootModel>()({
     },
     setJournalOpen(state, journalOpen: boolean) {
       const next = { ...state, journalOpen }
+      saveToStorage(next)
+      return next
+    },
+    setSidebarMode(state, sidebarMode: SidebarMode) {
+      const next = { ...state, sidebarMode }
       saveToStorage(next)
       return next
     },
@@ -154,6 +166,9 @@ export const settings = createModel<RootModel>()({
         }
         if (typeof stored.journalOpen === "boolean") {
           dispatch.settings.setJournalOpen(stored.journalOpen)
+        }
+        if (isSidebarMode(stored.sidebarMode)) {
+          dispatch.settings.setSidebarMode(stored.sidebarMode)
         }
         if (stored.canvasBuilderStep) {
           dispatch.settings.setCanvasBuilderStep(stored.canvasBuilderStep)

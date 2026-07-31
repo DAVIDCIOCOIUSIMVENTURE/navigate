@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { useRouter } from "@/lib/router"
-import Link from "@/components/link"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
 import type { RootState, AppDispatch } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -49,7 +49,7 @@ export default function PortfolioListPage() {
               build a prototype, run a customer test, map a learning roadmap, and gather what you need for a business model canvas. Use it as the summary you take into the tools where the building and testing actually happen.
             </p>
             <div className="flex flex-wrap items-center gap-2 shrink-0">
-              <Button onClick={() => router.push("/portfolio/new")} className="gap-2">
+              <Button onClick={() => router.push("/portfolios/new")} className="gap-2">
                 <Plus className="h-4 w-4" />
                 New portfolio
               </Button>
@@ -69,7 +69,7 @@ export default function PortfolioListPage() {
               Create your first portfolio to pull a problem, its solutions, and your next steps into one place.
             </p>
           </div>
-          <Button onClick={() => router.push("/portfolio/new")} size="lg" className="gap-2">
+          <Button onClick={() => router.push("/portfolios/new")} size="lg" className="gap-2">
             <Plus className="h-4 w-4" />
             New portfolio
           </Button>
@@ -88,7 +88,7 @@ export default function PortfolioListPage() {
                 className="group relative flex flex-col transition-colors hover:border-quaternary/40"
               >
                 <Link
-                  href={`/portfolio/${portfolio.id}`}
+                  href={`/portfolios/${portfolio.id}`}
                   className="flex flex-1 flex-col gap-3 p-5"
                   aria-label={`Open portfolio: ${portfolio.title || "untitled"}`}
                 >
@@ -128,7 +128,7 @@ export default function PortfolioListPage() {
                     size="icon"
                     className="h-8 w-8"
                     aria-label="Edit portfolio"
-                    onClick={() => router.push(`/portfolio/${portfolio.id}/edit`)}
+                    onClick={() => router.push(`/portfolios/${portfolio.id}/edit`)}
                   >
                     <Pencil className="h-4 w-4" />
                   </Button>

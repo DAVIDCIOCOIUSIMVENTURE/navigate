@@ -754,7 +754,7 @@ function ReviewPanel({
       <button
         type="button"
         onClick={onClick}
-        className="group inline-flex items-center gap-2 text-left text-base font-semibold hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded"
+        className="group inline-flex items-center gap-2 text-left text-base font-semibold text-white hover:text-white/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 rounded"
       >
         <span>{children}</span>
         <Pencil
@@ -789,13 +789,13 @@ function ReviewPanel({
       </p>
 
       {selectedTool && (
-        <section className="rounded-lg border bg-card p-4 flex flex-col gap-2">
-          <p className="text-base font-semibold">Source</p>
+        <section className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-2">
+          <p className="text-base font-semibold text-white">Source</p>
           <a
             href={selectedTool.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 text-base text-primary hover:underline"
+            className="inline-flex items-center gap-1.5 text-base text-white hover:underline"
           >
             {selectedTool.name}
             <ExternalLink className="h-3.5 w-3.5" />
@@ -804,7 +804,7 @@ function ReviewPanel({
       )}
 
       {titlePromptId && productName.length > 0 && (
-        <section className="rounded-lg border bg-card p-4 flex flex-col gap-3">
+        <section className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-3">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-8 h-8 rounded-md shrink-0 bg-yellow-600" aria-hidden="true">
               <Icon className="h-4 w-4 text-white" />
@@ -813,16 +813,16 @@ function ReviewPanel({
               Product
             </TitleButton>
           </div>
-          <p className="text-base font-medium">{productName}</p>
+          <p className="text-base font-medium text-white">{productName}</p>
         </section>
       )}
 
       {problemsPromptId && filledLabels.problems.length > 0 && (
-        <section className="rounded-lg border bg-card p-4 flex flex-col gap-3">
+        <section className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-3">
           <TitleButton onClick={() => onJumpToPrompt(problemsPromptId)}>
             Unmet needs (saved as problems)
           </TitleButton>
-          <p className="text-base">
+          <p className="text-base text-white">
             {filledLabels.problems.length}{" "}
             {filledLabels.problems.length === 1 ? "problem" : "problems"} selected. Remove anything
             that doesn&apos;t belong.
@@ -835,7 +835,7 @@ function ReviewPanel({
                   key={idx}
                   type="button"
                   onClick={() => removeAnswerSlot(problemsPromptId, idx)}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-foreground text-background px-3 py-1 text-base hover:bg-foreground/90"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-white text-foreground px-3 py-1 text-base hover:bg-white/90"
                 >
                   <span>{answer.text.trim()}</span>
                   <span aria-hidden="true">×</span>
@@ -848,11 +848,11 @@ function ReviewPanel({
       )}
 
       {customersPromptId && (
-        <section className="rounded-lg border bg-card p-4 flex flex-col gap-3">
+        <section className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-3">
           <TitleButton onClick={() => onJumpToPrompt(customersPromptId)}>
             Who is this for?
           </TitleButton>
-          <p className="text-base">
+          <p className="text-base text-white">
             {filledLabels.customers.length > 0
               ? `${filledLabels.customers.length} ${filledLabels.customers.length === 1 ? "customer" : "customers"} selected.`
               : "No customers selected yet. Optional, but helps frame the problem."}
@@ -866,7 +866,7 @@ function ReviewPanel({
                     key={idx}
                     type="button"
                     onClick={() => removeAnswerSlot(customersPromptId, idx)}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-foreground text-background px-3 py-1 text-base hover:bg-foreground/90"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-white text-foreground px-3 py-1 text-base hover:bg-white/90"
                   >
                     <span>{answer.text.trim()}</span>
                     <span aria-hidden="true">×</span>
@@ -884,7 +884,7 @@ function ReviewPanel({
         const hasAny = list.some((a) => a.text.trim().length > 0)
         if (!hasAny) return null
         return (
-          <section key={prompt.id} className="rounded-lg border bg-card p-4 flex flex-col gap-3">
+          <section key={prompt.id} className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-3">
             <TitleButton onClick={() => onJumpToPrompt(prompt.id)}>{prompt.question}</TitleButton>
             <div className="flex flex-col gap-3">
               {list.map((answer, originalIdx) => {
@@ -894,7 +894,7 @@ function ReviewPanel({
                     <Textarea
                       value={answer.text}
                       onChange={(e) => setAnswerText(prompt.id, originalIdx, e.target.value)}
-                      className="flex-1 text-base min-h-[4rem]"
+                      className="flex-1 text-base min-h-[4rem] bg-white border-white text-foreground"
                     />
                     <Button
                       variant="ghost"
@@ -902,6 +902,7 @@ function ReviewPanel({
                       type="button"
                       onClick={() => removeAnswerSlot(prompt.id, originalIdx)}
                       aria-label="Remove this answer"
+                      className="text-white hover:bg-white/10 hover:text-white"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
