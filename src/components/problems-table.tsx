@@ -68,11 +68,12 @@ interface ProblemsTableProps {
   showEditDelete?: boolean
   showSource?: boolean
   className?: string
+  headerLead?: React.ReactNode
   headerExtra?: React.ReactNode
   title?: string
 }
 
-export function ProblemsTable({ problems, showStatus = false, showEditDelete = false, showSource = true, className, headerExtra, title }: ProblemsTableProps) {
+export function ProblemsTable({ problems, showStatus = false, showEditDelete = false, showSource = true, className, headerLead, headerExtra, title }: ProblemsTableProps) {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const store = useStore<RootState>()
@@ -197,10 +198,12 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
     <Card className={cn("flex flex-col overflow-hidden", className)}>
         <CardHeader className="shrink-0 pb-3 gap-3">
           <div className="flex items-center justify-between gap-3 flex-wrap">
-            <CardTitle className="text-sm font-semibold">
-              {title ?? "Problems"} ({sortedProblems.length}
-              {sortedProblems.length !== problems.length ? ` of ${problems.length}` : ""})
-            </CardTitle>
+            {headerLead ?? (
+              <CardTitle className="text-sm font-semibold">
+                {title ?? "Problems"} ({sortedProblems.length}
+                {sortedProblems.length !== problems.length ? ` of ${problems.length}` : ""})
+              </CardTitle>
+            )}
             <div className="flex items-center gap-2 flex-wrap">
               {headerExtra}
               <div className="relative">
@@ -236,15 +239,6 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-10">
-                  <button
-                    type="button"
-                    onClick={() => handleSort("index")}
-                    className={cn("flex items-center gap-1", sortableHeaderClass)}
-                  >
-                    #{renderSortIcon("index")}
-                  </button>
-                </TableHead>
                 <TableHead className="w-full">
                   <button
                     type="button"
@@ -292,14 +286,14 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
               {sortedProblems.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={4 + (showStatus ? 1 : 0) + (showSource ? 1 : 0)}
+                    colSpan={3 + (showStatus ? 1 : 0) + (showSource ? 1 : 0)}
                     className="text-center text-sm py-8"
                   >
                     No problems match the current filters.
                   </TableCell>
                 </TableRow>
               ) : (
-                sortedProblems.map(({ problem, originalIndex }, rowIndex) => {
+                sortedProblems.map(({ problem }, rowIndex) => {
                   const status = showStatus ? (problem.validationStatus ?? "unvalidated") : null
                   const statusConfig = status ? TABLE_STATUS_META[status] : null
                   const linkedSolutions = solutionsByProblemId.get(problem.id) ?? []
@@ -321,7 +315,6 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                       }}
                       aria-label={`View problem: ${problem.title || "untitled"}`}
                     >
-                      <TableCell>{originalIndex + 1}</TableCell>
                       <TableCell className="text-sm">
                         <div className="flex items-center gap-2">
                           {hasSolutions ? (
@@ -482,7 +475,6 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                           }}
                           aria-label={`View solution: ${solutionLabel}`}
                         >
-                          <TableCell />
                           <TableCell className="text-sm">
                             <div className="flex items-center gap-2 pl-8">
                               <Lightbulb className="h-3.5 w-3.5 text-primary shrink-0" />

@@ -40,48 +40,36 @@ export default function DashboardPage() {
 
   return (
     <div className={cn("flex flex-col gap-4 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
-      {/* Row 1: Foundations + Self Discovery prompts + action buttons */}
+      {/* Row 1: Foundations + Self Discovery prompts */}
       <div className={cn("flex gap-3 shrink-0", isWide ? "flex-row items-stretch" : "flex-col items-stretch")}>
-        <div className={cn("flex gap-3 flex-1 min-w-0", isWide ? "flex-row" : "flex-col")}>
-          <Link href="/foundations" className="flex-1 min-w-0 flex">
-            <Card className="hover:shadow-md transition-shadow w-full">
-              <CardContent className="p-4 h-full flex items-center gap-3">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <BookOpen className="h-4 w-4 text-tertiary shrink-0" />
-                    <p className="text-base font-semibold">New here? Start with Why It Matters</p>
-                  </div>
-                  <p className="text-base mt-2">Optional reading on why validating ideas, problems, and solutions is worth the time.</p>
+        <Link href="/foundations" className="flex-1 min-w-0 flex">
+          <Card className="hover:shadow-md transition-shadow w-full bg-secondary-brand text-secondary-brand-foreground border-secondary-brand">
+            <CardContent className="p-4 h-full flex items-center gap-3">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <BookOpen className="h-4 w-4 shrink-0" />
+                  <p className="text-base font-semibold">New here? Start with Why It Matters</p>
                 </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
-              </CardContent>
-            </Card>
-          </Link>
-          <Link href="/self-discovery" className="flex-1 min-w-0 flex">
-            <Card className="hover:shadow-md transition-shadow w-full">
-              <CardContent className="p-4 h-full flex items-center gap-3">
-                <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <Compass className="h-4 w-4 text-tertiary shrink-0" />
-                    <p className="text-base font-semibold">Explore Self Discovery</p>
-                  </div>
-                  <p className="text-base mt-2">Surface interests, skills, and experiences that point you toward problems worth solving.</p>
+                <p className="text-base mt-2">Optional reading on why validating ideas, problems, and solutions is worth the time.</p>
+              </div>
+              <ChevronRight className="h-4 w-4 shrink-0" />
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/self-discovery" className="flex-1 min-w-0 flex">
+          <Card className="hover:shadow-md transition-shadow w-full">
+            <CardContent className="p-4 h-full flex items-center gap-3">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <Compass className="h-4 w-4 text-tertiary shrink-0" />
+                  <p className="text-base font-semibold">Explore Self Discovery</p>
                 </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
-              </CardContent>
-            </Card>
-          </Link>
-        </div>
-        <div className={cn("flex gap-2 shrink-0", isWide ? "flex-col justify-center" : "flex-row")}>
-          <Button onClick={() => router.push("/problems/identify")} className={cn("gap-2", !isWide && "flex-1")}>
-            <Plus className="h-4 w-4" />
-            Identify problems
-          </Button>
-          <Button onClick={() => router.push("/solutions/identify")} className={cn("gap-2", !isWide && "flex-1")}>
-            <Plus className="h-4 w-4" />
-            Identify solutions
-          </Button>
-        </div>
+                <p className="text-base mt-2">Surface interests, skills, and experiences that point you toward problems worth solving.</p>
+              </div>
+              <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
+            </CardContent>
+          </Card>
+        </Link>
       </div>
 
       {/* Row 2: Stats column + Problems/Solutions table column */}
@@ -125,6 +113,18 @@ export default function DashboardPage() {
               </ToggleGroupItem>
             </ToggleGroup>
           )
+          const identifyButtons = (
+            <>
+              <Button onClick={() => router.push("/problems/identify")} className="gap-2">
+                <Plus className="h-4 w-4" />
+                Identify problems
+              </Button>
+              <Button onClick={() => router.push("/solutions/identify")} className="gap-2">
+                <Plus className="h-4 w-4" />
+                Identify solutions
+              </Button>
+            </>
+          )
           return view === "problems" ? (
             <ProblemsTable
               problems={problems}
@@ -132,7 +132,8 @@ export default function DashboardPage() {
               showEditDelete
               showSource={false}
               className={tableClassName}
-              headerExtra={viewToggle}
+              headerLead={viewToggle}
+              headerExtra={identifyButtons}
             />
           ) : (
             <SolutionsTable
@@ -140,7 +141,8 @@ export default function DashboardPage() {
               showStatus
               showEditDelete
               className={tableClassName}
-              headerExtra={viewToggle}
+              headerLead={viewToggle}
+              headerExtra={identifyButtons}
             />
           )
         })()}

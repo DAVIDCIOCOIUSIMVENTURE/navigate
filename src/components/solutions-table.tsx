@@ -60,11 +60,12 @@ interface SolutionsTableProps {
   showStatus?: boolean
   showEditDelete?: boolean
   className?: string
+  headerLead?: React.ReactNode
   headerExtra?: React.ReactNode
   title?: string
 }
 
-export function SolutionsTable({ solutions, showStatus = true, showEditDelete = true, className, headerExtra, title }: SolutionsTableProps) {
+export function SolutionsTable({ solutions, showStatus = true, showEditDelete = true, className, headerLead, headerExtra, title }: SolutionsTableProps) {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const store = useStore<RootState>()
@@ -160,10 +161,12 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
     <Card className={cn("flex flex-col overflow-hidden", className)}>
       <CardHeader className="shrink-0 pb-3 gap-3">
         <div className="flex items-center justify-between gap-3 flex-wrap">
-          <CardTitle className="text-sm font-semibold">
-            {title ?? "Solutions"} ({sortedSolutions.length}
-            {sortedSolutions.length !== solutions.length ? ` of ${solutions.length}` : ""})
-          </CardTitle>
+          {headerLead ?? (
+            <CardTitle className="text-sm font-semibold">
+              {title ?? "Solutions"} ({sortedSolutions.length}
+              {sortedSolutions.length !== solutions.length ? ` of ${solutions.length}` : ""})
+            </CardTitle>
+          )}
           <div className="flex items-center gap-2 flex-wrap">
             {headerExtra}
             <div className="relative">
@@ -199,15 +202,6 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-10">
-                <button
-                  type="button"
-                  onClick={() => handleSort("index")}
-                  className={cn("flex items-center gap-1", sortableHeaderClass)}
-                >
-                  #{renderSortIcon("index")}
-                </button>
-              </TableHead>
               <TableHead className="w-full">
                 <button
                   type="button"
@@ -253,14 +247,14 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
             {sortedSolutions.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={showStatus ? 6 : 5}
+                  colSpan={showStatus ? 5 : 4}
                   className="text-center text-sm py-8"
                 >
                   No solutions match the current filters.
                 </TableCell>
               </TableRow>
             ) : (
-              sortedSolutions.map(({ solution, originalIndex, problemDescription }, rowIndex) => {
+              sortedSolutions.map(({ solution, problemDescription }, rowIndex) => {
                 const status = showStatus ? (solution.validationStatus ?? "unvalidated") : null
                 const statusConfig = status ? TABLE_STATUS_META[status] : null
                 const zebra = rowIndex % 2 === 1 ? "bg-muted/20" : undefined
@@ -279,7 +273,6 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                     }}
                     aria-label={`View solution: ${solution.title || "untitled"}`}
                   >
-                    <TableCell>{originalIndex + 1}</TableCell>
                     <TableCell className="text-sm">
                       <div className="flex items-center gap-2">
                         <Lightbulb className="h-3.5 w-3.5 text-primary shrink-0" />
