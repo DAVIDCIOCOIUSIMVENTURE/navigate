@@ -43,7 +43,7 @@ export default function DashboardPage() {
       {/* Row 1: Foundations + Self Discovery prompts */}
       <div className={cn("flex gap-3 shrink-0", isWide ? "flex-row items-stretch" : "flex-col items-stretch")}>
         <Link href="/foundations" className="flex-1 min-w-0 flex">
-          <Card className="hover:shadow-md transition-shadow w-full bg-secondary-brand text-secondary-brand-foreground border-secondary-brand">
+          <Card className="hover:shadow-md transition-shadow w-full bg-primary text-primary-foreground border-primary">
             <CardContent className="p-4 h-full flex items-center gap-3">
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
@@ -117,11 +117,11 @@ export default function DashboardPage() {
             <>
               <Button onClick={() => router.push("/problems/identify")} className="gap-2">
                 <Plus className="h-4 w-4" />
-                Identify problems
+                Identify new problems
               </Button>
               <Button onClick={() => router.push("/solutions/identify")} className="gap-2">
                 <Plus className="h-4 w-4" />
-                Identify solutions
+                Identify new solutions
               </Button>
             </>
           )
