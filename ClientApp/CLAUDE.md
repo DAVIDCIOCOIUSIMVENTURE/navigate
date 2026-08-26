@@ -220,6 +220,18 @@ max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]
 
 **Narrow card heights.** When the page scrolls, give long cards `min-h-[320px] max-h-[640px]` (or similar) with internal `overflow-y-auto` on their content area, so a single card doesn't dominate the page or stay cramped.
 
+#### Catalogue picker trees
+
+Collapsible catalogue pickers all share one markup, taken from `src/components/reflect/identify-dimension-picker.tsx` (the reference implementation). The other Reflect pickers (`life-experiences-picker.tsx`, `work-context-picker.tsx`, `own-problems-picker.tsx`, `audience-picker.tsx`) and the self-discovery suggestion tree (`SuggestionTreeItem` in `src/app/(app)/self-discovery/discover/[categoryId]/[questionId]/page.tsx`) follow it. Copy it rather than building a new tree.
+
+* **Group row**: `flex w-full items-center gap-1.5 px-1 py-1.5 rounded-md transition-colors hover:bg-accent/50`, chevron `h-3.5 w-3.5 shrink-0 text-muted-foreground` (`ChevronDown` open / `ChevronRight` closed), a `h-4 w-4` category icon from `getGroupIcon(label)` in `src/lib/group-icons.ts`, label `text-sm font-semibold tracking-wide select-none flex-1 text-left text-foreground` (not uppercase), and a right-aligned `text-sm text-secondary-brand font-medium` "N selected" counter.
+* **Children**: `<ul role="group" aria-label={group.label} className="ml-7 flex flex-col gap-1 pb-1">` with one `<li>` per child.
+* **Leaf row**: a `<button type="button" role="checkbox" aria-checked>` (not the shadcn `Checkbox` inside a `<label>`), `w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring`; selected `bg-primary/10 border border-primary`, unselected `border border-transparent hover:bg-accent/40`. The tick box is a `<span>`: `grid place-content-center h-4 w-4 shrink-0 rounded-sm border`, selected `border-primary bg-primary text-primary-foreground` holding `<Check className="h-3 w-3" />`, unselected `border-input`. Single-select variants use `rounded-full` in place of `rounded-sm`. Label `flex-1 text-sm leading-snug`.
+* The tree sits on a white `rounded-lg bg-card p-2` panel (or a `ScrollArea` carrying the same classes) so it reads as a panel against a `bg-secondary-brand` container.
+* **Group icons** come from `getGroupIcon(label)`, an ordered keyword-to-icon regex list keyed off the group's own label (no icon is stored in the data). Special groups keep their own icon instead: "From your self-discovery" uses `Compass`, and a "Your customers / contexts / problems" custom group uses the matching `DIMENSION_ICONS` entry, both tinted `text-quaternary`. When a new category label falls through to the `Folder` fallback, add a rule to `src/lib/group-icons.ts` rather than hard-coding an icon at the call site.
+
+**The `text-sm` here is deliberate.** These trees show long catalogues in a narrow column and trade the app's usual `text-base` floor for density. Do not bump them, and do not let the smaller size leak outward: descriptions, inputs, selection chips and empty states around the tree stay `text-base`.
+
 #### Card header spacing
 
 `CardHeader` defaults to `space-y-1.5` (6px), which is too tight when the header contains a `CardTitle` plus a description paragraph: `CardTitle` uses `leading-none`, so 6px reads as cramped. Whenever a `CardHeader` contains both a title and a description (`<p>` or `CardDescription`), override the spacing to `space-y-6` (24px) so the gap matches the `pt-6` rhythm `CardContent` uses below the title on validation pages. `cn` is `tw-merge`-aware, so passing `space-y-6` in the className cleanly replaces the default. The login page is an exception: its compact centered card intentionally keeps the tight default.

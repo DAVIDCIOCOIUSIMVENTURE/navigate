@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Check, ChevronDown, ChevronRight, Compass, Plus } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { getGroupIcon } from "@/lib/group-icons"
 import {
   SELF_DISCOVERY_CATEGORIES,
   type SelfDiscoveryQuestion,
@@ -126,6 +127,7 @@ export function OwnProblemsPicker({
             (i) => selectedId === i.id
           )
           const isSelfDiscoveryGroup = group.id === "self-discovery"
+          const GroupIcon = getGroupIcon(group.label)
           if (group.items.length === 0 && !isSelfDiscoveryGroup) return null
           return (
             <Collapsible
@@ -147,8 +149,10 @@ export function OwnProblemsPicker({
                   ? <ChevronDown className={cn("h-3.5 w-3.5 shrink-0", isSelfDiscoveryGroup ? "text-quaternary" : "text-muted-foreground")} />
                   : <ChevronRight className={cn("h-3.5 w-3.5 shrink-0", isSelfDiscoveryGroup ? "text-quaternary" : "text-muted-foreground")} />
                 }
-                {isSelfDiscoveryGroup && (
+                {isSelfDiscoveryGroup ? (
                   <Compass className="h-4 w-4 text-quaternary shrink-0" aria-hidden="true" />
+                ) : (
+                  <GroupIcon className="h-4 w-4 text-foreground shrink-0" aria-hidden="true" />
                 )}
                 <span
                   className={cn(

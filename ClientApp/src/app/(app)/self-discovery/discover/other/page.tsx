@@ -85,43 +85,55 @@ export default function OtherCategoryPage() {
                                 Anything you add here will appear under &ldquo;Your items&rdquo; in the You column of the Canvas Builder.
                             </p>
                         </div>
-                        {items.length > 0 && (
-                            <div className="flex flex-wrap gap-2">
-                                {items.map((item) => (
-                                    <div
-                                        key={item.id}
-                                        className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2 text-sm"
-                                    >
-                                        <span className="flex-1">{item.label}</span>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            onClick={() => setPendingDelete(item)}
-                                            className="h-4 w-4 text-muted-foreground hover:text-foreground"
-                                        >
-                                            <Trash2 className="h-3 w-3" />
-                                        </Button>
-                                    </div>
-                                ))}
+                        <div className={cn("rounded-xl bg-secondary-brand flex flex-col gap-4", roomy ? "p-6" : "p-4")}>
+                            <div className="flex gap-2 shrink-0 items-center">
+                                <Input
+                                    placeholder="Add your own..."
+                                    value={draft}
+                                    onChange={(e) => setDraft(e.target.value)}
+                                    onKeyDown={(e) => {
+                                        if (e.key === "Enter") {
+                                            e.preventDefault()
+                                            handleAdd()
+                                        }
+                                    }}
+                                    className="text-base h-9 bg-white border-white text-foreground placeholder:text-muted-foreground"
+                                />
+                                <Button
+                                    onClick={handleAdd}
+                                    size="sm"
+                                    className="gap-1.5 bg-white text-foreground hover:bg-white/90"
+                                    disabled={!draft.trim()}
+                                >
+                                    <Plus className="h-3.5 w-3.5" />
+                                    Add
+                                </Button>
                             </div>
-                        )}
-                        <div className="flex gap-2 shrink-0 items-center">
-                            <Input
-                                placeholder="Add your own..."
-                                value={draft}
-                                onChange={(e) => setDraft(e.target.value)}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") {
-                                        e.preventDefault()
-                                        handleAdd()
-                                    }
-                                }}
-                                className="text-sm h-9"
-                            />
-                            <Button onClick={handleAdd} variant="secondary-brand" size="sm" className="gap-1.5" disabled={!draft.trim()}>
-                                <Plus className="h-3.5 w-3.5" />
-                                Add
-                            </Button>
+                            <div className="rounded-lg bg-card p-3">
+                                {items.length === 0 ? (
+                                    <p className="text-base text-center py-4">Your items will appear here.</p>
+                                ) : (
+                                    <div className="flex flex-wrap gap-2">
+                                        {items.map((item) => (
+                                            <div
+                                                key={item.id}
+                                                className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2 text-base"
+                                            >
+                                                <span className="flex-1">{item.label}</span>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => setPendingDelete(item)}
+                                                    className="h-4 w-4 text-muted-foreground hover:text-foreground"
+                                                    aria-label="Delete"
+                                                >
+                                                    <Trash2 className="h-3 w-3" />
+                                                </Button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     </div>
                 </CardContent>

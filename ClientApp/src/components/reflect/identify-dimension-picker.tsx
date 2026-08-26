@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Check, ChevronDown, ChevronRight, Plus } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { getGroupIcon } from "@/lib/group-icons"
 import { dimensionColumns } from "@/data/dimensionData"
 import { DIMENSION_ICONS } from "@/lib/dimension-visuals"
 import type { CustomDimensionColumnId } from "@/store/custom-dimension-items-model"
@@ -141,6 +142,7 @@ export function IdentifyDimensionPicker({
           const open = openGroupId === group.id
           const selectedInGroup = group.items.filter((i) => isSelected(i.label)).length
           const isCustomGroup = group.id === `${columnId}-custom`
+          const GroupIcon = getGroupIcon(group.label)
           return (
             <Collapsible
               key={group.id}
@@ -170,11 +172,13 @@ export function IdentifyDimensionPicker({
                     )}
                   />
                 )}
-                {isCustomGroup && DimensionIcon && (
+                {isCustomGroup && DimensionIcon ? (
                   <DimensionIcon
                     className="h-4 w-4 text-quaternary shrink-0"
                     aria-hidden="true"
                   />
+                ) : (
+                  <GroupIcon className="h-4 w-4 text-foreground shrink-0" aria-hidden="true" />
                 )}
                 <span
                   className={cn(

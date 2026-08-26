@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Check, ChevronDown, ChevronRight, Compass, Plus } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { getGroupIcon } from "@/lib/group-icons"
 import { dimensionColumns } from "@/data/dimensionData"
 import { countAnchorUsage } from "@/lib/reflect-usage"
 import {
@@ -249,6 +250,7 @@ export function LifeExperiencesPicker({
             <div className="flex-1 min-h-0 overflow-y-auto rounded-lg border bg-card p-2">
               {contextGroups.map((group) => {
                 const open = openContextGroupId === group.id
+                const GroupIcon = getGroupIcon(group.label)
                 if (group.items.length === 0) return null
                 return (
                   <Collapsible
@@ -263,6 +265,7 @@ export function LifeExperiencesPicker({
                         ? <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                         : <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                       }
+                      <GroupIcon className="h-4 w-4 text-foreground shrink-0" aria-hidden="true" />
                       <span className="text-sm font-semibold tracking-wide select-none flex-1 text-left text-foreground">
                         {group.label}
                       </span>

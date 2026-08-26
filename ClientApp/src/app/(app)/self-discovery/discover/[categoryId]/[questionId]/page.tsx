@@ -16,34 +16,6 @@ import {
     Pencil,
     ChevronsUpDown,
     ChevronsDownUp,
-    Palette,
-    Dumbbell,
-    TreePine,
-    Cpu,
-    Utensils,
-    GraduationCap,
-    Users,
-    Plane,
-    Heart,
-    Briefcase,
-    Trophy,
-    ShieldAlert,
-    User,
-    BookOpen,
-    Scale,
-    Code,
-    BarChart3,
-    Cog,
-    PenLine,
-    MessageSquare,
-    Crown,
-    Brain,
-    Target,
-    TrendingUp,
-    Globe,
-    HeartHandshake,
-    Folder,
-    type LucideIcon,
 } from "lucide-react"
 import { useRouter, useParams } from "@/lib/router"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
@@ -54,49 +26,10 @@ import type { RootState, AppDispatch } from "@/store"
 import type { SelfDiscoveryItem } from "@/store/self-discovery-items-model"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
+import { getGroupIcon } from "@/lib/group-icons"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { useContainerSize } from "@/context/container-size-context"
-
-const GROUP_ICON_RULES: ReadonlyArray<readonly [RegExp, LucideIcon]> = [
-    [/software|programm|coding/, Code],
-    [/data|analytic/, BarChart3],
-    [/technical|hardware/, Cog],
-    [/tech|science/, Cpu],
-    [/writing/, PenLine],
-    [/media|communicat/, MessageSquare],
-    [/creative|art|design/, Palette],
-    [/leadership|management/, Crown],
-    [/strategy|analysis/, Target],
-    [/thinking|problem/, Brain],
-    [/sport|fitness|physical|hands-on|trade|practical/, Dumbbell],
-    [/outdoor|nature|environment|climate/, TreePine],
-    [/food|drink/, Utensils],
-    [/travel/, Plane],
-    [/education|learning|intellectual|growth/, GraduationCap],
-    [/marketing/, TrendingUp],
-    [/wellness|mindful|wellbeing|health/, Heart],
-    [/family|relationship/, HeartHandshake],
-    [/people|interpersonal/, Users],
-    [/business|entrepreneur|career|work|finance|operations|economic|labour|economy/, Briefcase],
-    [/adversity|challenge/, ShieldAlert],
-    [/achievement|milestone/, Trophy],
-    [/personal|identity|self-management/, User],
-    [/humanities/, BookOpen],
-    [/law|policy|rights|equality|justice|govern|freedom|expression/, Scale],
-    [/global|geopolitical/, Globe],
-    [/access|services|issue/, HeartHandshake],
-    [/social|community/, Users],
-]
-
-function getGroupIcon(label: string): LucideIcon {
-    const l = label.toLowerCase()
-    for (const [re, icon] of GROUP_ICON_RULES) {
-        if (re.test(l)) return icon
-    }
-    return Folder
-}
 
 function filterSuggestionItems(items: SuggestionItem[], query: string): SuggestionItem[] {
     if (!query) return items
@@ -131,54 +64,69 @@ function SuggestionTreeItem({
         const GroupIcon = getGroupIcon(item.label)
         return (
             <Collapsible open={open} onOpenChange={setOpen}>
-                <CollapsibleTrigger className="flex w-full items-center gap-1.5 px-1 py-1.5 rounded-md hover:bg-accent/50 transition-colors">
+                <CollapsibleTrigger className="flex w-full items-center gap-1.5 px-1 py-1.5 rounded-md transition-colors hover:bg-accent/50">
                     {open
-                        ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                        : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+                        ? <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
+                        : <ChevronRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
                     }
-                    <GroupIcon className="h-3.5 w-3.5 text-foreground shrink-0" aria-hidden="true" />
-                    <span className="text-sm font-semibold text-foreground uppercase tracking-wide select-none flex-1 text-left">
+                    <GroupIcon className="h-4 w-4 text-foreground shrink-0" aria-hidden="true" />
+                    <span className="text-sm font-semibold tracking-wide select-none flex-1 text-left text-foreground">
                         {item.label}
                     </span>
                     {selectedCount > 0 && (
-                        <span className="text-sm text-secondary-brand font-medium tabular-nums">
-                            {selectedCount}
+                        <span className="text-sm text-secondary-brand font-medium">
+                            {selectedCount} selected
                         </span>
                     )}
                 </CollapsibleTrigger>
                 <CollapsibleContent>
-                    <div className="ml-7 flex flex-col">
+                    <ul role="group" aria-label={item.label} className="ml-7 flex flex-col gap-1 pb-1">
                         {item.children!.map((child) => (
-                            <SuggestionTreeItem
-                                key={child.id}
-                                item={child}
-                                selectedIds={selectedIds}
-                                onToggle={onToggle}
-                                defaultOpen={defaultOpen}
-                            />
+                            <li key={child.id}>
+                                <SuggestionTreeItem
+                                    item={child}
+                                    selectedIds={selectedIds}
+                                    onToggle={onToggle}
+                                    defaultOpen={defaultOpen}
+                                />
+                            </li>
                         ))}
-                    </div>
+                    </ul>
                 </CollapsibleContent>
             </Collapsible>
         )
     }
 
-    const isSelected = selectedIds.has(item.id)
+    const checked = selectedIds.has(item.id)
 
     return (
-        <label className="flex items-center gap-2.5 px-1 py-1.5 cursor-pointer rounded-md hover:bg-accent/50 transition-colors">
-            <Checkbox
-                checked={isSelected}
-                onCheckedChange={() => onToggle(item.id, item.label)}
-                className="border-secondary-brand data-[state=checked]:bg-secondary-brand data-[state=checked]:text-secondary-brand-foreground"
-            />
-            <span className={cn(
-                "text-sm text-foreground select-none",
-                isSelected && "font-medium"
-            )}>
+        <button
+            type="button"
+            role="checkbox"
+            aria-checked={checked}
+            onClick={() => onToggle(item.id, item.label)}
+            className={cn(
+                "w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                checked
+                    ? "bg-primary/10 border border-primary"
+                    : "border border-transparent hover:bg-accent/40"
+            )}
+        >
+            <span
+                className={cn(
+                    "grid place-content-center h-4 w-4 shrink-0 rounded-sm border",
+                    checked
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-input"
+                )}
+                aria-hidden="true"
+            >
+                {checked && <Check className="h-3 w-3" />}
+            </span>
+            <span className="flex-1 text-sm leading-snug">
                 {item.label}
             </span>
-        </label>
+        </button>
     )
 }
 
@@ -337,8 +285,8 @@ export default function QuestionPage() {
                                 </p>
                             </div>
                             {question.suggestions ? (
-                                <div className={cn("flex gap-4 flex-1 min-h-0", roomy ? "flex-row" : "flex-col")}>
-                                    <div className={cn("flex flex-col gap-3", roomy ? "w-72 shrink-0" : "shrink-0")}>
+                                <div className={cn("rounded-xl bg-secondary-brand flex gap-4 flex-1 min-h-0", roomy ? "flex-row p-6" : "flex-col p-4")}>
+                                    <div className={cn("flex flex-col gap-3 min-h-0", roomy ? "w-72 shrink-0" : "shrink-0")}>
                                         <div className="flex gap-2 shrink-0">
                                             <Input
                                                 placeholder="Add your own..."
@@ -349,16 +297,20 @@ export default function QuestionPage() {
                                                         handleAddAnswer()
                                                     }
                                                 }}
-                                                className="text-sm h-9"
+                                                className="text-base h-9 bg-white border-white text-foreground placeholder:text-muted-foreground"
                                             />
-                                            <Button onClick={handleAddAnswer} size="sm" variant="secondary-brand" className="gap-1.5">
+                                            <Button
+                                                onClick={handleAddAnswer}
+                                                size="sm"
+                                                className="gap-1.5 bg-white text-foreground hover:bg-white/90"
+                                            >
                                                 <Plus className="h-3.5 w-3.5" />
                                                 Add
                                             </Button>
                                         </div>
-                                        <ScrollArea className={cn("rounded-lg border p-3", roomy ? "flex-1 min-h-0" : "max-h-48 min-h-[100px]")}>
+                                        <ScrollArea className={cn("rounded-lg bg-card p-3", roomy ? "flex-1 min-h-0" : "max-h-48 min-h-[100px]")}>
                                             {questionTriggers.length === 0 ? (
-                                                <p className="text-sm text-center py-4">Your selections will appear here.</p>
+                                                <p className="text-base text-center py-4">Your selections will appear here.</p>
                                             ) : (
                                                 <div className="flex flex-col gap-2">
                                                     {questionTriggers.map((trigger) => {
@@ -366,7 +318,7 @@ export default function QuestionPage() {
                                                         return (
                                                             <div
                                                                 key={trigger.id}
-                                                                className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2 text-sm"
+                                                                className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2 text-base"
                                                             >
                                                                 {isEditing ? (
                                                                     <>
@@ -378,7 +330,7 @@ export default function QuestionPage() {
                                                                                 if (e.key === "Escape") { e.preventDefault(); cancelEditTrigger() }
                                                                             }}
                                                                             autoFocus
-                                                                            className="h-7 text-sm flex-1"
+                                                                            className="h-7 text-base flex-1"
                                                                         />
                                                                         <Button
                                                                             variant="ghost"
@@ -437,7 +389,7 @@ export default function QuestionPage() {
                                                     placeholder="Search suggestions..."
                                                     value={searchQuery}
                                                     onChange={(e) => setSearchQuery(e.target.value)}
-                                                    className="pl-9 pr-8 h-9"
+                                                    className="pl-9 pr-8 h-9 text-base bg-white border-white text-foreground placeholder:text-muted-foreground"
                                                 />
                                                 {searchQuery && (
                                                     <button
@@ -461,7 +413,7 @@ export default function QuestionPage() {
                                                                     setDefaultGroupOpen(true)
                                                                     setTreeResetKey(k => k + 1)
                                                                 }}
-                                                                className="shrink-0"
+                                                                className="shrink-0 bg-white border-white text-foreground hover:bg-white/90 hover:text-foreground"
                                                                 aria-label="Expand all"
                                                             >
                                                                 <ChevronsUpDown className="h-3.5 w-3.5" />
@@ -478,7 +430,7 @@ export default function QuestionPage() {
                                                                     setDefaultGroupOpen(false)
                                                                     setTreeResetKey(k => k + 1)
                                                                 }}
-                                                                className="shrink-0"
+                                                                className="shrink-0 bg-white border-white text-foreground hover:bg-white/90 hover:text-foreground"
                                                                 aria-label="Collapse all"
                                                             >
                                                                 <ChevronsDownUp className="h-3.5 w-3.5" />
@@ -489,11 +441,11 @@ export default function QuestionPage() {
                                                 </div>
                                             </TooltipProvider>
                                         </div>
-                                        <ScrollArea className={cn("rounded-lg border p-3", roomy ? "flex-1 min-h-0" : "flex-1 min-h-[200px]")}>
+                                        <ScrollArea className={cn("rounded-lg bg-card p-3", roomy ? "flex-1 min-h-0" : "flex-1 min-h-[200px]")}>
                                             {filteredSuggestions.length === 0 ? (
                                                 <div className="flex flex-col items-center justify-center py-8 gap-2 text-center">
                                                     <Search className="h-5 w-5 text-muted-foreground" />
-                                                    <p className="text-sm">No suggestions match your search.</p>
+                                                    <p className="text-base">No suggestions match your search.</p>
                                                     <Button variant="outline" size="sm" onClick={() => setSearchQuery("")} className="mt-1 gap-1.5">
                                                         <X className="h-3.5 w-3.5" />
                                                         Clear search
@@ -516,76 +468,8 @@ export default function QuestionPage() {
                                     </div>
                                 </div>
                             ) : (
-                                <>
-                                    {questionTriggers.length > 0 && (
-                                        <div className="flex flex-wrap gap-2 shrink-0">
-                                            {questionTriggers.map((trigger) => {
-                                                const isEditing = editingTriggerId === trigger.id
-                                                return (
-                                                    <div
-                                                        key={trigger.id}
-                                                        className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2 text-sm"
-                                                    >
-                                                        {isEditing ? (
-                                                            <>
-                                                                <Input
-                                                                    value={editingDraft}
-                                                                    onChange={(e) => setEditingDraft(e.target.value)}
-                                                                    onKeyDown={(e) => {
-                                                                        if (e.key === "Enter") { e.preventDefault(); commitEditTrigger() }
-                                                                        if (e.key === "Escape") { e.preventDefault(); cancelEditTrigger() }
-                                                                    }}
-                                                                    autoFocus
-                                                                    className="h-7 text-sm flex-1"
-                                                                />
-                                                                <Button
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    onClick={commitEditTrigger}
-                                                                    className="h-4 w-4 text-muted-foreground hover:text-foreground"
-                                                                    aria-label="Save"
-                                                                >
-                                                                    <Check className="h-3 w-3" />
-                                                                </Button>
-                                                                <Button
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    onClick={cancelEditTrigger}
-                                                                    className="h-4 w-4 text-muted-foreground hover:text-foreground"
-                                                                    aria-label="Cancel"
-                                                                >
-                                                                    <X className="h-3 w-3" />
-                                                                </Button>
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                <span className="flex-1">{trigger.title}</span>
-                                                                <Button
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    onClick={() => beginEditTrigger(trigger)}
-                                                                    className="h-4 w-4 text-muted-foreground hover:text-foreground"
-                                                                    aria-label="Rename"
-                                                                >
-                                                                    <Pencil className="h-3 w-3" />
-                                                                </Button>
-                                                                <Button
-                                                                    variant="ghost"
-                                                                    size="icon"
-                                                                    onClick={() => setProblemTriggerToDelete(trigger)}
-                                                                    className="h-4 w-4 text-muted-foreground hover:text-foreground"
-                                                                    aria-label="Delete"
-                                                                >
-                                                                    <Trash2 className="h-3 w-3" />
-                                                                </Button>
-                                                            </>
-                                                        )}
-                                                    </div>
-                                                )
-                                            })}
-                                        </div>
-                                    )}
-                                    <div className="flex gap-2">
+                                <div className={cn("rounded-xl bg-secondary-brand flex flex-col gap-4", roomy ? "p-6" : "p-4")}>
+                                    <div className="flex gap-2 shrink-0">
                                         <Input
                                             placeholder="Type your answer..."
                                             value={answers[question.url] || ''}
@@ -595,13 +479,90 @@ export default function QuestionPage() {
                                                     handleAddAnswer()
                                                 }
                                             }}
-                                            className="text-sm h-9"
+                                            className="text-base h-9 bg-white border-white text-foreground placeholder:text-muted-foreground"
                                         />
-                                        <Button onClick={handleAddAnswer}>
+                                        <Button
+                                            onClick={handleAddAnswer}
+                                            size="sm"
+                                            className="gap-1.5 bg-white text-foreground hover:bg-white/90"
+                                        >
+                                            <Plus className="h-3.5 w-3.5" />
                                             Add
                                         </Button>
                                     </div>
-                                </>
+                                    <div className="rounded-lg bg-card p-3">
+                                        {questionTriggers.length === 0 ? (
+                                            <p className="text-base text-center py-4">Your answers will appear here.</p>
+                                        ) : (
+                                            <div className="flex flex-wrap gap-2">
+                                                {questionTriggers.map((trigger) => {
+                                                    const isEditing = editingTriggerId === trigger.id
+                                                    return (
+                                                        <div
+                                                            key={trigger.id}
+                                                            className="flex items-center gap-2 bg-muted rounded-lg px-3 py-2 text-base"
+                                                        >
+                                                            {isEditing ? (
+                                                                <>
+                                                                    <Input
+                                                                        value={editingDraft}
+                                                                        onChange={(e) => setEditingDraft(e.target.value)}
+                                                                        onKeyDown={(e) => {
+                                                                            if (e.key === "Enter") { e.preventDefault(); commitEditTrigger() }
+                                                                            if (e.key === "Escape") { e.preventDefault(); cancelEditTrigger() }
+                                                                        }}
+                                                                        autoFocus
+                                                                        className="h-7 text-base flex-1"
+                                                                    />
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="icon"
+                                                                        onClick={commitEditTrigger}
+                                                                        className="h-4 w-4 text-muted-foreground hover:text-foreground"
+                                                                        aria-label="Save"
+                                                                    >
+                                                                        <Check className="h-3 w-3" />
+                                                                    </Button>
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="icon"
+                                                                        onClick={cancelEditTrigger}
+                                                                        className="h-4 w-4 text-muted-foreground hover:text-foreground"
+                                                                        aria-label="Cancel"
+                                                                    >
+                                                                        <X className="h-3 w-3" />
+                                                                    </Button>
+                                                                </>
+                                                            ) : (
+                                                                <>
+                                                                    <span className="flex-1">{trigger.title}</span>
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="icon"
+                                                                        onClick={() => beginEditTrigger(trigger)}
+                                                                        className="h-4 w-4 text-muted-foreground hover:text-foreground"
+                                                                        aria-label="Rename"
+                                                                    >
+                                                                        <Pencil className="h-3 w-3" />
+                                                                    </Button>
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        size="icon"
+                                                                        onClick={() => setProblemTriggerToDelete(trigger)}
+                                                                        className="h-4 w-4 text-muted-foreground hover:text-foreground"
+                                                                        aria-label="Delete"
+                                                                    >
+                                                                        <Trash2 className="h-3 w-3" />
+                                                                    </Button>
+                                                                </>
+                                                            )}
+                                                        </div>
+                                                    )
+                                                })}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
                             )}
                         </div>
                     </div>
