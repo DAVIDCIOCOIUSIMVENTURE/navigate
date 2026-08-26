@@ -1,20 +1,15 @@
 "use client"
 
-import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import {
-  ChevronRight,
   Lightbulb,
   Target,
-  Compass,
-  BookOpen,
   Plus,
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { ProblemsTable } from "@/components/problems-table"
 import { SolutionsTable } from "@/components/solutions-table"
-import Link from "next/link"
 import { useState } from "react"
 import { useSelector } from "react-redux"
 
@@ -32,39 +27,7 @@ export default function DashboardPage() {
 
   return (
     <div className={cn("flex flex-col gap-4 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
-      {/* Row 1: Foundations + Self Discovery prompts */}
-      <div className={cn("flex gap-3 shrink-0", isWide ? "flex-row items-stretch" : "flex-col items-stretch")}>
-        <Link href="/foundations" className="flex-1 min-w-0 flex">
-          <Card className="hover:shadow-md transition-shadow w-full bg-primary text-primary-foreground border-primary">
-            <CardContent className="p-4 h-full flex items-center gap-3">
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <BookOpen className="h-4 w-4 shrink-0" />
-                  <p className="text-base font-semibold">New here? Start with Why It Matters</p>
-                </div>
-                <p className="text-base mt-2">Optional reading on why validating ideas, problems, and solutions is worth the time.</p>
-              </div>
-              <ChevronRight className="h-4 w-4 shrink-0" />
-            </CardContent>
-          </Card>
-        </Link>
-        <Link href="/self-discovery" className="flex-1 min-w-0 flex">
-          <Card className="hover:shadow-md transition-shadow w-full">
-            <CardContent className="p-4 h-full flex items-center gap-3">
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center gap-2">
-                  <Compass className="h-4 w-4 text-tertiary shrink-0" />
-                  <p className="text-base font-semibold">Explore Self Discovery</p>
-                </div>
-                <p className="text-base mt-2">Surface interests, skills, and experiences that point you toward problems worth solving.</p>
-              </div>
-              <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0" />
-            </CardContent>
-          </Card>
-        </Link>
-      </div>
-
-      {/* Row 2: toggleable problems / solutions table */}
+      {/* Toggleable problems / solutions table */}
       <div className="flex flex-1 min-h-0 flex-col">
         {(() => {
           const tableClassName = cn(isWide ? "flex-1 min-h-0 min-w-0" : "min-h-[320px] max-h-[640px]")

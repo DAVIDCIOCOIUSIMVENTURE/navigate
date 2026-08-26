@@ -20,6 +20,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import type { SelfDiscoveryItem } from "@/store/self-discovery-items-model"
 import type { CustomDimensionItem } from "@/store/custom-dimension-items-model"
 import { useContainerSize } from "@/context/container-size-context"
+import { ProgressRing } from "@/components/ui/progress-ring"
+import { getSelfDiscoveryProgress } from "@/lib/self-discovery-progress"
 import { cn } from "@/lib/utils"
 
 const FLOW_BASE = "/self-discovery/discover"
@@ -92,6 +94,8 @@ export default function SelfDiscoveryPage() {
 
   const totalItems = mounted ? selfDiscoveryAnswers.length + customYouItems.length : 0
 
+  const progress = useMemo(() => getSelfDiscoveryProgress(selfDiscoveryAnswers), [selfDiscoveryAnswers])
+
   const referencingProblemsCount = useMemo(() => {
     if (!pendingDelete) return 0
     const id = pendingDelete.item.id
@@ -115,6 +119,13 @@ export default function SelfDiscoveryPage() {
           <p className="flex-1 min-w-[16rem] text-base leading-relaxed">
             This is your <span className="font-bold">self discovery library</span>, a place to capture what you bring to a venture: your strengths, interests, and lived experiences. Use the journey to add insights, then bring them into the Problems section as triggers.
           </p>
+          <ProgressRing
+            label="Progress"
+            labelPosition="left"
+            completed={mounted ? progress.completed : 0}
+            total={progress.total}
+            size={56}
+          />
           <Button onClick={() => router.push(FLOW_BASE)} className="gap-2 shrink-0">
             <ArrowRight className="h-4 w-4" />
             {totalItems > 0 ? "Continue Self Discovery" : "Start Self Discovery"}
