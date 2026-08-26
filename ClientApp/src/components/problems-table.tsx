@@ -59,7 +59,7 @@ import { TABLE_STATUS_META, STATUS_FILTER_OPTIONS, STATUS_ORDER } from "@/lib/st
 
 import type { ValidationStatus } from "@/types/validation"
 
-type SortKey = "index" | "title" | "source" | "date" | "status"
+type SortKey = "index" | "title" | "source" | "status"
 type SortDirection = "asc" | "desc"
 
 interface ProblemsTableProps {
@@ -158,11 +158,6 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
           return a.problem.title.localeCompare(b.problem.title) * dir
         case "source":
           return a.problem.source.localeCompare(b.problem.source) * dir
-        case "date": {
-          const aTime = new Date(a.problem.createdAt).getTime()
-          const bTime = new Date(b.problem.createdAt).getTime()
-          return (aTime - bTime) * dir
-        }
         case "status": {
           const aStatus = a.problem.validationStatus ?? "unvalidated"
           const bStatus = b.problem.validationStatus ?? "unvalidated"
@@ -259,15 +254,6 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                     </button>
                   </TableHead>
                 )}
-                <TableHead className="w-28">
-                  <button
-                    type="button"
-                    onClick={() => handleSort("date")}
-                    className={cn("flex items-center gap-1", sortableHeaderClass)}
-                  >
-                    Date{renderSortIcon("date")}
-                  </button>
-                </TableHead>
                 {showStatus && (
                   <TableHead className="w-36">
                     <button
@@ -286,7 +272,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
               {sortedProblems.length === 0 ? (
                 <TableRow>
                   <TableCell
-                    colSpan={3 + (showStatus ? 1 : 0) + (showSource ? 1 : 0)}
+                    colSpan={2 + (showStatus ? 1 : 0) + (showSource ? 1 : 0)}
                     className="text-center text-sm py-8"
                   >
                     No problems match the current filters.
@@ -355,11 +341,6 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                           {problem.source}
                         </TableCell>
                       )}
-                      <TableCell className="text-sm whitespace-nowrap">
-                        {new Date(problem.createdAt).toLocaleDateString("en-GB", {
-                          day: "numeric", month: "short", year: "numeric",
-                        })}
-                      </TableCell>
                       {showStatus && statusConfig && (
                         <TableCell>
                           <div className={`flex items-center gap-1.5 text-sm font-medium ${statusConfig.className}`}>
@@ -482,11 +463,6 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                             </div>
                           </TableCell>
                           {showSource && <TableCell />}
-                          <TableCell className="text-sm whitespace-nowrap">
-                            {new Date(s.createdAt).toLocaleDateString("en-GB", {
-                              day: "numeric", month: "short", year: "numeric",
-                            })}
-                          </TableCell>
                           {showStatus && (
                             <TableCell>
                               <div className={`flex items-center gap-1.5 text-sm font-medium ${sStatusConfig.className}`}>

@@ -7,7 +7,6 @@ import {
   ChevronRight,
   Lightbulb,
   Target,
-  CheckCircle2,
   Compass,
   BookOpen,
   Plus,
@@ -28,13 +27,6 @@ export default function DashboardPage() {
   const problems = useSelector((state: RootState) => state.problems.problems)
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
   const [view, setView] = useState<"problems" | "solutions">("problems")
-
-  const validatedProblems = problems.filter(
-    (p) => p.validationStatus === "valid" || p.validationStatus === "invalid"
-  )
-  const validatedSolutions = solutions.filter(
-    (s) => s.validationStatus === "valid" || s.validationStatus === "invalid"
-  )
 
   const isWide = useContainerSize() === "wide"
 
@@ -72,17 +64,8 @@ export default function DashboardPage() {
         </Link>
       </div>
 
-      {/* Row 2: Stats column + Problems/Solutions table column */}
-      <div className={cn("flex gap-4 flex-1 min-h-0", isWide ? "flex-row" : "flex-col")}>
-        {/* Left column: stat cards stacked vertically */}
-        <div className={cn("flex shrink-0", isWide ? "flex-col gap-3 w-56" : "grid grid-cols-2 gap-3")}>
-          <StageCard icon={Target} title="Problems" value={problems.length} href="/problems" color="tertiary" />
-          <StageCard icon={CheckCircle2} title="Validated Problems" value={validatedProblems.length} href="/problems" color="tertiary" />
-          <StageCard icon={Lightbulb} title="Solutions" value={solutions.length} href="/solutions" color="tertiary" />
-          <StageCard icon={CheckCircle2} title="Validated Solutions" value={validatedSolutions.length} href="/solutions" color="tertiary" />
-        </div>
-
-        {/* Right column: toggleable problems / solutions table */}
+      {/* Row 2: toggleable problems / solutions table */}
+      <div className="flex flex-1 min-h-0 flex-col">
         {(() => {
           const tableClassName = cn(isWide ? "flex-1 min-h-0 min-w-0" : "min-h-[320px] max-h-[640px]")
           const viewToggle = (
@@ -149,46 +132,5 @@ export default function DashboardPage() {
       </div>
 
     </div>
-  )
-}
-
-function StageCard({
-  icon: Icon,
-  title,
-  value,
-  href,
-  color,
-}: {
-  icon: React.ComponentType<{ className?: string }>
-  title: string
-  value: number
-  href: string
-  color: string
-}) {
-  const bgMap: Record<string, string> = {
-    teal: "bg-secondary-brand",
-    blue: "bg-blue-900",
-    indigo: "bg-indigo-800",
-    purple: "bg-violet-800",
-    green: "bg-success",
-    tertiary: "bg-tertiary",
-    primary: "bg-primary",
-    quaternary: "bg-quaternary",
-  }
-
-  return (
-    <Link href={href}>
-      <Card className="hover:shadow-md transition-shadow">
-        <CardContent className="p-4 flex items-center gap-3">
-          <div className={`flex items-center justify-center w-9 h-9 rounded-lg shrink-0 ${value > 0 ? bgMap[color] : "bg-muted"}`}>
-            <Icon className={`h-4 w-4 ${value > 0 ? "text-white" : "text-muted-foreground"}`} />
-          </div>
-          <div className="min-w-0">
-            <p className="text-xl font-bold leading-none">{value}</p>
-            <p className="text-sm mt-0.5">{title}</p>
-          </div>
-        </CardContent>
-      </Card>
-    </Link>
   )
 }

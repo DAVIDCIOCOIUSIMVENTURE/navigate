@@ -52,7 +52,7 @@ import { cn } from "@/lib/utils"
 import { TABLE_STATUS_META, STATUS_FILTER_OPTIONS, STATUS_ORDER } from "@/lib/status-table"
 import type { ValidationStatus } from "@/types/validation"
 
-type SortKey = "index" | "title" | "problem" | "date" | "status"
+type SortKey = "index" | "title" | "problem" | "status"
 type SortDirection = "asc" | "desc"
 
 interface SolutionsTableProps {
@@ -121,11 +121,6 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
           return a.solution.title.localeCompare(b.solution.title) * dir
         case "problem":
           return a.problemDescription.localeCompare(b.problemDescription) * dir
-        case "date": {
-          const aTime = new Date(a.solution.createdAt).getTime()
-          const bTime = new Date(b.solution.createdAt).getTime()
-          return (aTime - bTime) * dir
-        }
         case "status": {
           const aStatus = a.solution.validationStatus ?? "unvalidated"
           const bStatus = b.solution.validationStatus ?? "unvalidated"
@@ -220,15 +215,6 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                   Problem{renderSortIcon("problem")}
                 </button>
               </TableHead>
-              <TableHead className="w-28">
-                <button
-                  type="button"
-                  onClick={() => handleSort("date")}
-                  className={cn("flex items-center gap-1", sortableHeaderClass)}
-                >
-                  Date{renderSortIcon("date")}
-                </button>
-              </TableHead>
               {showStatus && (
                 <TableHead className="w-36">
                   <button
@@ -247,7 +233,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
             {sortedSolutions.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={showStatus ? 5 : 4}
+                  colSpan={showStatus ? 4 : 3}
                   className="text-center text-sm py-8"
                 >
                   No solutions match the current filters.
@@ -292,11 +278,6 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                           <span className="text-muted-foreground">-</span>
                         )}
                       </div>
-                    </TableCell>
-                    <TableCell className="text-sm whitespace-nowrap">
-                      {new Date(solution.createdAt).toLocaleDateString("en-GB", {
-                        day: "numeric", month: "short", year: "numeric",
-                      })}
                     </TableCell>
                     {showStatus && statusConfig && (
                       <TableCell>
