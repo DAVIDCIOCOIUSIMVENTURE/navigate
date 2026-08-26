@@ -15,6 +15,7 @@ import { dimensionColumns } from "@/data/dimensionData"
 import type { DimensionItem } from "@/app/(app)/problems/identify/data"
 import { resolveDimensionLabel } from "@/lib/dimension-labels"
 import { DIMENSION_COLORS, DIMENSION_ICONS } from "@/lib/dimension-visuals"
+import { getGroupIcon } from "@/lib/group-icons"
 import { EditableLeafItem } from "@/components/editable-leaf-item"
 import { cn } from "@/lib/utils"
 
@@ -63,12 +64,14 @@ function CheckTree({
 
   if (isGroup) {
     const selectedCount = item.children!.filter((c) => selected.has(c.id)).length
+    const GroupIcon = getGroupIcon(item.label)
     return (
       <Collapsible open={effectiveOpen} onOpenChange={setOpen}>
         <CollapsibleTrigger className="flex w-full items-center gap-1.5 px-1 py-1 rounded hover:bg-accent/50 transition-colors">
           {effectiveOpen
             ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
             : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />}
+          <GroupIcon className="h-4 w-4 text-foreground shrink-0" aria-hidden="true" />
           <span className="text-sm font-semibold text-foreground tracking-wide select-none flex-1 text-left">
             {item.label}
           </span>

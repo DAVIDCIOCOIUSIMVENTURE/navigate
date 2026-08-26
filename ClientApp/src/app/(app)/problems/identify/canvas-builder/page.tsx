@@ -66,6 +66,10 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import { DIMENSION_ICONS as COLUMN_ICONS, DIMENSION_COLORS as COLUMN_COLORS } from "@/lib/dimension-visuals"
+import { getGroupIcon } from "@/lib/group-icons"
+import { getSelfDiscoveryCategoryIcon } from "@/config/navigation"
+
+const SELF_DISCOVERY_GROUP_PREFIX = "sd-group-"
 
 const COLUMN_DESCRIPTIONS: Record<string, string> = {
   "customers": "Who experiences this problem?",
@@ -137,6 +141,14 @@ function DimensionCheckItem({
 
   if (isGroup) {
     const selectedCount = item.children!.filter((c) => selected.has(c.id)).length
+    // You-column groups mirror the self-discovery categories, so they reuse that
+    // category's own icon instead of guessing one from the label.
+    const selfDiscoveryCategoryUrl = item.id.startsWith(SELF_DISCOVERY_GROUP_PREFIX)
+      ? item.id.slice(SELF_DISCOVERY_GROUP_PREFIX.length)
+      : null
+    const GroupIcon =
+      (selfDiscoveryCategoryUrl && getSelfDiscoveryCategoryIcon(selfDiscoveryCategoryUrl)) ||
+      getGroupIcon(item.label)
     return (
       <Collapsible open={effectiveOpen} onOpenChange={setOpen}>
         <CollapsibleTrigger className="flex w-full items-center gap-1.5 px-1 py-1.5 rounded-md hover:bg-accent/50 transition-colors group">
@@ -144,6 +156,7 @@ function DimensionCheckItem({
             ? <ChevronDown className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
             : <ChevronRight className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
           }
+          <GroupIcon className="h-4 w-4 text-foreground shrink-0" aria-hidden="true" />
           <span className="text-sm font-semibold text-foreground tracking-wide select-none flex-1 text-left">
             {item.label}
           </span>
@@ -693,6 +706,7 @@ function ProblemBuilder({
                     const explored = selectedInGroup > 0
                     const colors = COLUMN_COLORS[activeColumn.id]
                     const previewItems = group.children!.slice(0, 3).map((c) => c.label)
+                    const GroupIcon = getGroupIcon(group.label)
                     return (
                       <button
                         key={group.id}
@@ -702,7 +716,10 @@ function ProblemBuilder({
                           cn(colors?.bgIdle, "hover:shadow-sm"),
                         )}
                       >
-                        <span className="text-base font-medium">{group.label}</span>
+                        <span className="flex items-center gap-2">
+                          <GroupIcon className={cn("h-4 w-4 shrink-0", colors?.icon)} aria-hidden="true" />
+                          <span className="text-base font-medium">{group.label}</span>
+                        </span>
                         <span className="text-sm leading-relaxed">
                           {previewItems.join(", ")}{group.children!.length > 3 ? `, +${group.children!.length - 3} more` : ""}
                         </span>
@@ -946,7 +963,7 @@ export default function IdentifyPage() {
       groups.get(catUrl)!.children.push({ id: t.id, label: t.title })
     }
     const items: DimensionItem[] = Array.from(groups.entries()).map(([url, { title, children }]) => ({
-      id: `sd-group-${url}`,
+      id: `${SELF_DISCOVERY_GROUP_PREFIX}${url}`,
       label: title,
       children,
     }))

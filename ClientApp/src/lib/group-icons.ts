@@ -28,6 +28,7 @@ import {
     LifeBuoy,
     Lock,
     MapPin,
+    Megaphone,
     MessageSquare,
     Microscope,
     MousePointerClick,
@@ -45,6 +46,7 @@ import {
     Siren,
     Smartphone,
     Sparkles,
+    Star,
     Store,
     Sunrise,
     Target,
@@ -54,6 +56,7 @@ import {
     User,
     Users,
     Utensils,
+    Wrench,
     type LucideIcon,
 } from "lucide-react"
 
@@ -98,8 +101,13 @@ const GROUP_ICON_RULES: ReadonlyArray<readonly [RegExp, LucideIcon]> = [
     [/motivation|behaviour|behavior/, Flame],
     [/emotional|psychological|burden/, HeartCrack],
 
+    // User-authored groups injected into the canvas and the pickers
+    [/^your (items|custom items)$/, Star],
+
     // Skill, study and work-type categories
     [/self-management/, User],
+    [/expertise/, Wrench],
+    [/audience/, Megaphone],
     [/identity/, User],
     [/research|methodolog/, Microscope],
     [/reading|comprehension/, BookOpen],
