@@ -2,16 +2,20 @@
 
 import { Card, CardContent } from "@/components/ui/card"
 import { getSelfDiscoveryCategoryIcon } from "@/config/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
+import { useSelector } from "react-redux"
 import { Button } from "@/components/ui/button"
 import { useRouter, usePathname } from "@/lib/router"
 import { ArrowLeft, ChevronDown, Compass, PanelTop, type LucideIcon } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { ProgressRing } from "@/components/ui/progress-ring"
 import { cn } from "@/lib/utils"
 import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
 import { useContainerSize } from "@/context/container-size-context"
 import { useFocusChrome } from "@/context/focus-chrome-context"
+import type { RootState } from "@/store"
+import { getSelfDiscoveryProgress } from "@/lib/self-discovery-progress"
 
 const BASE_PATH = "/self-discovery/discover"
 
@@ -20,6 +24,24 @@ const OTHER_CATEGORY = {
     title: "Other",
     description: "Items you've added that don't fit the categories above.",
 } as const
+
+/** Share of the self discovery questions that have at least one item against them. */
+function ProgressFooter({ className }: { className?: string }) {
+    const items = useSelector((state: RootState) => state.selfDiscoveryItems.items)
+    const progress = useMemo(() => getSelfDiscoveryProgress(items), [items])
+
+    return (
+        <div className={cn("flex justify-center", className)}>
+            <ProgressRing
+                label="Progress"
+                labelPosition="bottom"
+                completed={progress.completed}
+                total={progress.total}
+                size={56}
+            />
+        </div>
+    )
+}
 
 function NavContent({
     pathname,
@@ -282,6 +304,7 @@ export default function SelfDiscoveryFlowLayout({
                                                 <NavContent pathname={pathname} onNavigate={handleNavigate} />
                                             </div>
                                         </CollapsibleContent>
+                                        <ProgressFooter className="border-t mt-2 pt-3 px-3 pb-1" />
                                     </CardContent>
                                 </Card>
                             </Collapsible>
@@ -309,6 +332,7 @@ export default function SelfDiscoveryFlowLayout({
                                 <div className="flex-1 min-h-0 overflow-y-auto">
                                     <NavContent pathname={pathname} onNavigate={handleNavigate} />
                                 </div>
+                                <ProgressFooter className="shrink-0 border-t pt-3 px-1" />
                             </CardContent>
                         </Card>
                     </div>
