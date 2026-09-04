@@ -16,6 +16,7 @@ import { Lightbulb, Lock, Check, ChevronDown, RotateCcw, ArrowLeft, PanelTop } f
 import { useContainerSize } from "@/context/container-size-context"
 import { useFocusChrome } from "@/context/focus-chrome-context"
 import { cn } from "@/lib/utils"
+import { NAV_ITEM_ACTIVE_CLASS } from "@/lib/nav-item-styles"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 
 function StepBadge({
@@ -80,7 +81,7 @@ function StepList({
           <Button
             key={item.path}
             type="button"
-            variant={isActive ? "secondary" : "ghost"}
+            variant="ghost"
             disabled={locked}
             onClick={() => {
               if (locked) return
@@ -88,8 +89,8 @@ function StepList({
             }}
             aria-current={isActive ? "step" : undefined}
             className={cn(
-              "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2 disabled:opacity-100 hover:text-tertiary",
-              isActive && "text-tertiary",
+              "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2 disabled:opacity-100",
+              isActive && NAV_ITEM_ACTIVE_CLASS,
               locked && "text-muted-foreground/60"
             )}
           >
@@ -166,7 +167,7 @@ function MobileStepper({
               aria-current={isActive ? "step" : undefined}
               className={cn(
                 "flex items-center gap-2.5 py-2 px-3 text-sm",
-                isActive && "bg-accent"
+                isActive && cn(NAV_ITEM_ACTIVE_CLASS, "focus:bg-secondary-brand/10 focus:text-secondary-brand")
               )}
             >
               <StepBadge index={i} state={state} />
@@ -174,7 +175,7 @@ function MobileStepper({
                 className={cn(
                   "whitespace-normal text-left",
                   isActive
-                    ? "font-semibold text-foreground"
+                    ? "font-semibold"
                     : locked
                       ? "text-muted-foreground/60"
                       : "text-muted-foreground"

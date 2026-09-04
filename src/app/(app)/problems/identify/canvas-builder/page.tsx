@@ -56,6 +56,7 @@ import { EditableLeafItem } from "@/components/editable-leaf-item"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
 import { cn } from "@/lib/utils"
+import { NAV_ITEM_ACTIVE_CLASS } from "@/lib/nav-item-styles"
 import { useContainerSize } from "@/context/container-size-context"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import {
@@ -570,7 +571,7 @@ function ProblemBuilder({
                         <li key={s.id}>
                           <Button
                             type="button"
-                            variant={isActive ? "secondary" : "ghost"}
+                            variant="ghost"
                             disabled={!isClickable}
                             onClick={() => {
                               if (!isClickable) return
@@ -578,7 +579,10 @@ function ProblemBuilder({
                               setStep(s.id)
                             }}
                             aria-current={isActive ? "step" : undefined}
-                            className="w-full justify-start h-auto py-2 px-3 gap-2.5"
+                            className={cn(
+                              "w-full justify-start h-auto py-2 px-3 gap-2.5",
+                              isActive && NAV_ITEM_ACTIVE_CLASS,
+                            )}
                           >
                             <span className={cn(
                               "flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 transition-colors shrink-0",
@@ -592,7 +596,7 @@ function ProblemBuilder({
                             </span>
                             <span className={cn(
                               "text-sm whitespace-normal text-left",
-                              isActive ? "font-semibold text-foreground" : "text-muted-foreground"
+                              isActive ? "font-semibold" : "text-muted-foreground"
                             )}>
                               {s.label}
                             </span>

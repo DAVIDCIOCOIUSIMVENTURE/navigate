@@ -55,6 +55,7 @@ import { useResolveOrCreate } from "@/lib/dimension-labels"
 import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
 import type { ResearchCapture } from "@/types/research"
 import type { ResearchStep } from "@/store/research-sessions-model"
+import { NAV_ITEM_ACTIVE_CLASS } from "@/lib/nav-item-styles"
 
 const RESEARCH_STEPS: { id: ResearchStep; label: string }[] = [
   { id: "pick", label: "Pick a method" },
@@ -163,13 +164,12 @@ function Stepper({
       {steps.map((s, i) => {
         const isActive = s.id === activeId
         const isCompleted = i < activeIdx
-        const isFilled = isActive || isCompleted
         const enabled = isStepEnabled(s.id)
         return (
           <Button
             key={s.id}
             type="button"
-            variant={isActive ? "secondary" : "ghost"}
+            variant="ghost"
             disabled={!enabled}
             onClick={() => {
               if (!enabled) return
@@ -178,14 +178,14 @@ function Stepper({
             }}
             aria-current={isActive ? "step" : undefined}
             className={cn(
-              "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2 disabled:opacity-100 hover:text-tertiary",
-              isActive && "text-tertiary",
+              "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2 disabled:opacity-100",
+              isActive && NAV_ITEM_ACTIVE_CLASS,
             )}
           >
             <span
               className={cn(
                 "flex items-center justify-center w-6 h-6 rounded-md shrink-0 text-xs font-bold transition-colors",
-                isFilled ? "bg-tertiary text-white" : "bg-tertiary/10 text-tertiary",
+                isActive || isCompleted ? "bg-tertiary text-white" : "bg-tertiary/10 text-tertiary",
               )}
             >
               {isCompleted ? <Check className="h-3.5 w-3.5" /> : i + 1}

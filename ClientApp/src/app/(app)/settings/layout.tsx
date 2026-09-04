@@ -5,6 +5,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { User, Palette, Bell, Shield } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { NAV_ITEM_ACTIVE_CLASS } from "@/lib/nav-item-styles"
 
 const SETTINGS_NAV: { path: string; label: string; icon: LucideIcon; disabled?: boolean }[] = [
   { path: "account", label: "Account", icon: User },
@@ -29,17 +31,20 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
                 return (
                   <Button
                     key={item.path}
-                    variant={isActive ? "secondary" : "ghost"}
+                    variant="ghost"
                     disabled={item.disabled}
                     aria-disabled={item.disabled}
                     title={item.disabled ? "Coming soon" : undefined}
-                    className={`w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2 hover:text-secondary-brand ${isActive ? "text-secondary-brand" : ""}`}
+                    className={cn(
+                      "w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2",
+                      isActive && NAV_ITEM_ACTIVE_CLASS,
+                    )}
                     onClick={() => {
                       if (item.disabled) return
                       router.push(`/settings/${item.path}`)
                     }}
                   >
-                    <Icon className={`h-3.5 w-3.5 shrink-0 ${isActive ? "text-secondary-brand" : ""}`} />
+                    <Icon className="h-3.5 w-3.5 shrink-0" />
                     <span className="flex-1 text-left">{item.label}</span>
                     {item.disabled && (
                       <span className="text-[10px] font-medium text-muted-foreground/70 uppercase tracking-wide shrink-0">

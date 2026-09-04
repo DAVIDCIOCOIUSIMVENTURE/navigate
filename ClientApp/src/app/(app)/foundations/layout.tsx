@@ -8,6 +8,7 @@ import { useRouter, usePathname } from "@/lib/router"
 import { ChevronDown, BookOpen, type LucideIcon } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
+import { NAV_ITEM_ACTIVE_CLASS } from "@/lib/nav-item-styles"
 import { FOUNDATIONS_SECTIONS } from "@/data/foundationsData"
 import { useContainerSize } from "@/context/container-size-context"
 
@@ -20,10 +21,10 @@ function NavContent({
 }) {
     const renderItem = (isActive: boolean, Icon: LucideIcon, label: string, href: string) => (
         <Button
-            variant={isActive ? "secondary" : "ghost"}
+            variant="ghost"
             className={cn(
-                "w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2 hover:text-tertiary",
-                isActive && "text-tertiary",
+                "w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2",
+                isActive && NAV_ITEM_ACTIVE_CLASS,
             )}
             onClick={() => onNavigate(href)}
         >

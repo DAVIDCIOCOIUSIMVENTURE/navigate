@@ -15,6 +15,7 @@ import {
 import type { LucideIcon } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
+import { NAV_ITEM_ACTIVE_CLASS } from "@/lib/nav-item-styles"
 
 const NAV_ICONS: Record<string, LucideIcon> = {
   introduction: ClipboardCheck,
@@ -49,8 +50,11 @@ function NavItems({
               </p>
             )}
             <Button
-              variant={isActive ? "secondary" : "ghost"}
-              className={`w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2 hover:text-tertiary ${isActive ? "text-tertiary" : ""}`}
+              variant="ghost"
+              className={cn(
+                "w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2",
+                isActive && NAV_ITEM_ACTIVE_CLASS,
+              )}
               onClick={() => onNavigate(href)}
               aria-current={isActive ? "page" : undefined}
             >

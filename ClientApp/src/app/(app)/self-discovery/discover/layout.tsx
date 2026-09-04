@@ -11,6 +11,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { ProgressRing } from "@/components/ui/progress-ring"
 import { cn } from "@/lib/utils"
+import { NAV_ITEM_ACTIVE_CLASS } from "@/lib/nav-item-styles"
 import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
 import { useContainerSize } from "@/context/container-size-context"
 import { useFocusChrome } from "@/context/focus-chrome-context"
@@ -67,10 +68,10 @@ function NavContent({
     return (
         <div className="flex flex-col gap-1">
             <Button
-                variant={isIntroActive ? "secondary" : "ghost"}
+                variant="ghost"
                 className={cn(
-                    "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2 hover:text-tertiary",
-                    isIntroActive && "text-tertiary",
+                    "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2",
+                    isIntroActive && NAV_ITEM_ACTIVE_CLASS,
                 )}
                 onClick={() => onNavigate(BASE_PATH)}
             >
@@ -102,9 +103,9 @@ function NavContent({
                     <AccordionItem key={category.url} value={category.url}>
                         <AccordionTrigger
                             className={cn(
-                                "w-full h-auto py-1.5 gap-4 justify-between px-3 text-sm text-left whitespace-normal rounded-md hover:no-underline hover:text-tertiary",
+                                "w-full h-auto py-1.5 gap-4 justify-between px-3 text-sm text-left whitespace-normal rounded-md hover:no-underline",
                                 isExactActive
-                                    ? "bg-secondary text-tertiary"
+                                    ? NAV_ITEM_ACTIVE_CLASS
                                     : isDeepActive
                                         ? "text-foreground hover:bg-accent"
                                         : "hover:bg-accent",
@@ -147,10 +148,10 @@ function NavContent({
                                         <li
                                             key={question.url}
                                             className={cn(
-                                                "text-sm cursor-pointer rounded-md px-2 py-1",
+                                                "text-sm cursor-pointer rounded-md px-2 py-1 transition-colors",
                                                 isActive
-                                                    ? "bg-secondary text-tertiary font-medium"
-                                                    : "text-foreground hover:text-tertiary"
+                                                    ? cn(NAV_ITEM_ACTIVE_CLASS, "font-medium")
+                                                    : "text-foreground hover:bg-accent hover:text-accent-foreground"
                                             )}
                                             onClick={() => onNavigate(`${BASE_PATH}/${category.url}/${question.url}`)}
                                             role="menuitem"
@@ -167,10 +168,10 @@ function NavContent({
                 })}
             </Accordion>
             <Button
-                variant={isOtherActive ? "secondary" : "ghost"}
+                variant="ghost"
                 className={cn(
-                    "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2 hover:text-tertiary",
-                    isOtherActive && "text-tertiary",
+                    "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2",
+                    isOtherActive && NAV_ITEM_ACTIVE_CLASS,
                 )}
                 onClick={() => onNavigate(`${BASE_PATH}/${OTHER_CATEGORY.url}`)}
             >

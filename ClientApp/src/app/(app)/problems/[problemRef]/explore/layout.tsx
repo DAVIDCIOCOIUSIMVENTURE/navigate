@@ -19,6 +19,7 @@ import {
 import type { LucideIcon } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
+import { NAV_ITEM_ACTIVE_CLASS } from "@/lib/nav-item-styles"
 
 const NAV_ICONS: Record<string, LucideIcon> = {
   introduction: Compass,
@@ -48,8 +49,11 @@ function NavItems({
         return (
           <li key={item.path}>
             <Button
-              variant={isActive ? "secondary" : "ghost"}
-              className={`w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2 hover:text-tertiary ${isActive ? "text-tertiary" : ""}`}
+              variant="ghost"
+              className={cn(
+                "w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2",
+                isActive && NAV_ITEM_ACTIVE_CLASS,
+              )}
               onClick={() => onNavigate(href)}
               aria-current={isActive ? "page" : undefined}
             >
@@ -140,7 +144,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                 aria-current={isActive ? "page" : undefined}
                 className={cn(
                   "flex items-center gap-2 py-2 px-3 text-sm",
-                  isActive && "bg-accent text-tertiary"
+                  isActive && cn(NAV_ITEM_ACTIVE_CLASS, "focus:bg-secondary-brand/10 focus:text-secondary-brand")
                 )}
               >
                 <span

@@ -46,7 +46,7 @@ export default function DashboardPage() {
             <p className="flex-1 min-w-[16rem] text-base leading-relaxed">
               This is your <span className="font-bold">home</span>, a single view of everything you&apos;ve captured so far.
               Switch between your <span className="font-bold">problems</span> and your <span className="font-bold">solutions</span> using the menu next to the table title,
-              then open any one to carry on refining or validating it. When you&apos;re ready to add more, start a new identify session from here.
+              then open any one to carry on refining or validating it. Use the identify buttons to add a new problem or solution.
             </p>
             <div className="flex flex-col items-stretch gap-2 shrink-0">
               <Button onClick={() => router.push("/problems/identify")} className="gap-2">
