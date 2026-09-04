@@ -7,7 +7,6 @@ import type { RootState } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { getAdjacentSteps, useProblem } from "../context"
-import { DimensionChips } from "@/components/dimension-chips"
 import { ProblemContextCard } from "@/components/problem-context-card"
 import {
   ClipboardCheck, ShieldCheck, LayoutTemplate, TrendingUp, Building2, PoundSterling,
@@ -20,16 +19,6 @@ const STEPS = [
   { icon: ShieldCheck, title: "Record your verdict", description: "Weigh the factors together against a colour-coded summary and lean indicator, then commit to Valid, Unsure, or Invalid with reasoning in the notes." },
   { icon: LayoutTemplate, title: "Summary", description: "Review the problem statement assembled from your exploration and validation work." },
 ]
-
-function FieldRow({ label, columnId, ids }: { label: string; columnId: string; ids: string[] }) {
-  if (ids.length === 0) return null
-  return (
-    <div className="flex flex-col gap-1">
-      <p className="text-base font-semibold uppercase tracking-wide">{label}</p>
-      <DimensionChips columnId={columnId} ids={ids} />
-    </div>
-  )
-}
 
 export default function IntroductionPage() {
   const router = useRouter()
@@ -73,17 +62,7 @@ export default function IntroductionPage() {
           </div>
         </div>
 
-        {mounted && (
-          <ProblemContextCard problem={problem}>
-            {problem && (
-              <>
-                <FieldRow label="Customer" columnId="customers" ids={problem.customers} />
-                <FieldRow label="Context" columnId="contexts" ids={problem.contexts} />
-                <FieldRow label="Problem" columnId="problems" ids={problem.problems} />
-              </>
-            )}
-          </ProblemContextCard>
-        )}
+        {mounted && <ProblemContextCard problem={problem} />}
 
         <div className="flex flex-col gap-3">
           <h3 className="text-xl font-bold text-foreground">What you&apos;ll work through</h3>

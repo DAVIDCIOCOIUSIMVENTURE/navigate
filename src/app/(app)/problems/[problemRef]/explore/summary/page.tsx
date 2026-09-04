@@ -9,6 +9,7 @@ import { CustomerStrategy } from "@/components/problem-strategies/customer-strat
 import { RefinementStrategy } from "@/components/problem-strategies/refinement-strategy"
 import { ExistingSolutionsStrategy } from "@/components/problem-strategies/existing-solutions-strategy"
 import { JobsToBeDoneStrategy } from "@/components/problem-strategies/validation-strategy"
+import { SHOW_REFINEMENT_STEPS } from "@/lib/feature-flags"
 
 function Section({ icon: Icon, label, children }: { icon: LucideIcon; label: string; children: React.ReactNode }) {
   return (
@@ -41,9 +42,11 @@ export default function ExploreSummaryPage() {
           <CustomerStrategy readOnly />
         </Section>
 
-        <Section icon={Search} label="Refinement">
-          <RefinementStrategy showChooser readOnly />
-        </Section>
+        {SHOW_REFINEMENT_STEPS && (
+          <Section icon={Search} label="Refinement">
+            <RefinementStrategy showChooser readOnly />
+          </Section>
+        )}
 
         <Section icon={GitFork} label="Existing Solutions, Shortcomings & Impacts">
           <ExistingSolutionsStrategy readOnly />

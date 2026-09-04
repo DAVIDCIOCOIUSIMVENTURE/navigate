@@ -14,9 +14,14 @@
  * be done) feeds the validation steps via the shared Problem record.
  */
 
+import { SHOW_REFINEMENT_STEPS } from "@/lib/feature-flags"
+
 export { ProblemProvider, useProblem } from "../problem-context"
 
-export const NAV_ITEMS = [
+/** Steps that only appear while the refinement feature switch is on. */
+const REFINEMENT_STEP_PATHS = ["choose-refinement", "refine"] as const
+
+const ALL_NAV_ITEMS = [
   { label: "Introduction", path: "introduction" },
   { label: "Define your customer", path: "customer" },
   { label: "Choose your refinement method", path: "choose-refinement" },
@@ -26,12 +31,27 @@ export const NAV_ITEMS = [
   { label: "Summary", path: "summary" },
 ] as const
 
+export type ExploreStepPath = (typeof ALL_NAV_ITEMS)[number]["path"]
+
+function isRefinementStep(path: string): boolean {
+  return (REFINEMENT_STEP_PATHS as readonly string[]).includes(path)
+}
+
+/**
+ * The steps shown in the stepper. The refinement pair is dropped when the
+ * feature switch is off, so prev / next navigation skips straight from the
+ * customer step to existing solutions.
+ */
+export const NAV_ITEMS: readonly (typeof ALL_NAV_ITEMS)[number][] = SHOW_REFINEMENT_STEPS
+  ? ALL_NAV_ITEMS
+  : ALL_NAV_ITEMS.filter((item) => !isRefinementStep(item.path))
+
 const STEP_PATHS = NAV_ITEMS.map((item) => item.path)
 
 export function getAdjacentSteps(pathname: string, problemRef: string) {
   const base = `/problems/${problemRef}/explore`
   const segment = pathname.split("/").pop() ?? ""
-  const idx = STEP_PATHS.indexOf(segment as (typeof STEP_PATHS)[number])
+  const idx = STEP_PATHS.indexOf(segment as ExploreStepPath)
   return {
     prevPath: idx > 0 ? `${base}/${STEP_PATHS[idx - 1]}` : null,
     nextPath: idx < STEP_PATHS.length - 1 ? `${base}/${STEP_PATHS[idx + 1]}` : null,

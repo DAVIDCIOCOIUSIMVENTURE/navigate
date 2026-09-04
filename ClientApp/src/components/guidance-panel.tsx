@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { SHOW_REFINEMENT_STEPS } from "@/lib/feature-flags"
 import {
   Rocket, Compass, Search, ClipboardCheck,
   FileQuestion, Pencil, Package,
@@ -276,7 +277,7 @@ const guidanceItems: GuidanceItem[] = [
           <p>If you already have a clear problem in mind, skip the exploration tools and write it directly. Useful when you have prior knowledge of a domain or have already spoken to potential customers.</p>
         </GuidanceSection>
         <GuidanceSection icon={ArrowRight} iconBg="bg-orange-700" title="What comes next">
-          <p>Once you have a list of candidate problems, pick one and take it into <Keyword>Explore the Problem</Keyword>: a deeper dive that defines the customer, refines the problem (root causes, 5 whys, affected groups), maps existing solutions and their shortcomings, and captures the jobs to be done. That work then feeds Problem Validation, where you size the market and decide whether the problem is worth pursuing.</p>
+          <p>Once you have a list of candidate problems, pick one and take it into <Keyword>Explore the Problem</Keyword>: a deeper dive that defines the customer, {SHOW_REFINEMENT_STEPS && <>refines the problem (root causes, 5 whys, affected groups), </>}maps existing solutions and their shortcomings, and captures the jobs to be done. That work then feeds Problem Validation, where you size the market and decide whether the problem is worth pursuing.</p>
         </GuidanceSection>
       </div>
     ),
@@ -295,7 +296,7 @@ const guidanceItems: GuidanceItem[] = [
           subtitle="A deeper dive into a single candidate before you size any markets. Understand exactly who has the problem, why it really happens, how people cope today, and what they are trying to get done. Everything you capture here carries forward into Problem Validation."
         />
         <GuidanceSection icon={Play} iconBg="bg-tertiary" title="How it works">
-          <p>Pick a candidate problem and open <Keyword>Explore</Keyword>. You work through a sequence of steps: define the customer, refine the problem, map existing solutions, and capture the jobs to be done. Work through them in order; each builds on the last, but you can return and update any step as your thinking develops.</p>
+          <p>Pick a candidate problem and open <Keyword>Explore</Keyword>. You work through a sequence of steps: define the customer, {SHOW_REFINEMENT_STEPS && <>refine the problem, </>}map existing solutions, and capture the jobs to be done. Work through them in order; each builds on the last, but you can return and update any step as your thinking develops.</p>
         </GuidanceSection>
         <GuidanceSection icon={Users} iconBg="bg-indigo-800" title="Define your customer">
           <p>Pin down exactly who experiences the problem. Vague labels like <Keyword>&ldquo;everyone&rdquo;</Keyword> or <Keyword>&ldquo;businesses&rdquo;</Keyword> lead to vague problems and vague solutions; a sharp customer definition unlocks every later step. Narrow down by:</p>
@@ -307,14 +308,16 @@ const guidanceItems: GuidanceItem[] = [
           </div>
           <p className="pt-1">Capture a written description of who experiences the problem. The population figure is captured later, on the market sizing step.</p>
         </GuidanceSection>
-        <GuidanceSection icon={Search} iconBg="bg-violet-800" title="Refine the problem">
-          <p>Before exploring alternatives, dig into <Keyword>why</Keyword> the problem exists and <Keyword>who</Keyword> it affects. The <Keyword>Choose your refinement method</Keyword> step lets you pick one of three techniques; the next step is where you capture the actual analysis. The refinement output also surfaces later in solution discovery, so the work is reused.</p>
-          <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
-            <ConceptCard icon={GitFork} label="Root Causes" description="Map the underlying factors that give rise to the problem." tile="bg-violet-800" border="border-violet-800/20 bg-violet-800/5" />
-            <ConceptCard icon={Repeat} label="5 Whys" description="Ask 'why' five times to drill from a surface symptom to the real cause." tile="bg-violet-800" border="border-violet-800/20 bg-violet-800/5" />
-            <ConceptCard icon={Users} label="Affected Groups" description="Map who is impacted, how severely, and in what way." tile="bg-violet-800" border="border-violet-800/20 bg-violet-800/5" />
-          </div>
-        </GuidanceSection>
+        {SHOW_REFINEMENT_STEPS && (
+          <GuidanceSection icon={Search} iconBg="bg-violet-800" title="Refine the problem">
+            <p>Before exploring alternatives, dig into <Keyword>why</Keyword> the problem exists and <Keyword>who</Keyword> it affects. The <Keyword>Choose your refinement method</Keyword> step lets you pick one of three techniques; the next step is where you capture the actual analysis. The refinement output also surfaces later in solution discovery, so the work is reused.</p>
+            <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
+              <ConceptCard icon={GitFork} label="Root Causes" description="Map the underlying factors that give rise to the problem." tile="bg-violet-800" border="border-violet-800/20 bg-violet-800/5" />
+              <ConceptCard icon={Repeat} label="5 Whys" description="Ask 'why' five times to drill from a surface symptom to the real cause." tile="bg-violet-800" border="border-violet-800/20 bg-violet-800/5" />
+              <ConceptCard icon={Users} label="Affected Groups" description="Map who is impacted, how severely, and in what way." tile="bg-violet-800" border="border-violet-800/20 bg-violet-800/5" />
+            </div>
+          </GuidanceSection>
+        )}
         <GuidanceSection icon={GitFork} iconBg="bg-blue-900" title="Existing solutions &amp; shortcomings">
           <p>List how customers handle the problem today: existing tools and software, manual workarounds, hiring or outsourcing, or simply tolerating the pain. For each one, capture its specific shortcomings: where it falls short, what it costs, or what friction it adds. This grounds the problem in reality and reveals the gap a future solution would need to fill.</p>
           <p>Each existing solution exposes an <Keyword>Impact examples</Keyword> panel listing common areas where shortcomings hurt (time lost, money wasted, errors, frustration, churn, and more). Use it to quantify how much each existing solution actually costs the customer; this is where the old <Keyword>quantifiable impact</Keyword> work now lives.</p>
@@ -329,11 +332,11 @@ const guidanceItems: GuidanceItem[] = [
           <p className="pt-1">On the price step you pick one of these jobs to anchor the price on: usually the strongest emotional or social pull, but a functional job can be the <Keyword>anchor</Keyword> when it is what drives the purchase.</p>
         </GuidanceSection>
         <GuidanceSection icon={FileText} iconBg="bg-tertiary" title="Summary">
-          <p>A read-only overview of everything Explore captured: the customer definition, refinement work, existing solutions and their shortcomings, and the three jobs lists. Review it, then continue to Problem Validation when you are ready.</p>
+          <p>A read-only overview of everything Explore captured: the customer definition, {SHOW_REFINEMENT_STEPS && <>refinement work, </>}existing solutions and their shortcomings, and the three jobs lists. Review it, then continue to Problem Validation when you are ready.</p>
         </GuidanceSection>
         <TipCallout items={[
           "A sharp customer definition unlocks every later step; resist 'everyone'",
-          "Refinement work done here flows into solution discovery later, so do not skip it",
+          ...(SHOW_REFINEMENT_STEPS ? ["Refinement work done here flows into solution discovery later, so do not skip it"] : []),
           "Capture the strongest emotional or social job: it usually justifies the price more than the tangible task",
         ]} />
       </div>

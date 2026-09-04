@@ -1,6 +1,8 @@
 "use client"
 
+import { useEffect } from "react"
 import { usePathname, useRouter } from "@/lib/router"
+import { SHOW_REFINEMENT_STEPS } from "@/lib/feature-flags"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
@@ -336,6 +338,12 @@ export default function RefinePage() {
   const pathname = usePathname()
   const { problemRef, problem, analysisToolType } = useProblem()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, problemRef)
+
+  // The step is hidden from the stepper while the switch is off; send a
+  // direct URL visit to the step that now precedes existing solutions.
+  useEffect(() => {
+    if (!SHOW_REFINEMENT_STEPS) router.replace(`/problems/${problemRef}/explore/customer`)
+  }, [router, problemRef])
 
   const toolInfo = analysisToolType ? TOOL_INFO[analysisToolType] : null
   const CaseStudies = analysisToolType ? CASE_STUDIES_BY_TOOL[analysisToolType] : null

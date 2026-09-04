@@ -1145,6 +1145,7 @@ export function ReflectBuilder({ resetRef }: { resetRef?: React.MutableRefObject
       <Button
         variant="outline"
         size="icon"
+        className="bg-white"
         onClick={revealTopNav}
         aria-label="Show top bar"
         title="Top bar"

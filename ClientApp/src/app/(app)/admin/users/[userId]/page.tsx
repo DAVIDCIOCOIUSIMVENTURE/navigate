@@ -32,7 +32,7 @@ export default function AdminUserPage() {
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <Button variant="outline" size="sm" asChild className="gap-2">
+        <Button variant="outline" size="sm" asChild className="gap-2 bg-white">
           <Link href="/admin">
             <ArrowLeft className="h-4 w-4" />
             Back to admin panel

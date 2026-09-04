@@ -12,6 +12,7 @@ import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context
 import { CoreProblemStrategy } from "@/components/problem-strategies/core-problem-strategy"
 import { CustomerStrategy } from "@/components/problem-strategies/customer-strategy"
 import { RefinementStrategy } from "@/components/problem-strategies/refinement-strategy"
+import { SHOW_REFINEMENT_STEPS } from "@/lib/feature-flags"
 import { ExistingSolutionsStrategy } from "@/components/problem-strategies/existing-solutions-strategy"
 import { ValidationStrategy } from "@/components/problem-strategies/validation-strategy"
 import {
@@ -527,13 +528,15 @@ export function ProblemHubContent({
         <CustomerStrategy readOnly={readOnly} />
       </HubSection>
 
-      <HubSection
-        icon={Search}
-        label="Refinement"
-        openInStep={exploreHref("choose-refinement")}
-      >
-        <RefinementStrategy showChooser readOnly={readOnly} />
-      </HubSection>
+      {SHOW_REFINEMENT_STEPS && (
+        <HubSection
+          icon={Search}
+          label="Refinement"
+          openInStep={exploreHref("choose-refinement")}
+        >
+          <RefinementStrategy showChooser readOnly={readOnly} />
+        </HubSection>
+      )}
 
       <HubSection
         icon={GitFork}

@@ -218,6 +218,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       <Button
         variant="outline"
         size="icon"
+        className="bg-white"
         onClick={revealTopNav}
         aria-label="Show top bar"
         title="Top bar"

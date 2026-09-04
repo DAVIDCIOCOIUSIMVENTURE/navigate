@@ -7,30 +7,23 @@ import type { RootState } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { getAdjacentSteps, useProblem } from "../context"
-import { DimensionChips } from "@/components/dimension-chips"
 import { ProblemContextCard } from "@/components/problem-context-card"
+import { SHOW_REFINEMENT_STEPS } from "@/lib/feature-flags"
 import {
   Compass, GitFork, LayoutTemplate, Users, Search, Sparkles,
 } from "lucide-react"
 
-const STEPS = [
+const ALL_STEPS = [
   { icon: Users, title: "Define your customer", description: "Pin down exactly who experiences this problem so the rest of the work has a real person at its centre." },
-  { icon: Search, title: "Choose a refinement method", description: "Pick the lens that fits: Root Causes, 5 Whys, or Affected Groups." },
-  { icon: Search, title: "Refine your problem", description: "Dig into why this problem exists and who it affects using the method you chose." },
+  { icon: Search, title: "Choose a refinement method", description: "Pick the lens that fits: Root Causes, 5 Whys, or Affected Groups.", refinement: true },
+  { icon: Search, title: "Refine your problem", description: "Dig into why this problem exists and who it affects using the method you chose.", refinement: true },
   { icon: GitFork, title: "Explore existing solutions & shortcomings", description: "Identify how customers currently deal with this problem and capture where each solution falls short." },
   { icon: Sparkles, title: "Jobs your customer is trying to get done", description: "List the tangible tasks they need to complete, how they want to feel, and how they want to be seen." },
   { icon: LayoutTemplate, title: "Summary", description: "Review what you have uncovered, then continue to Problem Validation when you are ready." },
 ]
 
-function FieldRow({ label, columnId, ids }: { label: string; columnId: string; ids: string[] }) {
-  if (ids.length === 0) return null
-  return (
-    <div className="flex flex-col gap-1">
-      <p className="text-base font-semibold uppercase tracking-wide">{label}</p>
-      <DimensionChips columnId={columnId} ids={ids} />
-    </div>
-  )
-}
+// Mirror NAV_ITEMS: the refinement pair is hidden while the switch is off.
+const STEPS = SHOW_REFINEMENT_STEPS ? ALL_STEPS : ALL_STEPS.filter((step) => !step.refinement)
 
 export default function ExploreIntroductionPage() {
   const router = useRouter()
@@ -73,17 +66,7 @@ export default function ExploreIntroductionPage() {
           </div>
         </div>
 
-        {mounted && (
-          <ProblemContextCard problem={problem}>
-            {problem && (
-              <>
-                <FieldRow label="Customer" columnId="customers" ids={problem.customers} />
-                <FieldRow label="Context" columnId="contexts" ids={problem.contexts} />
-                <FieldRow label="Problem" columnId="problems" ids={problem.problems} />
-              </>
-            )}
-          </ProblemContextCard>
-        )}
+        {mounted && <ProblemContextCard problem={problem} />}
 
         <div className="flex flex-col gap-3">
           <h3 className="text-xl font-bold text-foreground">What you&apos;ll work through</h3>

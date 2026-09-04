@@ -126,7 +126,7 @@ export function PortfolioEditor({
       </Card>
 
       <div className="flex items-center justify-end gap-2">
-        <Button variant="outline" onClick={() => router.push(cancelHref)}>
+        <Button variant="outline" className="bg-white" onClick={() => router.push(cancelHref)}>
           Cancel
         </Button>
         <Button onClick={handleSave}>

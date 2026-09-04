@@ -324,9 +324,11 @@ function ToolPickerPanel({
     ],
   }
 
+  const MethodIcon = method.icon
+
   return (
-    <div className="flex flex-col gap-6">
-      <GuidancePanel {...guidance} />
+    <div className="flex flex-col gap-6 flex-1 min-h-0 overflow-y-auto">
+      <GuidancePanel {...guidance} stepNumber={2} />
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between gap-2 flex-wrap">
           <h3 className="text-xl font-bold">Curated tools ({method.tools.length})</h3>
@@ -342,49 +344,63 @@ function ToolPickerPanel({
             </a>
           )}
         </div>
-        <div className="@container flex flex-col gap-4">
+        <div className="@container flex flex-col gap-6">
           {TOOL_CATEGORY_ORDER.map((category) => {
-              const list = toolsByCategory.get(category)
-              if (!list || list.length === 0) return null
-              return (
-                <section key={category} className="flex flex-col gap-2">
-                  <h4 className="text-base font-semibold uppercase tracking-wide text-muted-foreground">
-                    {getToolCategoryLabel(category)}
-                  </h4>
-                  <div className="grid grid-cols-1 @[480px]:grid-cols-2 @[800px]:grid-cols-3 gap-3">
-                    {list.map((tool) => {
-                      const isSelected = tool.id === toolId
-                      const MethodIcon = method.icon
-                      return (
-                        <button
-                          key={tool.id}
-                          type="button"
-                          onClick={() => setOpenToolId(tool.id)}
-                          aria-pressed={isSelected}
-                          className="rounded-md border border-primary bg-primary text-primary-foreground flex items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-primary/90 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                        >
-                          <div
-                            className="flex items-center justify-center w-8 h-8 rounded-md shrink-0 bg-white/20"
-                            aria-hidden="true"
-                          >
-                            <MethodIcon className="h-4 w-4 text-white" />
-                          </div>
-                          <span className="flex-1 min-w-0 text-base font-bold leading-tight truncate">
-                            {tool.name}
-                          </span>
-                          {isSelected && (
-                            <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-base font-semibold shrink-0 bg-white text-primary">
-                              <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
-                              Selected
-                            </span>
+            const list = toolsByCategory.get(category)
+            if (!list || list.length === 0) return null
+            return (
+              <section key={category} className="flex flex-col gap-3">
+                <h4 className="text-base font-semibold tracking-wide">
+                  {getToolCategoryLabel(category)}
+                </h4>
+                <div className="grid grid-cols-1 @[560px]:grid-cols-2 gap-3">
+                  {list.map((tool) => {
+                    const isSelected = tool.id === toolId
+                    return (
+                      <button
+                        key={tool.id}
+                        type="button"
+                        onClick={() => setOpenToolId(tool.id)}
+                        aria-pressed={isSelected}
+                        className={cn(
+                          "flex items-start gap-3 rounded-lg border p-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                          isSelected
+                            ? "border-primary bg-primary/10"
+                            : "border-border bg-card hover:border-primary/40 hover:bg-primary/5",
+                        )}
+                      >
+                        <span
+                          className={cn(
+                            "flex items-center justify-center w-9 h-9 rounded-md shrink-0",
+                            method.tileColor,
                           )}
-                        </button>
-                      )
-                    })}
-                  </div>
-                </section>
-              )
-            })}
+                          aria-hidden="true"
+                        >
+                          <MethodIcon className="h-4 w-4 text-white" />
+                        </span>
+                        <span className="flex-1 min-w-0 flex flex-col gap-1">
+                          <span className="flex items-center gap-2">
+                            <span className="flex-1 min-w-0 text-base font-semibold leading-tight">
+                              {tool.name}
+                            </span>
+                            {isSelected && (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2 py-0.5 text-base font-semibold shrink-0">
+                                <CheckCircle2 className="h-3.5 w-3.5" aria-hidden="true" />
+                                Selected
+                              </span>
+                            )}
+                          </span>
+                          <span className="text-base leading-snug line-clamp-2">
+                            {tool.description}
+                          </span>
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+              </section>
+            )
+          })}
         </div>
 
         <Dialog
@@ -1159,6 +1175,7 @@ export function ResearchBuilder({
       <Button
         variant="outline"
         size="icon"
+        className="bg-white"
         onClick={revealTopNav}
         aria-label="Show top bar"
         title="Top bar"
