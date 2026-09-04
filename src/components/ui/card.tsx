@@ -49,30 +49,43 @@ const CardEyebrow = React.forwardRef<HTMLDivElement, CardEyebrowProps>(
 )
 CardEyebrow.displayName = "CardEyebrow"
 
+type CardTitleSize = "sm" | "md" | "lg"
+
+const cardTitleSizes: Record<CardTitleSize, { root: string; tile: string; icon: string }> = {
+  sm: { root: "gap-2 text-base", tile: "w-7 h-7 rounded-md", icon: "h-3.5 w-3.5" },
+  md: { root: "gap-2 text-lg", tile: "w-8 h-8 rounded-md", icon: "h-4 w-4" },
+  lg: { root: "gap-2.5 text-2xl", tile: "w-10 h-10 rounded-lg", icon: "h-5 w-5" },
+}
+
 type CardTitleProps = React.HTMLAttributes<HTMLHeadingElement> & {
   icon?: React.ElementType
   iconBg?: string
+  size?: CardTitleSize
   as?: "h1" | "h2" | "h3" | "h4"
 }
 
 const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
-  ({ className, icon: Icon, iconBg = "bg-tertiary", as: Tag = "h2", children, ...props }, ref) => (
-    <Tag
-      ref={ref}
-      className={cn(
-        "flex items-center gap-2.5 text-2xl font-bold leading-none tracking-tight",
-        className
-      )}
-      {...props}
-    >
-      {Icon && (
-        <div className={cn("flex items-center justify-center w-10 h-10 rounded-lg shrink-0", iconBg)}>
-          <Icon className="h-5 w-5 text-tertiary-foreground" />
-        </div>
-      )}
-      {children}
-    </Tag>
-  )
+  ({ className, icon: Icon, iconBg = "bg-tertiary", size = "lg", as: Tag = "h2", children, ...props }, ref) => {
+    const sizes = cardTitleSizes[size]
+    return (
+      <Tag
+        ref={ref}
+        className={cn(
+          "flex items-center font-bold leading-none tracking-tight",
+          sizes.root,
+          className
+        )}
+        {...props}
+      >
+        {Icon && (
+          <div className={cn("flex items-center justify-center shrink-0", sizes.tile, iconBg)}>
+            <Icon className={cn("text-tertiary-foreground", sizes.icon)} />
+          </div>
+        )}
+        {children}
+      </Tag>
+    )
+  }
 )
 CardTitle.displayName = "CardTitle"
 
