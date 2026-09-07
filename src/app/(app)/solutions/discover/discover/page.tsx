@@ -1167,7 +1167,7 @@ function SaveSolutionDialog({
         <DialogHeader>
           <DialogTitle>Save Solution</DialogTitle>
           <DialogDescription>
-            Refine the solution before adding it to your bank. You can edit it again later from the Solutions page.
+            Refine the solution before adding it to your library. You can edit it again later from the Solutions page.
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-4 py-4 max-h-[60vh] overflow-y-auto pr-1">
@@ -1298,7 +1298,7 @@ function SolutionSavedDialog({
         <DialogHeader>
           <DialogTitle>Solution Saved</DialogTitle>
           <DialogDescription>
-            Your solution has been added to the bank. What would you like to do next?
+            Your solution has been added to the library. What would you like to do next?
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-3 pt-4">
@@ -1452,7 +1452,7 @@ const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo:
     whatYouDo: "Work through each of the <strong>7 SCAMPER prompts</strong> below. You don't need to fill in every one, but try at least 3-4. When you find a promising idea, click <strong>Add as Candidate</strong> to save it.",
     hints: [
       { icon: Shuffle, title: "7 creative angles", subtitle: "Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate, Reverse", bg: "bg-blue-900" },
-      { icon: Plus, title: "Save the best ideas", subtitle: "Click \"Add as Candidate\" to promote ideas to your Solution Bank", bg: "bg-yellow-600" },
+      { icon: Plus, title: "Save the best ideas", subtitle: "Click \"Add as Candidate\" to promote ideas to your Solution Library", bg: "bg-yellow-600" },
       { icon: Shuffle, title: "Quantity over quality", subtitle: "Generate lots of ideas first. You'll refine them later", bg: "bg-green-800" },
     ],
   },

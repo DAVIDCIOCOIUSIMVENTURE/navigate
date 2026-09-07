@@ -418,22 +418,22 @@ const guidanceItems: GuidanceItem[] = [
           icon={Lightbulb}
           tone="bg-blue-900"
           title="Solutions"
-          subtitle="Your Solution Bank collects candidate solutions for your validated problems. Discover new solutions through a guided wizard, then validate each one against feasibility, impact, cost, and time."
+          subtitle="Your Solution Library collects candidate solutions for your validated problems. Discover new solutions through a guided wizard, then validate each one against feasibility, impact, cost, and time."
         />
         <GuidanceSection icon={Play} iconBg="bg-blue-900" title="How it works">
           <p>The Solutions workspace has two connected flows: a discovery wizard that generates candidates, and a validation wizard that evaluates each candidate on its own.</p>
           <div className="flex flex-col gap-3 pt-1">
             <NumberedStep n={1} title="Discover" accent="bg-blue-900">
-              Pick a validated problem and use a creative technique to generate candidate solutions. Each candidate lands in your Solution Bank. Refinement work (root causes, 5 whys, affected groups) now happens earlier inside Problem Validation; the output flows through automatically.
+              Pick a validated problem and use a creative technique to generate candidate solutions. Each candidate lands in your Solution Library. Refinement work (root causes, 5 whys, affected groups) now happens earlier inside Problem Validation; the output flows through automatically.
             </NumberedStep>
             <NumberedStep n={2} title="Validate" accent="bg-green-800">
-              For each candidate in the bank, work through the four validation metrics and reach a verdict: valid, unsure, or invalid.
+              For each candidate in the library, work through the four validation metrics and reach a verdict: valid, unsure, or invalid.
             </NumberedStep>
           </div>
         </GuidanceSection>
 
         <GuidanceSection icon={Lightbulb} iconBg="bg-blue-900" title="Discover (inside Discover)">
-          <p>Pick a creative method to generate solution ideas. Each candidate you capture is added to the Solution Bank so you can validate it later:</p>
+          <p>Pick a creative method to generate solution ideas. Each candidate you capture is added to the Solution Library so you can validate it later:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={Blocks} label="SCAMPER" description="Substitute, Combine, Adapt, Modify, Put to other use, Eliminate, Reverse. Generate ideas by transforming existing concepts." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
             <ConceptCard icon={Repeat} label="Reverse Ideation" description="Instead of asking how to solve it, ask how to make it worse, then invert the answers." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
@@ -444,7 +444,7 @@ const guidanceItems: GuidanceItem[] = [
         </GuidanceSection>
 
         <GuidanceSection icon={BarChart2} iconBg="bg-green-800" title="Validate">
-          <p>Open any solution in the bank and work through four one-at-a-time metric pages. Each page has guidance and case studies to help you score 1 to 5. At the end, you mark the solution valid, unsure, or invalid:</p>
+          <p>Open any solution in the library and work through four one-at-a-time metric pages. Each page has guidance and case studies to help you score 1 to 5. At the end, you mark the solution valid, unsure, or invalid:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={Target} label="Feasibility" description="Can you actually build it with the resources and skills available?" tile="bg-green-800" border="border-green-800/20 bg-green-800/5" />
             <ConceptCard icon={Heart} label="Impact" description="How much value does it deliver, to the customer and the business?" tile="bg-green-800" border="border-green-800/20 bg-green-800/5" />

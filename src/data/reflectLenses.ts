@@ -133,7 +133,7 @@ export const REFLECT_LENSES: Lens[] = [
         id: "wish-told",
         question: "What did you wish someone had told you upfront?",
         helperText:
-          "Not generic advice: the specific thing you only figured out the hard way.",
+          "Think about the moment you realised something too late: a cost you didn't budget for, a deadline nobody flagged, a step that only made sense once you'd done it wrong. If you had to brief a friend about to go through the same thing, what is the one warning you'd give them first? Skip generic advice (\"be patient\", \"do your research\") and go for the specific thing you only figured out the hard way. Each of these gaps is something a product, guide, or service could have filled for you.",
         examples: [
           "That the visa fee was the smallest line item; translations and certifications dwarfed it",
           "That the first three months land critical paperwork in the foggiest window of your life",

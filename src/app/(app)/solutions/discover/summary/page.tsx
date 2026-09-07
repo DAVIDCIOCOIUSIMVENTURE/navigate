@@ -90,7 +90,7 @@ export default function SummaryPage() {
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <p className="text-base leading-relaxed">
-          Every candidate below has been saved to your <span className="font-semibold">solution bank</span>.
+          Every candidate below has been saved to your <span className="font-semibold">solution library</span>.
           Click <span className="font-semibold">Validate</span> on a candidate to start validating it.
         </p>
 
@@ -148,11 +148,11 @@ export default function SummaryPage() {
             <SectionTitle>Candidates ({candidates.length})</SectionTitle>
           </div>
           {candidates.length === 0 ? (
-            <EmptyHint text="No candidates in the bank for this problem yet. Go back to the Discover step to add some." />
+            <EmptyHint text="No candidates in the library for this problem yet. Go back to the Discover step to add some." />
           ) : (
             <>
               <p className="text-base text-white">
-                {candidates.length} {candidates.length === 1 ? "candidate" : "candidates"} in your solution bank for this problem. The badge shows which method produced each one.
+                {candidates.length} {candidates.length === 1 ? "candidate" : "candidates"} in your solution library for this problem. The badge shows which method produced each one.
               </p>
               <div className="flex flex-col gap-2">
                 {candidates.map((c) => (

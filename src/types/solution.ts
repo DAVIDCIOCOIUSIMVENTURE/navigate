@@ -70,7 +70,7 @@ export type SolutionWorkspace = {
 }
 
 /**
- * A single proposed solution. Rows in the Solution Bank are instances of this type.
+ * A single proposed solution. Rows in the Solution Library are instances of this type.
  * Each solution is tied to a problem and can be independently validated.
  */
 export type Solution = {

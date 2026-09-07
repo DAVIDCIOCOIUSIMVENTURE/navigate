@@ -42,7 +42,6 @@ import { useContainerSize } from "@/context/container-size-context"
 import { REFLECT_LENSES, LENS_CONTEXT_FIELDS, type Lens, type LensId, getReflectLens } from "@/data/reflectLenses"
 import { MethodPickerBoard, type MethodPickerItem } from "@/components/method-picker-board"
 import { ReflectProvider, useReflect } from "@/components/reflect/reflect-context"
-import { SelfDiscoveryChips } from "@/components/reflect/self-discovery-chips"
 import { LifeExperiencesPicker } from "@/components/reflect/life-experiences-picker"
 import { WorkContextPicker } from "@/components/reflect/work-context-picker"
 import { OwnProblemsPicker } from "@/components/reflect/own-problems-picker"
@@ -78,7 +77,7 @@ function getRolePromptId(lens: Lens, role: "problems" | "customers"): string | n
 const PICK_GUIDANCE = {
   title: "Pick a method",
   description:
-    "Each method is a different angle on where problems come from. Pick one to run through guided prompts and turn your answers into a problem in your problem bank.",
+    "Each method is a different angle on where problems come from. Pick one to run through guided prompts and turn your answers into a problem in your problem library.",
   tips: [] as string[],
 }
 
@@ -321,11 +320,6 @@ function PromptsPanel({
     [answers, prompt.id]
   )
 
-  const chipsCategory = useMemo(() => {
-    const src = lens.selfDiscoverySources?.find((s) => s.promptIds.includes(prompt.id))
-    return src?.category
-  }, [lens, prompt.id])
-
   const useLifeExperiencesPicker =
     lens.id === "life" && prompt.id === "significant-experience"
   const useWorkContextPicker =
@@ -399,27 +393,17 @@ function PromptsPanel({
     else onIndexChange(index + 1)
   }
 
-  function handlePickChip(text: string) {
-    const emptyIdx = promptAnswers.findIndex((a) => a.text.trim().length === 0)
-    if (emptyIdx >= 0) {
-      setAnswerText(prompt.id, emptyIdx, text)
-      return
-    }
-    if (prompt.multipleAllowed) {
-      addAnswerSlot(prompt.id)
-      setAnswerText(prompt.id, promptAnswers.length, text)
-      return
-    }
-    const current = promptAnswers[0].text
-    setAnswerText(prompt.id, 0, current.length > 0 ? `${current}\n${text}` : text)
-  }
-
   const Icon = lens.icon
 
   const rightColumn = (
     <div className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-4 min-h-0 max-h-full w-full">
       <div className="flex items-start justify-between gap-3 shrink-0">
-        <p className="text-lg font-bold leading-snug text-white">{prompt.question}</p>
+        <div className="flex flex-col gap-1.5 min-w-0">
+          <p className="text-lg font-bold leading-snug text-white">{prompt.question}</p>
+          {prompt.helperText && (
+            <p className="text-base leading-snug text-white/90">{prompt.helperText}</p>
+          )}
+        </div>
         {useAnchorPicker || dimensionPickerColumn ? (
           <div className="flex items-center gap-2 shrink-0">
             <Button
@@ -442,22 +426,9 @@ function PromptsPanel({
               <span className="font-semibold">Edit</span>
             </Button>
           </div>
-        ) : prompt.multipleAllowed ? (
-          <Button
-            type="button"
-            size="sm"
-            onClick={() => addAnswerSlot(prompt.id)}
-            className="gap-1.5 shrink-0 bg-white text-foreground hover:bg-white/90"
-          >
-            <Plus className="h-3.5 w-3.5" />
-            Add another answer
-          </Button>
         ) : null}
       </div>
       <div className="flex-1 min-h-0 overflow-y-auto flex flex-col gap-4">
-      {chipsCategory && !useAnchorPicker && !dimensionPickerColumn && (
-        <SelfDiscoveryChips category={chipsCategory} onPick={handlePickChip} />
-      )}
 
       {useLifeExperiencesPicker ? (
         <LifeExperiencesPicker
@@ -547,6 +518,17 @@ function PromptsPanel({
               )}
             </div>
           ))}
+          {prompt.multipleAllowed && (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => addAnswerSlot(prompt.id)}
+              className="w-full gap-1.5 bg-transparent border-white/40 text-white hover:bg-white/10 hover:text-white hover:border-white/60"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              Add another answer
+            </Button>
+          )}
         </div>
       )}
       </div>
@@ -756,7 +738,7 @@ function ReviewPanel({
         {hasCandidate ? (
           <>
             Your answers will be saved as <span className="font-semibold">one problem</span> in your
-            problem bank. Click any heading below to jump back to that step.
+            problem library. Click any heading below to jump back to that step.
           </>
         ) : (
           <>
@@ -927,7 +909,7 @@ function ReviewPanel({
             <DialogTitle>Save problem</DialogTitle>
             <DialogDescription>
               Describe the problem in a sentence or two. You can refine it later in the problem
-              bank.
+              library.
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-4 py-2">

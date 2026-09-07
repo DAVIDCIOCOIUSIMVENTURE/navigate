@@ -27,8 +27,8 @@ export default function IdentifySolutionsPage() {
     {
       id: "quick-capture",
       title: "Quick Capture",
-      shortDescription: "Already have an idea? Add it directly to the bank without going through the full discovery wizard.",
-      longDescription: "Already have an idea? Add it directly to the bank without going through the full discovery wizard.",
+      shortDescription: "Already have an idea? Add it directly to the library without going through the full discovery wizard.",
+      longDescription: "Already have an idea? Add it directly to the library without going through the full discovery wizard.",
       helperText: "Best for capturing a solution you already have in mind so you can come back and validate it later.",
       icon: Clock,
       tileColor: "bg-muted",

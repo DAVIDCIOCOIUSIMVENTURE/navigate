@@ -59,7 +59,7 @@ type DiscoveryContextValue = {
   setImprovementResponses: (val: ImprovementResponses) => void
   scamperIdeas: ScamperIdeasMap
   setScamperIdeas: (val: ScamperIdeasMap) => void
-  // Solution bank entries scoped to this workspace
+  // Solution library entries scoped to this workspace
   candidates: Solution[]
   addCandidate: (
     input: { title: string; inspirationSource: InspirationSource; inspirationDetail: string } & CandidateExtras
