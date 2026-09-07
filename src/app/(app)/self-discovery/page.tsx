@@ -58,7 +58,15 @@ function CategorySection({
             <Icon className="h-4 w-4 text-primary-foreground" aria-hidden="true" />
           </span>
           <div className="min-w-0">
-            <h3 className="font-semibold text-foreground">{title}</h3>
+            <h3 className="font-semibold text-foreground">
+              <button
+                type="button"
+                onClick={() => router.push(ctaUrl)}
+                className="text-left hover:text-tertiary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-sm"
+              >
+                {title}
+              </button>
+            </h3>
             {description && (
               <p className="text-sm mt-0.5">{description}</p>
             )}
@@ -68,7 +76,7 @@ function CategorySection({
           <span className="text-sm tabular-nums">
             {count} {count === 1 ? "item" : "items"}
           </span>
-          <Button variant="outline" size="sm" className="bg-white gap-1.5 text-tertiary" onClick={() => router.push(ctaUrl)}>
+          <Button variant="tertiary" size="sm" className="gap-1.5" onClick={() => router.push(ctaUrl)}>
             <Pencil className="h-3 w-3" aria-hidden="true" />
             Edit
           </Button>
@@ -180,7 +188,7 @@ export default function SelfDiscoveryPage() {
                             <button
                               type="button"
                               onClick={() => router.push(`${FLOW_BASE}/${category.url}/${question.url}`)}
-                              className="text-base hover:text-tertiary text-left"
+                              className="text-base font-medium hover:text-tertiary text-left"
                             >
                               {question.title}
                             </button>
@@ -188,13 +196,13 @@ export default function SelfDiscoveryPage() {
                               {questionItems.map((trigger) => (
                                 <div
                                   key={trigger.id}
-                                  className="flex items-center gap-2 bg-white rounded-md px-3 py-1.5 text-sm"
+                                  className="flex items-center gap-2 bg-amber-400 text-foreground rounded-md px-3 py-1.5 text-sm"
                                 >
                                   <span>{trigger.title}</span>
                                   <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="h-4 w-4 text-muted-foreground hover:text-foreground"
+                                    className="h-4 w-4 text-foreground/70 hover:text-foreground hover:bg-amber-500/60"
                                     onClick={() => setPendingDelete({ kind: "self-discovery", item: trigger })}
                                     aria-label={`Delete ${trigger.title}`}
                                   >
@@ -226,13 +234,13 @@ export default function SelfDiscoveryPage() {
                   {customYouItems.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center gap-2 bg-white rounded-md px-3 py-1.5 text-sm"
+                      className="flex items-center gap-2 bg-amber-400 text-foreground rounded-md px-3 py-1.5 text-sm"
                     >
                       <span>{item.label}</span>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-4 w-4 text-muted-foreground hover:text-foreground"
+                        className="h-4 w-4 text-foreground/70 hover:text-foreground hover:bg-amber-500/60"
                         onClick={() => setPendingDelete({ kind: "custom-you", item })}
                         aria-label={`Delete ${item.label}`}
                       >
