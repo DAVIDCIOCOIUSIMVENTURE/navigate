@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Brain, PenLine, Glasses, Microscope, Target } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ArrowRight, Brain, Clock, PenLine, Glasses, Microscope, Target } from "lucide-react"
 import { EditProblemDialog } from "@/components/edit-problem-dialog"
 import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
-import { MethodPickerBoard, type MethodPickerItem } from "@/components/method-picker-board"
+import type { MethodPickerItem } from "@/components/method-picker-board"
 
 export default function IdentifyProblemsPage() {
   const router = useRouter()
@@ -57,7 +59,7 @@ export default function IdentifyProblemsPage() {
       title: "Reflect",
       shortDescription: "Turn a lived experience into a problem through guided prompts about your own life and work.",
       longDescription: "Turn a lived experience into a problem through guided prompts about your own life and work.",
-      helperText: "Best for founders who already feel a friction in their own day-to-day and want to articulate it clearly.",
+      helperText: "Best for identifying problems if you're unsure where to start: a guided approach that walks you through prompts about your own life and work.",
       icon: Glasses,
       tileColor: "bg-tertiary",
       estimatedMinutes: 10,
@@ -68,7 +70,7 @@ export default function IdentifyProblemsPage() {
       title: "Canvas Builder",
       shortDescription: "Combine customer segments, contexts, and types of pain on a single canvas to surface problems worth solving.",
       longDescription: "Combine customer segments, contexts, and types of pain on a single canvas to surface problems worth solving.",
-      helperText: "Best for exploring a wide space of possibilities by mixing dimensions you can choose from a curated catalog.",
+      helperText: "Best for people who already know how to ask the right questions, or who want to explore a wide space of possibilities quickly by mixing dimensions from a curated catalogue.",
       icon: Brain,
       tileColor: "bg-tertiary",
       estimatedMinutes: 15,
@@ -121,26 +123,59 @@ export default function IdentifyProblemsPage() {
         <Card className={cn("w-full flex flex-col", isWide ? "flex-1 min-h-0 overflow-hidden" : "min-h-[320px]")}>
           <CardHeader className="space-y-6">
             <CardTitle icon={Target} iconBg="bg-tertiary">Identify a Problem</CardTitle>
-            <div className="flex flex-col gap-3">
-              <p className="text-base leading-relaxed">
-                Every problem you bring into your library starts here. Pick the tool that fits where you are right now: each one is a different doorway into the same goal of finding a problem that&apos;s real, painful, and worth solving.
-              </p>
-              <p className="text-base leading-relaxed">
-                You can use more than one tool over time. Many founders start with the <span className="font-semibold">Canvas Builder</span> to explore broadly, then return to <span className="font-semibold">Reflect</span> or <span className="font-semibold">Research</span> when they want to ground a specific candidate in lived experience or outside evidence. If you already know what you want to explore, <span className="font-semibold">Define a Problem Statement</span> lets you skip straight to capturing it.
-              </p>
-              <p className="text-base leading-relaxed">
-                Whichever tool you choose, the resulting problem lands in your library where you can refine and validate it.
-              </p>
-            </div>
+            <p className="text-base leading-relaxed">
+              Every problem in your library starts here. Each tool is a different doorway to the same goal: a problem that&apos;s real, painful, and worth solving. We suggest starting with <span className="font-semibold">Reflect</span> to ground a problem in your own experience, then returning to the <span className="font-semibold">Canvas Builder</span> or <span className="font-semibold">Research</span> to explore more broadly or gather outside evidence. If you already know what you want to explore, <span className="font-semibold">Define a Problem Statement</span> captures it straight away. Whichever tool you choose, the problem lands in your library, ready to refine and validate.
+            </p>
           </CardHeader>
           <CardContent className={cn("flex flex-col gap-3", isWide && "flex-1 min-h-0 overflow-y-auto")}>
-            <MethodPickerBoard
-              items={items}
-              selectedId={null}
-              onPick={handlePick}
-              ctaLabel="Use this tool"
-              reselectLabel="Continue with this tool"
-            />
+            <Tabs defaultValue={items[0].id} className="w-full">
+              <TabsList className="h-auto flex-wrap justify-start" aria-label="Ways to identify a problem">
+                {items.map((item) => {
+                  const Icon = item.icon
+                  return (
+                    <TabsTrigger key={item.id} value={item.id} className="gap-2 text-base">
+                      <Icon className="h-4 w-4" aria-hidden="true" />
+                      {item.title}
+                    </TabsTrigger>
+                  )
+                })}
+              </TabsList>
+
+              {items.map((item) => {
+                const Icon = item.icon
+                return (
+                  <TabsContent key={item.id} value={item.id} className="mt-4">
+                    <div className="rounded-lg border bg-card p-6 flex flex-col gap-5">
+                      <div className="flex items-center gap-3">
+                        <span
+                          className={cn("flex items-center justify-center w-10 h-10 rounded-md shrink-0", item.tileColor)}
+                          aria-hidden="true"
+                        >
+                          <Icon className="h-5 w-5 text-white" />
+                        </span>
+                        <h3 className="text-xl font-bold leading-tight tracking-tight">{item.title}</h3>
+                      </div>
+                      <p className="text-base leading-relaxed">{item.longDescription}</p>
+                      {item.helperText && (
+                        <div className="rounded-lg border bg-card p-4">
+                          <p className="text-base leading-relaxed">{item.helperText}</p>
+                        </div>
+                      )}
+                      <div className="flex items-center gap-1.5 text-base">
+                        <Clock className="h-4 w-4" aria-hidden="true" />
+                        <span>About {item.estimatedMinutes} minutes</span>
+                      </div>
+                      <div>
+                        <Button type="button" onClick={() => handlePick(item.id)} disabled={!item.enabled} className="gap-2">
+                          Use this tool
+                          <ArrowRight className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  </TabsContent>
+                )
+              })}
+            </Tabs>
           </CardContent>
         </Card>
       </div>
