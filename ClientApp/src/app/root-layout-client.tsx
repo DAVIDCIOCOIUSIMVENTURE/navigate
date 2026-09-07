@@ -367,9 +367,9 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  variant="on-primary"
+                  variant="default"
                   size="sm"
-                  className={cn("h-8 gap-2", pathname.startsWith("/admin") && "bg-secondary-brand border-secondary-brand text-secondary-brand-foreground")}
+                  className={cn("h-8 gap-2 text-white", pathname.startsWith("/admin") && "ring-2 ring-white/70")}
                   asChild
                 >
                   <Link href="/admin" aria-label="Admin panel">
@@ -485,9 +485,9 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
-                      variant="on-primary"
+                      variant="default"
                       size="sm"
-                      className={cn("h-8 gap-2", pathname.startsWith("/admin") && "bg-secondary-brand border-secondary-brand text-secondary-brand-foreground")}
+                      className={cn("h-8 gap-2 text-white", pathname.startsWith("/admin") && "ring-2 ring-white/70")}
                       asChild
                     >
                       <Link href="/admin" aria-label="Admin panel" onClick={() => setTopNavOpen(false)}>
