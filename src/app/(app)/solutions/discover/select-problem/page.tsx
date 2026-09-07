@@ -54,64 +54,67 @@ export default function SelectProblemPage() {
           </div>
         </div>
 
-        {eligibleProblems.length === 0 ? (
-          <div className="rounded-lg border border-dashed p-8 text-center flex flex-col items-center gap-3">
-            <Target className="h-8 w-8 text-muted-foreground" />
-            <div className="flex flex-col gap-1">
-              <p className="text-sm font-semibold">No eligible problems yet</p>
-              <p className="text-sm">
-                Validate a problem as Valid or Unsure before starting solution discovery.
-              </p>
+        <div className="flex flex-col gap-3">
+          <h3 className="text-lg font-bold">Problems</h3>
+          {eligibleProblems.length === 0 ? (
+            <div className="rounded-lg border border-dashed p-8 text-center flex flex-col items-center gap-3">
+              <Target className="h-8 w-8 text-muted-foreground" />
+              <div className="flex flex-col gap-1">
+                <p className="text-sm font-semibold">No eligible problems yet</p>
+                <p className="text-sm">
+                  Validate a problem as Valid or Unsure before starting solution discovery.
+                </p>
+              </div>
+              <Button variant="outline" onClick={() => router.push("/problems")}>Go to Problems</Button>
             </div>
-            <Button variant="outline" onClick={() => router.push("/problems")}>Go to Problems</Button>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-2">
-            {eligibleProblems.map((problem) => {
-              const selected = problemId === problem.id
-              const status = (problem.validationStatus === "unsure" ? "unsure" : "valid") as "valid" | "unsure"
-              const badge = STATUS_BADGE[status]
-              const BadgeIcon = badge.icon
-              return (
-                <button
-                  key={problem.id}
-                  onClick={() => setProblemId(problem.id)}
-                  className={`flex items-start gap-4 rounded-lg border p-4 text-left transition-colors ${
-                    selected ? "border-primary bg-primary/5" : "hover:bg-accent/50"
-                  }`}
-                >
-                  <div className={`flex items-center justify-center w-8 h-8 rounded-lg shrink-0 ${
-                    selected ? "bg-primary" : "bg-tertiary/10"
-                  }`}>
-                    {selected
-                      ? <CheckCircle2 className="h-4 w-4 text-primary-foreground" />
-                      : <Target className="h-4 w-4 text-tertiary" />}
-                  </div>
-                  <div className="flex-1 flex flex-col gap-1 min-w-0">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex flex-col gap-0.5 min-w-0">
-                        <p className="text-base font-medium">{problem.title || "Untitled problem"}</p>
-                        {problem.description && (
-                          <p className="text-base line-clamp-2 opacity-70">{problem.description}</p>
-                        )}
-                      </div>
-                      <Badge variant="outline" className={`shrink-0 gap-1 ${badge.className}`}>
-                        <BadgeIcon className="h-3 w-3" />
-                        {badge.label}
-                      </Badge>
+          ) : (
+            <div className="flex flex-col gap-2">
+              {eligibleProblems.map((problem) => {
+                const selected = problemId === problem.id
+                const status = (problem.validationStatus === "unsure" ? "unsure" : "valid") as "valid" | "unsure"
+                const badge = STATUS_BADGE[status]
+                const BadgeIcon = badge.icon
+                return (
+                  <button
+                    key={problem.id}
+                    onClick={() => setProblemId(problem.id)}
+                    className={`flex items-start gap-4 rounded-lg border p-4 text-left transition-colors ${
+                      selected ? "border-primary bg-primary/5" : "hover:bg-accent/50"
+                    }`}
+                  >
+                    <div className={`flex items-center justify-center w-8 h-8 rounded-lg shrink-0 ${
+                      selected ? "bg-primary" : "bg-tertiary/10"
+                    }`}>
+                      {selected
+                        ? <CheckCircle2 className="h-4 w-4 text-primary-foreground" />
+                        : <Target className="h-4 w-4 text-tertiary" />}
                     </div>
-                    {(problem.customers.length > 0 || problem.contexts.length > 0) && (
-                      <div className="flex flex-wrap gap-1.5 mt-1">
-                        <DimensionChips columnId="customers" ids={problem.customers.slice(0, 3)} />
-                        <DimensionChips columnId="contexts" ids={problem.contexts.slice(0, 3)} />
+                    <div className="flex-1 flex flex-col gap-1 min-w-0">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex flex-col gap-0.5 min-w-0">
+                          <p className="text-base font-medium">{problem.title || "Untitled problem"}</p>
+                          {problem.description && (
+                            <p className="text-base line-clamp-2 opacity-70">{problem.description}</p>
+                          )}
+                        </div>
+                        <Badge variant="outline" className={`shrink-0 gap-1 ${badge.className}`}>
+                          <BadgeIcon className="h-3 w-3" />
+                          {badge.label}
+                        </Badge>
                       </div>
-                    )}
-                  </div>
-                </button>
-              )
-            })}
-          </div>
-        )}
+                      {(problem.customers.length > 0 || problem.contexts.length > 0) && (
+                        <div className="flex flex-wrap gap-1.5 mt-1">
+                          <DimensionChips columnId="customers" ids={problem.customers.slice(0, 3)} />
+                          <DimensionChips columnId="contexts" ids={problem.contexts.slice(0, 3)} />
+                        </div>
+                      )}
+                    </div>
+                  </button>
+                )
+              })}
+            </div>
+          )}
+        </div>
 
         <div className="flex justify-between mt-2">
           {prevPath
