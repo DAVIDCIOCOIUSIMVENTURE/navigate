@@ -97,11 +97,11 @@ function getCrumbs(pathname: string): Crumb[] {
   }
   if (first === "problems") {
     if (segments.length === 1) {
-      crumbs.push({ label: "Problems" })
+      crumbs.push({ label: "Problem library" })
       return crumbs
     }
     if (second === "identify") {
-      crumbs.push({ label: "Problems", href: "/problems" })
+      crumbs.push({ label: "Problem library", href: "/problems" })
       if (third === "canvas-builder") {
         crumbs.push({ label: "Identify", href: "/problems/identify" })
         crumbs.push({ label: "Canvas Builder" })
@@ -116,7 +116,7 @@ function getCrumbs(pathname: string): Crumb[] {
       }
       return crumbs
     }
-    crumbs.push({ label: "Problems", href: "/problems" })
+    crumbs.push({ label: "Problem library", href: "/problems" })
     if (third === "explore") {
       crumbs.push({ label: second, href: `/problems/${second}` })
       crumbs.push({ label: "Explore" })
@@ -133,20 +133,20 @@ function getCrumbs(pathname: string): Crumb[] {
   }
   if (first === "solutions") {
     if (segments.length === 1) {
-      crumbs.push({ label: "Solutions" })
+      crumbs.push({ label: "Solution library" })
       return crumbs
     }
     if (second === "discover") {
-      crumbs.push({ label: "Solutions", href: "/solutions" })
+      crumbs.push({ label: "Solution library", href: "/solutions" })
       crumbs.push({ label: "Discovery" })
       return crumbs
     }
     if (second === "identify") {
-      crumbs.push({ label: "Solutions", href: "/solutions" })
+      crumbs.push({ label: "Solution library", href: "/solutions" })
       crumbs.push({ label: "Identify" })
       return crumbs
     }
-    crumbs.push({ label: "Solutions", href: "/solutions" })
+    crumbs.push({ label: "Solution library", href: "/solutions" })
     if (third === "validate") {
       crumbs.push({ label: second, href: `/solutions/${second}` })
       crumbs.push({ label: "Validation" })

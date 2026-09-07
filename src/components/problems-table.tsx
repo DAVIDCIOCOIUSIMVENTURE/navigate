@@ -195,7 +195,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
           <div className="flex items-center justify-between gap-3 flex-wrap">
             {headerLead ?? (
               <CardTitle size="md" icon={Target}>
-                {title ?? "Problems"} ({sortedProblems.length}
+                {title ?? "Problem library"} ({sortedProblems.length}
                 {sortedProblems.length !== problems.length ? ` of ${problems.length}` : ""})
               </CardTitle>
             )}
