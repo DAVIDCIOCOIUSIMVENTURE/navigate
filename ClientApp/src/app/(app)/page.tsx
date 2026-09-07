@@ -26,8 +26,8 @@ import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 
 const VIEW_OPTIONS = [
-  { value: "problems" as const, label: "Problems", icon: Target },
-  { value: "solutions" as const, label: "Solutions", icon: Lightbulb },
+  { value: "problems" as const, label: "Problem library", icon: Target },
+  { value: "solutions" as const, label: "Solution library", icon: Lightbulb },
 ]
 
 export default function DashboardPage() {
@@ -69,7 +69,7 @@ export default function DashboardPage() {
           const viewToggle = (
             <div className="flex items-center gap-2 shrink-0">
               <CardTitle size="md" icon={view === "problems" ? Target : Lightbulb}>
-                {view === "problems" ? "Problems" : "Solutions"}
+                {view === "problems" ? "Problem library" : "Solution library"}
               </CardTitle>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
