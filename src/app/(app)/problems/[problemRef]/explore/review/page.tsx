@@ -25,7 +25,7 @@ function Section({ icon: Icon, label, children }: { icon: LucideIcon; label: str
   )
 }
 
-export default function ExploreSummaryPage() {
+export default function ExploreReviewPage() {
   const router = useRouter()
   const pathname = usePathname()
   const { problemRef } = useProblem()
@@ -34,7 +34,7 @@ export default function ExploreSummaryPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0 space-y-6">
-        <CardTitle icon={LayoutTemplate} iconBg="bg-tertiary">Summary</CardTitle>
+        <CardTitle icon={LayoutTemplate} iconBg="bg-tertiary">Review</CardTitle>
         <p className="text-base">A read-only overview of everything you uncovered while exploring this problem. When you are happy with the picture, continue to Problem Validation to size the market and weigh up the competition. Everything below carries forward.</p>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-8">

@@ -19,7 +19,7 @@ const ALL_STEPS = [
   { icon: Search, title: "Refine your problem", description: "Dig into why this problem exists and who it affects using the method you chose.", refinement: true },
   { icon: GitFork, title: "Explore existing solutions & shortcomings", description: "Identify how customers currently deal with this problem and capture where each solution falls short." },
   { icon: Sparkles, title: "Jobs your customer is trying to get done", description: "List the tangible tasks they need to complete, how they want to feel, and how they want to be seen." },
-  { icon: LayoutTemplate, title: "Summary", description: "Review what you have uncovered, then continue to Problem Validation when you are ready." },
+  { icon: LayoutTemplate, title: "Review", description: "Look back over what you have uncovered, then continue to Problem Validation when you are ready." },
 ]
 
 // Mirror NAV_ITEMS: the refinement pair is hidden while the switch is off.

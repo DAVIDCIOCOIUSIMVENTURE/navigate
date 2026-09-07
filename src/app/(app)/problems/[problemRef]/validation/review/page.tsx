@@ -8,7 +8,7 @@ import { useProblem, getAdjacentSteps } from "../context"
 import { ProblemCanvasCards } from "@/components/canvas/problem-canvas-cards"
 import { NextStepsSection } from "@/components/problem-hub/problem-hub-content"
 
-export default function SummaryPage() {
+export default function ReviewPage() {
   const router = useRouter()
   const pathname = usePathname()
   const { problemRef, problemId, problem } = useProblem()
@@ -17,7 +17,7 @@ export default function SummaryPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0 space-y-6">
-        <CardTitle icon={LayoutTemplate} iconBg="bg-tertiary">Summary &amp; Next Steps</CardTitle>
+        <CardTitle icon={LayoutTemplate} iconBg="bg-tertiary">Review &amp; Next Steps</CardTitle>
         <p className="text-base">A read-only overview of everything you have captured so far. Use <strong>Open Problem</strong> to jump to the editable problem page.</p>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">

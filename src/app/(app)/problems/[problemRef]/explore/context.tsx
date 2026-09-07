@@ -28,7 +28,7 @@ const ALL_NAV_ITEMS = [
   { label: "Refine your problem", path: "refine" },
   { label: "Explore existing solutions & shortcomings", path: "existing-solutions" },
   { label: "Jobs your customer is trying to get done", path: "jobs-to-be-done" },
-  { label: "Summary", path: "summary" },
+  { label: "Review", path: "review" },
 ] as const
 
 export type ExploreStepPath = (typeof ALL_NAV_ITEMS)[number]["path"]

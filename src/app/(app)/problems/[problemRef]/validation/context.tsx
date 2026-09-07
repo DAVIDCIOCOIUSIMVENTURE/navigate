@@ -21,7 +21,7 @@ export const NAV_ITEMS = [
   { label: "Size the market", path: "market" },
   { label: "Assess the competition", path: "competition" },
   { label: "Record your verdict", path: "verdict" },
-  { label: "Summary & Next Steps", path: "summary" },
+  { label: "Review & Next Steps", path: "review" },
 ] as const
 
 const STEP_PATHS = NAV_ITEMS.map((item) => item.path)

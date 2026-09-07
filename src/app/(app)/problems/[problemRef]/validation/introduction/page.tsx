@@ -17,7 +17,7 @@ const STEPS = [
   { icon: TrendingUp, title: "Size the market", description: "Estimate how many customers have the problem and the share you can realistically reach in your launch. The page combines those with the price to produce a total and a reachable market figure." },
   { icon: Building2, title: "Assess the competition", description: "Read the cost of switching, how good existing solutions are, and how big the incumbents are. Then set the realistic share you could win out of the reachable market." },
   { icon: ShieldCheck, title: "Record your verdict", description: "Weigh the factors together against a colour-coded summary and lean indicator, then commit to Valid, Unsure, or Invalid with reasoning in the notes." },
-  { icon: LayoutTemplate, title: "Summary", description: "Review the problem statement assembled from your exploration and validation work." },
+  { icon: LayoutTemplate, title: "Review", description: "Look back over the problem statement assembled from your exploration and validation work." },
 ]
 
 export default function IntroductionPage() {

@@ -263,7 +263,7 @@ For a single problem there are now **two separate per-problem flows**: an **Expl
 `problemRef` is the numeric problem id as a string. `layout.tsx` wraps children in the explore provider (`explore/context.tsx`). Steps from `NAV_ITEMS`:
 
 ```
-introduction → customer → choose-refinement → refine → existing-solutions → jobs-to-be-done → summary
+introduction → customer → choose-refinement → refine → existing-solutions → jobs-to-be-done → review
 ```
 
 * `jobs-to-be-done`: three lists (functional / emotional / social) of `Job = { id, text, intensity }`, stored as `Problem.jobsToBeDone` (directly on the Problem, since the jobs are explore-owned rather than validation-owned). Emotional and social jobs carry a `mild | strong | unbearable` intensity. The jobs feed the price anchor in the Validation flow's `worth` step (replacing the dropped `emotional-impact` step), but the anchor is no longer auto-forced to emotional/social: see `worth` below.
@@ -274,7 +274,7 @@ introduction → customer → choose-refinement → refine → existing-solution
 `layout.tsx` wraps children in `ProblemProvider` (defined in the sibling `context.tsx`). Steps from `NAV_ITEMS`:
 
 ```
-introduction → worth → market → competition → verdict → summary
+introduction → worth → market → competition → verdict → review
 ```
 
 The pricing / market-sizing arc is built around the jobs-to-be-done captured during Explore, feeding TAM / SAM / SOM. **In the UI those acronyms are not used.** Surface them as: TAM is "total market", SAM is "reachable market", SOM is "realistic share of the market". The guidance side-panel is the one place where TAM/SAM/SOM may appear as educational reference.
@@ -298,7 +298,7 @@ The shared dimension type aliases stay at `src/app/(app)/problems/identify/data.
 Single multi-step flow scoped to one active problem. The layout wraps children in `DiscoveryProvider` (`solutions/discover/context.tsx`). Steps from `NAV_ITEMS`:
 
 ```
-select-problem → choose-discovery → discover → summary
+select-problem → choose-discovery → discover → review
 ```
 
 The provider persists the active problem id in `localStorage["navigate-active-discovery-problem"]` (so refreshes keep their context) and otherwise reads/writes the per-problem `SolutionWorkspace`. Solution candidates accumulated in this flow are written via `dispatch.solutions.create({ problemId, workspaceId, ... })`. The drawer `solutions-drawer.tsx` lists candidates for the current workspace.
@@ -308,7 +308,7 @@ The provider persists the active problem id in `localStorage["navigate-active-di
 `solutionId` is numeric. Wraps children in `SolutionProvider`. Steps:
 
 ```
-introduction → feasibility → impact → cost → time-to-implement → verdict → summary
+introduction → feasibility → impact → cost → time-to-implement → verdict → review
 ```
 
 The provider only sets fields on the `Solution` (1-5 metric scores, validation notes/status/reason); the linked `Problem` is read-only here.

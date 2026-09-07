@@ -57,7 +57,7 @@ function WhitePanel({ children }: { children: ReactNode }) {
   return <div className="rounded-lg bg-white p-4 text-foreground flex flex-col gap-1">{children}</div>
 }
 
-export default function SummaryPage() {
+export default function ReviewPage() {
   const router = useRouter()
   const pathname = usePathname()
   const {

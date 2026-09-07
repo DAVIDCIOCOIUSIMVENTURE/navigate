@@ -8,7 +8,7 @@ import { getAdjacentSteps, useSolution } from "../context"
 import { SolutionCanvasCards } from "@/components/canvas/solution-canvas-cards"
 import { NextStepsSection } from "@/components/solution-hub/solution-hub-content"
 
-export default function ValidationSummaryPage() {
+export default function ValidationReviewPage() {
   const router = useRouter()
   const pathname = usePathname()
   const { solutionId, solution } = useSolution()
@@ -17,7 +17,7 @@ export default function ValidationSummaryPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0 space-y-6">
-        <CardTitle icon={LayoutTemplate} iconBg="bg-tertiary">Summary</CardTitle>
+        <CardTitle icon={LayoutTemplate} iconBg="bg-tertiary">Review</CardTitle>
         <p className="text-base">A read-only overview of everything you have captured for this solution. Use <strong>Open Solution</strong> to jump to the editable solution page.</p>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">

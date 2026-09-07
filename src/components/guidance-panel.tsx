@@ -331,7 +331,7 @@ const guidanceItems: GuidanceItem[] = [
           </div>
           <p className="pt-1">On the price step you pick one of these jobs to anchor the price on: usually the strongest emotional or social pull, but a functional job can be the <Keyword>anchor</Keyword> when it is what drives the purchase.</p>
         </GuidanceSection>
-        <GuidanceSection icon={FileText} iconBg="bg-tertiary" title="Summary">
+        <GuidanceSection icon={FileText} iconBg="bg-tertiary" title="Review">
           <p>A read-only overview of everything Explore captured: the customer definition, {SHOW_REFINEMENT_STEPS && <>refinement work, </>}existing solutions and their shortcomings, and the three jobs lists. Review it, then continue to Problem Validation when you are ready.</p>
         </GuidanceSection>
         <TipCallout items={[
@@ -394,7 +394,7 @@ const guidanceItems: GuidanceItem[] = [
           </div>
           <p className="pt-1">Then commit to one of three verdicts: <Keyword>Valid</Keyword>, <Keyword>Unsure</Keyword>, or <Keyword>Invalid</Keyword>. The dot colours and lean banner are heuristics, not rules; if you disagree with how a signal is being read, override it in the notes and explain why. Use the notes to record the two or three signals that drove the call plus the strongest counter-argument you considered.</p>
         </GuidanceSection>
-        <GuidanceSection icon={FileText} iconBg="bg-green-800" title="Summary &amp; next steps">
+        <GuidanceSection icon={FileText} iconBg="bg-green-800" title="Review &amp; next steps">
           <p>A read-only overview of everything you have captured: the customer definition, refinement work, existing solutions and their shortcomings, the jobs list, the price, the market figures, the competitive picture, and your verdict with notes. Use <Keyword>Open Problem to edit</Keyword> to jump back to the editable problem page if anything needs revising before you move on to solution discovery.</p>
         </GuidanceSection>
         <TipCallout items={[

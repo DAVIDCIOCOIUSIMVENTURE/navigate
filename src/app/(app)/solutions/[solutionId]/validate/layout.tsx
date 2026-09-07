@@ -24,7 +24,7 @@ const NAV_ICONS: Record<string, LucideIcon> = {
   cost: Coins,
   "time-to-implement": Clock,
   verdict: CheckCircle2,
-  summary: LayoutTemplate,
+  review: LayoutTemplate,
 }
 
 function NavItems({

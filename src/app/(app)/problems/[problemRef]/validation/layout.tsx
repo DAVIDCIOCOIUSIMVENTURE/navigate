@@ -28,7 +28,7 @@ const NAV_ICONS: Record<string, LucideIcon> = {
   market: TrendingUp,
   competition: Building2,
   verdict: ShieldCheck,
-  summary: LayoutTemplate,
+  review: LayoutTemplate,
 }
 
 function NavItems({

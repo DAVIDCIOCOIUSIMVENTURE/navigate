@@ -248,7 +248,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
   { label: "Select a Problem", path: "select-problem" },
   { label: "Choose Discovery Method", path: "choose-discovery" },
   { label: "Discover", path: "discover" },
-  { label: "Review", path: "summary" },
+  { label: "Review", path: "review" },
 ] as const
 
 const STEP_PATHS = NAV_ITEMS.map((item) => item.path)
@@ -266,5 +266,5 @@ export function getAdjacentSteps(pathname: string) {
 export const STEPS_REQUIRING_PROBLEM = new Set([
   "choose-discovery",
   "discover",
-  "summary",
+  "review",
 ])

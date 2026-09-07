@@ -28,7 +28,7 @@ const NAV_ICONS: Record<string, LucideIcon> = {
   refine: Search,
   "existing-solutions": GitFork,
   "jobs-to-be-done": Sparkles,
-  summary: LayoutTemplate,
+  review: LayoutTemplate,
 }
 
 function NavItems({
