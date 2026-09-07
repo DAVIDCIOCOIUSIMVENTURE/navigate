@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
@@ -13,6 +14,11 @@ import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 import type { MethodPickerItem } from "@/components/method-picker-board"
+
+type IdentifyTool = MethodPickerItem & {
+  /** Optional illustration shown beside the tool's description on wide containers. */
+  image?: { src: string; alt: string }
+}
 
 export default function IdentifyProblemsPage() {
   const router = useRouter()
@@ -53,7 +59,7 @@ export default function IdentifyProblemsPage() {
     setSavedDialogOpen(true)
   }
 
-  const items: MethodPickerItem[] = [
+  const items: IdentifyTool[] = [
     {
       id: "reflect",
       title: "Reflect",
@@ -64,6 +70,10 @@ export default function IdentifyProblemsPage() {
       tileColor: "bg-tertiary",
       estimatedMinutes: 10,
       enabled: true,
+      image: {
+        src: "/images/reflection.jpg",
+        alt: "A person writing in a notebook at a wooden table with a coffee beside them",
+      },
     },
     {
       id: "canvas-builder",
@@ -75,6 +85,10 @@ export default function IdentifyProblemsPage() {
       tileColor: "bg-tertiary",
       estimatedMinutes: 15,
       enabled: true,
+      image: {
+        src: "/images/puzzle.jpg",
+        alt: "A wall painted with brightly coloured interlocking jigsaw pieces",
+      },
     },
     {
       id: "research",
@@ -86,6 +100,10 @@ export default function IdentifyProblemsPage() {
       tileColor: "bg-tertiary",
       estimatedMinutes: 20,
       enabled: true,
+      image: {
+        src: "/images/research.jpg",
+        alt: "Hands typing on a laptop with a second monitor in the background",
+      },
     },
     {
       id: "define",
@@ -97,6 +115,10 @@ export default function IdentifyProblemsPage() {
       tileColor: "bg-tertiary",
       estimatedMinutes: 5,
       enabled: true,
+      image: {
+        src: "/images/write.jpg",
+        alt: "A hand writing with an orange pen in an open notebook",
+      },
     },
   ]
 
@@ -145,32 +167,51 @@ export default function IdentifyProblemsPage() {
                 const Icon = item.icon
                 return (
                   <TabsContent key={item.id} value={item.id} className="mt-4">
-                    <div className="rounded-lg border bg-card p-6 flex flex-col gap-5">
-                      <div className="flex items-center gap-3">
-                        <span
-                          className={cn("flex items-center justify-center w-10 h-10 rounded-md shrink-0", item.tileColor)}
-                          aria-hidden="true"
-                        >
-                          <Icon className="h-5 w-5 text-white" />
-                        </span>
-                        <h3 className="text-xl font-bold leading-tight tracking-tight">{item.title}</h3>
+                    <div
+                      className={cn(
+                        "rounded-lg border bg-muted/70 p-6 grid gap-6",
+                        item.image && isWide && "grid-cols-[minmax(0,1fr),26rem] items-center",
+                      )}
+                    >
+                      <div className="flex flex-col gap-5 min-w-0">
+                        <div className="flex items-center gap-3">
+                          <span
+                            className={cn("flex items-center justify-center w-10 h-10 rounded-md shrink-0", item.tileColor)}
+                            aria-hidden="true"
+                          >
+                            <Icon className="h-5 w-5 text-white" />
+                          </span>
+                          <h3 className="text-xl font-bold leading-tight tracking-tight">{item.title}</h3>
+                        </div>
+                        <p className="text-base leading-relaxed">{item.longDescription}</p>
+                        {item.helperText && (
+                          <div className="rounded-lg border bg-card p-4">
+                            <p className="text-base leading-relaxed">{item.helperText}</p>
+                          </div>
+                        )}
+                        <div className="flex items-center gap-1.5 text-base">
+                          <Clock className="h-4 w-4" aria-hidden="true" />
+                          <span>About {item.estimatedMinutes} minutes</span>
+                        </div>
+                        <div>
+                          <Button type="button" onClick={() => handlePick(item.id)} disabled={!item.enabled} className="gap-2">
+                            Use this tool
+                            <ArrowRight className="h-4 w-4" />
+                          </Button>
+                        </div>
                       </div>
-                      <p className="text-base leading-relaxed">{item.longDescription}</p>
-                      {item.helperText && (
-                        <div className="rounded-lg border bg-card p-4">
-                          <p className="text-base leading-relaxed">{item.helperText}</p>
+                      {item.image && (
+                        <div className="relative w-full max-w-[26rem] aspect-[3/2] overflow-hidden rounded-lg">
+                          <Image
+                            src={item.image.src}
+                            alt={item.image.alt}
+                            fill
+                            sizes="26rem"
+                            className="object-cover"
+                            priority={item.id === items[0].id}
+                          />
                         </div>
                       )}
-                      <div className="flex items-center gap-1.5 text-base">
-                        <Clock className="h-4 w-4" aria-hidden="true" />
-                        <span>About {item.estimatedMinutes} minutes</span>
-                      </div>
-                      <div>
-                        <Button type="button" onClick={() => handlePick(item.id)} disabled={!item.enabled} className="gap-2">
-                          Use this tool
-                          <ArrowRight className="h-4 w-4" />
-                        </Button>
-                      </div>
                     </div>
                   </TabsContent>
                 )
