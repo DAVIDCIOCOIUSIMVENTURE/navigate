@@ -797,7 +797,7 @@ function ReviewPanel({
                   key={idx}
                   type="button"
                   onClick={() => removeAnswerSlot(problemsPrompt.id, idx)}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-white text-foreground px-3 py-1 text-base hover:bg-white/90"
+                  className="inline-flex items-center gap-1.5 rounded-full bg-amber-400 text-foreground px-3 py-1 text-base hover:bg-amber-500"
                 >
                   <span>{answer.text.trim()}</span>
                   <span aria-hidden="true">×</span>
@@ -828,7 +828,7 @@ function ReviewPanel({
                     key={idx}
                     type="button"
                     onClick={() => removeAnswerSlot(customerPrompt.id, idx)}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-white text-foreground px-3 py-1 text-base hover:bg-white/90"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-amber-400 text-foreground px-3 py-1 text-base hover:bg-amber-500"
                   >
                     <span>{answer.text.trim()}</span>
                     <span aria-hidden="true">×</span>

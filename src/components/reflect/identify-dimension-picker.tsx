@@ -252,7 +252,7 @@ export function IdentifyDimensionPicker({
                 key={label}
                 type="button"
                 onClick={() => toggle(label)}
-                className="inline-flex items-center gap-1.5 rounded-full bg-white text-foreground px-3 py-1 text-base hover:bg-white/90"
+                className="inline-flex items-center gap-1.5 rounded-full bg-amber-400 text-foreground px-3 py-1 text-base hover:bg-amber-500"
               >
                 <span>{label}</span>
                 <span aria-hidden="true">×</span>
