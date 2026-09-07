@@ -18,7 +18,7 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon" className="!top-16 h-[calc(100svh-4rem)]">
-      <SidebarContent className="pt-2">
+      <SidebarContent className="pt-4 lg:pt-6">
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>

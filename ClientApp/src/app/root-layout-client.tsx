@@ -343,7 +343,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       className="flex items-center gap-2 h-8 px-2 md:px-3 rounded-md bg-white/10 text-quaternary-foreground hover:bg-white/20 transition-colors shrink-0"
       aria-label="Navigate home"
     >
-      <Compass className="h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+      <Compass className="h-5 w-5 shrink-0" aria-hidden="true" />
       <span className="text-base font-semibold hidden md:inline">Navigate</span>
     </Link>
   )
