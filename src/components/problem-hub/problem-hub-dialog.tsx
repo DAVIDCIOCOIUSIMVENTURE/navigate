@@ -37,13 +37,13 @@ export function ProblemHubDialog({
             <DialogTitle>Problem canvas</DialogTitle>
             {problemRef && (
               <div className="ml-auto flex items-center gap-2">
-                <Button variant="outline" asChild>
+                <Button variant="outline" className="bg-white" asChild>
                   <Link href={`/problems/${problemRef}`}>
                     <ExternalLink />
                     Open as full page
                   </Link>
                 </Button>
-                <Button variant="outline" asChild>
+                <Button variant="outline" className="bg-white" asChild>
                   <Link href={`/problems/${problemRef}/edit`}>
                     <Pencil />
                     Edit
@@ -58,7 +58,7 @@ export function ProblemHubDialog({
         </DialogHeader>
         {problem && (
           <div className="-mx-6 -mb-6 flex-1 min-h-0 overflow-y-auto px-6 pb-6">
-            <ProblemCanvasCards problem={problem} />
+            <ProblemCanvasCards problem={problem} tone="brand" />
           </div>
         )}
       </DialogContent>

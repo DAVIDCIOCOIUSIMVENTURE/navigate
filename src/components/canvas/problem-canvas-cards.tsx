@@ -26,11 +26,16 @@ import {
 } from "@/components/ui/collapsible"
 import {
   Cell,
+  CELL_TONE_CLASSES,
   MetricRow,
   Placeholder,
   StatusPill,
   STATUS_CONFIG,
+  type CellTone,
 } from "./canvas-shared"
+
+/** Mustard tile behind every icon on the problem canvas cards. */
+const CANVAS_ICON_BG = "bg-yellow-600"
 
 function DimensionList({ columnId, ids }: { columnId: string; ids: string[] }) {
   const customByColumn = useSelector((s: RootState) => s.customDimensionItems.byColumn)
@@ -56,17 +61,27 @@ function DimensionList({ columnId, ids }: { columnId: string; ids: string[] }) {
  * `fill` switches on the canvas-page layout: the grid stretches to fill
  * the available height and cards scroll internally. Without it, the grid
  * lays out at natural height (suited to summary cards and dialogs).
+ *
+ * `tone` picks the card surface: `card` (default cream) or `brand`, which
+ * paints every card in the cobalt secondary brand colour with white text.
  */
 export function ProblemCanvasCards({
   problem,
   fill = false,
   actions,
+  tone = "card",
 }: {
   problem: Problem
   fill?: boolean
   actions?: React.ReactNode
+  tone?: CellTone
 }) {
   const router = useRouter()
+  const brand = tone === "brand"
+  const sectionHeading = cn(
+    "text-base font-semibold uppercase tracking-wide pb-1 border-b",
+    brand ? "border-white/30" : "border-border/40",
+  )
   const status = problem.validationStatus ?? "unvalidated"
   const va = problem.validationAssessment
   const linkedSolutions = useSelector((s: RootState) =>
@@ -125,7 +140,8 @@ export function ProblemCanvasCards({
         <Cell
           icon={FileText}
           label="Description"
-          iconBg="bg-tertiary"
+          iconBg={CANVAS_ICON_BG}
+          tone={tone}
           className="sm:col-span-12 lg:col-span-3"
           empty={!problem.description}
         >
@@ -139,7 +155,8 @@ export function ProblemCanvasCards({
         <Cell
           icon={Users}
           label="Customer"
-          iconBg="bg-tertiary"
+          iconBg={CANVAS_ICON_BG}
+          tone={tone}
           className="sm:col-span-6 lg:col-span-3"
           empty={problem.customers.length === 0 && !problem.customerDescription && !problem.segmentSize}
         >
@@ -157,7 +174,8 @@ export function ProblemCanvasCards({
         <Cell
           icon={MapPin}
           label="Context"
-          iconBg="bg-tertiary"
+          iconBg={CANVAS_ICON_BG}
+          tone={tone}
           className="sm:col-span-6 lg:col-span-3"
           empty={problem.contexts.length === 0 && !problem.contextWhen}
         >
@@ -172,7 +190,8 @@ export function ProblemCanvasCards({
         <Cell
           icon={TriangleAlert}
           label="Problem types"
-          iconBg="bg-tertiary"
+          iconBg={CANVAS_ICON_BG}
+          tone={tone}
           className="sm:col-span-12 lg:col-span-3"
           empty={problem.problems.length === 0}
         >
@@ -182,13 +201,14 @@ export function ProblemCanvasCards({
         <Cell
           icon={TrendingUp}
           label="Market opportunity"
-          iconBg="bg-secondary-brand"
+          iconBg={CANVAS_ICON_BG}
+          tone={tone}
           className="sm:col-span-12"
           empty={marketEmpty}
         >
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4">
             <div className="flex flex-col gap-1">
-              <p className="text-base font-semibold uppercase tracking-wide pb-1 border-b border-border/40">Your estimates</p>
+              <p className={sectionHeading}>Your estimates</p>
               <MetricRow label="People affected" metric={va.howManyPeople} />
               <MetricRow label="How often" metric={va.howOften} />
               <MetricRow label="Price per occurrence" metric={va.worthToThem} />
@@ -202,13 +222,13 @@ export function ProblemCanvasCards({
               </div>
             </div>
             <div className="flex flex-col gap-1">
-              <p className="text-base font-semibold uppercase tracking-wide pb-1 border-b border-border/40">Competition</p>
+              <p className={sectionHeading}>Competition</p>
               <MetricRow label="Competitor size" metric={va.competitorSize} />
               <MetricRow label="Cost of switching" metric={va.costOfSwitching} />
               <MetricRow label="Effectiveness" metric={va.solutionEffectiveness} />
             </div>
             <div className="flex flex-col gap-1">
-              <p className="text-base font-semibold uppercase tracking-wide pb-1 border-b border-border/40">Market size</p>
+              <p className={sectionHeading}>Market size</p>
               <div className="flex justify-between gap-2">
                 <span>Total market</span>
                 <span className="font-medium">{marketReady ? formatMoney(totalMarket, { currency, compact: true }) : "Not captured"}</span>
@@ -228,7 +248,8 @@ export function ProblemCanvasCards({
         <Cell
           icon={GitFork}
           label="Existing solutions"
-          iconBg="bg-secondary-brand"
+          iconBg={CANVAS_ICON_BG}
+          tone={tone}
           className="sm:col-span-12"
           empty={problem.existingSolutions.length === 0}
         >
@@ -253,11 +274,14 @@ export function ProblemCanvasCards({
       <Collapsible
         open={solutionsOpen}
         onOpenChange={setSolutionsOpen}
-        className="rounded-xl border bg-card shadow-sm shrink-0"
+        className={cn("rounded-xl shrink-0", CELL_TONE_CLASSES[tone])}
       >
         <CollapsibleTrigger className="flex items-center gap-3 px-4 py-3 w-full text-left">
           <span
-            className="flex items-center justify-center h-7 w-7 rounded-lg shrink-0 text-white bg-primary"
+            className={cn(
+              "flex items-center justify-center h-7 w-7 rounded-lg shrink-0 text-white",
+              CANVAS_ICON_BG,
+            )}
             aria-hidden="true"
           >
             <Lightbulb className="h-3.5 w-3.5" />
@@ -284,7 +308,10 @@ export function ProblemCanvasCards({
                     <button
                       type="button"
                       onClick={() => router.push(`/solutions/${sol.id}/edit`)}
-                      className="flex items-center gap-2 w-full text-left rounded-md px-2 py-1 -mx-2 hover:bg-muted/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      className={cn(
+                        "flex items-center gap-2 w-full text-left rounded-md px-2 py-1 -mx-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                        brand ? "hover:bg-white/10" : "hover:bg-muted/60",
+                      )}
                       data-canvas-no-print
                     >
                       <StatusPill status={sStatus} size="sm" />

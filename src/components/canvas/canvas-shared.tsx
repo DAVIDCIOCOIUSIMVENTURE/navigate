@@ -54,10 +54,23 @@ export function StatusPill({
   )
 }
 
+/**
+ * Surface treatment for a canvas card. `card` is the default cream card;
+ * `brand` paints the card in the cobalt secondary brand colour with white
+ * text (used by the validation review page).
+ */
+export type CellTone = "card" | "brand"
+
+export const CELL_TONE_CLASSES: Record<CellTone, string> = {
+  card: "border bg-card shadow-sm",
+  brand: "border border-secondary-brand bg-secondary-brand text-white shadow-sm",
+}
+
 export function Cell({
   icon: Icon,
   label,
   iconBg = "bg-tertiary",
+  tone = "card",
   className,
   children,
   empty,
@@ -65,12 +78,13 @@ export function Cell({
   icon: LucideIcon
   label: string
   iconBg?: string
+  tone?: CellTone
   className?: string
   empty?: boolean
   children: React.ReactNode
 }) {
   return (
-    <div className={cn("flex flex-col rounded-xl border bg-card shadow-sm overflow-hidden", className)}>
+    <div className={cn("flex flex-col rounded-xl overflow-hidden", CELL_TONE_CLASSES[tone], className)}>
       <div className="flex items-center gap-3 px-4 pt-4 pb-3">
         <span
           className={cn(

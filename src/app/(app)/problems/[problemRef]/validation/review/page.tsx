@@ -21,7 +21,7 @@ export default function ReviewPage() {
         <p className="text-base">A read-only overview of everything you have captured so far. Use <strong>Open Problem</strong> to jump to the editable problem page.</p>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
-        {problem && <ProblemCanvasCards problem={problem} />}
+        {problem && <ProblemCanvasCards problem={problem} tone="brand" />}
 
         <NextStepsSection problemRef={problemRef} problemId={problemId} />
 
