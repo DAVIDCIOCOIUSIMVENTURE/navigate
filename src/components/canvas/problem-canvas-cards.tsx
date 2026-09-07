@@ -6,6 +6,7 @@ import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
 import type { Problem } from "@/store/problems-model"
 import { resolveDimensionLabel } from "@/lib/dimension-labels"
+import type { LucideIcon } from "lucide-react"
 import {
   Users,
   MapPin,
@@ -14,7 +15,6 @@ import {
   GitFork,
   Lightbulb,
   ChevronDown,
-  FileText,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { computeMarket, formatMoney } from "@/lib/market"
@@ -36,6 +36,68 @@ import {
 
 /** Mustard tile behind every icon on the problem canvas cards. */
 const CANVAS_ICON_BG = "bg-yellow-600"
+/** Matching mustard rule under each card header on cream cards. Brand cards use white. */
+const CANVAS_DIVIDER = "border-yellow-600"
+
+/**
+ * A canvas card that starts collapsed and shows a count in its header.
+ * Used for the lists that sit below the main grid (existing solutions,
+ * linked solutions). The header rule only shows while open, since a
+ * collapsed row is nothing but the header.
+ */
+function CollapsibleSection({
+  icon: Icon,
+  label,
+  count,
+  open,
+  onOpenChange,
+  tone,
+  divider,
+  children,
+}: {
+  icon: LucideIcon
+  label: string
+  count: number
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  tone: CellTone
+  divider: string
+  children: React.ReactNode
+}) {
+  return (
+    <Collapsible
+      open={open}
+      onOpenChange={onOpenChange}
+      className={cn("rounded-xl shrink-0", CELL_TONE_CLASSES[tone])}
+    >
+      <CollapsibleTrigger
+        className={cn(
+          "flex items-center gap-3 px-4 py-3 w-full text-left",
+          open && "px-0 mx-4 w-[calc(100%-2rem)] border-b-2",
+          open && divider,
+        )}
+      >
+        <span
+          className={cn(
+            "flex items-center justify-center h-7 w-7 rounded-lg shrink-0 text-white",
+            CANVAS_ICON_BG,
+          )}
+          aria-hidden="true"
+        >
+          <Icon className="h-3.5 w-3.5" />
+        </span>
+        <h3 className="flex-1 font-semibold text-base">{label}</h3>
+        <span className="text-base">{count}</span>
+        <ChevronDown
+          className={cn("h-4 w-4 transition-transform", open && "rotate-180")}
+        />
+      </CollapsibleTrigger>
+      <CollapsibleContent className="px-4 pt-3 pb-4 text-base">
+        {count === 0 ? <span className="italic opacity-60">Not yet captured</span> : children}
+      </CollapsibleContent>
+    </Collapsible>
+  )
+}
 
 function DimensionList({ columnId, ids }: { columnId: string; ids: string[] }) {
   const customByColumn = useSelector((s: RootState) => s.customDimensionItems.byColumn)
@@ -52,8 +114,8 @@ function DimensionList({ columnId, ids }: { columnId: string; ids: string[] }) {
 }
 
 /**
- * Visual card grid for a Problem: header (description + status pill +
- * optional actions slot), 9-card grid, and a collapsible linked-solutions
+ * Visual card grid for a Problem: header (title + status pill +
+ * optional actions slot), card grid, and a collapsible linked-solutions
  * list. Used by the problem canvas page, the problem validation summary,
  * and the "View Problem" dialog so the read-only view is identical
  * everywhere.
@@ -78,6 +140,7 @@ export function ProblemCanvasCards({
 }) {
   const router = useRouter()
   const brand = tone === "brand"
+  const divider = brand ? "border-white" : CANVAS_DIVIDER
   const sectionHeading = cn(
     "text-base font-semibold uppercase tracking-wide pb-1 border-b",
     brand ? "border-white/30" : "border-border/40",
@@ -87,6 +150,7 @@ export function ProblemCanvasCards({
   const linkedSolutions = useSelector((s: RootState) =>
     s.solutions.solutions.filter((sol) => sol.problemId === problem.id),
   )
+  const [existingOpen, setExistingOpen] = useState(false)
   const [solutionsOpen, setSolutionsOpen] = useState(false)
 
   const currency = va.worthToThem.unit || "GBP"
@@ -134,30 +198,16 @@ export function ProblemCanvasCards({
         className={cn(
           "grid grid-cols-1 sm:grid-cols-12 gap-3",
           fill &&
-            "lg:grid-rows-[minmax(0,0.9fr)_minmax(0,1.2fr)_minmax(0,1.1fr)] flex-1 lg:min-h-0",
+            "lg:grid-rows-[minmax(0,0.9fr)_minmax(0,1.2fr)] flex-1 lg:min-h-0",
         )}
       >
-        <Cell
-          icon={FileText}
-          label="Description"
-          iconBg={CANVAS_ICON_BG}
-          tone={tone}
-          className="sm:col-span-12 lg:col-span-3"
-          empty={!problem.description}
-        >
-          {problem.description ? (
-            <p className="whitespace-pre-wrap">{problem.description}</p>
-          ) : (
-            <Placeholder />
-          )}
-        </Cell>
-
         <Cell
           icon={Users}
           label="Customer"
           iconBg={CANVAS_ICON_BG}
+          divider={divider}
           tone={tone}
-          className="sm:col-span-6 lg:col-span-3"
+          className="sm:col-span-6 lg:col-span-4"
           empty={problem.customers.length === 0 && !problem.customerDescription && !problem.segmentSize}
         >
           <div className="flex flex-col gap-2">
@@ -175,8 +225,9 @@ export function ProblemCanvasCards({
           icon={MapPin}
           label="Context"
           iconBg={CANVAS_ICON_BG}
+          divider={divider}
           tone={tone}
-          className="sm:col-span-6 lg:col-span-3"
+          className="sm:col-span-6 lg:col-span-4"
           empty={problem.contexts.length === 0 && !problem.contextWhen}
         >
           <div className="flex flex-col gap-2">
@@ -191,8 +242,9 @@ export function ProblemCanvasCards({
           icon={TriangleAlert}
           label="Problem types"
           iconBg={CANVAS_ICON_BG}
+          divider={divider}
           tone={tone}
-          className="sm:col-span-12 lg:col-span-3"
+          className="sm:col-span-12 lg:col-span-4"
           empty={problem.problems.length === 0}
         >
           <DimensionList columnId="problems" ids={problem.problems} />
@@ -202,6 +254,7 @@ export function ProblemCanvasCards({
           icon={TrendingUp}
           label="Market opportunity"
           iconBg={CANVAS_ICON_BG}
+          divider={divider}
           tone={tone}
           className="sm:col-span-12"
           empty={marketEmpty}
@@ -245,101 +298,81 @@ export function ProblemCanvasCards({
           </div>
         </Cell>
 
-        <Cell
-          icon={GitFork}
-          label="Existing solutions"
-          iconBg={CANVAS_ICON_BG}
-          tone={tone}
-          className="sm:col-span-12"
-          empty={problem.existingSolutions.length === 0}
-        >
-          <ul className="flex flex-col gap-2">
-            {problem.existingSolutions.map((s) => (
-              <li key={s.id}>
-                <p className="font-medium">{s.text || "Untitled solution"}</p>
-                {s.shortcomings.length > 0 && (
-                  <ul className="list-disc list-inside">
-                    {s.shortcomings.map((sc) => (
-                      <li key={sc.id}>{sc.text}</li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            ))}
-          </ul>
-        </Cell>
-
       </div>
 
-      <Collapsible
+      <CollapsibleSection
+        icon={GitFork}
+        label="Existing solutions"
+        count={problem.existingSolutions.length}
+        open={existingOpen}
+        onOpenChange={setExistingOpen}
+        tone={tone}
+        divider={divider}
+      >
+        <ul className="flex flex-col gap-2">
+          {problem.existingSolutions.map((s) => (
+            <li key={s.id}>
+              <p className="font-medium">{s.text || "Untitled solution"}</p>
+              {s.shortcomings.length > 0 && (
+                <ul className="list-disc list-inside">
+                  {s.shortcomings.map((sc) => (
+                    <li key={sc.id}>{sc.text}</li>
+                  ))}
+                </ul>
+              )}
+            </li>
+          ))}
+        </ul>
+      </CollapsibleSection>
+
+      <CollapsibleSection
+        icon={Lightbulb}
+        label="Solutions"
+        count={linkedSolutions.length}
         open={solutionsOpen}
         onOpenChange={setSolutionsOpen}
-        className={cn("rounded-xl shrink-0", CELL_TONE_CLASSES[tone])}
+        tone={tone}
+        divider={divider}
       >
-        <CollapsibleTrigger className="flex items-center gap-3 px-4 py-3 w-full text-left">
-          <span
-            className={cn(
-              "flex items-center justify-center h-7 w-7 rounded-lg shrink-0 text-white",
-              CANVAS_ICON_BG,
-            )}
-            aria-hidden="true"
-          >
-            <Lightbulb className="h-3.5 w-3.5" />
-          </span>
-          <h3 className="flex-1 font-semibold text-base">Solutions</h3>
-          <span className="text-base">{linkedSolutions.length}</span>
-          <ChevronDown
-            className={cn(
-              "h-4 w-4 transition-transform",
-              solutionsOpen && "rotate-180",
-            )}
-          />
-        </CollapsibleTrigger>
-        <CollapsibleContent className="px-4 pb-4 text-base">
-          {linkedSolutions.length === 0 ? (
-            <span className="italic opacity-60">Not yet captured</span>
-          ) : (
-            <ul className="flex flex-col gap-1.5">
-              {linkedSolutions.map((sol) => {
-                const sStatus = sol.validationStatus ?? "unvalidated"
-                const sCfg = STATUS_CONFIG[sStatus]
-                return (
-                  <li key={sol.id}>
-                    <button
-                      type="button"
-                      onClick={() => router.push(`/solutions/${sol.id}/edit`)}
-                      className={cn(
-                        "flex items-center gap-2 w-full text-left rounded-md px-2 py-1 -mx-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                        brand ? "hover:bg-white/10" : "hover:bg-muted/60",
-                      )}
-                      data-canvas-no-print
-                    >
-                      <StatusPill status={sStatus} size="sm" />
-                      <span className="truncate">
-                        {sol.title || `Solution #${sol.id}`}
-                      </span>
-                    </button>
-                    <span className="hidden print:flex items-center gap-2">
-                      <span
-                        className={cn(
-                          "inline-flex items-center gap-1 text-sm px-2 py-0.5 rounded-full border shrink-0",
-                          sCfg.className,
-                        )}
-                      >
-                        <sCfg.icon className="h-3 w-3" />
-                        {sCfg.label}
-                      </span>
-                      <span className="truncate">
-                        {sol.title || `Solution #${sol.id}`}
-                      </span>
-                    </span>
-                  </li>
-                )
-              })}
-            </ul>
-          )}
-        </CollapsibleContent>
-      </Collapsible>
+        <ul className="flex flex-col gap-1.5">
+          {linkedSolutions.map((sol) => {
+            const sStatus = sol.validationStatus ?? "unvalidated"
+            const sCfg = STATUS_CONFIG[sStatus]
+            return (
+              <li key={sol.id}>
+                <button
+                  type="button"
+                  onClick={() => router.push(`/solutions/${sol.id}/edit`)}
+                  className={cn(
+                    "flex items-center gap-2 w-full text-left rounded-md px-2 py-1 -mx-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                    brand ? "hover:bg-white/10" : "hover:bg-muted/60",
+                  )}
+                  data-canvas-no-print
+                >
+                  <StatusPill status={sStatus} size="sm" />
+                  <span className="truncate">
+                    {sol.title || `Solution #${sol.id}`}
+                  </span>
+                </button>
+                <span className="hidden print:flex items-center gap-2">
+                  <span
+                    className={cn(
+                      "inline-flex items-center gap-1 text-sm px-2 py-0.5 rounded-full border shrink-0",
+                      sCfg.className,
+                    )}
+                  >
+                    <sCfg.icon className="h-3 w-3" />
+                    {sCfg.label}
+                  </span>
+                  <span className="truncate">
+                    {sol.title || `Solution #${sol.id}`}
+                  </span>
+                </span>
+              </li>
+            )
+          })}
+        </ul>
+      </CollapsibleSection>
     </div>
   )
 }

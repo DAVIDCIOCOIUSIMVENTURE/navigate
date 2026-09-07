@@ -71,6 +71,7 @@ export function Cell({
   label,
   iconBg = "bg-tertiary",
   tone = "card",
+  divider,
   className,
   children,
   empty,
@@ -79,13 +80,20 @@ export function Cell({
   label: string
   iconBg?: string
   tone?: CellTone
+  /** Border colour class for a rule under the header, e.g. `border-yellow-600`. Omit for no rule. */
+  divider?: string
   className?: string
   empty?: boolean
   children: React.ReactNode
 }) {
   return (
     <div className={cn("flex flex-col rounded-xl overflow-hidden", CELL_TONE_CLASSES[tone], className)}>
-      <div className="flex items-center gap-3 px-4 pt-4 pb-3">
+      <div
+        className={cn(
+          "flex items-center gap-3 pt-4 pb-3",
+          divider ? cn("mx-4 mb-3 border-b-2", divider) : "px-4",
+        )}
+      >
         <span
           className={cn(
             "flex items-center justify-center h-7 w-7 rounded-lg shrink-0 text-white",

@@ -7,7 +7,7 @@ import type { RootState, AppDispatch } from "@/store"
 import type { Problem } from "@/store/problems-model"
 import { Button } from "@/components/ui/button"
 import {
-  Printer,
+  ClipboardCheck,
   Download,
   FileJson,
   Pencil,
@@ -92,9 +92,14 @@ export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHre
         <FileJson className="h-3.5 w-3.5 mr-1.5" />
         Export
       </Button>
-      <Button variant="outline" size="sm" className="bg-white" disabled title="Coming soon">
-        <Printer className="h-3.5 w-3.5 mr-1.5" />
-        Print
+      <Button
+        variant="outline"
+        size="sm"
+        className="bg-white"
+        onClick={() => router.push(`/problems/${problem.id}/validation/introduction`)}
+      >
+        <ClipboardCheck className="h-3.5 w-3.5 mr-1.5" />
+        Validate
       </Button>
       <Button
         variant="outline"
