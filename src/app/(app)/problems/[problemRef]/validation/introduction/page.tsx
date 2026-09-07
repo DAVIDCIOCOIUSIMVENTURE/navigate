@@ -7,7 +7,7 @@ import type { RootState } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { getAdjacentSteps, useProblem } from "../context"
-import { ProblemContextCard } from "@/components/problem-context-card"
+import { ProblemContextCard } from "@/components/context-card"
 import {
   ClipboardCheck, ShieldCheck, LayoutTemplate, TrendingUp, Building2, PoundSterling,
 } from "lucide-react"

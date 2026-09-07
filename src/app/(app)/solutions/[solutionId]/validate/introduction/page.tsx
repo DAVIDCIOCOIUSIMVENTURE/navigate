@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ClipboardCheck, Gauge, Target, Coins, Clock } from "lucide-react"
 import { getAdjacentSteps, useSolution } from "../context"
+import { ProblemContextCard, SolutionContextCard } from "@/components/context-card"
 
 const METRICS = [
   { icon: Gauge, title: "Feasibility", description: "How realistic is it to build this solution with the resources and skills available?" },
@@ -45,22 +46,10 @@ export default function IntroductionPage() {
         </div>
 
         {solution && (
-          <div className="rounded-lg border-2 border-tertiary/20 bg-tertiary/5 p-4 flex flex-col gap-3">
-            <div className="flex flex-col gap-1">
-              <p className="text-base font-semibold uppercase tracking-wide">Solution</p>
-              <p className="text-base font-medium">{solution.title || "Untitled solution"}</p>
-              {solution.description && (
-                <p className="text-base">{solution.description}</p>
-              )}
-            </div>
+          <div className="flex flex-col gap-2">
+            <SolutionContextCard solution={solution} showDescription />
             {problem && (problem.title || problem.description) && (
-              <div className="flex flex-col gap-1">
-                <p className="text-base font-semibold uppercase tracking-wide">Problem</p>
-                <p className="text-base font-medium">{problem.title || "Untitled problem"}</p>
-                {problem.description && (
-                  <p className="text-base">{problem.description}</p>
-                )}
-              </div>
+              <ProblemContextCard problem={problem} showDescription />
             )}
           </div>
         )}

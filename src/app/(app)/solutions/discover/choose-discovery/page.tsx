@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { useDiscovery, getAdjacentSteps } from "../context"
 import type { DiscoveryToolType } from "@/types/solution"
 import { Shuffle, ArrowLeft, Lightbulb, RotateCcw, GitCompare, Wrench } from "lucide-react"
-import { ProblemContextCard } from "@/components/problem-context-card"
+import { ProblemContextCard } from "@/components/context-card"
 import { MethodPickerBoard, type MethodPickerItem } from "@/components/method-picker-board"
 
 type ToolKey = "scamper" | "reverse" | "analogy" | "improve"

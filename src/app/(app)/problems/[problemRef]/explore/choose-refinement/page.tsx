@@ -17,7 +17,7 @@ import { useProblem, getAdjacentSteps } from "../context"
 import type { AnalysisToolType } from "@/types/solution"
 import { Search, ArrowLeft, ArrowRight, TreePine, HelpCircle, Users } from "lucide-react"
 import { MethodPickerBoard, type MethodPickerItem } from "@/components/method-picker-board"
-import { ProblemContextCard } from "@/components/problem-context-card"
+import { ProblemContextCard } from "@/components/context-card"
 
 type ToolKey = "root-causes" | "five-whys" | "affected-groups"
 

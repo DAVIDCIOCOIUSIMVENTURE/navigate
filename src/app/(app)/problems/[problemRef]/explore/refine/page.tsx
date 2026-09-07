@@ -12,7 +12,7 @@ import { ROOT_CAUSES_CASE_STUDIES } from "./root-causes-case-studies"
 import { FIVE_WHYS_CASE_STUDIES } from "./five-whys-case-studies"
 import { AFFECTED_GROUPS_CASE_STUDIES } from "./affected-groups-case-studies"
 import { RefinementStrategy } from "@/components/problem-strategies/refinement-strategy"
-import { ProblemContextCard } from "@/components/problem-context-card"
+import { ProblemContextCard } from "@/components/context-card"
 import {
   Search, Plus, Trash2, ArrowLeft, ArrowRight,
   Car, MessageSquare, Stethoscope, Wrench, Landmark, Cloud,

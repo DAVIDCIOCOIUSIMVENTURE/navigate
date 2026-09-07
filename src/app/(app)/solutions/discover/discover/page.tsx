@@ -27,7 +27,7 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
-import { ProblemContextCard } from "@/components/problem-context-card"
+import { ProblemContextCard } from "@/components/context-card"
 
 type SaveDialogTool = Exclude<DiscoveryToolType, "">
 type SaveDialogFields = {
