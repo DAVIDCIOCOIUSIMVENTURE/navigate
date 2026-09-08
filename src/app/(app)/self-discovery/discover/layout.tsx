@@ -9,7 +9,7 @@ import { useRouter, usePathname } from "next/navigation"
 import { ArrowLeft, ChevronDown, Compass, PanelTop, type LucideIcon } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { ProgressRing } from "@/components/ui/progress-ring"
+import { ProgressRing, type ProgressRingLabelPosition } from "@/components/ui/progress-ring"
 import { cn } from "@/lib/utils"
 import {
     NAV_ITEM_ACTIVE_CLASS,
@@ -34,7 +34,13 @@ const OTHER_CATEGORY = {
 } as const
 
 /** Share of the self discovery questions that have at least one item against them. */
-function ProgressFooter({ className }: { className?: string }) {
+function ProgressFooter({
+    className,
+    labelPosition = "bottom",
+}: {
+    className?: string
+    labelPosition?: ProgressRingLabelPosition
+}) {
     const items = useSelector((state: RootState) => state.selfDiscoveryItems.items)
     const progress = useMemo(() => getSelfDiscoveryProgress(items), [items])
 
@@ -42,7 +48,7 @@ function ProgressFooter({ className }: { className?: string }) {
         <div className={cn("flex justify-center", className)}>
             <ProgressRing
                 label="Progress"
-                labelPosition="bottom"
+                labelPosition={labelPosition}
                 completed={progress.completed}
                 total={progress.total}
                 size={56}
@@ -266,29 +272,31 @@ export default function SelfDiscoveryFlowLayout({
                             <Collapsible open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
                                 <Card>
                                     <CardContent className="p-2">
-                                        <CollapsibleTrigger asChild>
-                                            <Button
-                                                variant="ghost"
-                                                className="w-full justify-between h-auto py-2 px-3"
-                                            >
-                                                <span className="flex items-center gap-2 text-sm font-medium min-w-0">
-                                                    <span className={navIconTileClass(true)}>
-                                                        <ActiveIcon className={navIconClass(true)} aria-hidden="true" />
+                                        <div className="flex items-center gap-3">
+                                            <CollapsibleTrigger asChild>
+                                                <Button
+                                                    variant="ghost"
+                                                    className="flex-1 min-w-0 justify-between h-auto py-2 px-3"
+                                                >
+                                                    <span className="flex items-center gap-2 text-sm font-medium min-w-0">
+                                                        <span className={navIconTileClass(true)}>
+                                                            <ActiveIcon className={navIconClass(true)} aria-hidden="true" />
+                                                        </span>
+                                                        <span className="truncate">{activeLabel}</span>
                                                     </span>
-                                                    <span className="truncate">{activeLabel}</span>
-                                                </span>
-                                                <ChevronDown
-                                                    className={`h-4 w-4 text-muted-foreground transition-transform shrink-0 ${mobileNavOpen ? "rotate-180" : ""}`}
-                                                    aria-hidden="true"
-                                                />
-                                            </Button>
-                                        </CollapsibleTrigger>
+                                                    <ChevronDown
+                                                        className={`h-4 w-4 text-muted-foreground transition-transform shrink-0 ${mobileNavOpen ? "rotate-180" : ""}`}
+                                                        aria-hidden="true"
+                                                    />
+                                                </Button>
+                                            </CollapsibleTrigger>
+                                            <ProgressFooter labelPosition="left" className="shrink-0 pr-2" />
+                                        </div>
                                         <CollapsibleContent className="pt-2">
                                             <div className="px-1">
                                                 <NavContent pathname={pathname} onNavigate={handleNavigate} />
                                             </div>
                                         </CollapsibleContent>
-                                        <ProgressFooter className="border-t mt-2 pt-3 px-3 pb-1" />
                                     </CardContent>
                                 </Card>
                             </Collapsible>
