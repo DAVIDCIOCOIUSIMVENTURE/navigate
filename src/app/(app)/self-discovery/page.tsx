@@ -76,7 +76,7 @@ function CategorySection({
           <span className="text-sm tabular-nums">
             {count} {count === 1 ? "item" : "items"}
           </span>
-          <Button variant="tertiary" size="sm" className="gap-1.5" onClick={() => router.push(ctaUrl)}>
+          <Button variant="secondary-brand" size="sm" className="gap-1.5" onClick={() => router.push(ctaUrl)}>
             <Pencil className="h-3 w-3" aria-hidden="true" />
             Edit
           </Button>

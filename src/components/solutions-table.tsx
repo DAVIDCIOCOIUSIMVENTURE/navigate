@@ -293,13 +293,13 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Button
-                                variant="outline-card"
+                                variant="secondary-brand"
                                 size="icon"
                                 className="h-7 w-7"
                                 onClick={() => router.push(`/solutions/${solution.id}`)}
                                 aria-label="View solution canvas"
                               >
-                                <Eye className="h-3.5 w-3.5 text-tertiary" />
+                                <Eye className="h-3.5 w-3.5" />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>View canvas</TooltipContent>
@@ -309,13 +309,13 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <Button
-                                variant="outline-card"
+                                variant="secondary-brand"
                                 size="icon"
                                 className="h-7 w-7"
                                 onClick={() => router.push(`/solutions/${solution.id}/edit`)}
                                 aria-label="Edit solution"
                               >
-                                <Pencil className="h-3.5 w-3.5 text-tertiary" />
+                                <Pencil className="h-3.5 w-3.5" />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>Edit solution</TooltipContent>

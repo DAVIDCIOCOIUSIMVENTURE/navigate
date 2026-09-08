@@ -355,13 +355,13 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <Button
-                                  variant="outline-card"
+                                  variant="secondary-brand"
                                   size="icon"
                                   className="h-7 w-7"
                                   onClick={() => router.push(`/problems/${problem.id}`)}
                                   aria-label="View problem canvas"
                                 >
-                                  <Eye className="h-3.5 w-3.5 text-tertiary" />
+                                  <Eye className="h-3.5 w-3.5" />
                                 </Button>
                               </TooltipTrigger>
                               <TooltipContent>View canvas</TooltipContent>
@@ -371,13 +371,13 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                             <Tooltip>
                               <TooltipTrigger asChild>
                                 <Button
-                                  variant="outline-card"
+                                  variant="secondary-brand"
                                   size="icon"
                                   className="h-7 w-7"
                                   onClick={() => router.push(`/problems/${problem.id}/edit`)}
                                   aria-label="Edit problem"
                                 >
-                                  <Pencil className="h-3.5 w-3.5 text-tertiary" />
+                                  <Pencil className="h-3.5 w-3.5" />
                                 </Button>
                               </TooltipTrigger>
                               <TooltipContent>Edit problem</TooltipContent>
@@ -476,13 +476,13 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <Button
-                                    variant="outline-card"
+                                    variant="secondary-brand"
                                     size="icon"
                                     className="h-7 w-7"
                                     onClick={() => router.push(`/solutions/${s.id}`)}
                                     aria-label="View solution canvas"
                                   >
-                                    <Eye className="h-3.5 w-3.5 text-tertiary" />
+                                    <Eye className="h-3.5 w-3.5" />
                                   </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>View canvas</TooltipContent>
@@ -490,13 +490,13 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                               <Tooltip>
                                 <TooltipTrigger asChild>
                                   <Button
-                                    variant="outline-card"
+                                    variant="secondary-brand"
                                     size="icon"
                                     className="h-7 w-7"
                                     onClick={() => router.push(`/solutions/${s.id}/edit`)}
                                     aria-label="Edit solution"
                                   >
-                                    <Pencil className="h-3.5 w-3.5 text-tertiary" />
+                                    <Pencil className="h-3.5 w-3.5" />
                                   </Button>
                                 </TooltipTrigger>
                                 <TooltipContent>Edit solution</TooltipContent>
