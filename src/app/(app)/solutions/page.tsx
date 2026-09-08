@@ -10,6 +10,7 @@ import { SolutionsTable } from "@/components/solutions-table"
 import { BundleMenuButton } from "@/components/bundle-menu-button"
 import { Plus, Lightbulb } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
+import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { cn } from "@/lib/utils"
 
 export default function SolutionsPage() {
@@ -27,7 +28,7 @@ export default function SolutionsPage() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <CardTitle size="md" icon={Lightbulb} className="text-xl text-foreground">Solution library</CardTitle>
         <div className="flex flex-wrap items-center gap-2 shrink-0">
-          <Button onClick={() => router.push("/solutions/identify")} className="gap-2">
+          <Button onClick={() => router.push("/solutions/identify")} className="gap-2" data-tour={TOUR_TARGETS.solutionsIdentify}>
             <Plus className="h-4 w-4" />
             Identify solutions
           </Button>

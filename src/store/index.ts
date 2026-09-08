@@ -11,6 +11,7 @@ import { problemCandidates } from "./problem-candidates-model"
 import { reflectSessions } from "./reflect-sessions-model"
 import { researchSessions } from "./research-sessions-model"
 import { portfolios } from "./portfolios-model"
+import { tour } from "./tour-model"
 export interface RootModel extends Models<RootModel> {
   notes: typeof notes
   settings: typeof settings
@@ -24,9 +25,10 @@ export interface RootModel extends Models<RootModel> {
   reflectSessions: typeof reflectSessions
   researchSessions: typeof researchSessions
   portfolios: typeof portfolios
+  tour: typeof tour
 }
 
-const models: RootModel = { notes, settings, selfDiscoveryItems, customDimensionItems, problems, accountSettings, solutions, solutionWorkspaces, problemCandidates, reflectSessions, researchSessions, portfolios }
+const models: RootModel = { notes, settings, selfDiscoveryItems, customDimensionItems, problems, accountSettings, solutions, solutionWorkspaces, problemCandidates, reflectSessions, researchSessions, portfolios, tour }
 
 export function createStore() {
   return init<RootModel>({ models })

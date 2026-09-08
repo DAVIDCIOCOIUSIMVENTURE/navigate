@@ -7,6 +7,7 @@ import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 import { MethodPickerBoard, type MethodPickerItem } from "@/components/method-picker-board"
 import { saveActiveDiscoveryProblemId } from "@/lib/active-discovery-problem"
+import { TOUR_TARGETS } from "@/lib/tour-steps"
 
 export default function IdentifySolutionsPage() {
   const router = useRouter()
@@ -62,13 +63,15 @@ export default function IdentifySolutionsPage() {
           </div>
         </CardHeader>
         <CardContent className={cn("flex flex-col gap-3", isWide && "flex-1 min-h-0 overflow-y-auto")}>
-          <MethodPickerBoard
-            items={items}
-            selectedId={null}
-            onPick={handlePick}
-            ctaLabel="Use this tool"
-            reselectLabel="Continue with this tool"
-          />
+          <div data-tour={TOUR_TARGETS.solutionMethods}>
+            <MethodPickerBoard
+              items={items}
+              selectedId={null}
+              onPick={handlePick}
+              ctaLabel="Use this tool"
+              reselectLabel="Continue with this tool"
+            />
+          </div>
         </CardContent>
       </Card>
     </div>

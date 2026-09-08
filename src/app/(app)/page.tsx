@@ -24,6 +24,7 @@ import { useSelector } from "react-redux"
 
 import type { RootState } from "@/store"
 import { useContainerSize } from "@/context/container-size-context"
+import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { cn } from "@/lib/utils"
 
 const VIEW_OPTIONS = [
@@ -44,7 +45,7 @@ export default function DashboardPage() {
       <div className="flex flex-wrap items-center justify-between gap-4">
         <CardTitle size="md" icon={Home} className="text-xl text-foreground">Home</CardTitle>
         <div className="flex flex-wrap items-center gap-2 shrink-0">
-          <Button onClick={() => router.push("/problems/identify")} className="gap-2">
+          <Button onClick={() => router.push("/problems/identify")} className="gap-2" data-tour={TOUR_TARGETS.dashboardIdentifyProblems}>
             <Plus className="h-4 w-4" />
             Identify new problems
           </Button>

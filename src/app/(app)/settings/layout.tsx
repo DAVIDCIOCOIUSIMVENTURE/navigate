@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { User, Palette, Bell, Shield } from "lucide-react"
+import { User, Palette, Bell, Shield, Route } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { NAV_ITEM_ACTIVE_CLASS, NAV_ITEM_HOVER_CLASS, navIconClass, navIconTileClass } from "@/lib/nav-item-styles"
@@ -13,6 +13,7 @@ const SETTINGS_NAV: { path: string; label: string; icon: LucideIcon; disabled?: 
   { path: "appearance", label: "Appearance", icon: Palette, disabled: true },
   { path: "notifications", label: "Notifications", icon: Bell, disabled: true },
   { path: "data-privacy", label: "Data & Privacy", icon: Shield },
+  { path: "guided-tour", label: "Guided tour", icon: Route },
 ]
 
 export default function SettingsLayout({ children }: { children: React.ReactNode }) {

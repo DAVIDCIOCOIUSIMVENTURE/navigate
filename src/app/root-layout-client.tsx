@@ -4,7 +4,7 @@ import React from "react"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
-import { Settings, HelpCircle, NotebookText, Compass, User, UserCircle, ShieldCheck } from "lucide-react"
+import { Settings, HelpCircle, NotebookText, Compass, User, UserCircle, ShieldCheck, Route } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { cn } from "@/lib/utils"
 import { AVATAR_COLOR_OPTIONS } from "@/lib/avatar-colors"
@@ -29,6 +29,8 @@ import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import { Toaster } from "@/components/ui/sonner"
 import { TeamAvatars } from "@/components/team-avatars"
+import { TourOverlay } from "@/components/tour/tour-overlay"
+import { TOUR_TARGETS } from "@/lib/tour-steps"
 import Link from "next/link"
 
 function ContentArea({ children }: { children: React.ReactNode }) {
@@ -235,10 +237,11 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     dispatch.reflectSessions.init()
     dispatch.researchSessions.init()
     dispatch.portfolios.init()
+    dispatch.tour.init()
   }, [dispatch])
 
   const headerTitle = (
-    <Breadcrumb className="ml-2 min-w-0">
+    <Breadcrumb className="ml-2 min-w-0" data-tour={TOUR_TARGETS.headerBreadcrumb}>
       <BreadcrumbList className="text-sm lg:text-base font-semibold flex-nowrap [&_span]:text-quaternary-foreground [&_a]:text-quaternary-foreground/80 [&_a:hover]:text-quaternary-foreground [&_li[role=presentation]]:text-quaternary-foreground/60">
         {crumbs.map((crumb, idx) => {
           const isLast = idx === crumbs.length - 1
@@ -277,6 +280,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             aria-pressed={journalOpen}
             className={panelButtonClass(journalOpen)}
             onClick={toggleJournal}
+            data-tour={TOUR_TARGETS.headerJournal}
           >
             <NotebookText className="h-3.5 w-3.5" />
           </Button>
@@ -292,6 +296,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             aria-pressed={guidanceOpen}
             className={panelButtonClass(guidanceOpen)}
             onClick={toggleGuidance}
+            data-tour={TOUR_TARGETS.headerGuidance}
           >
             <HelpCircle className="h-3.5 w-3.5" />
           </Button>
@@ -313,6 +318,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                 activeAvatarColor.bgClass,
               )}
               aria-label="Open user menu"
+              data-tour={TOUR_TARGETS.headerAccount}
             >
               <User className="h-5 w-5" />
             </button>
@@ -332,6 +338,15 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             <Settings className="h-4 w-4" />
             Settings
           </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onSelect={() => {
+            setTopNavOpen(false)
+            dispatch.tour.start()
+          }}
+        >
+          <Route className="h-4 w-4" />
+          Guided tour
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -359,7 +374,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 border-b border-quaternary/30 bg-quaternary px-4 justify-between">
           <div className="flex items-center gap-2 min-w-0">
             {brandLogo}
-            <SidebarTrigger className="shrink-0 text-quaternary-foreground hover:bg-white/10 hover:text-quaternary-foreground" />
+            <SidebarTrigger
+              className="shrink-0 text-quaternary-foreground hover:bg-white/10 hover:text-quaternary-foreground"
+              data-tour={TOUR_TARGETS.headerSidebarTrigger}
+            />
             <Separator orientation="vertical" className="h-4 bg-quaternary-foreground/30" />
             {headerTitle}
           </div>
@@ -372,7 +390,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                   className={cn("h-8 gap-2 text-white", pathname.startsWith("/admin") && "ring-2 ring-white/70")}
                   asChild
                 >
-                  <Link href="/admin" aria-label="Admin panel">
+                  <Link href="/admin" aria-label="Admin panel" data-tour={TOUR_TARGETS.headerAdmin}>
                     <ShieldCheck className="h-4 w-4" />
                     <span className="hidden md:inline">Admin panel</span>
                   </Link>
@@ -380,7 +398,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               </TooltipTrigger>
               <TooltipContent>Admin panel</TooltipContent>
             </Tooltip>
-            <div className="hidden md:block">
+            <div className="hidden md:block" data-tour={TOUR_TARGETS.headerTeam}>
               <TeamAvatars />
             </div>
             {panelToggles}
@@ -512,6 +530,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         </Sheet>
       )}
       <Toaster />
+      <TourOverlay />
     </SidebarProvider>
     </TooltipProvider>
   )

@@ -12,6 +12,7 @@ import { ArrowRight, Brain, Clock, PenLine, Glasses, Microscope, Target } from "
 import { EditProblemDialog } from "@/components/edit-problem-dialog"
 import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
 import { useContainerSize } from "@/context/container-size-context"
+import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { cn } from "@/lib/utils"
 import type { MethodPickerItem } from "@/components/method-picker-board"
 import { MethodTile } from "@/components/method-tile"
@@ -148,7 +149,7 @@ export default function IdentifyProblemsPage() {
           </CardHeader>
           <CardContent className={cn("flex flex-col gap-3", isWide && "flex-1 min-h-0 overflow-y-auto")}>
             <Tabs defaultValue={items[0].id} className="w-full">
-              <TabsList className="h-auto flex-wrap justify-start" aria-label="Ways to identify a problem">
+              <TabsList className="h-auto flex-wrap justify-start" aria-label="Ways to identify a problem" data-tour={TOUR_TARGETS.identifyMethods}>
                 {items.map((item) => {
                   const Icon = item.icon
                   return (

@@ -23,6 +23,7 @@ import {
 } from "@/lib/canvas-export"
 import { buildProblemBundle, downloadProblemBundle } from "@/lib/problem-export"
 import { ExportBundleDialog } from "@/components/export-bundle-dialog"
+import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { ProblemCanvasCards } from "./problem-canvas-cards"
 
 export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHref: string }) {
@@ -97,6 +98,7 @@ export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHre
         size="sm"
         className="bg-white"
         onClick={() => router.push(`/problems/${problem.id}/validation/introduction`)}
+        data-tour={TOUR_TARGETS.canvasValidate}
       >
         <ClipboardCheck className="h-3.5 w-3.5 mr-1.5" />
         Validate
@@ -113,6 +115,7 @@ export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHre
       <Button
         size="sm"
         onClick={() => router.push(`/problems/${problem.id}/explore/introduction`)}
+        data-tour={TOUR_TARGETS.canvasExplore}
       >
         <Compass className="h-3.5 w-3.5 mr-1.5" />
         Explore

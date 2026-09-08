@@ -10,6 +10,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { navigationItems } from "@/config/navigation"
+import { TOUR_TARGETS } from "@/lib/tour-steps"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 
@@ -32,7 +33,7 @@ export function AppSidebar() {
                       isActive={isActive}
                       className="h-9 text-base active:bg-white/20 active:text-sidebar-foreground data-[active=true]:bg-white data-[active=true]:text-quaternary data-[active=true]:hover:bg-white data-[active=true]:hover:text-quaternary"
                     >
-                      <Link href={item.url} className="transition-colors">
+                      <Link href={item.url} className="transition-colors" data-tour={TOUR_TARGETS.sidebarItem(item.url)}>
                         <item.icon className="h-4 w-4 shrink-0" />
                         <span>{item.title}</span>
                       </Link>

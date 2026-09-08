@@ -10,6 +10,7 @@ import { BundleMenuButton } from "@/components/bundle-menu-button"
 import { Plus, Target } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useContainerSize } from "@/context/container-size-context"
+import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { cn } from "@/lib/utils"
 
 export default function ProblemsPage() {
@@ -34,7 +35,7 @@ export default function ProblemsPage() {
           <BundleMenuButton kind="problem" />
         </div>
       </div>
-      <Card>
+      <Card data-tour={TOUR_TARGETS.problemsLibrary}>
         <CardContent className="py-4">
           <p className="text-base leading-relaxed">
             This is your <span className="font-bold">problem library</span>, a central place to collect, refine, and track the problems you&apos;ve identified.
