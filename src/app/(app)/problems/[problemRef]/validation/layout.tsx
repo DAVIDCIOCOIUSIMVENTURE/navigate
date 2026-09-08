@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { ProblemHubDialog } from "@/components/problem-hub/problem-hub-dialog"
+import { ProblemContextCard } from "@/components/context-card"
 import { ProblemProvider, useProblem, NAV_ITEMS } from "./context"
 import {
   ShieldCheck, FileText, LayoutTemplate, ClipboardCheck, ChevronDown, Eye,
@@ -88,7 +89,7 @@ function ViewProblemButton({ onClick }: { onClick: () => void }) {
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
-  const { problemRef } = useProblem()
+  const { problemRef, problem } = useProblem()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const isWide = useContainerSize() === "wide"
@@ -168,6 +169,9 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
+      <div className="mt-3">
+        <ProblemContextCard problem={problem} compact />
+      </div>
     </nav>
     )}
 
@@ -179,7 +183,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             <div className="flex-1 min-h-0 overflow-y-auto">
               <NavItems base={base} pathname={pathname} onNavigate={handleNavigate} />
             </div>
-            <div className="border-t mt-2 pt-2 shrink-0">
+            <div className="mt-2 shrink-0 flex flex-col gap-2">
+              <ProblemContextCard problem={problem} compact />
               <ViewProblemButton onClick={() => setDialogOpen(true)} />
             </div>
           </CardContent>

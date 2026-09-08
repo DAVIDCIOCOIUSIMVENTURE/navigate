@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { DiscoveryProvider, useDiscovery, NAV_ITEMS, STEPS_REQUIRING_PROBLEM } from "./context"
 import { SolutionsDrawer } from "./solutions-drawer"
+import { ProblemContextCard } from "@/components/context-card"
 import { Lightbulb, Lock, Check, ChevronDown, RotateCcw, ArrowLeft, PanelTop } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
 import { useFocusChrome } from "@/context/focus-chrome-context"
@@ -193,7 +194,7 @@ function MobileStepper({
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
-  const { problemId, candidates, resetWorkspace } = useDiscovery()
+  const { problemId, problem, candidates, resetWorkspace } = useDiscovery()
   const { revealTopNav } = useFocusChrome()
   const [mounted, setMounted] = useState(false)
   const [solutionsDrawerOpen, setSolutionsDrawerOpen] = useState(false)
@@ -238,6 +239,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   const railActions = problemSelected && (
     <div className="shrink-0 flex flex-col gap-2">
+      <ProblemContextCard problem={problem} compact />
       <Button
         variant="outline"
         size="sm"

@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { useDiscovery, getAdjacentSteps } from "../context"
 import type { DiscoveryToolType } from "@/types/solution"
 import { Shuffle, ArrowLeft, Lightbulb, RotateCcw, GitCompare, Wrench } from "lucide-react"
-import { ProblemContextCard } from "@/components/context-card"
 import { MethodPickerBoard, type MethodPickerItem } from "@/components/method-picker-board"
 
 type ToolKey = "scamper" | "reverse" | "analogy" | "improve"
@@ -57,7 +56,7 @@ const TOOL_ITEMS: MethodPickerItem[] = [
 export default function ChooseDiscoveryPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { problem, discoveryToolType, setDiscoveryToolType } = useDiscovery()
+  const { discoveryToolType, setDiscoveryToolType } = useDiscovery()
   const { prevPath, nextPath } = getAdjacentSteps(pathname)
 
   const selectedTool = (discoveryToolType || null) as ToolKey | null
@@ -73,8 +72,6 @@ export default function ChooseDiscoveryPage() {
         <CardTitle icon={Shuffle}>Choose Your Discovery Tool</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
-        <ProblemContextCard problem={problem} />
-
         <p className="text-base leading-relaxed">
           Use creative ideation techniques to generate solution candidates. Pick the tool that fits where you are right now: each one is a different angle on the same problem.
         </p>

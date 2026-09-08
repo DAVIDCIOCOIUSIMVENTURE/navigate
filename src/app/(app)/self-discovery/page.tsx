@@ -200,13 +200,13 @@ export default function SelfDiscoveryPage() {
                               {questionItems.map((trigger) => (
                                 <div
                                   key={trigger.id}
-                                  className="flex items-center gap-2 bg-amber-400 text-foreground rounded-md px-3 py-1.5 text-sm"
+                                  className="flex items-center gap-2 bg-secondary-brand text-secondary-brand-foreground rounded-md px-3 py-1.5 text-base"
                                 >
                                   <span>{trigger.title}</span>
                                   <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="h-4 w-4 text-foreground/70 hover:text-foreground hover:bg-amber-500/60"
+                                    className="h-4 w-4 text-secondary-brand-foreground/80 hover:text-secondary-brand-foreground hover:bg-white/20"
                                     onClick={() => setPendingDelete({ kind: "self-discovery", item: trigger })}
                                     aria-label={`Delete ${trigger.title}`}
                                   >
@@ -238,13 +238,13 @@ export default function SelfDiscoveryPage() {
                   {customYouItems.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center gap-2 bg-amber-400 text-foreground rounded-md px-3 py-1.5 text-sm"
+                      className="flex items-center gap-2 bg-secondary-brand text-secondary-brand-foreground rounded-md px-3 py-1.5 text-base"
                     >
                       <span>{item.label}</span>
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-4 w-4 text-foreground/70 hover:text-foreground hover:bg-amber-500/60"
+                        className="h-4 w-4 text-secondary-brand-foreground/80 hover:text-secondary-brand-foreground hover:bg-white/20"
                         onClick={() => setPendingDelete({ kind: "custom-you", item })}
                         aria-label={`Delete ${item.label}`}
                       >

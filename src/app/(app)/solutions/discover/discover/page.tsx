@@ -27,7 +27,6 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
-import { ProblemContextCard } from "@/components/context-card"
 
 type SaveDialogTool = Exclude<DiscoveryToolType, "">
 type SaveDialogFields = {
@@ -1492,7 +1491,7 @@ export default function DiscoverPage() {
   const router = useRouter()
   const guardedRouter = useGuardedRouter()
   const pathname = usePathname()
-  const { problemId, problem, discoveryToolType } = useDiscovery()
+  const { problemId, discoveryToolType } = useDiscovery()
   const { prevPath, nextPath } = getAdjacentSteps(pathname)
   const containerSize = useContainerSize()
   const isNarrow = containerSize === "narrow"
@@ -1513,8 +1512,6 @@ export default function DiscoverPage() {
         <CardTitle icon={Shuffle}>Discover Your Solution: {toolInfo?.title ?? "-"}</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
-        <ProblemContextCard problem={problem} />
-
         {toolInfo && (
           <div className="flex flex-col gap-3 text-base">
             <p>{toolInfo.description}</p>

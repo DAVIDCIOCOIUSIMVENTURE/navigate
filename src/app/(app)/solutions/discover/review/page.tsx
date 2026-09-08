@@ -12,7 +12,6 @@ import {
   Lightbulb, RotateCcw, GitCompare, Wrench,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
-import { ProblemContextCard } from "@/components/context-card"
 
 const DISCOVERY_TOOL_LABELS: Record<Exclude<DiscoveryToolType, "">, { label: string; icon: LucideIcon }> = {
   scamper: { label: "SCAMPER", icon: Lightbulb },
@@ -62,7 +61,6 @@ export default function ReviewPage() {
   const pathname = usePathname()
   const {
     problemId,
-    problem,
     discoveryToolType,
     reverseIdeation,
     reverseInversion,
@@ -93,8 +91,6 @@ export default function ReviewPage() {
           Every candidate below has been saved to your <span className="font-semibold">solution library</span>.
           Click <span className="font-semibold">Validate</span> on a candidate to start validating it.
         </p>
-
-        <ProblemContextCard problem={problem} />
 
         <ReviewSection>
           <div className="flex items-center gap-3">

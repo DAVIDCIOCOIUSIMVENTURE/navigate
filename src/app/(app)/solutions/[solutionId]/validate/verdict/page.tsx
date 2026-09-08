@@ -12,7 +12,6 @@ import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { getAdjacentSteps, useSolution } from "../context"
 import { VerdictStrategy } from "@/components/solution-strategies/verdict-strategy"
-import { ProblemContextCard, SolutionContextCard } from "@/components/context-card"
 
 type VerdictKey = "valid" | "unsure" | "invalid"
 
@@ -86,7 +85,7 @@ export default function VerdictPage() {
   const router = useRouter()
   const pathname = usePathname()
   const {
-    solutionId, solution, problem,
+    solutionId,
     feasibility, impact, cost, timeToImplement,
   } = useSolution()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, solutionId)
@@ -100,13 +99,6 @@ export default function VerdictPage() {
         <p className="text-base leading-relaxed">
           Based on the four metrics, decide whether this solution is worth pursuing. A high-impact, feasible, low-cost, fast solution is an easy yes. A low-impact, expensive, slow one is an easy no. Most sit somewhere in between.
         </p>
-
-        {(solution?.title || problem?.title || problem?.description) && (
-          <div className="flex flex-col gap-2">
-            {solution?.title && <SolutionContextCard solution={solution} />}
-            <ProblemContextCard problem={problem} />
-          </div>
-        )}
 
         <div className="flex flex-col gap-2">
           <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Your scores</h3>

@@ -8,7 +8,6 @@ import { ArrowLeft, ArrowRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { getAdjacentSteps, useSolution } from "./context"
 import { MetricStrategy, type MetricContent, type MetricCaseStudy, type ScaleStop } from "@/components/solution-strategies/metric-strategy"
-import { ProblemContextCard, SolutionContextCard } from "@/components/context-card"
 
 export type { MetricContent, MetricCaseStudy, ScaleStop }
 
@@ -21,7 +20,7 @@ interface MetricStepProps {
 export function MetricStep({ content, value, onChange }: MetricStepProps) {
   const router = useRouter()
   const pathname = usePathname()
-  const { solutionId, solution, problem } = useSolution()
+  const { solutionId } = useSolution()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, solutionId)
 
   const { icon: Icon, title, summary, intro, readFor, pickLevel, yourTurnTitle, yourTurnBody, strategyTitle, strategyLabel, strategyDescription, scale, caseStudies, accent } = content
@@ -32,13 +31,6 @@ export function MetricStep({ content, value, onChange }: MetricStepProps) {
         <CardTitle icon={Icon}>{title}</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
-        {(solution?.title || problem?.title || problem?.description) && (
-          <div className="flex flex-col gap-2">
-            {solution?.title && <SolutionContextCard solution={solution} />}
-            <ProblemContextCard problem={problem} />
-          </div>
-        )}
-
         <div className="flex flex-col gap-3 text-base">
           <p>{summary}</p>
           {intro.map((para) => (

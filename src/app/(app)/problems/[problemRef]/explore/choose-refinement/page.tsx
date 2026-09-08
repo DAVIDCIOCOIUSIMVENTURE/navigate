@@ -17,7 +17,6 @@ import { useProblem, getAdjacentSteps } from "../context"
 import type { AnalysisToolType } from "@/types/solution"
 import { Search, ArrowLeft, ArrowRight, TreePine, HelpCircle, Users } from "lucide-react"
 import { MethodPickerBoard, type MethodPickerItem } from "@/components/method-picker-board"
-import { ProblemContextCard } from "@/components/context-card"
 
 type ToolKey = "root-causes" | "five-whys" | "affected-groups"
 
@@ -63,7 +62,7 @@ const TOOL_ITEMS: MethodPickerItem[] = [
 export default function ChooseRefinementPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { problem, problemRef, analysisToolType, setAnalysisToolType } = useProblem()
+  const { problemRef, analysisToolType, setAnalysisToolType } = useProblem()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, problemRef)
   const [confirmOpen, setConfirmOpen] = useState(false)
 
@@ -96,8 +95,6 @@ export default function ChooseRefinementPage() {
           <CardTitle icon={Search}>Choose Your Refinement Method</CardTitle>
         </CardHeader>
         <CardContent className="p-10 pt-6 flex flex-col gap-6">
-          <ProblemContextCard problem={problem} />
-
           <p className="text-base leading-relaxed">
             Take time to understand <strong>why</strong> this problem exists and <strong>who</strong> it affects.
             Choose a refinement technique below to get started.

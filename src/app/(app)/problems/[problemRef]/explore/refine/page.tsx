@@ -12,7 +12,6 @@ import { ROOT_CAUSES_CASE_STUDIES } from "./root-causes-case-studies"
 import { FIVE_WHYS_CASE_STUDIES } from "./five-whys-case-studies"
 import { AFFECTED_GROUPS_CASE_STUDIES } from "./affected-groups-case-studies"
 import { RefinementStrategy } from "@/components/problem-strategies/refinement-strategy"
-import { ProblemContextCard } from "@/components/context-card"
 import {
   Search, Plus, Trash2, ArrowLeft, ArrowRight,
   Car, MessageSquare, Stethoscope, Wrench, Landmark, Cloud,
@@ -336,7 +335,7 @@ const CASE_STUDIES_BY_TOOL = {
 export default function RefinePage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { problemRef, problem, analysisToolType } = useProblem()
+  const { problemRef, analysisToolType } = useProblem()
   const { prevPath, nextPath } = getAdjacentSteps(pathname, problemRef)
 
   // The step is hidden from the stepper while the switch is off; send a
@@ -354,8 +353,6 @@ export default function RefinePage() {
         <CardTitle icon={Search}>Refine: {toolInfo?.title ?? "-"}</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
-        <ProblemContextCard problem={problem} />
-
         {toolInfo && (
           <div className="flex flex-col gap-3 text-base">
             <p>{toolInfo.description}</p>

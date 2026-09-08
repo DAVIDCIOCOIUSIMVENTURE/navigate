@@ -7,7 +7,10 @@ import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
 import { ProblemHubDialog } from "@/components/problem-hub/problem-hub-dialog"
 import { SolutionHubDialog } from "@/components/solution-hub/solution-hub-dialog"
+import { ProblemContextCard, SolutionContextCard } from "@/components/context-card"
 import { SolutionProvider, useSolution, NAV_ITEMS } from "./context"
+import type { Problem } from "@/store/problems-model"
+import type { Solution } from "@/types/solution"
 import {
   ClipboardCheck, Gauge, Target, Coins, Clock, CheckCircle2, LayoutTemplate,
   FileText, ChevronDown, Eye, Lightbulb,
@@ -71,9 +74,21 @@ function NavItems({
   )
 }
 
-function SidebarActions({ onOpenSolution, onOpenProblem }: { onOpenSolution: () => void; onOpenProblem: () => void }) {
+function SidebarActions({
+  solution,
+  problem,
+  onOpenSolution,
+  onOpenProblem,
+}: {
+  solution: Solution | undefined
+  problem: Problem | undefined
+  onOpenSolution: () => void
+  onOpenProblem: () => void
+}) {
   return (
     <div className="flex flex-col gap-2">
+      <SolutionContextCard solution={solution} compact />
+      <ProblemContextCard problem={problem} compact />
       <Button variant="outline" size="sm" className="w-full gap-2" onClick={onOpenSolution}>
         <Lightbulb className="h-3.5 w-3.5" />
         View Solution
@@ -89,7 +104,7 @@ function SidebarActions({ onOpenSolution, onOpenProblem }: { onOpenSolution: () 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
-  const { solutionId, problem } = useSolution()
+  const { solutionId, solution, problem } = useSolution()
   const [solutionDialogOpen, setSolutionDialogOpen] = useState(false)
   const [problemDialogOpen, setProblemDialogOpen] = useState(false)
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
@@ -138,8 +153,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               </CollapsibleTrigger>
               <CollapsibleContent className="pt-1">
                 <NavItems base={base} pathname={pathname} onNavigate={handleNavigate} />
-                <div className="border-t mt-2 pt-2 px-1">
+                <div className="mt-2 px-1">
                   <SidebarActions
+                    solution={solution}
+                    problem={problem}
                     onOpenSolution={() => setSolutionDialogOpen(true)}
                     onOpenProblem={() => setProblemDialogOpen(true)}
                   />
@@ -159,8 +176,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               <div className="flex-1 min-h-0 overflow-y-auto">
                 <NavItems base={base} pathname={pathname} onNavigate={handleNavigate} />
               </div>
-              <div className="border-t mt-2 pt-2 shrink-0">
+              <div className="mt-2 shrink-0">
                 <SidebarActions
+                  solution={solution}
+                  problem={problem}
                   onOpenSolution={() => setSolutionDialogOpen(true)}
                   onOpenProblem={() => setProblemDialogOpen(true)}
                 />

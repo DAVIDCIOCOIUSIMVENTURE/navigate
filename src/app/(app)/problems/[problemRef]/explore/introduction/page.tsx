@@ -1,13 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
-import { useSelector } from "react-redux"
-import type { RootState } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { getAdjacentSteps, useProblem } from "../context"
-import { ProblemContextCard } from "@/components/context-card"
 import { SHOW_REFINEMENT_STEPS } from "@/lib/feature-flags"
 import {
   Compass, GitFork, LayoutTemplate, Users, Search, Sparkles,
@@ -28,18 +24,8 @@ const STEPS = SHOW_REFINEMENT_STEPS ? ALL_STEPS : ALL_STEPS.filter((step) => !st
 export default function ExploreIntroductionPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { problemRef, problemId } = useProblem()
+  const { problemRef } = useProblem()
   const { nextPath } = getAdjacentSteps(pathname, problemRef)
-  const problem = useSelector((state: RootState) =>
-    state.problems.problems.find((p) => p.id === problemId)
-  )
-
-  // Avoid SSR/client mismatch: localStorage-backed Redux data only resolves
-  // after mount, so defer rendering the problem block until then.
-  const [mounted, setMounted] = useState(false)
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   return (
     <Card className="w-full flex-1">
@@ -66,8 +52,6 @@ export default function ExploreIntroductionPage() {
             />
           </div>
         </div>
-
-        {mounted && <ProblemContextCard problem={problem} />}
 
         <div className="flex flex-col gap-3">
           <h3 className="text-xl font-bold text-foreground">What you&apos;ll work through</h3>
