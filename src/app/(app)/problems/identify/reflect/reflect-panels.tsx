@@ -1,20 +1,11 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { useRouter } from "next/navigation"
-import type { AppDispatch, RootState } from "@/store"
-import { Card, CardContent } from "@/components/ui/card"
+import { useMemo, useState, type ReactNode } from "react"
+import { useDispatch } from "react-redux"
+import type { AppDispatch } from "@/store"
 import { Button } from "@/components/ui/button"
-import { ConfirmDialog } from "@/components/ui/confirm-dialog"
-import { useFocusChrome } from "@/context/focus-chrome-context"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
 import {
   Dialog,
   DialogContent,
@@ -26,23 +17,19 @@ import {
 import {
   ArrowLeft,
   ArrowRight,
-  Check,
-  ChevronDown,
   ClipboardCheck,
-  PanelTop,
   Pencil,
   Plus,
-  RotateCcw,
-  Glasses,
   Trash2,
   Users,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useContainerSize } from "@/context/container-size-context"
-import { REFLECT_LENSES, LENS_CONTEXT_FIELDS, type Lens, type LensId, getReflectLens } from "@/data/reflectLenses"
+import { REFLECT_LENSES, LENS_CONTEXT_FIELDS, type Lens, type LensId } from "@/data/reflectLenses"
 import { MethodPickerBoard, type MethodPickerItem } from "@/components/method-picker-board"
 import { MethodTile } from "@/components/method-tile"
-import { ReflectProvider, useReflect } from "@/components/reflect/reflect-context"
+import { ContextBanner } from "@/components/context-card"
+import { useReflect } from "@/components/reflect/reflect-context"
 import { LifeExperiencesPicker } from "@/components/reflect/life-experiences-picker"
 import { WorkContextPicker } from "@/components/reflect/work-context-picker"
 import { OwnProblemsPicker } from "@/components/reflect/own-problems-picker"
@@ -51,20 +38,12 @@ import { IdentifyDimensionPicker } from "@/components/reflect/identify-dimension
 import { useResolveOrCreate } from "@/lib/dimension-labels"
 import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
 import type { ReflectionCapture } from "@/types/reflection"
-import type { ReflectStep } from "@/store/reflect-sessions-model"
-import {
-  NAV_ITEM_ACTIVE_CLASS,
-  NAV_ITEM_HOVER_CLASS,
-  SECTION_TITLE_ICON_CLASS,
-  SECTION_TITLE_TILE_CLASS,
-  navStepBadgeClass,
-} from "@/lib/nav-item-styles"
 
-const REFLECT_STEPS: { id: ReflectStep; label: string }[] = [
-  { id: "pick", label: "Pick a method" },
-  { id: "prompts", label: "Prompts" },
-  { id: "review", label: "Review" },
-]
+/*
+ * Step content panels for the Reflect identify flow. Each panel is rendered by
+ * its own route page (see ./routes.ts); the shared shell, stepper and store
+ * sync live in ./layout.tsx.
+ */
 
 const ENABLED_LENS_IDS = new Set<LensId>([
   "life",
@@ -129,135 +108,9 @@ function GuidancePanel({
   )
 }
 
-function Stepper({
-  steps,
-  activeId,
-  onStepClick,
-  isStepEnabled,
-  promptsProgress,
-  onReset,
-  resetDescription,
-}: {
-  steps: { id: ReflectStep; label: string }[]
-  activeId: ReflectStep
-  onStepClick: (id: ReflectStep) => void
-  isStepEnabled: (id: ReflectStep) => boolean
-  promptsProgress?: { current: number; total: number } | null
-  onReset: () => void
-  resetDescription: string
-}) {
-  const isWide = useContainerSize() === "wide"
-  const [open, setOpen] = useState(false)
-  const activeIdx = steps.findIndex((s) => s.id === activeId)
-  const active = steps[activeIdx] ?? steps[0]
-
-  const stepLabel = (id: ReflectStep, baseLabel: string) => {
-    if (id === "prompts" && activeId === "prompts" && promptsProgress) {
-      return `Prompt ${promptsProgress.current} of ${promptsProgress.total}`
-    }
-    return baseLabel
-  }
-
-  const resetButton = (
-    <ConfirmDialog
-      trigger={
-        <Button variant="outline" size="sm" className="w-full gap-2 bg-card text-destructive hover:text-destructive hover:bg-destructive/10">
-          <RotateCcw className="h-3.5 w-3.5" />
-          Reset
-        </Button>
-      }
-      title="Reset?"
-      description={resetDescription}
-      confirmLabel="Reset"
-      onConfirm={onReset}
-    />
-  )
-
-  const navList = (
-    <div className="flex flex-col gap-1">
-      {steps.map((s, i) => {
-        const isActive = s.id === activeId
-        const isCompleted = i < activeIdx
-        const enabled = isStepEnabled(s.id)
-        return (
-          <Button
-            key={s.id}
-            type="button"
-            variant="ghost"
-            disabled={!enabled}
-            onClick={() => {
-              if (!enabled) return
-              setOpen(false)
-              onStepClick(s.id)
-            }}
-            aria-current={isActive ? "step" : undefined}
-            className={cn(
-              "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2 disabled:opacity-100",
-              NAV_ITEM_HOVER_CLASS,
-              isActive && NAV_ITEM_ACTIVE_CLASS,
-            )}
-          >
-            <span className={navStepBadgeClass(isActive ? "active" : isCompleted ? "completed" : enabled ? "default" : "locked")}>
-              {isCompleted ? <Check className="h-3.5 w-3.5" /> : i + 1}
-            </span>
-            <span className="flex-1 text-left">{stepLabel(s.id, s.label)}</span>
-          </Button>
-        )
-      })}
-    </div>
-  )
-
-  if (isWide) {
-    return (
-      <Card className="flex-1 min-h-0 flex flex-col overflow-hidden">
-        <CardContent className="p-3 flex flex-col gap-3 flex-1 min-h-0">
-          <div className="flex-1 min-h-0 overflow-y-auto">{navList}</div>
-          <div className="shrink-0">{resetButton}</div>
-        </CardContent>
-      </Card>
-    )
-  }
-
-  return (
-    <nav aria-label="Reflect steps" className="w-full shrink-0">
-      <Collapsible open={open} onOpenChange={setOpen}>
-        <Card>
-          <CardContent className="p-2">
-            <CollapsibleTrigger asChild>
-              <Button variant="ghost" className="w-full justify-between h-auto py-2 px-3">
-                <span className="flex items-center gap-2 text-sm font-medium min-w-0">
-                  <span className={navStepBadgeClass("active")}>
-                    {activeIdx + 1}
-                  </span>
-                  <span className="truncate">
-                    Step {activeIdx + 1} of {steps.length}: {stepLabel(active.id, active.label)}
-                  </span>
-                </span>
-                <ChevronDown
-                  className={cn(
-                    "h-4 w-4 text-muted-foreground transition-transform shrink-0",
-                    open && "rotate-180"
-                  )}
-                  aria-hidden="true"
-                />
-              </Button>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="pt-2">
-              <div className="px-1 flex flex-col gap-3">
-                {navList}
-                {resetButton}
-              </div>
-            </CollapsibleContent>
-          </CardContent>
-        </Card>
-      </Collapsible>
-    </nav>
-  )
-}
-
 /* ─── Step content panels ─── */
 
-function PickMethodPanel({
+export function PickMethodPanel({
   onPick,
   selectedLensId,
 }: {
@@ -291,7 +144,7 @@ function PickMethodPanel({
   )
 }
 
-function PromptsPanel({
+export function PromptsPanel({
   index,
   onIndexChange,
   onBackToPick,
@@ -545,10 +398,9 @@ function PromptsPanel({
         <h2 className="text-2xl font-bold leading-none tracking-tight text-secondary-brand">{lens.title}</h2>
       </div>
       {chosenAnchor && !isAnchorPrompt && (
-        <div className="flex items-baseline gap-1.5 flex-1 basis-72 rounded-md border border-yellow-600/30 bg-yellow-600/10 px-3 py-2 text-base leading-snug">
-          <span className="font-semibold">Reflecting on:</span>
-          <span className="font-medium">{chosenAnchor}</span>
-        </div>
+        <ContextBanner label="Reflecting on:" className="flex-1 basis-72">
+          {chosenAnchor}
+        </ContextBanner>
       )}
     </div>
   )
@@ -576,7 +428,7 @@ function PromptsPanel({
   )
 }
 
-function ReviewPanel({
+export function ReviewPanel({
   onBack,
   onJumpToPrompt,
   onKeepIdentifying,
@@ -991,196 +843,4 @@ function ReviewPanel({
       />
     </div>
   )
-}
-
-/* ─── ReflectBuilder (main entry point) ─── */
-
-export function ReflectBuilder({ resetRef }: { resetRef?: React.MutableRefObject<(() => void) | null> }) {
-  const dispatch = useDispatch<AppDispatch>()
-  const hydrated = useSelector((s: RootState) => s.reflectSessions.hydrated)
-  const storedLensId = useSelector(
-    (s: RootState) => s.reflectSessions.lastPickedLensId
-  )
-  const storedStep = useSelector((s: RootState) => s.reflectSessions.lastStep)
-  const storedPromptIndex = useSelector(
-    (s: RootState) => s.reflectSessions.lastPromptIndex
-  )
-  const [step, setStep] = useState<ReflectStep>("pick")
-  const [lensId, setLensId] = useState<LensId | null>(null)
-  const [promptIndex, setPromptIndex] = useState(0)
-  const [restored, setRestored] = useState(false)
-  const lens = lensId ? getReflectLens(lensId) ?? null : null
-  const isWide = useContainerSize() === "wide"
-  const router = useRouter()
-  const { revealTopNav } = useFocusChrome()
-
-  useEffect(() => {
-    if (restored) return
-    if (!hydrated) return
-    setRestored(true)
-    if (storedLensId && getReflectLens(storedLensId)) {
-      setLensId(storedLensId as LensId)
-      const restoredLens = getReflectLens(storedLensId)!
-      const total = restoredLens.prompts.length
-      const safeIndex = Math.min(Math.max(storedPromptIndex, 0), Math.max(total - 1, 0))
-      setPromptIndex(safeIndex)
-      const restoredStep: ReflectStep =
-        storedStep && storedStep !== ("introduction" as ReflectStep)
-          ? storedStep
-          : "prompts"
-      setStep(restoredStep)
-    }
-  }, [hydrated, storedLensId, storedStep, storedPromptIndex, restored])
-
-  useEffect(() => {
-    if (!restored) return
-    dispatch.reflectSessions.setLastPosition({
-      lensId,
-      step: lensId ? step : null,
-      promptIndex,
-    })
-  }, [restored, dispatch, lensId, step, promptIndex])
-
-  function handlePick(id: LensId) {
-    setLensId(id)
-    setPromptIndex(0)
-    setStep("prompts")
-  }
-
-  function isStepEnabled(id: ReflectStep): boolean {
-    if (id === "pick") return true
-    if (!lens) return false
-    return true
-  }
-
-  function handleStepClick(id: ReflectStep) {
-    if (id === "pick") {
-      setStep("pick")
-      return
-    }
-    if (!lens) return
-    if (id === "prompts") setPromptIndex(0)
-    setStep(id)
-  }
-
-  const handleReset = useCallback(() => {
-    dispatch.reflectSessions.clearAllSessions()
-    setStep("pick")
-    setLensId(null)
-    setPromptIndex(0)
-  }, [dispatch])
-
-  useEffect(() => {
-    if (!resetRef) return
-    resetRef.current = handleReset
-  }, [resetRef, handleReset])
-
-  const promptsProgress =
-    step === "prompts" && lens
-      ? { current: promptIndex + 1, total: lens.prompts.length }
-      : null
-
-  const content = (() => {
-    if (step === "pick" || !lens) {
-      return <PickMethodPanel onPick={handlePick} selectedLensId={lensId} />
-    }
-    if (step === "prompts") {
-      return (
-        <PromptsPanel
-          index={promptIndex}
-          onIndexChange={setPromptIndex}
-          onBackToPick={() => {
-            setStep("pick")
-          }}
-          onReview={() => setStep("review")}
-        />
-      )
-    }
-    return (
-      <ReviewPanel
-        onBack={() => {
-          setPromptIndex(0)
-          setStep("prompts")
-        }}
-        onJumpToPrompt={(promptId) => {
-          if (!lens) return
-          const idx = lens.prompts.findIndex((p) => p.id === promptId)
-          setPromptIndex(idx >= 0 ? idx : 0)
-          setStep("prompts")
-        }}
-        onKeepIdentifying={() => {
-          setStep("pick")
-          setPromptIndex(0)
-        }}
-      />
-    )
-  })()
-
-  const backAndPanel = (
-    <div className="flex items-center gap-2 shrink-0">
-      <Button variant="tertiary-outline" onClick={() => router.push("/problems/identify")} className="gap-2">
-        <ArrowLeft className="h-4 w-4" />
-        Back
-      </Button>
-      <Button
-        variant="outline"
-        size="icon"
-        className="bg-white"
-        onClick={revealTopNav}
-        aria-label="Show top bar"
-        title="Top bar"
-      >
-        <PanelTop className="h-4 w-4" />
-      </Button>
-    </div>
-  )
-
-  const sectionTitle = (
-    <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 text-foreground">
-      <span className={SECTION_TITLE_TILE_CLASS} aria-hidden="true">
-        <Glasses className={SECTION_TITLE_ICON_CLASS} />
-      </span>
-      <span className="truncate">Reflect</span>
-    </h1>
-  )
-
-  const stepper = (
-    <Stepper
-      steps={REFLECT_STEPS}
-      activeId={step}
-      onStepClick={handleStepClick}
-      isStepEnabled={isStepEnabled}
-      promptsProgress={promptsProgress}
-      onReset={handleReset}
-      resetDescription="This will return you to the method picker and clear in-progress answers. Saved problems are not affected."
-    />
-  )
-
-  const inner = (
-    <div className={cn("flex flex-1 min-h-0 w-full", isWide ? "flex-row gap-3" : "flex-col gap-3")}>
-      {isWide ? (
-        <div className="w-72 shrink-0 h-full flex flex-col gap-4 min-h-0">
-          {backAndPanel}
-          {sectionTitle}
-          {stepper}
-        </div>
-      ) : (
-        <>
-          <div className="flex items-center gap-3 shrink-0">
-            {backAndPanel}
-            {sectionTitle}
-          </div>
-          {stepper}
-        </>
-      )}
-      <Card className="flex flex-col flex-1 min-h-0 min-w-0 overflow-hidden">
-        <CardContent className={cn("flex-1 flex flex-col min-h-0", isWide ? "p-10" : "p-6")}>
-          {content}
-        </CardContent>
-      </Card>
-    </div>
-  )
-
-  if (step === "pick" || !lens) return inner
-  return <ReflectProvider lens={lens}>{inner}</ReflectProvider>
 }

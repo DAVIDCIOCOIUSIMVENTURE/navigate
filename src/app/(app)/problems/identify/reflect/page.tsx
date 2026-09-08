@@ -1,23 +1,22 @@
 "use client"
 
-import { cn } from "@/lib/utils"
-import { useContainerSize } from "@/context/container-size-context"
-import { ReflectBuilder } from "./reflect-builder"
+import { useRouter } from "next/navigation"
+import { useSelector } from "react-redux"
+import type { RootState } from "@/store"
+import { getReflectLens, type LensId } from "@/data/reflectLenses"
+import { PickMethodPanel } from "./reflect-panels"
+import { reflectPromptHref } from "./routes"
 
-export default function ReflectPage() {
-  const isWide = useContainerSize() === "wide"
+export default function ReflectPickPage() {
+  const router = useRouter()
+  const storedLensId = useSelector((s: RootState) => s.reflectSessions.lastPickedLensId)
+  const selectedLensId =
+    storedLensId && getReflectLens(storedLensId) ? (storedLensId as LensId) : null
 
   return (
-    <div className="flex flex-1 min-h-0 w-full flex-col">
-      <div
-        className={cn(
-          "mx-auto flex w-full max-w-screen-2xl flex-1 min-h-0 flex-col gap-3",
-          "px-4 py-4 sm:px-6 lg:px-8 lg:py-6",
-          isWide && "overflow-hidden max-h-[100svh]",
-        )}
-      >
-        <ReflectBuilder />
-      </div>
-    </div>
+    <PickMethodPanel
+      selectedLensId={selectedLensId}
+      onPick={(id) => router.push(reflectPromptHref(id, 0))}
+    />
   )
 }

@@ -1,19 +1,10 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { useRouter } from "next/navigation"
-import type { AppDispatch, RootState } from "@/store"
-import { Card, CardContent } from "@/components/ui/card"
+import { useMemo, useState, type ReactNode } from "react"
+import { useDispatch } from "react-redux"
+import type { AppDispatch } from "@/store"
 import { Button } from "@/components/ui/button"
-import { ConfirmDialog } from "@/components/ui/confirm-dialog"
-import { useFocusChrome } from "@/context/focus-chrome-context"
 import { Textarea } from "@/components/ui/textarea"
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
 import {
   Dialog,
   DialogContent,
@@ -25,16 +16,11 @@ import {
 import {
   ArrowLeft,
   ArrowRight,
-  Check,
   CheckCircle2,
-  ChevronDown,
   ClipboardCheck,
   ExternalLink,
-  Microscope,
-  PanelTop,
   Pencil,
   Plus,
-  RotateCcw,
   Trash2,
   Users,
 } from "lucide-react"
@@ -42,34 +28,25 @@ import { cn } from "@/lib/utils"
 import { useContainerSize } from "@/context/container-size-context"
 import {
   RESEARCH_METHODS,
-  getResearchMethod,
   getToolCategoryLabel,
   type ResearchMethodId,
   type ResearchTool,
   type ResearchToolCategory,
 } from "@/data/researchMethods"
-import { ResearchProvider, useResearch } from "@/components/research/research-context"
+import { useResearch } from "@/components/research/research-context"
 import { MethodPickerBoard, type MethodPickerItem } from "@/components/method-picker-board"
 import { MethodTile } from "@/components/method-tile"
+import { ContextBanner } from "@/components/context-card"
 import { IdentifyDimensionPicker } from "@/components/reflect/identify-dimension-picker"
 import { useResolveOrCreate } from "@/lib/dimension-labels"
 import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
 import type { ResearchCapture } from "@/types/research"
-import type { ResearchStep } from "@/store/research-sessions-model"
-import {
-  NAV_ITEM_ACTIVE_CLASS,
-  NAV_ITEM_HOVER_CLASS,
-  SECTION_TITLE_ICON_CLASS,
-  SECTION_TITLE_TILE_CLASS,
-  navStepBadgeClass,
-} from "@/lib/nav-item-styles"
 
-const RESEARCH_STEPS: { id: ResearchStep; label: string }[] = [
-  { id: "pick", label: "Pick a method" },
-  { id: "tool", label: "Pick a tool" },
-  { id: "capture", label: "Capture" },
-  { id: "review", label: "Review" },
-]
+/*
+ * Step content panels for the Research identify flow. Each panel is rendered
+ * by its own route page (see ./routes.ts); the shared shell, stepper and store
+ * sync live in ./layout.tsx.
+ */
 
 const ENABLED_METHOD_IDS = new Set<ResearchMethodId>(["abandoned-products"])
 
@@ -122,135 +99,9 @@ function GuidancePanel({
   )
 }
 
-function Stepper({
-  steps,
-  activeId,
-  onStepClick,
-  isStepEnabled,
-  promptsProgress,
-  onReset,
-  resetDescription,
-}: {
-  steps: { id: ResearchStep; label: string }[]
-  activeId: ResearchStep
-  onStepClick: (id: ResearchStep) => void
-  isStepEnabled: (id: ResearchStep) => boolean
-  promptsProgress?: { current: number; total: number } | null
-  onReset: () => void
-  resetDescription: string
-}) {
-  const isWide = useContainerSize() === "wide"
-  const [open, setOpen] = useState(false)
-  const activeIdx = steps.findIndex((s) => s.id === activeId)
-  const active = steps[activeIdx] ?? steps[0]
-
-  const stepLabel = (id: ResearchStep, baseLabel: string) => {
-    if (id === "capture" && activeId === "capture" && promptsProgress) {
-      return `Prompt ${promptsProgress.current} of ${promptsProgress.total}`
-    }
-    return baseLabel
-  }
-
-  const resetButton = (
-    <ConfirmDialog
-      trigger={
-        <Button variant="outline" size="sm" className="w-full gap-2 bg-card text-destructive hover:text-destructive hover:bg-destructive/10">
-          <RotateCcw className="h-3.5 w-3.5" />
-          Reset
-        </Button>
-      }
-      title="Reset?"
-      description={resetDescription}
-      confirmLabel="Reset"
-      onConfirm={onReset}
-    />
-  )
-
-  const navList = (
-    <div className="flex flex-col gap-1">
-      {steps.map((s, i) => {
-        const isActive = s.id === activeId
-        const isCompleted = i < activeIdx
-        const enabled = isStepEnabled(s.id)
-        return (
-          <Button
-            key={s.id}
-            type="button"
-            variant="ghost"
-            disabled={!enabled}
-            onClick={() => {
-              if (!enabled) return
-              setOpen(false)
-              onStepClick(s.id)
-            }}
-            aria-current={isActive ? "step" : undefined}
-            className={cn(
-              "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2 disabled:opacity-100",
-              NAV_ITEM_HOVER_CLASS,
-              isActive && NAV_ITEM_ACTIVE_CLASS,
-            )}
-          >
-            <span className={navStepBadgeClass(isActive ? "active" : isCompleted ? "completed" : enabled ? "default" : "locked")}>
-              {isCompleted ? <Check className="h-3.5 w-3.5" /> : i + 1}
-            </span>
-            <span className="flex-1 text-left">{stepLabel(s.id, s.label)}</span>
-          </Button>
-        )
-      })}
-    </div>
-  )
-
-  if (isWide) {
-    return (
-      <Card className="flex-1 min-h-0 flex flex-col overflow-hidden">
-        <CardContent className="p-3 flex flex-col gap-3 flex-1 min-h-0">
-          <div className="flex-1 min-h-0 overflow-y-auto">{navList}</div>
-          <div className="shrink-0">{resetButton}</div>
-        </CardContent>
-      </Card>
-    )
-  }
-
-  return (
-    <nav aria-label="Research steps" className="w-full shrink-0">
-      <Collapsible open={open} onOpenChange={setOpen}>
-        <Card>
-          <CardContent className="p-2">
-            <CollapsibleTrigger asChild>
-              <Button variant="ghost" className="w-full justify-between h-auto py-2 px-3">
-                <span className="flex items-center gap-2 text-sm font-medium min-w-0">
-                  <span className={navStepBadgeClass("active")}>
-                    {activeIdx + 1}
-                  </span>
-                  <span className="truncate">
-                    Step {activeIdx + 1} of {steps.length}: {stepLabel(active.id, active.label)}
-                  </span>
-                </span>
-                <ChevronDown
-                  className={cn(
-                    "h-4 w-4 text-muted-foreground transition-transform shrink-0",
-                    open && "rotate-180"
-                  )}
-                  aria-hidden="true"
-                />
-              </Button>
-            </CollapsibleTrigger>
-            <CollapsibleContent className="pt-2">
-              <div className="px-1 flex flex-col gap-3">
-                {navList}
-                {resetButton}
-              </div>
-            </CollapsibleContent>
-          </CardContent>
-        </Card>
-      </Collapsible>
-    </nav>
-  )
-}
-
 /* ─── Pick method ─── */
 
-function PickMethodPanel({
+export function PickMethodPanel({
   onPick,
   selectedMethodId,
 }: {
@@ -293,7 +144,7 @@ const TOOL_CATEGORY_ORDER: ResearchToolCategory[] = [
   "general",
 ]
 
-function ToolPickerPanel({
+export function ToolPickerPanel({
   onBack,
   onContinue,
 }: {
@@ -464,7 +315,7 @@ function ToolPickerPanel({
 
 /* ─── Capture prompts ─── */
 
-function CapturePanel({
+export function CapturePanel({
   index,
   onIndexChange,
   onBackToTool,
@@ -520,17 +371,16 @@ function CapturePanel({
         <h2 className="text-2xl font-bold leading-none tracking-tight text-secondary-brand">{method.title}</h2>
       </div>
       {selectedTool && (
-        <div className="flex items-baseline gap-1.5 flex-1 basis-72 rounded-md border border-yellow-600/30 bg-yellow-600/10 px-3 py-2 text-base leading-snug">
-          <span className="font-semibold">Researching with:</span>
+        <ContextBanner label="Researching with:" className="flex-1 basis-72">
           <a
             href={selectedTool.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-medium text-primary hover:underline"
+            className="text-primary hover:underline"
           >
             {selectedTool.name}
           </a>
-        </div>
+        </ContextBanner>
       )}
     </div>
   )
@@ -641,7 +491,7 @@ function CapturePanel({
 
 /* ─── Review & save ─── */
 
-function ReviewPanel({
+export function ReviewPanel({
   onBack,
   onJumpToPrompt,
   onKeepResearching,
@@ -1006,217 +856,4 @@ function ReviewPanel({
       />
     </div>
   )
-}
-
-/* ─── ResearchBuilder (main entry point) ─── */
-
-export function ResearchBuilder({
-  resetRef,
-}: {
-  resetRef?: React.MutableRefObject<(() => void) | null>
-}) {
-  const dispatch = useDispatch<AppDispatch>()
-  const hydrated = useSelector((s: RootState) => s.researchSessions.hydrated)
-  const storedMethodId = useSelector(
-    (s: RootState) => s.researchSessions.lastPickedMethodId
-  )
-  const storedStep = useSelector((s: RootState) => s.researchSessions.lastStep)
-  const storedPromptIndex = useSelector(
-    (s: RootState) => s.researchSessions.lastPromptIndex
-  )
-  const [step, setStep] = useState<ResearchStep>("pick")
-  const [methodId, setMethodId] = useState<ResearchMethodId | null>(null)
-  const [promptIndex, setPromptIndex] = useState(0)
-  const [restored, setRestored] = useState(false)
-  const method = methodId ? getResearchMethod(methodId) ?? null : null
-  const isWide = useContainerSize() === "wide"
-  const router = useRouter()
-  const { revealTopNav } = useFocusChrome()
-  const currentToolId = useSelector((s: RootState) =>
-    methodId ? s.researchSessions.sessions[methodId]?.toolId ?? null : null
-  )
-
-  useEffect(() => {
-    if (restored) return
-    if (!hydrated) return
-    setRestored(true)
-    if (storedMethodId && getResearchMethod(storedMethodId)) {
-      setMethodId(storedMethodId as ResearchMethodId)
-      const restoredMethod = getResearchMethod(storedMethodId)!
-      const total = restoredMethod.prompts.length
-      const safeIndex = Math.min(Math.max(storedPromptIndex, 0), Math.max(total - 1, 0))
-      setPromptIndex(safeIndex)
-      const restoredStep: ResearchStep =
-        storedStep && storedStep !== ("introduction" as ResearchStep)
-          ? storedStep
-          : "tool"
-      setStep(restoredStep)
-    }
-  }, [hydrated, storedMethodId, storedStep, storedPromptIndex, restored])
-
-  useEffect(() => {
-    if (!restored) return
-    dispatch.researchSessions.setLastPosition({
-      methodId,
-      step: methodId ? step : null,
-      promptIndex,
-    })
-  }, [restored, dispatch, methodId, step, promptIndex])
-
-  function handlePick(id: ResearchMethodId) {
-    setMethodId(id)
-    setPromptIndex(0)
-    setStep("tool")
-  }
-
-  function isStepEnabled(id: ResearchStep): boolean {
-    if (id === "pick") return true
-    if (!method) return false
-    if (id === "tool") return true
-    // capture and review both require a selected tool
-    return currentToolId !== null
-  }
-
-  function handleStepClick(id: ResearchStep) {
-    if (id === "pick") {
-      setStep("pick")
-      return
-    }
-    if (!method) return
-    if ((id === "capture" || id === "review") && currentToolId === null) return
-    if (id === "capture") setPromptIndex(0)
-    setStep(id)
-  }
-
-  const handleReset = useCallback(() => {
-    dispatch.researchSessions.clearAllSessions()
-    setStep("pick")
-    setMethodId(null)
-    setPromptIndex(0)
-  }, [dispatch])
-
-  useEffect(() => {
-    if (!resetRef) return
-    resetRef.current = handleReset
-  }, [resetRef, handleReset])
-
-  const promptsProgress =
-    step === "capture" && method
-      ? { current: promptIndex + 1, total: method.prompts.length }
-      : null
-
-  const content = (() => {
-    if (step === "pick" || !method) {
-      return <PickMethodPanel onPick={handlePick} selectedMethodId={methodId} />
-    }
-    if (step === "tool") {
-      return (
-        <ToolPickerPanel
-          onBack={() => {
-            setStep("pick")
-          }}
-          onContinue={() => {
-            setPromptIndex(0)
-            setStep("capture")
-          }}
-        />
-      )
-    }
-    if (step === "capture") {
-      return (
-        <CapturePanel
-          index={promptIndex}
-          onIndexChange={setPromptIndex}
-          onBackToTool={() => setStep("tool")}
-          onReview={() => setStep("review")}
-        />
-      )
-    }
-    return (
-      <ReviewPanel
-        onBack={() => {
-          setPromptIndex(0)
-          setStep("capture")
-        }}
-        onJumpToPrompt={(promptId) => {
-          if (!method) return
-          const idx = method.prompts.findIndex((p) => p.id === promptId)
-          setPromptIndex(idx >= 0 ? idx : 0)
-          setStep("capture")
-        }}
-        onKeepResearching={() => {
-          setStep("pick")
-          setPromptIndex(0)
-        }}
-      />
-    )
-  })()
-
-  const backAndPanel = (
-    <div className="flex items-center gap-2 shrink-0">
-      <Button variant="tertiary-outline" onClick={() => router.push("/problems/identify")} className="gap-2">
-        <ArrowLeft className="h-4 w-4" />
-        Back
-      </Button>
-      <Button
-        variant="outline"
-        size="icon"
-        className="bg-white"
-        onClick={revealTopNav}
-        aria-label="Show top bar"
-        title="Top bar"
-      >
-        <PanelTop className="h-4 w-4" />
-      </Button>
-    </div>
-  )
-
-  const sectionTitle = (
-    <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 text-foreground">
-      <span className={SECTION_TITLE_TILE_CLASS} aria-hidden="true">
-        <Microscope className={SECTION_TITLE_ICON_CLASS} />
-      </span>
-      <span className="truncate">Research</span>
-    </h1>
-  )
-
-  const stepper = (
-    <Stepper
-      steps={RESEARCH_STEPS}
-      activeId={step}
-      onStepClick={handleStepClick}
-      isStepEnabled={isStepEnabled}
-      promptsProgress={promptsProgress}
-      onReset={handleReset}
-      resetDescription="This will return you to the method picker and clear in-progress capture answers. Saved problems are not affected."
-    />
-  )
-
-  const inner = (
-    <div className={cn("flex flex-1 min-h-0 w-full", isWide ? "flex-row gap-3" : "flex-col gap-3")}>
-      {isWide ? (
-        <div className="w-72 shrink-0 h-full flex flex-col gap-4 min-h-0">
-          {backAndPanel}
-          {sectionTitle}
-          {stepper}
-        </div>
-      ) : (
-        <>
-          <div className="flex items-center gap-3 shrink-0">
-            {backAndPanel}
-            {sectionTitle}
-          </div>
-          {stepper}
-        </>
-      )}
-      <Card className="flex flex-col flex-1 min-h-0 min-w-0 overflow-hidden">
-        <CardContent className={cn("flex-1 flex flex-col min-h-0", isWide ? "p-10" : "p-6")}>
-          {content}
-        </CardContent>
-      </Card>
-    </div>
-  )
-
-  if (step === "pick" || !method) return inner
-  return <ResearchProvider method={method}>{inner}</ResearchProvider>
 }
