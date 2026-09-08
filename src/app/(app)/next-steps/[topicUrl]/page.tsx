@@ -9,6 +9,36 @@ import { ChevronLeft, ChevronRight, Sparkles, AlertTriangle } from "lucide-react
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 
+type TopicImage = { src: string; alt: string; position: string }
+
+const TOPIC_IMAGES: Record<string, TopicImage> = {
+  "build-a-prototype": {
+    src: "/images/build-prototype.jpg",
+    alt: "A hand holding a pen over hand-drawn paper sketches of mobile app screens",
+    position: "object-center",
+  },
+  "run-a-customer-test": {
+    src: "/images/audience-people.jpg",
+    alt: "Four people chatting around a table with a tablet and coffee cups",
+    position: "object-center",
+  },
+  "map-a-learning-roadmap": {
+    src: "/images/learning-roadmap.jpg",
+    alt: "A hand pinning string between printed app screens on a wall to map the flow",
+    position: "object-center",
+  },
+  "decide-on-commitment": {
+    src: "/images/decide-directions.jpg",
+    alt: "A signpost with arrows pointing in different directions silhouetted against a sunset",
+    position: "object-bottom",
+  },
+  "revisit-your-problem": {
+    src: "/images/checklist.jpg",
+    alt: "A hand writing a checklist in a squared notebook",
+    position: "object-center",
+  },
+}
+
 export default function NextStepsTopicPage() {
   const params = useParams<{ topicUrl: string }>()
   const router = useRouter()
@@ -25,6 +55,7 @@ export default function NextStepsTopicPage() {
   const next = index < NEXT_STEPS_TOPICS.length - 1 ? NEXT_STEPS_TOPICS[index + 1] : null
 
   const Icon = getNextStepsTopicIcon(topic.iconKey)
+  const image = TOPIC_IMAGES[topic.url]
 
   return (
     <Card className="w-full h-full flex flex-col overflow-hidden">
@@ -32,65 +63,42 @@ export default function NextStepsTopicPage() {
         <CardTitle icon={Icon}>{topic.title}</CardTitle>
       </CardHeader>
       <CardContent className={cn("flex-1 flex flex-col gap-8 overflow-y-auto min-h-0", roomy ? "p-10 pt-6" : "p-6 pt-4")}>
+        <p className="text-base italic flex items-start gap-2">
+          <Sparkles className="h-3.5 w-3.5 shrink-0 mt-1" aria-hidden="true" />
+          <span>{topic.tagline}</span>
+        </p>
+
         <div className="@container">
-          <div className="flex flex-col gap-6 @[800px]:flex-row @[800px]:items-center">
-            <div className="flex flex-col gap-2 flex-1 min-w-0">
-              <p className="text-base italic flex items-start gap-2">
-                <Sparkles className="h-3.5 w-3.5 shrink-0 mt-1" aria-hidden="true" />
-                <span>{topic.tagline}</span>
-              </p>
+          <div className="flex flex-col gap-6 @[800px]:flex-row @[800px]:items-start">
+            <div className="flex flex-col gap-8 flex-1 min-w-0">
               <p className="text-base text-foreground leading-relaxed">{topic.intro}</p>
+
+              {topic.keyPoints.length > 0 && (
+                <div className="flex flex-col gap-3">
+                  <h3 className="text-lg font-bold text-foreground">Key points</h3>
+                  <ul className="flex flex-col gap-2">
+                    {topic.keyPoints.map((point, i) => (
+                      <li key={i} className="flex gap-3 items-start">
+                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold shrink-0 mt-0.5">
+                          {i + 1}
+                        </span>
+                        <p className="text-base text-foreground leading-relaxed flex-1">{point}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
-            {topic.url === "build-a-prototype" && (
+            {roomy && image && (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img
-                src="/illustrations/21-toolbox.svg"
-                alt=""
-                className="hidden @[900px]:block w-96 h-auto shrink-0 rounded-lg"
-              />
-            )}
-            {topic.url === "run-a-customer-test" && (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src="/illustrations/23-customer.svg"
-                alt=""
-                className="hidden @[900px]:block w-96 h-auto shrink-0 rounded-lg"
-              />
-            )}
-            {topic.url === "map-a-learning-roadmap" && (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src="/illustrations/19-mindmap.svg"
-                alt=""
-                className="hidden @[900px]:block w-96 h-auto shrink-0 rounded-lg"
-              />
-            )}
-            {topic.url === "decide-on-commitment" && (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src="/illustrations/04-terrain.svg"
-                alt=""
-                className="hidden @[900px]:block w-96 h-auto shrink-0 rounded-lg"
+                src={image.src}
+                alt={image.alt}
+                className={cn("w-80 aspect-[4/3] object-cover shrink-0 rounded-lg", image.position)}
               />
             )}
           </div>
         </div>
-
-        {topic.keyPoints.length > 0 && (
-          <div className="flex flex-col gap-3">
-            <h3 className="text-lg font-bold text-foreground">Key points</h3>
-            <ul className="flex flex-col gap-2">
-              {topic.keyPoints.map((point, i) => (
-                <li key={i} className="flex gap-3 items-start">
-                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold shrink-0 mt-0.5">
-                    {i + 1}
-                  </span>
-                  <p className="text-base text-foreground leading-relaxed flex-1">{point}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
 
         {topic.approaches.length > 0 && (
           <div className="flex flex-col gap-3">
