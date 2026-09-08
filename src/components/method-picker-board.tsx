@@ -10,6 +10,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { useContainerSize } from "@/context/container-size-context"
+import { MethodTile } from "@/components/method-tile"
 import { cn } from "@/lib/utils"
 
 export type MethodPickerItem = {
@@ -19,8 +20,8 @@ export type MethodPickerItem = {
   longDescription: string
   helperText?: string
   icon: LucideIcon
-  /** Tailwind class for the icon tile background, e.g. "bg-primary". */
-  tileColor: string
+  /** Optional photo shown beside the description on the wide layout. */
+  image?: { src: string; alt: string; position?: string }
   estimatedMinutes: number
   enabled: boolean
 }
@@ -70,7 +71,6 @@ export function MethodPickerBoard({
         className="flex flex-col gap-2"
       >
         {items.map((item) => {
-          const Icon = item.icon
           const isSelected = selectedId === item.id
           return (
             <AccordionItem
@@ -80,12 +80,7 @@ export function MethodPickerBoard({
             >
               <AccordionTrigger className="px-4 py-3 text-base font-semibold hover:no-underline">
                 <span className="flex items-center gap-3 flex-1 min-w-0">
-                  <span
-                    className={cn("flex items-center justify-center w-9 h-9 rounded-md shrink-0", item.tileColor)}
-                    aria-hidden="true"
-                  >
-                    <Icon className="h-4 w-4 text-white" />
-                  </span>
+                  <MethodTile icon={item.icon} />
                   <span className="flex-1 min-w-0 text-left truncate">{item.title}</span>
                   {!item.enabled && (
                     <span className="inline-flex items-center rounded-full bg-secondary px-2 py-0.5 text-base font-medium shrink-0">
@@ -123,7 +118,6 @@ export function MethodPickerBoard({
     <div className="rounded-lg border bg-card overflow-hidden grid grid-cols-[260px,1fr]">
       <nav className="border-r p-2 flex flex-col gap-1 bg-background/40" aria-label="Available methods">
         {items.map((item) => {
-          const Icon = item.icon
           const isActive = activeId === item.id
           const isSelected = selectedId === item.id
           return (
@@ -140,12 +134,7 @@ export function MethodPickerBoard({
                 !item.enabled && "opacity-70",
               )}
             >
-              <span
-                className={cn("flex items-center justify-center w-8 h-8 rounded-md shrink-0", item.tileColor)}
-                aria-hidden="true"
-              >
-                <Icon className="h-4 w-4 text-white" />
-              </span>
+              <MethodTile icon={item.icon} />
               <span className="flex-1 min-w-0 flex flex-col gap-0.5">
                 <span className="text-base font-semibold leading-tight truncate">{item.title}</span>
                 {!item.enabled ? (
@@ -194,40 +183,46 @@ function MethodPreview({
   showHeader: boolean
   className?: string
 }) {
-  const Icon = item.icon
   return (
     <div className={cn("flex flex-col gap-5", className)}>
       {showHeader && (
         <div className="flex items-center gap-3">
-          <span
-            className={cn("flex items-center justify-center w-10 h-10 rounded-md shrink-0", item.tileColor)}
-            aria-hidden="true"
-          >
-            <Icon className="h-5 w-5 text-white" />
-          </span>
-          <h3 className="text-xl font-bold leading-tight tracking-tight">{item.title}</h3>
+          <MethodTile icon={item.icon} size="lg" />
+          <h3 className="text-xl font-bold leading-tight tracking-tight text-secondary-brand">{item.title}</h3>
         </div>
       )}
-      <p className="text-base leading-relaxed">{item.longDescription}</p>
-      {item.helperText && (
-        <div className="rounded-lg border bg-card p-4">
-          <p className="text-base leading-relaxed">{item.helperText}</p>
+      <div className="flex gap-6 items-start">
+        <div className="flex flex-col gap-5 flex-1 min-w-0">
+          <p className="text-base leading-relaxed">{item.longDescription}</p>
+          {item.helperText && (
+            <div className="rounded-lg border bg-card p-4">
+              <p className="text-base leading-relaxed">{item.helperText}</p>
+            </div>
+          )}
+          <div className="flex items-center gap-1.5 text-base">
+            <Clock className="h-4 w-4" aria-hidden="true" />
+            <span>About {item.estimatedMinutes} minutes</span>
+          </div>
+          <div>
+            <Button
+              type="button"
+              onClick={() => onPick(item.id)}
+              disabled={!item.enabled}
+              className="gap-2"
+            >
+              {isSelected ? reselectLabel : ctaLabel}
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
-      )}
-      <div className="flex items-center gap-1.5 text-base">
-        <Clock className="h-4 w-4" aria-hidden="true" />
-        <span>About {item.estimatedMinutes} minutes</span>
-      </div>
-      <div>
-        <Button
-          type="button"
-          onClick={() => onPick(item.id)}
-          disabled={!item.enabled}
-          className="gap-2"
-        >
-          {isSelected ? reselectLabel : ctaLabel}
-          <ArrowRight className="h-4 w-4" />
-        </Button>
+        {showHeader && item.image && (
+          /* eslint-disable-next-line @next/next/no-img-element */
+          <img
+            src={item.image.src}
+            alt={item.image.alt}
+            className={cn("w-72 aspect-[4/3] object-cover shrink-0 rounded-lg", item.image.position ?? "object-center")}
+          />
+        )}
       </div>
     </div>
   )

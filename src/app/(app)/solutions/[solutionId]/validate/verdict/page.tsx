@@ -94,7 +94,7 @@ export default function VerdictPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={CheckCircle2} iconBg="bg-tertiary">Verdict</CardTitle>
+        <CardTitle icon={CheckCircle2}>Verdict</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <p className="text-base leading-relaxed">

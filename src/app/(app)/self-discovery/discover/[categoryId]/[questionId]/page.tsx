@@ -20,7 +20,7 @@ import {
 import { useRouter, useParams } from "next/navigation"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { getSelfDiscoveryCategoryIcon } from "@/config/navigation"
-import { SELF_DISCOVERY_CATEGORIES, SELF_DISCOVERY_CATEGORY_ICON_BG, type SuggestionItem } from "@/data/selfDiscoveryData"
+import { SELF_DISCOVERY_CATEGORIES, type SuggestionItem } from "@/data/selfDiscoveryData"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import type { SelfDiscoveryItem } from "@/store/self-discovery-items-model"
@@ -268,10 +268,7 @@ export default function QuestionPage() {
         <>
             <Card className="w-full h-full flex flex-col overflow-hidden">
                 <CardHeader className={cn("pb-0 shrink-0", roomy ? "px-10 pt-10" : "px-6 pt-6")}>
-                    <CardTitle icon={(() => {
-                        const CategoryIcon = getSelfDiscoveryCategoryIcon(category.url)
-                        return CategoryIcon || Compass
-                    })()} iconBg={SELF_DISCOVERY_CATEGORY_ICON_BG[category.url] ?? "bg-primary"} className="text-foreground">{question.title}</CardTitle>
+                    <CardTitle icon={getSelfDiscoveryCategoryIcon(category.url) ?? Compass}>{question.title}</CardTitle>
                 </CardHeader>
                 <CardContent className={cn("flex-1 min-h-0 flex flex-col overflow-y-auto", roomy ? "p-10 pt-6" : "p-6 pt-4")}>
                     <div className="flex flex-col gap-5 flex-1 min-h-0">

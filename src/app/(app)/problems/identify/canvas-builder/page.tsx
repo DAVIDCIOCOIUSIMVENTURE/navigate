@@ -56,7 +56,7 @@ import { EditableLeafItem } from "@/components/editable-leaf-item"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
 import { cn } from "@/lib/utils"
-import { NAV_ITEM_ACTIVE_CLASS } from "@/lib/nav-item-styles"
+import { NAV_ITEM_ACTIVE_CLASS, NAV_ITEM_HOVER_CLASS } from "@/lib/nav-item-styles"
 import { useContainerSize } from "@/context/container-size-context"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import {
@@ -509,9 +509,9 @@ function ProblemBuilder({
                         <span className={cn(
                           "flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 transition-colors",
                           isActive
-                            ? "border-tertiary bg-tertiary text-tertiary-foreground"
+                            ? "border-primary bg-primary text-primary-foreground"
                             : isCompleted
-                              ? "border-tertiary bg-tertiary/10 text-tertiary"
+                              ? "border-muted-foreground/30 bg-muted text-foreground"
                               : "border-muted-foreground/30 bg-transparent text-muted-foreground"
                         )}>
                           {isCompleted ? <Check className="h-3.5 w-3.5" /> : i + 1}
@@ -526,7 +526,7 @@ function ProblemBuilder({
                       {i < BUILDER_STEPS.length - 1 && (
                         <div className={cn(
                           "flex-1 h-px mx-3",
-                          i < stepIndex ? "bg-tertiary" : "bg-border"
+                          i < stepIndex ? "bg-primary" : "bg-border"
                         )} />
                       )}
                     </div>
@@ -545,7 +545,7 @@ function ProblemBuilder({
                     className="w-full justify-between h-auto py-2 px-3"
                   >
                     <span className="flex items-center gap-2 text-sm font-medium min-w-0">
-                      <span className="flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 border-tertiary bg-tertiary text-tertiary-foreground shrink-0">
+                      <span className="flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 border-primary bg-primary text-primary-foreground shrink-0">
                         {stepIndex + 1}
                       </span>
                       <span className="truncate font-semibold text-foreground">
@@ -581,15 +581,16 @@ function ProblemBuilder({
                             aria-current={isActive ? "step" : undefined}
                             className={cn(
                               "w-full justify-start h-auto py-2 px-3 gap-2.5",
+                              NAV_ITEM_HOVER_CLASS,
                               isActive && NAV_ITEM_ACTIVE_CLASS,
                             )}
                           >
                             <span className={cn(
                               "flex items-center justify-center h-7 w-7 rounded-full text-xs font-bold border-2 transition-colors shrink-0",
                               isActive
-                                ? "border-tertiary bg-tertiary text-tertiary-foreground"
+                                ? "border-primary bg-primary text-primary-foreground"
                                 : isCompleted
-                                  ? "border-tertiary bg-tertiary/10 text-tertiary"
+                                  ? "border-muted-foreground/30 bg-muted text-foreground"
                                   : "border-muted-foreground/30 bg-transparent text-muted-foreground"
                             )}>
                               {isCompleted ? <Check className="h-3.5 w-3.5" /> : i + 1}
@@ -1351,7 +1352,7 @@ export default function IdentifyPage() {
                         <Icon className="h-3.5 w-3.5 text-white" />
                       </span>
                     )}
-                    <CardTitle className="text-base font-bold">
+                    <CardTitle className={cn("text-base font-bold", colors?.icon ?? "text-foreground")}>
                       {column.title}
                     </CardTitle>
                   </div>

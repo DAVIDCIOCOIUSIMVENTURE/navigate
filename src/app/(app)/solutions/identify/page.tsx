@@ -20,7 +20,6 @@ export default function IdentifySolutionsPage() {
       longDescription: "Pick a validated problem, refine your understanding, and generate solution candidates using creative techniques.",
       helperText: "Best for working through guided tools (analogy, SCAMPER, reverse ideation, root-cause attacks) instead of jumping to the first idea that comes to mind.",
       icon: Lightbulb,
-      tileColor: "bg-tertiary",
       estimatedMinutes: 20,
       enabled: true,
     },
@@ -31,7 +30,6 @@ export default function IdentifySolutionsPage() {
       longDescription: "Already have an idea? Add it directly to the library without going through the full discovery wizard.",
       helperText: "Best for capturing a solution you already have in mind so you can come back and validate it later.",
       icon: Clock,
-      tileColor: "bg-muted",
       estimatedMinutes: 5,
       enabled: false,
     },
@@ -50,7 +48,7 @@ export default function IdentifySolutionsPage() {
     <div className={cn("flex flex-col gap-3 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
       <Card className={cn("w-full flex flex-col", isWide ? "flex-1 min-h-0 overflow-hidden" : "min-h-[320px]")}>
         <CardHeader className="space-y-6">
-          <CardTitle icon={Lightbulb} iconBg="bg-tertiary">Identify Solutions</CardTitle>
+          <CardTitle icon={Lightbulb}>Identify Solutions</CardTitle>
           <div className="flex flex-col gap-3">
             <p className="text-base leading-relaxed">
               Solutions answer a problem you&apos;ve already validated. Pick the tool that fits where you are right now: each one is a different doorway into the same goal of finding a solution worth pursuing.

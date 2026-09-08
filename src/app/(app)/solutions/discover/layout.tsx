@@ -16,7 +16,14 @@ import { Lightbulb, Lock, Check, ChevronDown, RotateCcw, ArrowLeft, PanelTop } f
 import { useContainerSize } from "@/context/container-size-context"
 import { useFocusChrome } from "@/context/focus-chrome-context"
 import { cn } from "@/lib/utils"
-import { NAV_ITEM_ACTIVE_CLASS } from "@/lib/nav-item-styles"
+import {
+  NAV_ITEM_ACTIVE_CLASS,
+  NAV_ITEM_ACTIVE_FOCUS_CLASS,
+  NAV_ITEM_HOVER_CLASS,
+  SECTION_TITLE_ICON_CLASS,
+  SECTION_TITLE_TILE_CLASS,
+  navStepBadgeClass,
+} from "@/lib/nav-item-styles"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 
 function StepBadge({
@@ -27,16 +34,7 @@ function StepBadge({
   state: "active" | "completed" | "locked" | "default"
 }) {
   return (
-    <span
-      className={cn(
-        "flex items-center justify-center w-6 h-6 rounded-md shrink-0 text-xs font-bold transition-colors",
-        state === "active" || state === "completed"
-          ? "bg-tertiary text-white"
-          : state === "locked"
-            ? "bg-tertiary/5 text-tertiary/40"
-            : "bg-tertiary/10 text-tertiary"
-      )}
-    >
+    <span className={navStepBadgeClass(state)}>
       {state === "completed" ? (
         <Check className="h-3.5 w-3.5" />
       ) : state === "locked" ? (
@@ -90,6 +88,7 @@ function StepList({
             aria-current={isActive ? "step" : undefined}
             className={cn(
               "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2 disabled:opacity-100",
+              NAV_ITEM_HOVER_CLASS,
               isActive && NAV_ITEM_ACTIVE_CLASS,
               locked && "text-muted-foreground/60"
             )}
@@ -167,7 +166,7 @@ function MobileStepper({
               aria-current={isActive ? "step" : undefined}
               className={cn(
                 "flex items-center gap-2.5 py-2 px-3 text-sm",
-                isActive && cn(NAV_ITEM_ACTIVE_CLASS, "focus:bg-secondary-brand/10 focus:text-secondary-brand")
+                isActive && cn(NAV_ITEM_ACTIVE_CLASS, NAV_ITEM_ACTIVE_FOCUS_CLASS)
               )}
             >
               <StepBadge index={i} state={state} />
@@ -229,9 +228,9 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   )
 
   const sectionTitle = (
-    <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0">
-      <span className="flex h-7 w-7 items-center justify-center rounded-md bg-tertiary shrink-0" aria-hidden="true">
-        <Lightbulb className="h-4 w-4 text-tertiary-foreground" />
+    <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 text-primary">
+      <span className={SECTION_TITLE_TILE_CLASS} aria-hidden="true">
+        <Lightbulb className={SECTION_TITLE_ICON_CLASS} />
       </span>
       <span className="truncate">Solution Discovery</span>
     </h1>

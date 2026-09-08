@@ -62,14 +62,21 @@ export type LensId =
   | "own-problems"
   | "audience-problems"
 
+export type LensImage = {
+  src: string
+  alt: string
+  /** Tailwind object-position class, e.g. "object-left". Defaults to centre. */
+  position?: string
+}
+
 export type Lens = {
   id: LensId
   title: string
   shortDescription: string
   longDescription: string
   icon: LucideIcon
-  /** Tailwind class for the icon tile background. From the brand palette in CLAUDE.md. */
-  tileColor: string
+  /** Optional photo shown beside the description in the method picker. */
+  image?: LensImage
   estimatedMinutes: number
   prompts: LensPrompt[]
   /** Optional helper text rendered in the guidance panel for this lens. */
@@ -97,7 +104,10 @@ export const REFLECT_LENSES: Lens[] = [
     longDescription:
       "Look back at one significant experience you've navigated and pull out the parts that were harder than they needed to be. You focus on a single experience per run so the prompts stay specific; to explore another, simply run this tool again and pick a different one.",
     icon: HeartHandshake,
-    tileColor: "bg-tertiary",
+    image: {
+      src: "/images/life-experiences.jpg",
+      alt: "A person standing on the crest of a sand dune with a trail of footprints behind them",
+    },
     estimatedMinutes: 10,
     anchorLabel: "Life experience",
     helperText:
@@ -187,7 +197,10 @@ export const REFLECT_LENSES: Lens[] = [
     longDescription:
       "Pick one job, role, or slice of work you do regularly and answer the prompts about that one place. The friction you've stopped noticing is often the friction worth productising; focusing on a single role per run keeps the prompts specific. To explore another, run this tool again and pick a different one.",
     icon: Briefcase,
-    tileColor: "bg-tertiary",
+    image: {
+      src: "/images/skipping-cost.jpg",
+      alt: "A hand pointing a pen at charts spread across a desk beside a laptop and calculator",
+    },
     estimatedMinutes: 10,
     anchorLabel: "Work area",
     helperText:
@@ -291,7 +304,10 @@ export const REFLECT_LENSES: Lens[] = [
     longDescription:
       "Pick one thing you've actually done, then describe the problems you ran into and what you did about it. The fixes you built for yourself are often the seed of a product someone else would pay for. To explore another, run this tool again and pick a different one.",
     icon: Wrench,
-    tileColor: "bg-tertiary",
+    image: {
+      src: "/images/solved-past-problems.jpg",
+      alt: "Two hands turning a partly solved Rubik's cube",
+    },
     estimatedMinutes: 10,
     anchorLabel: "What you've done",
     helperText:
@@ -361,7 +377,10 @@ export const REFLECT_LENSES: Lens[] = [
     longDescription:
       "Choose one audience (a customer segment or a group from your self-discovery), then explore the friction, workarounds, and wasted spend that shape their day. Sticking to a single audience per run keeps the prompts specific; to explore another, run this tool again and pick a different one.",
     icon: UsersRound,
-    tileColor: "bg-tertiary",
+    image: {
+      src: "/images/audience-people.jpg",
+      alt: "Four people chatting around a table with a tablet and coffee cups",
+    },
     estimatedMinutes: 10,
     anchorLabel: "Audience",
     helperText:
@@ -427,7 +446,6 @@ export const REFLECT_LENSES: Lens[] = [
     longDescription:
       "Pick one organisation you know intimately and answer the prompts about that one place. The aim is to surface the things only an insider would notice.",
     icon: Building2,
-    tileColor: "bg-tertiary",
     estimatedMinutes: 10,
     helperText:
       "One organisation is enough. If you're worried about specifics, anonymise the language; the prompts work just as well in general terms.",
@@ -481,7 +499,6 @@ export const REFLECT_LENSES: Lens[] = [
     longDescription:
       "A pattern that's normal in one context can be a fresh idea in another. The interesting question is usually why nobody has moved it yet.",
     icon: Shuffle,
-    tileColor: "bg-tertiary",
     estimatedMinutes: 8,
     helperText:
       "Always ask \"why hasn't this happened yet?\". A clean answer (regulation, timing, distribution) often gates whether the transplant is a real opportunity.",
@@ -532,7 +549,6 @@ export const REFLECT_LENSES: Lens[] = [
     longDescription:
       "Pick one person you observe regularly and answer the prompts with them in mind. Then validate by actually asking them.",
     icon: Users,
-    tileColor: "bg-tertiary",
     estimatedMinutes: 8,
     helperText:
       "Treat this as observation, not assumption. Anything you capture here should be confirmed by talking to the person before you commit to it.",
@@ -578,7 +594,6 @@ export const REFLECT_LENSES: Lens[] = [
     longDescription:
       "This lens doesn't ask you what to look at. It gives you a place to write down what you find when you scan low-rated tools, trend trackers, open data, and research.",
     icon: Radar,
-    tileColor: "bg-tertiary",
     estimatedMinutes: 5,
     flowKind: "single-form",
     helperText:

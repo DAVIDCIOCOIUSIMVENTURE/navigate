@@ -10,6 +10,34 @@ import { ChevronLeft, ChevronRight, Play, AlertTriangle, CheckCircle2, ExternalL
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 
+type SectionImage = { src: string; alt: string; position: string }
+
+const VALIDATION_BOARD: SectionImage = {
+  src: "/images/validation-board.jpg",
+  alt: "A validation board covered in handwritten sticky notes listing customer problems",
+  position: "object-left",
+}
+
+const SECTION_IMAGES: Record<string, SectionImage> = {
+  "why-the-right-idea": {
+    src: "/images/idea-lightbulb.jpg",
+    alt: "A sticky note with a lightbulb sketch pinned to a cork board",
+    position: "object-left",
+  },
+  "why-validate-the-problem": VALIDATION_BOARD,
+  "why-validate-the-solution": VALIDATION_BOARD,
+  "the-cost-of-skipping": {
+    src: "/images/skipping-cost.jpg",
+    alt: "A hand pointing a pen at charts spread across a desk beside a laptop and calculator",
+    position: "object-center",
+  },
+  "when-it-goes-right": {
+    src: "/illustrations/16-success.svg",
+    alt: "",
+    position: "object-contain",
+  },
+}
+
 export default function FoundationsSectionPage() {
   const params = useParams<{ sectionUrl: string }>()
   const router = useRouter()
@@ -26,85 +54,50 @@ export default function FoundationsSectionPage() {
   const next = index < FOUNDATIONS_SECTIONS.length - 1 ? FOUNDATIONS_SECTIONS[index + 1] : null
 
   const Icon = getFoundationsSectionIcon(section.iconKey)
+  const image = SECTION_IMAGES[section.url]
 
   return (
     <Card className="w-full h-full flex flex-col overflow-hidden">
       <CardHeader className={cn("pb-0 shrink-0", roomy ? "px-10 pt-10" : "px-6 pt-6")}>
-        <CardTitle>
-          <div className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-tertiary">
-            <Icon className="h-5 w-5 text-white" />
-          </div>
-          {section.title}
-        </CardTitle>
+        <CardTitle icon={Icon}>{section.title}</CardTitle>
       </CardHeader>
       <CardContent className={cn("flex-1 flex flex-col gap-8 overflow-y-auto min-h-0", roomy ? "p-10 pt-6" : "p-6 pt-4")}>
+        <p className="text-base italic flex items-start gap-2">
+          <Sparkles className="h-3.5 w-3.5 shrink-0 mt-1" aria-hidden="true" />
+          <span>{section.tagline}</span>
+        </p>
+
         <div className="@container">
-          <div className="flex flex-col gap-6 @[800px]:flex-row @[800px]:items-center">
-            <div className="flex flex-col gap-2 flex-1 min-w-0">
-              <p className="text-base italic flex items-start gap-2">
-                <Sparkles className="h-3.5 w-3.5 shrink-0 mt-1" aria-hidden="true" />
-                <span>{section.tagline}</span>
-              </p>
+          <div className="flex flex-col gap-6 @[800px]:flex-row @[800px]:items-start">
+            <div className="flex flex-col gap-8 flex-1 min-w-0">
               <p className="text-base text-foreground leading-relaxed">{section.intro}</p>
+
+              {section.keyPoints.length > 0 && (
+                <div className="flex flex-col gap-3">
+                  <h3 className="text-lg font-bold text-foreground">Key points</h3>
+                  <ul className="flex flex-col gap-2">
+                    {section.keyPoints.map((point, i) => (
+                      <li key={i} className="flex gap-3 items-start">
+                        <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold shrink-0 mt-0.5">
+                          {i + 1}
+                        </span>
+                        <p className="text-base text-foreground leading-relaxed flex-1">{point}</p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
-            {section.url === "why-the-right-idea" && (
+            {roomy && image && (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img
-                src="/illustrations/18-sticky-wall.svg"
-                alt=""
-                className="hidden @[900px]:block w-96 h-auto shrink-0 rounded-lg"
-              />
-            )}
-            {section.url === "why-validate-the-problem" && (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src="/illustrations/06-flask.svg"
-                alt=""
-                className="hidden @[900px]:block w-96 h-auto shrink-0 rounded-lg"
-              />
-            )}
-            {section.url === "why-validate-the-solution" && (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src="/illustrations/06-flask.svg"
-                alt=""
-                className="hidden @[900px]:block w-96 h-auto shrink-0 rounded-lg"
-              />
-            )}
-            {section.url === "the-cost-of-skipping" && (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src="/illustrations/25-cost-of-skipping.svg"
-                alt=""
-                className="hidden @[900px]:block w-96 h-auto shrink-0 rounded-lg"
-              />
-            )}
-            {section.url === "when-it-goes-right" && (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                src="/illustrations/16-success.svg"
-                alt=""
-                className="hidden @[900px]:block w-96 h-auto shrink-0 rounded-lg"
+                src={image.src}
+                alt={image.alt}
+                className={cn("w-80 aspect-[4/3] object-cover shrink-0 rounded-lg", image.position)}
               />
             )}
           </div>
         </div>
-
-        {section.keyPoints.length > 0 && (
-          <div className="flex flex-col gap-3">
-            <h3 className="text-lg font-bold text-foreground">Key points</h3>
-            <ul className="flex flex-col gap-2">
-              {section.keyPoints.map((point, i) => (
-                <li key={i} className="flex gap-3 items-start">
-                  <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold shrink-0 mt-0.5">
-                    {i + 1}
-                  </span>
-                  <p className="text-base text-foreground leading-relaxed flex-1">{point}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
 
         {section.videos.length > 0 && (
           <div className="flex flex-col gap-3">

@@ -14,6 +14,7 @@ import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 import type { MethodPickerItem } from "@/components/method-picker-board"
+import { MethodTile } from "@/components/method-tile"
 
 type IdentifyTool = MethodPickerItem & {
   /** Optional illustration shown beside the tool's description on wide containers. */
@@ -67,7 +68,6 @@ export default function IdentifyProblemsPage() {
       longDescription: "Turn a lived experience into a problem through guided prompts about your own life and work.",
       helperText: "Best for identifying problems if you're unsure where to start: a guided approach that walks you through prompts about your own life and work.",
       icon: Glasses,
-      tileColor: "bg-tertiary",
       estimatedMinutes: 10,
       enabled: true,
       image: {
@@ -82,7 +82,6 @@ export default function IdentifyProblemsPage() {
       longDescription: "Combine customer segments, contexts, and types of pain on a single canvas to surface problems worth solving.",
       helperText: "Best for people who already know how to ask the right questions, or who want to explore a wide space of possibilities quickly by mixing dimensions from a curated catalogue.",
       icon: Brain,
-      tileColor: "bg-tertiary",
       estimatedMinutes: 15,
       enabled: true,
       image: {
@@ -97,7 +96,6 @@ export default function IdentifyProblemsPage() {
       longDescription: "Hunt for problems out in the world using curated tools and a guided capture form.",
       helperText: "Best for looking outside your own experience: review sites, forums, communities, and conversations with strangers.",
       icon: Microscope,
-      tileColor: "bg-tertiary",
       estimatedMinutes: 20,
       enabled: true,
       image: {
@@ -112,7 +110,6 @@ export default function IdentifyProblemsPage() {
       longDescription: "Already know what you want to explore? Write it directly without working through a tool.",
       helperText: "Best for capturing a problem you have in mind right now so you can come back and validate it later.",
       icon: PenLine,
-      tileColor: "bg-tertiary",
       estimatedMinutes: 5,
       enabled: true,
       image: {
@@ -144,7 +141,7 @@ export default function IdentifyProblemsPage() {
       <div className={cn("flex flex-col gap-3 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
         <Card className={cn("w-full flex flex-col", isWide ? "flex-1 min-h-0 overflow-hidden" : "min-h-[320px]")}>
           <CardHeader className="space-y-6">
-            <CardTitle icon={Target} iconBg="bg-tertiary">Identify a Problem</CardTitle>
+            <CardTitle icon={Target}>Identify a Problem</CardTitle>
             <p className="text-base leading-relaxed">
               Every problem in your library starts here. Each tool is a different doorway to the same goal: a problem that&apos;s real, painful, and worth solving. We suggest starting with <span className="font-semibold">Reflect</span> to ground a problem in your own experience, then returning to the <span className="font-semibold">Canvas Builder</span> or <span className="font-semibold">Research</span> to explore more broadly or gather outside evidence. If you already know what you want to explore, <span className="font-semibold">Define a Problem Statement</span> captures it straight away. Whichever tool you choose, the problem lands in your library, ready to refine and validate.
             </p>
@@ -175,13 +172,8 @@ export default function IdentifyProblemsPage() {
                     >
                       <div className="flex flex-col gap-5 min-w-0">
                         <div className="flex items-center gap-3">
-                          <span
-                            className={cn("flex items-center justify-center w-10 h-10 rounded-md shrink-0", item.tileColor)}
-                            aria-hidden="true"
-                          >
-                            <Icon className="h-5 w-5 text-white" />
-                          </span>
-                          <h3 className="text-xl font-bold leading-tight tracking-tight">{item.title}</h3>
+                          <MethodTile icon={Icon} size="lg" />
+                          <h3 className="text-xl font-bold leading-tight tracking-tight text-secondary-brand">{item.title}</h3>
                         </div>
                         <p className="text-base leading-relaxed">{item.longDescription}</p>
                         {item.helperText && (

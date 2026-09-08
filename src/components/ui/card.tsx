@@ -59,27 +59,33 @@ const cardTitleSizes: Record<CardTitleSize, { root: string; tile: string; icon: 
 
 type CardTitleProps = React.HTMLAttributes<HTMLHeadingElement> & {
   icon?: React.ElementType
-  iconBg?: string
   size?: CardTitleSize
   as?: "h1" | "h2" | "h3" | "h4"
 }
 
+/**
+ * Page and card heading. Renders in the primary colour with the optional icon
+ * drawn light on a solid primary tile, with a slightly heavier stroke than
+ * lucide's default so it holds up at small sizes. This is the one title treatment used
+ * across the app; section navs mirror it for their active row via
+ * `src/lib/nav-item-styles.ts`.
+ */
 const CardTitle = React.forwardRef<HTMLHeadingElement, CardTitleProps>(
-  ({ className, icon: Icon, iconBg = "bg-tertiary", size = "lg", as: Tag = "h2", children, ...props }, ref) => {
+  ({ className, icon: Icon, size = "lg", as: Tag = "h2", children, ...props }, ref) => {
     const sizes = cardTitleSizes[size]
     return (
       <Tag
         ref={ref}
         className={cn(
-          "flex items-center font-bold leading-none tracking-tight",
+          "flex items-center font-bold leading-none tracking-tight text-primary",
           sizes.root,
           className
         )}
         {...props}
       >
         {Icon && (
-          <div className={cn("flex items-center justify-center shrink-0", sizes.tile, iconBg)}>
-            <Icon className={cn("text-tertiary-foreground", sizes.icon)} />
+          <div className={cn("flex items-center justify-center shrink-0 bg-primary", sizes.tile)}>
+            <Icon className={cn("text-primary-foreground [stroke-width:2.5]", sizes.icon)} />
           </div>
         )}
         {children}

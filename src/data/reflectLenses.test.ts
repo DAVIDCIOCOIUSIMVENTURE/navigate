@@ -1,22 +1,6 @@
 import { describe, it, expect } from "vitest"
 import { REFLECT_LENSES, LENS_CONTEXT_FIELDS } from "./reflectLenses"
 
-const ALLOWED_TILES = new Set([
-  "bg-primary",
-  "bg-secondary-brand",
-  "bg-tertiary",
-  "bg-yellow-600",
-  "bg-blue-900",
-  "bg-green-800",
-  "bg-red-800",
-  "bg-teal-700",
-  "bg-emerald-800",
-  "bg-orange-700",
-  "bg-indigo-800",
-  "bg-violet-800",
-  "bg-rose-800",
-])
-
 describe("REFLECT_LENSES schema", () => {
   it("has unique lens ids", () => {
     const ids = REFLECT_LENSES.map((l) => l.id)
@@ -39,12 +23,6 @@ describe("REFLECT_LENSES schema", () => {
     for (const lens of REFLECT_LENSES) {
       const ids = lens.prompts.map((p) => p.id)
       expect(new Set(ids).size).toBe(ids.length)
-    }
-  })
-
-  it("every tile color is in the allowed palette", () => {
-    for (const lens of REFLECT_LENSES) {
-      expect(ALLOWED_TILES.has(lens.tileColor)).toBe(true)
     }
   })
 

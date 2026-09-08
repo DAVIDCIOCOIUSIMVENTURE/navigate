@@ -24,7 +24,7 @@ import { PromoteCandidateDialog } from "./promote-candidate-dialog"
 import { EditCandidateDialog } from "./edit-candidate-dialog"
 import { useGuidance } from "@/context/guidance-context"
 import { toast } from "sonner"
-import { cn } from "@/lib/utils"
+import { MethodTile } from "@/components/method-tile"
 
 type CandidateTab = "active" | "promoted" | "dismissed"
 
@@ -73,16 +73,7 @@ function CandidateRow({
       )}
       <div className="flex items-center gap-2 min-w-0 flex-1">
         {lens && LensIcon && (
-          <span
-            className={cn(
-              "flex items-center justify-center w-7 h-7 rounded-md shrink-0",
-              lens.tileColor
-            )}
-            aria-label={lens.title}
-            title={lens.title}
-          >
-            <LensIcon className="h-4 w-4 text-white" />
-          </span>
+          <MethodTile icon={LensIcon} size="sm" aria-label={lens.title} title={lens.title} />
         )}
         <span className="text-base leading-snug">{candidate.title}</span>
       </div>
@@ -277,7 +268,7 @@ export function CandidatesTray() {
     <Card id="candidates">
       <CardHeader className="space-y-6">
         <div className="flex items-start justify-between gap-3">
-          <CardTitle icon={Lightbulb} iconBg="bg-tertiary">
+          <CardTitle icon={Lightbulb}>
             Candidates
           </CardTitle>
           <Button

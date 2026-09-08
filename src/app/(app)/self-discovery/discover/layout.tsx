@@ -11,7 +11,14 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { ProgressRing } from "@/components/ui/progress-ring"
 import { cn } from "@/lib/utils"
-import { NAV_ITEM_ACTIVE_CLASS } from "@/lib/nav-item-styles"
+import {
+    NAV_ITEM_ACTIVE_CLASS,
+    NAV_ITEM_HOVER_CLASS,
+    SECTION_TITLE_ICON_CLASS,
+    SECTION_TITLE_TILE_CLASS,
+    navIconClass,
+    navIconTileClass,
+} from "@/lib/nav-item-styles"
 import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
 import { useContainerSize } from "@/context/container-size-context"
 import { useFocusChrome } from "@/context/focus-chrome-context"
@@ -71,20 +78,13 @@ function NavContent({
                 variant="ghost"
                 className={cn(
                     "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2",
+                    NAV_ITEM_HOVER_CLASS,
                     isIntroActive && NAV_ITEM_ACTIVE_CLASS,
                 )}
                 onClick={() => onNavigate(BASE_PATH)}
             >
-                <span
-                    className={cn(
-                        "flex items-center justify-center w-6 h-6 rounded-md shrink-0",
-                        isIntroActive ? "bg-tertiary" : "bg-tertiary/10",
-                    )}
-                >
-                    <Compass
-                        className={cn("h-3.5 w-3.5", isIntroActive ? "text-white" : "text-tertiary")}
-                        aria-hidden="true"
-                    />
+                <span className={navIconTileClass(isIntroActive)}>
+                    <Compass className={navIconClass(isIntroActive)} aria-hidden="true" />
                 </span>
                 <span className="flex-1 text-left">Introduction</span>
                 <ChevronDown className="h-4 w-4 shrink-0 opacity-0" aria-hidden="true" />
@@ -107,8 +107,8 @@ function NavContent({
                                 isExactActive
                                     ? NAV_ITEM_ACTIVE_CLASS
                                     : isDeepActive
-                                        ? "text-foreground hover:bg-accent"
-                                        : "hover:bg-accent",
+                                        ? cn("text-foreground", NAV_ITEM_HOVER_CLASS)
+                                        : NAV_ITEM_HOVER_CLASS,
                             )}
                             aria-label={`${category.title} category`}
                             onClick={(e) => {
@@ -121,19 +121,8 @@ function NavContent({
                                 {(() => {
                                     const CategoryIcon = getSelfDiscoveryCategoryIcon(category.url)
                                     return CategoryIcon && (
-                                        <span
-                                            className={cn(
-                                                "flex items-center justify-center w-6 h-6 rounded-md shrink-0",
-                                                isExactActive ? "bg-tertiary" : "bg-tertiary/10",
-                                            )}
-                                        >
-                                            <CategoryIcon
-                                                className={cn(
-                                                    "h-3.5 w-3.5",
-                                                    isExactActive ? "text-white" : "text-tertiary",
-                                                )}
-                                                aria-hidden="true"
-                                            />
+                                        <span className={navIconTileClass(isExactActive)}>
+                                            <CategoryIcon className={navIconClass(isExactActive)} aria-hidden="true" />
                                         </span>
                                     )
                                 })()}
@@ -151,7 +140,7 @@ function NavContent({
                                                 "text-sm cursor-pointer rounded-md px-2 py-1 transition-colors",
                                                 isActive
                                                     ? cn(NAV_ITEM_ACTIVE_CLASS, "font-medium")
-                                                    : "text-foreground hover:bg-accent hover:text-accent-foreground"
+                                                    : cn("text-foreground", NAV_ITEM_HOVER_CLASS)
                                             )}
                                             onClick={() => onNavigate(`${BASE_PATH}/${category.url}/${question.url}`)}
                                             role="menuitem"
@@ -171,20 +160,13 @@ function NavContent({
                 variant="ghost"
                 className={cn(
                     "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2",
+                    NAV_ITEM_HOVER_CLASS,
                     isOtherActive && NAV_ITEM_ACTIVE_CLASS,
                 )}
                 onClick={() => onNavigate(`${BASE_PATH}/${OTHER_CATEGORY.url}`)}
             >
-                <span
-                    className={cn(
-                        "flex items-center justify-center w-6 h-6 rounded-md shrink-0",
-                        isOtherActive ? "bg-tertiary" : "bg-tertiary/10",
-                    )}
-                >
-                    <OtherIcon
-                        className={cn("h-3.5 w-3.5", isOtherActive ? "text-white" : "text-tertiary")}
-                        aria-hidden="true"
-                    />
+                <span className={navIconTileClass(isOtherActive)}>
+                    <OtherIcon className={navIconClass(isOtherActive)} aria-hidden="true" />
                 </span>
                 <span className="flex-1 text-left">{OTHER_CATEGORY.title}</span>
                 <ChevronDown className="h-4 w-4 shrink-0 opacity-0" aria-hidden="true" />
@@ -259,9 +241,9 @@ export default function SelfDiscoveryFlowLayout({
                 Back
             </Button>
             {chromeTriggers}
-            <h1 className="flex items-center gap-2 text-xl font-bold min-w-0">
-                <span className="flex h-7 w-7 items-center justify-center rounded-md bg-tertiary shrink-0" aria-hidden="true">
-                    <Compass className="h-4 w-4 text-tertiary-foreground" />
+            <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 text-primary">
+                <span className={SECTION_TITLE_TILE_CLASS} aria-hidden="true">
+                    <Compass className={SECTION_TITLE_ICON_CLASS} />
                 </span>
                 <span className="truncate">Self Discovery</span>
             </h1>
@@ -290,8 +272,8 @@ export default function SelfDiscoveryFlowLayout({
                                                 className="w-full justify-between h-auto py-2 px-3"
                                             >
                                                 <span className="flex items-center gap-2 text-sm font-medium min-w-0">
-                                                    <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-tertiary">
-                                                        <ActiveIcon className="h-3.5 w-3.5 text-white" aria-hidden="true" />
+                                                    <span className={navIconTileClass(true)}>
+                                                        <ActiveIcon className={navIconClass(true)} aria-hidden="true" />
                                                     </span>
                                                     <span className="truncate">{activeLabel}</span>
                                                 </span>
@@ -323,9 +305,9 @@ export default function SelfDiscoveryFlowLayout({
                             </Button>
                             {chromeTriggers}
                         </div>
-                        <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0">
-                            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-tertiary shrink-0" aria-hidden="true">
-                                <Compass className="h-4 w-4 text-tertiary-foreground" />
+                        <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 text-primary">
+                            <span className={SECTION_TITLE_TILE_CLASS} aria-hidden="true">
+                                <Compass className={SECTION_TITLE_ICON_CLASS} />
                             </span>
                             <span className="truncate">Self Discovery</span>
                         </h1>

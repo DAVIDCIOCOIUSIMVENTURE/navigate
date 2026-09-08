@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Plus, Trash2 } from "lucide-react"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { getSelfDiscoveryCategoryIcon } from "@/config/navigation"
-import { SELF_DISCOVERY_CATEGORIES, SELF_DISCOVERY_CATEGORY_ICON_BG } from "@/data/selfDiscoveryData"
+import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
 import type { CustomDimensionItem } from "@/store/custom-dimension-items-model"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
@@ -75,7 +75,7 @@ export default function OtherCategoryPage() {
         <>
             <Card className="w-full h-full flex flex-col overflow-hidden">
                 <CardHeader className={cn("pb-0 shrink-0", roomy ? "px-10 pt-10" : "px-6 pt-6")}>
-                    <CardTitle icon={Icon} iconBg={SELF_DISCOVERY_CATEGORY_ICON_BG["other"] ?? "bg-primary"}>Other</CardTitle>
+                    <CardTitle icon={Icon}>Other</CardTitle>
                 </CardHeader>
                 <CardContent className={cn("flex-1 min-h-0 flex flex-col overflow-y-auto", roomy ? "p-10 pt-6" : "p-6 pt-4")}>
                     <div className="flex flex-col gap-5 flex-1 min-h-0">

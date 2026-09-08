@@ -8,7 +8,7 @@ import { useRouter, usePathname } from "next/navigation"
 import { ChevronDown, Milestone, type LucideIcon } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
-import { NAV_ITEM_ACTIVE_CLASS } from "@/lib/nav-item-styles"
+import { NAV_ITEM_ACTIVE_CLASS, NAV_ITEM_HOVER_CLASS, navIconClass, navIconTileClass } from "@/lib/nav-item-styles"
 import { NEXT_STEPS_TOPICS } from "@/data/nextStepsData"
 import { useContainerSize } from "@/context/container-size-context"
 
@@ -24,20 +24,13 @@ function NavContent({
       variant="ghost"
       className={cn(
         "w-full justify-start h-auto whitespace-normal text-left py-1.5 gap-2",
+        NAV_ITEM_HOVER_CLASS,
         isActive && NAV_ITEM_ACTIVE_CLASS,
       )}
       onClick={() => onNavigate(href)}
     >
-      <span
-        className={cn(
-          "flex items-center justify-center w-6 h-6 rounded-md shrink-0",
-          isActive ? "bg-tertiary" : "bg-tertiary/10",
-        )}
-      >
-        <Icon
-          className={cn("h-3.5 w-3.5", isActive ? "text-white" : "text-tertiary")}
-          aria-hidden="true"
-        />
+      <span className={navIconTileClass(isActive)}>
+        <Icon className={navIconClass(isActive)} aria-hidden="true" />
       </span>
       <span className="flex-1 text-left">{label}</span>
     </Button>
@@ -111,8 +104,8 @@ export default function NextStepsLayout({
                     className="w-full justify-between h-auto py-2 px-3"
                   >
                     <span className="flex items-center gap-2 text-sm font-medium min-w-0">
-                      <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-tertiary">
-                        <ActiveIcon className="h-3.5 w-3.5 text-white" aria-hidden="true" />
+                      <span className={navIconTileClass(true)}>
+                        <ActiveIcon className={navIconClass(true)} aria-hidden="true" />
                       </span>
                       <span className="truncate">{activeLabel}</span>
                     </span>

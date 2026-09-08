@@ -41,6 +41,7 @@ import { cn } from "@/lib/utils"
 import { useContainerSize } from "@/context/container-size-context"
 import { REFLECT_LENSES, LENS_CONTEXT_FIELDS, type Lens, type LensId, getReflectLens } from "@/data/reflectLenses"
 import { MethodPickerBoard, type MethodPickerItem } from "@/components/method-picker-board"
+import { MethodTile } from "@/components/method-tile"
 import { ReflectProvider, useReflect } from "@/components/reflect/reflect-context"
 import { LifeExperiencesPicker } from "@/components/reflect/life-experiences-picker"
 import { WorkContextPicker } from "@/components/reflect/work-context-picker"
@@ -51,7 +52,13 @@ import { useResolveOrCreate } from "@/lib/dimension-labels"
 import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
 import type { ReflectionCapture } from "@/types/reflection"
 import type { ReflectStep } from "@/store/reflect-sessions-model"
-import { NAV_ITEM_ACTIVE_CLASS } from "@/lib/nav-item-styles"
+import {
+  NAV_ITEM_ACTIVE_CLASS,
+  NAV_ITEM_HOVER_CLASS,
+  SECTION_TITLE_ICON_CLASS,
+  SECTION_TITLE_TILE_CLASS,
+  navStepBadgeClass,
+} from "@/lib/nav-item-styles"
 
 const REFLECT_STEPS: { id: ReflectStep; label: string }[] = [
   { id: "pick", label: "Pick a method" },
@@ -96,10 +103,10 @@ function GuidancePanel({
 }) {
   return (
     <div className={cn("flex flex-col gap-8 text-base", className)}>
-      <h2 className="flex items-center gap-2.5 text-2xl font-bold leading-none tracking-tight">
+      <h2 className="flex items-center gap-2.5 text-2xl font-bold leading-none tracking-tight text-primary">
         {stepNumber !== undefined && (
           <span
-            className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-tertiary text-tertiary-foreground text-lg font-bold"
+            className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-primary text-primary-foreground text-lg font-bold"
             aria-hidden="true"
           >
             {stepNumber}
@@ -186,15 +193,11 @@ function Stepper({
             aria-current={isActive ? "step" : undefined}
             className={cn(
               "w-full justify-start h-auto whitespace-normal text-left py-1.5 px-3 gap-2 disabled:opacity-100",
+              NAV_ITEM_HOVER_CLASS,
               isActive && NAV_ITEM_ACTIVE_CLASS,
             )}
           >
-            <span
-              className={cn(
-                "flex items-center justify-center w-6 h-6 rounded-md shrink-0 text-xs font-bold transition-colors",
-                isActive || isCompleted ? "bg-tertiary text-white" : "bg-tertiary/10 text-tertiary",
-              )}
-            >
+            <span className={navStepBadgeClass(isActive ? "active" : isCompleted ? "completed" : enabled ? "default" : "locked")}>
               {isCompleted ? <Check className="h-3.5 w-3.5" /> : i + 1}
             </span>
             <span className="flex-1 text-left">{stepLabel(s.id, s.label)}</span>
@@ -223,7 +226,7 @@ function Stepper({
             <CollapsibleTrigger asChild>
               <Button variant="ghost" className="w-full justify-between h-auto py-2 px-3">
                 <span className="flex items-center gap-2 text-sm font-medium min-w-0">
-                  <span className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-tertiary text-xs font-bold text-white">
+                  <span className={navStepBadgeClass("active")}>
                     {activeIdx + 1}
                   </span>
                   <span className="truncate">
@@ -268,7 +271,7 @@ function PickMethodPanel({
     longDescription: lens.longDescription,
     helperText: lens.helperText,
     icon: lens.icon,
-    tileColor: lens.tileColor,
+    image: lens.image,
     estimatedMinutes: lens.estimatedMinutes,
     enabled: ENABLED_LENS_IDS.has(lens.id),
   }))
@@ -538,13 +541,8 @@ function PromptsPanel({
   const headerRow = (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
       <div className="flex items-center gap-2.5">
-        <div
-          className={cn("flex items-center justify-center w-10 h-10 rounded-lg shrink-0", lens.tileColor)}
-          aria-hidden="true"
-        >
-          <Icon className="h-5 w-5 text-white" />
-        </div>
-        <h2 className="text-2xl font-bold leading-none tracking-tight">{lens.title}</h2>
+        <MethodTile icon={Icon} size="lg" />
+        <h2 className="text-2xl font-bold leading-none tracking-tight text-secondary-brand">{lens.title}</h2>
       </div>
       {chosenAnchor && !isAnchorPrompt && (
         <div className="flex items-baseline gap-1.5 flex-1 basis-72 rounded-md border border-yellow-600/30 bg-yellow-600/10 px-3 py-2 text-base leading-snug">
@@ -701,10 +699,10 @@ function ReviewPanel({
     return (
       <div className="flex flex-col gap-6 w-full flex-1 min-h-0 overflow-y-auto">
         <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-tertiary" aria-hidden="true">
-            <ClipboardCheck className="h-5 w-5 text-tertiary-foreground" />
+          <div className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-primary" aria-hidden="true">
+            <ClipboardCheck className="h-5 w-5 text-primary-foreground [stroke-width:2.5]" />
           </div>
-          <h2 className="text-2xl font-bold leading-none tracking-tight">Review your answers</h2>
+          <h2 className="text-2xl font-bold leading-none tracking-tight text-primary">Review your answers</h2>
         </div>
         <p className="text-base leading-relaxed">
           Saving as a problem isn&apos;t wired up for this method yet.
@@ -729,10 +727,10 @@ function ReviewPanel({
   return (
     <div className="flex flex-col gap-6 w-full flex-1 min-h-0 overflow-y-auto">
       <div className="flex items-center gap-3">
-        <div className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-tertiary" aria-hidden="true">
-          <ClipboardCheck className="h-5 w-5 text-tertiary-foreground" />
+        <div className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-primary" aria-hidden="true">
+          <ClipboardCheck className="h-5 w-5 text-primary-foreground [stroke-width:2.5]" />
         </div>
-        <h2 className="text-2xl font-bold leading-none tracking-tight">Review your answers</h2>
+        <h2 className="text-2xl font-bold leading-none tracking-tight text-primary">Review your answers</h2>
       </div>
       <p className="text-base leading-relaxed">
         {hasCandidate ? (
@@ -1138,9 +1136,9 @@ export function ReflectBuilder({ resetRef }: { resetRef?: React.MutableRefObject
   )
 
   const sectionTitle = (
-    <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0">
-      <span className="flex h-7 w-7 items-center justify-center rounded-md bg-tertiary shrink-0" aria-hidden="true">
-        <Glasses className="h-4 w-4 text-tertiary-foreground" />
+    <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 text-primary">
+      <span className={SECTION_TITLE_TILE_CLASS} aria-hidden="true">
+        <Glasses className={SECTION_TITLE_ICON_CLASS} />
       </span>
       <span className="truncate">Reflect</span>
     </h1>
