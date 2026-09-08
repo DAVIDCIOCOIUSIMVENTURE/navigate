@@ -1136,7 +1136,7 @@ export function ReflectBuilder({ resetRef }: { resetRef?: React.MutableRefObject
   )
 
   const sectionTitle = (
-    <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 text-primary">
+    <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 text-foreground">
       <span className={SECTION_TITLE_TILE_CLASS} aria-hidden="true">
         <Glasses className={SECTION_TITLE_ICON_CLASS} />
       </span>

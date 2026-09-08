@@ -247,7 +247,7 @@ export default function SelfDiscoveryFlowLayout({
                 Back
             </Button>
             {chromeTriggers}
-            <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 text-primary">
+            <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 text-foreground">
                 <span className={SECTION_TITLE_TILE_CLASS} aria-hidden="true">
                     <Compass className={SECTION_TITLE_ICON_CLASS} />
                 </span>
@@ -313,7 +313,7 @@ export default function SelfDiscoveryFlowLayout({
                             </Button>
                             {chromeTriggers}
                         </div>
-                        <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 text-primary">
+                        <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 text-foreground">
                             <span className={SECTION_TITLE_TILE_CLASS} aria-hidden="true">
                                 <Compass className={SECTION_TITLE_ICON_CLASS} />
                             </span>

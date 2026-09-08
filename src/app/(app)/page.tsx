@@ -42,7 +42,7 @@ export default function DashboardPage() {
   return (
     <div className={cn("flex flex-col gap-3 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <CardTitle size="md" icon={Home} className="text-xl">Home</CardTitle>
+        <CardTitle size="md" icon={Home} className="text-xl text-foreground">Home</CardTitle>
         <div className="flex flex-wrap items-center gap-2 shrink-0">
           <Button onClick={() => router.push("/problems/identify")} className="gap-2">
             <Plus className="h-4 w-4" />
@@ -70,7 +70,7 @@ export default function DashboardPage() {
           const tableClassName = cn(isWide ? "flex-1 min-h-0 min-w-0" : "min-h-[320px] max-h-[640px]")
           const viewToggle = (
             <div className="flex items-center gap-2 shrink-0">
-              <CardTitle size="md">
+              <CardTitle size="md" className="text-foreground">
                 {view === "problems" ? "Problem library" : "Solution library"}
               </CardTitle>
               <DropdownMenu>

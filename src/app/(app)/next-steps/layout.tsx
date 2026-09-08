@@ -94,7 +94,7 @@ export default function NextStepsLayout({
       )}
     >
       {!isWide && (
-        <CardTitle size="md" icon={Milestone} className="text-xl">Next Steps</CardTitle>
+        <CardTitle size="md" icon={Milestone} className="text-xl text-foreground">Next Steps</CardTitle>
       )}
 
       {!isWide && (
@@ -132,7 +132,7 @@ export default function NextStepsLayout({
 
       {isWide && (
         <div className="flex w-72 shrink-0 flex-col gap-3 min-h-0">
-          <CardTitle size="md" icon={Milestone} className="text-xl">Next Steps</CardTitle>
+          <CardTitle size="md" icon={Milestone} className="text-xl text-foreground">Next Steps</CardTitle>
           <Card className="flex-1 min-h-0 overflow-y-auto">
             <CardContent className="p-3">
               <div className="flex flex-col gap-1">

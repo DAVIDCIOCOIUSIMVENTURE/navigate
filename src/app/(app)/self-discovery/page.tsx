@@ -123,7 +123,7 @@ export default function SelfDiscoveryPage() {
   return (
     <div className={cn("flex flex-col gap-3 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <CardTitle size="md" icon={Compass} className="text-xl">Self Discovery</CardTitle>
+        <CardTitle size="md" icon={Compass} className="text-xl text-foreground">Self Discovery</CardTitle>
         <Button onClick={() => router.push(FLOW_BASE)} className="gap-2 shrink-0">
           <ArrowRight className="h-4 w-4" />
           {totalItems > 0 ? "Continue Self Discovery" : "Start Self Discovery"}

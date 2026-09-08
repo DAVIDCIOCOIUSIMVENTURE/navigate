@@ -25,7 +25,7 @@ export default function ProblemsPage() {
   return (
     <div className={cn("flex flex-col gap-3 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <CardTitle size="md" icon={Target} className="text-xl">Problem library</CardTitle>
+        <CardTitle size="md" icon={Target} className="text-xl text-foreground">Problem library</CardTitle>
         <div className="flex flex-wrap items-center gap-2 shrink-0">
           <Button onClick={() => router.push("/problems/identify")} className="gap-2">
             <Plus className="h-4 w-4" />
