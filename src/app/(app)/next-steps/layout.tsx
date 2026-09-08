@@ -1,6 +1,6 @@
 "use client"
 
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardTitle } from "@/components/ui/card"
 import { getNextStepsTopicIcon } from "@/config/navigation"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -94,6 +94,10 @@ export default function NextStepsLayout({
       )}
     >
       {!isWide && (
+        <CardTitle size="md" icon={Milestone} className="text-xl">Next Steps</CardTitle>
+      )}
+
+      {!isWide && (
         <nav aria-label="Next Steps topics" className="w-full shrink-0">
           <Collapsible open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
             <Card>
@@ -127,13 +131,16 @@ export default function NextStepsLayout({
       )}
 
       {isWide && (
-        <Card className="w-72 overflow-y-auto shrink-0">
-          <CardContent className="p-3">
-            <div className="flex flex-col gap-1">
-              <NavContent pathname={pathname} onNavigate={handleNavigate} />
-            </div>
-          </CardContent>
-        </Card>
+        <div className="flex w-72 shrink-0 flex-col gap-3 min-h-0">
+          <CardTitle size="md" icon={Milestone} className="text-xl">Next Steps</CardTitle>
+          <Card className="flex-1 min-h-0 overflow-y-auto">
+            <CardContent className="p-3">
+              <div className="flex flex-col gap-1">
+                <NavContent pathname={pathname} onNavigate={handleNavigate} />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
       )}
 
       <div className="flex-1 min-h-0 min-w-0">

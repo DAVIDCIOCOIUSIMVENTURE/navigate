@@ -47,23 +47,23 @@ export default function SelfDiscoveryDiscoverIntroPage() {
           <h3 className="text-xl font-bold text-foreground">What you&apos;ll do</h3>
           <div className="flex flex-col gap-3">
             <div className={cn("flex gap-3", roomy ? "items-center" : "items-start")}>
-              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-tertiary text-tertiary-foreground text-sm font-bold shrink-0">1</span>
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-secondary-brand text-secondary-brand-foreground text-sm font-bold shrink-0">1</span>
               <div>
-                <p className="font-semibold text-foreground">Answer the questions within each category</p>
+                <p className="font-semibold text-secondary-brand">Answer the questions within each category</p>
                 <p className="text-base text-foreground">Reflect on your strengths, interests, and experiences.</p>
               </div>
             </div>
             <div className={cn("flex gap-3", roomy ? "items-center" : "items-start")}>
-              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-tertiary text-tertiary-foreground text-sm font-bold shrink-0">2</span>
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-secondary-brand text-secondary-brand-foreground text-sm font-bold shrink-0">2</span>
               <div>
-                <p className="font-semibold text-foreground">Use suggestion exercises to discover more insights</p>
+                <p className="font-semibold text-secondary-brand">Use suggestion exercises to discover more insights</p>
                 <p className="text-base text-foreground">Browse curated suggestions or add your own.</p>
               </div>
             </div>
             <div className={cn("flex gap-3", roomy ? "items-center" : "items-start")}>
-              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-tertiary text-tertiary-foreground text-sm font-bold shrink-0">3</span>
+              <span className="flex items-center justify-center w-8 h-8 rounded-full bg-secondary-brand text-secondary-brand-foreground text-sm font-bold shrink-0">3</span>
               <div>
-                <p className="font-semibold text-foreground">Build your problem triggers</p>
+                <p className="font-semibold text-secondary-brand">Build your problem triggers</p>
                 <p className="text-base text-foreground">Your answers become triggers you can take into the Ideas section.</p>
               </div>
             </div>

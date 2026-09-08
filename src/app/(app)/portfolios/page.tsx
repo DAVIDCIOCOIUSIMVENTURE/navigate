@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import Link from "next/link"
 import type { RootState, AppDispatch } from "@/store"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Card, CardContent, CardTitle } from "@/components/ui/card"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -41,20 +41,21 @@ export default function PortfolioListPage() {
 
   return (
     <div className={cn("flex flex-col gap-3 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <CardTitle size="md" icon={FolderKanban} className="text-xl">Portfolios</CardTitle>
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <Button onClick={() => router.push("/portfolios/new")} className="gap-2">
+            <Plus className="h-4 w-4" />
+            New portfolio
+          </Button>
+        </div>
+      </div>
       <Card>
         <CardContent className="py-4">
-          <div className="flex flex-wrap items-center gap-4">
-            <p className="flex-1 min-w-[16rem] text-base leading-relaxed">
-              A <span className="font-bold">portfolio</span> is where an idea comes together. Assign it a validated problem and its solutions carry over automatically, then work through the next steps:
-              build a prototype, run a customer test, map a learning roadmap, and gather what you need for a business model canvas. Use it as the summary you take into the tools where the building and testing actually happen.
-            </p>
-            <div className="flex flex-wrap items-center gap-2 shrink-0">
-              <Button onClick={() => router.push("/portfolios/new")} className="gap-2">
-                <Plus className="h-4 w-4" />
-                New portfolio
-              </Button>
-            </div>
-          </div>
+          <p className="text-base leading-relaxed">
+            A <span className="font-bold">portfolio</span> is where an idea comes together. Assign it a validated problem and its solutions carry over automatically, then work through the next steps:
+            build a prototype, run a customer test, map a learning roadmap, and gather what you need for a business model canvas. Use it as the summary you take into the tools where the building and testing actually happen.
+          </p>
         </CardContent>
       </Card>
 

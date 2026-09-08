@@ -263,11 +263,3 @@ export const NEXT_STEPS_TOPICS: NextStepsTopic[] = [
 export function getNextStepsTopic(url: string): NextStepsTopic | undefined {
   return NEXT_STEPS_TOPICS.find((t) => t.url === url)
 }
-
-export const NEXT_STEPS_TOPIC_ICON_BG: Record<string, string> = {
-  "build-a-prototype": "bg-yellow-600",
-  "run-a-customer-test": "bg-blue-900",
-  "map-a-learning-roadmap": "bg-teal-700",
-  "decide-on-commitment": "bg-green-800",
-  "revisit-your-problem": "bg-red-800",
-}

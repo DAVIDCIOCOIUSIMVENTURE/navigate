@@ -74,11 +74,11 @@ export default function CategoryPage({
                                 onClick={() => router.push(`/self-discovery/discover/${category.url}/${question.url}`)}
                                 className="text-left flex items-start gap-3 p-4 rounded-lg border hover:border-primary hover:bg-accent/40 transition-colors"
                             >
-                                <span className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0 bg-tertiary">
-                                    <span className="text-tertiary-foreground text-base font-bold">{index + 1}</span>
+                                <span className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0 bg-secondary-brand">
+                                    <span className="text-secondary-brand-foreground text-base font-bold">{index + 1}</span>
                                 </span>
                                 <div className="flex-1 min-w-0">
-                                    <p className="font-semibold text-foreground">{question.title}</p>
+                                    <p className="font-semibold text-secondary-brand">{question.title}</p>
                                     <p className="text-base italic mt-0.5 flex items-start gap-1.5">
                                         <Sparkles className="h-3 w-3 shrink-0 mt-1.5" aria-hidden="true" />
                                         <span>{question.description}</span>

@@ -10,7 +10,7 @@ import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 import { getProblemLabel } from "@/store/problems-model"
 import { Sparkles, Lightbulb, Milestone, Target, ChevronRight } from "lucide-react"
-import { NEXT_STEPS_TOPICS, NEXT_STEPS_TOPIC_ICON_BG, type NextStepsTopic } from "@/data/nextStepsData"
+import { NEXT_STEPS_TOPICS, type NextStepsTopic } from "@/data/nextStepsData"
 import { getNextStepsTopicIcon } from "@/config/navigation"
 
 export default function NextStepsPage() {
@@ -138,18 +138,17 @@ export default function NextStepsPage() {
 
 function TopicCard({ topic, onClick }: { topic: NextStepsTopic; onClick: () => void }) {
   const Icon = getNextStepsTopicIcon(topic.iconKey)
-  const bgClass = NEXT_STEPS_TOPIC_ICON_BG[topic.url] ?? "bg-primary"
   return (
     <button
       type="button"
       onClick={onClick}
       className="text-left flex items-start gap-3 p-4 rounded-lg border hover:border-primary hover:bg-accent/40 transition-colors h-full"
     >
-      <span className={cn("flex items-center justify-center w-9 h-9 rounded-lg shrink-0", bgClass)}>
-        <Icon className="h-5 w-5 text-white" aria-hidden="true" />
+      <span className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0 bg-secondary-brand">
+        <Icon className="h-5 w-5 text-secondary-brand-foreground" aria-hidden="true" />
       </span>
       <div className="flex-1 min-w-0">
-        <p className="font-semibold text-foreground">{topic.title}</p>
+        <p className="font-semibold text-secondary-brand">{topic.title}</p>
         <p className="text-sm italic mt-0.5 flex items-start gap-1.5">
           <Sparkles className="h-3 w-3 shrink-0 mt-1" aria-hidden="true" />
           <span>{topic.tagline}</span>

@@ -42,7 +42,7 @@ Each brand token also has a matching `-foreground` variable for text/icon contra
 
 ### Tile palette derived from these tokens
 
-Sectioned tile colors (Foundations, Self-Discovery categories, validation step timelines, Next Steps, dashboard achievements) draw from this saturated dark set so colored surfaces feel like one family:
+Sectioned tile colors (Self-Discovery categories, dashboard achievements, jobs-to-be-done groups) draw from this saturated dark set so colored surfaces feel like one family:
 
 * Mustard tertiary: `bg-yellow-600`
 * Navy secondary: `bg-blue-900`
@@ -259,6 +259,7 @@ One treatment covers every page heading and every section nav, so new pages get 
   * `SECTION_TITLE_TILE_CLASS` / `SECTION_TITLE_ICON_CLASS` for the compact `h1` tile used by focus flows (Self Discovery, Solution Discovery, Reflect, Research).
 * Consumers: the Why It Matters, Next Steps, Self Discovery, Settings, problem explore / validation and solution validate layouts, plus the Solution Discovery, Reflect, Research and Canvas Builder steppers. Copy one of those when adding a nav; do not hand-roll tile colours.
 * **Methods** (Reflect lenses, Research methods, the identify hubs, discovery and refinement tool pickers) are the one exception: they use the cobalt secondary brand instead of primary so a method reads as a choice rather than a page. `MethodTile` (`src/components/method-tile.tsx`) renders a light glyph on a solid `bg-secondary-brand` tile, and method titles next to it use `text-secondary-brand`. Lens and method data carry no tile colour of their own.
+* **In-page tiles** that are not the page title (the "Browse the sections" cards on Why It Matters, the "Where to go from here" cards on Next Steps, the question cards on a Self Discovery category, the numbered intro steps, the introduction-page step timelines, the empty-state icon) also use the solid `bg-secondary-brand` tile with `text-secondary-brand-foreground`, and the title beside each tile is `text-secondary-brand`, so primary is reserved for the page heading and the active nav row.
 
 ### Card header spacing
 

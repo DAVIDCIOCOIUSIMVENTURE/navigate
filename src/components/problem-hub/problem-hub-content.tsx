@@ -23,6 +23,7 @@ import {
 import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { getReflectLens } from "@/data/reflectLenses"
+import { MethodTile } from "@/components/method-tile"
 import { saveActiveDiscoveryProblemId } from "@/lib/active-discovery-problem"
 
 type SectionTone = "indigo" | "amber" | "purple" | "emerald" | "primary" | "rose" | "tertiary"
@@ -128,13 +129,8 @@ function ReflectionSection({ problemId, readOnly = false }: { problemId: number;
     <HubSection icon={MessageSquare} label={`Reflection: ${lens.title}`}>
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
-          <div
-            className="flex items-center justify-center w-8 h-8 rounded-md shrink-0 bg-tertiary"
-            aria-hidden="true"
-          >
-            <LensIcon className="h-4 w-4 text-white" />
-          </div>
-          <p className="text-base font-medium flex-1">{lens.title}</p>
+          <MethodTile icon={LensIcon} size="sm" />
+          <p className="text-base font-medium flex-1 text-secondary-brand">{lens.title}</p>
         </div>
         <div className="flex flex-col gap-4">
           {editablePrompts.map((prompt) => (

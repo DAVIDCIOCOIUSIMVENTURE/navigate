@@ -157,7 +157,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
       <CardHeader className="shrink-0 pb-3 gap-3">
         <div className="flex items-center justify-between gap-3 flex-wrap">
           {headerLead ?? (
-            <CardTitle size="md" icon={Lightbulb}>
+            <CardTitle size="md">
               {title ?? "Solution library"} ({sortedSolutions.length}
               {sortedSolutions.length !== solutions.length ? ` of ${solutions.length}` : ""})
             </CardTitle>

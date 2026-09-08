@@ -11,6 +11,7 @@ import {
 import {
   Check,
   ChevronDown,
+  Home,
   Lightbulb,
   Target,
   Plus,
@@ -40,25 +41,26 @@ export default function DashboardPage() {
 
   return (
     <div className={cn("flex flex-col gap-3 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <CardTitle size="md" icon={Home} className="text-xl">Home</CardTitle>
+        <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <Button onClick={() => router.push("/problems/identify")} className="gap-2">
+            <Plus className="h-4 w-4" />
+            Identify new problems
+          </Button>
+          <Button onClick={() => router.push("/solutions/identify")} className="gap-2">
+            <Plus className="h-4 w-4" />
+            Identify new solutions
+          </Button>
+        </div>
+      </div>
       <Card>
         <CardContent className="py-4">
-          <div className="flex flex-wrap items-center gap-4">
-            <p className="flex-1 min-w-[16rem] text-base leading-relaxed">
-              This is your <span className="font-bold">home</span>, a single view of everything you&apos;ve captured so far.
-              Switch between your <span className="font-bold">problems</span> and your <span className="font-bold">solutions</span> using the menu next to the table title,
-              then open any one to carry on refining or validating it. Use the identify buttons to add a new problem or solution.
-            </p>
-            <div className="flex flex-col items-stretch gap-2 shrink-0">
-              <Button onClick={() => router.push("/problems/identify")} className="gap-2">
-                <Plus className="h-4 w-4" />
-                Identify new problems
-              </Button>
-              <Button onClick={() => router.push("/solutions/identify")} className="gap-2">
-                <Plus className="h-4 w-4" />
-                Identify new solutions
-              </Button>
-            </div>
-          </div>
+          <p className="text-base leading-relaxed">
+            This is your <span className="font-bold">home</span>, a single view of everything you&apos;ve captured so far.
+            Switch between your <span className="font-bold">problems</span> and your <span className="font-bold">solutions</span> using the menu next to the table title,
+            then open any one to carry on refining or validating it. Use the identify buttons to add a new problem or solution.
+          </p>
         </CardContent>
       </Card>
 
@@ -68,7 +70,7 @@ export default function DashboardPage() {
           const tableClassName = cn(isWide ? "flex-1 min-h-0 min-w-0" : "min-h-[320px] max-h-[640px]")
           const viewToggle = (
             <div className="flex items-center gap-2 shrink-0">
-              <CardTitle size="md" icon={view === "problems" ? Target : Lightbulb}>
+              <CardTitle size="md">
                 {view === "problems" ? "Problem library" : "Solution library"}
               </CardTitle>
               <DropdownMenu>

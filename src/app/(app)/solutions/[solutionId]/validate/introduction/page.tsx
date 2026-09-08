@@ -60,15 +60,15 @@ export default function IntroductionPage() {
             {METRICS.map(({ icon: Icon, title, description }, index) => (
               <div key={title} className="flex gap-4">
                 <div className="flex flex-col items-center">
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-tertiary">
-                    <Icon className="h-3.5 w-3.5 text-white" />
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary-brand">
+                    <Icon className="h-3.5 w-3.5 text-secondary-brand-foreground" />
                   </div>
                   {index < METRICS.length - 1 && (
                     <div className="w-px flex-1 bg-border my-1" />
                   )}
                 </div>
                 <div className="flex flex-col gap-0.5 pb-5">
-                  <p className="text-base font-medium leading-8">{title}</p>
+                  <p className="text-base font-medium leading-8 text-secondary-brand">{title}</p>
                   <p className="text-base leading-relaxed">{description}</p>
                 </div>
               </div>

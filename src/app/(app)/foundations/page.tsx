@@ -53,11 +53,11 @@ export default function FoundationsPage() {
                   onClick={() => router.push(`/foundations/${section.url}`)}
                   className="text-left flex items-start gap-3 p-4 rounded-lg border hover:border-primary hover:bg-accent/40 transition-colors"
                 >
-                  <span className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0 bg-tertiary">
-                    <Icon className="h-5 w-5 text-tertiary-foreground" aria-hidden="true" />
+                  <span className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0 bg-secondary-brand">
+                    <Icon className="h-5 w-5 text-secondary-brand-foreground" aria-hidden="true" />
                   </span>
                   <div className="flex-1 min-w-0">
-                    <p className="font-semibold text-foreground">{section.title}</p>
+                    <p className="font-semibold text-secondary-brand">{section.title}</p>
                     <p className="text-sm italic mt-0.5 flex items-start gap-1.5">
                       <Sparkles className="h-3 w-3 shrink-0 mt-1" aria-hidden="true" />
                       <span>{section.tagline}</span>
