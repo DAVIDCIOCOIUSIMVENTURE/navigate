@@ -298,8 +298,9 @@ export default function QuestionPage() {
                                             />
                                             <Button
                                                 onClick={handleAddAnswer}
+                                                variant="on-primary"
                                                 size="sm"
-                                                className="gap-1.5 bg-white text-foreground hover:bg-white/90"
+                                                className="gap-1.5"
                                             >
                                                 <Plus className="h-3.5 w-3.5" />
                                                 Add
@@ -404,13 +405,13 @@ export default function QuestionPage() {
                                                     <Tooltip>
                                                         <TooltipTrigger asChild>
                                                             <Button
-                                                                variant="outline"
+                                                                variant="on-primary"
                                                                 size="icon"
                                                                 onClick={() => {
                                                                     setDefaultGroupOpen(true)
                                                                     setTreeResetKey(k => k + 1)
                                                                 }}
-                                                                className="shrink-0 bg-white border-white text-foreground hover:bg-white/90 hover:text-foreground"
+                                                                className="shrink-0"
                                                                 aria-label="Expand all"
                                                             >
                                                                 <ChevronsUpDown className="h-3.5 w-3.5" />
@@ -421,13 +422,13 @@ export default function QuestionPage() {
                                                     <Tooltip>
                                                         <TooltipTrigger asChild>
                                                             <Button
-                                                                variant="outline"
+                                                                variant="on-primary"
                                                                 size="icon"
                                                                 onClick={() => {
                                                                     setDefaultGroupOpen(false)
                                                                     setTreeResetKey(k => k + 1)
                                                                 }}
-                                                                className="shrink-0 bg-white border-white text-foreground hover:bg-white/90 hover:text-foreground"
+                                                                className="shrink-0"
                                                                 aria-label="Collapse all"
                                                             >
                                                                 <ChevronsDownUp className="h-3.5 w-3.5" />
