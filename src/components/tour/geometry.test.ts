@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { GAP, MARGIN, arrowGeometry, expandRect, placeCard, sameRect, type Rect } from "./geometry"
+import { GAP, MARGIN, arrowGeometry, expandRect, maskPanels, placeCard, sameRect, type Rect } from "./geometry"
 
 const viewport = { width: 1440, height: 900 }
 const card = { width: 352, height: 200 }
@@ -69,6 +69,28 @@ describe("arrowGeometry", () => {
     expect(arrowGeometry(placedTop, spot, card).offset.bottom).toBe(-6)
     const placedLeft = { top: 0, left: 0, placement: "left" as const }
     expect(arrowGeometry(placedLeft, spot, card).offset.right).toBe(-6)
+  })
+})
+
+describe("maskPanels", () => {
+  it("covers the viewport except the hole", () => {
+    const hole: Rect = { top: 100, left: 200, width: 50, height: 40 }
+    const panels = maskPanels(hole, viewport)
+    expect(panels).toEqual([
+      { top: 0, left: 0, width: 1440, height: 100 },
+      { top: 140, left: 0, width: 1440, height: 760 },
+      { top: 100, left: 0, width: 200, height: 40 },
+      { top: 100, left: 250, width: 1190, height: 40 },
+    ])
+    const area = panels.reduce((sum, p) => sum + p.width * p.height, 0)
+    expect(area).toBe(1440 * 900 - 50 * 40)
+  })
+
+  it("drops empty panels when the hole touches an edge", () => {
+    const hole: Rect = { top: 0, left: 0, width: 50, height: 40 }
+    const panels = maskPanels(hole, viewport)
+    expect(panels).toHaveLength(2)
+    expect(panels.every((p) => p.width > 0 && p.height > 0)).toBe(true)
   })
 })
 

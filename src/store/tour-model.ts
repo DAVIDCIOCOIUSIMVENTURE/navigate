@@ -1,5 +1,6 @@
 import { createModel } from "@rematch/core"
 import type { RootModel } from "."
+import { EMPTY_JOURNEY, type TourJourney } from "@/lib/tour-steps"
 
 const STORAGE_KEY = "navigate-tour"
 
@@ -30,12 +31,15 @@ export interface TourState {
   phase: TourPhase
   /** Index into TOUR_STEPS. Kept while paused so the tour resumes in place. */
   stepIndex: number
+  /** Ids created during the hands-on steps, so later steps point at the same problem and solution. */
+  journey: TourJourney
 }
 
 /** What is persisted. Expected to move to the database later. */
 export interface StoredTour {
   phase: TourPhase
   stepIndex: number
+  journey: TourJourney
 }
 
 const PHASES: readonly TourPhase[] = ["armed", "running", "paused", "off"]
@@ -53,16 +57,27 @@ const defaultState: TourState = {
   hydrated: false,
   phase: "armed",
   stepIndex: 0,
+  journey: EMPTY_JOURNEY,
 }
 
 function saveToStorage(state: TourState) {
   if (typeof window === "undefined") return
   try {
-    const stored: StoredTour = { phase: state.phase, stepIndex: state.stepIndex }
+    const stored: StoredTour = { phase: state.phase, stepIndex: state.stepIndex, journey: state.journey }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(stored))
   } catch {
     // ignore storage errors
   }
+}
+
+function parseId(value: unknown): number | null {
+  return typeof value === "number" && Number.isFinite(value) ? value : null
+}
+
+function parseJourney(value: unknown): TourJourney {
+  if (!value || typeof value !== "object") return EMPTY_JOURNEY
+  const raw = value as Partial<Record<keyof TourJourney, unknown>>
+  return { problemId: parseId(raw.problemId), solutionId: parseId(raw.solutionId) }
 }
 
 /**
@@ -70,15 +85,17 @@ function saveToStorage(state: TourState) {
  * so browsers that saw the first release keep their place.
  */
 export function parseStoredTour(raw: string | null): StoredTour {
-  const fallback: StoredTour = { phase: "armed", stepIndex: 0 }
+  const fallback: StoredTour = { phase: "armed", stepIndex: 0, journey: EMPTY_JOURNEY }
   if (!raw) return fallback
   try {
     const parsed = JSON.parse(raw) as Partial<StoredTour> & { enabled?: unknown }
-    const stepIndex =
-      typeof parsed.stepIndex === "number" && Number.isFinite(parsed.stepIndex) ? Math.max(0, parsed.stepIndex) : 0
-    if (isTourPhase(parsed.phase)) return { phase: parsed.phase, stepIndex }
+    const stepIndex = parseId(parsed.stepIndex) ?? 0
+    const journey = parseJourney(parsed.journey)
+    if (isTourPhase(parsed.phase)) return { phase: parsed.phase, stepIndex: Math.max(0, stepIndex), journey }
     if (typeof parsed.enabled === "boolean") {
-      return parsed.enabled ? { phase: stepIndex > 0 ? "paused" : "armed", stepIndex } : { phase: "off", stepIndex: 0 }
+      return parsed.enabled
+        ? { phase: stepIndex > 0 ? "paused" : "armed", stepIndex: Math.max(0, stepIndex), journey }
+        : { phase: "off", stepIndex: 0, journey: EMPTY_JOURNEY }
     }
     return fallback
   } catch {
@@ -92,16 +109,20 @@ export const tour = createModel<RootModel>()({
   reducers: {
     /** Applies the stored value. Anything not switched off resumes straight away. */
     hydrate(state, stored: StoredTour): TourState {
-      const next: TourState =
-        stored.phase === "off"
-          ? { hydrated: true, phase: "off", stepIndex: 0 }
-          : { hydrated: true, phase: "running", stepIndex: stored.phase === "armed" ? 0 : stored.stepIndex }
+      let next: TourState
+      if (stored.phase === "off") {
+        next = { hydrated: true, phase: "off", stepIndex: 0, journey: EMPTY_JOURNEY }
+      } else if (stored.phase === "armed") {
+        next = { hydrated: true, phase: "running", stepIndex: 0, journey: EMPTY_JOURNEY }
+      } else {
+        next = { hydrated: true, phase: "running", stepIndex: stored.stepIndex, journey: stored.journey }
+      }
       saveToStorage(next)
       return next
     },
     /** Starts (or restarts) from the welcome dialog, whatever the current phase. */
     start(state): TourState {
-      const next: TourState = { ...state, hydrated: true, phase: "running", stepIndex: 0 }
+      const next: TourState = { ...state, hydrated: true, phase: "running", stepIndex: 0, journey: EMPTY_JOURNEY }
       saveToStorage(next)
       return next
     },
@@ -117,6 +138,12 @@ export const tour = createModel<RootModel>()({
       saveToStorage(next)
       return next
     },
+    /** Remembers ids created during the hands-on steps. */
+    setJourney(state, patch: Partial<TourJourney>): TourState {
+      const next: TourState = { ...state, journey: { ...state.journey, ...patch } }
+      saveToStorage(next)
+      return next
+    },
     /**
      * Hides the overlay but keeps the setting on and the current step. Used by
      * the close cross on any step and by the welcome dialog's Close button
@@ -129,7 +156,7 @@ export const tour = createModel<RootModel>()({
     },
     /** Ends the tour and switches it off so it does not show again. */
     finish(state): TourState {
-      const next: TourState = { ...state, phase: "off", stepIndex: 0 }
+      const next: TourState = { ...state, phase: "off", stepIndex: 0, journey: EMPTY_JOURNEY }
       saveToStorage(next)
       return next
     },
@@ -139,9 +166,7 @@ export const tour = createModel<RootModel>()({
      */
     setEnabled(state, enabled: boolean): TourState {
       if (enabled === isTourEnabled(state.phase)) return state
-      const next: TourState = enabled
-        ? { ...state, phase: "armed", stepIndex: 0 }
-        : { ...state, phase: "off", stepIndex: 0 }
+      const next: TourState = { ...state, phase: enabled ? "armed" : "off", stepIndex: 0, journey: EMPTY_JOURNEY }
       saveToStorage(next)
       return next
     },

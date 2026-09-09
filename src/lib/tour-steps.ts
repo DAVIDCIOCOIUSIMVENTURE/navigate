@@ -1,39 +1,83 @@
 /**
  * Guided tour content. The overlay (`src/components/tour/tour-overlay.tsx`)
  * walks through these steps in order, navigating to `route` and anchoring a
- * popover to the element carrying `data-tour={target}`. A step without a
- * target (or whose target cannot be found on the current screen) renders as a
- * centred dialog instead, so the tour degrades gracefully on mobile and when
- * a page has no content yet.
+ * popover to the element carrying `data-tour={target}`.
+ *
+ * There are two kinds of step:
+ *
+ * - **explain** (the default): the page is blocked, the card describes what
+ *   the spotlighted element is for, and Next moves on.
+ * - **act**: the user does something for real. The page stays usable, the
+ *   card says what to do, and `done(ctx, entry)` decides when it has
+ *   happened. `capture` records ids created along the way in the journey so
+ *   later steps can point at the same problem and solution.
+ *
+ * A step without a target (or whose target cannot be found) renders as a
+ * centred card (explain) or a docked card in the corner (act), so the tour
+ * degrades gracefully on mobile and when a page has no content yet.
  */
+import type { ValidationStatus } from "@/types/validation"
 
 export type TourPlacement = "top" | "right" | "bottom" | "left"
 
+/** Ids created while working through the hands-on part of the tour. Persisted by the tour model. */
+export type TourJourney = {
+  problemId: number | null
+  solutionId: number | null
+}
+
+export const EMPTY_JOURNEY: TourJourney = { problemId: null, solutionId: null }
+
+export type TourProblemSummary = { id: number; title: string; validationStatus: ValidationStatus }
+export type TourSolutionSummary = { id: number; problemId: number; validationStatus: ValidationStatus }
+
 /** What the app knows at the time a step is shown. Extend this when a step needs to depend on more. */
 export type TourContext = {
-  /** Id of a problem to demonstrate the per-problem canvas with, if any exist. */
-  firstProblemId: number | null
+  pathname: string
+  journey: TourJourney
+  problems: TourProblemSummary[]
+  solutions: TourSolutionSummary[]
 }
 
 export interface TourStep {
   id: string
   title: string
   body: string[]
-  /** `data-tour` id of the element to spotlight. Omit for a centred dialog. */
+  /** `data-tour` id of the element to spotlight. Omit for a centred or docked card. */
   target?: string
   placement?: TourPlacement
   /**
-   * Route to open before showing the step. A resolver may return null, which
+   * Route to open when the step is entered. A resolver may return null, which
    * means "no page can show this anchor right now": the step then stays on
-   * the current page as a centred card (see `resolveTourStep`).
+   * the current page without an anchor (see `resolveTourStep`).
    */
   route?: string | ((ctx: TourContext) => string | null)
+  /**
+   * True when the user is already inside this step's flow (for example part-way
+   * through Explore), so entering or resuming the step must not navigate to
+   * `route` and drag them back to its first page. Defaults to "only on the
+   * route itself".
+   */
+  within?: (ctx: TourContext) => boolean
   /** Skip the step entirely when this returns false. Defaults to always shown. */
   when?: (ctx: TourContext) => boolean
   /** Large centred cards that open and close the tour. */
   variant?: "welcome" | "finish"
   /** The left sidebar must be visible for the target to exist. */
   needsSidebar?: boolean
+
+  /** `act` steps wait for the user to do something; see the module comment. Defaults to `explain`. */
+  mode?: "explain" | "act"
+  /**
+   * Act steps only: when the user has done what the card asks. `entry` is the
+   * context as it was when the step was entered, for "something new appeared"
+   * checks.
+   */
+  done?: (ctx: TourContext, entry: TourContext) => boolean
+  /** Act steps only: ids to remember once `done` is true. */
+  capture?: (ctx: TourContext) => Partial<TourJourney>
+  /** Act steps only: move on as soon as `done` is true instead of waiting for Next. */
+  advance?: "auto"
 }
 
 /** Stable ids for the `data-tour` attribute. Add one here before anchoring a step to a new element. */
@@ -55,8 +99,38 @@ export const TOUR_TARGETS = {
   solutionMethods: "solution-methods",
 } as const
 
-const problemCanvasRoute = (ctx: TourContext) =>
-  ctx.firstProblemId === null ? null : `/problems/${ctx.firstProblemId}`
+// Context helpers, shared by the step definitions and the overlay.
+
+const VERDICTS: ValidationStatus[] = ["valid", "unsure", "invalid"]
+
+export function hasVerdict(status: ValidationStatus | undefined): boolean {
+  return status !== undefined && VERDICTS.includes(status)
+}
+
+export function journeyProblem(ctx: TourContext): TourProblemSummary | undefined {
+  return ctx.problems.find((p) => p.id === ctx.journey.problemId)
+}
+
+export function journeySolution(ctx: TourContext): TourSolutionSummary | undefined {
+  return ctx.solutions.find((s) => s.id === ctx.journey.solutionId)
+}
+
+/** The most recently created item, by id. */
+export function latest<T extends { id: number }>(items: T[]): T | undefined {
+  return items.reduce<T | undefined>((best, item) => (best === undefined || item.id > best.id ? item : best), undefined)
+}
+
+const problemRoute = (suffix: string) => (ctx: TourContext) =>
+  ctx.journey.problemId === null ? null : `/problems/${ctx.journey.problemId}${suffix}`
+
+const solutionRoute = (suffix: string) => (ctx: TourContext) =>
+  ctx.journey.solutionId === null ? null : `/solutions/${ctx.journey.solutionId}${suffix}`
+
+const withinProblemFlow = (flow: string) => (ctx: TourContext) =>
+  ctx.journey.problemId !== null && ctx.pathname.startsWith(`/problems/${ctx.journey.problemId}/${flow}`)
+
+const withinSolutionFlow = (flow: string) => (ctx: TourContext) =>
+  ctx.journey.solutionId !== null && ctx.pathname.startsWith(`/solutions/${ctx.journey.solutionId}/${flow}`)
 
 export const TOUR_STEPS: TourStep[] = [
   {
@@ -65,8 +139,8 @@ export const TOUR_STEPS: TourStep[] = [
     title: "Welcome to Navigate",
     body: [
       "Navigate is a platform for identifying problems worth solving and discovering solutions worth pursuing. This guided tour walks you through the application so you know where everything lives and what each part is for.",
-      "You will learn why the right problem matters, discover what you bring to the table, then identify, explore and validate problems before moving on to solutions and the steps that follow.",
-      "You can skip the tour at any point and start it again later from Settings.",
+      "It starts with a look around the menu and the top bar. Then it becomes hands-on: you will create your first problem, explore and validate it, and find and validate a solution for it, with the tour guiding each step.",
+      "You can close the tour at any point and it will pick up where you left off. You can also skip it and start it again later from Settings.",
     ],
   },
 
@@ -215,88 +289,113 @@ export const TOUR_STEPS: TourStep[] = [
     route: "/",
   },
 
-  // The problem and solution journey
+  // Hands-on: create a problem, explore and validate it, then find and validate a solution.
   {
-    id: "identify-problem",
-    title: "Identify a new problem",
+    id: "journey-intro",
+    title: "Now let's do it for real",
     body: [
-      "Everything starts with a problem. Click here, or the matching button in the problem library, to begin identifying one.",
+      "The rest of the tour is hands-on. You will create a problem, explore and validate it, then find a solution for it and validate that too. Each card tells you what to do and waits until you have done it.",
+      "Take as long as you like. Close the tour at any point and it will pick up from the same step next time.",
     ],
-    target: TOUR_TARGETS.dashboardIdentifyProblems,
-    placement: "bottom",
     route: "/",
   },
   {
-    id: "identify-methods",
+    id: "act-identify",
+    mode: "act",
+    title: "Identify a new problem",
+    body: ["Everything starts with a problem. Click Identify new problems to begin."],
+    target: TOUR_TARGETS.dashboardIdentifyProblems,
+    placement: "bottom",
+    route: "/",
+    done: (ctx) => ctx.pathname === "/problems/identify",
+    advance: "auto",
+  },
+  {
+    id: "act-define",
+    mode: "act",
     title: "Choose how to identify it",
     body: [
-      "There are four doorways. Reflect on your own experience, combine dimensions on the Canvas Builder, Research problems out in the world, or Define a Problem Statement directly if you already have one in mind.",
-      "We suggest starting with Reflect. Whichever you pick, the problem lands in your library ready to refine.",
+      "There are four doorways: Reflect on your own experience, combine dimensions on the Canvas Builder, Research problems out in the world, or Define a Problem Statement directly.",
+      "For this tour, pick the Define a Problem Statement tab and press Use this tool. It is the quickest way in; you can try the other tools another time.",
     ],
-    target: TOUR_TARGETS.identifyMethods,
-    placement: "bottom",
     route: "/problems/identify",
+    done: (ctx, entry) => ctx.problems.length > entry.problems.length,
+    capture: (ctx) => ({ problemId: latest(ctx.problems)?.id ?? null }),
+    advance: "auto",
   },
   {
-    id: "problem-library",
-    title: "Your problem library",
+    id: "act-describe",
+    mode: "act",
+    title: "Describe your problem",
     body: [
-      "Each problem you identify appears here with its status. Open one to see its canvas, a one-page summary of who has the problem, when it shows up and why it matters.",
+      "Give the problem a title and a sentence or two on who has it and when it shows up. A rough first draft is fine; you will sharpen it in the next step.",
+      "Press Done, then on the Problem Saved dialog choose Explore the Problem.",
     ],
-    target: TOUR_TARGETS.problemsLibrary,
-    placement: "bottom",
-    route: "/problems",
+    done: (ctx) => ctx.journey.problemId !== null && ctx.pathname.startsWith(`/problems/${ctx.journey.problemId}/explore`),
+    advance: "auto",
   },
   {
-    id: "explore-problem",
-    title: "Explore the problem",
+    id: "act-explore",
+    mode: "act",
+    title: "Explore your problem",
     body: [
-      "Explore takes you on a deep dive: who the customer is, refining the problem with tools such as 5 Whys, mapping the solutions that already exist and capturing the jobs the customer needs done.",
-      "This is where a vague idea becomes a sharp, well-understood problem.",
+      "Explore is a deep dive into the problem: who the customer is, refining it with tools such as 5 Whys, mapping the solutions that already exist and capturing the jobs the customer needs done.",
+      "Work through the steps in the left-hand nav; each one saves as you go. When you reach Review, press Continue to Problem Validation.",
     ],
-    target: TOUR_TARGETS.canvasExplore,
-    placement: "bottom",
-    route: problemCanvasRoute,
+    route: problemRoute("/explore/introduction"),
+    within: withinProblemFlow("explore"),
+    done: withinProblemFlow("validation"),
+    advance: "auto",
   },
   {
-    id: "validate-problem",
-    title: "Validate the problem",
+    id: "act-validate",
+    mode: "act",
+    title: "Validate your problem",
     body: [
-      "Validation asks what solving the problem is worth to the customer, how big the market is and how strong the competition is, then records a verdict: valid, invalid or unsure.",
-      "Only validated problems move on to solutions.",
+      "Validation asks what solving the problem is worth to the customer, how big the market is and how strong the competition is.",
+      "Work through Worth, Market and Competition, then on Verdict choose Valid, Unsure or Invalid. Only problems marked Valid or Unsure can move on to solutions.",
     ],
-    target: TOUR_TARGETS.canvasValidate,
-    placement: "bottom",
-    route: problemCanvasRoute,
+    route: problemRoute("/validation/introduction"),
+    within: withinProblemFlow("validation"),
+    done: (ctx) => hasVerdict(journeyProblem(ctx)?.validationStatus),
   },
   {
-    id: "identify-solution",
-    title: "Identify solutions",
-    body: [
-      "Once a problem is validated, come to the solution library and click here to start finding solutions for it.",
-    ],
+    id: "act-identify-solution",
+    mode: "act",
+    title: "Identify a solution",
+    body: ["Now find a solution for your problem. Click Identify solutions."],
     target: TOUR_TARGETS.solutionsIdentify,
     placement: "bottom",
     route: "/solutions",
+    done: (ctx) => ctx.pathname === "/solutions/identify",
+    advance: "auto",
   },
   {
-    id: "solution-methods",
-    title: "Solution Discovery",
+    id: "act-discover",
+    mode: "act",
+    title: "Discover a solution",
     body: [
-      "Solution Discovery picks one of your validated problems, refines your understanding of it, then uses creative techniques such as analogy, SCAMPER and reverse ideation to generate candidates rather than settling for the first idea.",
+      "Choose Solution Discovery and press Use this tool. Select your problem (only problems marked Valid or Unsure are listed), pick a discovery method such as analogy or SCAMPER, and capture at least one candidate.",
+      "When a candidate is in your library, press Next.",
     ],
-    target: TOUR_TARGETS.solutionMethods,
-    placement: "top",
     route: "/solutions/identify",
+    within: (ctx) => ctx.pathname.startsWith("/solutions/discover"),
+    done: (ctx, entry) =>
+      ctx.solutions.some((s) => s.problemId === ctx.journey.problemId) || ctx.solutions.length > entry.solutions.length,
+    capture: (ctx) => ({
+      solutionId: (latest(ctx.solutions.filter((s) => s.problemId === ctx.journey.problemId)) ?? latest(ctx.solutions))?.id ?? null,
+    }),
   },
   {
-    id: "validate-solution",
-    title: "Validate each solution",
+    id: "act-validate-solution",
+    mode: "act",
+    title: "Validate your solution",
     body: [
-      "Every candidate can be validated by scoring it from one to five on feasibility, impact, cost and time to implement. The verdict tells you which solution is worth pursuing.",
-      "Open a solution from the library and choose Validate to begin.",
+      "Score the candidate from one to five on feasibility, impact, cost and time to implement, then record a verdict. The verdict tells you whether this is the solution worth pursuing.",
     ],
-    route: "/solutions",
+    route: solutionRoute("/validate/introduction"),
+    within: withinSolutionFlow("validate"),
+    done: (ctx) => hasVerdict(journeySolution(ctx)?.validationStatus),
   },
   {
     id: "next-steps",
@@ -311,7 +410,7 @@ export const TOUR_STEPS: TourStep[] = [
     variant: "finish",
     title: "You are ready to go",
     body: [
-      "That is the end of the tour. The guidance panel in the top bar explains every step in more detail, and you can run this tour again at any time from Settings.",
+      "That is the end of the tour. Your problem and solution are in their libraries, ready to refine further. The guidance panel in the top bar explains every step in more detail, and you can run this tour again at any time from Settings.",
     ],
     route: "/",
   },
@@ -321,7 +420,7 @@ export const TOUR_STEPS: TourStep[] = [
 export type ResolvedTourStep = {
   /** Page to open first, or null to stay where the user is. */
   route: string | null
-  /** Element to spotlight, or null for a centred card. */
+  /** Element to spotlight, or null for a card with no anchor. */
   target: string | null
 }
 
@@ -339,8 +438,20 @@ export function resolveTourStep(step: TourStep, ctx: TourContext): ResolvedTourS
   return { route: step.route ?? null, target: step.target ?? null }
 }
 
+/** Whether the user is already where the step wants them: on its route, or inside its flow. */
+export function isWithinStep(step: TourStep, ctx: TourContext): boolean {
+  const { route } = resolveTourStep(step, ctx)
+  if (route === null || route === ctx.pathname) return true
+  return step.within ? step.within(ctx) : false
+}
+
 export function isStepApplicable(step: TourStep, ctx: TourContext): boolean {
   return step.when ? step.when(ctx) : true
+}
+
+/** Whether an act step's condition is met. Explain steps are never "done"; they just move on. */
+export function isStepDone(step: TourStep, ctx: TourContext, entry: TourContext): boolean {
+  return step.mode === "act" && step.done !== undefined && step.done(ctx, entry)
 }
 
 /**

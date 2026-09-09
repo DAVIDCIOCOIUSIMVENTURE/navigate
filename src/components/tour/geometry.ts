@@ -35,6 +35,25 @@ export function expandRect(rect: Rect, pad: number): Rect {
   return { top: rect.top - pad, left: rect.left - pad, width: rect.width + pad * 2, height: rect.height + pad * 2 }
 }
 
+/**
+ * The four rectangles that cover everything except `hole`. Used on hands-on
+ * steps so the spotlighted element stays clickable while the rest of the
+ * page is masked. Panels that would have no area are left out.
+ */
+export function maskPanels(hole: Rect, viewport: Size): Rect[] {
+  const top = Math.max(0, hole.top)
+  const left = Math.max(0, hole.left)
+  const bottom = Math.min(viewport.height, hole.top + hole.height)
+  const right = Math.min(viewport.width, hole.left + hole.width)
+  const panels: Rect[] = [
+    { top: 0, left: 0, width: viewport.width, height: top },
+    { top: bottom, left: 0, width: viewport.width, height: viewport.height - bottom },
+    { top, left: 0, width: left, height: bottom - top },
+    { top, left: right, width: viewport.width - right, height: bottom - top },
+  ]
+  return panels.filter((p) => p.width > 0 && p.height > 0)
+}
+
 function opposite(p: TourPlacement): TourPlacement {
   switch (p) {
     case "top": return "bottom"
