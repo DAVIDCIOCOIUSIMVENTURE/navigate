@@ -833,38 +833,33 @@ function TamSamSomPanel({
 
       <div className="flex flex-col gap-3">
         {show.tam && (
-          <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 flex flex-col gap-1 text-base text-white">
-            <span className="text-base uppercase tracking-wide text-white">Total market</span>
-            <span className="text-xl font-bold">
-              {ready ? `${formatMoney(tam, { currency })} ${unit}` : "Fill in customers and price to see this"}
-            </span>
-            {ready && (
-              <span className="text-base text-white">
-                {formatMoney(customers)} customers × {frequency || 1} {unit} × {formatMoney(price, { currency })}
-              </span>
-            )}
+          <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4">
+            <MarketFigure
+              label="Total market"
+              value={ready ? `${formatMoney(tam, { currency })} ${unit}` : null}
+              fallback="Fill in customers and price to see this"
+              detail={`${formatMoney(customers)} customers × ${frequency || 1} ${unit} × ${formatMoney(price, { currency })}`}
+            />
           </div>
         )}
         {show.sam && (
-          <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 flex flex-col gap-1 text-base text-white">
-            <span className="text-base uppercase tracking-wide text-white">Reachable market</span>
-            <span className="text-xl font-bold">
-              {ready ? `${formatMoney(sam, { currency })} ${unit}` : "Fill in the inputs to see this"}
-            </span>
-            {ready && (
-              <span className="text-base text-white">Total market × {reachPct}% reachable share</span>
-            )}
+          <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4">
+            <MarketFigure
+              label="Reachable market"
+              value={ready ? `${formatMoney(sam, { currency })} ${unit}` : null}
+              fallback="Fill in the inputs to see this"
+              detail={`Total market × ${reachPct}% reachable share`}
+            />
           </div>
         )}
         {show.som && (
-          <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 flex flex-col gap-1 text-base text-white">
-            <span className="text-base uppercase tracking-wide text-white">Realistic share of the market</span>
-            <span className="text-xl font-bold">
-              {ready ? `${formatMoney(som, { currency })} ${unit}` : "Fill in the inputs to see this"}
-            </span>
-            {ready && (
-              <span className="text-base text-white">Reachable market × {obtainPct}% realistic share</span>
-            )}
+          <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4">
+            <MarketFigure
+              label="Realistic share of the market"
+              value={ready ? `${formatMoney(som, { currency })} ${unit}` : null}
+              fallback="Fill in the inputs to see this"
+              detail={`Reachable market × ${obtainPct}% realistic share`}
+            />
           </div>
         )}
       </div>
@@ -1042,7 +1037,31 @@ function MetricRow({ label, icon: Icon, value }: { label: string; icon: LucideIc
         <Icon className="h-3.5 w-3.5 text-white shrink-0" />
         <span className="text-base font-semibold text-white">{label}</span>
       </div>
-      <span className="text-base font-semibold text-white">{value || "Not captured"}</span>
+      <span className="text-base text-white">{value || "Not captured"}</span>
+    </div>
+  )
+}
+
+/**
+ * One market figure (total, reachable or realistic share). The headline is only
+ * enlarged when there is a number to show; the fallback sentence stays at body size
+ * so an empty estimate does not shout.
+ */
+function MarketFigure({ label, value, fallback, detail }: {
+  label: string
+  value: string | null
+  fallback: string
+  detail?: string
+}) {
+  return (
+    <div className="flex flex-col gap-1 text-white">
+      <span className="text-base font-semibold">{label}</span>
+      {value ? (
+        <span className="text-lg font-semibold">{value}</span>
+      ) : (
+        <span className="text-base italic">{fallback}</span>
+      )}
+      {value && detail && <span className="text-base">{detail}</span>}
     </div>
   )
 }
@@ -1131,19 +1150,22 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
               value={competitorSize.level}
             />
           </div>
-          <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-base text-white">
-            <div className="flex flex-col gap-1">
-              <span className="text-base uppercase tracking-wide text-white">Total market</span>
-              <span className="text-xl font-bold">{ready ? `${formatMoney(tam, { currency })} ${unit}` : "Not enough data"}</span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-base uppercase tracking-wide text-white">Reachable market</span>
-              <span className="text-xl font-bold">{ready ? `${formatMoney(sam, { currency })} ${unit}` : "Not enough data"}</span>
-            </div>
-            <div className="flex flex-col gap-1">
-              <span className="text-base uppercase tracking-wide text-white">Realistic share of the market</span>
-              <span className="text-xl font-bold">{ready ? `${formatMoney(som, { currency })} ${unit}` : "Not enough data"}</span>
-            </div>
+          <div className="rounded-lg bg-secondary-brand/40 border border-white/20 p-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <MarketFigure
+              label="Total market"
+              value={ready ? `${formatMoney(tam, { currency })} ${unit}` : null}
+              fallback="Not enough data"
+            />
+            <MarketFigure
+              label="Reachable market"
+              value={ready ? `${formatMoney(sam, { currency })} ${unit}` : null}
+              fallback="Not enough data"
+            />
+            <MarketFigure
+              label="Realistic share of the market"
+              value={ready ? `${formatMoney(som, { currency })} ${unit}` : null}
+              fallback="Not enough data"
+            />
           </div>
         </div>
 
