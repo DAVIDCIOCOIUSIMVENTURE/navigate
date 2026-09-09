@@ -12,6 +12,7 @@ import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 import { getReflectLens } from "@/data/reflectLenses"
 import { ReflectProvider } from "@/components/reflect/reflect-context"
+import { ReflectingOnCard } from "@/components/reflect/reflecting-on-card"
 import type { ReflectStep } from "@/store/reflect-sessions-model"
 import { SECTION_TITLE_ICON_CLASS, SECTION_TITLE_TILE_CLASS } from "@/lib/nav-item-styles"
 import { ReflectStepper } from "./reflect-stepper"
@@ -149,6 +150,11 @@ export default function ReflectLayout({ children }: { children: ReactNode }) {
     </h1>
   )
 
+  // The anchor prompt is where the user picks what to reflect on, so the
+  // reminder card only appears on the steps that follow it.
+  const isAnchorPrompt =
+    route.kind === "prompts" && route.lens.prompts[route.promptIndex]?.contextOnly === true
+
   const stepper = (
     <ReflectStepper
       activeId={activeStep}
@@ -157,6 +163,7 @@ export default function ReflectLayout({ children }: { children: ReactNode }) {
       promptsProgress={promptsProgress}
       onReset={handleReset}
       resetDescription="This will return you to the method picker and clear in-progress answers. Saved problems are not affected."
+      contextCard={routeLens && !isAnchorPrompt ? <ReflectingOnCard /> : undefined}
     />
   )
 

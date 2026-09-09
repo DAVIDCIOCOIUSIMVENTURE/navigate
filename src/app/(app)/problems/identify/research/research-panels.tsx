@@ -36,7 +36,6 @@ import {
 import { useResearch } from "@/components/research/research-context"
 import { MethodPickerBoard, type MethodPickerItem } from "@/components/method-picker-board"
 import { MethodTile } from "@/components/method-tile"
-import { ContextBanner } from "@/components/context-card"
 import { IdentifyDimensionPicker } from "@/components/reflect/identify-dimension-picker"
 import { useResolveOrCreate } from "@/lib/dimension-labels"
 import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
@@ -326,7 +325,7 @@ export function CapturePanel({
   onBackToTool: () => void
   onReview: () => void
 }) {
-  const { method, toolId, answers, setAnswerText, setAnswerSlots, addAnswerSlot, removeAnswerSlot } = useResearch()
+  const { method, answers, setAnswerText, setAnswerSlots, addAnswerSlot, removeAnswerSlot } = useResearch()
   const isNarrow = useContainerSize() === "narrow"
   const [addDialogOpen, setAddDialogOpen] = useState(false)
 
@@ -338,7 +337,6 @@ export function CapturePanel({
     [answers, prompt.id]
   )
 
-  const selectedTool = method.tools.find((t) => t.id === toolId) ?? null
   const Icon = method.icon
 
   const dimensionColumn: "customers" | "problems" | null =
@@ -365,23 +363,9 @@ export function CapturePanel({
   }
 
   const headerRow = (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <div className="flex items-center gap-2.5">
-        <MethodTile icon={Icon} size="lg" />
-        <h2 className="text-2xl font-bold leading-none tracking-tight text-secondary-brand">{method.title}</h2>
-      </div>
-      {selectedTool && (
-        <ContextBanner label="Researching with:" className="flex-1 basis-72">
-          <a
-            href={selectedTool.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-primary hover:underline"
-          >
-            {selectedTool.name}
-          </a>
-        </ContextBanner>
-      )}
+    <div className="flex items-center gap-2.5">
+      <MethodTile icon={Icon} size="lg" />
+      <h2 className="text-2xl font-bold leading-none tracking-tight text-secondary-brand">{method.title}</h2>
     </div>
   )
 

@@ -12,6 +12,7 @@ import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 import { getResearchMethod } from "@/data/researchMethods"
 import { ResearchProvider } from "@/components/research/research-context"
+import { ResearchingWithCard } from "@/components/research/researching-with-card"
 import type { ResearchStep } from "@/store/research-sessions-model"
 import { SECTION_TITLE_ICON_CLASS, SECTION_TITLE_TILE_CLASS } from "@/lib/nav-item-styles"
 import { ResearchStepper } from "./research-stepper"
@@ -156,6 +157,8 @@ export default function ResearchLayout({ children }: { children: ReactNode }) {
     </h1>
   )
 
+  // The tool step is where the user picks the tool, so the reminder card only
+  // appears on the steps that follow it.
   const stepper = (
     <ResearchStepper
       activeId={activeStep}
@@ -164,6 +167,7 @@ export default function ResearchLayout({ children }: { children: ReactNode }) {
       promptsProgress={promptsProgress}
       onReset={handleReset}
       resetDescription="This will return you to the method picker and clear in-progress capture answers. Saved problems are not affected."
+      contextCard={routeMethod && route.kind !== "tool" ? <ResearchingWithCard /> : undefined}
     />
   )
 

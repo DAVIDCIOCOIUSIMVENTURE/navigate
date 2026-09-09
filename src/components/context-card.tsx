@@ -5,46 +5,19 @@ import type { Problem } from "@/store/problems-model"
 import type { Solution } from "@/types/solution"
 
 /**
- * Amber surface shared by the problem context card and the inline
- * "Reflecting on" / "Researching with" banners, so every reminder of what
- * the user is currently working on reads the same. Dark text keeps contrast
- * on the amber in both themes.
+ * Amber surface shared by the problem context card and the "Reflecting on" /
+ * "Researching with" cards, so every reminder of what the user is currently
+ * working on reads the same. Dark text keeps contrast on the amber in both
+ * themes.
  */
 export const CONTEXT_HIGHLIGHT_CLASS = "bg-[#f8ba39] text-zinc-900"
 
-interface ContextBannerProps {
-  /** Short lead-in, e.g. "Reflecting on:". */
-  label: string
-  /** The thing being worked on: plain text or a link. */
-  children: ReactNode
-  className?: string
-}
-
-/**
- * Compact inline strip for a flow header that names what the current step
- * is anchored on. Sits beside the step title; pass `flex-1 basis-72` via
- * `className` when it should fill the rest of the header row.
- */
-export function ContextBanner({ label, children, className }: ContextBannerProps) {
-  return (
-    <div
-      className={cn(
-        "flex items-baseline gap-1.5 rounded-md px-3 py-2 text-base leading-snug",
-        CONTEXT_HIGHLIGHT_CLASS,
-        className
-      )}
-    >
-      <span className="font-semibold">{label}</span>
-      <span className="font-medium">{children}</span>
-    </div>
-  )
-}
-
 interface ContextCardProps {
-  /** Small uppercase label above the title, e.g. "Problem". */
+  /** Small uppercase label above the title, e.g. "Problem" or "Reflecting on". */
   label: string
   icon: LucideIcon
-  title: string
+  /** The thing being worked on: plain text or a link. */
+  title: ReactNode
   description?: string
   /** Background and text colour classes. */
   className?: string
@@ -54,8 +27,10 @@ interface ContextCardProps {
 
 /**
  * Solid coloured banner that reminds the user which entity a step belongs to.
- * Use `ProblemContextCard` / `SolutionContextCard` rather than this directly
- * so every flow shows the same colour and icon for the same entity.
+ * Use one of the wrappers (`ProblemContextCard`, `SolutionContextCard`,
+ * `ReflectingOnCard`, `ResearchingWithCard`) rather than this directly so
+ * every flow shows the same colour and icon for the same thing. Flows render
+ * it compact in their stepper rail, directly above the Reset button.
  */
 export function ContextCard({ label, icon: Icon, title, description, className, compact = false }: ContextCardProps) {
   const text = compact ? "text-sm" : "text-base"

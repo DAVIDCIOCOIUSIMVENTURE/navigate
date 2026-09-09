@@ -90,8 +90,8 @@ export type Lens = {
   flowKind?: "standard" | "single-form"
   /**
    * Short label for the contextOnly anchor prompt (e.g. "Life experience",
-   * "Work area"). Used in the review heading, the "Reflecting on:" badge, and
-   * the save dialog. Falls back to "Anchor" if missing.
+   * "Work area"). Used in the review heading and the save dialog. Falls back
+   * to "Anchor" if missing.
    */
   anchorLabel?: string
 }
@@ -661,4 +661,12 @@ export const REFLECT_LENS_BY_ID: Record<LensId, Lens> = REFLECT_LENSES.reduce(
 
 export function getReflectLens(id: string): Lens | undefined {
   return REFLECT_LENS_BY_ID[id as LensId]
+}
+
+/**
+ * The lens's contextOnly "anchor" prompt (the experience, work area or
+ * audience the rest of the prompts reflect on), or null when it has none.
+ */
+export function getAnchorPromptId(lens: Lens): string | null {
+  return lens.prompts.find((p) => p.contextOnly)?.id ?? null
 }

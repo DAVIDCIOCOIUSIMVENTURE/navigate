@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, type ReactNode } from "react"
 import { Check, ChevronDown, RotateCcw } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -33,6 +33,7 @@ export function ResearchStepper({
   promptsProgress,
   onReset,
   resetDescription,
+  contextCard,
 }: {
   activeId: ResearchStep
   onStepClick: (id: ResearchStep) => void
@@ -40,6 +41,8 @@ export function ResearchStepper({
   promptsProgress?: { current: number; total: number } | null
   onReset: () => void
   resetDescription: string
+  /** Reminder of what the session is anchored on, shown above the Reset button. */
+  contextCard?: ReactNode
 }) {
   const steps = RESEARCH_STEPS
   const isWide = useContainerSize() === "wide"
@@ -108,7 +111,10 @@ export function ResearchStepper({
       <Card className="flex-1 min-h-0 flex flex-col overflow-hidden">
         <CardContent className="p-3 flex flex-col gap-3 flex-1 min-h-0">
           <div className="flex-1 min-h-0 overflow-y-auto">{navList}</div>
-          <div className="shrink-0">{resetButton}</div>
+          <div className="shrink-0 flex flex-col gap-2">
+            {contextCard}
+            {resetButton}
+          </div>
         </CardContent>
       </Card>
     )
@@ -118,7 +124,8 @@ export function ResearchStepper({
     <nav aria-label="Research steps" className="w-full shrink-0">
       <Collapsible open={open} onOpenChange={setOpen}>
         <Card>
-          <CardContent className="p-2">
+          <CardContent className="p-2 flex flex-col gap-2">
+            {contextCard}
             <CollapsibleTrigger asChild>
               <Button variant="ghost" className="w-full justify-between h-auto py-2 px-3">
                 <span className="flex items-center gap-2 text-sm font-medium min-w-0">

@@ -25,10 +25,15 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useContainerSize } from "@/context/container-size-context"
-import { REFLECT_LENSES, LENS_CONTEXT_FIELDS, type Lens, type LensId } from "@/data/reflectLenses"
+import {
+  REFLECT_LENSES,
+  LENS_CONTEXT_FIELDS,
+  getAnchorPromptId,
+  type Lens,
+  type LensId,
+} from "@/data/reflectLenses"
 import { MethodPickerBoard, type MethodPickerItem } from "@/components/method-picker-board"
 import { MethodTile } from "@/components/method-tile"
-import { ContextBanner } from "@/components/context-card"
 import { useReflect } from "@/components/reflect/reflect-context"
 import { LifeExperiencesPicker } from "@/components/reflect/life-experiences-picker"
 import { WorkContextPicker } from "@/components/reflect/work-context-picker"
@@ -51,10 +56,6 @@ const ENABLED_LENS_IDS = new Set<LensId>([
   "own-problems",
   "audience-problems",
 ])
-
-function getAnchorPromptId(lens: Lens): string | null {
-  return lens.prompts.find((p) => p.contextOnly)?.id ?? null
-}
 
 function getRolePromptId(lens: Lens, role: "problems" | "customers"): string | null {
   return lens.prompts.find((p) => p.role === role)?.id ?? null
@@ -225,15 +226,6 @@ export function PromptsPanel({
     return id && id.length > 0 ? id : null
   }, [useAnchorPicker, promptAnswers])
 
-  const anchorPromptId = useMemo(() => getAnchorPromptId(lens), [lens])
-  const chosenAnchor = useMemo(() => {
-    if (!anchorPromptId) return null
-    const list = answers[anchorPromptId] ?? []
-    const firstFilled = list.find((a) => a.text.trim().length > 0)
-    return firstFilled ? firstFilled.text.trim() : null
-  }, [anchorPromptId, answers])
-  const isAnchorPrompt = anchorPromptId !== null && prompt.id === anchorPromptId
-
   function handleSelectAnchor(id: string | null, label: string | null) {
     setAnswerText(prompt.id, 0, label ?? "")
     setAnswerContext(prompt.id, 0, "anchorItemId", id ?? "")
@@ -392,16 +384,9 @@ export function PromptsPanel({
   )
 
   const headerRow = (
-    <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-      <div className="flex items-center gap-2.5">
-        <MethodTile icon={Icon} size="lg" />
-        <h2 className="text-2xl font-bold leading-none tracking-tight text-secondary-brand">{lens.title}</h2>
-      </div>
-      {chosenAnchor && !isAnchorPrompt && (
-        <ContextBanner label="Reflecting on:" className="flex-1 basis-72">
-          {chosenAnchor}
-        </ContextBanner>
-      )}
+    <div className="flex items-center gap-2.5">
+      <MethodTile icon={Icon} size="lg" />
+      <h2 className="text-2xl font-bold leading-none tracking-tight text-secondary-brand">{lens.title}</h2>
     </div>
   )
 
