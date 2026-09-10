@@ -1,17 +1,14 @@
 "use client"
 
 import { useRouter } from "next/navigation"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Lightbulb, Clock } from "lucide-react"
-import { useContainerSize } from "@/context/container-size-context"
-import { cn } from "@/lib/utils"
+import { IdentifyHubShell } from "@/components/identify-hub-shell"
 import { MethodPickerBoard, type MethodPickerItem } from "@/components/method-picker-board"
 import { saveActiveDiscoveryProblemId } from "@/lib/active-discovery-problem"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
 
 export default function IdentifySolutionsPage() {
   const router = useRouter()
-  const isWide = useContainerSize() === "wide"
 
   const items: MethodPickerItem[] = [
     {
@@ -47,34 +44,33 @@ export default function IdentifySolutionsPage() {
   }
 
   return (
-    <div className={cn("flex flex-col gap-3 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
-      <Card className={cn("w-full flex flex-col", isWide ? "flex-1 min-h-0 overflow-hidden" : "min-h-[320px]")}>
-        <CardHeader className="space-y-6">
-          <CardTitle icon={Lightbulb}>Identify Solutions</CardTitle>
-          <div className="flex flex-col gap-3">
-            <p className="text-base leading-relaxed">
-              Solutions answer a problem you&apos;ve already validated. Pick the tool that fits where you are right now: each one is a different doorway into the same goal of finding a solution worth pursuing.
-            </p>
-            <p className="text-base leading-relaxed">
-              <span className="font-semibold">Solution Discovery</span> walks you through creative techniques (analogy, SCAMPER, reverse ideation, root-cause attacks) to surface candidates you wouldn&apos;t reach by jumping to the first idea. <span className="font-semibold">Quick Capture</span> lets you log an idea you already have without working through the wizard.
-            </p>
-            <p className="text-base leading-relaxed">
-              Whichever tool you choose, the resulting solution lands in your library where you can refine and validate it.
-            </p>
-          </div>
-        </CardHeader>
-        <CardContent className={cn("flex flex-col gap-3", isWide && "flex-1 min-h-0 overflow-y-auto")}>
-          <div data-tour={TOUR_TARGETS.solutionMethods}>
-            <MethodPickerBoard
-              items={items}
-              selectedId={null}
-              onPick={handlePick}
-              ctaLabel="Use this tool"
-              reselectLabel="Continue with this tool"
-            />
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+    <IdentifyHubShell
+      title="Identify Solutions"
+      icon={Lightbulb}
+      backHref="/solutions"
+      intro={
+        <>
+          <p className="text-base leading-relaxed">
+            Solutions answer a problem you&apos;ve already validated. Pick the tool that fits where you are right now: each one is a different doorway into the same goal of finding a solution worth pursuing.
+          </p>
+          <p className="text-base leading-relaxed">
+            <span className="font-semibold">Solution Discovery</span> walks you through creative techniques (analogy, SCAMPER, reverse ideation, root-cause attacks) to surface candidates you wouldn&apos;t reach by jumping to the first idea. <span className="font-semibold">Quick Capture</span> lets you log an idea you already have without working through the wizard.
+          </p>
+          <p className="text-base leading-relaxed">
+            Whichever tool you choose, the resulting solution lands in your library where you can refine and validate it.
+          </p>
+        </>
+      }
+    >
+      <div data-tour={TOUR_TARGETS.solutionMethods}>
+        <MethodPickerBoard
+          items={items}
+          selectedId={null}
+          onPick={handlePick}
+          ctaLabel="Use this tool"
+          reselectLabel="Continue with this tool"
+        />
+      </div>
+    </IdentifyHubShell>
   )
 }

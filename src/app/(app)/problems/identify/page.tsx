@@ -5,12 +5,12 @@ import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowRight, Brain, Clock, PenLine, Glasses, Microscope, Target } from "lucide-react"
 import { EditProblemDialog } from "@/components/edit-problem-dialog"
 import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
+import { IdentifyHubShell } from "@/components/identify-hub-shell"
 import { useContainerSize } from "@/context/container-size-context"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { cn } from "@/lib/utils"
@@ -139,91 +139,90 @@ export default function IdentifyProblemsPage() {
 
   return (
     <>
-      <div className={cn("flex flex-col gap-3 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
-        <Card className={cn("w-full flex flex-col", isWide ? "flex-1 min-h-0 overflow-hidden" : "min-h-[320px]")}>
-          <CardHeader className="space-y-6">
-            <CardTitle icon={Target}>Identify a Problem</CardTitle>
-            <p className="text-base leading-relaxed">
-              Every problem in your library starts here. Each tool is a different doorway to the same goal: a problem that&apos;s real, painful, and worth solving. We suggest starting with <span className="font-semibold">Reflect</span> to ground a problem in your own experience, then returning to the <span className="font-semibold">Canvas Builder</span> or <span className="font-semibold">Research</span> to explore more broadly or gather outside evidence. If you already know what you want to explore, <span className="font-semibold">Define a Problem Statement</span> captures it straight away. Whichever tool you choose, the problem lands in your library, ready to refine and validate.
-            </p>
-          </CardHeader>
-          <CardContent className={cn("flex flex-col gap-3", isWide && "flex-1 min-h-0 overflow-y-auto")}>
-            <Tabs defaultValue={items[0].id} className="w-full">
-              <TabsList className="h-auto flex-wrap justify-start" aria-label="Ways to identify a problem" data-tour={TOUR_TARGETS.identifyMethods}>
-                {items.map((item) => {
-                  const Icon = item.icon
-                  return (
-                    <TabsTrigger
-                      key={item.id}
-                      value={item.id}
-                      className="gap-2 text-base"
-                      data-tour={item.id === "define" ? TOUR_TARGETS.identifyDefineTab : undefined}
-                    >
-                      <Icon className="h-4 w-4" aria-hidden="true" />
-                      {item.title}
-                    </TabsTrigger>
-                  )
-                })}
-              </TabsList>
+      <IdentifyHubShell
+        title="Identify a Problem"
+        icon={Target}
+        backHref="/problems"
+        intro={
+          <p className="text-base leading-relaxed">
+            Every problem in your library starts here. Each tool is a different doorway to the same goal: a problem that&apos;s real, painful, and worth solving. We suggest starting with <span className="font-semibold">Reflect</span> to ground a problem in your own experience, then returning to the <span className="font-semibold">Canvas Builder</span> or <span className="font-semibold">Research</span> to explore more broadly or gather outside evidence. If you already know what you want to explore, <span className="font-semibold">Define a Problem Statement</span> captures it straight away. Whichever tool you choose, the problem lands in your library, ready to refine and validate.
+          </p>
+        }
+      >
+        <Tabs defaultValue={items[0].id} className="w-full">
+          <TabsList className="h-auto flex-wrap justify-start" aria-label="Ways to identify a problem" data-tour={TOUR_TARGETS.identifyMethods}>
+            {items.map((item) => {
+              const Icon = item.icon
+              return (
+                <TabsTrigger
+                  key={item.id}
+                  value={item.id}
+                  className="gap-2 text-base"
+                  data-tour={item.id === "define" ? TOUR_TARGETS.identifyDefineTab : undefined}
+                >
+                  <Icon className="h-4 w-4" aria-hidden="true" />
+                  {item.title}
+                </TabsTrigger>
+              )
+            })}
+          </TabsList>
 
-              {items.map((item) => {
-                const Icon = item.icon
-                return (
-                  <TabsContent key={item.id} value={item.id} className="mt-4">
-                    <div
-                      className={cn(
-                        "rounded-lg border bg-muted/70 p-6 grid gap-6",
-                        item.image && isWide && "grid-cols-[minmax(0,1fr),26rem] items-center",
-                      )}
-                    >
-                      <div className="flex flex-col gap-5 min-w-0">
-                        <div className="flex items-center gap-3">
-                          <MethodTile icon={Icon} size="lg" />
-                          <h3 className="text-xl font-bold leading-tight tracking-tight text-secondary-brand">{item.title}</h3>
-                        </div>
-                        <p className="text-base leading-relaxed">{item.longDescription}</p>
-                        {item.helperText && (
-                          <div className="rounded-lg border bg-card p-4">
-                            <p className="text-base leading-relaxed">{item.helperText}</p>
-                          </div>
-                        )}
-                        <div className="flex items-center gap-1.5 text-base">
-                          <Clock className="h-4 w-4" aria-hidden="true" />
-                          <span>About {item.estimatedMinutes} minutes</span>
-                        </div>
-                        <div>
-                          <Button
-                            type="button"
-                            onClick={() => handlePick(item.id)}
-                            disabled={!item.enabled}
-                            className="gap-2"
-                            data-tour={item.id === "define" ? TOUR_TARGETS.identifyDefineUse : undefined}
-                          >
-                            Use this tool
-                            <ArrowRight className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </div>
-                      {item.image && (
-                        <div className="relative w-full max-w-[26rem] aspect-[3/2] overflow-hidden rounded-lg">
-                          <Image
-                            src={item.image.src}
-                            alt={item.image.alt}
-                            fill
-                            sizes="26rem"
-                            className="object-cover"
-                            priority={item.id === items[0].id}
-                          />
-                        </div>
-                      )}
+          {items.map((item) => {
+            const Icon = item.icon
+            return (
+              <TabsContent key={item.id} value={item.id} className="mt-4">
+                <div
+                  className={cn(
+                    "rounded-lg border bg-muted/70 p-6 grid gap-6",
+                    item.image && isWide && "grid-cols-[minmax(0,1fr),26rem] items-center",
+                  )}
+                >
+                  <div className="flex flex-col gap-5 min-w-0">
+                    <div className="flex items-center gap-3">
+                      <MethodTile icon={Icon} size="lg" />
+                      <h2 className="text-xl font-bold leading-tight tracking-tight text-secondary-brand">{item.title}</h2>
                     </div>
-                  </TabsContent>
-                )
-              })}
-            </Tabs>
-          </CardContent>
-        </Card>
-      </div>
+                    <p className="text-base leading-relaxed">{item.longDescription}</p>
+                    {item.helperText && (
+                      <div className="rounded-lg border bg-card p-4">
+                        <p className="text-base leading-relaxed">{item.helperText}</p>
+                      </div>
+                    )}
+                    <div className="flex items-center gap-1.5 text-base">
+                      <Clock className="h-4 w-4" aria-hidden="true" />
+                      <span>About {item.estimatedMinutes} minutes</span>
+                    </div>
+                    <div>
+                      <Button
+                        type="button"
+                        onClick={() => handlePick(item.id)}
+                        disabled={!item.enabled}
+                        className="gap-2"
+                        data-tour={item.id === "define" ? TOUR_TARGETS.identifyDefineUse : undefined}
+                      >
+                        Use this tool
+                        <ArrowRight className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  {item.image && (
+                    <div className="relative w-full max-w-[26rem] aspect-[3/2] overflow-hidden rounded-lg">
+                      <Image
+                        src={item.image.src}
+                        alt={item.image.alt}
+                        fill
+                        sizes="26rem"
+                        className="object-cover"
+                        priority={item.id === items[0].id}
+                      />
+                    </div>
+                  )}
+                </div>
+              </TabsContent>
+            )
+          })}
+        </Tabs>
+      </IdentifyHubShell>
 
       <EditProblemDialog
         problem={draftProblem}
