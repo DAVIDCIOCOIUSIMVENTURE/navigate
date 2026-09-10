@@ -149,9 +149,8 @@ describe("hands-on steps", () => {
     validationStatus,
   })
 
-  it("act-define spotlights the Define tab, then its Use this tool button", () => {
+  it("act-define spotlights the Define card's Use this tool button", () => {
     expect(resolveTourStep(find("act-define"), ctxWith()).targets).toEqual([
-      TOUR_TARGETS.identifyDefineTab,
       TOUR_TARGETS.identifyDefineUse,
     ])
   })

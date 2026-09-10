@@ -165,17 +165,14 @@ function getCrumbs(pathname: string): Crumb[] {
 
 /**
  * Routes that render without the header and sidebar and supply their own Back
- * button and title. The two Identify hubs are matched exactly: the Canvas
- * Builder underneath `/problems/identify` keeps the standard chrome and its
- * own full-view toggle.
+ * button and title: the Identify hubs and every tool underneath them (Canvas
+ * Builder, Reflect, Research), Self Discovery and Solution Discovery.
  */
 function isFocusFlowPath(pathname: string): boolean {
   return (
-    pathname === "/problems/identify" ||
+    pathname.startsWith("/problems/identify") ||
     pathname === "/solutions/identify" ||
     pathname.startsWith("/self-discovery/discover") ||
-    pathname.startsWith("/problems/identify/reflect") ||
-    pathname.startsWith("/problems/identify/research") ||
     pathname.startsWith("/solutions/discover")
   )
 }

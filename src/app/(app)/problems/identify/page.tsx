@@ -1,31 +1,23 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
 import { useRouter } from "next/navigation"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
 import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ArrowRight, Brain, Clock, PenLine, Glasses, Microscope, Target } from "lucide-react"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { ArrowRight, Brain, ChevronDown, Clock, PenLine, Glasses, Microscope, Target } from "lucide-react"
 import { EditProblemDialog } from "@/components/edit-problem-dialog"
 import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
 import { IdentifyHubShell } from "@/components/identify-hub-shell"
-import { useContainerSize } from "@/context/container-size-context"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { cn } from "@/lib/utils"
 import type { MethodPickerItem } from "@/components/method-picker-board"
 import { MethodTile } from "@/components/method-tile"
 
-type IdentifyTool = MethodPickerItem & {
-  /** Optional illustration shown beside the tool's description on wide containers. */
-  image?: { src: string; alt: string }
-}
-
 export default function IdentifyProblemsPage() {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
-  const isWide = useContainerSize() === "wide"
 
   const [draftProblemId, setDraftProblemId] = useState<number | null>(null)
   const draftProblem = useSelector((s: RootState) =>
@@ -61,7 +53,7 @@ export default function IdentifyProblemsPage() {
     setSavedDialogOpen(true)
   }
 
-  const items: IdentifyTool[] = [
+  const items: MethodPickerItem[] = [
     {
       id: "reflect",
       title: "Reflect",
@@ -71,10 +63,6 @@ export default function IdentifyProblemsPage() {
       icon: Glasses,
       estimatedMinutes: 10,
       enabled: true,
-      image: {
-        src: "/images/reflection.jpg",
-        alt: "A person writing in a notebook at a wooden table with a coffee beside them",
-      },
     },
     {
       id: "canvas-builder",
@@ -85,10 +73,6 @@ export default function IdentifyProblemsPage() {
       icon: Brain,
       estimatedMinutes: 15,
       enabled: true,
-      image: {
-        src: "/images/puzzle.jpg",
-        alt: "A wall painted with brightly coloured interlocking jigsaw pieces",
-      },
     },
     {
       id: "research",
@@ -99,10 +83,6 @@ export default function IdentifyProblemsPage() {
       icon: Microscope,
       estimatedMinutes: 20,
       enabled: true,
-      image: {
-        src: "/images/research.jpg",
-        alt: "Hands typing on a laptop with a second monitor in the background",
-      },
     },
     {
       id: "define",
@@ -113,10 +93,7 @@ export default function IdentifyProblemsPage() {
       icon: PenLine,
       estimatedMinutes: 5,
       enabled: true,
-      image: {
-        src: "/images/write.jpg",
-        alt: "A hand writing with an orange pen in an open notebook",
-      },
+      tourTarget: TOUR_TARGETS.identifyDefineUse,
     },
   ]
 
@@ -149,79 +126,11 @@ export default function IdentifyProblemsPage() {
           </p>
         }
       >
-        <Tabs defaultValue={items[0].id} className="w-full">
-          <TabsList className="h-auto flex-wrap justify-start" aria-label="Ways to identify a problem" data-tour={TOUR_TARGETS.identifyMethods}>
-            {items.map((item) => {
-              const Icon = item.icon
-              return (
-                <TabsTrigger
-                  key={item.id}
-                  value={item.id}
-                  className="gap-2 text-base"
-                  data-tour={item.id === "define" ? TOUR_TARGETS.identifyDefineTab : undefined}
-                >
-                  <Icon className="h-4 w-4" aria-hidden="true" />
-                  {item.title}
-                </TabsTrigger>
-              )
-            })}
-          </TabsList>
-
-          {items.map((item) => {
-            const Icon = item.icon
-            return (
-              <TabsContent key={item.id} value={item.id} className="mt-4">
-                <div
-                  className={cn(
-                    "rounded-lg border bg-muted/70 p-6 grid gap-6",
-                    item.image && isWide && "grid-cols-[minmax(0,1fr),26rem] items-center",
-                  )}
-                >
-                  <div className="flex flex-col gap-5 min-w-0">
-                    <div className="flex items-center gap-3">
-                      <MethodTile icon={Icon} size="lg" />
-                      <h2 className="text-xl font-bold leading-tight tracking-tight text-secondary-brand">{item.title}</h2>
-                    </div>
-                    <p className="text-base leading-relaxed">{item.longDescription}</p>
-                    {item.helperText && (
-                      <div className="rounded-lg border bg-card p-4">
-                        <p className="text-base leading-relaxed">{item.helperText}</p>
-                      </div>
-                    )}
-                    <div className="flex items-center gap-1.5 text-base">
-                      <Clock className="h-4 w-4" aria-hidden="true" />
-                      <span>About {item.estimatedMinutes} minutes</span>
-                    </div>
-                    <div>
-                      <Button
-                        type="button"
-                        onClick={() => handlePick(item.id)}
-                        disabled={!item.enabled}
-                        className="gap-2"
-                        data-tour={item.id === "define" ? TOUR_TARGETS.identifyDefineUse : undefined}
-                      >
-                        Use this tool
-                        <ArrowRight className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                  {item.image && (
-                    <div className="relative w-full max-w-[26rem] aspect-[3/2] overflow-hidden rounded-lg">
-                      <Image
-                        src={item.image.src}
-                        alt={item.image.alt}
-                        fill
-                        sizes="26rem"
-                        className="object-cover"
-                        priority={item.id === items[0].id}
-                      />
-                    </div>
-                  )}
-                </div>
-              </TabsContent>
-            )
-          })}
-        </Tabs>
+        <ul className="flex flex-col gap-3" aria-label="Ways to identify a problem" data-tour={TOUR_TARGETS.identifyMethods}>
+          {items.map((item) => (
+            <IdentifyToolCard key={item.id} item={item} onPick={handlePick} />
+          ))}
+        </ul>
       </IdentifyHubShell>
 
       <EditProblemDialog
@@ -238,5 +147,69 @@ export default function IdentifyProblemsPage() {
         problemId={savedProblemId}
       />
     </>
+  )
+}
+
+/**
+ * One row of the tool list: title and description with the call to action on
+ * the right, and a "Best for" section the user can drop down when they want
+ * help choosing between the tools.
+ */
+function IdentifyToolCard({ item, onPick }: { item: MethodPickerItem; onPick: (id: string) => void }) {
+  const [open, setOpen] = useState(false)
+  const helperId = `identify-tool-${item.id}-best-for`
+
+  return (
+    <li className="rounded-lg border bg-muted/70 p-5">
+      <Collapsible open={open} onOpenChange={setOpen} className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+          <div className="flex flex-1 min-w-0 items-start gap-3">
+            <MethodTile icon={item.icon} size="lg" />
+            <div className="flex flex-1 min-w-0 flex-col gap-1.5">
+              <h2 className="text-xl font-bold leading-tight tracking-tight text-secondary-brand">{item.title}</h2>
+              <p className="text-base leading-relaxed">{item.longDescription}</p>
+              <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-base">
+                {item.helperText && (
+                  <CollapsibleTrigger asChild>
+                    <button
+                      type="button"
+                      className="inline-flex items-center gap-1 font-medium text-secondary-brand rounded-sm hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                      aria-controls={helperId}
+                    >
+                      Best for
+                      <ChevronDown
+                        className={cn("h-4 w-4 transition-transform", open && "rotate-180")}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  </CollapsibleTrigger>
+                )}
+                <span className="inline-flex items-center gap-1.5">
+                  <Clock className="h-4 w-4" aria-hidden="true" />
+                  About {item.estimatedMinutes} minutes
+                </span>
+              </div>
+            </div>
+          </div>
+          <Button
+            type="button"
+            onClick={() => onPick(item.id)}
+            disabled={!item.enabled}
+            className="gap-2 shrink-0 self-start"
+            data-tour={item.tourTarget}
+          >
+            Use this tool
+            <ArrowRight className="h-4 w-4" />
+          </Button>
+        </div>
+        {item.helperText && (
+          <CollapsibleContent id={helperId} className="sm:pl-[3.25rem]">
+            <div className="rounded-lg border bg-card p-4">
+              <p className="text-base leading-relaxed">{item.helperText}</p>
+            </div>
+          </CollapsibleContent>
+        )}
+      </Collapsible>
+    </li>
   )
 }

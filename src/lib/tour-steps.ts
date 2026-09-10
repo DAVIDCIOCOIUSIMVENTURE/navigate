@@ -102,9 +102,7 @@ export const TOUR_TARGETS = {
   headerAccount: "header-account",
   dashboardIdentifyProblems: "dashboard-identify-problems",
   identifyMethods: "identify-methods",
-  /** The "Define a Problem Statement" tab on the identify hub. */
-  identifyDefineTab: "identify-define-tab",
-  /** The "Use this tool" button inside that tab; only rendered while the tab is active. */
+  /** The "Use this tool" button on the "Define a Problem Statement" card of the identify hub. */
   identifyDefineUse: "identify-define-use",
   problemsLibrary: "problems-library",
   canvasExplore: "canvas-explore",
@@ -336,9 +334,9 @@ export const TOUR_STEPS: TourStep[] = [
     title: "Choose how to identify it",
     body: [
       "There are four doorways: Reflect on your own experience, combine dimensions on the Canvas Builder, Research problems out in the world, or Define a Problem Statement directly.",
-      "For this tour, open the Define a Problem Statement tab, then press Use this tool. It is the quickest way in; you can try the other tools another time.",
+      "For this tour, press Use this tool on the Define a Problem Statement card. It is the quickest way in; you can try the other tools another time.",
     ],
-    target: [TOUR_TARGETS.identifyDefineTab, TOUR_TARGETS.identifyDefineUse],
+    target: TOUR_TARGETS.identifyDefineUse,
     placement: "bottom",
     route: "/problems/identify",
     done: (ctx, entry) => ctx.problems.length > entry.problems.length,

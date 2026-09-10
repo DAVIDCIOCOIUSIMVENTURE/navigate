@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useRef, useEffect, useMemo, useDeferredValue, useCallback, type ReactNode } from "react"
-import { usePathname } from "next/navigation"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import type { CanvasBuilderMode } from "@/store/settings-model"
@@ -26,6 +25,7 @@ import {
 import {
   ArrowLeft,
   ArrowRight,
+  Brain,
   Check,
   ChevronDown,
   ChevronRight,
@@ -34,8 +34,6 @@ import {
   EyeOff,
   Grid3X3,
   Layers,
-  Maximize2,
-  Minimize2,
   Pencil,
   Plus,
   RotateCcw,
@@ -55,6 +53,7 @@ import { ManageCustomItemsDialog } from "@/components/manage-custom-items-dialog
 import { EditableLeafItem } from "@/components/editable-leaf-item"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
+import { FocusFlowHeader } from "@/components/focus-flow-header"
 import { cn } from "@/lib/utils"
 import { NAV_ITEM_ACTIVE_CLASS, NAV_ITEM_HOVER_CLASS } from "@/lib/nav-item-styles"
 import { useContainerSize } from "@/context/container-size-context"
@@ -1059,7 +1058,6 @@ export default function IdentifyPage() {
   const [addCustomDialogOpen, setAddCustomDialogOpen] = useState(false)
   const [managingColumnId, setManagingColumnId] = useState<string | null>(null)
   const builderResetRef = useRef<(() => void) | null>(null)
-  const fullView = useSelector((state: RootState) => state.settings.fullView)
   const canvasBuilderMode = useSelector((state: RootState) => state.settings.canvasBuilderMode)
   const containerSize = useContainerSize()
   // Columns the user can edit (excludes "you", which is populated only from
@@ -1079,24 +1077,6 @@ export default function IdentifyPage() {
     setLastSavedProblemId(newProblem.id)
     setNextStepDialogOpen(true)
   }, [allColumns, dispatch.problems])
-
-  // Exit full view when navigating away from this page
-  const pathname = usePathname()
-  useEffect(() => {
-    if (!pathname.includes("/identify/canvas-builder")) {
-      dispatch.settings.setFullView(false)
-    }
-  }, [pathname, dispatch.settings])
-
-  // Escape key exits full view
-  useEffect(() => {
-    if (!fullView) return
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") dispatch.settings.setFullView(false)
-    }
-    document.addEventListener("keydown", handler)
-    return () => document.removeEventListener("keydown", handler)
-  }, [fullView, dispatch.settings])
 
   const toggleItem = (id: string) => {
     setSelected((prev) => {
@@ -1162,17 +1142,6 @@ export default function IdentifyPage() {
       >
         <Plus className="h-3.5 w-3.5" />
         <span className={cn(containerSize === "narrow" && "sr-only")}>Add your own item</span>
-      </Button>
-      <Button
-        variant="outline"
-        size="sm"
-        onClick={() => dispatch.settings.setFullView(!fullView)}
-        className="gap-2 bg-card"
-      >
-        {fullView ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
-        <span className={cn(containerSize === "narrow" && "sr-only")}>
-          {fullView ? "Exit Full View" : "Full View"}
-        </span>
       </Button>
       <Button
         variant="outline"
@@ -1263,16 +1232,19 @@ export default function IdentifyPage() {
     </ToggleGroup>
   )
 
+  // The page is a focus flow (no header or sidebar), so it re-adds the padding
+  // and max width the root layout skips and fits itself to the viewport on wide.
   const content = (
+    <div className="flex flex-1 min-h-0 w-full flex-col">
     <div
       className={cn(
-        "flex flex-col gap-3 w-full flex-1 min-h-0 min-w-0 overflow-x-hidden",
-        containerSize === "wide" &&
-          (fullView
-            ? "max-h-[calc(100svh-3rem)]"
-            : "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]"),
+        "mx-auto flex w-full max-w-screen-2xl flex-1 min-h-0 flex-col gap-3",
+        "px-4 py-4 sm:px-6 lg:px-8 lg:py-6",
+        containerSize === "wide" && "overflow-hidden max-h-[100svh]",
       )}
     >
+      <FocusFlowHeader title="Canvas Builder" icon={Brain} backHref="/problems/identify" />
+    <div className="flex flex-col gap-3 w-full flex-1 min-h-0 min-w-0 overflow-x-hidden">
       {containerSize === "wide" ? (
         <div className="flex flex-wrap items-center gap-3 min-w-0 shrink-0">
           <div className="mr-auto">{toggleGroupEl}</div>
@@ -1496,6 +1468,8 @@ export default function IdentifyPage() {
         onOpenChange={setNextStepDialogOpen}
         problemId={lastSavedProblemId}
       />
+    </div>
+    </div>
     </div>
   )
 
