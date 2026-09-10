@@ -166,15 +166,15 @@ function getCrumbs(pathname: string): Crumb[] {
 /** The problem canvas `/problems/<id>`, its `/edit` page and its `/explore/...` and `/validation/...` flows. */
 const PROBLEM_FOCUS_PATH = /^\/problems\/\d+(\/edit|\/(explore|validation)(\/.*)?)?$/
 
-/** The solution edit page `/solutions/<id>/edit`. */
-const SOLUTION_FOCUS_PATH = /^\/solutions\/\d+\/edit$/
+/** The solution canvas `/solutions/<id>`, its `/edit` page and its `/validate/...` flow. */
+const SOLUTION_FOCUS_PATH = /^\/solutions\/\d+(\/edit|\/validate(\/.*)?)?$/
 
 /**
  * Routes that render without the header and sidebar and supply their own Back
  * button and title: the Identify hubs and every tool underneath them (Canvas
  * Builder, Reflect, Research), the problem canvas, its edit page and its
- * Explore and Validation flows, the solution edit page, Self Discovery and
- * Solution Discovery.
+ * Explore and Validation flows, the solution canvas, its edit page and its
+ * validation flow, Self Discovery and Solution Discovery.
  */
 function isFocusFlowPath(pathname: string): boolean {
   return (
