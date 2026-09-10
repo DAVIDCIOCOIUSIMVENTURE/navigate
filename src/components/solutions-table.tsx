@@ -247,20 +247,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                 const statusConfig = status ? TABLE_STATUS_META[status] : null
                 const zebra = rowIndex % 2 === 1 ? "bg-muted/20" : undefined
                 return (
-                  <TableRow
-                    key={solution.id}
-                    className={cn(zebra, "cursor-pointer hover:bg-muted/40")}
-                    onClick={() => router.push(`/solutions/${solution.id}`)}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault()
-                        router.push(`/solutions/${solution.id}`)
-                      }
-                    }}
-                    aria-label={`View solution: ${solution.title || "untitled"}`}
-                  >
+                  <TableRow key={solution.id} className={zebra}>
                     <TableCell className="text-sm">
                       <div className="flex items-center gap-2">
                         <Lightbulb className="h-3.5 w-3.5 text-primary shrink-0" />
@@ -289,7 +276,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                         </div>
                       </TableCell>
                     )}
-                    <TableCell onClick={(e) => e.stopPropagation()}>
+                    <TableCell>
                       <div className="flex items-center gap-1">
                         {showEditDelete && (
                           <Tooltip>

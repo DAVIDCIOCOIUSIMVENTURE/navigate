@@ -292,28 +292,13 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                   const zebra = rowIndex % 2 === 1 ? "bg-muted/20" : undefined
                   return (
                     <Fragment key={problem.id}>
-                    <TableRow
-                      className={cn(zebra, expanded && hasSolutions && "border-b-0", "cursor-pointer hover:bg-muted/40")}
-                      onClick={() => router.push(`/problems/${problem.id}`)}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault()
-                          router.push(`/problems/${problem.id}`)
-                        }
-                      }}
-                      aria-label={`View problem: ${problem.title || "untitled"}`}
-                    >
+                    <TableRow className={cn(zebra, expanded && hasSolutions && "border-b-0")}>
                       <TableCell className="text-sm">
                         <div className="flex items-center gap-2">
                           {hasSolutions ? (
                             <button
                               type="button"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                toggleExpanded(problem.id)
-                              }}
+                              onClick={() => toggleExpanded(problem.id)}
                               className="flex items-center justify-center w-6 h-6 rounded border border-muted-foreground/30 text-muted-foreground hover:bg-muted/50 shrink-0"
                               aria-label={expanded ? "Hide solutions" : `View ${linkedSolutions.length} solution${linkedSolutions.length === 1 ? "" : "s"}`}
                               aria-expanded={expanded}
@@ -353,7 +338,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                           </div>
                         </TableCell>
                       )}
-                      <TableCell onClick={(e) => e.stopPropagation()}>
+                      <TableCell>
                         <div className="flex items-center gap-1">
                           {showEditDelete && (
                             <Tooltip>
@@ -446,20 +431,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                       const sStatusConfig = TABLE_STATUS_META[sStatus]
                       const solutionLabel = s.title || `Solution #${s.id}`
                       return (
-                        <TableRow
-                          key={s.id}
-                          className="bg-muted/30 cursor-pointer hover:bg-muted/50"
-                          onClick={() => router.push(`/solutions/${s.id}`)}
-                          role="button"
-                          tabIndex={0}
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter" || e.key === " ") {
-                              e.preventDefault()
-                              router.push(`/solutions/${s.id}`)
-                            }
-                          }}
-                          aria-label={`View solution: ${solutionLabel}`}
-                        >
+                        <TableRow key={s.id} className="bg-muted/30">
                           <TableCell className="text-sm">
                             <div className="flex items-center gap-2 pl-8">
                               <Lightbulb className="h-3.5 w-3.5 text-primary shrink-0" />
@@ -475,7 +447,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                               </div>
                             </TableCell>
                           )}
-                          <TableCell onClick={(e) => e.stopPropagation()}>
+                          <TableCell>
                             <div className="flex items-center gap-1">
                               <Tooltip>
                                 <TooltipTrigger asChild>
