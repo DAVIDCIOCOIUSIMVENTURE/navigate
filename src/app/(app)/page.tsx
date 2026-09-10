@@ -25,6 +25,7 @@ import { useSelector } from "react-redux"
 
 import type { RootState } from "@/store"
 import { useContainerSize } from "@/context/container-size-context"
+import { startSolutionDiscovery } from "@/lib/active-discovery-problem"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { cn } from "@/lib/utils"
 
@@ -61,7 +62,7 @@ export default function DashboardPage() {
             <Plus className="h-4 w-4" />
             Identify new problems
           </Button>
-          <Button onClick={() => router.push("/solutions/identify")} className="gap-2">
+          <Button onClick={() => startSolutionDiscovery(router.push)} className="gap-2">
             <Plus className="h-4 w-4" />
             Identify new solutions
           </Button>

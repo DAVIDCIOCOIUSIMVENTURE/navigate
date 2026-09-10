@@ -11,6 +11,7 @@ import { SolutionsTable } from "@/components/solutions-table"
 import { BundleMenuButton } from "@/components/bundle-menu-button"
 import { Plus, Lightbulb } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
+import { startSolutionDiscovery } from "@/lib/active-discovery-problem"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { cn } from "@/lib/utils"
 
@@ -41,7 +42,7 @@ export default function SolutionsPage() {
           </AboutDialog>
         </div>
         <div className="flex flex-wrap items-center gap-2 shrink-0">
-          <Button onClick={() => router.push("/solutions/identify")} className="gap-2" data-tour={TOUR_TARGETS.solutionsIdentify}>
+          <Button onClick={() => startSolutionDiscovery(router.push)} className="gap-2" data-tour={TOUR_TARGETS.solutionsIdentify}>
             <Plus className="h-4 w-4" />
             Identify solutions
           </Button>
@@ -59,7 +60,7 @@ export default function SolutionsPage() {
               Start by searching for a solution. Pick a validated problem and work through the discovery wizard.
             </p>
           </div>
-          <Button onClick={() => router.push("/solutions/identify")} size="lg" className="gap-2">
+          <Button onClick={() => startSolutionDiscovery(router.push)} size="lg" className="gap-2">
             <Plus className="h-4 w-4" />
             Identify solutions
           </Button>

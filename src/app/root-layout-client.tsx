@@ -143,11 +143,6 @@ function getCrumbs(pathname: string): Crumb[] {
       crumbs.push({ label: "Discovery" })
       return crumbs
     }
-    if (second === "identify") {
-      crumbs.push({ label: "Solution library", href: "/solutions" })
-      crumbs.push({ label: "Identify" })
-      return crumbs
-    }
     crumbs.push({ label: "Solution library", href: "/solutions" })
     if (third === "validate") {
       crumbs.push({ label: second, href: `/solutions/${second}` })
@@ -171,8 +166,8 @@ const SOLUTION_FOCUS_PATH = /^\/solutions\/\d+(\/edit|\/validate(\/.*)?)?$/
 
 /**
  * Routes that render without the header and sidebar and supply their own Back
- * button and title: the Identify hubs and every tool underneath them (Canvas
- * Builder, Reflect, Research), the problem canvas, its edit page and its
+ * button and title: the Identify problems hub and every tool underneath it
+ * (Canvas Builder, Reflect, Research), the problem canvas, its edit page and its
  * Explore and Validation flows, the solution canvas, its edit page and its
  * validation flow, Self Discovery and Solution Discovery.
  */
@@ -181,7 +176,6 @@ function isFocusFlowPath(pathname: string): boolean {
     pathname.startsWith("/problems/identify") ||
     PROBLEM_FOCUS_PATH.test(pathname) ||
     SOLUTION_FOCUS_PATH.test(pathname) ||
-    pathname === "/solutions/identify" ||
     pathname.startsWith("/self-discovery/discover") ||
     pathname.startsWith("/solutions/discover")
   )

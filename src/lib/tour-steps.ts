@@ -107,10 +107,8 @@ export const TOUR_TARGETS = {
   problemsLibrary: "problems-library",
   canvasExplore: "canvas-explore",
   canvasValidate: "canvas-validate",
+  /** The "Identify solutions" button on the solution library; it opens Solution Discovery directly. */
   solutionsIdentify: "solutions-identify",
-  solutionMethods: "solution-methods",
-  /** The "Use this tool" button for Solution Discovery on the identify-solutions hub. */
-  solutionDiscoveryUse: "solution-discovery-use",
   /** A problem card on the discovery "Select a Problem" step. */
   discoverProblem: (problemId: number) => `discover-problem-${problemId}`,
   /** The Next button on that step; disabled until a problem is picked. */
@@ -383,23 +381,12 @@ export const TOUR_STEPS: TourStep[] = [
     id: "act-identify-solution",
     mode: "act",
     title: "Identify a solution",
-    body: ["Now find a solution for your problem. Click Identify solutions."],
+    body: [
+      "Now find a solution for your problem. Click Identify solutions to open Solution Discovery, which walks you from a validated problem to concrete candidates using creative techniques.",
+    ],
     target: TOUR_TARGETS.solutionsIdentify,
     placement: "bottom",
     route: "/solutions",
-    done: (ctx) => ctx.pathname === "/solutions/identify",
-    advance: "auto",
-  },
-  {
-    id: "act-discover-tool",
-    mode: "act",
-    title: "Open Solution Discovery",
-    body: [
-      "Solution Discovery walks you from a validated problem to concrete candidates using creative techniques. Press Use this tool to start it.",
-    ],
-    target: TOUR_TARGETS.solutionDiscoveryUse,
-    placement: "top",
-    route: "/solutions/identify",
     done: (ctx) => ctx.pathname.startsWith("/solutions/discover"),
     advance: "auto",
   },

@@ -11,8 +11,8 @@ import type { JourneyStepId } from "@/lib/journey-steps"
 import { cn } from "@/lib/utils"
 
 /**
- * Shell for the Identify hubs (problems and solutions). Both render as focus
- * flows, like Reflect, so the header and sidebar are hidden and this shell
+ * Shell for the Identify problems hub. It renders as a focus flow, like
+ * Reflect, so the header and sidebar are hidden and this shell
  * supplies what they would otherwise provide: a Back button, the top-bar
  * toggle and the section title. The introductory copy opens in a dialog from
  * the About button beside the title; a one-line `description` sits at the top

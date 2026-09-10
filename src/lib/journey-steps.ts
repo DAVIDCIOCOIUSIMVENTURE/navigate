@@ -6,6 +6,7 @@
  */
 import { Compass, Lightbulb, Microscope, ShieldCheck, Target, type LucideIcon } from "lucide-react"
 import type { ValidationStatus } from "@/types/validation"
+import { SOLUTION_DISCOVERY_START_HREF } from "@/lib/active-discovery-problem"
 import { hasVerdict } from "@/lib/tour-steps"
 
 export type JourneyStepId =
@@ -29,7 +30,7 @@ export const JOURNEY_STEPS: JourneyStepDefinition[] = [
   { id: "identify-problems", label: "Identify problems", href: "/problems/identify", icon: Target },
   { id: "explore-problems", label: "Explore problems", href: "/problems", icon: Microscope },
   { id: "validate-problems", label: "Validate problems", href: "/problems", icon: ShieldCheck },
-  { id: "identify-solutions", label: "Identify solutions", href: "/solutions/identify", icon: Lightbulb },
+  { id: "identify-solutions", label: "Identify solutions", href: SOLUTION_DISCOVERY_START_HREF, icon: Lightbulb },
   { id: "validate-solutions", label: "Validate solutions", href: "/solutions", icon: ShieldCheck },
 ]
 

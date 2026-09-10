@@ -203,11 +203,11 @@ describe("hands-on steps", () => {
     expect(isStepDone(validate, ctxWith({ journey, problems: [problem(2, "unsure")] }), ctxWith())).toBe(true)
   })
 
-  it("act-discover-tool completes once the discovery flow opens", () => {
-    const tool = find("act-discover-tool")
-    expect(resolveTourStep(tool, ctxWith()).targets).toEqual([TOUR_TARGETS.solutionDiscoveryUse])
-    expect(isStepDone(tool, ctxWith({ pathname: "/solutions/identify" }), ctxWith())).toBe(false)
-    expect(isStepDone(tool, ctxWith({ pathname: "/solutions/discover/select-problem" }), ctxWith())).toBe(true)
+  it("act-identify-solution completes once the discovery flow opens", () => {
+    const identify = find("act-identify-solution")
+    expect(resolveTourStep(identify, ctxWith()).targets).toEqual([TOUR_TARGETS.solutionsIdentify])
+    expect(isStepDone(identify, ctxWith({ pathname: "/solutions" }), ctxWith())).toBe(false)
+    expect(isStepDone(identify, ctxWith({ pathname: "/solutions/discover/select-problem" }), ctxWith())).toBe(true)
   })
 
   it("act-discover-problem chains the tour's problem card to Next and completes on leaving the step", () => {
