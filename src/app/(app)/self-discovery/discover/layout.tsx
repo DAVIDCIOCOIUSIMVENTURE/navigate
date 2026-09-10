@@ -260,9 +260,14 @@ export default function SelfDiscoveryFlowLayout({
         <div className="flex flex-1 min-h-0 w-full flex-col">
             <div
                 className={cn(
-                    "mx-auto flex w-full max-w-screen-2xl flex-1 min-h-0 gap-3",
+                    "mx-auto flex w-full max-w-screen-2xl min-h-0 gap-3",
                     "px-4 py-4 sm:px-6 lg:px-8 lg:py-6",
-                    isWide ? "flex-row overflow-hidden max-h-[100svh]" : "flex-col",
+                    // On wide the row takes a definite height from the height property
+                    // (flex-none, not flex-1, so flex-basis cannot override it). That is
+                    // what lets the nav column's h-full resolve and its Card shrink, so
+                    // only the question list scrolls. The parent chain is min-h-full and
+                    // therefore indefinite, which is why max-h / flex-1 were not enough.
+                    isWide ? "flex-none flex-row overflow-hidden h-[100svh]" : "flex-1 flex-col",
                 )}
             >
                 {!isWide && (
