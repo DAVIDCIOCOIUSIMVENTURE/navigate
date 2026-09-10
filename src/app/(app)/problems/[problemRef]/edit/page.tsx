@@ -11,20 +11,43 @@ import { Target, ArrowLeft, Download } from "lucide-react"
 import { toast } from "sonner"
 import { ProblemProvider } from "../validation/context"
 import { ProblemHubContent } from "@/components/problem-hub/problem-hub-content"
+import { FocusFlowHeader } from "@/components/focus-flow-header"
+import { FocusPageShell } from "@/components/focus-page-shell"
 import { buildProblemBundle, downloadProblemBundle } from "@/lib/problem-export"
 import { ExportBundleDialog } from "@/components/export-bundle-dialog"
+import { useContainerSize } from "@/context/container-size-context"
+import { problemJourneyStep } from "@/lib/journey-steps"
+import { cn } from "@/lib/utils"
 
+/**
+ * The per-problem edit page. A focus page like the problem canvas and the
+ * Identify hubs: no header or sidebar, so the left column carries Back (to the
+ * canvas), the top-bar toggle, the title and the journey rail, with the edit
+ * card beside it. On wide containers the card is fitted to the viewport and
+ * only its content scrolls.
+ */
 function HubBody({ problemRef }: { problemRef: string }) {
   const problemId = Number(problemRef)
   const problem = useSelector((state: RootState) =>
     state.problems.problems.find((p) => p.id === problemId)
   )
   const store = useStore<RootState>()
+  const isWide = useContainerSize() === "wide"
   const [exportOpen, setExportOpen] = useState(false)
+
+  const header = (
+    <FocusFlowHeader
+      title="Edit problem"
+      icon={Target}
+      backHref={`/problems/${problemRef}`}
+      className={cn(isWide && "flex-wrap")}
+    />
+  )
 
   if (!problem) {
     return (
-      <div className="flex flex-col w-full flex-1">
+      <div className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-3 px-4 py-4 sm:px-6 lg:px-8 lg:py-6">
+        <FocusFlowHeader title="Edit problem" icon={Target} backHref="/problems" />
         <Card className="w-full">
           <CardContent className="p-10 flex flex-col items-center gap-4 text-center">
             <p className="text-base">Problem not found.</p>
@@ -40,6 +63,15 @@ function HubBody({ problemRef }: { problemRef: string }) {
     )
   }
 
+  const journeyStep = problemJourneyStep({
+    validationStatus: problem.validationStatus,
+    jobCount:
+      problem.jobsToBeDone.functional.length +
+      problem.jobsToBeDone.emotional.length +
+      problem.jobsToBeDone.social.length,
+    existingSolutionCount: problem.existingSolutions.length,
+  })
+
   const handleExport = (includeSolutions: boolean) => {
     const bundle = buildProblemBundle(store.getState(), problemId, { includeSolutions })
     if (!bundle) {
@@ -51,8 +83,8 @@ function HubBody({ problemRef }: { problemRef: string }) {
   }
 
   return (
-    <div className="flex flex-col w-full flex-1">
-      <Card className="w-full">
+    <FocusPageShell header={header} journeyStep={journeyStep}>
+      <Card className={cn("flex w-full min-w-0 flex-col", isWide && "flex-1 min-h-0 overflow-hidden")}>
         <CardHeader className="px-10 pt-10 pb-0 space-y-6">
           <div className="flex items-start justify-between gap-4">
             <CardTitle icon={Target}>
@@ -67,7 +99,7 @@ function HubBody({ problemRef }: { problemRef: string }) {
             Edit and review every part of this problem in one place.
           </p>
         </CardHeader>
-        <CardContent className="p-10 pt-6">
+        <CardContent className={cn("p-10 pt-6", isWide && "flex-1 min-h-0 overflow-y-auto")}>
           <ProblemHubContent mode="page" />
         </CardContent>
       </Card>
@@ -77,7 +109,7 @@ function HubBody({ problemRef }: { problemRef: string }) {
         kind="problem"
         onConfirm={handleExport}
       />
-    </div>
+    </FocusPageShell>
   )
 }
 

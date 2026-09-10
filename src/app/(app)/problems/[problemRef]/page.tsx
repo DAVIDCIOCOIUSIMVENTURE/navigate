@@ -9,8 +9,7 @@ import { Button } from "@/components/ui/button"
 import { ArrowLeft, Target } from "lucide-react"
 import { ProblemCanvas } from "@/components/canvas/problem-canvas"
 import { FocusFlowHeader } from "@/components/focus-flow-header"
-import { JourneyProgressCard } from "@/components/journey-progress"
-import { FOCUS_COLUMN_MAX_HEIGHT_CLASS } from "@/components/problem-flow-shell"
+import { FocusPageShell } from "@/components/focus-page-shell"
 import { useContainerSize } from "@/context/container-size-context"
 import { problemJourneyStep } from "@/lib/journey-steps"
 import { cn } from "@/lib/utils"
@@ -62,30 +61,8 @@ export default function ProblemCanvasPage() {
   })
 
   return (
-    <div className="flex flex-1 min-h-0 w-full flex-col">
-      <div
-        className={cn(
-          "mx-auto flex w-full max-w-screen-2xl flex-1 min-h-0 gap-3",
-          "px-4 py-4 sm:px-6 lg:px-8 lg:py-6",
-          isWide ? "flex-row items-stretch overflow-hidden max-h-[100svh]" : "flex-col",
-        )}
-      >
-        {isWide ? (
-          <div className={cn("flex w-72 shrink-0 flex-col gap-3 min-h-0 overflow-y-auto", FOCUS_COLUMN_MAX_HEIGHT_CLASS)}>
-            {header}
-            <JourneyProgressCard activeId={journeyStep} />
-          </div>
-        ) : (
-          <>
-            {header}
-            <JourneyProgressCard activeId={journeyStep} orientation="horizontal" />
-          </>
-        )}
-
-        <div className="flex flex-1 min-w-0 min-h-0 flex-col">
-          <ProblemCanvas problem={problem} editHref={`/problems/${problemRef}/edit`} showFullView={false} />
-        </div>
-      </div>
-    </div>
+    <FocusPageShell header={header} journeyStep={journeyStep}>
+      <ProblemCanvas problem={problem} editHref={`/problems/${problemRef}/edit`} showFullView={false} />
+    </FocusPageShell>
   )
 }
