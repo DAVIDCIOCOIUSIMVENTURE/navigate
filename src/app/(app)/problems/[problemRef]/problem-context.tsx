@@ -73,7 +73,7 @@ type ProblemContextValue = {
   setCostOfSwitching: (patch: Partial<ValidationMetric>) => void
   setSolutionEffectiveness: (patch: Partial<ValidationMetric>) => void
   setCompetitorSize: (patch: Partial<ValidationMetric>) => void
-  // Refinement workspace fields (shared with the solution discovery flow via
+  // Refinement workspace fields (shared with the Identify Solutions flow via
   // the per-problem solution workspace).
   analysisToolType: AnalysisToolType
   setAnalysisToolType: (val: AnalysisToolType) => void
@@ -106,7 +106,7 @@ export function ProblemProvider({
   )
 
   // Lazily ensure a solution workspace exists for this problem so refinement
-  // data is captured here and surfaces later in solution discovery.
+  // data is captured here and surfaces later when identifying solutions.
   useEffect(() => {
     if (!Number.isFinite(problemId)) return
     if (!workspace) {
@@ -307,7 +307,7 @@ export function ProblemProvider({
     [dispatch, problemId, validationAssessment]
   )
 
-  // Refinement workspace fields (shared with solution discovery via solutionWorkspaces).
+  // Refinement workspace fields (shared with the Identify Solutions flow via solutionWorkspaces).
   const analysisToolType: AnalysisToolType = workspace?.analysisToolType ?? ""
   const rootCauses = workspace?.rootCauses ?? []
   const rootCauseNotes = workspace?.rootCauseNotes ?? ""

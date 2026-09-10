@@ -138,9 +138,9 @@ function getCrumbs(pathname: string): Crumb[] {
       crumbs.push({ label: "Solution library" })
       return crumbs
     }
-    if (second === "discover") {
+    if (second === "identify") {
       crumbs.push({ label: "Solution library", href: "/solutions" })
-      crumbs.push({ label: "Discovery" })
+      crumbs.push({ label: "Identify" })
       return crumbs
     }
     crumbs.push({ label: "Solution library", href: "/solutions" })
@@ -169,7 +169,7 @@ const SOLUTION_FOCUS_PATH = /^\/solutions\/\d+(\/edit|\/validate(\/.*)?)?$/
  * button and title: the Identify problems hub and every tool underneath it
  * (Canvas Builder, Reflect, Research), the problem canvas, its edit page and its
  * Explore and Validation flows, the solution canvas, its edit page and its
- * validation flow, Self Discovery and Solution Discovery.
+ * validation flow, Self Discovery and Identify Solutions.
  */
 function isFocusFlowPath(pathname: string): boolean {
   return (
@@ -177,7 +177,7 @@ function isFocusFlowPath(pathname: string): boolean {
     PROBLEM_FOCUS_PATH.test(pathname) ||
     SOLUTION_FOCUS_PATH.test(pathname) ||
     pathname.startsWith("/self-discovery/discover") ||
-    pathname.startsWith("/solutions/discover")
+    pathname.startsWith("/solutions/identify")
   )
 }
 

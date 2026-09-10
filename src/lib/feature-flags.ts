@@ -12,6 +12,6 @@
  *
  * Switched off while we assess whether the refinement step earns its place.
  * The underlying workspace fields (analysisToolType, rootCauses, fiveWhyChains,
- * affectedGroups) are still stored and still flow into solution discovery.
+ * affectedGroups) are still stored and still flow into the Identify Solutions flow.
  */
 export const SHOW_REFINEMENT_STEPS = false

@@ -203,11 +203,11 @@ describe("hands-on steps", () => {
     expect(isStepDone(validate, ctxWith({ journey, problems: [problem(2, "unsure")] }), ctxWith())).toBe(true)
   })
 
-  it("act-identify-solution completes once the discovery flow opens", () => {
+  it("act-identify-solution completes once the Identify Solutions flow opens", () => {
     const identify = find("act-identify-solution")
     expect(resolveTourStep(identify, ctxWith()).targets).toEqual([TOUR_TARGETS.solutionsIdentify])
     expect(isStepDone(identify, ctxWith({ pathname: "/solutions" }), ctxWith())).toBe(false)
-    expect(isStepDone(identify, ctxWith({ pathname: "/solutions/discover/select-problem" }), ctxWith())).toBe(true)
+    expect(isStepDone(identify, ctxWith({ pathname: "/solutions/identify/select-problem" }), ctxWith())).toBe(true)
   })
 
   it("act-discover-problem chains the tour's problem card to Next and completes on leaving the step", () => {
@@ -215,8 +215,8 @@ describe("hands-on steps", () => {
     const journey = { problemId: 2, solutionId: null }
     expect(resolveTourStep(pick, ctxWith()).targets).toEqual([])
     expect(resolveTourStep(pick, ctxWith({ journey })).targets).toEqual([TOUR_TARGETS.discoverProblem(2), TOUR_TARGETS.discoverNext])
-    expect(isStepDone(pick, ctxWith({ journey, pathname: "/solutions/discover/select-problem" }), ctxWith())).toBe(false)
-    expect(isStepDone(pick, ctxWith({ journey, pathname: "/solutions/discover/choose-discovery" }), ctxWith())).toBe(true)
+    expect(isStepDone(pick, ctxWith({ journey, pathname: "/solutions/identify/select-problem" }), ctxWith())).toBe(false)
+    expect(isStepDone(pick, ctxWith({ journey, pathname: "/solutions/identify/pick-method" }), ctxWith())).toBe(true)
   })
 
   it("act-discover completes when a solution for the tour's problem exists and captures it", () => {

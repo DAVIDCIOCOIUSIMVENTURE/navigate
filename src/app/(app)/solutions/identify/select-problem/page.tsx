@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Target, ArrowLeft, ArrowRight, CheckCircle2, HelpCircle, Info } from "lucide-react"
-import { getAdjacentSteps, useDiscovery } from "../context"
+import { getAdjacentSteps, useIdentifySolutions } from "../context"
 import { DimensionChips } from "@/components/dimension-chips"
 import type { ValidationStatus } from "@/types/validation"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
@@ -22,7 +22,7 @@ const ELIGIBLE_STATUSES: ValidationStatus[] = ["valid", "unsure"]
 export default function SelectProblemPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { problemId, setProblemId } = useDiscovery()
+  const { problemId, setProblemId } = useIdentifySolutions()
   const { prevPath, nextPath } = getAdjacentSteps(pathname)
 
   const eligibleProblems = useSelector((state: RootState) =>
@@ -36,11 +36,11 @@ export default function SelectProblemPage() {
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <p className="text-base leading-relaxed">
-          Solution discovery helps you move from a validated problem to concrete solution candidates. You&apos;ll pick a problem, then use creative techniques to generate ideas. Each candidate you capture is added to your Solution Library, where you can validate it later.
+          Identifying solutions helps you move from a validated problem to concrete solution candidates. You&apos;ll pick a problem, then use creative techniques to generate ideas. Each candidate you capture is added to your Solution Library, where you can validate it later.
         </p>
 
         <p className="text-base leading-relaxed">
-          Choose a problem below to anchor your solution discovery. You can continue to the next step once a problem is selected.
+          Choose a problem below to anchor your search for solutions. You can continue to the next step once a problem is selected.
         </p>
 
         <div className="rounded-lg border border-blue-200 bg-blue-50 p-4 flex items-start gap-3">
@@ -63,7 +63,7 @@ export default function SelectProblemPage() {
               <div className="flex flex-col gap-1">
                 <p className="text-sm font-semibold">No eligible problems yet</p>
                 <p className="text-sm">
-                  Validate a problem as Valid or Unsure before starting solution discovery.
+                  Validate a problem as Valid or Unsure before identifying solutions.
                 </p>
               </div>
               <Button variant="outline" onClick={() => router.push("/problems")}>Go to Problems</Button>

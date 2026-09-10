@@ -400,7 +400,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                               </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => {
                                 saveActiveDiscoveryProblemId(problem.id)
-                                router.push("/solutions/discover/select-problem")
+                                router.push("/solutions/identify/select-problem")
                               }}>
                                 <Lightbulb className="h-3.5 w-3.5" />
                                 Identify solutions

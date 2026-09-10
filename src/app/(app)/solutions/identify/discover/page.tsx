@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
-import { useDiscovery, getAdjacentSteps } from "../context"
+import { useIdentifySolutions, getAdjacentSteps } from "../context"
 import { SCAMPER_CASE_STUDIES } from "./case-studies"
 import { IMPROVE_CASE_STUDIES } from "./improve-case-studies"
 import { REVERSE_CASE_STUDIES } from "./reverse-case-studies"
@@ -218,7 +218,7 @@ function ScamperDimensionContent({
   dimensionKey: ScamperKey
   placeholder?: string
 }) {
-  const { scamperIdeas, setScamperIdeas } = useDiscovery()
+  const { scamperIdeas, setScamperIdeas } = useIdentifySolutions()
 
   const items = scamperIdeas[dimensionKey] ?? []
   const externalText = items[0]?.text ?? ""
@@ -508,7 +508,7 @@ function ReverseIdeationForm() {
     setReverseIdeation,
     reverseInversion,
     setReverseInversion,
-  } = useDiscovery()
+  } = useIdentifySolutions()
 
   const ideationItems = Array.isArray(reverseIdeation) ? reverseIdeation : []
   const inversionItems = Array.isArray(reverseInversion) ? reverseInversion : []
@@ -542,7 +542,7 @@ function ReverseIdeationForm() {
 /* -- Analogy Form -- */
 
 function AnalogyForm() {
-  const { analogyDomain, setAnalogyDomain, analogyInsight, setAnalogyInsight } = useDiscovery()
+  const { analogyDomain, setAnalogyDomain, analogyInsight, setAnalogyInsight } = useIdentifySolutions()
 
   return (
     <div className="bg-secondary-brand rounded-xl p-8">
@@ -643,7 +643,7 @@ function ImprovementDimension({
   prompt: string
   example: string
 }) {
-  const { improvementResponses, setImprovementResponses } = useDiscovery()
+  const { improvementResponses, setImprovementResponses } = useIdentifySolutions()
 
   const items = improvementResponses[dimensionKey] ?? []
   const externalText = items[0]?.text ?? ""
@@ -1325,7 +1325,7 @@ function SaveSolutionPanel({ toolType }: { toolType: SaveDialogTool }) {
     analogyInsight,
     reverseIdeation,
     reverseInversion,
-  } = useDiscovery()
+  } = useIdentifySolutions()
 
   const [saveOpen, setSaveOpen] = useState(false)
   const [savedOpen, setSavedOpen] = useState(false)
@@ -1491,14 +1491,14 @@ export default function DiscoverPage() {
   const router = useRouter()
   const guardedRouter = useGuardedRouter()
   const pathname = usePathname()
-  const { problemId, discoveryToolType } = useDiscovery()
+  const { problemId, discoveryToolType } = useIdentifySolutions()
   const { prevPath, nextPath } = getAdjacentSteps(pathname)
   const containerSize = useContainerSize()
   const isNarrow = containerSize === "narrow"
 
   useEffect(() => {
     if (problemId == null) {
-      router.replace("/solutions/discover/select-problem")
+      router.replace("/solutions/identify/select-problem")
     }
   }, [problemId, router])
 
@@ -1675,9 +1675,9 @@ export default function DiscoverPage() {
 
         {!discoveryToolType && (
           <div className="flex flex-col items-center justify-center gap-3 py-8 rounded-lg border border-dashed">
-            <p className="text-sm">No discovery technique selected.</p>
-            <Button variant="outline" onClick={() => guardedRouter.push("/solutions/discover/choose-discovery")}>
-              <ArrowLeft className="h-4 w-4 mr-2" />Choose a Discovery Technique
+            <p className="text-sm">No method selected.</p>
+            <Button variant="outline" onClick={() => guardedRouter.push("/solutions/identify/pick-method")}>
+              <ArrowLeft className="h-4 w-4 mr-2" />Pick a method
             </Button>
           </div>
         )}

@@ -310,7 +310,7 @@ const guidanceItems: GuidanceItem[] = [
         </GuidanceSection>
         {SHOW_REFINEMENT_STEPS && (
           <GuidanceSection icon={Search} iconBg="bg-violet-800" title="Refine the problem">
-            <p>Before exploring alternatives, dig into <Keyword>why</Keyword> the problem exists and <Keyword>who</Keyword> it affects. The <Keyword>Choose your refinement method</Keyword> step lets you pick one of three techniques; the next step is where you capture the actual analysis. The refinement output also surfaces later in solution discovery, so the work is reused.</p>
+            <p>Before exploring alternatives, dig into <Keyword>why</Keyword> the problem exists and <Keyword>who</Keyword> it affects. The <Keyword>Choose your refinement method</Keyword> step lets you pick one of three techniques; the next step is where you capture the actual analysis. The refinement output also surfaces later when you identify solutions, so the work is reused.</p>
             <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
               <ConceptCard icon={GitFork} label="Root Causes" description="Map the underlying factors that give rise to the problem." tile="bg-violet-800" border="border-violet-800/20 bg-violet-800/5" />
               <ConceptCard icon={Repeat} label="5 Whys" description="Ask 'why' five times to drill from a surface symptom to the real cause." tile="bg-violet-800" border="border-violet-800/20 bg-violet-800/5" />
@@ -336,7 +336,7 @@ const guidanceItems: GuidanceItem[] = [
         </GuidanceSection>
         <TipCallout items={[
           "A sharp customer definition unlocks every later step; resist 'everyone'",
-          ...(SHOW_REFINEMENT_STEPS ? ["Refinement work done here flows into solution discovery later, so do not skip it"] : []),
+          ...(SHOW_REFINEMENT_STEPS ? ["Refinement work done here flows into identifying solutions later, so do not skip it"] : []),
           "Capture the strongest emotional or social job: it usually justifies the price more than the tangible task",
         ]} />
       </div>
@@ -395,7 +395,7 @@ const guidanceItems: GuidanceItem[] = [
           <p className="pt-1">Then commit to one of three verdicts: <Keyword>Valid</Keyword>, <Keyword>Unsure</Keyword>, or <Keyword>Invalid</Keyword>. The dot colours and lean banner are heuristics, not rules; if you disagree with how a signal is being read, override it in the notes and explain why. Use the notes to record the two or three signals that drove the call plus the strongest counter-argument you considered.</p>
         </GuidanceSection>
         <GuidanceSection icon={FileText} iconBg="bg-green-800" title="Review &amp; next steps">
-          <p>A read-only overview of everything you have captured: the customer definition, refinement work, existing solutions and their shortcomings, the jobs list, the price, the market figures, the competitive picture, and your verdict with notes. Use <Keyword>Open Problem to edit</Keyword> to jump back to the editable problem page if anything needs revising before you move on to solution discovery.</p>
+          <p>A read-only overview of everything you have captured: the customer definition, refinement work, existing solutions and their shortcomings, the jobs list, the price, the market figures, the competitive picture, and your verdict with notes. Use <Keyword>Open Problem to edit</Keyword> to jump back to the editable problem page if anything needs revising before you move on to identifying solutions.</p>
         </GuidanceSection>
         <TipCallout items={[
           "Be honest about the evidence: weak validation data is a signal, not a failure",
@@ -418,12 +418,12 @@ const guidanceItems: GuidanceItem[] = [
           icon={Lightbulb}
           tone="bg-blue-900"
           title="Solutions"
-          subtitle="Your Solution Library collects candidate solutions for your validated problems. Discover new solutions through a guided wizard, then validate each one against feasibility, impact, cost, and time."
+          subtitle="Your Solution Library collects candidate solutions for your validated problems. Identify new solutions through a guided flow, then validate each one against feasibility, impact, cost, and time."
         />
         <GuidanceSection icon={Play} iconBg="bg-blue-900" title="How it works">
-          <p>The Solutions workspace has two connected flows: a discovery wizard that generates candidates, and a validation wizard that evaluates each candidate on its own.</p>
+          <p>The Solutions workspace has two connected flows: an Identify Solutions flow that generates candidates, and a validation flow that evaluates each candidate on its own.</p>
           <div className="flex flex-col gap-3 pt-1">
-            <NumberedStep n={1} title="Discover" accent="bg-blue-900">
+            <NumberedStep n={1} title="Identify" accent="bg-blue-900">
               Pick a validated problem and use a creative technique to generate candidate solutions. Each candidate lands in your Solution Library. Refinement work (root causes, 5 whys, affected groups) now happens earlier inside Problem Validation; the output flows through automatically.
             </NumberedStep>
             <NumberedStep n={2} title="Validate" accent="bg-green-800">
@@ -432,7 +432,7 @@ const guidanceItems: GuidanceItem[] = [
           </div>
         </GuidanceSection>
 
-        <GuidanceSection icon={Lightbulb} iconBg="bg-blue-900" title="Discover (inside Discover)">
+        <GuidanceSection icon={Lightbulb} iconBg="bg-blue-900" title="Identify solutions">
           <p>Pick a creative method to generate solution ideas. Each candidate you capture is added to the Solution Library so you can validate it later:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={Blocks} label="SCAMPER" description="Substitute, Combine, Adapt, Modify, Put to other use, Eliminate, Reverse. Generate ideas by transforming existing concepts." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
@@ -456,7 +456,7 @@ const guidanceItems: GuidanceItem[] = [
 
         <TipCallout items={[
           "Refinement now lives inside Problem Validation; the work you do there shapes everything in this section",
-          "Quantity beats quality at the discover step; validation prunes later",
+          "Quantity beats quality when identifying solutions; validation prunes later",
           "A weak candidate is still useful as a comparison baseline",
           "You can come back and add more candidates at any time",
         ]} />

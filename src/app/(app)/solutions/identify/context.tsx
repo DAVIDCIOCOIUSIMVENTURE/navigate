@@ -30,7 +30,7 @@ type CandidateExtras = {
 import type { Problem } from "@/store/problems-model"
 import { loadActiveDiscoveryProblemId, saveActiveDiscoveryProblemId } from "@/lib/active-discovery-problem"
 
-type DiscoveryContextValue = {
+type IdentifySolutionsContextValue = {
   problemId: number | null
   setProblemId: (id: number | null) => void
   problem: Problem | undefined
@@ -74,9 +74,9 @@ type DiscoveryContextValue = {
   resetWorkspace: () => void
 }
 
-const DiscoveryContext = createContext<DiscoveryContextValue | null>(null)
+const IdentifySolutionsContext = createContext<IdentifySolutionsContextValue | null>(null)
 
-export function DiscoveryProvider({ children }: { children: ReactNode }) {
+export function IdentifySolutionsProvider({ children }: { children: ReactNode }) {
   const dispatch = useDispatch<AppDispatch>()
   const [problemId, setProblemIdState] = useState<number | null>(null)
   const [hydrated, setHydrated] = useState(false)
@@ -211,7 +211,7 @@ export function DiscoveryProvider({ children }: { children: ReactNode }) {
   )
 
   return (
-    <DiscoveryContext.Provider
+    <IdentifySolutionsContext.Provider
       value={{
         problemId, setProblemId, problem, workspace,
         analysisToolType, setAnalysisToolType,
@@ -232,13 +232,13 @@ export function DiscoveryProvider({ children }: { children: ReactNode }) {
       }}
     >
       {children}
-    </DiscoveryContext.Provider>
+    </IdentifySolutionsContext.Provider>
   )
 }
 
-export function useDiscovery() {
-  const ctx = useContext(DiscoveryContext)
-  if (!ctx) throw new Error("useDiscovery must be used within DiscoveryProvider")
+export function useIdentifySolutions() {
+  const ctx = useContext(IdentifySolutionsContext)
+  if (!ctx) throw new Error("useIdentifySolutions must be used within IdentifySolutionsProvider")
   return ctx
 }
 
@@ -246,7 +246,7 @@ export type NavItem = { label: string; path: string }
 
 export const NAV_ITEMS: readonly NavItem[] = [
   { label: "Select a Problem", path: "select-problem" },
-  { label: "Choose Discovery Method", path: "choose-discovery" },
+  { label: "Pick a method", path: "pick-method" },
   { label: "Discover", path: "discover" },
   { label: "Review", path: "review" },
 ] as const
@@ -254,7 +254,7 @@ export const NAV_ITEMS: readonly NavItem[] = [
 const STEP_PATHS = NAV_ITEMS.map((item) => item.path)
 
 export function getAdjacentSteps(pathname: string) {
-  const base = "/solutions/discover"
+  const base = "/solutions/identify"
   const segment = pathname.split("/").pop() ?? ""
   const idx = STEP_PATHS.indexOf(segment)
   return {
@@ -264,7 +264,7 @@ export function getAdjacentSteps(pathname: string) {
 }
 
 export const STEPS_REQUIRING_PROBLEM = new Set([
-  "choose-discovery",
+  "pick-method",
   "discover",
   "review",
 ])

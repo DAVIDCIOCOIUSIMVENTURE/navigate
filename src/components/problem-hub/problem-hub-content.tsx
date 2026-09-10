@@ -256,7 +256,7 @@ function SolutionsSection({ problemId }: { problemId: number }) {
             size="sm"
             onClick={() => {
               saveActiveDiscoveryProblemId(problemId)
-              router.push("/solutions/discover/choose-discovery")
+              router.push("/solutions/identify/pick-method")
             }}
           >
             <Lightbulb className="h-3.5 w-3.5 mr-1" />
@@ -302,7 +302,7 @@ export function NextStepsSection({ problemRef, problemId }: { problemRef: string
   const goToValidation = () => router.push(`/problems/${problemRef}/validation/market`)
   const goToDiscover = () => {
     saveActiveDiscoveryProblemId(problemId)
-    router.push("/solutions/discover/choose-discovery")
+    router.push("/solutions/identify/pick-method")
   }
 
   const handleDuplicate = () => {
@@ -346,7 +346,7 @@ export function NextStepsSection({ problemRef, problemId }: { problemRef: string
           </p>
           <Button className="self-start" onClick={goToDiscover}>
             <Lightbulb className="h-4 w-4 mr-2" />
-            Continue to Solution Discovery
+            Identify solutions
           </Button>
         </div>
       )}
@@ -363,9 +363,9 @@ export function NextStepsSection({ problemRef, problemId }: { problemRef: string
           <div className="flex flex-col gap-3 mt-1">
             <NextStepCard
               icon={Lightbulb}
-              title="Continue to solution discovery"
+              title="Move on to identifying solutions"
               description="Exploring possible solutions can sometimes sharpen your view of the problem itself."
-              actionLabel="Continue to Solution Discovery"
+              actionLabel="Identify solutions"
               actionIcon={Lightbulb}
               onAction={goToDiscover}
             />

@@ -8,7 +8,7 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer"
 import { SolutionsTable } from "@/components/solutions-table"
-import { useDiscovery } from "./context"
+import { useIdentifySolutions } from "./context"
 
 export function SolutionsDrawer({
   open,
@@ -17,7 +17,7 @@ export function SolutionsDrawer({
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
-  const { candidates } = useDiscovery()
+  const { candidates } = useIdentifySolutions()
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>

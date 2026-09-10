@@ -10,7 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { DiscoveryProvider, useDiscovery, NAV_ITEMS, STEPS_REQUIRING_PROBLEM } from "./context"
+import { IdentifySolutionsProvider, useIdentifySolutions, NAV_ITEMS, STEPS_REQUIRING_PROBLEM } from "./context"
 import { SolutionsDrawer } from "./solutions-drawer"
 import { ProblemContextCard } from "@/components/context-card"
 import { Lightbulb, Lock, Check, ChevronDown, RotateCcw, ArrowLeft, PanelTop } from "lucide-react"
@@ -70,7 +70,7 @@ function StepList({
   onNavigate: (path: string) => void
 }) {
   const activeIdx = NAV_ITEMS.findIndex(
-    (item) => pathname === `/solutions/discover/${item.path}`
+    (item) => pathname === `/solutions/identify/${item.path}`
   )
   return (
     <div className="flex flex-col gap-1">
@@ -86,7 +86,7 @@ function StepList({
             disabled={locked}
             onClick={() => {
               if (locked) return
-              onNavigate(`/solutions/discover/${item.path}`)
+              onNavigate(`/solutions/identify/${item.path}`)
             }}
             aria-current={isActive ? "step" : undefined}
             className={cn(
@@ -116,7 +116,7 @@ function MobileStepper({
 }) {
   const [open, setOpen] = useState(false)
   const activeIdx = NAV_ITEMS.findIndex(
-    (item) => pathname === `/solutions/discover/${item.path}`
+    (item) => pathname === `/solutions/identify/${item.path}`
   )
   const activeItem = activeIdx >= 0 ? NAV_ITEMS[activeIdx] : null
 
@@ -135,7 +135,7 @@ function MobileStepper({
             <span className="truncate">
               {activeItem
                 ? `Step ${activeIdx + 1} of ${NAV_ITEMS.length}: ${activeItem.label}`
-                : "Solution Discovery"}
+                : "Identify Solutions"}
             </span>
           </span>
           <ChevronDown
@@ -164,7 +164,7 @@ function MobileStepper({
                   e.preventDefault()
                   return
                 }
-                onNavigate(`/solutions/discover/${item.path}`)
+                onNavigate(`/solutions/identify/${item.path}`)
               }}
               aria-current={isActive ? "step" : undefined}
               className={cn(
@@ -196,7 +196,7 @@ function MobileStepper({
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
-  const { problemId, problem, candidates, resetWorkspace } = useDiscovery()
+  const { problemId, problem, candidates, resetWorkspace } = useIdentifySolutions()
   const { revealTopNav } = useFocusChrome()
   const [mounted, setMounted] = useState(false)
   const [solutionsDrawerOpen, setSolutionsDrawerOpen] = useState(false)
@@ -235,7 +235,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       <span className={SECTION_TITLE_TILE_CLASS} aria-hidden="true">
         <Lightbulb className={SECTION_TITLE_ICON_CLASS} />
       </span>
-      <span className="truncate">Solution Discovery</span>
+      <span className="truncate">Identify Solutions</span>
     </h1>
   )
 
@@ -258,8 +258,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             Reset
           </Button>
         }
-        title="Reset solution discovery?"
-        description="This will clear your analysis tool choice, discovery method, root-cause work, and all in-progress ideas for this problem. Saved solutions are not affected."
+        title="Reset your progress?"
+        description="This will clear your analysis tool choice, method, root-cause work, and all in-progress ideas for this problem. Saved solutions are not affected."
         confirmLabel="Reset"
         onConfirm={resetWorkspace}
       />
@@ -267,7 +267,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   )
 
   const wideStepper = (
-    <nav aria-label="Solution discovery steps" className="flex shrink-0 flex-col">
+    <nav aria-label="Identify solutions steps" className="flex shrink-0 flex-col">
       <Card>
         <CardContent className="p-3 flex flex-col gap-3">
           <StepList
@@ -322,10 +322,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   )
 }
 
-export default function DiscoveryLayout({ children }: { children: React.ReactNode }) {
+export default function IdentifySolutionsLayout({ children }: { children: React.ReactNode }) {
   return (
-    <DiscoveryProvider>
+    <IdentifySolutionsProvider>
       <LayoutContent>{children}</LayoutContent>
-    </DiscoveryProvider>
+    </IdentifySolutionsProvider>
   )
 }

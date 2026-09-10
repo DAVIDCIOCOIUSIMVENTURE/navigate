@@ -76,7 +76,7 @@ const STORAGE_GROUPS: StorageGroup[] = [
   {
     id: "solution-workspaces",
     label: "Solution refinement workspaces",
-    description: "Per-problem refinement notes (root causes, 5 whys, affected groups) shared between problem validation and solution discovery.",
+    description: "Per-problem refinement notes (root causes, 5 whys, affected groups) shared between problem validation and identifying solutions.",
     keys: ["navigate-solution-workspaces", "navigate-active-discovery-problem"],
   },
   {

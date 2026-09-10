@@ -107,9 +107,9 @@ export const TOUR_TARGETS = {
   problemsLibrary: "problems-library",
   canvasExplore: "canvas-explore",
   canvasValidate: "canvas-validate",
-  /** The "Identify solutions" button on the solution library; it opens Solution Discovery directly. */
+  /** The "Identify solutions" button on the solution library; it opens Identify Solutions directly. */
   solutionsIdentify: "solutions-identify",
-  /** A problem card on the discovery "Select a Problem" step. */
+  /** A problem card on the Identify Solutions "Select a Problem" step. */
   discoverProblem: (problemId: number) => `discover-problem-${problemId}`,
   /** The Next button on that step; disabled until a problem is picked. */
   discoverNext: "discover-next",
@@ -382,12 +382,12 @@ export const TOUR_STEPS: TourStep[] = [
     mode: "act",
     title: "Identify a solution",
     body: [
-      "Now find a solution for your problem. Click Identify solutions to open Solution Discovery, which walks you from a validated problem to concrete candidates using creative techniques.",
+      "Now find a solution for your problem. Click Identify solutions to open the Identify Solutions flow, which walks you from a validated problem to concrete candidates using creative techniques.",
     ],
     target: TOUR_TARGETS.solutionsIdentify,
     placement: "bottom",
     route: "/solutions",
-    done: (ctx) => ctx.pathname.startsWith("/solutions/discover"),
+    done: (ctx) => ctx.pathname.startsWith("/solutions/identify"),
     advance: "auto",
   },
   {
@@ -400,8 +400,8 @@ export const TOUR_STEPS: TourStep[] = [
     target: (ctx) =>
       ctx.journey.problemId === null ? null : [TOUR_TARGETS.discoverProblem(ctx.journey.problemId), TOUR_TARGETS.discoverNext],
     placement: "top",
-    route: "/solutions/discover/select-problem",
-    done: (ctx) => ctx.pathname.startsWith("/solutions/discover/") && ctx.pathname !== "/solutions/discover/select-problem",
+    route: "/solutions/identify/select-problem",
+    done: (ctx) => ctx.pathname.startsWith("/solutions/identify/") && ctx.pathname !== "/solutions/identify/select-problem",
     advance: "auto",
   },
   {
@@ -409,11 +409,11 @@ export const TOUR_STEPS: TourStep[] = [
     mode: "act",
     title: "Discover a solution",
     body: [
-      "Pick a discovery method such as analogy or SCAMPER, work through its prompts and save at least one candidate. Each one lands in your solution library.",
+      "Pick a method such as analogy or SCAMPER, work through its prompts and save at least one candidate. Each one lands in your solution library.",
       "When a candidate is saved, press Next.",
     ],
-    route: "/solutions/discover/choose-discovery",
-    within: (ctx) => ctx.pathname.startsWith("/solutions/discover"),
+    route: "/solutions/identify/pick-method",
+    within: (ctx) => ctx.pathname.startsWith("/solutions/identify"),
     done: (ctx, entry) =>
       ctx.solutions.some((s) => s.problemId === ctx.journey.problemId) || ctx.solutions.length > entry.solutions.length,
     capture: (ctx) => ({

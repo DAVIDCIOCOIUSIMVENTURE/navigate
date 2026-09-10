@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 export default function IntroductionRedirectPage() {
   const router = useRouter()
   useEffect(() => {
-    router.replace("/solutions/discover")
+    router.replace("/solutions/identify")
   }, [router])
   return null
 }

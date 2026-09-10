@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { useDiscovery, getAdjacentSteps } from "../context"
+import { useIdentifySolutions, getAdjacentSteps } from "../context"
 import type { DiscoveryToolType } from "@/types/solution"
 import {
   ClipboardCheck, ArrowLeft, ArrowRight,
@@ -67,12 +67,12 @@ export default function ReviewPage() {
     analogyDomain,
     analogyInsight,
     candidates,
-  } = useDiscovery()
+  } = useIdentifySolutions()
   const { prevPath } = getAdjacentSteps(pathname)
 
   useEffect(() => {
     if (problemId == null) {
-      router.replace("/solutions/discover/select-problem")
+      router.replace("/solutions/identify/select-problem")
     }
   }, [problemId, router])
 
@@ -96,11 +96,11 @@ export default function ReviewPage() {
           <div className="flex items-center gap-3">
             <IconTile icon={DiscoveryIcon} />
             <SectionTitle>
-              Discovery method{discoveryTool ? `: ${discoveryTool.label}` : ""}
+              Method{discoveryTool ? `: ${discoveryTool.label}` : ""}
             </SectionTitle>
           </div>
 
-          {!discoveryTool && <EmptyHint text="No discovery method was chosen." />}
+          {!discoveryTool && <EmptyHint text="No method was chosen." />}
 
           {discoveryToolType === "reverse" && (
             <div className="grid gap-3 md:grid-cols-2">

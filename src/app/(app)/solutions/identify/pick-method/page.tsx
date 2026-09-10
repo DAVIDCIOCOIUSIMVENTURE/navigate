@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { useDiscovery, getAdjacentSteps } from "../context"
+import { useIdentifySolutions, getAdjacentSteps } from "../context"
 import type { DiscoveryToolType } from "@/types/solution"
 import { Shuffle, ArrowLeft, Lightbulb, RotateCcw, GitCompare, Wrench } from "lucide-react"
 import { MethodPickerBoard, type MethodPickerItem } from "@/components/method-picker-board"
@@ -53,10 +53,10 @@ const TOOL_ITEMS: MethodPickerItem[] = [
   },
 ]
 
-export default function ChooseDiscoveryPage() {
+export default function PickMethodPage() {
   const router = useRouter()
   const pathname = usePathname()
-  const { discoveryToolType, setDiscoveryToolType } = useDiscovery()
+  const { discoveryToolType, setDiscoveryToolType } = useIdentifySolutions()
   const { prevPath, nextPath } = getAdjacentSteps(pathname)
 
   const selectedTool = (discoveryToolType || null) as ToolKey | null
@@ -69,19 +69,17 @@ export default function ChooseDiscoveryPage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={Shuffle}>Choose Your Discovery Tool</CardTitle>
+        <CardTitle icon={Shuffle}>Pick a method</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <p className="text-base leading-relaxed">
-          Use creative ideation techniques to generate solution candidates. Pick the tool that fits where you are right now: each one is a different angle on the same problem.
+          Use creative ideation techniques to generate solution candidates. Pick the method that fits where you are right now: each one is a different angle on the same problem.
         </p>
 
         <MethodPickerBoard
           items={TOOL_ITEMS}
           selectedId={selectedTool}
           onPick={(id) => handleChoose(id as ToolKey)}
-          ctaLabel="Use this tool"
-          reselectLabel="Continue with this tool"
         />
 
         {prevPath && (
