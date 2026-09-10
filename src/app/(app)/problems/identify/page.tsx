@@ -153,7 +153,12 @@ export default function IdentifyProblemsPage() {
                 {items.map((item) => {
                   const Icon = item.icon
                   return (
-                    <TabsTrigger key={item.id} value={item.id} className="gap-2 text-base">
+                    <TabsTrigger
+                      key={item.id}
+                      value={item.id}
+                      className="gap-2 text-base"
+                      data-tour={item.id === "define" ? TOUR_TARGETS.identifyDefineTab : undefined}
+                    >
                       <Icon className="h-4 w-4" aria-hidden="true" />
                       {item.title}
                     </TabsTrigger>
@@ -187,7 +192,13 @@ export default function IdentifyProblemsPage() {
                           <span>About {item.estimatedMinutes} minutes</span>
                         </div>
                         <div>
-                          <Button type="button" onClick={() => handlePick(item.id)} disabled={!item.enabled} className="gap-2">
+                          <Button
+                            type="button"
+                            onClick={() => handlePick(item.id)}
+                            disabled={!item.enabled}
+                            className="gap-2"
+                            data-tour={item.id === "define" ? TOUR_TARGETS.identifyDefineUse : undefined}
+                          >
                             Use this tool
                             <ArrowRight className="h-4 w-4" />
                           </Button>

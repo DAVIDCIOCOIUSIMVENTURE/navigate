@@ -23,6 +23,7 @@ export default function IdentifySolutionsPage() {
       icon: Lightbulb,
       estimatedMinutes: 20,
       enabled: true,
+      tourTarget: TOUR_TARGETS.solutionDiscoveryUse,
     },
     {
       id: "quick-capture",

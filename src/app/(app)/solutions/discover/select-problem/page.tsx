@@ -10,6 +10,7 @@ import { Target, ArrowLeft, ArrowRight, CheckCircle2, HelpCircle, Info } from "l
 import { getAdjacentSteps, useDiscovery } from "../context"
 import { DimensionChips } from "@/components/dimension-chips"
 import type { ValidationStatus } from "@/types/validation"
+import { TOUR_TARGETS } from "@/lib/tour-steps"
 
 const STATUS_BADGE: Record<"valid" | "unsure", { label: string; icon: typeof CheckCircle2; className: string }> = {
   valid: { label: "Valid", icon: CheckCircle2, className: "text-success border-success/40 bg-success/10" },
@@ -78,6 +79,7 @@ export default function SelectProblemPage() {
                   <button
                     key={problem.id}
                     onClick={() => setProblemId(problem.id)}
+                    data-tour={TOUR_TARGETS.discoverProblem(problem.id)}
                     className={`flex items-start gap-4 rounded-lg border p-4 text-left transition-colors ${
                       selected ? "border-primary bg-primary/5" : "hover:bg-accent/50"
                     }`}
@@ -121,7 +123,7 @@ export default function SelectProblemPage() {
             ? <Button variant="primary-outline" onClick={() => router.push(prevPath)}><ArrowLeft className="h-4 w-4" />Previous</Button>
             : <span />}
           {nextPath && (
-            <Button onClick={() => router.push(nextPath)} disabled={problemId == null}>
+            <Button onClick={() => router.push(nextPath)} disabled={problemId == null} data-tour={TOUR_TARGETS.discoverNext}>
               Next<ArrowRight className="h-4 w-4" />
             </Button>
           )}

@@ -118,7 +118,7 @@ function TourLayer() {
     }
   }, [done, stepIndex, step, ctx, nextIndex, dispatch.tour])
 
-  const { route, target } = useMemo(() => resolveTourStep(step, ctx), [step, ctx])
+  const { route, targets } = useMemo(() => resolveTourStep(step, ctx), [step, ctx])
   const within = isWithinStep(step, ctx)
 
   // Navigate once per step, and only when the user is not already where the
@@ -145,10 +145,10 @@ function TourLayer() {
     }
   }, [step, sidebarMode, dispatch.settings])
 
-  const anchor = useTargetRect(target, waitingForRoute, `${stepIndex}:${pathname}`)
+  const anchor = useTargetRect(targets, waitingForRoute, `${stepIndex}:${pathname}`)
   const unanchored: TourView = isAct ? "docked" : "centred"
   const view: TourView =
-    target === null ? unanchored
+    targets.length === 0 ? unanchored
     : waitingForRoute || anchor.status === "pending" ? "waiting"
     : anchor.status === "found" ? "spotlight"
     : unanchored

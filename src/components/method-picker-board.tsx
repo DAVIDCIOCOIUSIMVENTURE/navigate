@@ -24,6 +24,8 @@ export type MethodPickerItem = {
   image?: { src: string; alt: string; position?: string }
   estimatedMinutes: number
   enabled: boolean
+  /** Optional guided-tour anchor placed on this item's call-to-action button. */
+  tourTarget?: string
 }
 
 export function MethodPickerBoard({
@@ -209,6 +211,7 @@ function MethodPreview({
               onClick={() => onPick(item.id)}
               disabled={!item.enabled}
               className="gap-2"
+              data-tour={item.tourTarget}
             >
               {isSelected ? reselectLabel : ctaLabel}
               <ArrowRight className="h-4 w-4" />

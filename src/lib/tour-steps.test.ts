@@ -33,17 +33,27 @@ const find = (id: string) => {
 
 describe("resolveTourStep", () => {
   it("passes a static route and target through", () => {
-    expect(resolveTourStep(step({ route: "/problems", target: "a" }), ctxWith())).toEqual({ route: "/problems", target: "a" })
+    expect(resolveTourStep(step({ route: "/problems", target: "a" }), ctxWith())).toEqual({ route: "/problems", targets: ["a"] })
+  })
+
+  it("keeps a click chain in order", () => {
+    expect(resolveTourStep(step({ target: ["tab", "button"] }), ctxWith()).targets).toEqual(["tab", "button"])
+  })
+
+  it("resolves a target from the context", () => {
+    const dynamic = step({ target: (ctx) => (ctx.journey.problemId === null ? null : `card-${ctx.journey.problemId}`) })
+    expect(resolveTourStep(dynamic, ctxWith()).targets).toEqual([])
+    expect(resolveTourStep(dynamic, ctxWith({ journey: { problemId: 4, solutionId: null } })).targets).toEqual(["card-4"])
   })
 
   it("has no route or target when neither is given", () => {
-    expect(resolveTourStep(step({}), ctxWith())).toEqual({ route: null, target: null })
+    expect(resolveTourStep(step({}), ctxWith())).toEqual({ route: null, targets: [] })
   })
 
   it("drops the target when a route resolver returns null", () => {
     const resolver = step({ route: (ctx) => (ctx.journey.problemId === null ? null : "/x"), target: "a" })
-    expect(resolveTourStep(resolver, ctxWith())).toEqual({ route: null, target: null })
-    expect(resolveTourStep(resolver, ctxWith({ journey: { problemId: 1, solutionId: null } }))).toEqual({ route: "/x", target: "a" })
+    expect(resolveTourStep(resolver, ctxWith())).toEqual({ route: null, targets: [] })
+    expect(resolveTourStep(resolver, ctxWith({ journey: { problemId: 1, solutionId: null } }))).toEqual({ route: "/x", targets: ["a"] })
   })
 })
 
@@ -139,6 +149,13 @@ describe("hands-on steps", () => {
     validationStatus,
   })
 
+  it("act-define spotlights the Define tab, then its Use this tool button", () => {
+    expect(resolveTourStep(find("act-define"), ctxWith()).targets).toEqual([
+      TOUR_TARGETS.identifyDefineTab,
+      TOUR_TARGETS.identifyDefineUse,
+    ])
+  })
+
   it("act-define completes when a problem appears and captures its id", () => {
     const define = find("act-define")
     const entry = ctxWith({ problems: [problem(1)] })
@@ -185,6 +202,22 @@ describe("hands-on steps", () => {
     const journey = { problemId: 2, solutionId: null }
     expect(isStepDone(validate, ctxWith({ journey, problems: [problem(2, "in_progress")] }), ctxWith())).toBe(false)
     expect(isStepDone(validate, ctxWith({ journey, problems: [problem(2, "unsure")] }), ctxWith())).toBe(true)
+  })
+
+  it("act-discover-tool completes once the discovery flow opens", () => {
+    const tool = find("act-discover-tool")
+    expect(resolveTourStep(tool, ctxWith()).targets).toEqual([TOUR_TARGETS.solutionDiscoveryUse])
+    expect(isStepDone(tool, ctxWith({ pathname: "/solutions/identify" }), ctxWith())).toBe(false)
+    expect(isStepDone(tool, ctxWith({ pathname: "/solutions/discover/select-problem" }), ctxWith())).toBe(true)
+  })
+
+  it("act-discover-problem chains the tour's problem card to Next and completes on leaving the step", () => {
+    const pick = find("act-discover-problem")
+    const journey = { problemId: 2, solutionId: null }
+    expect(resolveTourStep(pick, ctxWith()).targets).toEqual([])
+    expect(resolveTourStep(pick, ctxWith({ journey })).targets).toEqual([TOUR_TARGETS.discoverProblem(2), TOUR_TARGETS.discoverNext])
+    expect(isStepDone(pick, ctxWith({ journey, pathname: "/solutions/discover/select-problem" }), ctxWith())).toBe(false)
+    expect(isStepDone(pick, ctxWith({ journey, pathname: "/solutions/discover/choose-discovery" }), ctxWith())).toBe(true)
   })
 
   it("act-discover completes when a solution for the tour's problem exists and captures it", () => {
@@ -235,8 +268,12 @@ describe("TOUR_STEPS", () => {
     const known = new Set<string>(
       Object.values(TOUR_TARGETS).flatMap((v) => (typeof v === "function" ? [] : [v])),
     )
+    const ctx = ctxWith({ journey: { problemId: 1, solutionId: 1 } })
     for (const s of TOUR_STEPS) {
-      if (s.target && !s.target.startsWith("sidebar-")) expect(known.has(s.target), s.id).toBe(true)
+      for (const id of resolveTourStep(s, ctx).targets) {
+        if (id.startsWith("sidebar-") || id.startsWith("discover-problem-")) continue
+        expect(known.has(id), `${s.id} -> ${id}`).toBe(true)
+      }
     }
   })
 

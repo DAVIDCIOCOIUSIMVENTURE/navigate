@@ -20,6 +20,9 @@ import type { ValidationStatus } from "@/types/validation"
 
 export type TourPlacement = "top" | "right" | "bottom" | "left"
 
+/** One `data-tour` id, or an ordered click chain of them. */
+export type TourTarget = string | string[]
+
 /** Ids created while working through the hands-on part of the tour. Persisted by the tour model. */
 export type TourJourney = {
   problemId: number | null
@@ -43,8 +46,15 @@ export interface TourStep {
   id: string
   title: string
   body: string[]
-  /** `data-tour` id of the element to spotlight. Omit for a centred or docked card. */
-  target?: string
+  /**
+   * What to spotlight. A single `data-tour` id, or a click chain: a list of
+   * ids where each click reveals or enables the next (a tab that mounts its
+   * panel, a card that enables Next). The spotlight sits on the last id in
+   * the chain that is rendered and enabled, so it moves along as the user
+   * clicks. A resolver may pick ids from the context (for example the card
+   * for the tour's own problem). Omit for a centred or docked card.
+   */
+  target?: TourTarget | ((ctx: TourContext) => TourTarget | null)
   placement?: TourPlacement
   /**
    * Route to open when the step is entered. A resolver may return null, which
@@ -92,11 +102,21 @@ export const TOUR_TARGETS = {
   headerAccount: "header-account",
   dashboardIdentifyProblems: "dashboard-identify-problems",
   identifyMethods: "identify-methods",
+  /** The "Define a Problem Statement" tab on the identify hub. */
+  identifyDefineTab: "identify-define-tab",
+  /** The "Use this tool" button inside that tab; only rendered while the tab is active. */
+  identifyDefineUse: "identify-define-use",
   problemsLibrary: "problems-library",
   canvasExplore: "canvas-explore",
   canvasValidate: "canvas-validate",
   solutionsIdentify: "solutions-identify",
   solutionMethods: "solution-methods",
+  /** The "Use this tool" button for Solution Discovery on the identify-solutions hub. */
+  solutionDiscoveryUse: "solution-discovery-use",
+  /** A problem card on the discovery "Select a Problem" step. */
+  discoverProblem: (problemId: number) => `discover-problem-${problemId}`,
+  /** The Next button on that step; disabled until a problem is picked. */
+  discoverNext: "discover-next",
 } as const
 
 // Context helpers, shared by the step definitions and the overlay.
@@ -316,8 +336,10 @@ export const TOUR_STEPS: TourStep[] = [
     title: "Choose how to identify it",
     body: [
       "There are four doorways: Reflect on your own experience, combine dimensions on the Canvas Builder, Research problems out in the world, or Define a Problem Statement directly.",
-      "For this tour, pick the Define a Problem Statement tab and press Use this tool. It is the quickest way in; you can try the other tools another time.",
+      "For this tour, open the Define a Problem Statement tab, then press Use this tool. It is the quickest way in; you can try the other tools another time.",
     ],
+    target: [TOUR_TARGETS.identifyDefineTab, TOUR_TARGETS.identifyDefineUse],
+    placement: "bottom",
     route: "/problems/identify",
     done: (ctx, entry) => ctx.problems.length > entry.problems.length,
     capture: (ctx) => ({ problemId: latest(ctx.problems)?.id ?? null }),
@@ -371,14 +393,41 @@ export const TOUR_STEPS: TourStep[] = [
     advance: "auto",
   },
   {
+    id: "act-discover-tool",
+    mode: "act",
+    title: "Open Solution Discovery",
+    body: [
+      "Solution Discovery walks you from a validated problem to concrete candidates using creative techniques. Press Use this tool to start it.",
+    ],
+    target: TOUR_TARGETS.solutionDiscoveryUse,
+    placement: "top",
+    route: "/solutions/identify",
+    done: (ctx) => ctx.pathname.startsWith("/solutions/discover"),
+    advance: "auto",
+  },
+  {
+    id: "act-discover-problem",
+    mode: "act",
+    title: "Pick your problem",
+    body: [
+      "Only problems marked Valid or Unsure are listed. Select the problem you just validated, then press Next.",
+    ],
+    target: (ctx) =>
+      ctx.journey.problemId === null ? null : [TOUR_TARGETS.discoverProblem(ctx.journey.problemId), TOUR_TARGETS.discoverNext],
+    placement: "top",
+    route: "/solutions/discover/select-problem",
+    done: (ctx) => ctx.pathname.startsWith("/solutions/discover/") && ctx.pathname !== "/solutions/discover/select-problem",
+    advance: "auto",
+  },
+  {
     id: "act-discover",
     mode: "act",
     title: "Discover a solution",
     body: [
-      "Choose Solution Discovery and press Use this tool. Select your problem (only problems marked Valid or Unsure are listed), pick a discovery method such as analogy or SCAMPER, and capture at least one candidate.",
-      "When a candidate is in your library, press Next.",
+      "Pick a discovery method such as analogy or SCAMPER, work through its prompts and save at least one candidate. Each one lands in your solution library.",
+      "When a candidate is saved, press Next.",
     ],
-    route: "/solutions/identify",
+    route: "/solutions/discover/choose-discovery",
     within: (ctx) => ctx.pathname.startsWith("/solutions/discover"),
     done: (ctx, entry) =>
       ctx.solutions.some((s) => s.problemId === ctx.journey.problemId) || ctx.solutions.length > entry.solutions.length,
@@ -420,22 +469,26 @@ export const TOUR_STEPS: TourStep[] = [
 export type ResolvedTourStep = {
   /** Page to open first, or null to stay where the user is. */
   route: string | null
-  /** Element to spotlight, or null for a card with no anchor. */
-  target: string | null
+  /** The click chain to spotlight, in order; empty for a card with no anchor. */
+  targets: string[]
+}
+
+function resolveTargets(step: TourStep, ctx: TourContext): string[] {
+  const target = typeof step.target === "function" ? step.target(ctx) : step.target
+  if (target === undefined || target === null) return []
+  return Array.isArray(target) ? target : [target]
 }
 
 /**
- * Applies the step's route resolver. The one rule that ties route and target
- * together lives here: when a resolver says no page can show the anchor, the
- * target is dropped too, so the overlay never waits for an element that
- * cannot exist.
+ * Applies the step's route and target resolvers. The one rule that ties them
+ * together lives here: when a route resolver says no page can show the
+ * anchor, the targets are dropped too, so the overlay never waits for an
+ * element that cannot exist.
  */
 export function resolveTourStep(step: TourStep, ctx: TourContext): ResolvedTourStep {
-  if (typeof step.route === "function") {
-    const route = step.route(ctx)
-    return { route, target: route === null ? null : (step.target ?? null) }
-  }
-  return { route: step.route ?? null, target: step.target ?? null }
+  const route = typeof step.route === "function" ? step.route(ctx) : (step.route ?? null)
+  if (typeof step.route === "function" && route === null) return { route, targets: [] }
+  return { route, targets: resolveTargets(step, ctx) }
 }
 
 /** Whether the user is already where the step wants them: on its route, or inside its flow. */
