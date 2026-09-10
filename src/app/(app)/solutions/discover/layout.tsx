@@ -26,6 +26,8 @@ import {
   navStepBadgeClass,
 } from "@/lib/nav-item-styles"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
+import { JourneyProgressCard } from "@/components/journey-progress"
+import { FOCUS_COLUMN_MAX_HEIGHT_CLASS } from "@/components/flow-shell"
 
 function StepBadge({
   index,
@@ -265,18 +267,18 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   )
 
   const wideStepper = (
-    <Card className="flex-1 min-h-0 flex flex-col overflow-hidden">
-      <CardContent className="p-3 flex flex-col gap-3 flex-1 min-h-0">
-        <div className="flex-1 min-h-0 overflow-y-auto">
+    <nav aria-label="Solution discovery steps" className="flex shrink-0 flex-col">
+      <Card>
+        <CardContent className="p-3 flex flex-col gap-3">
           <StepList
             pathname={pathname}
             problemSelected={problemSelected}
             onNavigate={(path) => router.push(path)}
           />
-        </div>
-        {railActions}
-      </CardContent>
-    </Card>
+          {railActions}
+        </CardContent>
+      </Card>
+    </nav>
   )
 
   return (
@@ -288,10 +290,14 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       )}
     >
       {isWide ? (
-        <div className="w-72 shrink-0 h-full flex flex-col gap-4 min-h-0">
+        <div className={cn("w-72 shrink-0 flex flex-col gap-4 min-h-0", FOCUS_COLUMN_MAX_HEIGHT_CLASS)}>
           {backAndPanel}
           {sectionTitle}
-          {wideStepper}
+          {/* The stepper keeps its natural height; the column scrolls when it and the rail outgrow the viewport. */}
+          <div className="flex flex-1 min-h-0 flex-col gap-4 overflow-y-auto">
+            {wideStepper}
+            <JourneyProgressCard activeId="identify-solutions" />
+          </div>
         </div>
       ) : (
         <>
@@ -305,6 +311,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             onNavigate={(path) => router.push(path)}
           />
           {railActions}
+          <JourneyProgressCard activeId="identify-solutions" orientation="horizontal" />
         </>
       )}
 
