@@ -387,7 +387,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                 <Button
                   variant="default"
                   size="sm"
-                  className={cn("h-8 gap-2 text-white", pathname.startsWith("/admin") && "ring-2 ring-white/70")}
+                  className={cn("h-8 gap-2 bg-white text-destructive hover:bg-white/90 hover:text-destructive", pathname.startsWith("/admin") && "ring-2 ring-white/70")}
                   asChild
                 >
                   <Link href="/admin" aria-label="Admin panel" data-tour={TOUR_TARGETS.headerAdmin}>
@@ -507,7 +507,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                     <Button
                       variant="default"
                       size="sm"
-                      className={cn("h-8 gap-2 text-white", pathname.startsWith("/admin") && "ring-2 ring-white/70")}
+                      className={cn("h-8 gap-2 bg-white text-destructive hover:bg-white/90 hover:text-destructive", pathname.startsWith("/admin") && "ring-2 ring-white/70")}
                       asChild
                     >
                       <Link href="/admin" aria-label="Admin panel" onClick={() => setTopNavOpen(false)}>
