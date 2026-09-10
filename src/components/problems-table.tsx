@@ -8,6 +8,8 @@ import { toast } from "sonner"
 import { buildProblemBundle, downloadProblemBundle, duplicateProblem } from "@/lib/problem-export"
 import { ExportBundleDialog } from "@/components/export-bundle-dialog"
 import { DuplicateProblemDialog } from "@/components/duplicate-problem-dialog"
+import { ProblemHubDialog } from "@/components/problem-hub/problem-hub-dialog"
+import { SolutionHubDialog } from "@/components/solution-hub/solution-hub-dialog"
 import { Button } from "@/components/ui/button"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
@@ -85,6 +87,8 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
   const [expandedIds, setExpandedIds] = useState<Set<number>>(new Set())
   const [exportProblemId, setExportProblemId] = useState<number | null>(null)
   const [duplicateProblemId, setDuplicateProblemId] = useState<number | null>(null)
+  const [viewProblemId, setViewProblemId] = useState<number | null>(null)
+  const [viewSolutionId, setViewSolutionId] = useState<number | null>(null)
 
   const runProblemExport = (problemId: number, includeSolutions: boolean) => {
     const bundle = buildProblemBundle(store.getState(), problemId, { includeSolutions })
@@ -358,7 +362,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                   variant="secondary-brand"
                                   size="icon"
                                   className="h-7 w-7"
-                                  onClick={() => router.push(`/problems/${problem.id}`)}
+                                  onClick={() => setViewProblemId(problem.id)}
                                   aria-label="View problem canvas"
                                 >
                                   <Eye className="h-3.5 w-3.5" />
@@ -479,7 +483,7 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
                                     variant="secondary-brand"
                                     size="icon"
                                     className="h-7 w-7"
-                                    onClick={() => router.push(`/solutions/${s.id}`)}
+                                    onClick={() => setViewSolutionId(s.id)}
                                     aria-label="View solution canvas"
                                   >
                                     <Eye className="h-3.5 w-3.5" />
@@ -542,6 +546,16 @@ export function ProblemsTable({ problems, showStatus = false, showEditDelete = f
           </Table>
         </CardContent>
       </Card>
+      <ProblemHubDialog
+        open={viewProblemId != null}
+        onOpenChange={(open) => { if (!open) setViewProblemId(null) }}
+        problemRef={viewProblemId != null ? String(viewProblemId) : null}
+      />
+      <SolutionHubDialog
+        open={viewSolutionId != null}
+        onOpenChange={(open) => { if (!open) setViewSolutionId(null) }}
+        solutionId={viewSolutionId}
+      />
       <ExportBundleDialog
         open={exportProblemId != null}
         onOpenChange={(open) => { if (!open) setExportProblemId(null) }}

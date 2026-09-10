@@ -10,7 +10,8 @@ import { ProblemCanvasCards } from "@/components/canvas/problem-canvas-cards"
 
 /**
  * Read-only view of a problem rendered inside a Dialog. Used by the
- * validation sidebar's "View Problem" button. Renders the same canvas
+ * validation sidebar's "View Problem" button and the problem library's
+ * "View canvas" button. Renders the same canvas
  * cards used by the problem canvas page and validation summary so the
  * three surfaces stay in sync. The header offers a link to the
  * full-page canvas and a separate link to the edit hub.

@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { buildSolutionBundle, downloadProblemBundle } from "@/lib/problem-export"
 import { ExportBundleDialog } from "@/components/export-bundle-dialog"
+import { SolutionHubDialog } from "@/components/solution-hub/solution-hub-dialog"
 import { Button } from "@/components/ui/button"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
@@ -75,6 +76,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
   const [sortKey, setSortKey] = useState<SortKey>("index")
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc")
   const [exportSolutionId, setExportSolutionId] = useState<number | null>(null)
+  const [viewSolutionId, setViewSolutionId] = useState<number | null>(null)
 
   const runSolutionExport = (solutionId: number, includeProblem: boolean) => {
     const bundle = buildSolutionBundle(store.getState(), solutionId, { includeProblem })
@@ -296,7 +298,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                                 variant="secondary-brand"
                                 size="icon"
                                 className="h-7 w-7"
-                                onClick={() => router.push(`/solutions/${solution.id}`)}
+                                onClick={() => setViewSolutionId(solution.id)}
                                 aria-label="View solution canvas"
                               >
                                 <Eye className="h-3.5 w-3.5" />
@@ -371,6 +373,11 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
         </Table>
       </CardContent>
     </Card>
+    <SolutionHubDialog
+      open={viewSolutionId != null}
+      onOpenChange={(open) => { if (!open) setViewSolutionId(null) }}
+      solutionId={viewSolutionId}
+    />
     <ExportBundleDialog
       open={exportSolutionId != null}
       onOpenChange={(open) => { if (!open) setExportSolutionId(null) }}
