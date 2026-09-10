@@ -13,6 +13,8 @@ import { cn } from "@/lib/utils"
 import { getResearchMethod } from "@/data/researchMethods"
 import { ResearchProvider } from "@/components/research/research-context"
 import { ResearchingWithCard } from "@/components/research/researching-with-card"
+import { JourneyProgressCard } from "@/components/journey-progress"
+import { FOCUS_COLUMN_MAX_HEIGHT_CLASS } from "@/components/problem-flow-shell"
 import type { ResearchStep } from "@/store/research-sessions-model"
 import { SECTION_TITLE_ICON_CLASS, SECTION_TITLE_TILE_CLASS } from "@/lib/nav-item-styles"
 import { ResearchStepper } from "./research-stepper"
@@ -178,10 +180,14 @@ export default function ResearchLayout({ children }: { children: ReactNode }) {
   const inner = (
     <div className={cn("flex flex-1 min-h-0 w-full", isWide ? "flex-row gap-3" : "flex-col gap-3")}>
       {isWide ? (
-        <div className="w-72 shrink-0 h-full flex flex-col gap-4 min-h-0">
+        <div className={cn("w-72 shrink-0 flex flex-col gap-4 min-h-0", FOCUS_COLUMN_MAX_HEIGHT_CLASS)}>
           {backAndPanel}
           {sectionTitle}
-          {stepper}
+          {/* The stepper keeps its natural height; the column scrolls when it and the rail outgrow the viewport. */}
+          <div className="flex flex-1 min-h-0 flex-col gap-4 overflow-y-auto">
+            <div className="flex shrink-0 flex-col">{stepper}</div>
+            <JourneyProgressCard activeId="identify-problems" />
+          </div>
         </div>
       ) : (
         <>
@@ -190,6 +196,7 @@ export default function ResearchLayout({ children }: { children: ReactNode }) {
             {sectionTitle}
           </div>
           {stepper}
+          <JourneyProgressCard activeId="identify-problems" orientation="horizontal" />
         </>
       )}
       <Card className="flex flex-col flex-1 min-h-0 min-w-0 overflow-hidden">

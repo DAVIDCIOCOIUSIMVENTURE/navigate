@@ -6,11 +6,22 @@ import Link from "next/link"
 import type { RootState } from "@/store"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft } from "lucide-react"
+import { ArrowLeft, Target } from "lucide-react"
 import { ProblemCanvas } from "@/components/canvas/problem-canvas"
+import { FocusFlowHeader } from "@/components/focus-flow-header"
+import { JourneyProgressCard } from "@/components/journey-progress"
+import { FOCUS_COLUMN_MAX_HEIGHT_CLASS } from "@/components/problem-flow-shell"
 import { useContainerSize } from "@/context/container-size-context"
+import { problemJourneyStep } from "@/lib/journey-steps"
 import { cn } from "@/lib/utils"
 
+/**
+ * The per-problem canvas. A focus page like the Identify hubs: no header or
+ * sidebar, so the left column carries Back (to the library), the top-bar
+ * toggle, the title and the journey rail, with the canvas beside it. The rail
+ * highlights the problem's own next milestone (explore, validate, or find
+ * solutions) rather than a fixed step.
+ */
 export default function ProblemCanvasPage() {
   const params = useParams()
   const problemRef = params.problemRef as string
@@ -20,9 +31,12 @@ export default function ProblemCanvasPage() {
     state.problems.problems.find((p) => p.id === problemId),
   )
 
+  const header = <FocusFlowHeader title="Problem canvas" icon={Target} backHref="/problems" className={cn(isWide && "flex-wrap")} />
+
   if (!problem) {
     return (
-      <div className="flex flex-col w-full flex-1">
+      <div className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-3 px-4 py-4 sm:px-6 lg:px-8 lg:py-6">
+        {header}
         <Card className="w-full">
           <CardContent className="p-10 flex flex-col items-center gap-4 text-center">
             <p className="text-base">Problem not found.</p>
@@ -38,14 +52,40 @@ export default function ProblemCanvasPage() {
     )
   }
 
+  const journeyStep = problemJourneyStep({
+    validationStatus: problem.validationStatus,
+    jobCount:
+      problem.jobsToBeDone.functional.length +
+      problem.jobsToBeDone.emotional.length +
+      problem.jobsToBeDone.social.length,
+    existingSolutionCount: problem.existingSolutions.length,
+  })
+
   return (
-    <div
-      className={cn(
-        "flex flex-col w-full flex-1 min-h-0",
-        isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]",
-      )}
-    >
-      <ProblemCanvas problem={problem} editHref={`/problems/${problemRef}/edit`} />
+    <div className="flex flex-1 min-h-0 w-full flex-col">
+      <div
+        className={cn(
+          "mx-auto flex w-full max-w-screen-2xl flex-1 min-h-0 gap-3",
+          "px-4 py-4 sm:px-6 lg:px-8 lg:py-6",
+          isWide ? "flex-row items-stretch overflow-hidden max-h-[100svh]" : "flex-col",
+        )}
+      >
+        {isWide ? (
+          <div className={cn("flex w-72 shrink-0 flex-col gap-3 min-h-0 overflow-y-auto", FOCUS_COLUMN_MAX_HEIGHT_CLASS)}>
+            {header}
+            <JourneyProgressCard activeId={journeyStep} />
+          </div>
+        ) : (
+          <>
+            {header}
+            <JourneyProgressCard activeId={journeyStep} orientation="horizontal" />
+          </>
+        )}
+
+        <div className="flex flex-1 min-w-0 min-h-0 flex-col">
+          <ProblemCanvas problem={problem} editHref={`/problems/${problemRef}/edit`} showFullView={false} />
+        </div>
+      </div>
     </div>
   )
 }

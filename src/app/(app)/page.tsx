@@ -1,7 +1,8 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import { CardTitle } from "@/components/ui/card"
+import { AboutDialog } from "@/components/about-toggle"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -41,9 +42,20 @@ export default function DashboardPage() {
   const isWide = useContainerSize() === "wide"
 
   return (
-    <div className={cn("flex flex-col gap-3 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
+    <div
+      className={cn("flex flex-col gap-3 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}
+    >
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <CardTitle size="md" icon={Home} className="text-xl text-foreground">Home</CardTitle>
+        <div className="flex flex-wrap items-center gap-3">
+          <CardTitle size="md" icon={Home} className="text-xl text-foreground">Home</CardTitle>
+          <AboutDialog subject="the home page">
+            <p>
+              This is your <span className="font-bold">home</span>, a single view of everything you&apos;ve captured so far.
+              Switch between your <span className="font-bold">problems</span> and your <span className="font-bold">solutions</span> using the menu next to the table title,
+              then open any one to carry on refining or validating it. Use the identify buttons to add a new problem or solution.
+            </p>
+          </AboutDialog>
+        </div>
         <div className="flex flex-wrap items-center gap-2 shrink-0">
           <Button onClick={() => router.push("/problems/identify")} className="gap-2" data-tour={TOUR_TARGETS.dashboardIdentifyProblems}>
             <Plus className="h-4 w-4" />
@@ -55,16 +67,6 @@ export default function DashboardPage() {
           </Button>
         </div>
       </div>
-      <Card>
-        <CardContent className="py-4">
-          <p className="text-base leading-relaxed">
-            This is your <span className="font-bold">home</span>, a single view of everything you&apos;ve captured so far.
-            Switch between your <span className="font-bold">problems</span> and your <span className="font-bold">solutions</span> using the menu next to the table title,
-            then open any one to carry on refining or validating it. Use the identify buttons to add a new problem or solution.
-          </p>
-        </CardContent>
-      </Card>
-
       {/* Toggleable problems / solutions table */}
       <div className="flex flex-1 min-h-0 flex-col">
         {(() => {
@@ -121,7 +123,6 @@ export default function DashboardPage() {
           )
         })()}
       </div>
-
     </div>
   )
 }

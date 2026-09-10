@@ -120,6 +120,9 @@ export default function IdentifyProblemsPage() {
         title="Identify a Problem"
         icon={Target}
         backHref="/problems"
+        aboutTitle="About identifying a problem"
+        description="Pick the tool that suits how you want to find a problem. Whichever you choose, the problem lands in your library, ready to explore and validate."
+        journeyStep="identify-problems"
         intro={
           <p className="text-base leading-relaxed">
             Every problem in your library starts here. Each tool is a different doorway to the same goal: a problem that&apos;s real, painful, and worth solving. We suggest starting with <span className="font-semibold">Reflect</span> to ground a problem in your own experience, then returning to the <span className="font-semibold">Canvas Builder</span> or <span className="font-semibold">Research</span> to explore more broadly or gather outside evidence. If you already know what you want to explore, <span className="font-semibold">Define a Problem Statement</span> captures it straight away. Whichever tool you choose, the problem lands in your library, ready to refine and validate.

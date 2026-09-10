@@ -26,7 +26,16 @@ import { ExportBundleDialog } from "@/components/export-bundle-dialog"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { ProblemCanvasCards } from "./problem-canvas-cards"
 
-export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHref: string }) {
+export function ProblemCanvas({
+  problem,
+  editHref,
+  showFullView = true,
+}: {
+  problem: Problem
+  editHref: string
+  /** Hide the Full View toggle where the page already renders without the app chrome. */
+  showFullView?: boolean
+}) {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const store = useStore<RootState>()
@@ -72,19 +81,21 @@ export function ProblemCanvas({ problem, editHref }: { problem: Problem; editHre
 
   const actions = (
     <>
-      <Button
-        variant="outline"
-        size="sm"
-        className="bg-white"
-        onClick={() => dispatch.settings.setFullView(!fullView)}
-      >
-        {fullView ? (
-          <Minimize2 className="h-3.5 w-3.5 mr-1.5" />
-        ) : (
-          <Maximize2 className="h-3.5 w-3.5 mr-1.5" />
-        )}
-        {fullView ? "Exit Full View" : "Full View"}
-      </Button>
+      {showFullView && (
+        <Button
+          variant="outline"
+          size="sm"
+          className="bg-white"
+          onClick={() => dispatch.settings.setFullView(!fullView)}
+        >
+          {fullView ? (
+            <Minimize2 className="h-3.5 w-3.5 mr-1.5" />
+          ) : (
+            <Maximize2 className="h-3.5 w-3.5 mr-1.5" />
+          )}
+          {fullView ? "Exit Full View" : "Full View"}
+        </Button>
+      )}
       <Button variant="outline" size="sm" className="bg-white" onClick={handleDownload} title="Download as text">
         <Download className="h-3.5 w-3.5 mr-1.5" />
         Download

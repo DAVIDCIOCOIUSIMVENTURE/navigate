@@ -6,30 +6,34 @@ import { ArrowLeft, PanelTop, type LucideIcon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useFocusChrome } from "@/context/focus-chrome-context"
 import { SECTION_TITLE_ICON_CLASS, SECTION_TITLE_TILE_CLASS } from "@/lib/nav-item-styles"
+import { cn } from "@/lib/utils"
 
 /**
  * Header row for a focus page that has no stepper rail (the Identify hubs and
  * the Canvas Builder). It supplies what the hidden app chrome would otherwise
  * provide: the Back button, the top-bar toggle and the tile section title.
- * Extra actions passed as children sit after the title.
+ * Extra actions passed as children sit after the title. Pass `flex-wrap` in
+ * `className` when the header sits in a narrow column and must stack.
  */
 export function FocusFlowHeader({
   title,
   icon: Icon,
   backHref,
+  className,
   children,
 }: {
   title: string
   icon: LucideIcon
   /** Where the Back button returns to. */
   backHref: string
+  className?: string
   children?: ReactNode
 }) {
   const router = useRouter()
   const { revealTopNav } = useFocusChrome()
 
   return (
-    <div className="flex items-center gap-3 shrink-0">
+    <div className={cn("flex items-center gap-3 shrink-0", className)}>
       <div className="flex items-center gap-2 shrink-0">
         <Button variant="tertiary-outline" onClick={() => router.push(backHref)} className="gap-2">
           <ArrowLeft className="h-4 w-4" />

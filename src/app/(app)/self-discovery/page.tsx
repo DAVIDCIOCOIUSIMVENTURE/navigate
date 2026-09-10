@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import { AboutDialog } from "@/components/about-toggle"
 import {
   ArrowRight,
   Compass,
@@ -121,30 +122,34 @@ export default function SelfDiscoveryPage() {
   }
 
   return (
-    <div className={cn("flex flex-col gap-3 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}>
+    <div
+      className={cn("flex flex-col gap-3 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}
+    >
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <CardTitle size="md" icon={Compass} className="text-xl text-foreground">Self Discovery</CardTitle>
-        <Button onClick={() => router.push(FLOW_BASE)} className="gap-2 shrink-0">
-          <ArrowRight className="h-4 w-4" />
-          {totalItems > 0 ? "Continue Self Discovery" : "Start Self Discovery"}
-        </Button>
-      </div>
-      <Card>
-        <CardContent className="flex flex-wrap items-center gap-6 py-4">
-          <p className="flex-1 min-w-[16rem] text-base leading-relaxed">
-            This is your <span className="font-bold">self discovery library</span>, a place to capture what you bring to a venture: your strengths, interests, and lived experiences. Use the journey to add insights, then bring them into the Problems section as triggers.
-          </p>
+        <div className="flex flex-wrap items-center gap-3">
+          <CardTitle size="md" icon={Compass} className="text-xl text-foreground">Self Discovery</CardTitle>
+          <AboutDialog subject="Self Discovery">
+            <p>
+              This is your <span className="font-bold">self discovery library</span>, a place to capture what you bring to a venture: your strengths, interests, and lived experiences. Use the journey to add insights, then bring them into the Problems section as triggers.
+            </p>
+          </AboutDialog>
+        </div>
+        <div className="flex flex-wrap items-center gap-4 shrink-0">
           <ProgressRing
             label="Progress"
             labelPosition="left"
             completed={mounted ? progress.completed : 0}
             total={progress.total}
-            size={56}
+            size={48}
+            strokeWidth={5}
             className="shrink-0"
           />
-        </CardContent>
-      </Card>
-
+          <Button onClick={() => router.push(FLOW_BASE)} className="gap-2 shrink-0">
+            <ArrowRight className="h-4 w-4" />
+            {totalItems > 0 ? "Continue Self Discovery" : "Start Self Discovery"}
+          </Button>
+        </div>
+      </div>
       {!mounted || totalItems === 0 ? (
         <div className="flex-1 flex flex-col items-center justify-center gap-6 py-24">
           <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-secondary-brand">

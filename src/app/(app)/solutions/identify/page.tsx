@@ -48,6 +48,9 @@ export default function IdentifySolutionsPage() {
       title="Identify Solutions"
       icon={Lightbulb}
       backHref="/solutions"
+      aboutTitle="About identifying solutions"
+      description="Pick the tool that suits how you want to find a solution. Whichever you choose, the solution lands in your library, ready to validate."
+      journeyStep="identify-solutions"
       intro={
         <>
           <p className="text-base leading-relaxed">

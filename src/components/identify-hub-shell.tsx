@@ -1,78 +1,97 @@
 "use client"
 
-import { useState, type ReactNode } from "react"
-import { ChevronDown, Info, type LucideIcon } from "lucide-react"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import type { ReactNode } from "react"
+import type { LucideIcon } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
+import { AboutDialog } from "@/components/about-toggle"
 import { FocusFlowHeader } from "@/components/focus-flow-header"
+import { JourneyProgressCard } from "@/components/journey-progress"
 import { useContainerSize } from "@/context/container-size-context"
+import type { JourneyStepId } from "@/lib/journey-steps"
 import { cn } from "@/lib/utils"
 
 /**
  * Shell for the Identify hubs (problems and solutions). Both render as focus
  * flows, like Reflect, so the header and sidebar are hidden and this shell
  * supplies what they would otherwise provide: a Back button, the top-bar
- * toggle and the section title. The introductory copy stays hidden until the
- * user presses the About toggle beside the title. On wide containers the card
- * is fitted to the viewport and only its content scrolls; on narrow the page
- * scrolls naturally.
+ * toggle and the section title. The introductory copy opens in a dialog from
+ * the About button beside the title; a one-line `description` sits at the top
+ * of the card to say what to do. On wide containers the card is fitted to the
+ * viewport and only its content scrolls; on narrow the page scrolls naturally.
+ *
+ * When `journeyStep` is given, wide containers get a left column holding the
+ * header (Back, top-bar toggle, title, About) stacked above the journey
+ * progress rail, with the content card beside it. Narrow containers keep the
+ * header on top and show the rail as a compact row above the card.
  */
 export function IdentifyHubShell({
   title,
   icon,
   backHref,
   intro,
+  aboutTitle,
+  description,
+  journeyStep,
   children,
 }: {
   title: string
   icon: LucideIcon
   /** Where the Back button returns to (the matching library page). */
   backHref: string
-  /** Introductory copy revealed at the top of the card by the About toggle beside the title. */
+  /** Introductory copy shown in the About dialog. */
   intro: ReactNode
+  /** Heading of the About dialog. Defaults to "About <title>". */
+  aboutTitle?: string
+  /** Short instruction shown at the top of the card, above the tool list. */
+  description?: ReactNode
+  /** The journey milestone this hub belongs to; shows the progress rail when set. */
+  journeyStep?: JourneyStepId
   children: ReactNode
 }) {
   const isWide = useContainerSize() === "wide"
-  const [introOpen, setIntroOpen] = useState(false)
+  const sideColumn = journeyStep !== undefined && isWide
+
+  const header = (
+    <FocusFlowHeader title={title} icon={icon} backHref={backHref} className={cn(sideColumn && "flex-wrap")}>
+      <AboutDialog subject={title} title={aboutTitle}>
+        {intro}
+      </AboutDialog>
+    </FocusFlowHeader>
+  )
+
+  const content = (
+    <Card className={cn("flex w-full min-w-0 flex-col", isWide ? "flex-1 min-h-0 overflow-hidden" : "min-h-[320px]")}>
+      <CardContent className={cn("flex flex-col gap-3 pt-6", isWide && "flex-1 min-h-0 overflow-y-auto")}>
+        {description && <p className="text-base leading-relaxed">{description}</p>}
+        {children}
+      </CardContent>
+    </Card>
+  )
 
   return (
-    <Collapsible
-      open={introOpen}
-      onOpenChange={setIntroOpen}
-      className="flex flex-1 min-h-0 w-full flex-col"
-    >
+    <div className="flex flex-1 min-h-0 w-full flex-col">
       <div
         className={cn(
-          "mx-auto flex w-full max-w-screen-2xl flex-1 min-h-0 flex-col gap-3",
+          "mx-auto flex w-full max-w-screen-2xl flex-1 min-h-0 gap-3",
           "px-4 py-4 sm:px-6 lg:px-8 lg:py-6",
+          sideColumn ? "flex-row items-stretch" : "flex-col",
           isWide && "overflow-hidden max-h-[100svh]",
         )}
       >
-        <FocusFlowHeader title={title} icon={icon} backHref={backHref}>
-          <CollapsibleTrigger asChild>
-            <Button variant="outline" className="gap-2 bg-white shrink-0" aria-label={`About ${title}`}>
-              <Info className="h-4 w-4" aria-hidden="true" />
-              About
-              <ChevronDown
-                className={cn("h-4 w-4 transition-transform", introOpen && "rotate-180")}
-                aria-hidden="true"
-              />
-            </Button>
-          </CollapsibleTrigger>
-        </FocusFlowHeader>
+        {sideColumn ? (
+          <div className="flex w-72 shrink-0 flex-col gap-3 min-h-0 overflow-y-auto">
+            {header}
+            <JourneyProgressCard activeId={journeyStep} />
+          </div>
+        ) : (
+          <>
+            {header}
+            {journeyStep && <JourneyProgressCard activeId={journeyStep} orientation="horizontal" />}
+          </>
+        )}
 
-        <Card className={cn("flex w-full flex-col", isWide ? "flex-1 min-h-0 overflow-hidden" : "min-h-[320px]")}>
-          <CollapsibleContent asChild>
-            <CardHeader className="space-y-3">{intro}</CardHeader>
-          </CollapsibleContent>
-          <CardContent
-            className={cn("flex flex-col gap-3", !introOpen && "pt-6", isWide && "flex-1 min-h-0 overflow-y-auto")}
-          >
-            {children}
-          </CardContent>
-        </Card>
+        {content}
       </div>
-    </Collapsible>
+    </div>
   )
 }
