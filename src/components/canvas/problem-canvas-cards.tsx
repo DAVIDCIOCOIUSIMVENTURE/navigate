@@ -25,6 +25,8 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 import {
+  CANVAS_DIVIDER,
+  CANVAS_ICON_BG,
   Cell,
   CELL_TONE_CLASSES,
   MetricRow,
@@ -33,11 +35,6 @@ import {
   STATUS_CONFIG,
   type CellTone,
 } from "./canvas-shared"
-
-/** Mustard tile behind every icon on the problem canvas cards. */
-const CANVAS_ICON_BG = "bg-yellow-600"
-/** Matching mustard rule under each card header on cream cards. Brand cards use white. */
-const CANVAS_DIVIDER = "border-yellow-600"
 
 /**
  * A canvas card that starts collapsed and shows a count in its header.

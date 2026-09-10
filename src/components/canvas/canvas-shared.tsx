@@ -61,6 +61,11 @@ export function StatusPill({
  */
 export type CellTone = "card" | "brand"
 
+/** Mustard tile behind every icon on the problem and solution canvas cards. */
+export const CANVAS_ICON_BG = "bg-yellow-600"
+/** Matching mustard rule under each card header on cream cards. Brand cards use white. */
+export const CANVAS_DIVIDER = "border-yellow-600"
+
 export const CELL_TONE_CLASSES: Record<CellTone, string> = {
   card: "border bg-card shadow-sm",
   brand: "border border-secondary-brand bg-secondary-brand text-white shadow-sm",
@@ -151,6 +156,7 @@ export function ScoreCell({
   icon,
   label,
   iconBg,
+  divider,
   score,
   scaleNote,
   className,
@@ -158,13 +164,15 @@ export function ScoreCell({
   icon: LucideIcon
   label: string
   iconBg: string
+  /** Border colour class for a rule under the header. Omit for no rule. */
+  divider?: string
   score: number | null
   scaleNote: string
   className?: string
 }) {
   const filled = score ?? 0
   return (
-    <Cell icon={icon} label={label} iconBg={iconBg} className={className} empty={score == null}>
+    <Cell icon={icon} label={label} iconBg={iconBg} divider={divider} className={className} empty={score == null}>
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-1">
           {[1, 2, 3, 4, 5].map((n) => (

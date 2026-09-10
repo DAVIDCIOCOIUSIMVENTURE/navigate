@@ -71,10 +71,14 @@ export function AboutDialog({
       </DialogTrigger>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="text-xl">{title ?? `About ${subject}`}</DialogTitle>
+          <DialogTitle className="text-xl font-bold">{title ?? `About ${subject}`}</DialogTitle>
         </DialogHeader>
-        <DialogDescription asChild>
-          <div className="flex flex-col gap-3 text-base leading-relaxed text-foreground">{children}</div>
+        {/*
+          The classes go on DialogDescription rather than the div so tw-merge
+          replaces its muted text-sm defaults instead of concatenating them.
+        */}
+        <DialogDescription asChild className="flex flex-col gap-3 text-base leading-relaxed text-foreground">
+          <div>{children}</div>
         </DialogDescription>
       </DialogContent>
     </Dialog>

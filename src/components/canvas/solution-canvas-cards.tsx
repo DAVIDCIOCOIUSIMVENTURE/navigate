@@ -13,14 +13,22 @@ import {
   FileText,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { Cell, Placeholder, ScoreCell, StatusPill } from "./canvas-shared"
+import {
+  CANVAS_DIVIDER,
+  CANVAS_ICON_BG,
+  Cell,
+  Placeholder,
+  ScoreCell,
+  StatusPill,
+} from "./canvas-shared"
 
 /**
  * Visual card grid for a Solution: header (title + status pill + optional
  * actions), description, linked-problem, inspiration, and four scoring
  * cards. Used by the solution canvas page, the solution validation
  * summary, and the "View Solution" dialog so the read-only view is
- * identical everywhere.
+ * identical everywhere. Every card carries the same mustard icon tile and
+ * header rule as the problem canvas so the two canvases read as one family.
  *
  * `fill` switches on the canvas-page layout: the grid stretches to fill
  * the available height and cards scroll internally. Without it, the grid
@@ -71,7 +79,8 @@ export function SolutionCanvasCards({
         <Cell
           icon={FileText}
           label="Description"
-          iconBg="bg-tertiary"
+          iconBg={CANVAS_ICON_BG}
+          divider={CANVAS_DIVIDER}
           className="sm:col-span-12 lg:col-span-6 lg:row-span-2"
           empty={!solution.description}
         >
@@ -85,7 +94,8 @@ export function SolutionCanvasCards({
         <Cell
           icon={Target}
           label="Linked problem"
-          iconBg="bg-tertiary"
+          iconBg={CANVAS_ICON_BG}
+          divider={CANVAS_DIVIDER}
           className="sm:col-span-6"
           empty={!linkedProblem}
         >
@@ -104,7 +114,8 @@ export function SolutionCanvasCards({
         <Cell
           icon={Sparkles}
           label="Inspiration"
-          iconBg="bg-tertiary"
+          iconBg={CANVAS_ICON_BG}
+          divider={CANVAS_DIVIDER}
           className="sm:col-span-6"
           empty={!solution.inspirationSource && !solution.inspirationDetail}
         >
@@ -123,7 +134,8 @@ export function SolutionCanvasCards({
         <ScoreCell
           icon={Wrench}
           label="Feasibility"
-          iconBg="bg-secondary-brand"
+          iconBg={CANVAS_ICON_BG}
+          divider={CANVAS_DIVIDER}
           score={solution.feasibility}
           scaleNote="(1 hard, 5 easy)"
           className="sm:col-span-6 lg:col-span-3"
@@ -131,7 +143,8 @@ export function SolutionCanvasCards({
         <ScoreCell
           icon={TrendingUp}
           label="Impact"
-          iconBg="bg-secondary-brand"
+          iconBg={CANVAS_ICON_BG}
+          divider={CANVAS_DIVIDER}
           score={solution.impact}
           scaleNote="(1 low, 5 high)"
           className="sm:col-span-6 lg:col-span-3"
@@ -139,7 +152,8 @@ export function SolutionCanvasCards({
         <ScoreCell
           icon={Coins}
           label="Cost"
-          iconBg="bg-secondary-brand"
+          iconBg={CANVAS_ICON_BG}
+          divider={CANVAS_DIVIDER}
           score={solution.cost}
           scaleNote="(1 cheap, 5 expensive)"
           className="sm:col-span-6 lg:col-span-3"
@@ -147,7 +161,8 @@ export function SolutionCanvasCards({
         <ScoreCell
           icon={Hourglass}
           label="Time to implement"
-          iconBg="bg-secondary-brand"
+          iconBg={CANVAS_ICON_BG}
+          divider={CANVAS_DIVIDER}
           score={solution.timeToImplement}
           scaleNote="(1 fast, 5 slow)"
           className="sm:col-span-6 lg:col-span-3"

@@ -34,7 +34,7 @@ export function ProblemHubDialog({
       <DialogContent className="flex max-h-[90vh] flex-col sm:max-w-5xl">
         <DialogHeader className="shrink-0">
           <div className="flex items-center gap-4 pr-8">
-            <DialogTitle>Problem canvas</DialogTitle>
+            <DialogTitle className="text-xl font-bold">Problem canvas</DialogTitle>
             {problemRef && (
               <div className="ml-auto flex items-center gap-2">
                 <Button variant="outline" className="bg-white" asChild>
@@ -58,7 +58,7 @@ export function ProblemHubDialog({
         </DialogHeader>
         {problem && (
           <div className="-mx-6 -mb-6 flex-1 min-h-0 overflow-y-auto px-6 pb-6">
-            <ProblemCanvasCards problem={problem} tone="brand" />
+            <ProblemCanvasCards problem={problem} />
           </div>
         )}
       </DialogContent>
