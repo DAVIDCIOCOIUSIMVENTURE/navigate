@@ -617,7 +617,7 @@ export function ReviewPanel({
         {hasCandidate ? (
           <>
             Your research will be saved as <span className="font-semibold">one problem</span> in your
-            problem library. Click any heading to jump back to that step.
+            problems. Click any heading to jump back to that step.
           </>
         ) : (
           <>Add a product name and at least one unmet need to save it as a problem.</>
@@ -766,8 +766,8 @@ export function ReviewPanel({
           <DialogHeader>
             <DialogTitle>Save problem</DialogTitle>
             <DialogDescription>
-              Describe the problem in a sentence or two. You can refine it later in the problem
-              library.
+              Describe the problem in a sentence or two. You can refine it later from the Problems
+              page.
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-4 py-2">

@@ -160,7 +160,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
         <div className="flex items-center justify-between gap-3 flex-wrap">
           {headerLead ?? (
             <CardTitle size="md" className="text-foreground">
-              {title ?? "Solution library"} ({sortedSolutions.length}
+              {title ?? "Solutions"} ({sortedSolutions.length}
               {sortedSolutions.length !== solutions.length ? ` of ${solutions.length}` : ""})
             </CardTitle>
           )}

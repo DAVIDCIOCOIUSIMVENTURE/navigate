@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils"
 
 /**
  * The per-problem canvas. A focus page like the Identify hubs: no header or
- * sidebar, so the left column carries Back (to the library), the top-bar
+ * sidebar, so the left column carries Back (to Problems), the top-bar
  * toggle, the title and the journey rail, with the canvas beside it. The rail
  * highlights the problem's own next milestone (explore, validate, or find
  * solutions) rather than a fixed step.

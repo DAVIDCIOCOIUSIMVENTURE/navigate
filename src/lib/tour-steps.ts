@@ -107,7 +107,7 @@ export const TOUR_TARGETS = {
   problemsLibrary: "problems-library",
   canvasExplore: "canvas-explore",
   canvasValidate: "canvas-validate",
-  /** The "Identify solutions" button on the solution library; it opens Identify Solutions directly. */
+  /** The "Identify solutions" button on the Solutions page; it opens Identify Solutions directly. */
   solutionsIdentify: "solutions-identify",
   /** A problem card on the Identify Solutions "Select a Problem" step. */
   discoverProblem: (problemId: number) => `discover-problem-${problemId}`,
@@ -196,9 +196,9 @@ export const TOUR_STEPS: TourStep[] = [
   },
   {
     id: "sidebar-problems",
-    title: "Problem library",
+    title: "Problems",
     body: [
-      "Every problem you identify lands here. From the library you can open a problem, explore it in depth and validate whether it is real and painful enough to commit to.",
+      "Every problem you identify lands here. From this page you can open a problem, explore it in depth and validate whether it is real and painful enough to commit to.",
     ],
     target: TOUR_TARGETS.sidebarItem("/problems"),
     placement: "right",
@@ -207,9 +207,9 @@ export const TOUR_STEPS: TourStep[] = [
   },
   {
     id: "sidebar-solutions",
-    title: "Solution library",
+    title: "Solutions",
     body: [
-      "Solutions answer a validated problem. This library collects your candidates and lets you score each one on feasibility, impact, cost and time to implement.",
+      "Solutions answer a validated problem. This page collects your candidates and lets you score each one on feasibility, impact, cost and time to implement.",
     ],
     target: TOUR_TARGETS.sidebarItem("/solutions"),
     placement: "right",
@@ -409,7 +409,7 @@ export const TOUR_STEPS: TourStep[] = [
     mode: "act",
     title: "Discover a solution",
     body: [
-      "Pick a method such as analogy or SCAMPER, work through its prompts and save at least one candidate. Each one lands in your solution library.",
+      "Pick a method such as analogy or SCAMPER, work through its prompts and save at least one candidate. Each one lands in your solutions.",
       "When a candidate is saved, press Next.",
     ],
     route: "/solutions/identify/pick-method",
@@ -444,7 +444,7 @@ export const TOUR_STEPS: TourStep[] = [
     variant: "finish",
     title: "You are ready to go",
     body: [
-      "That is the end of the tour. Your problem and solution are in their libraries, ready to refine further. The guidance panel in the top bar explains every step in more detail, and you can run this tour again at any time from Settings.",
+      "That is the end of the tour. Your problem and solution are saved in Problems and Solutions, ready to refine further. The guidance panel in the top bar explains every step in more detail, and you can run this tour again at any time from Settings.",
     ],
     route: "/",
   },

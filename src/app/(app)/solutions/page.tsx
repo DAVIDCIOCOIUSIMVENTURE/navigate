@@ -31,11 +31,11 @@ export default function SolutionsPage() {
     >
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-3">
-          <CardTitle size="md" icon={Lightbulb} className="text-xl text-foreground">Solution library</CardTitle>
-          <AboutDialog subject="the solution library">
+          <CardTitle size="md" icon={Lightbulb} className="text-xl text-foreground">Solutions</CardTitle>
+          <AboutDialog subject="solutions">
             <p>
-              This is your <span className="font-bold">solution library</span>, a central place to collect, refine, and track the solutions you&apos;ve identified.
-              The workflow has three steps. <span className="font-bold">Pick a problem</span> from your validated library to anchor the work.
+              This is your <span className="font-bold">solutions</span> page, a central place to collect, refine, and track the solutions you&apos;ve identified.
+              The workflow has three steps. <span className="font-bold">Pick a problem</span> from your validated problems to anchor the work.
               Then <span className="font-bold">discover candidates</span> using guided tools (analogy, SCAMPER, reverse ideation, root-cause attacks) instead of jumping to the first idea.
               Finally, <span className="font-bold">validate</span> each candidate by scoring it on feasibility, impact, cost, and time to implement, so you can decide which one is worth pursuing.
             </p>

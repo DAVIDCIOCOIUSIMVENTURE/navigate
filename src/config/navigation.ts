@@ -30,12 +30,12 @@ export const navigationItems = {
       icon: Compass
     },
     {
-      title: "Problem library",
+      title: "Problems",
       url: "/problems",
       icon: Target
     },
     {
-      title: "Solution library",
+      title: "Solutions",
       url: "/solutions",
       icon: Lightbulb
     },

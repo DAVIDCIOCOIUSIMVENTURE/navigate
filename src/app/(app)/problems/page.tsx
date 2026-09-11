@@ -30,10 +30,10 @@ export default function ProblemsPage() {
     >
       <div className="flex flex-wrap items-center justify-between gap-4" data-tour={TOUR_TARGETS.problemsLibrary}>
         <div className="flex flex-wrap items-center gap-3">
-          <CardTitle size="md" icon={Target} className="text-xl text-foreground">Problem library</CardTitle>
-          <AboutDialog subject="the problem library">
+          <CardTitle size="md" icon={Target} className="text-xl text-foreground">Problems</CardTitle>
+          <AboutDialog subject="problems">
             <p>
-              This is your <span className="font-bold">problem library</span>, a central place to collect, refine, and track the problems you&apos;ve identified.
+              This is your <span className="font-bold">problems</span> page, a central place to collect, refine, and track the problems you&apos;ve identified.
               The workflow has two steps. First, <span className="font-bold">identify</span> problems worth solving by combining customer segments, contexts, and types of pain with what you&apos;ve learned about yourself.
               Then <span className="font-bold">validate</span> each one by refining who feels it, when it shows up, why it matters, and how today&apos;s alternatives fall short, so you can decide whether it&apos;s real and painful enough to commit to.
             </p>

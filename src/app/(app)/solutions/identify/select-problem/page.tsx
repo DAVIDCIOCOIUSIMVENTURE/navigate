@@ -36,7 +36,7 @@ export default function SelectProblemPage() {
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <p className="text-base leading-relaxed">
-          Identifying solutions helps you move from a validated problem to concrete solution candidates. You&apos;ll pick a problem, then use creative techniques to generate ideas. Each candidate you capture is added to your Solution Library, where you can validate it later.
+          Identifying solutions helps you move from a validated problem to concrete solution candidates. You&apos;ll pick a problem, then use creative techniques to generate ideas. Each candidate you capture is added to your Solutions, where you can validate it later.
         </p>
 
         <p className="text-base leading-relaxed">

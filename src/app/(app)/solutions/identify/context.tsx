@@ -59,7 +59,7 @@ type IdentifySolutionsContextValue = {
   setImprovementResponses: (val: ImprovementResponses) => void
   scamperIdeas: ScamperIdeasMap
   setScamperIdeas: (val: ScamperIdeasMap) => void
-  // Solution library entries scoped to this workspace
+  // Solutions scoped to this workspace
   candidates: Solution[]
   addCandidate: (
     input: { title: string; inspirationSource: InspirationSource; inspirationDetail: string } & CandidateExtras

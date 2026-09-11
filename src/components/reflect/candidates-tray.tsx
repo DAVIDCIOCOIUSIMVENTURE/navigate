@@ -284,7 +284,7 @@ export function CandidatesTray() {
         </div>
         <p className="text-base leading-relaxed">
           Answers you save in a lens land here. Review them, then promote the ones worth
-          refining into your problem library.
+          refining into your problems.
         </p>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">

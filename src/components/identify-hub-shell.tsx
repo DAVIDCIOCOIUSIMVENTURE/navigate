@@ -36,7 +36,7 @@ export function IdentifyHubShell({
 }: {
   title: string
   icon: LucideIcon
-  /** Where the Back button returns to (the matching library page). */
+  /** Where the Back button returns to (the Problems or Solutions page). */
   backHref: string
   /** Introductory copy shown in the About dialog. */
   intro: ReactNode

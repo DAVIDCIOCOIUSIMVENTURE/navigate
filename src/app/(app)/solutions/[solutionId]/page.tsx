@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils"
 
 /**
  * The per-solution canvas. A focus page like the problem canvas: no header or
- * sidebar, so the left column carries Back (to the library), the top-bar
+ * sidebar, so the left column carries Back (to Solutions), the top-bar
  * toggle, the title and the journey rail, with the canvas beside it. A
  * solution on its canvas has been identified and is on its way to validation,
  * so the rail sits on "Validate solutions".

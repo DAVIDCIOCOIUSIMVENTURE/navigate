@@ -64,7 +64,7 @@ function getRolePromptId(lens: Lens, role: "problems" | "customers"): string | n
 const PICK_GUIDANCE = {
   title: "Pick a method",
   description:
-    "Each method is a different angle on where problems come from. Pick one to run through guided prompts and turn your answers into a problem in your problem library.",
+    "Each method is a different angle on where problems come from. Pick one to run through guided prompts and turn your answers into a problem in your problems.",
   tips: [] as string[],
 }
 
@@ -573,7 +573,7 @@ export function ReviewPanel({
         {hasCandidate ? (
           <>
             Your answers will be saved as <span className="font-semibold">one problem</span> in your
-            problem library. Click any heading below to jump back to that step.
+            problems. Click any heading below to jump back to that step.
           </>
         ) : (
           <>
@@ -743,8 +743,8 @@ export function ReviewPanel({
           <DialogHeader>
             <DialogTitle>Save problem</DialogTitle>
             <DialogDescription>
-              Describe the problem in a sentence or two. You can refine it later in the problem
-              library.
+              Describe the problem in a sentence or two. You can refine it later from the Problems
+              page.
             </DialogDescription>
           </DialogHeader>
           <div className="flex flex-col gap-4 py-2">

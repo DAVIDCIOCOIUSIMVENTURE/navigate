@@ -10,7 +10,7 @@ import { SolutionCanvasCards } from "@/components/canvas/solution-canvas-cards"
 
 /**
  * Read-only view of a solution rendered inside a Dialog. Used by the
- * validation sidebar's "View Solution" button and the library tables'
+ * validation sidebar's "View Solution" button and the Solutions tables'
  * "View canvas" buttons. Renders the same canvas
  * cards used by the solution canvas page and validation summary so the
  * three surfaces stay in sync. The header offers a link to the
