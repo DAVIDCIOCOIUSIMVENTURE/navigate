@@ -13,6 +13,7 @@ import {
   FileText,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { TrafficLightPill } from "@/components/traffic-light"
 import {
   CANVAS_DIVIDER,
   CANVAS_ICON_BG,
@@ -60,6 +61,7 @@ export function SolutionCanvasCards({
           </div>
         </div>
         <div className="flex items-center gap-2 shrink-0">
+          <TrafficLightPill light={solution.trafficLight} />
           <StatusPill status={status} />
           {actions && (
             <div className="flex items-center gap-2" data-canvas-no-print>

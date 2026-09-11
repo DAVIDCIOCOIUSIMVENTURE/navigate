@@ -1,8 +1,16 @@
 "use client"
 
 import Link from "next/link"
+import { useSelector } from "react-redux"
+import type { RootState } from "@/store"
 import { Card, CardContent } from "@/components/ui/card"
-import { computeJourneySteps, type JourneyStep, type JourneyStepId } from "@/lib/journey-steps"
+import {
+  completedJourneySteps,
+  computeJourneySteps,
+  summariseProblemJourney,
+  type JourneyStep,
+  type JourneyStepId,
+} from "@/lib/journey-steps"
 import { cn } from "@/lib/utils"
 
 /**
@@ -12,28 +20,35 @@ import { cn } from "@/lib/utils"
  */
 export function JourneyProgressCard({
   activeId,
+  problemId,
   orientation = "vertical",
   className,
 }: {
   activeId: JourneyStepId | null
+  /** The problem the page is about, when there is one; drives which steps show as done. */
+  problemId?: number | null
   orientation?: "vertical" | "horizontal"
   className?: string
 }) {
   return (
     <Card className={cn("shrink-0", className)}>
       <CardContent className={orientation === "vertical" ? "p-5" : "p-4"}>
-        <JourneyProgress activeId={activeId} orientation={orientation} />
+        <JourneyProgress activeId={activeId} problemId={problemId} orientation={orientation} />
       </CardContent>
     </Card>
   )
 }
 
 /**
- * The user's position in the innovation journey: Self Discovery,
- * identify / explore / validate problems, identify / validate solutions.
- * Status is positional: the steps before the page's own step are done (muted
- * primary), that step is highlighted (solid primary), and the steps after it
- * are grey because nothing there has been touched yet.
+ * The user's position in the innovation journey: identify / explore /
+ * validate problems, identify / validate solutions. The page's own step is
+ * always highlighted (solid primary). When the page is about one problem
+ * (`problemId`), every other step reflects that problem's real progress: done
+ * (muted primary) only once the work behind it exists, grey otherwise, so a
+ * problem with no solutions yet shows both solution steps grey while a
+ * problem with a validated solution lights up the whole rail. Without a
+ * problem, the steps before the page's own count as done and the rest are
+ * grey.
  *
  * `vertical` (the default) is a rail with the label beside each circle, for
  * a left column on wide containers. `horizontal` is a compact row of circles
@@ -45,18 +60,26 @@ export function JourneyProgressCard({
  */
 export function JourneyProgress({
   activeId,
+  problemId = null,
   orientation = "vertical",
   heading = "Your journey",
   className,
 }: {
   /** The milestone the current page belongs to, or null to show every step as upcoming. */
   activeId: JourneyStepId | null
+  /** The problem the page is about, when there is one; drives which steps show as done. */
+  problemId?: number | null
   orientation?: "vertical" | "horizontal"
   /** Accessible name for the rail (not rendered visually). */
   heading?: string
   className?: string
 }) {
-  const steps = computeJourneySteps(activeId)
+  const problem = useSelector((state: RootState) =>
+    problemId === null ? undefined : state.problems.problems.find((p) => p.id === problemId),
+  )
+  const solutions = useSelector((state: RootState) => state.solutions.solutions)
+  const completed = problem ? completedJourneySteps(summariseProblemJourney(problem, solutions)) : undefined
+  const steps = computeJourneySteps(activeId, completed)
 
   if (orientation === "horizontal") {
     return (

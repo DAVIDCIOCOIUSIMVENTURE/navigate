@@ -73,6 +73,7 @@ export function FlowShell({
   navItems,
   navIcons,
   journeyStep,
+  journeyProblemId,
   context,
   menuActions = [],
   children,
@@ -87,7 +88,10 @@ export function FlowShell({
   base: string
   navItems: readonly FlowNavItem[]
   navIcons: Record<string, LucideIcon>
-  journeyStep: JourneyStepId
+  /** The journey milestone the flow belongs to; omit to render no rail (Compare solutions). */
+  journeyStep?: JourneyStepId
+  /** The problem the flow is about; the journey rail shows its real progress. */
+  journeyProblemId?: number | null
   context?: ReactNode
   menuActions?: readonly FlowMenuAction[]
   children: ReactNode
@@ -254,7 +258,7 @@ export function FlowShell({
                   </CardContent>
                 </Card>
               </nav>
-              <JourneyProgressCard activeId={journeyStep} />
+              {journeyStep && <JourneyProgressCard activeId={journeyStep} problemId={journeyProblemId} />}
             </div>
           </div>
         ) : (
@@ -264,7 +268,9 @@ export function FlowShell({
               {sectionTitle}
             </div>
             {mobileNav}
-            <JourneyProgressCard activeId={journeyStep} orientation="horizontal" />
+            {journeyStep && (
+              <JourneyProgressCard activeId={journeyStep} problemId={journeyProblemId} orientation="horizontal" />
+            )}
           </>
         )}
 

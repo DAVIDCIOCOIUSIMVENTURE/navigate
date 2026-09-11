@@ -51,14 +51,18 @@ import {
 import type { Solution } from "@/store/solutions-model"
 import { cn } from "@/lib/utils"
 import { TABLE_STATUS_META, STATUS_FILTER_OPTIONS, STATUS_ORDER } from "@/lib/status-table"
+import { trafficLightRank } from "@/lib/solution-comparison"
+import { TrafficLightLabel } from "@/components/traffic-light"
 import type { ValidationStatus } from "@/types/validation"
 
-type SortKey = "index" | "title" | "problem" | "status"
+type SortKey = "index" | "title" | "problem" | "status" | "score"
 type SortDirection = "asc" | "desc"
 
 interface SolutionsTableProps {
   solutions: Solution[]
   showStatus?: boolean
+  /** Show the traffic light from Compare solutions as a sortable column. */
+  showScore?: boolean
   showEditDelete?: boolean
   className?: string
   headerLead?: React.ReactNode
@@ -66,7 +70,7 @@ interface SolutionsTableProps {
   title?: string
 }
 
-export function SolutionsTable({ solutions, showStatus = true, showEditDelete = true, className, headerLead, headerExtra, title }: SolutionsTableProps) {
+export function SolutionsTable({ solutions, showStatus = true, showScore = true, showEditDelete = true, className, headerLead, headerExtra, title }: SolutionsTableProps) {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const store = useStore<RootState>()
@@ -128,6 +132,10 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
           const bStatus = b.solution.validationStatus ?? "unvalidated"
           return (STATUS_ORDER[aStatus] - STATUS_ORDER[bStatus]) * dir
         }
+        case "score":
+          // Ascending puts green first and unscored last, so the first click
+          // on the column shows the best-rated solutions at the top.
+          return (trafficLightRank(a.solution.trafficLight) - trafficLightRank(b.solution.trafficLight)) * dir
         default:
           return 0
       }
@@ -228,6 +236,17 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                   </button>
                 </TableHead>
               )}
+              {showScore && (
+                <TableHead className="w-32">
+                  <button
+                    type="button"
+                    onClick={() => handleSort("score")}
+                    className={cn("flex items-center gap-1", sortableHeaderClass)}
+                  >
+                    Score{renderSortIcon("score")}
+                  </button>
+                </TableHead>
+              )}
               <TableHead />
             </TableRow>
           </TableHeader>
@@ -235,7 +254,7 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
             {sortedSolutions.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={showStatus ? 4 : 3}
+                  colSpan={3 + (showStatus ? 1 : 0) + (showScore ? 1 : 0)}
                   className="text-center text-sm py-8"
                 >
                   No solutions match the current filters.
@@ -274,6 +293,11 @@ export function SolutionsTable({ solutions, showStatus = true, showEditDelete = 
                           <statusConfig.icon className="h-3.5 w-3.5" />
                           {statusConfig.label}
                         </div>
+                      </TableCell>
+                    )}
+                    {showScore && (
+                      <TableCell>
+                        <TrafficLightLabel light={solution.trafficLight} />
                       </TableCell>
                     )}
                     <TableCell>

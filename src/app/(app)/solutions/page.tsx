@@ -9,7 +9,7 @@ import { CardTitle } from "@/components/ui/card"
 import { AboutDialog } from "@/components/about-toggle"
 import { SolutionsTable } from "@/components/solutions-table"
 import { BundleMenuButton } from "@/components/bundle-menu-button"
-import { Plus, Lightbulb } from "lucide-react"
+import { Plus, Lightbulb, Scale } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
 import { startIdentifySolutions } from "@/lib/active-discovery-problem"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
@@ -38,6 +38,7 @@ export default function SolutionsPage() {
               The workflow has three steps. <span className="font-bold">Pick a problem</span> from your validated problems to anchor the work.
               Then <span className="font-bold">discover candidates</span> using guided tools (analogy, SCAMPER, reverse ideation, root-cause attacks) instead of jumping to the first idea.
               Finally, <span className="font-bold">validate</span> each candidate by scoring it on feasibility, impact, cost, and time to implement, so you can decide which one is worth pursuing.
+              Once a few are scored, <span className="font-bold">compare solutions</span> to weigh those metrics by what matters to you and give each one a green, amber or red light.
             </p>
           </AboutDialog>
         </div>
@@ -45,6 +46,15 @@ export default function SolutionsPage() {
           <Button onClick={() => startIdentifySolutions(router.push)} className="gap-2" data-tour={TOUR_TARGETS.solutionsIdentify}>
             <Plus className="h-4 w-4" />
             Identify solutions
+          </Button>
+          <Button
+            variant="secondary-brand"
+            onClick={() => router.push("/solutions/compare")}
+            className="gap-2"
+            disabled={!mounted || solutions.length === 0}
+          >
+            <Scale className="h-4 w-4" />
+            Compare solutions
           </Button>
           <BundleMenuButton kind="solution" />
         </div>

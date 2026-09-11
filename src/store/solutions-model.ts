@@ -2,6 +2,7 @@ import { createModel } from "@rematch/core"
 import type { RootModel } from "."
 import type { Solution, InspirationSource } from "@/types/solution"
 import { DEFAULT_SOLUTION_FIELDS } from "@/types/solution"
+import { isTrafficLight } from "@/lib/solution-comparison"
 
 const STORAGE_KEY = "navigate-solutions"
 
@@ -17,6 +18,7 @@ export type SolutionPatch = Partial<
     | "cost"
     | "timeToImplement"
     | "validationStatus"
+    | "trafficLight"
     | "workspaceId"
     | "analogyDomain"
     | "analogyInsight"
@@ -75,6 +77,7 @@ function loadFromStorage(): SolutionsState | null {
         impact: s.impact ?? 3,
         cost: s.cost ?? 3,
         timeToImplement: s.timeToImplement ?? 3,
+        trafficLight: isTrafficLight(s.trafficLight) ? s.trafficLight : null,
       })),
     }
   } catch {

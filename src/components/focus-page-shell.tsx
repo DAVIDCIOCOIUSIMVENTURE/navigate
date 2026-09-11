@@ -17,14 +17,20 @@ import { cn } from "@/lib/utils"
  * becomes a horizontal row and the page scrolls naturally.
  *
  * Pass `flex-wrap` to the header so it stacks inside the narrow column.
+ * Pages that are not about one problem or solution (Compare solutions) omit
+ * `journeyStep` and get the same layout without the rail.
  */
 export function FocusPageShell({
   header,
   journeyStep,
+  journeyProblemId,
   children,
 }: {
   header: ReactNode
-  journeyStep: JourneyStepId
+  /** The journey milestone the page belongs to; omit to render no rail. */
+  journeyStep?: JourneyStepId
+  /** The problem the page is about (a solution's linked problem on solution pages); the rail shows its real progress. */
+  journeyProblemId?: number | null
   children: ReactNode
 }) {
   const isWide = useContainerSize() === "wide"
@@ -41,12 +47,14 @@ export function FocusPageShell({
         {isWide ? (
           <div className={cn("flex w-72 shrink-0 flex-col gap-3 min-h-0 overflow-y-auto", FOCUS_COLUMN_MAX_HEIGHT_CLASS)}>
             {header}
-            <JourneyProgressCard activeId={journeyStep} />
+            {journeyStep && <JourneyProgressCard activeId={journeyStep} problemId={journeyProblemId} />}
           </div>
         ) : (
           <>
             {header}
-            <JourneyProgressCard activeId={journeyStep} orientation="horizontal" />
+            {journeyStep && (
+              <JourneyProgressCard activeId={journeyStep} problemId={journeyProblemId} orientation="horizontal" />
+            )}
           </>
         )}
 

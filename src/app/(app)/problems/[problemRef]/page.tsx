@@ -11,7 +11,7 @@ import { ProblemCanvas } from "@/components/canvas/problem-canvas"
 import { FocusFlowHeader } from "@/components/focus-flow-header"
 import { FocusPageShell } from "@/components/focus-page-shell"
 import { useContainerSize } from "@/context/container-size-context"
-import { problemJourneyStep } from "@/lib/journey-steps"
+import { problemJourneyStep, summariseProblemJourney } from "@/lib/journey-steps"
 import { cn } from "@/lib/utils"
 
 /**
@@ -29,6 +29,7 @@ export default function ProblemCanvasPage() {
   const problem = useSelector((state: RootState) =>
     state.problems.problems.find((p) => p.id === problemId),
   )
+  const solutions = useSelector((state: RootState) => state.solutions.solutions)
 
   const header = <FocusFlowHeader title="Problem canvas" icon={Target} backHref="/problems" className={cn(isWide && "flex-wrap")} />
 
@@ -51,17 +52,10 @@ export default function ProblemCanvasPage() {
     )
   }
 
-  const journeyStep = problemJourneyStep({
-    validationStatus: problem.validationStatus,
-    jobCount:
-      problem.jobsToBeDone.functional.length +
-      problem.jobsToBeDone.emotional.length +
-      problem.jobsToBeDone.social.length,
-    existingSolutionCount: problem.existingSolutions.length,
-  })
+  const journeyStep = problemJourneyStep(summariseProblemJourney(problem, solutions))
 
   return (
-    <FocusPageShell header={header} journeyStep={journeyStep}>
+    <FocusPageShell header={header} journeyStep={journeyStep} journeyProblemId={problem.id}>
       <ProblemCanvas problem={problem} editHref={`/problems/${problemRef}/edit`} showFullView={false} />
     </FocusPageShell>
   )

@@ -40,6 +40,12 @@ export type ImprovementResponses = {
   postPurchase: ImprovementItem[]
 }
 
+/** The four 1-5 scores captured by solution validation and compared on the Compare solutions page. */
+export type SolutionMetricKey = "feasibility" | "impact" | "cost" | "timeToImplement"
+
+/** The user's overall verdict on a solution after comparing it with the others. */
+export type TrafficLight = "green" | "amber" | "red"
+
 export type AnalysisToolType = "" | "root-causes" | "five-whys" | "affected-groups"
 export type DiscoveryToolType = "" | "scamper" | "reverse" | "analogy" | "improve"
 export type InspirationSource = "" | "scamper" | "reverse" | "analogy" | "improve" | "freeform"
@@ -88,6 +94,8 @@ export type Solution = {
   cost: number | null // 1-5 (1=cheap, 5=expensive)
   timeToImplement: number | null // 1-5 (1=fast, 5=slow)
   validationStatus: ValidationStatus
+  // Traffic light given on the Compare solutions page; null until scored there.
+  trafficLight: TrafficLight | null
   // Method-specific snapshots captured at save time, so each solution can be
   // re-edited later in a dialog tailored to its inspiration source.
   analogyDomain?: string
@@ -141,6 +149,7 @@ export const DEFAULT_SOLUTION_FIELDS: Omit<Solution, "id" | "problemId" | "works
   cost: 3,
   timeToImplement: 3,
   validationStatus: "unvalidated",
+  trafficLight: null,
   analogyDomain: undefined,
   analogyInsight: undefined,
   scamperIdeas: undefined,

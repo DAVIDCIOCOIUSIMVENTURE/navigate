@@ -16,7 +16,7 @@ import { FocusPageShell } from "@/components/focus-page-shell"
 import { buildProblemBundle, downloadProblemBundle } from "@/lib/problem-export"
 import { ExportBundleDialog } from "@/components/export-bundle-dialog"
 import { useContainerSize } from "@/context/container-size-context"
-import { problemJourneyStep } from "@/lib/journey-steps"
+import { problemJourneyStep, summariseProblemJourney } from "@/lib/journey-steps"
 import { cn } from "@/lib/utils"
 
 /**
@@ -31,6 +31,7 @@ function HubBody({ problemRef }: { problemRef: string }) {
   const problem = useSelector((state: RootState) =>
     state.problems.problems.find((p) => p.id === problemId)
   )
+  const solutions = useSelector((state: RootState) => state.solutions.solutions)
   const store = useStore<RootState>()
   const isWide = useContainerSize() === "wide"
   const [exportOpen, setExportOpen] = useState(false)
@@ -63,14 +64,7 @@ function HubBody({ problemRef }: { problemRef: string }) {
     )
   }
 
-  const journeyStep = problemJourneyStep({
-    validationStatus: problem.validationStatus,
-    jobCount:
-      problem.jobsToBeDone.functional.length +
-      problem.jobsToBeDone.emotional.length +
-      problem.jobsToBeDone.social.length,
-    existingSolutionCount: problem.existingSolutions.length,
-  })
+  const journeyStep = problemJourneyStep(summariseProblemJourney(problem, solutions))
 
   const handleExport = (includeSolutions: boolean) => {
     const bundle = buildProblemBundle(store.getState(), problemId, { includeSolutions })
@@ -83,7 +77,7 @@ function HubBody({ problemRef }: { problemRef: string }) {
   }
 
   return (
-    <FocusPageShell header={header} journeyStep={journeyStep}>
+    <FocusPageShell header={header} journeyStep={journeyStep} journeyProblemId={problem.id}>
       <Card className={cn("flex w-full min-w-0 flex-col", isWide && "flex-1 min-h-0 overflow-hidden")}>
         <CardHeader className="px-10 pt-10 pb-0 space-y-6">
           <div className="flex items-start justify-between gap-4">

@@ -50,6 +50,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         navItems={NAV_ITEMS}
         navIcons={NAV_ICONS}
         journeyStep="validate-solutions"
+        journeyProblemId={problem?.id ?? null}
         context={
           <>
             <SolutionContextCard solution={solution} compact />

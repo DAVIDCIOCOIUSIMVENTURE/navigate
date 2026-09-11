@@ -219,6 +219,7 @@ export async function duplicateProblem(
             cost: s.cost,
             timeToImplement: s.timeToImplement,
             validationStatus: s.validationStatus,
+            trafficLight: s.trafficLight ?? null,
           },
         })
         solutionCount++
@@ -433,6 +434,7 @@ export async function importProblemBundle(
           cost: s.cost,
           timeToImplement: s.timeToImplement,
           validationStatus: s.validationStatus,
+          trafficLight: s.trafficLight ?? null,
         },
       })
     }

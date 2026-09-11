@@ -72,7 +72,7 @@ function HubBody({ solutionId }: { solutionId: number }) {
   }
 
   return (
-    <FocusPageShell header={header} journeyStep="validate-solutions">
+    <FocusPageShell header={header} journeyStep="validate-solutions" journeyProblemId={solution.problemId}>
       <Card className={cn("flex w-full min-w-0 flex-col", isWide && "flex-1 min-h-0 overflow-hidden")}>
         <CardHeader className="px-10 pt-10 pb-0 space-y-6">
           <div className="flex items-start justify-between gap-4">

@@ -56,6 +56,7 @@ export function ProblemFlowShell({
         navItems={navItems}
         navIcons={navIcons}
         journeyStep={journeyStep}
+        journeyProblemId={Number(problemRef)}
         context={
           <>
             <ProblemContextCard problem={problem} compact />

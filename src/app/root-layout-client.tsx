@@ -144,7 +144,9 @@ function getCrumbs(pathname: string): Crumb[] {
       return crumbs
     }
     crumbs.push({ label: "Solutions", href: "/solutions" })
-    if (third === "validate") {
+    if (second === "compare") {
+      crumbs.push({ label: "Compare" })
+    } else if (third === "validate") {
       crumbs.push({ label: second, href: `/solutions/${second}` })
       crumbs.push({ label: "Validation" })
     } else if (third === "edit") {
@@ -169,13 +171,15 @@ const SOLUTION_FOCUS_PATH = /^\/solutions\/\d+(\/edit|\/validate(\/.*)?)?$/
  * button and title: the Identify problems hub and every tool underneath it
  * (Canvas Builder, Reflect, Research), the problem canvas, its edit page and its
  * Explore and Validation flows, the solution canvas, its edit page and its
- * validation flow, Self Discovery and Identify Solutions.
+ * validation flow, the Compare solutions flow, Self Discovery and Identify
+ * Solutions.
  */
 function isFocusFlowPath(pathname: string): boolean {
   return (
     pathname.startsWith("/problems/identify") ||
     PROBLEM_FOCUS_PATH.test(pathname) ||
     SOLUTION_FOCUS_PATH.test(pathname) ||
+    pathname.startsWith("/solutions/compare") ||
     pathname.startsWith("/self-discovery/discover") ||
     pathname.startsWith("/solutions/identify")
   )
@@ -241,6 +245,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     dispatch.accountSettings.init()
     dispatch.solutions.init()
     dispatch.solutionWorkspaces.init()
+    dispatch.solutionComparison.init()
     dispatch.notes.init()
     dispatch.problemCandidates.init()
     dispatch.reflectSessions.init()

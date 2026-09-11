@@ -296,7 +296,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           {/* The stepper keeps its natural height; the column scrolls when it and the rail outgrow the viewport. */}
           <div className="flex flex-1 min-h-0 flex-col gap-4 overflow-y-auto">
             {wideStepper}
-            <JourneyProgressCard activeId="identify-solutions" />
+            <JourneyProgressCard activeId="identify-solutions" problemId={problemId} />
           </div>
         </div>
       ) : (
@@ -311,7 +311,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             onNavigate={(path) => router.push(path)}
           />
           {railActions}
-          <JourneyProgressCard activeId="identify-solutions" orientation="horizontal" />
+          <JourneyProgressCard activeId="identify-solutions" problemId={problemId} orientation="horizontal" />
         </>
       )}
 

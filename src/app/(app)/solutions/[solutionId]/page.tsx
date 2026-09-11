@@ -52,7 +52,7 @@ export default function SolutionCanvasPage() {
   }
 
   return (
-    <FocusPageShell header={header} journeyStep="validate-solutions">
+    <FocusPageShell header={header} journeyStep="validate-solutions" journeyProblemId={solution.problemId}>
       <SolutionCanvas solution={solution} editHref={`/solutions/${solutionId}/edit`} showFullView={false} />
     </FocusPageShell>
   )
