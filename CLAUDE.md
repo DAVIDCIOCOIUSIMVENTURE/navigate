@@ -374,7 +374,7 @@ introduction → rate → review
 
 * `introduction`: what the section is for and how it works.
 * `rate`: the hands-on step. A compact slider strip on a `bg-secondary-brand` panel asks how important each of the four validation metrics is (`Ignore` / `Nice to have` / `Important` / `Essential`, stored as 0 to 3 in the `solutionComparison` model); the table underneath, which gets most of the page, ranks every solution by the weighted score those weights produce and re-orders live as they change, with an optional filter to one problem. Cost and time to implement are inverted before weighting so a higher weighted score is always better. Against each ranked solution the user picks a traffic light (green pursue, amber consider, red park), saved as `Solution.trafficLight`.
-* `review`: read-only. The chosen weights, then every solution grouped by light (green, amber, red, not yet given one) with its weighted score.
+* `review`: read-only. The chosen weights, then every solution grouped by light (green, amber, red, not rated yet) with its weighted score.
 
 The library table shows the light in a sortable "Score" column (green first, unscored last) and the canvas header shows it as a pill beside the status pill. Rules and tests: `src/lib/solution-comparison.ts`; the light components: `src/components/traffic-light.tsx`.
 

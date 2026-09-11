@@ -23,7 +23,7 @@ import { getAdjacentSteps } from "../steps"
 /**
  * The read-only close of Compare solutions: the weights that were chosen,
  * then every solution grouped by its traffic light (green first) with its
- * weighted score, and the ones still without a light at the end.
+ * weighted score, and the ones not rated yet at the end.
  */
 export default function CompareReviewPage() {
   const router = useRouter()
@@ -57,7 +57,7 @@ export default function CompareReviewPage() {
         <div className="flex items-center gap-2">
           {light ? <TrafficLightDot light={light} className="h-4 w-4" /> : null}
           <h3 className={cn("text-xl font-bold", heading ? heading.textClass : "text-foreground")}>
-            {heading ? `${heading.label}: ${heading.description.replace(/\.$/, "")}` : "Not yet given a light"}
+            {heading ? `${heading.label}: ${heading.description.replace(/\.$/, "")}` : "Not rated yet"}
           </h3>
           <span className="text-base">({entries.length})</span>
         </div>

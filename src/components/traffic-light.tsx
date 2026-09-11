@@ -21,10 +21,10 @@ export function TrafficLightDot({ light, className }: { light: TrafficLight; cla
   )
 }
 
-/** Disc plus label for a table cell. Renders a muted "Not scored" when unset. */
+/** Disc plus label for a table cell. Renders a muted "Not rated yet" when unset. */
 export function TrafficLightLabel({ light, className }: { light: TrafficLight | null | undefined; className?: string }) {
   if (!light) {
-    return <span className={cn("text-sm text-muted-foreground", className)}>Not scored</span>
+    return <span className={cn("text-sm text-muted-foreground", className)}>Not rated yet</span>
   }
   const meta = TRAFFIC_LIGHT_META[light]
   return (
