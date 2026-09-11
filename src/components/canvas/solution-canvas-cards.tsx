@@ -2,14 +2,14 @@
 
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
-import type { Solution } from "@/types/solution"
+import { inspirationSourceLabel, type Solution } from "@/types/solution"
 import {
   Target,
   Wrench,
   TrendingUp,
   Coins,
   Hourglass,
-  Sparkles,
+  Lightbulb,
   FileText,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -25,7 +25,7 @@ import {
 
 /**
  * Visual card grid for a Solution: header (title + status pill + optional
- * actions), description, linked-problem, inspiration, and four scoring
+ * actions), description, linked-problem, method used, and four scoring
  * cards. Used by the solution canvas page, the solution validation
  * summary, and the "View Solution" dialog so the read-only view is
  * identical everywhere. Every card carries the same mustard icon tile and
@@ -114,8 +114,8 @@ export function SolutionCanvasCards({
         </Cell>
 
         <Cell
-          icon={Sparkles}
-          label="Inspiration"
+          icon={Lightbulb}
+          label="Method used"
           iconBg={CANVAS_ICON_BG}
           divider={CANVAS_DIVIDER}
           className="sm:col-span-6"
@@ -123,9 +123,7 @@ export function SolutionCanvasCards({
         >
           <div className="flex flex-col gap-1">
             {solution.inspirationSource && (
-              <p className="capitalize font-medium">
-                {solution.inspirationSource.replace(/_/g, " ")}
-              </p>
+              <p className="font-medium">{inspirationSourceLabel(solution.inspirationSource)}</p>
             )}
             {solution.inspirationDetail && (
               <p className="whitespace-pre-wrap">{solution.inspirationDetail}</p>

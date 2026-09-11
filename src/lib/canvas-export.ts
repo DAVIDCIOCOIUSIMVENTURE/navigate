@@ -1,5 +1,5 @@
 import type { Problem } from "@/store/problems-model"
-import type { Solution } from "@/types/solution"
+import { inspirationSourceLabel, type Solution } from "@/types/solution"
 import type { CustomDimensionItem } from "@/store/custom-dimension-items-model"
 import type { SelfDiscoveryItem } from "@/store/self-discovery-items-model"
 import { resolveDimensionLabel } from "@/lib/dimension-labels"
@@ -124,8 +124,8 @@ function formatSolutionBlock(sol: Solution): string {
   out.push(`Status: ${STATUS_LABEL[sol.validationStatus ?? "unvalidated"]}`)
   if (sol.description) out.push(`Description: ${sol.description}`)
   if (sol.inspirationSource) {
-    const detail = sol.inspirationDetail ? ` — ${sol.inspirationDetail}` : ""
-    out.push(`Inspiration: ${sol.inspirationSource}${detail}`)
+    const detail = sol.inspirationDetail ? ` (${sol.inspirationDetail})` : ""
+    out.push(`Method used: ${inspirationSourceLabel(sol.inspirationSource)}${detail}`)
   }
   const score = (n: number | null) => (n == null ? "not scored" : `${n} / 5`)
   out.push(`Feasibility: ${score(sol.feasibility)} (1 hard, 5 easy)`)
@@ -158,8 +158,8 @@ export function buildSolutionExportText(
   lines.push(section("Description", solution.description || "(none)"))
   lines.push("")
   if (solution.inspirationSource || solution.inspirationDetail) {
-    lines.push(section("Inspiration", [
-      solution.inspirationSource ? `Source: ${solution.inspirationSource}` : null,
+    lines.push(section("Method used", [
+      solution.inspirationSource ? `Method: ${inspirationSourceLabel(solution.inspirationSource)}` : null,
       solution.inspirationDetail ? `Detail: ${solution.inspirationDetail}` : null,
     ].filter(Boolean).join("\n")))
     lines.push("")

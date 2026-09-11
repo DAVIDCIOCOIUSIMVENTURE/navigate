@@ -50,6 +50,20 @@ export type AnalysisToolType = "" | "root-causes" | "five-whys" | "affected-grou
 export type DiscoveryToolType = "" | "scamper" | "reverse" | "analogy" | "improve"
 export type InspirationSource = "" | "scamper" | "reverse" | "analogy" | "improve" | "freeform"
 
+/** Human-readable name of the method a solution was captured with. */
+export const INSPIRATION_SOURCE_LABELS: Record<Exclude<InspirationSource, "">, string> = {
+  scamper: "SCAMPER",
+  reverse: "Reverse",
+  analogy: "Analogy",
+  improve: "Improve",
+  freeform: "Freeform",
+}
+
+export function inspirationSourceLabel(source: InspirationSource | null | undefined): string {
+  if (!source) return ""
+  return INSPIRATION_SOURCE_LABELS[source] ?? source
+}
+
 /**
  * Per-problem refinement and discovery scratchpad. One workspace per problem.
  * Holds the tool choices and intermediate data generated during the discovery wizard.

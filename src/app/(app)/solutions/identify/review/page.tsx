@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { useIdentifySolutions, getAdjacentSteps } from "../context"
-import type { DiscoveryToolType } from "@/types/solution"
+import { inspirationSourceLabel, type DiscoveryToolType } from "@/types/solution"
 import {
   ClipboardCheck, ArrowLeft, ArrowRight,
   Lightbulb, RotateCcw, GitCompare, Wrench,
@@ -18,14 +18,6 @@ const DISCOVERY_TOOL_LABELS: Record<Exclude<DiscoveryToolType, "">, { label: str
   reverse: { label: "Reverse Ideation", icon: RotateCcw },
   analogy: { label: "Analogy Thinking", icon: GitCompare },
   improve: { label: "Improve Existing Solutions", icon: Wrench },
-}
-
-const SOURCE_LABELS: Record<string, string> = {
-  scamper: "SCAMPER",
-  reverse: "Reverse",
-  analogy: "Analogy",
-  improve: "Improve",
-  freeform: "Freeform",
 }
 
 function SectionTitle({ children }: { children: ReactNode }) {
@@ -158,7 +150,7 @@ export default function ReviewPage() {
                         <p className="text-base font-semibold">{c.title || <span className="italic">Untitled</span>}</p>
                         {c.inspirationSource && (
                           <Badge variant="outline" className="text-base font-normal">
-                            {SOURCE_LABELS[c.inspirationSource] ?? c.inspirationSource}
+                            {inspirationSourceLabel(c.inspirationSource)}
                           </Badge>
                         )}
                       </div>
