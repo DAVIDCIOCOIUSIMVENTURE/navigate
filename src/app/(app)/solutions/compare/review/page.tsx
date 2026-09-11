@@ -103,7 +103,8 @@ export default function CompareReviewPage() {
           A read-only overview of how you weighed the metrics and where each solution landed. The lights show on the Solutions page, where you can sort by them.
         </p>
       </CardHeader>
-      <CardContent className="p-10 pt-6 flex flex-col gap-8">
+      <CardContent className="p-10 pt-6 flex flex-col gap-6">
+        <div className="rounded-xl border bg-muted p-6 flex flex-col gap-6">
         <section className="flex flex-col gap-3">
           <h3 className="text-xl font-bold text-foreground">Your weights</h3>
           <div className="flex flex-wrap gap-2">
@@ -122,6 +123,7 @@ export default function CompareReviewPage() {
         </section>
 
         {[...TRAFFIC_LIGHTS, null].map((light) => renderGroup(light))}
+        </div>
 
         <div className="flex justify-between mt-2">
           {prevPath ? (
