@@ -357,7 +357,7 @@ export const TOUR_STEPS: TourStep[] = [
     mode: "act",
     title: "Explore your problem",
     body: [
-      "Explore is a deep dive into the problem: who the customer is, refining it with tools such as 5 Whys, mapping the solutions that already exist and capturing the jobs the customer needs done.",
+      "Explore is a deep dive into the problem: who the customer is, refining it with tools such as 5 Whys, mapping the solutions that already exist and capturing what the customer is trying to achieve.",
       "Work through the steps in the left-hand nav; each one saves as you go. When you reach Review, press Continue to Problem Validation.",
     ],
     route: problemRoute("/explore/introduction"),

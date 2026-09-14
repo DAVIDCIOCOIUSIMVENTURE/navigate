@@ -139,7 +139,7 @@ const guidanceItems: GuidanceItem[] = [
               Turn those triggers into concrete, well-framed candidate problems using guided or freeform tools.
             </NumberedStep>
             <NumberedStep n={3} title="Explore the Problem" accent="bg-tertiary">
-              Take one candidate for a deeper dive: define the customer, refine the problem, map existing solutions, and capture the jobs to be done.
+              Take one candidate for a deeper dive: define the customer, refine the problem, map existing solutions, and capture what the customer is trying to achieve.
             </NumberedStep>
             <NumberedStep n={4} title="Problem Validation" accent="bg-green-800">
               Stress-test the explored problem against price, market size, and competition to decide if it is worth pursuing.
@@ -277,7 +277,7 @@ const guidanceItems: GuidanceItem[] = [
           <p>If you already have a clear problem in mind, skip the exploration tools and write it directly. Useful when you have prior knowledge of a domain or have already spoken to potential customers.</p>
         </GuidanceSection>
         <GuidanceSection icon={ArrowRight} iconBg="bg-orange-700" title="What comes next">
-          <p>Once you have a list of candidate problems, pick one and take it into <Keyword>Explore the Problem</Keyword>: a deeper dive that defines the customer, {SHOW_REFINEMENT_STEPS && <>refines the problem (root causes, 5 whys, affected groups), </>}maps existing solutions and their shortcomings, and captures the jobs to be done. That work then feeds Problem Validation, where you size the market and decide whether the problem is worth pursuing.</p>
+          <p>Once you have a list of candidate problems, pick one and take it into <Keyword>Explore the Problem</Keyword>: a deeper dive that defines the customer, {SHOW_REFINEMENT_STEPS && <>refines the problem (root causes, 5 whys, affected groups), </>}maps existing solutions and their shortcomings, and captures what the customer is trying to achieve. That work then feeds Problem Validation, where you size the market and decide whether the problem is worth pursuing.</p>
         </GuidanceSection>
       </div>
     ),
@@ -296,7 +296,7 @@ const guidanceItems: GuidanceItem[] = [
           subtitle="A deeper dive into a single candidate before you size any markets. Understand exactly who has the problem, why it really happens, how people cope today, and what they are trying to get done. Everything you capture here carries forward into Problem Validation."
         />
         <GuidanceSection icon={Play} iconBg="bg-tertiary" title="How it works">
-          <p>Pick a candidate problem and open <Keyword>Explore</Keyword>. You work through a sequence of steps: define the customer, {SHOW_REFINEMENT_STEPS && <>refine the problem, </>}map existing solutions, and capture the jobs to be done. Work through them in order; each builds on the last, but you can return and update any step as your thinking develops.</p>
+          <p>Pick a candidate problem and open <Keyword>Explore</Keyword>. You work through a sequence of steps: define the customer, {SHOW_REFINEMENT_STEPS && <>refine the problem, </>}map existing solutions, and capture what the customer is trying to achieve. Work through them in order; each builds on the last, but you can return and update any step as your thinking develops.</p>
         </GuidanceSection>
         <GuidanceSection icon={Users} iconBg="bg-indigo-800" title="Define your customer">
           <p>Pin down exactly who experiences the problem. Vague labels like <Keyword>&ldquo;everyone&rdquo;</Keyword> or <Keyword>&ldquo;businesses&rdquo;</Keyword> lead to vague problems and vague solutions; a sharp customer definition unlocks every later step. Narrow down by:</p>
@@ -322,22 +322,22 @@ const guidanceItems: GuidanceItem[] = [
           <p>List how customers handle the problem today: existing tools and software, manual workarounds, hiring or outsourcing, or simply tolerating the pain. For each one, capture its specific shortcomings: where it falls short, what it costs, or what friction it adds. This grounds the problem in reality and reveals the gap a future solution would need to fill.</p>
           <p>Each existing solution exposes an <Keyword>Impact examples</Keyword> panel listing common areas where shortcomings hurt (time lost, money wasted, errors, frustration, churn, and more). Use it to quantify how much each existing solution actually costs the customer; this is where the old <Keyword>quantifiable impact</Keyword> work now lives.</p>
         </GuidanceSection>
-        <GuidanceSection icon={Sparkles} iconBg="bg-rose-800" title="Jobs your customer is trying to get done">
-          <p>Before guessing a price, get a clear picture of what the customer is really hiring a solution to do. People do not buy products: they buy progress on a job. Split that job into three layers, because the strongest emotional or social pull is usually what justifies the price, not the tangible task.</p>
+        <GuidanceSection icon={Sparkles} iconBg="bg-rose-800" title="What your customer is trying to achieve">
+          <p>Before guessing a price, get a clear picture of what the customer is really trying to achieve. People do not buy products: they buy progress towards a goal. Split that goal into three layers, because the strongest emotional or social pull is usually what justifies the price, not the tangible task.</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={Briefcase} label="What they need to get done" description="The tangible tasks, phrased as outcomes (e.g. complete the sale and the purchase on the same day, find a place inside budget)." tile="bg-emerald-800" border="border-emerald-800/20 bg-emerald-800/5" />
             <ConceptCard icon={Heart} label="How they want to feel" description="The emotional pulls, rated mild, strong, or unbearable from what real customers have said (e.g. stop lying awake worrying the chain will collapse)." tile="bg-red-800" border="border-red-800/20 bg-red-800/5" />
             <ConceptCard icon={Eye} label="How they want to be seen" description="The social pulls, rated the same way (e.g. not look disorganised in front of the estate agent)." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
           </div>
-          <p className="pt-1">On the price step you pick one of these jobs to anchor the price on: usually the strongest emotional or social pull, but a functional job can be the <Keyword>anchor</Keyword> when it is what drives the purchase.</p>
+          <p className="pt-1">On the price step you pick one of these goals to anchor the price on: usually the strongest emotional or social pull, but a functional goal can be the <Keyword>anchor</Keyword> when it is what drives the purchase.</p>
         </GuidanceSection>
         <GuidanceSection icon={FileText} iconBg="bg-tertiary" title="Review">
-          <p>A read-only overview of everything Explore captured: the customer definition, {SHOW_REFINEMENT_STEPS && <>refinement work, </>}existing solutions and their shortcomings, and the three jobs lists. Review it, then continue to Problem Validation when you are ready.</p>
+          <p>A read-only overview of everything Explore captured: the customer definition, {SHOW_REFINEMENT_STEPS && <>refinement work, </>}existing solutions and their shortcomings, and the three lists of customer goals. Review it, then continue to Problem Validation when you are ready.</p>
         </GuidanceSection>
         <TipCallout items={[
           "A sharp customer definition unlocks every later step; resist 'everyone'",
           ...(SHOW_REFINEMENT_STEPS ? ["Refinement work done here flows into identifying solutions later, so do not skip it"] : []),
-          "Capture the strongest emotional or social job: it usually justifies the price more than the tangible task",
+          "Capture the strongest emotional or social goal: it usually justifies the price more than the tangible task",
         ]} />
       </div>
     ),
@@ -353,15 +353,15 @@ const guidanceItems: GuidanceItem[] = [
           icon={ClipboardCheck}
           tone="bg-green-800"
           title="Problem Validation"
-          subtitle="Stress-test an explored problem before investing in a solution. Building on the customer, jobs, and existing solutions captured in Explore, you set a price, size the market, weigh up the competition, and reach a verdict. The goal is not to prove the problem is valid; it is to gather enough evidence to make an honest, informed decision."
+          subtitle="Stress-test an explored problem before investing in a solution. Building on the customer, their goals, and the existing solutions captured in Explore, you set a price, size the market, weigh up the competition, and reach a verdict. The goal is not to prove the problem is valid; it is to gather enough evidence to make an honest, informed decision."
         />
         <GuidanceSection icon={Play} iconBg="bg-green-800" title="How it works">
           <p>Validation picks up where Explore left off. You work through a short sequence of steps: price, market size, competition, and verdict. Work through them in order; each builds on the last, but you can return and update any step as your thinking develops.</p>
         </GuidanceSection>
         <GuidanceSection icon={PoundSterling} iconBg="bg-teal-700" title="What they would pay to solve it">
-          <p>A customer hires a solution for one primary job: the one that tips them into buying. The other jobs are secondary, they nudge what someone will pay rather than each adding their own price. So you set one price, anchored on that one dominant job. Pick whichever job drives the purchase, functional, emotional, or social, not the cost of building a feature, then cross-check the number against three angles:</p>
+          <p>A customer buys a solution for one primary goal: the one that tips them into buying. The other goals are secondary, they nudge what someone will pay rather than each adding their own price. So you set one price, anchored on that one dominant goal. Pick whichever goal drives the purchase, functional, emotional, or social, not the cost of building a feature, then cross-check the number against three angles:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
-            <ConceptCard icon={Heart} label="The one anchor job" description="The single job that drives the purchase. Often the strongest emotional or social pull, which can carry prices an order of magnitude above the tangible task, but a functional job can anchor it too." tile="bg-teal-700" border="border-teal-700/20 bg-teal-700/5" />
+            <ConceptCard icon={Heart} label="The one anchor goal" description="The single goal that drives the purchase. Often the strongest emotional or social pull, which can carry prices an order of magnitude above the tangible task, but a functional goal can anchor it too." tile="bg-teal-700" border="border-teal-700/20 bg-teal-700/5" />
             <ConceptCard icon={Wallet} label="Money already spent" description="Subscriptions, contractors, late fines, chain chasers, replacement parts. Revealed spend is the strongest sanity check on a number that came out of an emotional read." tile="bg-teal-700" border="border-teal-700/20 bg-teal-700/5" />
             <ConceptCard icon={Scale} label="Hypothesis, not fact" description="Ask real customers at different price points what they would pay; the captured number is a starting point for those conversations, not the final answer." tile="bg-teal-700" border="border-teal-700/20 bg-teal-700/5" />
           </div>
@@ -387,7 +387,7 @@ const guidanceItems: GuidanceItem[] = [
           <p className="pt-1">Strong opportunities combine low or moderate switching costs, average-or-worse alternatives, and competitors that are small or distracted. <Keyword>SOM = SAM × realistic share</Keyword>.</p>
         </GuidanceSection>
         <GuidanceSection icon={ShieldCheck} iconBg="bg-destructive" title="Record your verdict">
-          <p>The verdict step pulls everything together. The summary card shows each captured factor (three market signals, the anchor job, and three competition signals) with a colour-coded dot (green favourable, amber neutral, red unfavourable) and a stack of the three market headlines (TAM, SAM, SOM) from the earlier steps:</p>
+          <p>The verdict step pulls everything together. The summary card shows each captured factor (three market signals, the anchor goal, and three competition signals) with a colour-coded dot (green favourable, amber neutral, red unfavourable) and a stack of the three market headlines (TAM, SAM, SOM) from the earlier steps:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(220px,1fr))]">
             <ConceptCard icon={Scale} label="Lean indicator" description="Once at least five of the seven signals are captured, a banner shows whether the evidence leans toward Valid, Unsure, or Invalid." tile="bg-destructive" border="border-destructive/20 bg-destructive/5" />
             <ConceptCard icon={Calculator} label="Market headlines are sanity checks" description="A large TAM is not the same as proven willingness to pay. Read the underlying signals before trusting the headline." tile="bg-destructive" border="border-destructive/20 bg-destructive/5" />
@@ -395,11 +395,11 @@ const guidanceItems: GuidanceItem[] = [
           <p className="pt-1">Then commit to one of three verdicts: <Keyword>Valid</Keyword>, <Keyword>Unsure</Keyword>, or <Keyword>Invalid</Keyword>. The dot colours and lean banner are heuristics, not rules; if you disagree with how a signal is being read, override it in the notes and explain why. Use the notes to record the two or three signals that drove the call plus the strongest counter-argument you considered.</p>
         </GuidanceSection>
         <GuidanceSection icon={FileText} iconBg="bg-green-800" title="Review &amp; next steps">
-          <p>A read-only overview of everything you have captured: the customer definition, refinement work, existing solutions and their shortcomings, the jobs list, the price, the market figures, the competitive picture, and your verdict with notes. Use <Keyword>Open Problem to edit</Keyword> to jump back to the editable problem page if anything needs revising before you move on to identifying solutions.</p>
+          <p>A read-only overview of everything you have captured: the customer definition, refinement work, existing solutions and their shortcomings, the customer goals, the price, the market figures, the competitive picture, and your verdict with notes. Use <Keyword>Open Problem to edit</Keyword> to jump back to the editable problem page if anything needs revising before you move on to identifying solutions.</p>
         </GuidanceSection>
         <TipCallout items={[
           "Be honest about the evidence: weak validation data is a signal, not a failure",
-          "Anchor the price on the one job that drives the purchase, not on the cost of building a feature",
+          "Anchor the price on the one goal that drives the purchase, not on the cost of building a feature",
           "If you cannot justify the reachable share or realistic share to a sceptical friend, slide them down",
           "A large total market is not the same as proven willingness to pay; read the underlying signals",
           "You can validate multiple problems and compare verdicts before committing to one",

@@ -137,7 +137,7 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
     },
     verdict: "Valid: Worth Solving",
     reasoning:
-      "The combination of a massive audience, extremely high frequency, and an unbearable emotional job made this a strong opportunity. Notion validated it by seeing power users organically convert their entire teams, the problem was painful enough that individuals championed the switch without top-down mandates.",
+      "The combination of a massive audience, extremely high frequency, and an unbearable emotional goal made this a strong opportunity. Notion validated it by seeing power users organically convert their entire teams, the problem was painful enough that individuals championed the switch without top-down mandates.",
   },
   {
     company: "Warby Parker (launch)",
@@ -225,7 +225,7 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
     worthToThem: {
       value: 25,
       unit: "pounds per ride",
-      detail: "Early Uber Black cost a premium over a taxi, often £20-35 a trip. Customers happily paid more than a cab because the strong job was reliability and not being stranded, not the lowest fare.",
+      detail: "Early Uber Black cost a premium over a taxi, often £20-35 a trip. Customers happily paid more than a cab because the strong goal was reliability and not being stranded, not the lowest fare.",
     },
     reachableShare: {
       value: 20,
@@ -241,7 +241,7 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
     },
     solutionEffectiveness: {
       level: "poor",
-      detail: "Taxis and traditional car services were unreliable: no-shows, no ETA, cash-only payment, dirty cars, and dispatchers you couldn't reach. The core job of 'get me there reliably' was badly served.",
+      detail: "Taxis and traditional car services were unreliable: no-shows, no ETA, cash-only payment, dirty cars, and dispatchers you couldn't reach. The core goal of 'get me there reliably' was badly served.",
     },
     competitorSize: {
       level: "large",
@@ -249,6 +249,6 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
     },
     verdict: "Valid: Worth Solving",
     reasoning:
-      "A frequent, recurring need that incumbents served badly, paired with a strong emotional job: not being stranded. Uber validated it by launching a premium black-car service in one city, proving people would happily pay more for a reliable, tracked, cashless ride before expanding down-market to UberX.",
+      "A frequent, recurring need that incumbents served badly, paired with a strong emotional goal: not being stranded. Uber validated it by launching a premium black-car service in one city, proving people would happily pay more for a reliable, tracked, cashless ride before expanding down-market to UberX.",
   },
 ]

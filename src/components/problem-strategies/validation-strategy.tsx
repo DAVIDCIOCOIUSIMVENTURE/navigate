@@ -268,7 +268,7 @@ function JobRow({
             variant="ghost"
             onClick={onRemove}
             className="h-8 w-8 text-white hover:bg-white/15 shrink-0"
-            aria-label="Remove job"
+            aria-label="Remove goal"
           >
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -404,7 +404,7 @@ function JobsToBeDoneSection({
         onChange={(val) => onChange({ ...jobs, functional: val })}
         withIntensity={false}
         placeholder="e.g. Complete the sale and the purchase on the same day"
-        emptyLabel="No functional jobs captured."
+        emptyLabel="No functional goals captured."
         readOnly={readOnly}
       />
       <JobsGroup
@@ -416,7 +416,7 @@ function JobsToBeDoneSection({
         onChange={(val) => onChange({ ...jobs, emotional: val })}
         withIntensity={true}
         placeholder="e.g. Stop lying awake worrying the chain will collapse"
-        emptyLabel="No emotional jobs captured."
+        emptyLabel="No emotional goals captured."
         readOnly={readOnly}
       />
       <JobsGroup
@@ -428,7 +428,7 @@ function JobsToBeDoneSection({
         onChange={(val) => onChange({ ...jobs, social: val })}
         withIntensity={true}
         placeholder="e.g. Not look disorganised in front of the estate agent"
-        emptyLabel="No social jobs captured."
+        emptyLabel="No social goals captured."
         readOnly={readOnly}
       />
     </div>
@@ -474,7 +474,7 @@ function JobLine({
         )}
         <span className="inline-flex items-center gap-1.5 text-base text-white">
           <Icon className="h-4 w-4" />
-          <span>{meta.label} job</span>
+          <span>{meta.label} goal</span>
         </span>
       </div>
       <p className={cn("italic text-white", prominent ? "text-xl font-semibold" : "text-base")}>
@@ -509,18 +509,18 @@ function WorthSection({
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-white shrink-0" />
             <span className="text-base font-semibold text-white">
-              {readOnly ? "The job you anchored the price on" : "Pick the one job to anchor the price on"}
+              {readOnly ? "The goal you anchored the price on" : "Pick the one goal to anchor the price on"}
             </span>
           </div>
           {!readOnly && (
-            <p className="text-base text-white">A customer hires a solution for one primary job: the one that tips them into buying. The others are secondary, they nudge what someone will pay rather than each adding their own price. So you set one price, anchored on that one dominant job. Pick whichever job below truly drives the decision to buy, whether it is functional, emotional, or social.</p>
+            <p className="text-base text-white">A customer buys a solution for one primary goal: the one that tips them into buying. The others are secondary, they nudge what someone will pay rather than each adding their own price. So you set one price, anchored on that one dominant goal. Pick whichever goal below truly drives the decision to buy, whether it is functional, emotional, or social.</p>
           )}
           {readOnly ? (
             anchor
               ? <JobLine kind={anchor.kind} job={anchor.job} prominent />
-              : <p className="text-base italic text-white">No job captured.</p>
+              : <p className="text-base italic text-white">No goal captured.</p>
           ) : (
-            <div role="radiogroup" aria-label="Pick the job to anchor the price on" className="flex flex-col gap-2">
+            <div role="radiogroup" aria-label="Pick the goal to anchor the price on" className="flex flex-col gap-2">
               {allJobs.map(({ kind, job }) => {
                 const selected = !!anchor && anchor.kind === kind && anchor.job.id === job.id
                 const pick = () => setAnchorJob({ kind, id: job.id })
@@ -571,7 +571,7 @@ function WorthSection({
           <span className="text-base font-semibold text-white">What they would pay each time the problem occurs</span>
         </div>
         {!readOnly && (
-          <p className="text-base text-white">Picture the customer being asked: &quot;If a service made this problem go away cleanly, what would you happily pay?&quot; Use your chosen anchor job above to guide the number, not the cost of building a feature. This is a hypothesis to test in real conversations, not a fact yet. If you cannot picture a customer signing off on the figure, round it down.</p>
+          <p className="text-base text-white">Picture the customer being asked: &quot;If a service made this problem go away cleanly, what would you happily pay?&quot; Use the anchor goal you chose above to guide the number, not the cost of building a feature. This is a hypothesis to test in real conversations, not a fact yet. If you cannot picture a customer signing off on the figure, round it down.</p>
         )}
         <CurrencyInput metric={worthToThem} onChange={setWorthToThem} readOnly={readOnly} />
       </div>
@@ -891,7 +891,7 @@ export function JobsToBeDoneStrategy({ readOnly = false }: { readOnly?: boolean 
   if (readOnly && !hasAny) {
     return (
       <div className="bg-secondary-brand rounded-xl p-8">
-        <p className="text-base text-white italic">No jobs captured.</p>
+        <p className="text-base text-white italic">Nothing captured yet.</p>
       </div>
     )
   }
@@ -899,7 +899,7 @@ export function JobsToBeDoneStrategy({ readOnly = false }: { readOnly?: boolean 
   return (
     <div className="bg-secondary-brand rounded-xl p-8">
       <div className="flex flex-col gap-6">
-        <p className="text-base font-medium text-white">Jobs your customer is trying to get done</p>
+        <p className="text-base font-medium text-white">What your customer is trying to achieve</p>
         <JobsToBeDoneSection
           jobs={jobsToBeDone}
           onChange={setJobsToBeDone}
@@ -1120,7 +1120,7 @@ export function VerdictStrategy({ readOnly = false }: { readOnly?: boolean }) {
               value={price > 0 ? formatMoney(price, { currency }) : ""}
             />
             <MetricRow
-              label="Anchor job for the price"
+              label="Anchor goal for the price"
               icon={Heart}
               value={anchor ? (anchor.job.intensity ? `${anchor.job.intensity} (${anchor.kind})` : anchor.kind) : ""}
             />

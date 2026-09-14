@@ -75,7 +75,7 @@ export function buildProblemExportText(
   const jobLine = (j: { text: string; intensity: string }) =>
     `${j.text}${j.intensity ? ` (${j.intensity})` : ""}`
   const jobs = problem.jobsToBeDone
-  lines.push(section("Jobs to be done", [
+  lines.push(section("What the customer is trying to achieve", [
     "Functional:",
     bulletList(jobs?.functional?.map((j) => j.text) ?? []),
     "Emotional:",

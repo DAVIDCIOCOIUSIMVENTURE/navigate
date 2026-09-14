@@ -21,18 +21,18 @@ export default function JobsToBeDonePage() {
   return (
     <Card className="w-full flex-1">
       <CardHeader className="px-10 pt-10 pb-0">
-        <CardTitle icon={Sparkles}>Jobs your customer is trying to get done</CardTitle>
+        <CardTitle icon={Sparkles}>What your customer is trying to achieve</CardTitle>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <div className="flex flex-col gap-3 text-base">
           <p>
-            Before you can guess what a customer would pay, you need a clear picture of what they are really hiring a solution to do. People do not buy products: they buy progress on something they are trying to get done. Some of that progress is a tangible task. Some of it is a feeling they want to have, or stop having. Some of it is how they want to be seen by others.
+            Before you can guess what a customer would pay, you need a clear picture of what they are really trying to achieve. People do not buy products: they buy progress on something they are trying to do. Some of that progress is a tangible task. Some of it is a feeling they want to have, or stop having. Some of it is how they want to be seen by others.
           </p>
           <p>
-            The trap is collapsing all of these into one short phrase like &quot;help me move house&quot;. Keep them separate. Later, in Problem Validation, you will pick one of these jobs to anchor the price on: usually the strongest emotional or social pull rather than the tangible task, though not always. A house move with no chain risk is the same job functionally as one with a fragile chain, but the price someone will pay to make the chain anxiety disappear is far higher than the price they will pay for a tidier solicitor portal.
+            The trap is collapsing all of these into one short phrase like &quot;help me move house&quot;. Keep them separate. Later, in Problem Validation, you will pick one of these goals to anchor the price on: usually the strongest emotional or social pull rather than the tangible task, though not always. A house move with no chain risk is the same task functionally as one with a fragile chain, but the price someone will pay to make the chain anxiety disappear is far higher than the price they will pay for a tidier solicitor portal.
           </p>
 
-          <h3 className="mt-4 text-xl font-bold text-foreground">Three kinds of job to capture</h3>
+          <h3 className="mt-4 text-xl font-bold text-foreground">Three kinds of goal to capture</h3>
           <div className={cn("grid gap-3", containerSize === "narrow" ? "grid-cols-1" : "grid-cols-3")}>
             <div className="flex items-start gap-3">
               <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-800 shrink-0 mt-0.5">
@@ -65,18 +65,18 @@ export default function JobsToBeDonePage() {
 
           <h3 className="mt-4 text-xl font-bold text-foreground">How to read intensity</h3>
           <p>
-            For emotional and social jobs, mark the intensity from what customers have said and done, not from how strongly you feel about it. <strong className="text-foreground">Mild</strong> is &quot;mildly annoying, forgotten within the hour&quot;. <strong className="text-foreground">Strong</strong> is &quot;makes the customer rearrange their day to avoid it&quot;. <strong className="text-foreground">Unbearable</strong> is &quot;will switch tools, jobs, or providers to make it stop&quot;.
+            For emotional and social goals, mark the intensity from what customers have said and done, not from how strongly you feel about it. <strong className="text-foreground">Mild</strong> is &quot;mildly annoying, forgotten within the hour&quot;. <strong className="text-foreground">Strong</strong> is &quot;makes the customer rearrange their day to avoid it&quot;. <strong className="text-foreground">Unbearable</strong> is &quot;will switch tools, jobs, or providers to make it stop&quot;.
           </p>
 
           <h3 className="mt-4 text-xl font-bold text-foreground">What will you do?</h3>
           <p>
-            Add at least one job under each of the three headings. Lean into emotional and social jobs even if they feel softer than the tangible tasks: those are usually where the price comes from. Later, in Problem Validation, you will choose one of these jobs as the anchor for the price, then put a number on what a customer would pay to make the problem go away. Pick whichever job truly drives the decision to buy, whatever its type.
+            Add at least one goal under each of the three headings. Lean into emotional and social goals even if they feel softer than the tangible tasks: those are usually where the price comes from. Later, in Problem Validation, you will choose one of these goals as the anchor for the price, then put a number on what a customer would pay to make the problem go away. Pick whichever goal truly drives the decision to buy, whatever its type.
           </p>
         </div>
 
         <hr className="border-border/40 my-4" />
 
-        <h3 className="mb-2 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> List the jobs the customer is trying to get done</h3>
+        <h3 className="mb-2 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> List what the customer is trying to achieve</h3>
 
         <Tabs defaultValue="strategy" className="flex flex-col gap-4">
           <TabsList className="self-center">
@@ -91,7 +91,7 @@ export default function JobsToBeDonePage() {
           <TabsContent value="case-studies">
             <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
               <p className="text-base text-foreground">
-                See the kinds of jobs successful companies recognised in their customers before settling on a price.
+                See what successful companies recognised their customers were trying to achieve before settling on a price.
               </p>
               <Tabs defaultValue={VALIDATE_CASE_STUDIES[0]?.company} className="flex flex-col gap-4">
                 <TabsList className="self-center bg-background">

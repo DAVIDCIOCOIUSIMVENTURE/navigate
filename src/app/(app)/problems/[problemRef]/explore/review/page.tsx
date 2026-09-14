@@ -213,10 +213,10 @@ export default function ExploreReviewPage() {
 
         <ReviewSection>
           <SectionHeading icon={Sparkles} onClick={() => goTo("jobs-to-be-done")}>
-            Jobs your customer is trying to get done
+            What your customer is trying to achieve
           </SectionHeading>
           {jobsCount === 0 ? (
-            <EmptyHint text="No jobs captured." />
+            <EmptyHint text="Nothing captured yet." />
           ) : (
             <div className="flex flex-col gap-5">
               <JobsGroup
@@ -224,21 +224,21 @@ export default function ExploreReviewPage() {
                 icon={Briefcase}
                 iconBg="bg-emerald-800"
                 jobs={jobsToBeDone.functional}
-                emptyLabel="No functional jobs captured."
+                emptyLabel="No functional goals captured."
               />
               <JobsGroup
                 title="How they want to feel"
                 icon={Heart}
                 iconBg="bg-red-800"
                 jobs={jobsToBeDone.emotional}
-                emptyLabel="No emotional jobs captured."
+                emptyLabel="No emotional goals captured."
               />
               <JobsGroup
                 title="How they want to be seen"
                 icon={Eye}
                 iconBg="bg-blue-900"
                 jobs={jobsToBeDone.social}
-                emptyLabel="No social jobs captured."
+                emptyLabel="No social goals captured."
               />
             </div>
           )}

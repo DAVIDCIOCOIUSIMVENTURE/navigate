@@ -14,7 +14,7 @@ const ALL_STEPS = [
   { icon: Search, title: "Choose a refinement method", description: "Pick the lens that fits: Root Causes, 5 Whys, or Affected Groups.", refinement: true },
   { icon: Search, title: "Refine your problem", description: "Dig into why this problem exists and who it affects using the method you chose.", refinement: true },
   { icon: GitFork, title: "Explore existing solutions & shortcomings", description: "Identify how customers currently deal with this problem and capture where each solution falls short." },
-  { icon: Sparkles, title: "Jobs your customer is trying to get done", description: "List the tangible tasks they need to complete, how they want to feel, and how they want to be seen." },
+  { icon: Sparkles, title: "What your customer is trying to achieve", description: "List the tangible tasks they need to complete, how they want to feel, and how they want to be seen." },
   { icon: LayoutTemplate, title: "Review", description: "Look back over what you have uncovered, then continue to Problem Validation when you are ready." },
 ]
 
@@ -34,23 +34,13 @@ export default function ExploreIntroductionPage() {
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
 
-        <div className="@container">
-          <div className="flex flex-col gap-6 @[800px]:flex-row @[800px]:items-center">
-            <div className="flex flex-col gap-4 flex-1 min-w-0">
-              <p className="text-base leading-relaxed">
-                You have identified a problem worth a closer look. Before you start sizing markets and weighing up the competition, take time to understand it properly. Who exactly has this problem, why does it really happen, how do people cope today, and what are they actually trying to get done?
-              </p>
-              <p className="text-base leading-relaxed">
-                This is the exploring and defining stage. The clearer the picture you build here, the sharper and more honest your validation will be afterwards. Everything you capture carries forward into Problem Validation.
-              </p>
-            </div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/illustrations/23-customer.svg"
-              alt=""
-              className="hidden @[900px]:block w-96 h-auto shrink-0 rounded-lg"
-            />
-          </div>
+        <div className="flex flex-col gap-4">
+          <p className="text-base leading-relaxed">
+            You have identified a problem worth a closer look. Before you start sizing markets and weighing up the competition, take time to understand it properly. Who exactly has this problem, why does it really happen, how do people cope today, and what are they actually trying to get done?
+          </p>
+          <p className="text-base leading-relaxed">
+            This is the exploring and defining stage. The clearer the picture you build here, the sharper and more honest your validation will be afterwards. Everything you capture carries forward into Problem Validation.
+          </p>
         </div>
 
         <div className="flex flex-col gap-3">

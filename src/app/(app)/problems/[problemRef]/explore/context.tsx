@@ -27,7 +27,7 @@ const ALL_NAV_ITEMS = [
   { label: "Choose your refinement method", path: "choose-refinement" },
   { label: "Refine your problem", path: "refine" },
   { label: "Explore existing solutions & shortcomings", path: "existing-solutions" },
-  { label: "Jobs your customer is trying to get done", path: "jobs-to-be-done" },
+  { label: "What your customer is trying to achieve", path: "jobs-to-be-done" },
   { label: "Review", path: "review" },
 ] as const
 

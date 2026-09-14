@@ -45,7 +45,7 @@ export default function VerdictPage() {
           </div>
           <h3 className="mt-4 text-xl font-bold text-foreground">How to weigh the factors together</h3>
           <p>
-            The seven factors split into three groups. The market sizing inputs (how many, how often, how much) tell you whether the prize is worth pursuing. The anchor job tells you how badly the customer wants progress, which often unlocks willingness to pay that the cash number alone misses. The competitive inputs (cost of switching, existing solution effectiveness, competitor size) tell you whether you can realistically capture the market. A strong opportunity needs at least decent scores across the groups: a huge total market you cannot win is no better than a small market you can dominate, and a market with no emotional or social pull rarely converts however large it looks.
+            The seven factors split into three groups. The market sizing inputs (how many, how often, how much) tell you whether the prize is worth pursuing. The anchor goal tells you how badly the customer wants progress, which often unlocks willingness to pay that the cash number alone misses. The competitive inputs (cost of switching, existing solution effectiveness, competitor size) tell you whether you can realistically capture the market. A strong opportunity needs at least decent scores across the groups: a huge total market you cannot win is no better than a small market you can dominate, and a market with no emotional or social pull rarely converts however large it looks.
           </p>
           <p>
             The total, reachable, and realistic market figures are sanity checks, not the verdict. A very large total with no demonstrated willingness to pay is a mirage: the arithmetic is real but the assumption that customers will hand over that money is not. Equally, a modest total is fine if willingness to pay is rock-solid, the reachable slice is large enough, and your realistic share looks defensible against the competition.
@@ -172,7 +172,7 @@ export default function VerdictPage() {
                         </ul>
                       </div>
                       <div>
-                        <span className="text-base font-semibold text-foreground">Jobs and competitive signals</span>
+                        <span className="text-base font-semibold text-foreground">Customer goals and competitive signals</span>
                         <ul className="mt-1 text-base text-foreground list-disc pl-5 space-y-1">
                           {cs.jobs.emotional[0] && (
                             <li>Strongest emotional pull: <span className="capitalize">{cs.jobs.emotional[0].intensity}</span> ({cs.jobs.emotional[0].text})</li>
