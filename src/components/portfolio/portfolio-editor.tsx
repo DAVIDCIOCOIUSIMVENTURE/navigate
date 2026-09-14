@@ -16,21 +16,21 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { ArrowLeft, Save, Lightbulb } from "lucide-react"
+import { ArrowLeft, Save, Target } from "lucide-react"
 
-const NO_PROBLEM = "none"
+const NO_SOLUTION = "none"
 
 export type PortfolioDraft = {
   title: string
   description: string
-  problemId: number | null
+  solutionId: number | null
 }
 
 /**
  * Shared create / edit form for a portfolio. The "new" and "edit" pages both
  * render this and pass an `onSave` that creates or updates the record. The
- * problem picker lists every problem; assigning one carries its solutions over
- * automatically (resolved live on the detail page, nothing is copied here).
+ * solution picker lists every solution; the problem it answers is resolved
+ * live on the detail page, nothing is copied here.
  */
 export function PortfolioEditor({
   heading,
@@ -44,18 +44,20 @@ export function PortfolioEditor({
   cancelHref: string
 }) {
   const router = useRouter()
-  const problems = useSelector((state: RootState) => state.problems.problems)
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
+  const problems = useSelector((state: RootState) => state.problems.problems)
 
   const [title, setTitle] = useState(initial.title)
   const [description, setDescription] = useState(initial.description)
-  const [problemId, setProblemId] = useState<number | null>(initial.problemId)
+  const [solutionId, setSolutionId] = useState<number | null>(initial.solutionId)
 
-  const selectedSolutionCount =
-    problemId != null ? solutions.filter((s) => s.problemId === problemId).length : 0
+  const selectedSolution = solutionId != null ? solutions.find((s) => s.id === solutionId) : undefined
+  const linkedProblem = selectedSolution
+    ? problems.find((p) => p.id === selectedSolution.problemId)
+    : undefined
 
   const handleSave = () => {
-    onSave({ title: title.trim(), description: description.trim(), problemId })
+    onSave({ title: title.trim(), description: description.trim(), solutionId })
   }
 
   return (
@@ -94,31 +96,33 @@ export function PortfolioEditor({
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label htmlFor="portfolio-problem">Problem</Label>
+            <Label htmlFor="portfolio-solution">Solution</Label>
             <Select
-              value={problemId == null ? NO_PROBLEM : String(problemId)}
-              onValueChange={(v) => setProblemId(v === NO_PROBLEM ? null : Number(v))}
+              value={solutionId == null ? NO_SOLUTION : String(solutionId)}
+              onValueChange={(v) => setSolutionId(v === NO_SOLUTION ? null : Number(v))}
             >
-              <SelectTrigger id="portfolio-problem" className="w-full">
-                <SelectValue placeholder="Choose a problem" />
+              <SelectTrigger id="portfolio-solution" className="w-full">
+                <SelectValue placeholder="Choose a solution" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value={NO_PROBLEM}>No problem assigned</SelectItem>
-                {problems.map((p) => (
-                  <SelectItem key={p.id} value={String(p.id)}>
-                    {p.title || `Problem #${p.id}`}
+                <SelectItem value={NO_SOLUTION}>No solution assigned</SelectItem>
+                {solutions.map((s) => (
+                  <SelectItem key={s.id} value={String(s.id)}>
+                    {s.title || `Solution #${s.id}`}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
-            {problemId != null ? (
+            {selectedSolution ? (
               <p className="flex items-center gap-1.5 text-base text-foreground/70">
-                <Lightbulb className="h-4 w-4 text-yellow-600" />
-                {selectedSolutionCount} {selectedSolutionCount === 1 ? "solution" : "solutions"} will carry over from this problem.
+                <Target className="h-4 w-4 text-red-800" />
+                {linkedProblem
+                  ? `Answers the problem "${linkedProblem.title || `Problem #${linkedProblem.id}`}", whose canvas will sit underneath.`
+                  : "This solution is not linked to a problem, so only its canvas will show."}
               </p>
             ) : (
               <p className="text-base text-foreground/60">
-                You can assign a problem now or later. Its solutions are carried over automatically.
+                You can assign a solution now or later. Its problem is carried over automatically.
               </p>
             )}
           </div>

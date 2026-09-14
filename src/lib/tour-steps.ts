@@ -231,7 +231,7 @@ export const TOUR_STEPS: TourStep[] = [
     id: "sidebar-portfolios",
     title: "Portfolios",
     body: [
-      "Group related problems and solutions into a portfolio you can present or share as a single body of work.",
+      "Package a solution and the problem it answers into a portfolio you can present or share as a single body of work.",
     ],
     target: TOUR_TARGETS.sidebarItem("/portfolios"),
     placement: "right",
@@ -435,7 +435,7 @@ export const TOUR_STEPS: TourStep[] = [
     id: "next-steps",
     title: "What comes next",
     body: [
-      "With a validated problem and solution in hand, Next Steps guides you through building, testing, planning, finding people and iterating. Portfolios let you package the work to present or share.",
+      "With a validated problem and solution in hand, Next Steps guides you through building, testing, planning, finding people and iterating. Portfolios let you package a solution and its problem to present or share.",
     ],
     route: "/next-steps",
   },

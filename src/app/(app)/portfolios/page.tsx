@@ -18,10 +18,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
-import { Plus, FolderKanban, Target, Lightbulb, Pencil, Trash2, ListChecks } from "lucide-react"
+import { Plus, FolderKanban, Target, Lightbulb, Pencil, Trash2 } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
-import { PORTFOLIO_ACTIONS } from "@/data/portfolioActions"
 
 export default function PortfolioListPage() {
   const router = useRouter()
@@ -38,8 +37,6 @@ export default function PortfolioListPage() {
     setMounted(true)
   }, [])
 
-  const totalActions = PORTFOLIO_ACTIONS.length
-
   return (
     <div
       className={cn("flex flex-col gap-3 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}
@@ -49,8 +46,8 @@ export default function PortfolioListPage() {
           <CardTitle size="md" icon={FolderKanban} className="text-xl text-foreground">Portfolios</CardTitle>
           <AboutDialog subject="portfolios">
             <p>
-              A <span className="font-bold">portfolio</span> is where an idea comes together. Assign it a validated problem and its solutions carry over automatically, then work through the next steps:
-              build a prototype, run a customer test, map a learning roadmap, and gather what you need for a business model canvas. Use it as the summary you take into the tools where the building and testing actually happen.
+              A <span className="font-bold">portfolio</span> is where an idea comes together. Assign it a solution and the problem it answers carries over automatically, so each portfolio shows the solution canvas with the problem canvas underneath.
+              Use it as the summary you take into the tools where the building and testing actually happen.
             </p>
           </AboutDialog>
         </div>
@@ -69,7 +66,7 @@ export default function PortfolioListPage() {
           <div className="text-center flex flex-col gap-2 max-w-sm">
             <h2 className="text-lg font-semibold">No portfolios yet</h2>
             <p className="text-base">
-              Create your first portfolio to pull a problem, its solutions, and your next steps into one place.
+              Create your first portfolio to bring a solution and the problem it answers into one place.
             </p>
           </div>
           <Button onClick={() => router.push("/portfolios/new")} size="lg" className="gap-2">
@@ -80,11 +77,8 @@ export default function PortfolioListPage() {
       ) : (
         <div className={cn("grid gap-3 overflow-y-auto sm:grid-cols-2 lg:grid-cols-3", isWide ? "flex-1 min-h-0 content-start" : "min-h-[320px]")}>
           {portfolios.map((portfolio) => {
-            const problem = problems.find((p) => p.id === portfolio.problemId)
-            const solutionCount = problem
-              ? solutions.filter((s) => s.problemId === problem.id).length
-              : 0
-            const doneCount = portfolio.actions.filter((a) => a.status === "done").length
+            const solution = solutions.find((s) => s.id === portfolio.solutionId)
+            const problem = solution ? problems.find((p) => p.id === solution.problemId) : undefined
             return (
               <Card
                 key={portfolio.id}
@@ -110,18 +104,16 @@ export default function PortfolioListPage() {
                   </div>
 
                   <div className="mt-auto flex flex-wrap items-center gap-2 text-base">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-red-800/15 px-2.5 py-1 text-red-800">
-                      <Target className="h-4 w-4" />
-                      {problem ? problem.title || "Untitled problem" : "No problem assigned"}
-                    </span>
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-yellow-600/20 px-2.5 py-1 text-yellow-700">
                       <Lightbulb className="h-4 w-4" />
-                      {solutionCount} {solutionCount === 1 ? "solution" : "solutions"}
+                      {solution ? solution.title || "Untitled solution" : "No solution assigned"}
                     </span>
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-quaternary/15 px-2.5 py-1 text-quaternary">
-                      <ListChecks className="h-4 w-4" />
-                      {doneCount}/{totalActions} steps done
-                    </span>
+                    {problem && (
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-red-800/15 px-2.5 py-1 text-red-800">
+                        <Target className="h-4 w-4" />
+                        {problem.title || "Untitled problem"}
+                      </span>
+                    )}
                   </div>
                 </Link>
 
@@ -156,7 +148,7 @@ export default function PortfolioListPage() {
           <AlertDialogHeader>
             <AlertDialogTitle>Delete this portfolio?</AlertDialogTitle>
             <AlertDialogDescription>
-              This removes the portfolio and its notes. The underlying problem and solutions are not affected.
+              This removes the portfolio. The underlying solution and problem are not affected.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

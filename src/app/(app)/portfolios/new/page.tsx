@@ -13,7 +13,7 @@ export default function NewPortfolioPage() {
     <PortfolioEditor
       heading="New portfolio"
       cancelHref="/portfolios"
-      initial={{ title: "", description: "", problemId: null }}
+      initial={{ title: "", description: "", solutionId: null }}
       onSave={(draft) => {
         const created = dispatch.portfolios.create(draft)
         router.push(`/portfolios/${created.id}`)

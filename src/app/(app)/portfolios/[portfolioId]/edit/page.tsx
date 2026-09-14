@@ -28,7 +28,7 @@ export default function EditPortfolioPage() {
             <Button asChild variant="outline">
               <Link href="/portfolios">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Portfolio
+                Back to Portfolios
               </Link>
             </Button>
           </CardContent>
@@ -44,7 +44,7 @@ export default function EditPortfolioPage() {
       initial={{
         title: portfolio.title,
         description: portfolio.description,
-        problemId: portfolio.problemId,
+        solutionId: portfolio.solutionId,
       }}
       onSave={(draft) => {
         dispatch.portfolios.update({ id: portfolio.id, patch: draft })

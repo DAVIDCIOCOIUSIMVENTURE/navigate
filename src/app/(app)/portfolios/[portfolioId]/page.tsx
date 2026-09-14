@@ -1,30 +1,35 @@
 "use client"
 
 import { useParams, useRouter } from "next/navigation"
-import { useSelector, useDispatch } from "react-redux"
+import { useSelector } from "react-redux"
 import Link from "next/link"
-import type { RootState, AppDispatch } from "@/store"
+import type { RootState } from "@/store"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Pencil, FolderKanban, Target } from "lucide-react"
+import { ArrowLeft, Pencil, FolderKanban, Lightbulb } from "lucide-react"
+import { SolutionCanvasCards } from "@/components/canvas/solution-canvas-cards"
 import { ProblemCanvasCards } from "@/components/canvas/problem-canvas-cards"
-import { PortfolioActionSection } from "@/components/portfolio/portfolio-action-section"
-import { PORTFOLIO_ACTIONS } from "@/data/portfolioActions"
-import type { PortfolioActionState, PortfolioActionStatus } from "@/types/portfolio"
 
+/**
+ * A portfolio is scoped to one solution: the page is that solution's canvas
+ * with the canvas of the problem it answers underneath. Both are resolved
+ * live from the store, so the portfolio only records which solution it is.
+ */
 export default function PortfolioDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const dispatch = useDispatch<AppDispatch>()
   const portfolioId = Number(params.portfolioId as string)
 
   const portfolio = useSelector((state: RootState) =>
     state.portfolios.portfolios.find((p) => p.id === portfolioId),
   )
-  const problem = useSelector((state: RootState) =>
-    portfolio?.problemId != null
-      ? state.problems.problems.find((p) => p.id === portfolio.problemId)
+  const solution = useSelector((state: RootState) =>
+    portfolio?.solutionId != null
+      ? state.solutions.solutions.find((s) => s.id === portfolio.solutionId)
       : undefined,
+  )
+  const problem = useSelector((state: RootState) =>
+    solution ? state.problems.problems.find((p) => p.id === solution.problemId) : undefined,
   )
 
   if (!portfolio) {
@@ -36,28 +41,13 @@ export default function PortfolioDetailPage() {
             <Button asChild variant="outline">
               <Link href="/portfolios">
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Portfolio
+                Back to Portfolios
               </Link>
             </Button>
           </CardContent>
         </Card>
       </div>
     )
-  }
-
-  // Reconcile stored action state against the full catalogue so every action
-  // shows, defaulting unseen ones to "not started" with empty notes.
-  const stateByAction = new Map(portfolio.actions.map((a) => [a.actionId, a]))
-
-  const writeActions = (next: PortfolioActionState[]) => {
-    dispatch.portfolios.update({ id: portfolio.id, patch: { actions: next } })
-  }
-
-  const updateAction = (actionId: string, patch: Partial<PortfolioActionState>) => {
-    const existing = stateByAction.get(actionId) ?? { actionId, status: "not_started" as PortfolioActionStatus, notes: "" }
-    const merged: PortfolioActionState = { ...existing, ...patch, actionId }
-    const others = portfolio.actions.filter((a) => a.actionId !== actionId)
-    writeActions([...others, merged])
   }
 
   return (
@@ -89,50 +79,36 @@ export default function PortfolioDetailPage() {
         </CardContent>
       </Card>
 
-      <section className="flex flex-col gap-2">
-        <h2 className="text-lg font-semibold">The problem</h2>
-        {problem ? (
-          <ProblemCanvasCards problem={problem} />
-        ) : (
-          <Card>
-            <CardContent className="flex flex-col items-center gap-4 p-10 text-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-800/15">
-                <Target className="h-6 w-6 text-red-800" />
-              </div>
-              <p className="max-w-sm text-base">
-                No problem is assigned to this portfolio yet. Assign one so its canvas and solutions appear here.
-              </p>
-              <Button variant="outline" onClick={() => router.push(`/portfolios/${portfolio.id}/edit`)}>
-                <Pencil className="mr-1.5 h-3.5 w-3.5" />
-                Assign a problem
-              </Button>
-            </CardContent>
-          </Card>
-        )}
-      </section>
+      {solution ? (
+        <>
+          <section className="flex flex-col gap-2">
+            <h2 className="text-lg font-semibold">The solution</h2>
+            <SolutionCanvasCards solution={solution} />
+          </section>
 
-      <section className="flex flex-col gap-3">
-        <div>
-          <h2 className="text-lg font-semibold">Next steps</h2>
-          <p className="text-base text-foreground/70">
-            Work through these to take the idea forward. Some are done in other tools; this is the summary you bring with you.
-          </p>
-        </div>
-        <div className="flex flex-col gap-3">
-          {PORTFOLIO_ACTIONS.map((def) => {
-            const state = stateByAction.get(def.id) ?? { actionId: def.id, status: "not_started" as PortfolioActionStatus, notes: "" }
-            return (
-              <PortfolioActionSection
-                key={def.id}
-                def={def}
-                state={state}
-                onStatusChange={(status) => updateAction(def.id, { status })}
-                onNotesChange={(notes) => updateAction(def.id, { notes })}
-              />
-            )
-          })}
-        </div>
-      </section>
+          {problem && (
+            <section className="flex flex-col gap-2">
+              <h2 className="text-lg font-semibold">The problem</h2>
+              <ProblemCanvasCards problem={problem} />
+            </section>
+          )}
+        </>
+      ) : (
+        <Card>
+          <CardContent className="flex flex-col items-center gap-4 p-10 text-center">
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-yellow-600/20">
+              <Lightbulb className="h-6 w-6 text-yellow-700" />
+            </div>
+            <p className="max-w-sm text-base">
+              No solution is assigned to this portfolio yet. Assign one so its canvas and the problem it answers appear here.
+            </p>
+            <Button variant="outline" onClick={() => router.push(`/portfolios/${portfolio.id}/edit`)}>
+              <Pencil className="mr-1.5 h-3.5 w-3.5" />
+              Assign a solution
+            </Button>
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }

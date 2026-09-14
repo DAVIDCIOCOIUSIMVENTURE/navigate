@@ -1,19 +1,16 @@
 import { createModel } from "@rematch/core"
 import type { RootModel } from "."
-import type { Portfolio, PortfolioActionState } from "@/types/portfolio"
+import type { Portfolio } from "@/types/portfolio"
 import { DEFAULT_PORTFOLIO_FIELDS } from "@/types/portfolio"
 
 const STORAGE_KEY = "navigate-portfolios"
 
-export type PortfolioPatch = Partial<
-  Pick<Portfolio, "title" | "description" | "problemId" | "actions">
->
+export type PortfolioPatch = Partial<Pick<Portfolio, "title" | "description" | "solutionId">>
 
 export type PortfolioCreateInput = {
   title?: string
   description?: string
-  problemId?: number | null
-  actions?: PortfolioActionState[]
+  solutionId?: number | null
 }
 
 interface PortfoliosState {
@@ -35,18 +32,26 @@ function saveToStorage(state: PortfoliosState) {
   }
 }
 
+/**
+ * Reads the stored shape. Portfolios were once scoped to a problem and carried
+ * a list of next-step actions; those fields are dropped and any record without
+ * a solution loads as unassigned.
+ */
 function loadFromStorage(): PortfoliosState | null {
   if (typeof window === "undefined") return null
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
     if (!raw) return null
-    const parsed = JSON.parse(raw) as PortfoliosState
+    const parsed = JSON.parse(raw) as { portfolios: Array<Record<string, unknown>>; nextId: number }
     return {
-      ...parsed,
+      nextId: parsed.nextId,
       portfolios: parsed.portfolios.map((p) => ({
-        ...p,
-        problemId: p.problemId ?? null,
-        actions: p.actions ?? [],
+        id: p.id as number,
+        createdAt: p.createdAt as string,
+        editedAt: p.editedAt as string,
+        title: (p.title as string) ?? "",
+        description: (p.description as string) ?? "",
+        solutionId: typeof p.solutionId === "number" ? p.solutionId : null,
       })),
     }
   } catch {
@@ -105,8 +110,7 @@ export const portfolios = createModel<RootModel>()({
         ...DEFAULT_PORTFOLIO_FIELDS,
         title: payload.title ?? DEFAULT_PORTFOLIO_FIELDS.title,
         description: payload.description ?? DEFAULT_PORTFOLIO_FIELDS.description,
-        problemId: payload.problemId ?? DEFAULT_PORTFOLIO_FIELDS.problemId,
-        actions: payload.actions ?? DEFAULT_PORTFOLIO_FIELDS.actions,
+        solutionId: payload.solutionId ?? DEFAULT_PORTFOLIO_FIELDS.solutionId,
       }
       dispatch.portfolios.addPortfolio(newPortfolio)
       const nextState: PortfoliosState = {
