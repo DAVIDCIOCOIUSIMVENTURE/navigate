@@ -37,7 +37,7 @@ export type LensPrompt = {
   /**
    * If true, this prompt's answer is context for later prompts, not a candidate
    * itself (e.g. "Name an organisation"). Captured in session state but never
-   * becomes a `ProblemCandidate`.
+   * becomes the saved problem.
    */
   contextOnly?: boolean
   /**

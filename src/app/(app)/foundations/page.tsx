@@ -30,7 +30,7 @@ export default function FoundationsPage() {
               </p>
               <p className="text-base text-foreground leading-relaxed">
                 What you&apos;ll find here: short pages, videos, and real case studies about the <span className="font-semibold">whys</span> and the <span className="font-semibold">whats</span>.
-                Why finding the right idea matters. What goes wrong when people skip validation. What went well for founders who did the work. We don&apos;t cover <span className="italic">how</span> to solve things here: that&apos;s what the Problems and Solutions sections are for.
+                Why finding the right idea matters. What goes wrong when people skip validation. What went well for founders who did the work. We don&apos;t cover <span className="italic">how</span> to solve things here: that&apos;s what your projects are for.
               </p>
             </div>
             {/* eslint-disable-next-line @next/next/no-img-element */}

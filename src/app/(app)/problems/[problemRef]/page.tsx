@@ -1,62 +1,26 @@
 "use client"
 
-import { useParams } from "next/navigation"
+import { useEffect } from "react"
+import { useParams, useRouter } from "next/navigation"
 import { useSelector } from "react-redux"
-import Link from "next/link"
 import type { RootState } from "@/store"
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { ArrowLeft, Target } from "lucide-react"
-import { ProblemCanvas } from "@/components/canvas/problem-canvas"
-import { FocusFlowHeader } from "@/components/focus-flow-header"
-import { FocusPageShell } from "@/components/focus-page-shell"
-import { useContainerSize } from "@/context/container-size-context"
-import { problemJourneyStep, summariseProblemJourney } from "@/lib/journey-steps"
-import { cn } from "@/lib/utils"
+import { projectHrefForProblem } from "@/lib/projects"
 
 /**
- * The per-problem canvas. A focus page like the Identify hubs: no header or
- * sidebar, so the left column carries Back (to Problems), the top-bar
- * toggle, the title and the journey rail, with the canvas beside it. The rail
- * highlights the problem's own next milestone (explore, validate, or find
- * solutions) rather than a fixed step.
+ * A problem is viewed on its project's page, so `/problems/<id>` sends the
+ * user there once the store has loaded (and home when the problem no longer
+ * exists). The edit, explore and validation pages under this route stay.
  */
-export default function ProblemCanvasPage() {
+export default function ProblemRedirectPage() {
   const params = useParams()
-  const problemRef = params.problemRef as string
-  const problemId = Number(problemRef)
-  const isWide = useContainerSize() === "wide"
-  const problem = useSelector((state: RootState) =>
-    state.problems.problems.find((p) => p.id === problemId),
-  )
-  const solutions = useSelector((state: RootState) => state.solutions.solutions)
+  const router = useRouter()
+  const problemId = Number(params.problemRef)
+  const hydrated = useSelector((state: RootState) => state.projects.hydrated)
+  const href = useSelector((state: RootState) => projectHrefForProblem(state.projects.projects, problemId))
 
-  const header = <FocusFlowHeader title="Problem canvas" icon={Target} backHref="/problems" className={cn(isWide && "flex-wrap")} />
+  useEffect(() => {
+    if (hydrated) router.replace(href)
+  }, [hydrated, href, router])
 
-  if (!problem) {
-    return (
-      <div className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-3 px-4 py-4 sm:px-6 lg:px-8 lg:py-6">
-        {header}
-        <Card className="w-full">
-          <CardContent className="p-10 flex flex-col items-center gap-4 text-center">
-            <p className="text-base">Problem not found.</p>
-            <Button asChild variant="outline">
-              <Link href="/problems">
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Problems
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
-    )
-  }
-
-  const journeyStep = problemJourneyStep(summariseProblemJourney(problem, solutions))
-
-  return (
-    <FocusPageShell header={header} journeyStep={journeyStep} journeyProblemId={problem.id}>
-      <ProblemCanvas problem={problem} editHref={`/problems/${problemRef}/edit`} showFullView={false} />
-    </FocusPageShell>
-  )
+  return null
 }

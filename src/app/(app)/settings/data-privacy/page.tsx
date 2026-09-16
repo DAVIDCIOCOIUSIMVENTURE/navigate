@@ -31,6 +31,12 @@ type StorageGroup = {
 // Add new groups here when introducing new persisted state.
 const STORAGE_GROUPS: StorageGroup[] = [
   {
+    id: "projects",
+    label: "Projects",
+    description: "Your projects: their names and which problem each one holds. Problems and solutions are cleared separately below.",
+    keys: ["navigate-projects"],
+  },
+  {
     id: "problems",
     label: "Problems",
     description: "Problems you've added, including descriptions, dimensions, and validation work.",
@@ -50,22 +56,29 @@ const STORAGE_GROUPS: StorageGroup[] = [
   },
   {
     id: "reflect-sessions",
-    label: "Reflect sessions",
-    description: "In-progress answers captured while reflecting through a lens in the Reflect tool.",
-    keys: ["navigate-reflect-sessions"],
+    label: "Reflect drafts",
+    description: "In-progress answers captured while reflecting through a lens in the Reflect tool, kept per project.",
+    // navigate-problem-candidates is a legacy key: its model is gone, but clearing it tidies browsers that still hold the data.
+    keys: ["navigate-reflect-sessions", "navigate-problem-candidates"],
   },
   {
     id: "research-sessions",
-    label: "Research sessions",
-    description: "In-progress capture answers from the Research tool, plus the research saved against problems you created with it.",
+    label: "Research drafts",
+    description: "In-progress capture answers from the Research tool, kept per project, plus the research saved against problems you created with it.",
     keys: ["navigate-research-sessions"],
     keyPrefixes: ["navigate-problem-research-"],
   },
   {
-    id: "problem-candidates",
-    label: "Problem candidates",
-    description: "Problems surfaced from reflect sessions before they're promoted into your Problems list.",
-    keys: ["navigate-problem-candidates"],
+    id: "canvas-drafts",
+    label: "Canvas Builder drafts",
+    description: "The dimension items ticked and the title typed in the Canvas Builder before a problem is saved, kept per project.",
+    keys: ["navigate-canvas-drafts"],
+  },
+  {
+    id: "solution-comparison",
+    label: "Solution comparison weights",
+    description: "How much each metric counts when comparing a project's solutions, kept per project.",
+    keys: ["navigate-solution-comparison"],
   },
   {
     id: "solutions",
@@ -77,6 +90,7 @@ const STORAGE_GROUPS: StorageGroup[] = [
     id: "solution-workspaces",
     label: "Solution refinement workspaces",
     description: "Per-problem refinement notes (root causes, 5 whys, affected groups) shared between problem validation and identifying solutions.",
+    // navigate-active-discovery-problem is a legacy key: there is no active problem any more, but old browsers may still hold one.
     keys: ["navigate-solution-workspaces", "navigate-active-discovery-problem"],
   },
   {
@@ -94,7 +108,7 @@ const STORAGE_GROUPS: StorageGroup[] = [
   {
     id: "app-preferences",
     label: "App preferences",
-    description: "Sidebar mode, problem builder draft, hidden columns, and other UI state.",
+    description: "Sidebar mode, Canvas Builder view preferences, and other UI state.",
     keys: ["navigate-settings"],
   },
 ]

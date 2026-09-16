@@ -7,7 +7,6 @@ import type { SidebarMode } from "@/components/ui/sidebar"
 const STORAGE_KEY = "navigate-settings"
 
 export type CanvasBuilderMode = "canvas" | "builder"
-export type CanvasBuilderStep = "pick" | "category" | "choose" | "review"
 // Re-exported so existing consumers can keep importing it from the store, but
 // the canonical definition now lives alongside the colour data in lib.
 export type { AvatarColor }
@@ -20,17 +19,18 @@ function isSidebarMode(value: unknown): value is SidebarMode {
   return value === "expanded" || value === "icon" || value === "collapsed"
 }
 
+/**
+ * App-wide preferences and UI state. Nothing here belongs to one project:
+ * the Canvas Builder's in-progress selection lives in `canvasDrafts`, keyed
+ * by project, while its view preferences (which columns are hidden, canvas
+ * or builder mode) stay here because they are how the user likes to work.
+ */
 interface SettingsState {
   hiddenCanvasBuilderColumns: string[]
   fullView: boolean
-  canvasBuilderSelected: string[]
   canvasBuilderMode: CanvasBuilderMode
   journalOpen: boolean
   sidebarMode: SidebarMode
-  canvasBuilderStep: CanvasBuilderStep
-  canvasBuilderActiveColumnId: string | null
-  canvasBuilderActiveCategoryId: string | null
-  canvasBuilderDescription: string
   avatarColor: AvatarColor
   nickname: string
   bio: string
@@ -39,14 +39,9 @@ interface SettingsState {
 const defaultState: SettingsState = {
   hiddenCanvasBuilderColumns: [],
   fullView: false,
-  canvasBuilderSelected: [],
   canvasBuilderMode: "canvas",
   journalOpen: false,
   sidebarMode: "expanded",
-  canvasBuilderStep: "pick",
-  canvasBuilderActiveColumnId: null,
-  canvasBuilderActiveCategoryId: null,
-  canvasBuilderDescription: "",
   avatarColor: "teal",
   nickname: "",
   bio: "",
@@ -74,11 +69,6 @@ export const settings = createModel<RootModel>()({
       // Not persisted, resets on reload
       return { ...state, fullView }
     },
-    setCanvasBuilderSelected(state, canvasBuilderSelected: string[]) {
-      const next = { ...state, canvasBuilderSelected }
-      saveToStorage(next)
-      return next
-    },
     setCanvasBuilderMode(state, canvasBuilderMode: CanvasBuilderMode) {
       const next = { ...state, canvasBuilderMode }
       saveToStorage(next)
@@ -91,26 +81,6 @@ export const settings = createModel<RootModel>()({
     },
     setSidebarMode(state, sidebarMode: SidebarMode) {
       const next = { ...state, sidebarMode }
-      saveToStorage(next)
-      return next
-    },
-    setCanvasBuilderStep(state, canvasBuilderStep: CanvasBuilderStep) {
-      const next = { ...state, canvasBuilderStep }
-      saveToStorage(next)
-      return next
-    },
-    setCanvasBuilderActiveColumnId(state, canvasBuilderActiveColumnId: string | null) {
-      const next = { ...state, canvasBuilderActiveColumnId }
-      saveToStorage(next)
-      return next
-    },
-    setCanvasBuilderActiveCategoryId(state, canvasBuilderActiveCategoryId: string | null) {
-      const next = { ...state, canvasBuilderActiveCategoryId }
-      saveToStorage(next)
-      return next
-    },
-    setCanvasBuilderDescription(state, canvasBuilderDescription: string) {
-      const next = { ...state, canvasBuilderDescription }
       saveToStorage(next)
       return next
     },
@@ -129,19 +99,6 @@ export const settings = createModel<RootModel>()({
       saveToStorage(next)
       return next
     },
-    resetCanvasBuilder(state) {
-      const next: SettingsState = {
-        ...state,
-        canvasBuilderStep: "pick",
-        canvasBuilderActiveColumnId: null,
-        canvasBuilderActiveCategoryId: null,
-        canvasBuilderDescription: "",
-        // Selections are shared between canvas and builder; reset clears both.
-        canvasBuilderSelected: [],
-      }
-      saveToStorage(next)
-      return next
-    },
   },
 
   effects: (dispatch) => ({
@@ -154,33 +111,14 @@ export const settings = createModel<RootModel>()({
         if (stored.hiddenCanvasBuilderColumns) {
           dispatch.settings.setHiddenCanvasBuilderColumns(stored.hiddenCanvasBuilderColumns)
         }
-        if (stored.canvasBuilderSelected) {
-          dispatch.settings.setCanvasBuilderSelected(stored.canvasBuilderSelected)
-        }
-        if (stored.canvasBuilderMode) {
-          // Reflect and research are now their own pages, not canvas-builder modes;
-          // any persisted value for them falls back to the default canvas mode.
-          if (stored.canvasBuilderMode === "canvas" || stored.canvasBuilderMode === "builder") {
-            dispatch.settings.setCanvasBuilderMode(stored.canvasBuilderMode)
-          }
+        if (stored.canvasBuilderMode === "canvas" || stored.canvasBuilderMode === "builder") {
+          dispatch.settings.setCanvasBuilderMode(stored.canvasBuilderMode)
         }
         if (typeof stored.journalOpen === "boolean") {
           dispatch.settings.setJournalOpen(stored.journalOpen)
         }
         if (isSidebarMode(stored.sidebarMode)) {
           dispatch.settings.setSidebarMode(stored.sidebarMode)
-        }
-        if (stored.canvasBuilderStep) {
-          dispatch.settings.setCanvasBuilderStep(stored.canvasBuilderStep)
-        }
-        if (stored.canvasBuilderActiveColumnId !== undefined) {
-          dispatch.settings.setCanvasBuilderActiveColumnId(stored.canvasBuilderActiveColumnId)
-        }
-        if (stored.canvasBuilderActiveCategoryId !== undefined) {
-          dispatch.settings.setCanvasBuilderActiveCategoryId(stored.canvasBuilderActiveCategoryId)
-        }
-        if (typeof stored.canvasBuilderDescription === "string") {
-          dispatch.settings.setCanvasBuilderDescription(stored.canvasBuilderDescription)
         }
         if (isAvatarColor(stored.avatarColor)) {
           dispatch.settings.setAvatarColor(stored.avatarColor)

@@ -77,7 +77,7 @@ function parseId(value: unknown): number | null {
 function parseJourney(value: unknown): TourJourney {
   if (!value || typeof value !== "object") return EMPTY_JOURNEY
   const raw = value as Partial<Record<keyof TourJourney, unknown>>
-  return { problemId: parseId(raw.problemId), solutionId: parseId(raw.solutionId) }
+  return { projectId: parseId(raw.projectId), problemId: parseId(raw.problemId), solutionId: parseId(raw.solutionId) }
 }
 
 /**

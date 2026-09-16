@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux"
 import type { AppDispatch } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { useSolution } from "@/app/(app)/solutions/[solutionId]/validate/context"
+import { useSolution } from "@/app/(app)/projects/[projectId]/solutions/[solutionId]/validate/context"
 import { CoreSolutionStrategy } from "@/components/solution-strategies/core-solution-strategy"
 import { MetricStrategy } from "@/components/solution-strategies/metric-strategy"
 import { VerdictStrategy } from "@/components/solution-strategies/verdict-strategy"
@@ -23,6 +23,7 @@ import {
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { projectRoutes } from "@/lib/projects"
 
 type SectionTone = "primary" | "indigo" | "amber" | "emerald" | "purple" | "rose" | "muted"
 
@@ -94,7 +95,7 @@ function HubSection({
   )
 }
 
-function LinkedProblemSection({ problemId, problemTitle, problemDescription }: { problemId: number | null; problemTitle: string | null; problemDescription: string | null }) {
+function LinkedProblemSection({ projectId, problemId, problemTitle, problemDescription }: { projectId: number; problemId: number | null; problemTitle: string | null; problemDescription: string | null }) {
   return (
     <HubSection icon={Target} label="Linked Problem" tone="amber">
       {problemId == null ? (
@@ -111,7 +112,7 @@ function LinkedProblemSection({ problemId, problemTitle, problemDescription }: {
             )}
           </div>
           <Button asChild variant="outline" size="sm" className="h-7 gap-1 text-base bg-white border-secondary-brand/40 text-secondary-brand hover:bg-secondary-brand/5 hover:text-secondary-brand shrink-0">
-            <Link href={`/problems/${problemId}/edit`}>
+            <Link href={projectRoutes.problemEdit(projectId)}>
               <ExternalLink className="h-3 w-3" />
               Open Problem
             </Link>
@@ -125,9 +126,10 @@ function LinkedProblemSection({ problemId, problemTitle, problemDescription }: {
 export function NextStepsSection({ solutionId }: { solutionId: number }) {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
-  const { validationStatus, solution } = useSolution()
+  const { projectId, validationStatus, solution } = useSolution()
+  const projectHref = projectRoutes.page(projectId)
 
-  const goToVerdict = () => router.push(`/solutions/${solutionId}/validate/verdict`)
+  const goToVerdict = () => router.push(projectRoutes.solutionValidate(projectId, solutionId, "verdict"))
 
   const handleDuplicate = () => {
     if (!solution) return
@@ -146,7 +148,7 @@ export function NextStepsSection({ solutionId }: { solutionId: number }) {
       reverseInversions: solution.reverseInversions,
     })
     if (newSolution && typeof newSolution === "object" && "id" in newSolution) {
-      router.push(`/solutions/${newSolution.id}/edit`)
+      router.push(projectRoutes.solutionEdit(projectId, newSolution.id))
     }
   }
 
@@ -219,10 +221,10 @@ export function NextStepsSection({ solutionId }: { solutionId: number }) {
             <NextStepCard
               icon={Lightbulb}
               title="Pick another solution"
-              description="Go back to your solutions list and try a different candidate."
-              actionLabel="Back to Solutions"
+              description="Go back to the project and try a different candidate."
+              actionLabel="Back to project"
               actionIcon={ArrowRight}
-              onAction={() => router.push("/solutions")}
+              onAction={() => router.push(projectHref)}
             />
           </div>
         </div>
@@ -291,7 +293,7 @@ export function SolutionHubContent({
   readOnly?: boolean
 }) {
   const {
-    solutionId, solution, problem,
+    projectId, solutionId, solution, problem,
     feasibility, setFeasibility,
     impact, setImpact,
     cost, setCost,
@@ -300,7 +302,7 @@ export function SolutionHubContent({
 
   if (!solution) return null
 
-  const validationBase = `/solutions/${solutionId}/validate`
+  const validationBase = projectRoutes.solutionValidateBase(projectId, solutionId)
   const stepHref = (suffix: string) => readOnly ? undefined : `${validationBase}/${suffix}`
 
   return (
@@ -310,6 +312,7 @@ export function SolutionHubContent({
       </HubSection>
 
       <LinkedProblemSection
+        projectId={projectId}
         problemId={problem?.id ?? null}
         problemTitle={problem?.title ?? null}
         problemDescription={problem?.description ?? null}

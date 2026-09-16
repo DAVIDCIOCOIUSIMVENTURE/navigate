@@ -17,6 +17,7 @@
  * degrades gracefully on mobile and when a page has no content yet.
  */
 import type { ValidationStatus } from "@/types/validation"
+import { projectRoutes } from "@/lib/projects"
 
 export type TourPlacement = "top" | "right" | "bottom" | "left"
 
@@ -25,12 +26,14 @@ export type TourTarget = string | string[]
 
 /** Ids created while working through the hands-on part of the tour. Persisted by the tour model. */
 export type TourJourney = {
+  projectId: number | null
   problemId: number | null
   solutionId: number | null
 }
 
-export const EMPTY_JOURNEY: TourJourney = { problemId: null, solutionId: null }
+export const EMPTY_JOURNEY: TourJourney = { projectId: null, problemId: null, solutionId: null }
 
+export type TourProjectSummary = { id: number; problemId: number | null }
 export type TourProblemSummary = { id: number; title: string; validationStatus: ValidationStatus }
 export type TourSolutionSummary = { id: number; problemId: number; validationStatus: ValidationStatus }
 
@@ -38,6 +41,7 @@ export type TourSolutionSummary = { id: number; problemId: number; validationSta
 export type TourContext = {
   pathname: string
   journey: TourJourney
+  projects: TourProjectSummary[]
   problems: TourProblemSummary[]
   solutions: TourSolutionSummary[]
 }
@@ -100,19 +104,21 @@ export const TOUR_TARGETS = {
   headerJournal: "header-journal",
   headerGuidance: "header-guidance",
   headerAccount: "header-account",
-  dashboardIdentifyProblems: "dashboard-identify-problems",
+  /** The projects dropdown in the header. */
+  headerProjects: "header-projects",
+  /** The "New project" item at the top of that dropdown. */
+  headerNewProject: "header-new-project",
+  /** The "New project" button on the home page. */
+  dashboardNewProject: "dashboard-new-project",
+  /** The "Identify a problem" button on a project page that has no problem yet. */
+  projectIdentifyProblem: "project-identify-problem",
   identifyMethods: "identify-methods",
   /** The "Use this tool" button on the "Define a Problem Statement" card of the identify hub. */
   identifyDefineUse: "identify-define-use",
-  problemsLibrary: "problems-library",
   canvasExplore: "canvas-explore",
   canvasValidate: "canvas-validate",
-  /** The "Identify solutions" button on the Solutions page; it opens Identify Solutions directly. */
-  solutionsIdentify: "solutions-identify",
-  /** A problem card on the Identify Solutions "Select a Problem" step. */
-  discoverProblem: (problemId: number) => `discover-problem-${problemId}`,
-  /** The Next button on that step; disabled until a problem is picked. */
-  discoverNext: "discover-next",
+  /** The "Identify solutions" button on a project page; it opens Identify Solutions for the project's problem. */
+  projectIdentifySolutions: "project-identify-solutions",
 } as const
 
 // Context helpers, shared by the step definitions and the overlay.
@@ -136,17 +142,50 @@ export function latest<T extends { id: number }>(items: T[]): T | undefined {
   return items.reduce<T | undefined>((best, item) => (best === undefined || item.id > best.id ? item : best), undefined)
 }
 
-const problemRoute = (suffix: string) => (ctx: TourContext) =>
-  ctx.journey.problemId === null ? null : `/problems/${ctx.journey.problemId}${suffix}`
+/** The project the tour's problem belongs to, falling back to the project created during the tour. */
+export function journeyProject(ctx: TourContext): TourProjectSummary | undefined {
+  return (
+    ctx.projects.find((p) => p.problemId !== null && p.problemId === ctx.journey.problemId) ??
+    ctx.projects.find((p) => p.id === ctx.journey.projectId)
+  )
+}
 
-const solutionRoute = (suffix: string) => (ctx: TourContext) =>
-  ctx.journey.solutionId === null ? null : `/solutions/${ctx.journey.solutionId}${suffix}`
+/** The tour's project id, or null before one exists. Every hands-on route is built from it. */
+function journeyProjectId(ctx: TourContext): number | null {
+  return journeyProject(ctx)?.id ?? null
+}
 
-const withinProblemFlow = (flow: string) => (ctx: TourContext) =>
-  ctx.journey.problemId !== null && ctx.pathname.startsWith(`/problems/${ctx.journey.problemId}/${flow}`)
+const projectRoute = (ctx: TourContext) => {
+  const id = journeyProjectId(ctx)
+  return id === null ? null : projectRoutes.page(id)
+}
 
-const withinSolutionFlow = (flow: string) => (ctx: TourContext) =>
-  ctx.journey.solutionId !== null && ctx.pathname.startsWith(`/solutions/${ctx.journey.solutionId}/${flow}`)
+/** A route under the tour's project, or null before the project exists. */
+const projectSubroute = (build: (projectId: number) => string) => (ctx: TourContext) => {
+  const id = journeyProjectId(ctx)
+  return id === null ? null : build(id)
+}
+
+const problemRoute = (build: (projectId: number) => string) => (ctx: TourContext) =>
+  ctx.journey.problemId === null ? null : projectSubroute(build)(ctx)
+
+const solutionRoute = (build: (projectId: number, solutionId: number) => string) => (ctx: TourContext) => {
+  const id = journeyProjectId(ctx)
+  return id === null || ctx.journey.solutionId === null ? null : build(id, ctx.journey.solutionId)
+}
+
+const withinProjectPath = (build: (projectId: number) => string) => (ctx: TourContext) => {
+  const id = journeyProjectId(ctx)
+  return id !== null && ctx.pathname.startsWith(build(id))
+}
+
+const withinProblemFlow = (base: (projectId: number) => string) => (ctx: TourContext) =>
+  ctx.journey.problemId !== null && withinProjectPath(base)(ctx)
+
+const withinSolutionFlow = (ctx: TourContext) => {
+  const id = journeyProjectId(ctx)
+  return id !== null && ctx.journey.solutionId !== null && ctx.pathname.startsWith(projectRoutes.solutionValidateBase(id, ctx.journey.solutionId))
+}
 
 export const TOUR_STEPS: TourStep[] = [
   {
@@ -154,8 +193,8 @@ export const TOUR_STEPS: TourStep[] = [
     variant: "welcome",
     title: "Welcome to Navigate",
     body: [
-      "Navigate is a platform for identifying problems worth solving and discovering solutions worth pursuing. This guided tour walks you through the application so you know where everything lives and what each part is for.",
-      "It starts with a look around the menu and the top bar. Then it becomes hands-on: you will create your first problem, explore and validate it, and find and validate a solution for it, with the tour guiding each step.",
+      "Navigate is a platform for identifying problems worth solving and discovering solutions worth pursuing. Your work is organised into projects: each one holds a problem and the solutions you find for it. This guided tour walks you through the application so you know where everything lives and what each part is for.",
+      "It starts with a look around the menu and the top bar. Then it becomes hands-on: you will start your first project, identify its problem, explore and validate it, and find and validate a solution for it, with the tour guiding each step.",
       "You can close the tour at any point and it will pick up where you left off. You can also skip it and start it again later from Settings.",
     ],
   },
@@ -165,7 +204,7 @@ export const TOUR_STEPS: TourStep[] = [
     id: "sidebar-home",
     title: "Home",
     body: [
-      "Your home page shows everything you have captured so far: your problems and your solutions in one place. Come back here whenever you want an overview of your progress.",
+      "Your home page lists your projects. Each project is one problem and the solutions you find for it; open one to carry on where you left off. Come back here whenever you want an overview of your progress.",
     ],
     target: TOUR_TARGETS.sidebarItem("/"),
     placement: "right",
@@ -190,28 +229,6 @@ export const TOUR_STEPS: TourStep[] = [
       "A questionnaire about your interests, knowledge, skills, experience and the people you know. Your answers feed the You column when you identify problems, so every problem stays grounded in what you can actually do.",
     ],
     target: TOUR_TARGETS.sidebarItem("/self-discovery"),
-    placement: "right",
-    route: "/",
-    needsSidebar: true,
-  },
-  {
-    id: "sidebar-problems",
-    title: "Problems",
-    body: [
-      "Every problem you identify lands here. From this page you can open a problem, explore it in depth and validate whether it is real and painful enough to commit to.",
-    ],
-    target: TOUR_TARGETS.sidebarItem("/problems"),
-    placement: "right",
-    route: "/",
-    needsSidebar: true,
-  },
-  {
-    id: "sidebar-solutions",
-    title: "Solutions",
-    body: [
-      "Solutions answer a validated problem. This page collects your candidates and lets you score each one on feasibility, impact, cost and time to implement.",
-    ],
-    target: TOUR_TARGETS.sidebarItem("/solutions"),
     placement: "right",
     route: "/",
     needsSidebar: true,
@@ -257,6 +274,16 @@ export const TOUR_STEPS: TourStep[] = [
       "The breadcrumb shows where you are in the application. Click an earlier part of it to jump back up a level.",
     ],
     target: TOUR_TARGETS.headerBreadcrumb,
+    placement: "bottom",
+    route: "/",
+  },
+  {
+    id: "header-projects",
+    title: "Your projects",
+    body: [
+      "The projects menu lists every project and lets you jump between them from anywhere in the application. New project at the top of the list starts a fresh one.",
+    ],
+    target: TOUR_TARGETS.headerProjects,
     placement: "bottom",
     route: "/",
   },
@@ -310,20 +337,32 @@ export const TOUR_STEPS: TourStep[] = [
     id: "journey-intro",
     title: "Now let's do it for real",
     body: [
-      "The rest of the tour is hands-on. You will create a problem, explore and validate it, then find a solution for it and validate that too. Each card tells you what to do and waits until you have done it.",
+      "The rest of the tour is hands-on. You will start a project, identify its problem, explore and validate it, then find a solution for it and validate that too. Each card tells you what to do and waits until you have done it.",
       "Take as long as you like. Close the tour at any point and it will pick up from the same step next time.",
     ],
     route: "/",
   },
   {
-    id: "act-identify",
+    id: "act-new-project",
     mode: "act",
-    title: "Identify a new problem",
-    body: ["Everything starts with a problem. Click Identify new problems to begin."],
-    target: TOUR_TARGETS.dashboardIdentifyProblems,
+    title: "Start a project",
+    body: ["Everything happens inside a project. Click New project, give it a name and create it."],
+    target: TOUR_TARGETS.dashboardNewProject,
     placement: "bottom",
     route: "/",
-    done: (ctx) => ctx.pathname === "/problems/identify",
+    done: (ctx, entry) => ctx.projects.length > entry.projects.length,
+    capture: (ctx) => ({ projectId: latest(ctx.projects)?.id ?? null }),
+    advance: "auto",
+  },
+  {
+    id: "act-identify",
+    mode: "act",
+    title: "Identify the project's problem",
+    body: ["A project starts with a problem. Click Identify a problem to choose how to find one."],
+    target: TOUR_TARGETS.projectIdentifyProblem,
+    placement: "bottom",
+    route: projectRoute,
+    done: withinProjectPath(projectRoutes.identify),
     advance: "auto",
   },
   {
@@ -336,7 +375,7 @@ export const TOUR_STEPS: TourStep[] = [
     ],
     target: TOUR_TARGETS.identifyDefineUse,
     placement: "bottom",
-    route: "/problems/identify",
+    route: projectSubroute(projectRoutes.identify),
     done: (ctx, entry) => ctx.problems.length > entry.problems.length,
     capture: (ctx) => ({ problemId: latest(ctx.problems)?.id ?? null }),
     advance: "auto",
@@ -349,7 +388,7 @@ export const TOUR_STEPS: TourStep[] = [
       "Give the problem a title and a sentence or two on who has it and when it shows up. A rough first draft is fine; you will sharpen it in the next step.",
       "Press Done, then on the Problem Saved dialog choose Explore the Problem.",
     ],
-    done: (ctx) => ctx.journey.problemId !== null && ctx.pathname.startsWith(`/problems/${ctx.journey.problemId}/explore`),
+    done: withinProblemFlow(projectRoutes.exploreBase),
     advance: "auto",
   },
   {
@@ -360,9 +399,9 @@ export const TOUR_STEPS: TourStep[] = [
       "Explore is a deep dive into the problem: who the customer is, refining it with tools such as 5 Whys, mapping the solutions that already exist and capturing what the customer is trying to achieve.",
       "Work through the steps in the left-hand nav; each one saves as you go. When you reach Review, press Continue to Problem Validation.",
     ],
-    route: problemRoute("/explore/introduction"),
-    within: withinProblemFlow("explore"),
-    done: withinProblemFlow("validation"),
+    route: problemRoute((id) => projectRoutes.explore(id)),
+    within: withinProblemFlow(projectRoutes.exploreBase),
+    done: withinProblemFlow(projectRoutes.validationBase),
     advance: "auto",
   },
   {
@@ -373,8 +412,8 @@ export const TOUR_STEPS: TourStep[] = [
       "Validation asks what solving the problem is worth to the customer, how big the market is and how strong the competition is.",
       "Work through Worth, Market and Competition, then on Verdict choose Valid, Unsure or Invalid. Only problems marked Valid or Unsure can move on to solutions.",
     ],
-    route: problemRoute("/validation/introduction"),
-    within: withinProblemFlow("validation"),
+    route: problemRoute((id) => projectRoutes.validation(id)),
+    within: withinProblemFlow(projectRoutes.validationBase),
     done: (ctx) => hasVerdict(journeyProblem(ctx)?.validationStatus),
   },
   {
@@ -382,26 +421,12 @@ export const TOUR_STEPS: TourStep[] = [
     mode: "act",
     title: "Identify a solution",
     body: [
-      "Now find a solution for your problem. Click Identify solutions to open the Identify Solutions flow, which walks you from a validated problem to concrete candidates using creative techniques.",
+      "Now find a solution for your problem. Back on the project page, click Identify solutions to open the Identify Solutions flow, which walks you from a validated problem to concrete candidates using creative techniques.",
     ],
-    target: TOUR_TARGETS.solutionsIdentify,
+    target: TOUR_TARGETS.projectIdentifySolutions,
     placement: "bottom",
-    route: "/solutions",
-    done: (ctx) => ctx.pathname.startsWith("/solutions/identify"),
-    advance: "auto",
-  },
-  {
-    id: "act-discover-problem",
-    mode: "act",
-    title: "Pick your problem",
-    body: [
-      "Only problems marked Valid or Unsure are listed. Select the problem you just validated, then press Next.",
-    ],
-    target: (ctx) =>
-      ctx.journey.problemId === null ? null : [TOUR_TARGETS.discoverProblem(ctx.journey.problemId), TOUR_TARGETS.discoverNext],
-    placement: "top",
-    route: "/solutions/identify/select-problem",
-    done: (ctx) => ctx.pathname.startsWith("/solutions/identify/") && ctx.pathname !== "/solutions/identify/select-problem",
+    route: projectRoute,
+    done: withinProjectPath(projectRoutes.identifySolutionsBase),
     advance: "auto",
   },
   {
@@ -409,11 +434,11 @@ export const TOUR_STEPS: TourStep[] = [
     mode: "act",
     title: "Discover a solution",
     body: [
-      "Pick a method such as analogy or SCAMPER, work through its prompts and save at least one candidate. Each one lands in your solutions.",
+      "Pick a method such as analogy or SCAMPER, work through its prompts and save at least one candidate. Each one lands in your project.",
       "When a candidate is saved, press Next.",
     ],
-    route: "/solutions/identify/pick-method",
-    within: (ctx) => ctx.pathname.startsWith("/solutions/identify"),
+    route: projectSubroute((id) => projectRoutes.identifySolutions(id)),
+    within: withinProjectPath(projectRoutes.identifySolutionsBase),
     done: (ctx, entry) =>
       ctx.solutions.some((s) => s.problemId === ctx.journey.problemId) || ctx.solutions.length > entry.solutions.length,
     capture: (ctx) => ({
@@ -427,8 +452,8 @@ export const TOUR_STEPS: TourStep[] = [
     body: [
       "Score the candidate from one to five on feasibility, impact, cost and time to implement, then record a verdict. The verdict tells you whether this is the solution worth pursuing.",
     ],
-    route: solutionRoute("/validate/introduction"),
-    within: withinSolutionFlow("validate"),
+    route: solutionRoute((id, solutionId) => projectRoutes.solutionValidate(id, solutionId)),
+    within: withinSolutionFlow,
     done: (ctx) => hasVerdict(journeySolution(ctx)?.validationStatus),
   },
   {
@@ -444,7 +469,7 @@ export const TOUR_STEPS: TourStep[] = [
     variant: "finish",
     title: "You are ready to go",
     body: [
-      "That is the end of the tour. Your problem and solution are saved in Problems and Solutions, ready to refine further. The guidance panel in the top bar explains every step in more detail, and you can run this tour again at any time from Settings.",
+      "That is the end of the tour. Your problem and solution are saved in your project, ready to refine further. The guidance panel in the top bar explains every step in more detail, and you can run this tour again at any time from Settings.",
     ],
     route: "/",
   },

@@ -1,16 +1,20 @@
 "use client"
 
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
 import { Card, CardContent } from "@/components/ui/card"
 import {
   completedJourneySteps,
   computeJourneySteps,
+  journeyStepHref,
   summariseProblemJourney,
   type JourneyStep,
   type JourneyStepId,
 } from "@/lib/journey-steps"
+import { useProjectIdForProblem } from "@/hooks/use-projects"
+import { projectIdFromPathname } from "@/lib/projects"
 import { cn } from "@/lib/utils"
 
 /**
@@ -78,8 +82,14 @@ export function JourneyProgress({
     problemId === null ? undefined : state.problems.problems.find((p) => p.id === problemId),
   )
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
+  // The rail links into the project the page belongs to: the problem's project
+  // when a problem is in view, otherwise the project in the URL (the identify hub).
+  const pathname = usePathname()
+  const problemProjectId = useProjectIdForProblem(problem?.id)
+  const projectId = problemProjectId ?? projectIdFromPathname(pathname)
   const completed = problem ? completedJourneySteps(summariseProblemJourney(problem, solutions)) : undefined
   const steps = computeJourneySteps(activeId, completed)
+  const hrefFor = (step: JourneyStep) => journeyStepHref(step, projectId, problem !== undefined)
 
   if (orientation === "horizontal") {
     return (
@@ -92,7 +102,7 @@ export function JourneyProgress({
                 <StepCircle step={step} />
                 <Connector visible={i < steps.length - 1} done={step.status === "completed"} orientation="horizontal" />
               </div>
-              <StepLabel step={step} className="text-center" />
+              <StepLabel step={step} href={hrefFor(step)} className="text-center" />
             </li>
           ))}
         </ol>
@@ -109,7 +119,7 @@ export function JourneyProgress({
               <StepCircle step={step} />
               {i < steps.length - 1 && <Connector visible done={step.status === "completed"} orientation="vertical" />}
             </div>
-            <StepLabel step={step} className={cn("pt-1", i < steps.length - 1 && "pb-5")} />
+            <StepLabel step={step} href={hrefFor(step)} className={cn("pt-1", i < steps.length - 1 && "pb-5")} />
           </li>
         ))}
       </ol>
@@ -135,12 +145,20 @@ function StepCircle({ step }: { step: JourneyStep }) {
   )
 }
 
-function StepLabel({ step, className }: { step: JourneyStep; className?: string }) {
+function StepLabel({
+  step,
+  href,
+  className,
+}: {
+  step: JourneyStep
+  href: string
+  className?: string
+}) {
   const status =
     step.status === "active" ? " (current step)" : step.status === "completed" ? " (completed)" : ""
   return (
     <Link
-      href={step.href}
+      href={href}
       aria-current={step.status === "active" ? "step" : undefined}
       className={cn(
         "text-sm leading-snug rounded-sm hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",

@@ -7,73 +7,80 @@ import {
   type MetricImportance,
   type MetricWeights,
 } from "@/lib/solution-comparison"
+import { parsePerProject, perProjectReducers, type PerProject, type PerProjectState } from "./per-project"
 
 const STORAGE_KEY = "navigate-solution-comparison"
 
 /**
- * How important each solution metric is to the user when comparing
- * solutions. The Compare solutions page ranks solutions by these weights;
+ * How important each solution metric is to the user when comparing the
+ * solutions of one project. A bootstrapped project can favour cheap, quick
+ * wins while a funded one chases impact, so the weights are kept per
+ * project. The Compare solutions flow ranks the project's solutions by them;
  * the traffic light the user then gives each solution lives on the
  * `Solution` itself.
  */
-interface SolutionComparisonState {
-  weights: MetricWeights
-}
+type SolutionComparisonState = PerProjectState<MetricWeights>
 
 const defaultState: SolutionComparisonState = {
-  weights: DEFAULT_METRIC_WEIGHTS,
+  byProject: {},
+  hydrated: false,
 }
 
-function saveToStorage(state: SolutionComparisonState) {
+/** The weights of one project, the defaults until it has set any. */
+export function selectComparisonWeights(state: { solutionComparison: SolutionComparisonState }, projectId: number): MetricWeights {
+  return state.solutionComparison.byProject[projectId] ?? DEFAULT_METRIC_WEIGHTS
+}
+
+function saveToStorage(byProject: PerProject<MetricWeights>) {
   if (typeof window === "undefined") return
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ byProject }))
   } catch {
     // ignore storage errors
   }
 }
 
-function loadFromStorage(): SolutionComparisonState | null {
-  if (typeof window === "undefined") return null
+/** Reads the stored map. Weights saved before projects existed had no project to belong to and are dropped. */
+function loadFromStorage(): PerProject<MetricWeights> {
+  if (typeof window === "undefined") return {}
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return null
-    const parsed = JSON.parse(raw) as Partial<SolutionComparisonState>
-    return { weights: normaliseWeights(parsed.weights) }
+    if (!raw) return {}
+    const parsed = JSON.parse(raw) as { byProject?: unknown }
+    return parsePerProject(parsed.byProject, normaliseWeights)
   } catch {
-    return null
+    return {}
   }
 }
+
+const { update: updateProject, clear: clearProjectSlice } = perProjectReducers(DEFAULT_METRIC_WEIGHTS, saveToStorage)
 
 export const solutionComparison = createModel<RootModel>()({
   state: defaultState,
 
   reducers: {
-    setWeights(state, weights: MetricWeights) {
-      return { ...state, weights }
+    setAll(state, byProject: PerProject<MetricWeights>): SolutionComparisonState {
+      return { ...state, byProject, hydrated: true }
     },
 
-    setWeight(state, { key, value }: { key: SolutionMetricKey; value: MetricImportance }) {
-      return { ...state, weights: { ...state.weights, [key]: value } }
+    setWeights(state, payload: { projectId: number; weights: MetricWeights }): SolutionComparisonState {
+      return updateProject(state, payload, (_current, { weights }) => weights)
+    },
+
+    /** Forgets one project's weights. */
+    clearProject(state, projectId: number): SolutionComparisonState {
+      return clearProjectSlice(state, projectId)
     },
   },
 
   effects: (dispatch) => ({
     init() {
-      const stored = loadFromStorage()
-      if (stored) {
-        dispatch.solutionComparison.setWeights(stored.weights)
-      }
+      dispatch.solutionComparison.setAll(loadFromStorage())
     },
 
-    updateWeight(payload: { key: SolutionMetricKey; value: MetricImportance }, rootState) {
-      dispatch.solutionComparison.setWeight(payload)
-      saveToStorage({ weights: { ...rootState.solutionComparison.weights, [payload.key]: payload.value } })
-    },
-
-    resetWeights() {
-      dispatch.solutionComparison.setWeights(DEFAULT_METRIC_WEIGHTS)
-      saveToStorage({ weights: DEFAULT_METRIC_WEIGHTS })
+    updateWeight({ projectId, key, value }: { projectId: number; key: SolutionMetricKey; value: MetricImportance }, rootState) {
+      const current = selectComparisonWeights(rootState, projectId)
+      dispatch.solutionComparison.setWeights({ projectId, weights: { ...current, [key]: value } })
     },
   }),
 })

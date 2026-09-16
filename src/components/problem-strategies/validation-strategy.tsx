@@ -7,7 +7,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
+import { useProblem } from "@/app/(app)/projects/[projectId]/problem/validation/context"
 import type { Job, JobAnchor, JobIntensity, JobKind, JobsToBeDone, ValidationMetric } from "@/types/validation"
 import {
   CURRENCY_OPTIONS, DEFAULT_OBTAINABLE_SHARE, DEFAULT_REACHABLE_SHARE,

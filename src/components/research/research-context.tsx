@@ -6,18 +6,29 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   type ReactNode,
 } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
 import type { ResearchMethod } from "@/data/researchMethods"
-import type { ResearchAnswer } from "@/store/research-sessions-model"
+import { selectResearchProject, type ResearchAnswer } from "@/store/research-sessions-model"
+import type { ResearchCapture } from "@/types/research"
 
 export type { ResearchAnswer }
 
+/** Turns the research saved against a problem back into session answers for the same method. */
+function answersFromCapture(method: ResearchMethod, capture: ResearchCapture): Record<string, ResearchAnswer[]> {
+  if (capture.methodId !== method.id) return {}
+  const out: Record<string, ResearchAnswer[]> = {}
+  for (const entry of capture.prompts) {
+    out[entry.promptId] = entry.answers.map((text) => ({ text }))
+  }
+  return out
+}
+
 type ResearchContextValue = {
   method: ResearchMethod
-  sessionId: string
   toolId: string | null
   answers: Record<string, ResearchAnswer[]>
   setTool: (toolId: string | null) => void
@@ -25,6 +36,7 @@ type ResearchContextValue = {
   setAnswerSlots: (promptId: string, slots: ResearchAnswer[]) => void
   addAnswerSlot: (promptId: string) => void
   removeAnswerSlot: (promptId: string, index: number) => void
+  /** Drops the draft once its problem has been saved. */
   clearSession: () => void
 }
 
@@ -49,74 +61,95 @@ function initialAnswers(method: ResearchMethod): Record<string, ResearchAnswer[]
   return out
 }
 
+/**
+ * The Research session for one method inside one project. Every read and
+ * write goes to the `researchSessions` model under the project's id, so a
+ * draft started in one project never appears in another.
+ */
 export function ResearchProvider({
+  projectId,
   method,
+  seed = null,
   children,
 }: {
+  projectId: number
   method: ResearchMethod
+  /** The research already saved against the project's problem; pre-fills a fresh session for the same method. */
+  seed?: ResearchCapture | null
   children: ReactNode
 }) {
   const dispatch = useDispatch<AppDispatch>()
   const hydrated = useSelector((s: RootState) => s.researchSessions.hydrated)
-  const session = useSelector((s: RootState) => s.researchSessions.sessions[method.id])
+  const session = useSelector((s: RootState) => selectResearchProject(s, projectId).sessions[method.id])
 
+  /**
+   * The method whose session this provider has already opened. Saving the
+   * problem clears the draft, and the project then holds that problem, so
+   * without this the effect would immediately build the draft again from
+   * what was just saved. Keyed by method so switching method still opens one.
+   */
+  const openedForMethod = useRef<string | null>(null)
   useEffect(() => {
     if (!hydrated) return
-    if (session) return
+    if (session || openedForMethod.current === method.id) return
+    openedForMethod.current = method.id
+    const seeded = seed && seed.methodId === method.id ? seed : null
     dispatch.researchSessions.ensureSession({
+      projectId,
       methodId: method.id,
       sessionId: createSessionId(),
       promptIds: method.prompts.map((p) => p.id),
+      seedAnswers: seeded ? answersFromCapture(method, seeded) : undefined,
+      seedToolId: seeded?.toolId ?? null,
     })
-  }, [hydrated, session, dispatch, method.id, method.prompts])
+  }, [hydrated, session, dispatch, projectId, method, seed])
 
-  const sessionId = session?.sessionId ?? ""
   const toolId = session?.toolId ?? null
   const answers = session?.answers ?? initialAnswers(method)
+  const methodId = method.id
 
   const setTool = useCallback(
     (next: string | null) => {
-      dispatch.researchSessions.setTool({ methodId: method.id, toolId: next })
+      dispatch.researchSessions.setTool({ projectId, methodId, toolId: next })
     },
-    [dispatch, method.id]
+    [dispatch, projectId, methodId]
   )
 
   const setAnswerText = useCallback(
     (promptId: string, index: number, text: string) => {
-      dispatch.researchSessions.setAnswerText({ methodId: method.id, promptId, index, text })
+      dispatch.researchSessions.setAnswerText({ projectId, methodId, promptId, index, text })
     },
-    [dispatch, method.id]
+    [dispatch, projectId, methodId]
   )
 
   const setAnswerSlots = useCallback(
     (promptId: string, slots: ResearchAnswer[]) => {
-      dispatch.researchSessions.setAnswerSlots({ methodId: method.id, promptId, slots })
+      dispatch.researchSessions.setAnswerSlots({ projectId, methodId, promptId, slots })
     },
-    [dispatch, method.id]
+    [dispatch, projectId, methodId]
   )
 
   const addAnswerSlot = useCallback(
     (promptId: string) => {
-      dispatch.researchSessions.addAnswerSlot({ methodId: method.id, promptId })
+      dispatch.researchSessions.addAnswerSlot({ projectId, methodId, promptId })
     },
-    [dispatch, method.id]
+    [dispatch, projectId, methodId]
   )
 
   const removeAnswerSlot = useCallback(
     (promptId: string, index: number) => {
-      dispatch.researchSessions.removeAnswerSlot({ methodId: method.id, promptId, index })
+      dispatch.researchSessions.removeAnswerSlot({ projectId, methodId, promptId, index })
     },
-    [dispatch, method.id]
+    [dispatch, projectId, methodId]
   )
 
   const clearSession = useCallback(() => {
-    dispatch.researchSessions.clearSession(method.id)
-  }, [dispatch, method.id])
+    dispatch.researchSessions.clearSession({ projectId, methodId })
+  }, [dispatch, projectId, methodId])
 
   const value = useMemo<ResearchContextValue>(
     () => ({
       method,
-      sessionId,
       toolId,
       answers,
       setTool,
@@ -126,18 +159,7 @@ export function ResearchProvider({
       removeAnswerSlot,
       clearSession,
     }),
-    [
-      method,
-      sessionId,
-      toolId,
-      answers,
-      setTool,
-      setAnswerText,
-      setAnswerSlots,
-      addAnswerSlot,
-      removeAnswerSlot,
-      clearSession,
-    ]
+    [method, toolId, answers, setTool, setAnswerText, setAnswerSlots, addAnswerSlot, removeAnswerSlot, clearSession]
   )
 
   return <ResearchContext.Provider value={value}>{children}</ResearchContext.Provider>

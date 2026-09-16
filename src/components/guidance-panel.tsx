@@ -135,11 +135,11 @@ const guidanceItems: GuidanceItem[] = [
             <NumberedStep n={1} title="Self Discovery" accent="bg-indigo-800">
               Explore your background, interests, and frustrations to surface <Keyword>problem triggers</Keyword>: seeds worth investigating.
             </NumberedStep>
-            <NumberedStep n={2} title="Identify Problems" accent="bg-orange-700">
-              Turn those triggers into concrete, well-framed candidate problems using guided or freeform tools.
+            <NumberedStep n={2} title="Identify a problem" accent="bg-orange-700">
+              Start a project and turn those triggers into one concrete, well-framed problem using guided or freeform tools.
             </NumberedStep>
             <NumberedStep n={3} title="Explore the Problem" accent="bg-tertiary">
-              Take one candidate for a deeper dive: define the customer, refine the problem, map existing solutions, and capture what the customer is trying to achieve.
+              Take your project&apos;s problem for a deeper dive: define the customer, refine the problem, map existing solutions, and capture what the customer is trying to achieve.
             </NumberedStep>
             <NumberedStep n={4} title="Problem Validation" accent="bg-green-800">
               Stress-test the explored problem against price, market size, and competition to decide if it is worth pursuing.
@@ -172,7 +172,7 @@ const guidanceItems: GuidanceItem[] = [
         />
         <GuidanceSection icon={Sparkles} iconBg="bg-violet-800" title="When to read this">
           <p>You don&apos;t have to go through this section. The rest of the app works fine without it. But if you&apos;re new to the problem-first approach, or you&apos;ve been tempted to skip straight to building, the reading here is designed to change that instinct before it costs you time.</p>
-          <p>It covers the <Keyword>whys</Keyword> and the <Keyword>whats</Keyword> (what went wrong, what went well). It does <Keyword>not</Keyword> cover <Keyword>how</Keyword> to solve things; the Problems and Solutions sections have the tools for that.</p>
+          <p>It covers the <Keyword>whys</Keyword> and the <Keyword>whats</Keyword> (what went wrong, what went well). It does <Keyword>not</Keyword> cover <Keyword>how</Keyword> to solve things; your projects have the tools for that.</p>
         </GuidanceSection>
         <GuidanceSection icon={LayoutGrid} iconBg="bg-violet-800" title="What&apos;s inside">
           <p>Five short sections, each with a tagline, key points, videos, and real case studies:</p>
@@ -237,7 +237,7 @@ const guidanceItems: GuidanceItem[] = [
           icon={Search}
           tone="bg-orange-700"
           title="Problem Discovery"
-          subtitle="Turn the rough areas identified in Self Discovery into concrete, well-framed problems worth investigating. Build a list of candidates before committing to validating any one of them."
+          subtitle="Turn the rough areas identified in Self Discovery into a concrete, well-framed problem worth investigating. Each project holds one problem, so the tools here give your project its problem."
         />
         <GuidanceSection icon={Play} iconBg="bg-orange-700" title="How it works">
           <p>Click <Keyword>Identify problems</Keyword> to open the tool selector. Use one of the discovery tools to surface a problem, or define one directly if you already know what you want to explore.</p>
@@ -271,13 +271,13 @@ const guidanceItems: GuidanceItem[] = [
             <ConceptCard icon={MapPin} label="Context" description="The situation or environment where the problem occurs (e.g. daily commute, remote team)" tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
             <ConceptCard icon={AlertTriangle} label="Problem" description="The category of friction (e.g. information gaps, coordination overhead)" tile="bg-red-800" border="border-red-800/20 bg-red-800/5" />
           </div>
-          <p className="pt-1">Browse each column, tick items that resonate, and click <Keyword>Save Problem</Keyword> to record the combination. Each saved row is one candidate problem. Save as many as you like.</p>
+          <p className="pt-1">Browse each column, tick items that resonate, and click <Keyword>Save Problem</Keyword> to record the combination as your project&apos;s problem. Coming back to the canvas later reopens it so you can change your mind.</p>
         </GuidanceSection>
         <GuidanceSection icon={FileText} iconBg="bg-orange-700" title="Define a Problem Statement">
           <p>If you already have a clear problem in mind, skip the exploration tools and write it directly. Useful when you have prior knowledge of a domain or have already spoken to potential customers.</p>
         </GuidanceSection>
         <GuidanceSection icon={ArrowRight} iconBg="bg-orange-700" title="What comes next">
-          <p>Once you have a list of candidate problems, pick one and take it into <Keyword>Explore the Problem</Keyword>: a deeper dive that defines the customer, {SHOW_REFINEMENT_STEPS && <>refines the problem (root causes, 5 whys, affected groups), </>}maps existing solutions and their shortcomings, and captures what the customer is trying to achieve. That work then feeds Problem Validation, where you size the market and decide whether the problem is worth pursuing.</p>
+          <p>Once your project has its problem, take it into <Keyword>Explore the Problem</Keyword>: a deeper dive that defines the customer, {SHOW_REFINEMENT_STEPS && <>refines the problem (root causes, 5 whys, affected groups), </>}maps existing solutions and their shortcomings, and captures what the customer is trying to achieve. That work then feeds Problem Validation, where you size the market and decide whether the problem is worth pursuing.</p>
         </GuidanceSection>
       </div>
     ),
@@ -293,10 +293,10 @@ const guidanceItems: GuidanceItem[] = [
           icon={Telescope}
           tone="bg-tertiary"
           title="Explore the Problem"
-          subtitle="A deeper dive into a single candidate before you size any markets. Understand exactly who has the problem, why it really happens, how people cope today, and what they are trying to get done. Everything you capture here carries forward into Problem Validation."
+          subtitle="A deeper dive into your project&apos;s problem before you size any markets. Understand exactly who has the problem, why it really happens, how people cope today, and what they are trying to get done. Everything you capture here carries forward into Problem Validation."
         />
         <GuidanceSection icon={Play} iconBg="bg-tertiary" title="How it works">
-          <p>Pick a candidate problem and open <Keyword>Explore</Keyword>. You work through a sequence of steps: define the customer, {SHOW_REFINEMENT_STEPS && <>refine the problem, </>}map existing solutions, and capture what the customer is trying to achieve. Work through them in order; each builds on the last, but you can return and update any step as your thinking develops.</p>
+          <p>Open <Keyword>Explore</Keyword> from your project. You work through a sequence of steps: define the customer, {SHOW_REFINEMENT_STEPS && <>refine the problem, </>}map existing solutions, and capture what the customer is trying to achieve. Work through them in order; each builds on the last, but you can return and update any step as your thinking develops.</p>
         </GuidanceSection>
         <GuidanceSection icon={Users} iconBg="bg-indigo-800" title="Define your customer">
           <p>Pin down exactly who experiences the problem. Vague labels like <Keyword>&ldquo;everyone&rdquo;</Keyword> or <Keyword>&ldquo;businesses&rdquo;</Keyword> lead to vague problems and vague solutions; a sharp customer definition unlocks every later step. Narrow down by:</p>
@@ -418,22 +418,22 @@ const guidanceItems: GuidanceItem[] = [
           icon={Lightbulb}
           tone="bg-blue-900"
           title="Solutions"
-          subtitle="Your Solutions page collects candidate solutions for your validated problems. Identify new solutions through a guided flow, then validate each one against feasibility, impact, cost, and time."
+          subtitle="Each project collects candidate solutions for its validated problem. Identify new solutions through a guided flow, then validate each one against feasibility, impact, cost, and time."
         />
         <GuidanceSection icon={Play} iconBg="bg-blue-900" title="How it works">
           <p>The Solutions workspace has two connected flows: an Identify Solutions flow that generates candidates, and a validation flow that evaluates each candidate on its own.</p>
           <div className="flex flex-col gap-3 pt-1">
             <NumberedStep n={1} title="Identify" accent="bg-blue-900">
-              Pick a validated problem and use a creative technique to generate candidate solutions. Each candidate lands in your Solutions. Refinement work (root causes, 5 whys, affected groups) now happens earlier inside Problem Validation; the output flows through automatically.
+              From a project whose problem is validated, use a creative technique to generate candidate solutions. Each candidate lands in the project. Refinement work (root causes, 5 whys, affected groups) now happens earlier inside Problem Validation; the output flows through automatically.
             </NumberedStep>
             <NumberedStep n={2} title="Validate" accent="bg-green-800">
-              For each candidate in your Solutions, work through the four validation metrics and reach a verdict: valid, unsure, or invalid.
+              For each candidate in the project, work through the four validation metrics and reach a verdict: valid, unsure, or invalid.
             </NumberedStep>
           </div>
         </GuidanceSection>
 
         <GuidanceSection icon={Lightbulb} iconBg="bg-blue-900" title="Identify solutions">
-          <p>Pick a creative method to generate solution ideas. Each candidate you capture is added to your Solutions so you can validate it later:</p>
+          <p>Pick a creative method to generate solution ideas. Each candidate you capture is added to the project so you can validate it later:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={Blocks} label="SCAMPER" description="Substitute, Combine, Adapt, Modify, Put to other use, Eliminate, Reverse. Generate ideas by transforming existing concepts." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
             <ConceptCard icon={Repeat} label="Reverse Ideation" description="Instead of asking how to solve it, ask how to make it worse, then invert the answers." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
@@ -444,7 +444,7 @@ const guidanceItems: GuidanceItem[] = [
         </GuidanceSection>
 
         <GuidanceSection icon={BarChart2} iconBg="bg-green-800" title="Validate">
-          <p>Open any solution from the Solutions page and work through four one-at-a-time metric pages. Each page has guidance and case studies to help you score 1 to 5. At the end, you mark the solution valid, unsure, or invalid:</p>
+          <p>Open any solution from its project page and work through four one-at-a-time metric pages. Each page has guidance and case studies to help you score 1 to 5. At the end, you mark the solution valid, unsure, or invalid:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={Target} label="Feasibility" description="Can you actually build it with the resources and skills available?" tile="bg-green-800" border="border-green-800/20 bg-green-800/5" />
             <ConceptCard icon={Heart} label="Impact" description="How much value does it deliver, to the customer and the business?" tile="bg-green-800" border="border-green-800/20 bg-green-800/5" />
@@ -477,7 +477,7 @@ const guidanceItems: GuidanceItem[] = [
           subtitle="A guided way to surface problems worth solving by answering short prompts about your work, life, the organisations you know, the people around you, and what you spot in the wider world."
         />
         <GuidanceSection icon={Compass} iconBg="bg-secondary-brand" title="When to use Reflect">
-          <p>Reflect is its own tool, opened from the <Keyword>Identify problems</Keyword> selector and living at <Keyword>/problems/identify/reflect</Keyword>.</p>
+          <p>Reflect is its own tool, opened from your project&apos;s <Keyword>Identify a problem</Keyword> hub.</p>
           <div className="grid gap-3 pt-1 sm:grid-cols-2">
             <div className="rounded-lg border bg-card p-3">
               <h5 className="text-base font-semibold mb-1">Use Reflect when</h5>
@@ -498,7 +498,7 @@ const guidanceItems: GuidanceItem[] = [
           </div>
         </GuidanceSection>
         <GuidanceSection icon={LayoutGrid} iconBg="bg-secondary-brand" title="The six lenses">
-          <p>Each lens is a short Q&A focused on one source of insight. Answers are saved as <Keyword>candidates</Keyword> you can review before promoting them into your problems.</p>
+          <p>Each lens is a short Q&A focused on one source of insight. Your answers become your project&apos;s problem when you save at the end.</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={Briefcase} label="Work friction" description="Repeated annoyances, expensive habits, and 'this should just exist' thoughts at your job." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
             <ConceptCard icon={HeartHandshake} label="Life experiences" description="Productise what you have already lived through. The friction you remember is friction others are about to hit." tile="bg-yellow-600" border="border-yellow-600/20 bg-yellow-600/5" />
@@ -512,7 +512,7 @@ const guidanceItems: GuidanceItem[] = [
           <p>Several lenses surface chips drawn from your saved self-discovery answers. Picking a chip drops the title into the textarea as a starting point so you can edit and expand. The panel only appears if you have items in the matching category and is suggestion-only: nothing is ever auto-filled.</p>
           <p>The hub also marks a few lenses as <Keyword>Recommended</Keyword> based on what you already answered in self-discovery. It is a nudge, not a gate.</p>
         </GuidanceSection>
-        <GuidanceSection icon={ArrowRight} iconBg="bg-secondary-brand" title="The candidate flow">
+        <GuidanceSection icon={ArrowRight} iconBg="bg-secondary-brand" title="How a lens runs">
           <div className="flex flex-col gap-3 pt-1">
             <NumberedStep n={1} title="Pick a lens" accent="bg-secondary-brand">
               From the hub, pick a lens and read the short introduction. Lenses take roughly 5 to 10 minutes.
@@ -521,50 +521,14 @@ const guidanceItems: GuidanceItem[] = [
               One prompt per screen. Multiple answers allowed where it helps. Skip anything that does not apply.
             </NumberedStep>
             <NumberedStep n={3} title="Review and save" accent="bg-secondary-brand">
-              Edit or remove answers, capture optional context (who else has this, why has nobody done it yet), and save the rest as candidates.
-            </NumberedStep>
-            <NumberedStep n={4} title="Promote what is worth refining" accent="bg-secondary-brand">
-              Candidates live on the hub. Promote the strongest ones into your problems to validate them in the existing flow.
+              Edit or remove answers, capture optional context (who else has this, why has nobody done it yet), then save.
             </NumberedStep>
           </div>
         </GuidanceSection>
         <TipCallout items={[
           "Small, specific, and slightly weird answers tend to point at the most interesting problems",
-          "If you are not sure between two answers, save both. Pruning happens later",
+          "If you are not sure between two wordings, write both into the description and settle it while you explore",
           "The Market signals lens is for capturing what you find when you look outward. The prompts do not tell you what to look at",
-        ]} />
-      </div>
-    ),
-  },
-  {
-    id: "reflect-candidates",
-    title: "Candidates",
-    icon: Lightbulb,
-    iconBg: "bg-tertiary",
-    content: (
-      <div className="flex flex-col gap-5">
-        <GuidanceHero
-          icon={Lightbulb}
-          tone="bg-tertiary"
-          title="Reflect candidates"
-          subtitle="A staging area between lens answers and full Problems. Candidates let you collect more than you commit to, then promote only the ones worth refining."
-        />
-        <GuidanceSection icon={Filter} iconBg="bg-tertiary" title="Three tabs">
-          <p><Keyword>Active</Keyword> is the default. It shows candidates you have not yet promoted or dismissed.</p>
-          <p><Keyword>Promoted</Keyword> shows candidates that became Problems. Use the open-Problem icon to jump straight into the refinement flow.</p>
-          <p><Keyword>Dismissed</Keyword> is soft-deleted. Candidates here can be restored at any time. Nothing is ever hard-deleted from the UI.</p>
-        </GuidanceSection>
-        <GuidanceSection icon={ArrowRight} iconBg="bg-tertiary" title="Promoting to a Problem">
-          <p>Promotion creates a new, <Keyword>blank</Keyword> Problem with the candidate title as its description. You fill in the rest (customers, contexts, problem types, validation) in the existing problem refinement flow at <Keyword>/problems/&#x5b;id&#x5d;</Keyword>.</p>
-          <p>You can edit the title before confirming. Captured context fields on the candidate stay on the candidate for reference; they do not auto-fill the Problem.</p>
-        </GuidanceSection>
-        <GuidanceSection icon={Repeat} iconBg="bg-tertiary" title="Bulk actions">
-          <p>The Active tab has a select-all checkbox plus per-row checkboxes. When you have a selection, the row at the top of the list shows <Keyword>Promote selected</Keyword> and <Keyword>Dismiss selected</Keyword>. Both ask for confirmation before running.</p>
-        </GuidanceSection>
-        <TipCallout items={[
-          "Candidates persist indefinitely. There is no auto-decay",
-          "Two lenses can produce near-identical candidates; both stay. Pick the wording you prefer when you promote",
-          "Dismissed candidates do not clutter the Active count but are kept for context",
         ]} />
       </div>
     ),

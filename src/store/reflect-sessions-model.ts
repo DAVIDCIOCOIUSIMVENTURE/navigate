@@ -1,5 +1,6 @@
 import { createModel } from "@rematch/core"
 import type { RootModel } from "."
+import { parsePerProject, perProjectReducers, type PerProject, type PerProjectState } from "./per-project"
 
 const STORAGE_KEY = "navigate-reflect-sessions"
 
@@ -15,54 +16,69 @@ export type ReflectSession = {
 
 export type ReflectStep = "pick" | "prompts" | "review"
 
-interface ReflectSessionsState {
+const REFLECT_STEPS: readonly ReflectStep[] = ["pick", "prompts", "review"]
+
+/**
+ * One project's Reflect drafts: a session per lens the user has opened, plus
+ * where they last were so the flow can resume. Drafts belong to the project
+ * they were started in and never show in another.
+ */
+export type ReflectProjectState = {
   sessions: Record<string, ReflectSession>
   lastPickedLensId: string | null
   lastStep: ReflectStep | null
   lastPromptIndex: number
-  hydrated: boolean
 }
 
-const defaultState: ReflectSessionsState = {
+export const EMPTY_REFLECT_PROJECT: ReflectProjectState = {
   sessions: {},
   lastPickedLensId: null,
   lastStep: null,
   lastPromptIndex: 0,
+}
+
+type ReflectSessionsState = PerProjectState<ReflectProjectState>
+
+const defaultState: ReflectSessionsState = {
+  byProject: {},
   hydrated: false,
 }
 
-function saveToStorage(state: ReflectSessionsState) {
+/** The Reflect drafts of one project, empty when it has none. */
+export function selectReflectProject(state: { reflectSessions: ReflectSessionsState }, projectId: number): ReflectProjectState {
+  return state.reflectSessions.byProject[projectId] ?? EMPTY_REFLECT_PROJECT
+}
+
+function saveToStorage(byProject: PerProject<ReflectProjectState>) {
   if (typeof window === "undefined") return
   try {
-    localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({
-        sessions: state.sessions,
-        lastPickedLensId: state.lastPickedLensId,
-        lastStep: state.lastStep,
-        lastPromptIndex: state.lastPromptIndex,
-      })
-    )
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ byProject }))
   } catch {
     // ignore storage errors
   }
 }
 
-type StoredShape = {
-  sessions?: Record<string, ReflectSession>
-  lastPickedLensId?: string | null
-  lastStep?: ReflectStep | null
-  lastPromptIndex?: number
+function parseProjectState(raw: unknown): ReflectProjectState | null {
+  if (!raw || typeof raw !== "object") return null
+  const value = raw as Partial<ReflectProjectState>
+  return {
+    sessions: value.sessions && typeof value.sessions === "object" ? value.sessions : {},
+    lastPickedLensId: typeof value.lastPickedLensId === "string" ? value.lastPickedLensId : null,
+    lastStep: REFLECT_STEPS.includes(value.lastStep as ReflectStep) ? (value.lastStep as ReflectStep) : null,
+    lastPromptIndex: typeof value.lastPromptIndex === "number" && value.lastPromptIndex >= 0 ? value.lastPromptIndex : 0,
+  }
 }
 
-function loadFromStorage(): StoredShape | null {
-  if (typeof window === "undefined") return null
+/** Reads the stored map. Drafts saved before projects existed had no project to belong to and are dropped. */
+function loadFromStorage(): PerProject<ReflectProjectState> {
+  if (typeof window === "undefined") return {}
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return null
-    return JSON.parse(raw) as StoredShape
+    if (!raw) return {}
+    const parsed = JSON.parse(raw) as { byProject?: unknown }
+    return parsePerProject(parsed.byProject, parseProjectState)
   } catch {
-    return null
+    return {}
   }
 }
 
@@ -70,252 +86,140 @@ function emptyAnswer(): ReflectAnswer {
   return { text: "", context: {} }
 }
 
+const { update: updateProject, clear: clearProjectSlice } = perProjectReducers(EMPTY_REFLECT_PROJECT, saveToStorage)
+
+/** Applies a change to one lens's answers within the project. */
+function updateAnswers(
+  project: ReflectProjectState,
+  lensId: string,
+  promptId: string,
+  change: (list: ReflectAnswer[]) => ReflectAnswer[],
+): ReflectProjectState {
+  const session = project.sessions[lensId]
+  if (!session) return project
+  const list = session.answers[promptId] ?? [emptyAnswer()]
+  return {
+    ...project,
+    sessions: {
+      ...project.sessions,
+      [lensId]: { ...session, answers: { ...session.answers, [promptId]: change(list) } },
+    },
+  }
+}
+
+function freshSession(sessionId: string, promptIds: string[], seedAnswers?: Record<string, ReflectAnswer[]>): ReflectSession {
+  const answers: Record<string, ReflectAnswer[]> = {}
+  for (const id of promptIds) {
+    const seeded = seedAnswers?.[id]
+    answers[id] = seeded && seeded.length > 0 ? seeded : [emptyAnswer()]
+  }
+  return { sessionId, answers }
+}
+
 export const reflectSessions = createModel<RootModel>()({
   state: defaultState,
 
   reducers: {
-    setAllSessions(
-      state,
-      payload: {
-        sessions: Record<string, ReflectSession>
-        lastPickedLensId: string | null
-        lastStep: ReflectStep | null
-        lastPromptIndex: number
-      }
-    ) {
-      return {
-        ...state,
-        sessions: payload.sessions,
-        lastPickedLensId: payload.lastPickedLensId,
-        lastStep: payload.lastStep,
-        lastPromptIndex: payload.lastPromptIndex,
-        hydrated: true,
-      }
-    },
-
-    markHydrated(state) {
-      return { ...state, hydrated: true }
+    setAll(state, byProject: PerProject<ReflectProjectState>): ReflectSessionsState {
+      return { ...state, byProject, hydrated: true }
     },
 
     setLastPosition(
       state,
-      payload: {
-        lensId: string | null
-        step: ReflectStep | null
-        promptIndex: number
-      }
+      payload: { projectId: number; lensId: string | null; step: ReflectStep | null; promptIndex: number }
     ) {
-      const next: ReflectSessionsState = {
-        ...state,
-        lastPickedLensId: payload.lensId,
-        lastStep: payload.step,
-        lastPromptIndex: payload.promptIndex,
-      }
-      saveToStorage(next)
-      return next
+      return updateProject(state, payload, (project, { lensId, step, promptIndex }) => ({
+        ...project,
+        lastPickedLensId: lensId,
+        lastStep: step,
+        lastPromptIndex: promptIndex,
+      }))
     },
 
+    /**
+     * Creates the lens's session if the project has none. `seedAnswers`
+     * pre-fills prompts from a problem already saved with this lens, so
+     * revisiting the tool for the project's problem starts from what was
+     * captured.
+     */
     ensureSession(
       state,
-      payload: { lensId: string; sessionId: string; promptIds: string[] }
+      payload: { projectId: number; lensId: string; sessionId: string; promptIds: string[]; seedAnswers?: Record<string, ReflectAnswer[]> }
     ) {
-      if (state.sessions[payload.lensId]) return state
-      const answers: Record<string, ReflectAnswer[]> = {}
-      for (const id of payload.promptIds) answers[id] = [emptyAnswer()]
-      const next: ReflectSessionsState = {
-        ...state,
-        sessions: {
-          ...state.sessions,
-          [payload.lensId]: { sessionId: payload.sessionId, answers },
-        },
-      }
-      saveToStorage(next)
-      return next
+      return updateProject(state, payload, (project, { lensId, sessionId, promptIds, seedAnswers }) => {
+        if (project.sessions[lensId]) return project
+        return { ...project, sessions: { ...project.sessions, [lensId]: freshSession(sessionId, promptIds, seedAnswers) } }
+      })
     },
 
-    resetSession(
-      state,
-      payload: { lensId: string; sessionId: string; promptIds: string[] }
-    ) {
-      const answers: Record<string, ReflectAnswer[]> = {}
-      for (const id of payload.promptIds) answers[id] = [emptyAnswer()]
-      const next: ReflectSessionsState = {
-        ...state,
-        sessions: {
-          ...state.sessions,
-          [payload.lensId]: { sessionId: payload.sessionId, answers },
-        },
-      }
-      saveToStorage(next)
-      return next
+    /** Forgets every draft and the last position of one project. */
+    clearProject(state, projectId: number): ReflectSessionsState {
+      return clearProjectSlice(state, projectId)
     },
 
-    clearAllSessions(state) {
-      const next: ReflectSessionsState = {
-        ...state,
-        sessions: {},
-        lastPickedLensId: null,
-        lastStep: null,
-        lastPromptIndex: 0,
-      }
-      saveToStorage(next)
-      return next
+    clearSession(state, payload: { projectId: number; lensId: string }) {
+      return updateProject(state, payload, (project, { lensId }) => {
+        const { [lensId]: _removed, ...rest } = project.sessions
+        void _removed
+        const wasActive = project.lastPickedLensId === lensId
+        return {
+          sessions: rest,
+          lastPickedLensId: wasActive ? null : project.lastPickedLensId,
+          lastStep: wasActive ? null : project.lastStep,
+          lastPromptIndex: wasActive ? 0 : project.lastPromptIndex,
+        }
+      })
     },
 
-    clearSession(state, lensId: string) {
-      const { [lensId]: _removed, ...rest } = state.sessions
-      void _removed
-      const wasActive = state.lastPickedLensId === lensId
-      const next: ReflectSessionsState = {
-        ...state,
-        sessions: rest,
-        lastPickedLensId: wasActive ? null : state.lastPickedLensId,
-        lastStep: wasActive ? null : state.lastStep,
-        lastPromptIndex: wasActive ? 0 : state.lastPromptIndex,
-      }
-      saveToStorage(next)
-      return next
-    },
-
-    setAnswerText(
-      state,
-      payload: { lensId: string; promptId: string; index: number; text: string }
-    ) {
-      const session = state.sessions[payload.lensId]
-      if (!session) return state
-      const list = session.answers[payload.promptId] ?? [emptyAnswer()]
-      const nextList = [...list]
-      nextList[payload.index] = {
-        ...(nextList[payload.index] ?? emptyAnswer()),
-        text: payload.text,
-      }
-      const next: ReflectSessionsState = {
-        ...state,
-        sessions: {
-          ...state.sessions,
-          [payload.lensId]: {
-            ...session,
-            answers: { ...session.answers, [payload.promptId]: nextList },
-          },
-        },
-      }
-      saveToStorage(next)
-      return next
+    setAnswerText(state, payload: { projectId: number; lensId: string; promptId: string; index: number; text: string }) {
+      return updateProject(state, payload, (project, { lensId, promptId, index, text }) =>
+        updateAnswers(project, lensId, promptId, (list) => {
+          const next = [...list]
+          next[index] = { ...(next[index] ?? emptyAnswer()), text }
+          return next
+        }),
+      )
     },
 
     setAnswerContext(
       state,
-      payload: {
-        lensId: string
-        promptId: string
-        index: number
-        fieldId: string
-        value: string
-      }
+      payload: { projectId: number; lensId: string; promptId: string; index: number; fieldId: string; value: string }
     ) {
-      const session = state.sessions[payload.lensId]
-      if (!session) return state
-      const list = session.answers[payload.promptId] ?? [emptyAnswer()]
-      const nextList = [...list]
-      const slot = nextList[payload.index] ?? emptyAnswer()
-      nextList[payload.index] = {
-        ...slot,
-        context: { ...slot.context, [payload.fieldId]: payload.value },
-      }
-      const next: ReflectSessionsState = {
-        ...state,
-        sessions: {
-          ...state.sessions,
-          [payload.lensId]: {
-            ...session,
-            answers: { ...session.answers, [payload.promptId]: nextList },
-          },
-        },
-      }
-      saveToStorage(next)
-      return next
+      return updateProject(state, payload, (project, { lensId, promptId, index, fieldId, value }) =>
+        updateAnswers(project, lensId, promptId, (list) => {
+          const next = [...list]
+          const slot = next[index] ?? emptyAnswer()
+          next[index] = { ...slot, context: { ...slot.context, [fieldId]: value } }
+          return next
+        }),
+      )
     },
 
-    addAnswerSlot(state, payload: { lensId: string; promptId: string }) {
-      const session = state.sessions[payload.lensId]
-      if (!session) return state
-      const list = session.answers[payload.promptId] ?? []
-      const next: ReflectSessionsState = {
-        ...state,
-        sessions: {
-          ...state.sessions,
-          [payload.lensId]: {
-            ...session,
-            answers: {
-              ...session.answers,
-              [payload.promptId]: [...list, emptyAnswer()],
-            },
-          },
-        },
-      }
-      saveToStorage(next)
-      return next
+    addAnswerSlot(state, payload: { projectId: number; lensId: string; promptId: string }) {
+      return updateProject(state, payload, (project, { lensId, promptId }) =>
+        updateAnswers(project, lensId, promptId, (list) => [...list, emptyAnswer()]),
+      )
     },
 
-    setAnswerSlots(
-      state,
-      payload: { lensId: string; promptId: string; slots: ReflectAnswer[] }
-    ) {
-      const session = state.sessions[payload.lensId]
-      if (!session) return state
-      const finalList =
-        payload.slots.length === 0 ? [emptyAnswer()] : payload.slots
-      const next: ReflectSessionsState = {
-        ...state,
-        sessions: {
-          ...state.sessions,
-          [payload.lensId]: {
-            ...session,
-            answers: { ...session.answers, [payload.promptId]: finalList },
-          },
-        },
-      }
-      saveToStorage(next)
-      return next
+    setAnswerSlots(state, payload: { projectId: number; lensId: string; promptId: string; slots: ReflectAnswer[] }) {
+      return updateProject(state, payload, (project, { lensId, promptId, slots }) =>
+        updateAnswers(project, lensId, promptId, () => (slots.length === 0 ? [emptyAnswer()] : slots)),
+      )
     },
 
-    removeAnswerSlot(
-      state,
-      payload: { lensId: string; promptId: string; index: number }
-    ) {
-      const session = state.sessions[payload.lensId]
-      if (!session) return state
-      const list = session.answers[payload.promptId] ?? []
-      const filtered = list.filter((_, i) => i !== payload.index)
-      const finalList = filtered.length === 0 ? [emptyAnswer()] : filtered
-      const next: ReflectSessionsState = {
-        ...state,
-        sessions: {
-          ...state.sessions,
-          [payload.lensId]: {
-            ...session,
-            answers: { ...session.answers, [payload.promptId]: finalList },
-          },
-        },
-      }
-      saveToStorage(next)
-      return next
+    removeAnswerSlot(state, payload: { projectId: number; lensId: string; promptId: string; index: number }) {
+      return updateProject(state, payload, (project, { lensId, promptId, index }) =>
+        updateAnswers(project, lensId, promptId, (list) => {
+          const filtered = list.filter((_, i) => i !== index)
+          return filtered.length === 0 ? [emptyAnswer()] : filtered
+        }),
+      )
     },
   },
 
   effects: (dispatch) => ({
     init() {
-      const stored = loadFromStorage()
-      if (stored) {
-        dispatch.reflectSessions.setAllSessions({
-          sessions: stored.sessions ?? {},
-          lastPickedLensId: stored.lastPickedLensId ?? null,
-          lastStep: stored.lastStep ?? null,
-          lastPromptIndex: stored.lastPromptIndex ?? 0,
-        })
-      } else {
-        dispatch.reflectSessions.markHydrated()
-      }
+      dispatch.reflectSessions.setAll(loadFromStorage())
     },
   }),
 })

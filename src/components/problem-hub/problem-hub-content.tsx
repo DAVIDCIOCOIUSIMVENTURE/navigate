@@ -8,7 +8,7 @@ import Link from "next/link"
 import { useDispatch, useSelector, useStore } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
 import { Button } from "@/components/ui/button"
-import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
+import { useProblem } from "@/app/(app)/projects/[projectId]/problem/validation/context"
 import { CoreProblemStrategy } from "@/components/problem-strategies/core-problem-strategy"
 import { CustomerStrategy } from "@/components/problem-strategies/customer-strategy"
 import { RefinementStrategy } from "@/components/problem-strategies/refinement-strategy"
@@ -24,7 +24,7 @@ import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { getReflectLens } from "@/data/reflectLenses"
 import { MethodTile } from "@/components/method-tile"
-import { saveActiveDiscoveryProblemId } from "@/lib/active-discovery-problem"
+import { projectForProblem, projectRoutes } from "@/lib/projects"
 
 type SectionTone = "indigo" | "amber" | "purple" | "emerald" | "primary" | "rose" | "tertiary"
 
@@ -237,7 +237,7 @@ function ReflectionPromptCard({
   )
 }
 
-function SolutionsSection({ problemId }: { problemId: number }) {
+function SolutionsSection({ projectId, problemId }: { projectId: number; problemId: number }) {
   const router = useRouter()
   const solutions = useSelector((state: RootState) =>
     state.solutions.solutions.filter((s) => s.problemId === problemId)
@@ -254,13 +254,10 @@ function SolutionsSection({ problemId }: { problemId: number }) {
           <p className="text-sm">No solutions yet for this problem.</p>
           <Button
             size="sm"
-            onClick={() => {
-              saveActiveDiscoveryProblemId(problemId)
-              router.push("/solutions/identify/pick-method")
-            }}
+            onClick={() => router.push(projectRoutes.identifySolutions(projectId))}
           >
             <Lightbulb className="h-3.5 w-3.5 mr-1" />
-            Discover solutions
+            Identify solutions
           </Button>
         </div>
       ) : (
@@ -279,7 +276,7 @@ function SolutionsSection({ problemId }: { problemId: number }) {
                   variant="ghost"
                   size="sm"
                   className="h-7"
-                  onClick={() => router.push(`/solutions/${s.id}/edit`)}
+                  onClick={() => router.push(projectRoutes.solutionEdit(projectId, s.id))}
                   aria-label="Open solution"
                 >
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -293,36 +290,33 @@ function SolutionsSection({ problemId }: { problemId: number }) {
   )
 }
 
-export function NextStepsSection({ problemRef, problemId }: { problemRef: string; problemId: number }) {
+export function NextStepsSection({ projectId, problemId }: { projectId: number; problemId: number }) {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const { status } = useProblem()
+  const store = useStore<RootState>()
 
-  const goToExplore = () => router.push(`/problems/${problemRef}/explore/introduction`)
-  const goToValidation = () => router.push(`/problems/${problemRef}/validation/market`)
-  const goToDiscover = () => {
-    saveActiveDiscoveryProblemId(problemId)
-    router.push("/solutions/identify/pick-method")
-  }
+  const goToExplore = () => router.push(projectRoutes.explore(projectId))
+  const goToValidation = () => router.push(projectRoutes.validation(projectId, "market"))
+  const goToDiscover = () => router.push(projectRoutes.identifySolutions(projectId))
 
-  const handleDuplicate = () => {
-    const raw = localStorage.getItem("navigate-problems")
-    if (!raw) return
-    const original = JSON.parse(raw).problems.find((p: { id: number }) => p.id === problemId)
+  // A copy starts a project of its own (a project holds one problem), so the
+  // page opens the copy inside that new project.
+  const handleDuplicate = async () => {
+    const original = store.getState().problems.problems.find((p) => p.id === problemId)
     if (!original) return
-    const newProblem = dispatch.problems.create({
+    const newProblem = await dispatch.problems.create({
       source: original.source,
-      title: original.title ?? "",
+      title: original.title,
       description: original.description,
       customers: [...original.customers],
       contexts: [...original.contexts],
       problems: [...original.problems],
-      segmentSize: original.segmentSize ?? null,
-      customerDescription: original.customerDescription ?? "",
+      segmentSize: original.segmentSize,
+      customerDescription: original.customerDescription,
     })
-    if (newProblem && typeof newProblem === "object" && "id" in newProblem) {
-      router.push(`/problems/${newProblem.id}/edit`)
-    }
+    const owner = projectForProblem(store.getState().projects.projects, newProblem.id)
+    router.push(projectRoutes.problemEdit(owner?.id ?? null))
   }
 
   return (
@@ -418,10 +412,10 @@ export function NextStepsSection({ problemRef, problemId }: { problemRef: string
             <NextStepCard
               icon={RotateCcw}
               title="Move on to a different problem"
-              description="Go back to your problem list and pick another problem to validate. Ruling out a problem is still progress."
-              actionLabel="Back to Problems"
+              description="Go back to your projects and start another one, or pick a different problem to validate. Ruling out a problem is still progress."
+              actionLabel="Back to Home"
               actionIcon={ArrowRight}
-              onAction={() => router.push("/problems")}
+              onAction={() => router.push("/")}
             />
           </div>
         </div>
@@ -503,9 +497,9 @@ export function ProblemHubContent({
   mode: "dialog" | "page"
   readOnly?: boolean
 }) {
-  const { problemRef, problemId } = useProblem()
-  const exploreBase = `/problems/${problemRef}/explore`
-  const validationBase = `/problems/${problemRef}/validation`
+  const { projectId, problemId } = useProblem()
+  const exploreBase = projectRoutes.exploreBase(projectId)
+  const validationBase = projectRoutes.validationBase(projectId)
   // Customer, refinement, and existing-solutions are captured in the Explore
   // the Problem flow; the validation assessment is captured in Problem
   // Validation. Each "Open step" link points to wherever that step now lives.
@@ -550,9 +544,9 @@ export function ProblemHubContent({
         <ValidationStrategy readOnly={readOnly} />
       </HubSection>
 
-      <SolutionsSection problemId={problemId} />
+      <SolutionsSection projectId={projectId} problemId={problemId} />
 
-      <NextStepsSection problemRef={problemRef} problemId={problemId} />
+      <NextStepsSection projectId={projectId} problemId={problemId} />
 
       {mode === "page" && !readOnly && (
         <div className="flex flex-col gap-3 border-t pt-4 sm:flex-row sm:justify-end">

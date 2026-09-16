@@ -7,14 +7,16 @@ import type { RootState } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { SolutionCanvasCards } from "@/components/canvas/solution-canvas-cards"
+import { useProjectIdForSolution } from "@/hooks/use-projects"
+import { projectRoutes } from "@/lib/projects"
 
 /**
  * Read-only view of a solution rendered inside a Dialog. Used by the
- * validation sidebar's "View Solution" button and the Solutions tables'
- * "View canvas" buttons. Renders the same canvas
- * cards used by the solution canvas page and validation summary so the
- * three surfaces stay in sync. The header offers a link to the
- * full-page canvas and a separate link to the edit hub.
+ * validation sidebar's "View Solution" button and the project page's
+ * solutions table "View canvas" buttons. Renders the same canvas cards used
+ * by the solution canvas page and validation summary so the surfaces stay in
+ * sync. The header offers a link to the full-page canvas and a separate
+ * link to the edit hub, both inside the solution's project.
  */
 export function SolutionHubDialog({
   open,
@@ -28,6 +30,7 @@ export function SolutionHubDialog({
   const solution = useSelector((s: RootState) =>
     solutionId != null ? s.solutions.solutions.find((sol) => sol.id === solutionId) : undefined,
   )
+  const projectId = useProjectIdForSolution(solutionId)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -38,13 +41,13 @@ export function SolutionHubDialog({
             {solutionId != null && (
               <div className="ml-auto flex items-center gap-2">
                 <Button variant="outline" asChild>
-                  <Link href={`/solutions/${solutionId}`}>
+                  <Link href={projectRoutes.solution(projectId, solutionId)}>
                     <ExternalLink />
                     Open as full page
                   </Link>
                 </Button>
                 <Button variant="outline" asChild>
-                  <Link href={`/solutions/${solutionId}/edit`}>
+                  <Link href={projectRoutes.solutionEdit(projectId, solutionId)}>
                     <Pencil />
                     Edit
                   </Link>

@@ -32,11 +32,12 @@ export function IdentifyHubShell({
   aboutTitle,
   description,
   journeyStep,
+  journeyProblemId,
   children,
 }: {
   title: string
   icon: LucideIcon
-  /** Where the Back button returns to (the Problems or Solutions page). */
+  /** Where the Back button returns to (the project the user came from, or home). */
   backHref: string
   /** Introductory copy shown in the About dialog. */
   intro: ReactNode
@@ -46,6 +47,8 @@ export function IdentifyHubShell({
   description?: ReactNode
   /** The journey milestone this hub belongs to; shows the progress rail when set. */
   journeyStep?: JourneyStepId
+  /** The project's problem, when it already has one, so the rail shows how far it has come. */
+  journeyProblemId?: number | null
   children: ReactNode
 }) {
   const isWide = useContainerSize() === "wide"
@@ -81,12 +84,12 @@ export function IdentifyHubShell({
         {sideColumn ? (
           <div className="flex w-72 shrink-0 flex-col gap-3 min-h-0 overflow-y-auto">
             {header}
-            <JourneyProgressCard activeId={journeyStep} />
+            <JourneyProgressCard activeId={journeyStep} problemId={journeyProblemId} />
           </div>
         ) : (
           <>
             {header}
-            {journeyStep && <JourneyProgressCard activeId={journeyStep} orientation="horizontal" />}
+            {journeyStep && <JourneyProgressCard activeId={journeyStep} problemId={journeyProblemId} orientation="horizontal" />}
           </>
         )}
 

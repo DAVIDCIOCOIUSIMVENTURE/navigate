@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { useDispatch } from "react-redux"
+import { useDispatch, useStore } from "react-redux"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { MoreHorizontal, Upload, Download } from "lucide-react"
@@ -12,23 +12,33 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import type { AppDispatch } from "@/store"
+import type { AppDispatch, RootState } from "@/store"
 import {
   BundleParseError,
   importProblemBundle,
   parseProblemBundle,
 } from "@/lib/problem-export"
+import { projectHrefForProblem } from "@/lib/projects"
 import { ExportPickerDialog } from "@/components/export-picker-dialog"
 
-// Page-level actions menu for the problem and solution lists. The 3-dot
-// trigger holds "Import <kind>" (file picker) and "Export <kind>" (opens a
-// dialog with a record picker plus the include-related checkbox).
+/** What the menu calls a bundle of the given kind. A problem bundle is a whole project (its problem plus solutions). */
+const NOUN: Record<"problem" | "solution", string> = {
+  problem: "project",
+  solution: "solution",
+}
+
+// Page-level actions menu for the home page. The 3-dot trigger holds
+// "Import <kind>" (file picker) and "Export <kind>" (opens a dialog with a
+// record picker plus the include-related checkbox). An imported problem
+// arrives with a project of its own, which the page then opens.
 export function BundleMenuButton({ kind }: { kind: "problem" | "solution" }) {
   const dispatch = useDispatch<AppDispatch>()
+  const store = useStore<RootState>()
   const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [importing, setImporting] = useState(false)
   const [exportOpen, setExportOpen] = useState(false)
+  const noun = NOUN[kind]
 
   const onFileSelected = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
@@ -39,15 +49,15 @@ export function BundleMenuButton({ kind }: { kind: "problem" | "solution" }) {
       const text = await file.text()
       const bundle = parseProblemBundle(text)
       const result = await importProblemBundle(bundle, dispatch)
-      const noun = result.solutionCount === 1 ? "solution" : "solutions"
+      const solutionNoun = result.solutionCount === 1 ? "solution" : "solutions"
       if (result.placeholderCreated) {
-        toast.success(`Imported ${result.solutionCount} ${noun} into a placeholder problem.`)
+        toast.success(`Imported ${result.solutionCount} ${solutionNoun} into a placeholder problem.`)
       } else if (result.solutionCount > 0) {
-        toast.success(`Imported problem with ${result.solutionCount} ${noun}.`)
+        toast.success(`Imported the project with ${result.solutionCount} ${solutionNoun}.`)
       } else {
-        toast.success("Problem imported.")
+        toast.success("Project imported.")
       }
-      router.push(`/problems/${result.problemId}/edit`)
+      router.push(projectHrefForProblem(store.getState().projects.projects, result.problemId))
     } catch (err) {
       const message =
         err instanceof BundleParseError ? err.message :
@@ -80,11 +90,11 @@ export function BundleMenuButton({ kind }: { kind: "problem" | "solution" }) {
             disabled={importing}
           >
             <Upload className="h-4 w-4" />
-            {importing ? "Importing..." : `Import ${kind}`}
+            {importing ? "Importing..." : `Import ${noun}`}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={() => setExportOpen(true)}>
             <Download className="h-4 w-4" />
-            Export {kind}
+            Export {noun}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

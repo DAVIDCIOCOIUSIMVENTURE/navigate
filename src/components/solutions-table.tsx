@@ -51,6 +51,7 @@ import {
 import type { Solution } from "@/store/solutions-model"
 import { cn } from "@/lib/utils"
 import { TABLE_STATUS_META, STATUS_FILTER_OPTIONS, STATUS_ORDER } from "@/lib/status-table"
+import { projectForProblem, projectRoutes } from "@/lib/projects"
 import { trafficLightRank } from "@/lib/solution-comparison"
 import { TrafficLightLabel } from "@/components/traffic-light"
 import type { ValidationStatus } from "@/types/validation"
@@ -63,6 +64,8 @@ interface SolutionsTableProps {
   showStatus?: boolean
   /** Show the traffic light from Compare solutions as a sortable column. */
   showScore?: boolean
+  /** Show the linked problem as a column; off when every listed solution answers the same problem (a project page). */
+  showProblem?: boolean
   showEditDelete?: boolean
   className?: string
   headerLead?: React.ReactNode
@@ -70,11 +73,12 @@ interface SolutionsTableProps {
   title?: string
 }
 
-export function SolutionsTable({ solutions, showStatus = true, showScore = true, showEditDelete = true, className, headerLead, headerExtra, title }: SolutionsTableProps) {
+export function SolutionsTable({ solutions, showStatus = true, showScore = true, showProblem = true, showEditDelete = true, className, headerLead, headerExtra, title }: SolutionsTableProps) {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const store = useStore<RootState>()
   const problems = useSelector((state: RootState) => state.problems.problems)
+  const projects = useSelector((state: RootState) => state.projects.projects)
   const [search, setSearch] = useState("")
   const [statusFilter, setStatusFilter] = useState<"all" | ValidationStatus>("all")
   const [sortKey, setSortKey] = useState<SortKey>("index")
@@ -96,9 +100,10 @@ export function SolutionsTable({ solutions, showStatus = true, showScore = true,
     () => solutions.map((solution, index) => {
       const problem = problems.find((p) => p.id === solution.problemId)
       const problemHaystack = `${problem?.title ?? ""} ${problem?.description ?? ""}`.trim()
-      return { solution, originalIndex: index, problemDescription: problemHaystack }
+      const projectId = projectForProblem(projects, solution.problemId)?.id ?? null
+      return { solution, originalIndex: index, problemDescription: problemHaystack, projectId }
     }),
-    [solutions, problems],
+    [solutions, problems, projects],
   )
 
   const filteredSolutions = useMemo(() => {
@@ -216,15 +221,17 @@ export function SolutionsTable({ solutions, showStatus = true, showScore = true,
                   Solution{renderSortIcon("title")}
                 </button>
               </TableHead>
-              <TableHead className="w-64">
-                <button
-                  type="button"
-                  onClick={() => handleSort("problem")}
-                  className={cn("flex items-center gap-1", sortableHeaderClass)}
-                >
-                  Problem{renderSortIcon("problem")}
-                </button>
-              </TableHead>
+              {showProblem && (
+                <TableHead className="w-64">
+                  <button
+                    type="button"
+                    onClick={() => handleSort("problem")}
+                    className={cn("flex items-center gap-1", sortableHeaderClass)}
+                  >
+                    Problem{renderSortIcon("problem")}
+                  </button>
+                </TableHead>
+              )}
               {showStatus && (
                 <TableHead className="w-36">
                   <button
@@ -254,14 +261,14 @@ export function SolutionsTable({ solutions, showStatus = true, showScore = true,
             {sortedSolutions.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={3 + (showStatus ? 1 : 0) + (showScore ? 1 : 0)}
+                  colSpan={2 + (showProblem ? 1 : 0) + (showStatus ? 1 : 0) + (showScore ? 1 : 0)}
                   className="text-center text-sm py-8"
                 >
                   No solutions match the current filters.
                 </TableCell>
               </TableRow>
             ) : (
-              sortedSolutions.map(({ solution, problemDescription }, rowIndex) => {
+              sortedSolutions.map(({ solution, problemDescription, projectId }, rowIndex) => {
                 const status = showStatus ? (solution.validationStatus ?? "unvalidated") : null
                 const statusConfig = status ? TABLE_STATUS_META[status] : null
                 const zebra = rowIndex % 2 === 1 ? "bg-muted/20" : undefined
@@ -277,16 +284,18 @@ export function SolutionsTable({ solutions, showStatus = true, showScore = true,
                         )}
                       </div>
                     </TableCell>
-                    <TableCell className="text-sm">
-                      <div className="flex items-center gap-2">
-                        <Target className="h-3.5 w-3.5 text-tertiary shrink-0" />
-                        {problemDescription ? (
-                          <span className="line-clamp-2">{problemDescription}</span>
-                        ) : (
-                          <span className="text-muted-foreground">-</span>
-                        )}
-                      </div>
-                    </TableCell>
+                    {showProblem && (
+                      <TableCell className="text-sm">
+                        <div className="flex items-center gap-2">
+                          <Target className="h-3.5 w-3.5 text-tertiary shrink-0" />
+                          {problemDescription ? (
+                            <span className="line-clamp-2">{problemDescription}</span>
+                          ) : (
+                            <span className="text-muted-foreground">-</span>
+                          )}
+                        </div>
+                      </TableCell>
+                    )}
                     {showStatus && statusConfig && (
                       <TableCell>
                         <div className={`flex items-center gap-1.5 text-sm font-medium ${statusConfig.className}`}>
@@ -325,7 +334,7 @@ export function SolutionsTable({ solutions, showStatus = true, showScore = true,
                                 variant="secondary-brand"
                                 size="icon"
                                 className="h-7 w-7"
-                                onClick={() => router.push(`/solutions/${solution.id}/edit`)}
+                                onClick={() => router.push(projectRoutes.solutionEdit(projectId, solution.id))}
                                 aria-label="Edit solution"
                               >
                                 <Pencil className="h-3.5 w-3.5" />
@@ -341,12 +350,12 @@ export function SolutionsTable({ solutions, showStatus = true, showScore = true,
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => router.push(`/solutions/${solution.id}/validate/introduction`)}>
+                            <DropdownMenuItem onClick={() => router.push(projectRoutes.solutionValidate(projectId, solution.id))}>
                               <ClipboardCheck className="h-3.5 w-3.5" />
                               Open solution validation
                             </DropdownMenuItem>
                             {solution.problemId != null && (
-                              <DropdownMenuItem onClick={() => router.push(`/problems/${solution.problemId}/edit`)}>
+                              <DropdownMenuItem onClick={() => router.push(projectRoutes.problemEdit(projectId))}>
                                 <Target className="h-3.5 w-3.5" />
                                 Open problem
                               </DropdownMenuItem>

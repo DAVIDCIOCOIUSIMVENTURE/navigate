@@ -7,28 +7,30 @@ import type { RootState } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { ProblemCanvasCards } from "@/components/canvas/problem-canvas-cards"
+import { useProjectIdForProblem } from "@/hooks/use-projects"
+import { projectRoutes } from "@/lib/projects"
 
 /**
- * Read-only view of a problem rendered inside a Dialog. Used by the
- * validation sidebar's "View Problem" button and the Problems page's
- * "View canvas" button. Renders the same canvas
- * cards used by the problem canvas page and validation summary so the
- * three surfaces stay in sync. The header offers a link to the
- * full-page canvas and a separate link to the edit hub.
+ * Read-only view of a problem rendered inside a Dialog, opened by the
+ * "View Problem" button in the problem and solution validation flows. It
+ * renders the same canvas cards as the project page and the validation
+ * summary so the surfaces stay in sync, and its header links to the
+ * problem's project page and to the edit hub.
  */
 export function ProblemHubDialog({
   open,
   onOpenChange,
-  problemRef,
+  problemId,
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
-  problemRef: string | null
+  problemId: number | null
 }) {
-  const problemId = problemRef != null ? Number(problemRef) : null
   const problem = useSelector((s: RootState) =>
     problemId != null ? s.problems.problems.find((p) => p.id === problemId) : undefined,
   )
+  const projectId = useProjectIdForProblem(problemId)
+  const projectHref = projectRoutes.page(projectId)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -36,16 +38,16 @@ export function ProblemHubDialog({
         <DialogHeader className="shrink-0">
           <div className="flex items-center gap-4 pr-8">
             <DialogTitle className="text-xl font-bold">Problem canvas</DialogTitle>
-            {problemRef && (
+            {problemId !== null && (
               <div className="ml-auto flex items-center gap-2">
                 <Button variant="outline" className="bg-white" asChild>
-                  <Link href={`/problems/${problemRef}`}>
+                  <Link href={projectHref}>
                     <ExternalLink />
-                    Open as full page
+                    Open project
                   </Link>
                 </Button>
                 <Button variant="outline" className="bg-white" asChild>
-                  <Link href={`/problems/${problemRef}/edit`}>
+                  <Link href={projectRoutes.problemEdit(projectId)}>
                     <Pencil />
                     Edit
                   </Link>

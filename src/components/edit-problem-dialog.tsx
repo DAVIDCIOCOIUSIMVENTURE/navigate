@@ -22,6 +22,8 @@ import type { Problem, ProblemPatch } from "@/store/problems-model"
 import type { ValidationStatus } from "@/types/validation"
 import { DimensionPicker } from "@/components/dimension-picker"
 import { ArrowRight, Compass, ExternalLink } from "lucide-react"
+import { useProjectIdForProblem } from "@/hooks/use-projects"
+import { projectRoutes } from "@/lib/projects"
 
 const COLUMN_TO_FIELD: Record<string, "customers" | "contexts" | "problems"> = {
   customers: "customers",
@@ -42,6 +44,7 @@ interface EditProblemDialogProps {
 export function EditProblemDialog({ problem, onClose, title: dialogTitle = "Edit Problem", showStatus = true, onDone }: EditProblemDialogProps) {
   const dispatch = useDispatch<AppDispatch>()
   const router = useRouter()
+  const projectId = useProjectIdForProblem(problem?.id)
 
   const [problemTitle, setProblemTitle] = useState("")
   const [description, setDescription] = useState("")
@@ -62,12 +65,25 @@ export function EditProblemDialog({ problem, onClose, title: dialogTitle = "Edit
     if (!initRef.current) { initRef.current = true; return }
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => {
+      debounceRef.current = null
       dispatch.problems.update({ id: problem.id, patch: { title: problemTitle, description } })
     }, 400)
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
     }
   }, [problemTitle, description, problem, dispatch])
+
+  /**
+   * Writes a still-pending edit at once. Every button below closes the
+   * dialog, which unmounts the debounce above, so without this the last few
+   * hundred milliseconds of typing would be dropped.
+   */
+  const flushPendingEdit = () => {
+    if (!problem || !debounceRef.current) return
+    clearTimeout(debounceRef.current)
+    debounceRef.current = null
+    dispatch.problems.update({ id: problem.id, patch: { title: problemTitle, description } })
+  }
 
   // Live ids for the chip pickers come straight from the redux store - the
   // chip onChange handlers below dispatch updates synchronously, so no local
@@ -80,7 +96,7 @@ export function EditProblemDialog({ problem, onClose, title: dialogTitle = "Edit
   }
 
   return (
-    <Dialog open={problem !== null} onOpenChange={(open) => { if (!open) onClose() }}>
+    <Dialog open={problem !== null} onOpenChange={(open) => { if (!open) { flushPendingEdit(); onClose() } }}>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>{dialogTitle}</DialogTitle>
@@ -157,8 +173,9 @@ export function EditProblemDialog({ problem, onClose, title: dialogTitle = "Edit
                 disabled={!hasContent}
                 title={disabledHint}
                 onClick={() => {
+                  flushPendingEdit()
                   onClose()
-                  router.push(`/problems/${problem.id}/edit`)
+                  router.push(projectRoutes.problemEdit(projectId))
                 }}
               >
                 <ExternalLink className="h-4 w-4 mr-2" />
@@ -170,8 +187,9 @@ export function EditProblemDialog({ problem, onClose, title: dialogTitle = "Edit
                 disabled={!hasContent}
                 title={disabledHint}
                 onClick={() => {
+                  flushPendingEdit()
                   onClose()
-                  router.push(`/problems/${problem.id}/explore/introduction`)
+                  router.push(projectRoutes.explore(projectId))
                 }}
               >
                 <Compass className="h-4 w-4 mr-2" />
@@ -182,6 +200,7 @@ export function EditProblemDialog({ problem, onClose, title: dialogTitle = "Edit
                 disabled={!hasContent}
                 title={disabledHint}
                 onClick={() => {
+                  flushPendingEdit()
                   if (onDone) onDone(problem.id)
                   else onClose()
                 }}

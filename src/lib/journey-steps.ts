@@ -9,7 +9,7 @@ import { Lightbulb, Microscope, ShieldCheck, Target, type LucideIcon } from "luc
 import type { ValidationStatus } from "@/types/validation"
 import type { Solution } from "@/types/solution"
 import type { Problem } from "@/store/problems-model"
-import { IDENTIFY_SOLUTIONS_START_HREF } from "@/lib/active-discovery-problem"
+import { HOME_HREF, projectRoutes } from "@/lib/projects"
 import { hasVerdict } from "@/lib/tour-steps"
 
 export type JourneyStepId =
@@ -22,18 +22,44 @@ export type JourneyStepId =
 export type JourneyStepDefinition = {
   id: JourneyStepId
   label: string
-  /** Where clicking the step takes the user. */
-  href: string
   icon: LucideIcon
 }
 
 export const JOURNEY_STEPS: JourneyStepDefinition[] = [
-  { id: "identify-problems", label: "Identify problems", href: "/problems/identify", icon: Target },
-  { id: "explore-problems", label: "Explore problems", href: "/problems", icon: Microscope },
-  { id: "validate-problems", label: "Validate problems", href: "/problems", icon: ShieldCheck },
-  { id: "identify-solutions", label: "Identify solutions", href: IDENTIFY_SOLUTIONS_START_HREF, icon: Lightbulb },
-  { id: "validate-solutions", label: "Validate solutions", href: "/solutions", icon: ShieldCheck },
+  { id: "identify-problems", label: "Identify problem", icon: Target },
+  { id: "explore-problems", label: "Explore problem", icon: Microscope },
+  { id: "validate-problems", label: "Validate problem", icon: ShieldCheck },
+  { id: "identify-solutions", label: "Identify solutions", icon: Lightbulb },
+  { id: "validate-solutions", label: "Validate solutions", icon: ShieldCheck },
 ]
+
+/**
+ * Where a milestone leads inside a project. Every page the rail appears on
+ * belongs to a project, so each step links into that project: the identify
+ * hub while the project has no problem yet, then the problem's own Explore
+ * and Validation flows, the Identify Solutions flow, and the project page,
+ * where the problem and its solutions are listed. Without a project (the
+ * rail rendered outside one) every step leads home.
+ */
+export function journeyStepHref(
+  step: JourneyStepDefinition,
+  projectId: number | null,
+  hasProblem: boolean,
+): string {
+  if (projectId === null) return HOME_HREF
+  if (!hasProblem) return step.id === "identify-problems" ? projectRoutes.identify(projectId) : projectRoutes.page(projectId)
+  switch (step.id) {
+    case "identify-problems":
+    case "validate-solutions":
+      return projectRoutes.page(projectId)
+    case "explore-problems":
+      return projectRoutes.explore(projectId)
+    case "validate-problems":
+      return projectRoutes.validation(projectId)
+    case "identify-solutions":
+      return projectRoutes.identifySolutions(projectId)
+  }
+}
 
 export type JourneyStepStatus = "completed" | "active" | "upcoming"
 
@@ -112,9 +138,9 @@ export function completedJourneySteps(problem: ProblemJourneySummary): JourneySt
 
 /**
  * The milestone a single problem is at, for pages about one problem (its
- * canvas): explore it first, then validate it once the Explore deep dive has
- * produced a job to be done or an existing solution, then look for solutions
- * once it has a verdict.
+ * project page): explore it first, then validate it once the Explore deep
+ * dive has produced a job to be done or an existing solution, then look for
+ * solutions once it has a verdict.
  */
 export function problemJourneyStep(problem: ProblemJourneySummary): JourneyStepId {
   if (hasVerdict(problem.validationStatus)) return "identify-solutions"

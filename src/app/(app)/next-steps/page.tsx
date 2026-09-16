@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 import { getProblemLabel } from "@/store/problems-model"
+import { projectForProblem, projectRoutes } from "@/lib/projects"
 import { Sparkles, Lightbulb, Milestone, Target, ChevronRight } from "lucide-react"
 import { NEXT_STEPS_TOPICS, type NextStepsTopic } from "@/data/nextStepsData"
 import { getNextStepsTopicIcon } from "@/config/navigation"
@@ -17,6 +18,7 @@ export default function NextStepsPage() {
   const router = useRouter()
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
   const problems = useSelector((state: RootState) => state.problems.problems)
+  const projects = useSelector((state: RootState) => state.projects.projects)
   const customByColumn = useSelector((state: RootState) => state.customDimensionItems.byColumn)
   const selfDiscoveryItems = useSelector((state: RootState) => state.selfDiscoveryItems.items)
   const size = useContainerSize()
@@ -72,8 +74,8 @@ export default function NextStepsPage() {
                 </p>
               </div>
               <Button asChild variant="outline" size="sm">
-                <Link href="/solutions">
-                  Go to Solutions
+                <Link href="/">
+                  Go to your projects
                   <ChevronRight className="ml-1 h-4 w-4" />
                 </Link>
               </Button>
@@ -81,13 +83,14 @@ export default function NextStepsPage() {
           ) : (
             <div className="flex flex-col gap-3">
               {problemsWithSolutions.map(({ problem, solutions: linked }) => {
+                const projectId = projectForProblem(projects, problem.id)?.id ?? null
                 const label = problem.title || getProblemLabel(problem, customByColumn, selfDiscoveryItems) || `Problem #${problem.id}`
                 return (
                   <div key={problem.id} className="rounded-lg border overflow-hidden">
                     <div className="flex items-center gap-2 px-4 py-2.5 bg-muted/40 border-b">
                       <Target className="h-4 w-4 text-tertiary shrink-0" />
                       <Link
-                        href={`/problems/${problem.id}/edit`}
+                        href={projectRoutes.problemEdit(projectId)}
                         className="flex-1 min-w-0 text-sm font-medium truncate hover:underline"
                       >
                         {label}
@@ -103,7 +106,7 @@ export default function NextStepsPage() {
                         return (
                           <li key={s.id}>
                             <Link
-                              href={`/solutions/${s.id}/edit`}
+                              href={projectRoutes.solutionEdit(projectId, s.id)}
                               className="flex items-center gap-2 px-4 py-2 group hover:bg-accent/40 transition-colors"
                             >
                               <Lightbulb className="h-3.5 w-3.5 text-muted-foreground shrink-0" />

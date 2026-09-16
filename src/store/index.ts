@@ -8,11 +8,12 @@ import { accountSettings } from "./account-settings-model"
 import { solutions } from "./solutions-model"
 import { solutionWorkspaces } from "./solution-workspaces-model"
 import { solutionComparison } from "./solution-comparison-model"
-import { problemCandidates } from "./problem-candidates-model"
 import { reflectSessions } from "./reflect-sessions-model"
 import { researchSessions } from "./research-sessions-model"
+import { canvasDrafts } from "./canvas-drafts-model"
 import { portfolios } from "./portfolios-model"
 import { tour } from "./tour-model"
+import { projects } from "./projects-model"
 export interface RootModel extends Models<RootModel> {
   notes: typeof notes
   settings: typeof settings
@@ -23,14 +24,31 @@ export interface RootModel extends Models<RootModel> {
   solutions: typeof solutions
   solutionWorkspaces: typeof solutionWorkspaces
   solutionComparison: typeof solutionComparison
-  problemCandidates: typeof problemCandidates
   reflectSessions: typeof reflectSessions
   researchSessions: typeof researchSessions
+  canvasDrafts: typeof canvasDrafts
   portfolios: typeof portfolios
   tour: typeof tour
+  projects: typeof projects
 }
 
-const models: RootModel = { notes, settings, selfDiscoveryItems, customDimensionItems, problems, accountSettings, solutions, solutionWorkspaces, solutionComparison, problemCandidates, reflectSessions, researchSessions, portfolios, tour }
+const models: RootModel = {
+  notes,
+  settings,
+  selfDiscoveryItems,
+  customDimensionItems,
+  problems,
+  accountSettings,
+  solutions,
+  solutionWorkspaces,
+  solutionComparison,
+  reflectSessions,
+  researchSessions,
+  canvasDrafts,
+  portfolios,
+  tour,
+  projects,
+}
 
 export function createStore() {
   return init<RootModel>({ models })

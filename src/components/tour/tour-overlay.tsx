@@ -56,16 +56,18 @@ function useViewportSize(): Size {
 /** A light, pure snapshot of the app state the steps can depend on. */
 function useTourContext(pathname: string): TourContext {
   const journey = useSelector((s: RootState) => s.tour.journey)
+  const projects = useSelector((s: RootState) => s.projects.projects)
   const problems = useSelector((s: RootState) => s.problems.problems)
   const solutions = useSelector((s: RootState) => s.solutions.solutions)
   return useMemo<TourContext>(
     () => ({
       pathname,
       journey,
+      projects: projects.map((p) => ({ id: p.id, problemId: p.problemId })),
       problems: problems.map((p) => ({ id: p.id, title: p.title, validationStatus: p.validationStatus })),
       solutions: solutions.map((s) => ({ id: s.id, problemId: s.problemId, validationStatus: s.validationStatus })),
     }),
-    [pathname, journey, problems, solutions],
+    [pathname, journey, projects, problems, solutions],
   )
 }
 

@@ -7,6 +7,7 @@ import { ProblemHubDialog } from "@/components/problem-hub/problem-hub-dialog"
 import { ProblemContextCard } from "@/components/context-card"
 import { FlowShell, type FlowNavItem } from "@/components/flow-shell"
 import type { JourneyStepId } from "@/lib/journey-steps"
+import { projectRoutes } from "@/lib/projects"
 
 export { FOCUS_COLUMN_MAX_HEIGHT_CLASS } from "@/components/flow-shell"
 
@@ -14,14 +15,15 @@ export type ProblemFlowNavItem = FlowNavItem
 
 /**
  * Shell for the two per-problem flows, Explore and Validation: the generic
- * `FlowShell` with Back set to the problem canvas and the problem reminder
- * (context card plus a View Problem button that opens the problem hub dialog)
- * under the step list.
+ * `FlowShell` with Back set to the project page and the problem reminder
+ * (context card plus a View Problem button that opens the problem hub
+ * dialog) under the step list.
  */
 export function ProblemFlowShell({
   title,
   icon,
   navLabel,
+  projectId,
   problemRef,
   problem,
   base,
@@ -34,6 +36,7 @@ export function ProblemFlowShell({
   icon: LucideIcon
   /** Accessible name for the step nav. */
   navLabel: string
+  projectId: number
   problemRef: string
   problem: ComponentProps<typeof ProblemContextCard>["problem"]
   /** Route prefix the step paths are appended to. */
@@ -51,7 +54,7 @@ export function ProblemFlowShell({
         title={title}
         icon={icon}
         navLabel={navLabel}
-        backHref={`/problems/${problemRef}`}
+        backHref={projectRoutes.page(projectId)}
         base={base}
         navItems={navItems}
         navIcons={navIcons}
@@ -70,7 +73,7 @@ export function ProblemFlowShell({
       >
         {children}
       </FlowShell>
-      <ProblemHubDialog open={dialogOpen} onOpenChange={setDialogOpen} problemRef={problemRef} />
+      <ProblemHubDialog open={dialogOpen} onOpenChange={setDialogOpen} problemId={Number(problemRef)} />
     </>
   )
 }

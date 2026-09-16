@@ -2,6 +2,7 @@ import {
   completedJourneySteps,
   computeJourneySteps,
   JOURNEY_STEPS,
+  journeyStepHref,
   problemJourneyStep,
   summariseProblemJourney,
   type ProblemJourneySummary,
@@ -27,6 +28,29 @@ describe("JOURNEY_STEPS", () => {
       "identify-solutions",
       "validate-solutions",
     ])
+  })
+})
+
+describe("journeyStepHref", () => {
+  const step = (id: (typeof JOURNEY_STEPS)[number]["id"]) => JOURNEY_STEPS.find((s) => s.id === id)!
+
+  it("leads home outside a project", () => {
+    expect(journeyStepHref(step("explore-problems"), null, false)).toBe("/")
+    expect(journeyStepHref(step("identify-problems"), null, true)).toBe("/")
+  })
+
+  it("leads to the identify hub, and otherwise the project page, while the project has no problem", () => {
+    expect(journeyStepHref(step("identify-problems"), 3, false)).toBe("/projects/3/identify")
+    expect(journeyStepHref(step("explore-problems"), 3, false)).toBe("/projects/3")
+    expect(journeyStepHref(step("identify-solutions"), 3, false)).toBe("/projects/3")
+  })
+
+  it("points each step at the project's own flows once it has a problem", () => {
+    expect(journeyStepHref(step("identify-problems"), 3, true)).toBe("/projects/3")
+    expect(journeyStepHref(step("explore-problems"), 3, true)).toBe("/projects/3/problem/explore/introduction")
+    expect(journeyStepHref(step("validate-problems"), 3, true)).toBe("/projects/3/problem/validation/introduction")
+    expect(journeyStepHref(step("identify-solutions"), 3, true)).toBe("/projects/3/solutions/identify/pick-method")
+    expect(journeyStepHref(step("validate-solutions"), 3, true)).toBe("/projects/3")
   })
 })
 

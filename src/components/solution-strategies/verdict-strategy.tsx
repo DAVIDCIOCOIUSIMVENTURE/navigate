@@ -1,7 +1,7 @@
 ﻿"use client"
 
 import { useEffect, useState } from "react"
-import { useSolution } from "@/app/(app)/solutions/[solutionId]/validate/context"
+import { useSolution } from "@/app/(app)/projects/[projectId]/solutions/[solutionId]/validate/context"
 import type { ValidationStatus } from "@/types/validation"
 import { CheckCircle2, HelpCircle, XCircle } from "lucide-react"
 import type { LucideIcon } from "lucide-react"

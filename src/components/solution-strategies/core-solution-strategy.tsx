@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux"
 import type { AppDispatch } from "@/store"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { useSolution } from "@/app/(app)/solutions/[solutionId]/validate/context"
+import { useSolution } from "@/app/(app)/projects/[projectId]/solutions/[solutionId]/validate/context"
 
 /**
  * Editable surface for the solution's title and description, the only

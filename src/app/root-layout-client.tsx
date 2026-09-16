@@ -30,7 +30,10 @@ import type { RootState, AppDispatch } from "@/store"
 import { Toaster } from "@/components/ui/sonner"
 import { TeamAvatars } from "@/components/team-avatars"
 import { TourOverlay } from "@/components/tour/tour-overlay"
+import { ProjectsMenu } from "@/components/projects-menu"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
+import { projectForProblem, projectLabel, projectRoutes } from "@/lib/projects"
+import type { Project } from "@/store/projects-model"
 import Link from "next/link"
 
 function ContentArea({ children }: { children: React.ReactNode }) {
@@ -46,11 +49,54 @@ function ContentArea({ children }: { children: React.ReactNode }) {
 }
 type Crumb = { label: string; href?: string }
 
-function getCrumbs(pathname: string): Crumb[] {
+/** What the breadcrumb needs from the store: the project a page belongs to. */
+type CrumbLookup = {
+  projectById: (projectId: number) => Crumb | null
+  projectForProblem: (problemId: number) => Crumb | null
+}
+
+function getCrumbs(pathname: string, lookup: CrumbLookup): Crumb[] {
   if (pathname === "/") return [{ label: "Home" }]
   const crumbs: Crumb[] = [{ label: "Home", href: "/" }]
   const segments = pathname.split("/").filter(Boolean)
   const [first, second, third] = segments
+
+  if (first === "projects") {
+    const project = lookup.projectById(Number(second))
+    if (segments.length === 2) {
+      crumbs.push(project ? { label: project.label } : { label: "Project" })
+      return crumbs
+    }
+    const projectId = Number(second)
+    crumbs.push(project ?? { label: "Project", href: projectRoutes.page(projectId) })
+    const [, , area, fourth, fifth] = segments
+    if (area === "identify") {
+      const tool = fourth === "canvas-builder" ? "Canvas Builder" : fourth === "reflect" ? "Reflect" : fourth === "research" ? "Research" : null
+      if (tool) {
+        crumbs.push({ label: "Identify a problem", href: projectRoutes.identify(projectId) })
+        crumbs.push({ label: tool })
+      } else {
+        crumbs.push({ label: "Identify a problem" })
+      }
+    } else if (area === "problem") {
+      crumbs.push({ label: fourth === "explore" ? "Explore" : fourth === "validation" ? "Validation" : "Edit problem" })
+    } else if (area === "solutions") {
+      if (fourth === "identify") {
+        crumbs.push({ label: "Identify solutions" })
+      } else if (fourth === "compare") {
+        crumbs.push({ label: "Compare solutions" })
+      } else if (fifth === "validate") {
+        crumbs.push({ label: "Solution", href: projectRoutes.solution(projectId, Number(fourth)) })
+        crumbs.push({ label: "Validation" })
+      } else if (fifth === "edit") {
+        crumbs.push({ label: "Solution", href: projectRoutes.solution(projectId, Number(fourth)) })
+        crumbs.push({ label: "Edit solution" })
+      } else {
+        crumbs.push({ label: "Solution" })
+      }
+    }
+    return crumbs
+  }
 
   if (first === "foundations") {
     crumbs.push({ label: "Why It Matters" })
@@ -97,92 +143,29 @@ function getCrumbs(pathname: string): Crumb[] {
     }
     return crumbs
   }
-  if (first === "problems") {
-    if (segments.length === 1) {
-      crumbs.push({ label: "Problems" })
-      return crumbs
-    }
-    if (second === "identify") {
-      crumbs.push({ label: "Problems", href: "/problems" })
-      if (third === "canvas-builder") {
-        crumbs.push({ label: "Identify", href: "/problems/identify" })
-        crumbs.push({ label: "Canvas Builder" })
-      } else if (third === "reflect") {
-        crumbs.push({ label: "Identify", href: "/problems/identify" })
-        crumbs.push({ label: "Reflect" })
-      } else if (third === "research") {
-        crumbs.push({ label: "Identify", href: "/problems/identify" })
-        crumbs.push({ label: "Research" })
-      } else {
-        crumbs.push({ label: "Identify" })
-      }
-      return crumbs
-    }
-    crumbs.push({ label: "Problems", href: "/problems" })
-    if (third === "explore") {
-      crumbs.push({ label: second, href: `/problems/${second}` })
-      crumbs.push({ label: "Explore" })
-    } else if (third === "validation") {
-      crumbs.push({ label: second, href: `/problems/${second}` })
-      crumbs.push({ label: "Validation" })
-    } else if (third === "edit") {
-      crumbs.push({ label: second, href: `/problems/${second}` })
-      crumbs.push({ label: "Edit" })
-    } else {
-      crumbs.push({ label: second })
-    }
-    return crumbs
-  }
-  if (first === "solutions") {
-    if (segments.length === 1) {
-      crumbs.push({ label: "Solutions" })
-      return crumbs
-    }
-    if (second === "identify") {
-      crumbs.push({ label: "Solutions", href: "/solutions" })
-      crumbs.push({ label: "Identify" })
-      return crumbs
-    }
-    crumbs.push({ label: "Solutions", href: "/solutions" })
-    if (second === "compare") {
-      crumbs.push({ label: "Compare" })
-    } else if (third === "validate") {
-      crumbs.push({ label: second, href: `/solutions/${second}` })
-      crumbs.push({ label: "Validation" })
-    } else if (third === "edit") {
-      crumbs.push({ label: second, href: `/solutions/${second}` })
-      crumbs.push({ label: "Edit" })
-    } else {
-      crumbs.push({ label: second })
-    }
+  if (first === "problems" && second) {
+    // The old `/problems/<id>` link redirects to the problem's project.
+    const project = lookup.projectForProblem(Number(second))
+    if (project) crumbs.push({ label: project.label })
     return crumbs
   }
   return crumbs
 }
 
-/** The problem canvas `/problems/<id>`, its `/edit` page and its `/explore/...` and `/validation/...` flows. */
-const PROBLEM_FOCUS_PATH = /^\/problems\/\d+(\/edit|\/(explore|validation)(\/.*)?)?$/
-
-/** The solution canvas `/solutions/<id>`, its `/edit` page and its `/validate/...` flow. */
-const SOLUTION_FOCUS_PATH = /^\/solutions\/\d+(\/edit|\/validate(\/.*)?)?$/
+/** Everything under a project page: the identify hub and tools, the problem's pages and flows, the solution pages and flows. */
+const PROJECT_FLOW_PATH = /^\/projects\/\d+\/.+/
 
 /**
  * Routes that render without the header and sidebar and supply their own Back
- * button and title: the Identify problems hub and every tool underneath it
- * (Canvas Builder, Reflect, Research), the problem canvas, its edit page and its
- * Explore and Validation flows, the solution canvas, its edit page and its
- * validation flow, the Compare solutions flow, Self Discovery and Identify
- * Solutions.
+ * button and title: every page inside a project other than the project page
+ * itself (the Identify problems hub and its tools, the problem edit page and
+ * its Explore and Validation flows, the solution canvas, its edit page and
+ * its validation flow, Identify Solutions, Compare solutions) and Self
+ * Discovery. The project page is not one of them: it is the hub the user
+ * works from.
  */
 function isFocusFlowPath(pathname: string): boolean {
-  return (
-    pathname.startsWith("/problems/identify") ||
-    PROBLEM_FOCUS_PATH.test(pathname) ||
-    SOLUTION_FOCUS_PATH.test(pathname) ||
-    pathname.startsWith("/solutions/compare") ||
-    pathname.startsWith("/self-discovery/discover") ||
-    pathname.startsWith("/solutions/identify")
-  )
+  return PROJECT_FLOW_PATH.test(pathname) || pathname.startsWith("/self-discovery/discover")
 }
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
@@ -198,7 +181,16 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const dispatch = useDispatch<AppDispatch>()
   const activeAvatarColor = AVATAR_COLOR_OPTIONS.find((c) => c.id === avatarColor) ?? AVATAR_COLOR_OPTIONS[0]
 
-  const crumbs = getCrumbs(pathname)
+  const projects = useSelector((state: RootState) => state.projects.projects)
+  const problems = useSelector((state: RootState) => state.problems.problems)
+  const projectCrumb = (project: Project | undefined): Crumb | null => {
+    if (!project) return null
+    return { label: projectLabel(project, problems), href: projectRoutes.page(project.id) }
+  }
+  const crumbs = getCrumbs(pathname, {
+    projectById: (id) => projectCrumb(projects.find((p) => p.id === id)),
+    projectForProblem: (problemId) => projectCrumb(projectForProblem(projects, problemId)),
+  })
 
   const isFocusFlow = isFocusFlowPath(pathname)
   const [topNavOpen, setTopNavOpen] = useState(false)
@@ -247,11 +239,14 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     dispatch.solutionWorkspaces.init()
     dispatch.solutionComparison.init()
     dispatch.notes.init()
-    dispatch.problemCandidates.init()
     dispatch.reflectSessions.init()
     dispatch.researchSessions.init()
+    dispatch.canvasDrafts.init()
     dispatch.portfolios.init()
     dispatch.tour.init()
+    dispatch.projects.init()
+    // Problems saved before projects existed each get a project of their own.
+    dispatch.projects.ensureForProblems()
   }, [dispatch])
 
   const headerTitle = (
@@ -396,6 +391,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             {headerTitle}
           </div>
           <div className="flex items-center gap-2 shrink-0">
+            <ProjectsMenu />
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -516,6 +512,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                 {headerTitle}
               </div>
               <div className="flex items-center gap-2 shrink-0 pr-10">
+                <ProjectsMenu onNavigate={() => setTopNavOpen(false)} />
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button

@@ -6,7 +6,7 @@ const reducers = tour.reducers
 const initialState = tour.state
 
 const running = (stepIndex: number, journey = EMPTY_JOURNEY): TourState => ({ hydrated: true, phase: "running", stepIndex, journey })
-const midJourney = { problemId: 7, solutionId: null }
+const midJourney = { projectId: 3, problemId: 7, solutionId: null }
 
 describe("tour model reducers", () => {
   it("starts un-hydrated and armed with an empty journey", () => {
@@ -56,8 +56,8 @@ describe("tour model reducers", () => {
 
   it("setJourney merges the patch", () => {
     const withProblem = reducers.setJourney(running(3), { problemId: 7 })
-    expect(withProblem.journey).toEqual({ problemId: 7, solutionId: null })
-    expect(reducers.setJourney(withProblem, { solutionId: 2 }).journey).toEqual({ problemId: 7, solutionId: 2 })
+    expect(withProblem.journey).toEqual({ projectId: null, problemId: 7, solutionId: null })
+    expect(reducers.setJourney(withProblem, { solutionId: 2 }).journey).toEqual({ projectId: null, problemId: 7, solutionId: 2 })
   })
 
   describe("stop", () => {
@@ -120,6 +120,14 @@ describe("parseStoredTour", () => {
   it("defaults a missing or malformed journey", () => {
     expect(parseStoredTour(JSON.stringify({ phase: "paused", stepIndex: 6 })).journey).toEqual(EMPTY_JOURNEY)
     expect(parseStoredTour(JSON.stringify({ phase: "paused", stepIndex: 6, journey: { problemId: "x" } })).journey).toEqual(EMPTY_JOURNEY)
+  })
+
+  it("reads a journey saved before projects existed", () => {
+    expect(parseStoredTour(JSON.stringify({ phase: "paused", stepIndex: 6, journey: { problemId: 7, solutionId: 2 } })).journey).toEqual({
+      projectId: null,
+      problemId: 7,
+      solutionId: 2,
+    })
   })
 
   it("migrates the earlier enabled flag", () => {

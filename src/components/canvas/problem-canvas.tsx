@@ -24,6 +24,8 @@ import {
 import { buildProblemBundle, downloadProblemBundle } from "@/lib/problem-export"
 import { ExportBundleDialog } from "@/components/export-bundle-dialog"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
+import { useProjectIdForProblem } from "@/hooks/use-projects"
+import { projectRoutes } from "@/lib/projects"
 import { ProblemCanvasCards } from "./problem-canvas-cards"
 
 export function ProblemCanvas({
@@ -46,6 +48,7 @@ export function ProblemCanvas({
   )
   const customByColumn = useSelector((s: RootState) => s.customDimensionItems.byColumn)
   const selfDiscoveryItems = useSelector((s: RootState) => s.selfDiscoveryItems.items)
+  const projectId = useProjectIdForProblem(problem.id)
 
   const handleDownload = () => {
     const text = buildProblemExportText(problem, linkedSolutions, customByColumn, selfDiscoveryItems)
@@ -108,7 +111,7 @@ export function ProblemCanvas({
         variant="outline"
         size="sm"
         className="bg-white"
-        onClick={() => router.push(`/problems/${problem.id}/validation/introduction`)}
+        onClick={() => router.push(projectRoutes.validation(projectId))}
         data-tour={TOUR_TARGETS.canvasValidate}
       >
         <ClipboardCheck className="h-3.5 w-3.5 mr-1.5" />
@@ -125,7 +128,7 @@ export function ProblemCanvas({
       </Button>
       <Button
         size="sm"
-        onClick={() => router.push(`/problems/${problem.id}/explore/introduction`)}
+        onClick={() => router.push(projectRoutes.explore(projectId))}
         data-tour={TOUR_TARGETS.canvasExplore}
       >
         <Compass className="h-3.5 w-3.5 mr-1.5" />

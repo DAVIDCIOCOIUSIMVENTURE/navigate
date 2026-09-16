@@ -1,18 +1,6 @@
-import { BookOpen, Compass, Heart, Book, Brain, Briefcase, Globe, Target, Lightbulb, Home, Search, FlaskConical, Clock, Trophy, Milestone, Hammer, Route, Users, RotateCcw, Plus, FolderKanban, LayoutDashboard, Presentation, type LucideIcon } from "lucide-react"
+import { BookOpen, Compass, Heart, Book, Brain, Briefcase, Globe, Home, Search, FlaskConical, Clock, Trophy, Milestone, Hammer, Route, Users, RotateCcw, Plus, FolderKanban, LayoutDashboard, Presentation, type LucideIcon } from "lucide-react"
 
 export const navigationItems = {
-  innovation: [
-    {
-      title: "Problems",
-      url: "/problems",
-      icon: Target
-    },
-    {
-      title: "Solutions",
-      url: "/solutions",
-      icon: Lightbulb
-    },
-  ],
   sidebar: [
     {
       title: "Home",
@@ -28,16 +16,6 @@ export const navigationItems = {
       title: "Self Discovery",
       url: "/self-discovery",
       icon: Compass
-    },
-    {
-      title: "Problems",
-      url: "/problems",
-      icon: Target
-    },
-    {
-      title: "Solutions",
-      url: "/solutions",
-      icon: Lightbulb
     },
     {
       title: "Next Steps",

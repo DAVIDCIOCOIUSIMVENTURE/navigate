@@ -28,6 +28,7 @@ import {
   buildSolutionBundle,
   downloadProblemBundle,
 } from "@/lib/problem-export"
+import { projectDisplayName } from "@/lib/projects"
 
 export type ExportPickerDialogProps = {
   open: boolean
@@ -37,15 +38,14 @@ export type ExportPickerDialogProps = {
 
 const COPY = {
   problem: {
-    title: "Export problem",
-    description: "Pick a problem to export as a JSON file you can re-import later.",
-    selectLabel: "Problem",
-    selectPlaceholder: "Pick a problem",
-    emptyState: "No problems to export yet.",
-    relatedLabel: "Include solutions linked to this problem",
-    relatedHelper: "When on, every solution attached to this problem is bundled with it.",
-    successPrefix: "Problem",
-    fallbackPrefix: "Problem",
+    title: "Export project",
+    description: "Pick a project to export its problem as a JSON file you can re-import later.",
+    selectLabel: "Project",
+    selectPlaceholder: "Pick a project",
+    emptyState: "No projects with a problem to export yet.",
+    relatedLabel: "Include the solutions found in this project",
+    relatedHelper: "When on, every solution in the project is bundled with its problem.",
+    successPrefix: "Project",
   },
   solution: {
     title: "Export solution",
@@ -56,22 +56,29 @@ const COPY = {
     relatedLabel: "Include the problem this solution belongs to",
     relatedHelper: "When on, the linked problem is bundled in so the solution lands with its full context. When off, the imported solution is attached to a placeholder problem.",
     successPrefix: "Solution",
-    fallbackPrefix: "Solution",
   },
 } as const
 
 export function ExportPickerDialog({ open, onOpenChange, kind }: ExportPickerDialogProps) {
   const store = useStore<RootState>()
+  const projects = useSelector((s: RootState) => s.projects.projects)
   const problems = useSelector((s: RootState) => s.problems.problems)
   const solutions = useSelector((s: RootState) => s.solutions.solutions)
   const copy = COPY[kind]
 
+  // A problem bundle is a whole project, so the list shows project names and
+  // exports the problem each one holds. Projects with no problem yet have
+  // nothing to export and are left out.
   const items = useMemo(() => {
     const raw = kind === "problem"
-      ? problems.map((p) => ({ id: p.id, label: p.title || `${copy.fallbackPrefix} #${p.id}`, editedAt: p.editedAt }))
-      : solutions.map((s) => ({ id: s.id, label: s.title || `${copy.fallbackPrefix} #${s.id}`, editedAt: s.editedAt }))
+      ? projects.flatMap((project) => {
+          const problem = project.problemId === null ? undefined : problems.find((p) => p.id === project.problemId)
+          if (!problem) return []
+          return [{ id: problem.id, label: projectDisplayName(project, problem.title), editedAt: problem.editedAt }]
+        })
+      : solutions.map((s) => ({ id: s.id, label: s.title || `Solution #${s.id}`, editedAt: s.editedAt }))
     return [...raw].sort((a, b) => b.editedAt.localeCompare(a.editedAt))
-  }, [kind, problems, solutions, copy.fallbackPrefix])
+  }, [kind, projects, problems, solutions])
 
   const [selectedId, setSelectedId] = useState<string>("")
   const [includeRelated, setIncludeRelated] = useState(true)
@@ -87,9 +94,10 @@ export function ExportPickerDialog({ open, onOpenChange, kind }: ExportPickerDia
   }, [open, items])
 
   const handleExport = () => {
+    const noun = copy.successPrefix.toLowerCase()
     const id = Number(selectedId)
     if (!Number.isFinite(id)) {
-      toast.error(`Please pick a ${kind}.`)
+      toast.error(`Please pick a ${noun}.`)
       return
     }
     const state = store.getState()
@@ -97,7 +105,7 @@ export function ExportPickerDialog({ open, onOpenChange, kind }: ExportPickerDia
       ? buildProblemBundle(state, id, { includeSolutions: includeRelated })
       : buildSolutionBundle(state, id, { includeProblem: includeRelated })
     if (!bundle) {
-      toast.error(`Could not export this ${kind}.`)
+      toast.error(`Could not export this ${noun}.`)
       return
     }
     downloadProblemBundle(bundle)

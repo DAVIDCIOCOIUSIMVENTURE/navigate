@@ -2,7 +2,7 @@
 
 import { Textarea } from "@/components/ui/textarea"
 import { DimensionChips } from "@/components/dimension-chips"
-import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
+import { useProblem } from "@/app/(app)/projects/[projectId]/problem/validation/context"
 
 export function CustomerStrategy({ readOnly = false }: { readOnly?: boolean }) {
   const { problem, segmentSize, customerDescription, setCustomerDescription } = useProblem()

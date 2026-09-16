@@ -6,6 +6,7 @@ import type { ReflectionCapture } from "@/types/reflection"
 import type { CustomDimensionItem } from "./custom-dimension-items-model"
 import type { SelfDiscoveryItem } from "./self-discovery-items-model"
 import { resolveDimensionLabel } from "@/lib/dimension-labels"
+import { clearResearchCapture } from "@/lib/research-capture"
 
 const STORAGE_KEY = "navigate-problems"
 
@@ -130,7 +131,11 @@ export const problems = createModel<RootModel>()({
     },
 
     create(
-      payload: ProblemPatch & { source: ProblemSource },
+      payload: ProblemPatch & {
+        source: ProblemSource
+        /** The project the problem is identified for; it takes the problem if it has none yet. Omit for imports and copies. */
+        projectId?: number
+      },
       rootState
     ): Problem {
       const state = rootState.problems
@@ -161,13 +166,28 @@ export const problems = createModel<RootModel>()({
         nextId: state.nextId + 1,
       }
       saveToStorage(nextState)
+      // Every problem belongs to a project: the one it was identified for if still empty, otherwise a new one.
+      dispatch.projects.adoptProblem({ id: newProblem.id, title: newProblem.title, projectId: payload.projectId ?? null })
       return newProblem
     },
 
+    /**
+     * Deleting a problem takes everything found for it: its solutions, its
+     * refinement workspace and the research captured while identifying it.
+     * The project stays, empty and ready for a new problem.
+     */
     delete(id: number, rootState) {
+      for (const solution of rootState.solutions.solutions) {
+        if (solution.problemId === id) dispatch.solutions.delete(solution.id)
+      }
+      for (const workspace of rootState.solutionWorkspaces.workspaces) {
+        if (workspace.problemId === id) dispatch.solutionWorkspaces.delete(workspace.id)
+      }
+      clearResearchCapture(id)
       dispatch.problems.removeProblem(id)
       const remaining = rootState.problems.problems.filter((p) => p.id !== id)
       saveToStorage({ problems: remaining, nextId: rootState.problems.nextId })
+      dispatch.projects.detachProblem(id)
     },
   }),
 })

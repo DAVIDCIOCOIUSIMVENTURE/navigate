@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import type { AppDispatch } from "@/store"
-import { useProblem } from "@/app/(app)/problems/[problemRef]/validation/context"
+import { useProblem } from "@/app/(app)/projects/[projectId]/problem/validation/context"
 import { DimensionPicker } from "@/components/dimension-picker"
 
 /**

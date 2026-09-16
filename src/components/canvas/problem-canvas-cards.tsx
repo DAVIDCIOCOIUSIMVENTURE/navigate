@@ -6,6 +6,8 @@ import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
 import type { Problem } from "@/store/problems-model"
 import { resolveDimensionLabel } from "@/lib/dimension-labels"
+import { useProjectIdForProblem } from "@/hooks/use-projects"
+import { projectRoutes } from "@/lib/projects"
 import type { LucideIcon } from "lucide-react"
 import {
   Users,
@@ -136,6 +138,7 @@ export function ProblemCanvasCards({
   tone?: CellTone
 }) {
   const router = useRouter()
+  const projectId = useProjectIdForProblem(problem.id)
   const brand = tone === "brand"
   const divider = brand ? "border-white" : CANVAS_DIVIDER
   const sectionHeading = cn(
@@ -339,7 +342,7 @@ export function ProblemCanvasCards({
               <li key={sol.id}>
                 <button
                   type="button"
-                  onClick={() => router.push(`/solutions/${sol.id}/edit`)}
+                  onClick={() => router.push(projectRoutes.solutionEdit(projectId, sol.id))}
                   className={cn(
                     "flex items-center gap-2 w-full text-left rounded-md px-2 py-1 -mx-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                     brand ? "hover:bg-white/10" : "hover:bg-muted/60",

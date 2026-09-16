@@ -10,21 +10,25 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { useProjectIdForProblem } from "@/hooks/use-projects"
+import { projectRoutes } from "@/lib/projects"
 
+/**
+ * Shown by every identify tool once a problem is saved. A project holds one
+ * problem, so identifying is finished at this point and the only way on is
+ * to explore the problem.
+ */
 export function ProblemSavedDialog({
   open,
   onOpenChange,
   problemId,
-  onKeepIdentifying,
-  keepIdentifyingLabel = "Keep Identifying Problems",
 }: {
   open: boolean
   onOpenChange: (open: boolean) => void
   problemId: number | null
-  onKeepIdentifying?: () => void
-  keepIdentifyingLabel?: string
 }) {
   const router = useRouter()
+  const projectId = useProjectIdForProblem(problemId)
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -32,7 +36,7 @@ export function ProblemSavedDialog({
         <DialogHeader>
           <DialogTitle>Problem Saved</DialogTitle>
           <DialogDescription>
-            Your problem has been saved. What would you like to do next?
+            You have found your project&apos;s problem. Next you will explore it: who has it, when it shows up, how people cope today and what they are trying to achieve.
           </DialogDescription>
         </DialogHeader>
         <div className="flex flex-col gap-3 pt-4">
@@ -40,22 +44,13 @@ export function ProblemSavedDialog({
             onClick={() => {
               onOpenChange(false)
               if (problemId !== null) {
-                router.push(`/problems/${problemId}/explore/introduction`)
+                router.push(projectRoutes.explore(projectId))
               }
             }}
             className="gap-2"
           >
             <ArrowRight className="h-4 w-4" />
             Explore the Problem
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => {
-              onOpenChange(false)
-              onKeepIdentifying?.()
-            }}
-          >
-            {keepIdentifyingLabel}
           </Button>
         </div>
       </DialogContent>
