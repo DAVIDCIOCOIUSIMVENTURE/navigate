@@ -85,6 +85,7 @@ export function SolutionsTable({ solutions, showStatus = true, showScore = true,
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc")
   const [exportSolutionId, setExportSolutionId] = useState<number | null>(null)
   const [viewSolutionId, setViewSolutionId] = useState<number | null>(null)
+  const [deleteSolutionId, setDeleteSolutionId] = useState<number | null>(null)
 
   const runSolutionExport = (solutionId: number, includeProblem: boolean) => {
     const bundle = buildSolutionBundle(store.getState(), solutionId, { includeProblem })
@@ -327,22 +328,6 @@ export function SolutionsTable({ solutions, showStatus = true, showScore = true,
                             <TooltipContent>View canvas</TooltipContent>
                           </Tooltip>
                         )}
-                        {showEditDelete && (
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <Button
-                                variant="secondary-brand"
-                                size="icon"
-                                className="h-7 w-7"
-                                onClick={() => router.push(projectRoutes.solutionEdit(projectId, solution.id))}
-                                aria-label="Edit solution"
-                              >
-                                <Pencil className="h-3.5 w-3.5" />
-                              </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Edit solution</TooltipContent>
-                          </Tooltip>
-                        )}
                         <DropdownMenu modal={false}>
                           <DropdownMenuTrigger asChild>
                             <Button variant="outline-card" size="icon" className="h-7 w-7" aria-label="Actions">
@@ -350,6 +335,12 @@ export function SolutionsTable({ solutions, showStatus = true, showScore = true,
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end">
+                            {showEditDelete && (
+                              <DropdownMenuItem onClick={() => router.push(projectRoutes.solutionEdit(projectId, solution.id))}>
+                                <Pencil className="h-3.5 w-3.5" />
+                                Edit solution
+                              </DropdownMenuItem>
+                            )}
                             <DropdownMenuItem onClick={() => router.push(projectRoutes.solutionValidate(projectId, solution.id))}>
                               <ClipboardCheck className="h-3.5 w-3.5" />
                               Open solution validation
@@ -364,25 +355,17 @@ export function SolutionsTable({ solutions, showStatus = true, showScore = true,
                               <FileJson className="h-3.5 w-3.5" />
                               Export
                             </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                        {showEditDelete && (
-                          <ConfirmDialog
-                            tooltip="Delete solution"
-                            trigger={
-                              <Button
-                                variant="destructive-outline"
-                                size="icon"
-                                className="h-7 w-7"
-                                aria-label="Delete solution"
+                            {showEditDelete && (
+                              <DropdownMenuItem
+                                className="text-destructive focus:text-destructive"
+                                onClick={() => setDeleteSolutionId(solution.id)}
                               >
                                 <Trash2 className="h-3.5 w-3.5" />
-                              </Button>
-                            }
-                            description="This will permanently delete this solution and any associated validation data."
-                            onConfirm={() => dispatch.solutions.delete(solution.id)}
-                          />
-                        )}
+                                Delete solution
+                              </DropdownMenuItem>
+                            )}
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     </TableCell>
                   </TableRow>
@@ -404,6 +387,15 @@ export function SolutionsTable({ solutions, showStatus = true, showScore = true,
       kind="solution"
       onConfirm={(includeProblem) => {
         if (exportSolutionId != null) runSolutionExport(exportSolutionId, includeProblem)
+      }}
+    />
+    <ConfirmDialog
+      open={deleteSolutionId != null}
+      onOpenChange={(open) => { if (!open) setDeleteSolutionId(null) }}
+      description="This will permanently delete this solution and any associated validation data."
+      onConfirm={() => {
+        if (deleteSolutionId != null) dispatch.solutions.delete(deleteSolutionId)
+        setDeleteSolutionId(null)
       }}
     />
     </>

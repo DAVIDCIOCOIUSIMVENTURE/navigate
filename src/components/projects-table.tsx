@@ -18,6 +18,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { MemberAvatarStack } from "@/components/member-avatar"
 import { DELETE_PROJECT_COPY } from "@/components/project-name-dialog"
 import { ProjectSettingsDialog } from "@/components/project-settings-dialog"
@@ -25,9 +31,10 @@ import {
   ArrowDown,
   ArrowUp,
   ArrowUpDown,
+  Eye,
   FolderKanban,
-  FolderOpen,
   Lightbulb,
+  MoreHorizontal,
   Search,
   Settings,
   Target,
@@ -43,8 +50,9 @@ type SortDirection = "asc" | "desc"
 /**
  * The home page list: one row per project with its problem, the problem's
  * validation status and how many solutions it has.
- * Open goes to the project page; rename and delete act on the project itself
- * (delete also removes its problem and solutions).
+ * The eye button opens the project page; everything else (settings, delete)
+ * sits in the row's actions menu. Deleting a project also removes its problem
+ * and solutions.
  */
 export function ProjectsTable({ projects, className }: { projects: Project[]; className?: string }) {
   const router = useRouter()
@@ -55,6 +63,7 @@ export function ProjectsTable({ projects, className }: { projects: Project[]; cl
   const [sortKey, setSortKey] = useState<SortKey>("index")
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc")
   const [settingsId, setSettingsId] = useState<number | null>(null)
+  const [deleteId, setDeleteId] = useState<number | null>(null)
 
   const rows = useMemo(
     () =>
@@ -217,41 +226,36 @@ export function ProjectsTable({ projects, className }: { projects: Project[]; cl
                                 onClick={() => router.push(projectRoutes.page(project.id))}
                                 aria-label={`Open ${name}`}
                               >
-                                <FolderOpen className="h-3.5 w-3.5" />
+                                <Eye className="h-3.5 w-3.5" />
                               </Button>
                             </TooltipTrigger>
                             <TooltipContent>Open project</TooltipContent>
                           </Tooltip>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
+                          <DropdownMenu modal={false}>
+                            <DropdownMenuTrigger asChild>
                               <Button
                                 variant="outline-card"
                                 size="icon"
                                 className="h-7 w-7"
-                                onClick={() => setSettingsId(project.id)}
-                                aria-label={`Settings for ${name}`}
+                                aria-label={`Actions for ${name}`}
                               >
-                                <Settings className="h-3.5 w-3.5 text-tertiary" />
+                                <MoreHorizontal className="h-3.5 w-3.5 text-tertiary" />
                               </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>Project settings: name and team</TooltipContent>
-                          </Tooltip>
-                          <ConfirmDialog
-                            tooltip="Delete project"
-                            trigger={
-                              <Button
-                                variant="destructive-outline"
-                                size="icon"
-                                className="h-7 w-7"
-                                aria-label={`Delete ${name}`}
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem onClick={() => setSettingsId(project.id)}>
+                                <Settings className="h-3.5 w-3.5" />
+                                Settings: name and team
+                              </DropdownMenuItem>
+                              <DropdownMenuItem
+                                className="text-destructive focus:text-destructive"
+                                onClick={() => setDeleteId(project.id)}
                               >
                                 <Trash2 className="h-3.5 w-3.5" />
-                              </Button>
-                            }
-                            title={DELETE_PROJECT_COPY.title}
-                            description={DELETE_PROJECT_COPY.description}
-                            onConfirm={() => dispatch.projects.delete(project.id)}
-                          />
+                                Delete project
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
                         </div>
                       </TableCell>
                     </TableRow>
@@ -266,6 +270,16 @@ export function ProjectsTable({ projects, className }: { projects: Project[]; cl
         project={editing}
         open={editing !== undefined}
         onOpenChange={(open) => { if (!open) setSettingsId(null) }}
+      />
+      <ConfirmDialog
+        open={deleteId !== null}
+        onOpenChange={(open) => { if (!open) setDeleteId(null) }}
+        title={DELETE_PROJECT_COPY.title}
+        description={DELETE_PROJECT_COPY.description}
+        onConfirm={() => {
+          if (deleteId !== null) dispatch.projects.delete(deleteId)
+          setDeleteId(null)
+        }}
       />
     </>
   )

@@ -25,7 +25,9 @@ import { TOUR_TARGETS } from "@/lib/tour-steps"
  * project" at the top. The trigger shows the name of the project the current
  * page belongs to (everything under `/projects/<id>`), or "Projects"
  * elsewhere. Each row carries a settings button for the project's name and
- * team. The dropdown is non-modal because those dialogs open from it.
+ * team. The list of projects scrolls inside a capped area so a long list never
+ * stretches the menu down the window; "New project" stays in view above it. The
+ * dropdown is non-modal because those dialogs open from it.
  */
 export function ProjectsMenu({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname()
@@ -76,29 +78,31 @@ export function ProjectsMenu({ onNavigate }: { onNavigate?: () => void }) {
           {projects.length === 0 ? (
             <DropdownMenuItem disabled>No projects yet</DropdownMenuItem>
           ) : (
-            projects.map((project) => {
-              const projectName = projectLabel(project, problems)
-              return (
-                <div key={project.id} className="flex items-center gap-1">
-                  <DropdownMenuItem asChild className="gap-2 flex-1 min-w-0">
-                    <Link href={projectRoutes.page(project.id)} onClick={onNavigate}>
-                      <FolderKanban className="h-4 w-4 shrink-0" />
-                      <span className="flex-1 truncate">{projectName}</span>
-                      {current?.id === project.id && <Check className="h-4 w-4 shrink-0" />}
-                    </Link>
-                  </DropdownMenuItem>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-7 w-7 shrink-0"
-                    onClick={() => openSettings(project.id)}
-                    aria-label={`Settings for ${projectName}`}
-                  >
-                    <Settings className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-              )
-            })
+            <div className="max-h-72 overflow-y-auto overflow-x-hidden">
+              {projects.map((project) => {
+                const projectName = projectLabel(project, problems)
+                return (
+                  <div key={project.id} className="flex items-center gap-1">
+                    <DropdownMenuItem asChild className="gap-2 flex-1 min-w-0">
+                      <Link href={projectRoutes.page(project.id)} onClick={onNavigate}>
+                        <FolderKanban className="h-4 w-4 shrink-0" />
+                        <span className="flex-1 truncate">{projectName}</span>
+                        {current?.id === project.id && <Check className="h-4 w-4 shrink-0" />}
+                      </Link>
+                    </DropdownMenuItem>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7 shrink-0"
+                      onClick={() => openSettings(project.id)}
+                      aria-label={`Settings for ${projectName}`}
+                    >
+                      <Settings className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                )
+              })}
+            </div>
           )}
         </DropdownMenuContent>
       </DropdownMenu>

@@ -115,6 +115,8 @@ export const TOUR_TARGETS = {
   identifyMethods: "identify-methods",
   /** The "Use this tool" button on the "Define a Problem Statement" card of the identify hub. */
   identifyDefineUse: "identify-define-use",
+  /** The actions menu button on the problem canvas; its items are the two below. */
+  canvasActions: "canvas-actions",
   canvasExplore: "canvas-explore",
   canvasValidate: "canvas-validate",
   /** The "Identify solutions" button on a project page; it opens Identify Solutions for the project's problem. */

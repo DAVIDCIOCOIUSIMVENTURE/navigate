@@ -7,12 +7,20 @@ import type { RootState, AppDispatch } from "@/store"
 import type { Solution } from "@/types/solution"
 import { Button } from "@/components/ui/button"
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
   Printer,
   Download,
   FileJson,
   Pencil,
   Maximize2,
   Minimize2,
+  Settings,
 } from "lucide-react"
 import { toast } from "sonner"
 import {
@@ -76,45 +84,50 @@ export function SolutionCanvas({
     return () => document.removeEventListener("keydown", handler)
   }, [fullView, dispatch.settings])
 
+  /**
+   * One menu rather than a row of buttons, so the header leaves the solution
+   * title the room it needs. `modal={false}` keeps the page clickable after
+   * the export dialog the menu opens is closed.
+   */
   const actions = (
-    <>
-      {showFullView && (
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger asChild>
         <Button
           variant="outline"
-          size="sm"
-          className="bg-white"
-          onClick={() => dispatch.settings.setFullView(!fullView)}
+          size="icon"
+          className="h-8 w-8 bg-white"
+          aria-label="Solution actions"
+          title="Solution actions"
         >
-          {fullView ? (
-            <Minimize2 className="h-3.5 w-3.5 mr-1.5" />
-          ) : (
-            <Maximize2 className="h-3.5 w-3.5 mr-1.5" />
-          )}
-          {fullView ? "Exit Full View" : "Full View"}
+          <Settings className="h-4 w-4" />
         </Button>
-      )}
-      <Button variant="outline" size="sm" className="bg-white" onClick={handleDownload} title="Download as text">
-        <Download className="h-3.5 w-3.5 mr-1.5" />
-        Download
-      </Button>
-      <Button variant="outline" size="sm" className="bg-white" onClick={() => setExportOpen(true)} title="Export as a re-importable JSON bundle">
-        <FileJson className="h-3.5 w-3.5 mr-1.5" />
-        Export
-      </Button>
-      <Button variant="outline" size="sm" className="bg-white" disabled title="Coming soon">
-        <Printer className="h-3.5 w-3.5 mr-1.5" />
-        Print
-      </Button>
-      <Button
-        variant="outline"
-        size="sm"
-        className="bg-white border-secondary-brand/40 text-secondary-brand hover:bg-secondary-brand/5 hover:text-secondary-brand"
-        onClick={() => router.push(editHref)}
-      >
-        <Pencil className="h-3.5 w-3.5 mr-1.5" />
-        Edit
-      </Button>
-    </>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end">
+        <DropdownMenuItem onClick={() => router.push(editHref)}>
+          <Pencil className="h-3.5 w-3.5" />
+          Edit
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        {showFullView && (
+          <DropdownMenuItem onClick={() => dispatch.settings.setFullView(!fullView)}>
+            {fullView ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
+            {fullView ? "Exit full view" : "Full view"}
+          </DropdownMenuItem>
+        )}
+        <DropdownMenuItem onClick={handleDownload}>
+          <Download className="h-3.5 w-3.5" />
+          Download as text
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setExportOpen(true)}>
+          <FileJson className="h-3.5 w-3.5" />
+          Export
+        </DropdownMenuItem>
+        <DropdownMenuItem disabled>
+          <Printer className="h-3.5 w-3.5" />
+          Print (coming soon)
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 
   return (

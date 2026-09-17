@@ -18,7 +18,11 @@ import {
 } from "@/components/ui/tooltip"
 
 interface ConfirmDialogProps {
-  trigger: React.ReactNode
+  /** Omit when the dialog is opened from elsewhere, e.g. a menu item, via `open`. */
+  trigger?: React.ReactNode
+  /** Drive the dialog from the outside; leave unset for a trigger-owned dialog. */
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
   title?: string
   description?: string
   confirmLabel?: string
@@ -29,6 +33,8 @@ interface ConfirmDialogProps {
 
 export function ConfirmDialog({
   trigger,
+  open,
+  onOpenChange,
   title = "Are you sure?",
   description = "This action cannot be undone.",
   confirmLabel = "Delete",
@@ -37,17 +43,18 @@ export function ConfirmDialog({
   tooltip,
 }: ConfirmDialogProps) {
   return (
-    <AlertDialog>
-      {tooltip ? (
-        <Tooltip>
-          <AlertDialogTrigger asChild>
-            <TooltipTrigger asChild>{trigger}</TooltipTrigger>
-          </AlertDialogTrigger>
-          <TooltipContent>{tooltip}</TooltipContent>
-        </Tooltip>
-      ) : (
-        <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
-      )}
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      {trigger &&
+        (tooltip ? (
+          <Tooltip>
+            <AlertDialogTrigger asChild>
+              <TooltipTrigger asChild>{trigger}</TooltipTrigger>
+            </AlertDialogTrigger>
+            <TooltipContent>{tooltip}</TooltipContent>
+          </Tooltip>
+        ) : (
+          <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+        ))}
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>

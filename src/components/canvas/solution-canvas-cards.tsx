@@ -3,33 +3,47 @@
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
 import { inspirationSourceLabel, type Solution } from "@/types/solution"
-import {
-  Target,
-  Wrench,
-  TrendingUp,
-  Coins,
-  Hourglass,
-  Lightbulb,
-  FileText,
-} from "lucide-react"
+import { Target, Gauge, Lightbulb, FileText } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { TrafficLightPill } from "@/components/traffic-light"
+import {
+  COST_CONTENT,
+  FEASIBILITY_CONTENT,
+  IMPACT_CONTENT,
+  TIME_CONTENT,
+} from "@/components/solution-strategies/metric-content"
+import type { MetricContent } from "@/components/solution-strategies/metric-strategy"
+import { DescriptionItem, DescriptionList } from "@/components/ui/description-list"
 import {
   CANVAS_DIVIDER,
   CANVAS_ICON_BG,
   Cell,
   Placeholder,
-  ScoreCell,
   StatusPill,
 } from "./canvas-shared"
 
+/** The four validation metrics, each read out as "name: level". */
+const METRICS: { label: string; scale: MetricContent["scale"]; read: (s: Solution) => number | null }[] = [
+  { label: "Feasibility", scale: FEASIBILITY_CONTENT.scale, read: (s) => s.feasibility },
+  { label: "Impact", scale: IMPACT_CONTENT.scale, read: (s) => s.impact },
+  { label: "Cost", scale: COST_CONTENT.scale, read: (s) => s.cost },
+  { label: "Time to implement", scale: TIME_CONTENT.scale, read: (s) => s.timeToImplement },
+]
+
+/** The level word a score stands for, e.g. 4 on feasibility reads "Achievable". */
+function metricLevel(score: number | null, scale: MetricContent["scale"]) {
+  if (score == null) return null
+  return scale.find((s) => s.score === score)?.label ?? null
+}
+
 /**
  * Visual card grid for a Solution: header (title + status pill + optional
- * actions), description, linked-problem, method used, and four scoring
- * cards. Used by the solution canvas page, the solution validation
- * summary, and the "View Solution" dialog so the read-only view is
- * identical everywhere. Every card carries the same mustard icon tile and
- * header rule as the problem canvas so the two canvases read as one family.
+ * actions), description, linked-problem, method used, and one Metrics card
+ * listing the four validation scores as "name: level". Used by the solution
+ * canvas page, the solution validation summary, and the "View Solution"
+ * dialog so the read-only view is identical everywhere. Every card carries
+ * the same mustard icon tile and header rule as the problem canvas so the
+ * two canvases read as one family.
  *
  * `fill` switches on the canvas-page layout: the grid stretches to fill
  * the available height and cards scroll internally. Without it, the grid
@@ -75,7 +89,7 @@ export function SolutionCanvasCards({
         className={cn(
           "grid grid-cols-1 sm:grid-cols-12 gap-3",
           fill &&
-            "lg:grid-rows-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,0.7fr)] flex-1 lg:min-h-0",
+            "lg:grid-rows-[minmax(0,1fr)_minmax(0,1fr)_auto] flex-1 lg:min-h-0",
         )}
       >
         <Cell
@@ -131,42 +145,25 @@ export function SolutionCanvasCards({
           </div>
         </Cell>
 
-        <ScoreCell
-          icon={Wrench}
-          label="Feasibility"
+        <Cell
+          icon={Gauge}
+          label="Metrics"
           iconBg={CANVAS_ICON_BG}
           divider={CANVAS_DIVIDER}
-          score={solution.feasibility}
-          scaleNote="(1 hard, 5 easy)"
-          className="sm:col-span-6 lg:col-span-3"
-        />
-        <ScoreCell
-          icon={TrendingUp}
-          label="Impact"
-          iconBg={CANVAS_ICON_BG}
-          divider={CANVAS_DIVIDER}
-          score={solution.impact}
-          scaleNote="(1 low, 5 high)"
-          className="sm:col-span-6 lg:col-span-3"
-        />
-        <ScoreCell
-          icon={Coins}
-          label="Cost"
-          iconBg={CANVAS_ICON_BG}
-          divider={CANVAS_DIVIDER}
-          score={solution.cost}
-          scaleNote="(1 cheap, 5 expensive)"
-          className="sm:col-span-6 lg:col-span-3"
-        />
-        <ScoreCell
-          icon={Hourglass}
-          label="Time to implement"
-          iconBg={CANVAS_ICON_BG}
-          divider={CANVAS_DIVIDER}
-          score={solution.timeToImplement}
-          scaleNote="(1 fast, 5 slow)"
-          className="sm:col-span-6 lg:col-span-3"
-        />
+          className="sm:col-span-12"
+          empty={METRICS.every(({ read }) => read(solution) == null)}
+        >
+          <DescriptionList columns={2}>
+            {METRICS.map(({ label, scale, read }) => {
+              const level = metricLevel(read(solution), scale)
+              return (
+                <DescriptionItem key={label} term={label} empty={!level}>
+                  {level ?? "Not scored"}
+                </DescriptionItem>
+              )
+            })}
+          </DescriptionList>
+        </Cell>
       </div>
     </div>
   )
