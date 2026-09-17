@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
-import { useDispatch } from "react-redux"
-import type { AppDispatch } from "@/store"
+import { useDispatch, useSelector } from "react-redux"
+import type { AppDispatch, RootState } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { useSolution } from "@/app/(app)/projects/[projectId]/solutions/[solutionId]/validate/context"
@@ -18,8 +18,8 @@ import {
   TIME_CONTENT,
 } from "@/components/solution-strategies/metric-content"
 import {
-  ArrowRight, ChevronDown, CheckCircle2, ExternalLink, HelpCircle, Lightbulb,
-  Pencil, RotateCcw, Target, XCircle, Copy,
+  ArrowRight, ChevronDown, CheckCircle2, ExternalLink, FolderKanban, HelpCircle,
+  Lightbulb, Pencil, RotateCcw, Target, XCircle, Copy,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -125,11 +125,26 @@ function LinkedProblemSection({ projectId, problemId, problemTitle, problemDescr
 
 export function NextStepsSection({ solutionId }: { solutionId: number }) {
   const router = useRouter()
+  const pathname = usePathname()
   const dispatch = useDispatch<AppDispatch>()
   const { projectId, validationStatus, solution } = useSolution()
   const projectHref = projectRoutes.page(projectId)
 
+  // A portfolio is scoped to one solution, so this solution has at most one.
+  const existingPortfolio = useSelector((state: RootState) =>
+    state.portfolios.portfolios.find((p) => p.solutionId === solutionId),
+  )
+
   const goToVerdict = () => router.push(projectRoutes.solutionValidate(projectId, solutionId, "verdict"))
+
+  // Cancelling the new-portfolio form comes back to whichever view this
+  // section was rendered in (the solution hub, or the validation review step).
+  const goToPortfolio = () =>
+    router.push(
+      existingPortfolio
+        ? `/portfolios/${existingPortfolio.id}`
+        : `/portfolios/new?solution=${solutionId}&from=${encodeURIComponent(pathname)}`,
+    )
 
   const handleDuplicate = () => {
     if (!solution) return
@@ -169,12 +184,30 @@ export function NextStepsSection({ solutionId }: { solutionId: number }) {
             <h3 className="text-lg font-semibold text-foreground">This solution is worth pursuing</h3>
           </div>
           <p className="text-base">
-            You have decided this solution is worth building. The next step is to plan delivery: scope a first version, decide on the team, and break the work into milestones.
+            You have decided this solution is worth building. From here you can read the guidance on delivering it, or bring it together as a portfolio.
           </p>
-          <Button className="self-start" onClick={() => router.push("/next-steps")}>
-            <ArrowRight className="h-4 w-4 mr-2" />
-            See Next Steps Guidance
-          </Button>
+          <div className="flex flex-col gap-3 mt-1">
+            <NextStepCard
+              icon={ArrowRight}
+              title="Plan how to deliver it"
+              description="Scope a first version, decide on the team, and break the work into milestones."
+              actionLabel="See Next Steps Guidance"
+              actionIcon={ArrowRight}
+              onAction={() => router.push("/next-steps")}
+            />
+            <NextStepCard
+              icon={FolderKanban}
+              title={existingPortfolio ? "Your portfolio for this solution" : "Build a portfolio for it"}
+              description={
+                existingPortfolio
+                  ? "This solution already sits in a portfolio, with the problem it answers underneath."
+                  : "Bring this solution and the problem it answers into one place, as the summary you take into the tools where you build and test."
+              }
+              actionLabel={existingPortfolio ? "Open portfolio" : "Create a portfolio"}
+              actionIcon={FolderKanban}
+              onAction={goToPortfolio}
+            />
+          </div>
         </div>
       )}
 
@@ -266,11 +299,11 @@ function NextStepCard({
 }) {
   return (
     <div className="rounded-xl border bg-muted/30 p-5 flex flex-col gap-2">
-      <h4 className="text-sm font-semibold text-foreground flex items-center gap-2">
-        <Icon className="h-3.5 w-3.5 text-muted-foreground" />
+      <h4 className="text-base font-semibold text-foreground flex items-center gap-2">
+        <Icon className="h-4 w-4" />
         {title}
       </h4>
-      <p className="text-sm" dangerouslySetInnerHTML={{ __html: description }} />
+      <p className="text-base" dangerouslySetInnerHTML={{ __html: description }} />
       <Button size="sm" className="self-start mt-1" onClick={onAction}>
         <ActionIcon className="h-4 w-4 mr-2" />
         <span dangerouslySetInnerHTML={{ __html: actionLabel }} />

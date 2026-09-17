@@ -136,7 +136,7 @@ export default function ResearchLayout({ children }: { children: ReactNode }) {
 
   const backAndPanel = (
     <div className="flex items-center gap-2 shrink-0">
-      <Button variant="tertiary-outline" onClick={() => router.push(projectRoutes.identify(projectId))} className="gap-2">
+      <Button variant="tertiary-outline" onClick={() => router.push(projectRoutes.page(projectId))} className="gap-2">
         <ArrowLeft className="h-4 w-4" />
         Back
       </Button>

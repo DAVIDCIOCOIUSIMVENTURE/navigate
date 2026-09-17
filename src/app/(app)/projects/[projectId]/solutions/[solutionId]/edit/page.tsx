@@ -21,7 +21,7 @@ import { cn } from "@/lib/utils"
 
 /**
  * The per-solution edit page. A focus page like the problem edit page: no
- * header or sidebar, so the left column carries Back (to the solution canvas),
+ * header or sidebar, so the left column carries Back (to the project page),
  * the top-bar toggle, the title and the journey rail, with the edit card
  * beside it. A solution being edited has been identified and is on its way to
  * validation, so the rail sits on "Validate solutions".
@@ -38,7 +38,7 @@ function HubBody({ projectId, solutionId }: { projectId: number; solutionId: num
     <FocusFlowHeader
       title="Edit solution"
       icon={Lightbulb}
-      backHref={projectRoutes.solution(projectId, solutionId)}
+      backHref={projectRoutes.page(projectId)}
       className={cn(isWide && "flex-wrap")}
     />
   )
