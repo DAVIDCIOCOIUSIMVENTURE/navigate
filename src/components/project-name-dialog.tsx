@@ -15,22 +15,20 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import type { Project } from "@/store/projects-model"
 import { projectRoutes } from "@/lib/projects"
 
 /**
- * Asks for a project name. Used to create a project ("New project" in the
- * header and on the home page) and to rename one from its page or the
- * projects list. The name is required; it is what the project is called in
- * the header menu and the home list.
+ * Asks for a project name, for "New project" in the header and on the home
+ * page. The name is required; it is what the project is called in the header
+ * menu and the home list. Renaming an existing project happens in
+ * `ProjectSettingsDialog` instead, alongside its team.
  */
-export function ProjectNameDialog({
+function ProjectNameDialog({
   open,
   onOpenChange,
   title,
   description,
   confirmLabel,
-  initialName = "",
   onSubmit,
 }: {
   open: boolean
@@ -38,14 +36,13 @@ export function ProjectNameDialog({
   title: string
   description: string
   confirmLabel: string
-  initialName?: string
   onSubmit: (name: string) => void
 }) {
-  const [name, setName] = useState(initialName)
+  const [name, setName] = useState("")
 
   useEffect(() => {
-    if (open) setName(initialName)
-  }, [open, initialName])
+    if (open) setName("")
+  }, [open])
 
   const trimmed = name.trim()
 
@@ -120,33 +117,3 @@ export const DELETE_PROJECT_COPY = {
   title: "Delete this project?",
   description: "This will permanently delete the project, its problem and every solution found for it.",
 } as const
-
-/**
- * Renames one project. The wording lives here so the home list and the
- * project page ask for it in the same words.
- */
-export function RenameProjectDialog({
-  project,
-  open,
-  onOpenChange,
-}: {
-  project: Project | undefined
-  open: boolean
-  onOpenChange: (open: boolean) => void
-}) {
-  const dispatch = useDispatch<AppDispatch>()
-
-  return (
-    <ProjectNameDialog
-      open={open}
-      onOpenChange={onOpenChange}
-      title="Rename project"
-      description="Choose the name shown in the projects menu and on the home page."
-      confirmLabel="Save"
-      initialName={project?.name ?? ""}
-      onSubmit={(name) => {
-        if (project) dispatch.projects.update({ id: project.id, patch: { name } })
-      }}
-    />
-  )
-}

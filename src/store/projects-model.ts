@@ -4,22 +4,35 @@ import type { RootModel } from "."
 const STORAGE_KEY = "navigate-projects"
 
 /**
+ * Somebody the project is shared with. There is no user account system yet,
+ * so a member is only the name and email typed into the project settings
+ * dialog; `id` exists so the list can be edited and rendered.
+ */
+export type ProjectMember = {
+  id: string
+  name: string
+  email: string
+}
+
+/**
  * A project is the unit of work in Navigate: one problem and the solutions
  * found for it. `problemId` is null while the project has not identified its
  * problem yet (a freshly created project). Solutions are not listed here;
- * they belong to the project through `Solution.problemId`. Everything else
- * the user does inside a project (drafts, comparison weights) is kept by the
- * feature's own model under the project id.
+ * they belong to the project through `Solution.problemId`. `members` is the
+ * team the project is shared with. Everything else the user does inside a
+ * project (drafts, comparison weights) is kept by the feature's own model
+ * under the project id.
  */
 export type Project = {
   id: number
   name: string
   problemId: number | null
+  members: ProjectMember[]
   createdAt: string
   editedAt: string
 }
 
-export type ProjectPatch = Partial<Pick<Project, "name" | "problemId">>
+export type ProjectPatch = Partial<Pick<Project, "name" | "problemId" | "members">>
 
 /** What is persisted. */
 interface StoredProjects {
@@ -49,6 +62,17 @@ function saveToStorage(state: StoredProjects) {
   }
 }
 
+/** Drop anything stored under `members` that is not a usable member, rather than trusting it. */
+function parseMembers(value: unknown): ProjectMember[] {
+  if (!Array.isArray(value)) return []
+  return value.flatMap((entry) => {
+    if (typeof entry !== "object" || entry === null) return []
+    const { id, name, email } = entry as Partial<ProjectMember>
+    if (typeof id !== "string" || id.length === 0) return []
+    return [{ id, name: typeof name === "string" ? name : "", email: typeof email === "string" ? email : "" }]
+  })
+}
+
 function loadFromStorage(): StoredProjects | null {
   if (typeof window === "undefined") return null
   try {
@@ -59,6 +83,7 @@ function loadFromStorage(): StoredProjects | null {
       ...p,
       name: p.name ?? "",
       problemId: typeof p.problemId === "number" ? p.problemId : null,
+      members: parseMembers(p.members),
     }))
     // Never mint an id a stored project already holds, whatever `nextId` says.
     const afterLast = projects.reduce((max, p) => Math.max(max, p.id), 0) + 1
@@ -119,13 +144,14 @@ export const projects = createModel<RootModel>()({
       }
     },
 
-    create(payload: { name: string; problemId?: number | null }, rootState): Project {
+    create(payload: { name: string; problemId?: number | null; members?: ProjectMember[] }, rootState): Project {
       const state = rootState.projects
       const now = new Date().toISOString()
       const project: Project = {
         id: state.nextId,
         name: defaultProjectName(payload.name, state.nextId),
         problemId: payload.problemId ?? null,
+        members: payload.members ?? [],
         createdAt: now,
         editedAt: now,
       }

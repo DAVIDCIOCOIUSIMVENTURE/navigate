@@ -129,6 +129,44 @@ describe("projects model", () => {
     expect(fresh.getState().projects.projects.map((p) => p.name)).toEqual(["Saved"])
     expect(fresh.getState().projects.hydrated).toBe(true)
   })
+
+  it("starts with an empty team and keeps the members it is given", async () => {
+    const project = await store.dispatch.projects.create({ name: "Shared" })
+    expect(project.members).toEqual([])
+
+    const members = [{ id: "member-1", name: "Jane", email: "jane@example.com" }]
+    store.dispatch.projects.update({ id: project.id, patch: { members } })
+    expect(store.getState().projects.projects[0].members).toEqual(members)
+
+    const fresh = createStore()
+    fresh.dispatch.projects.init()
+    expect(fresh.getState().projects.projects[0].members).toEqual(members)
+  })
+
+  it("drops stored members that are not usable", () => {
+    localStorage.setItem(
+      "navigate-projects",
+      JSON.stringify({
+        nextId: 2,
+        projects: [
+          {
+            id: 1,
+            name: "Legacy",
+            problemId: null,
+            members: [{ id: "member-1", name: "Jane" }, { name: "No id" }, "nonsense", null],
+            createdAt: "2026-09-16T00:00:00.000Z",
+            editedAt: "2026-09-16T00:00:00.000Z",
+          },
+          { id: 2, name: "Older still", problemId: null },
+        ],
+      }),
+    )
+    const fresh = createStore()
+    fresh.dispatch.projects.init()
+    const [legacy, older] = fresh.getState().projects.projects
+    expect(legacy.members).toEqual([{ id: "member-1", name: "Jane", email: "" }])
+    expect(older.members).toEqual([])
+  })
 })
 
 describe("defaultProjectName", () => {

@@ -18,7 +18,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { DELETE_PROJECT_COPY, RenameProjectDialog } from "@/components/project-name-dialog"
+import { MemberAvatarStack } from "@/components/member-avatar"
+import { DELETE_PROJECT_COPY } from "@/components/project-name-dialog"
+import { ProjectSettingsDialog } from "@/components/project-settings-dialog"
 import {
   ArrowDown,
   ArrowUp,
@@ -26,8 +28,8 @@ import {
   FolderKanban,
   FolderOpen,
   Lightbulb,
-  Pencil,
   Search,
+  Settings,
   Target,
   Trash2,
 } from "lucide-react"
@@ -52,7 +54,7 @@ export function ProjectsTable({ projects, className }: { projects: Project[]; cl
   const [search, setSearch] = useState("")
   const [sortKey, setSortKey] = useState<SortKey>("index")
   const [sortDirection, setSortDirection] = useState<SortDirection>("asc")
-  const [renameId, setRenameId] = useState<number | null>(null)
+  const [settingsId, setSettingsId] = useState<number | null>(null)
 
   const rows = useMemo(
     () =>
@@ -118,7 +120,7 @@ export function ProjectsTable({ projects, className }: { projects: Project[]; cl
     </button>
   )
 
-  const renaming = renameId === null ? undefined : projects.find((p) => p.id === renameId)
+  const editing = settingsId === null ? undefined : projects.find((p) => p.id === settingsId)
 
   return (
     <>
@@ -149,13 +151,14 @@ export function ProjectsTable({ projects, className }: { projects: Project[]; cl
                 <TableHead className="w-full">{sortButton("name", "Project")}</TableHead>
                 <TableHead className="w-36">{sortButton("status", "Problem status")}</TableHead>
                 <TableHead className="w-28">{sortButton("solutions", "Solutions")}</TableHead>
+                <TableHead className="w-28">Team</TableHead>
                 <TableHead />
               </TableRow>
             </TableHeader>
             <TableBody>
               {sorted.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={4} className="text-center text-sm py-8">
+                  <TableCell colSpan={5} className="text-center text-sm py-8">
                     No projects match the current filters.
                   </TableCell>
                 </TableRow>
@@ -197,6 +200,13 @@ export function ProjectsTable({ projects, className }: { projects: Project[]; cl
                         </div>
                       </TableCell>
                       <TableCell>
+                        {project.members.length > 0 ? (
+                          <MemberAvatarStack members={project.members} max={3} className="[&>*]:h-7 [&>*]:w-7" />
+                        ) : (
+                          <span className="text-sm opacity-70">-</span>
+                        )}
+                      </TableCell>
+                      <TableCell>
                         <div className="flex items-center gap-1">
                           <Tooltip>
                             <TooltipTrigger asChild>
@@ -218,13 +228,13 @@ export function ProjectsTable({ projects, className }: { projects: Project[]; cl
                                 variant="outline-card"
                                 size="icon"
                                 className="h-7 w-7"
-                                onClick={() => setRenameId(project.id)}
-                                aria-label={`Rename ${name}`}
+                                onClick={() => setSettingsId(project.id)}
+                                aria-label={`Settings for ${name}`}
                               >
-                                <Pencil className="h-3.5 w-3.5 text-tertiary" />
+                                <Settings className="h-3.5 w-3.5 text-tertiary" />
                               </Button>
                             </TooltipTrigger>
-                            <TooltipContent>Rename project</TooltipContent>
+                            <TooltipContent>Project settings: name and team</TooltipContent>
                           </Tooltip>
                           <ConfirmDialog
                             tooltip="Delete project"
@@ -252,10 +262,10 @@ export function ProjectsTable({ projects, className }: { projects: Project[]; cl
           </Table>
         </CardContent>
       </Card>
-      <RenameProjectDialog
-        project={renaming}
-        open={renaming !== undefined}
-        onOpenChange={(open) => { if (!open) setRenameId(null) }}
+      <ProjectSettingsDialog
+        project={editing}
+        open={editing !== undefined}
+        onOpenChange={(open) => { if (!open) setSettingsId(null) }}
       />
     </>
   )

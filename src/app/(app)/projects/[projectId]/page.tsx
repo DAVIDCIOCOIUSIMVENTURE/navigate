@@ -12,7 +12,9 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { AboutDialog } from "@/components/about-toggle"
 import { ProblemCanvas } from "@/components/canvas/problem-canvas"
 import { JourneyProgressCard } from "@/components/journey-progress"
-import { DELETE_PROJECT_COPY, RenameProjectDialog } from "@/components/project-name-dialog"
+import { MemberAvatarStack } from "@/components/member-avatar"
+import { DELETE_PROJECT_COPY } from "@/components/project-name-dialog"
+import { ProjectSettingsDialog } from "@/components/project-settings-dialog"
 import { SolutionsTable } from "@/components/solutions-table"
 import { useContainerSize } from "@/context/container-size-context"
 import { problemJourneyStep, summariseProblemJourney } from "@/lib/journey-steps"
@@ -20,7 +22,7 @@ import { HOME_HREF, projectDisplayName, projectRoutes } from "@/lib/projects"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { cn } from "@/lib/utils"
 import type { ValidationStatus } from "@/types/validation"
-import { ArrowLeft, FolderKanban, Lightbulb, Pencil, Plus, Scale, Target, Trash2 } from "lucide-react"
+import { ArrowLeft, FolderKanban, Lightbulb, Plus, Scale, Settings, Target, Trash2 } from "lucide-react"
 
 /** Solutions are identified only for problems that have come through validation as Valid or Unsure. */
 const SOLUTION_READY_STATUSES: ValidationStatus[] = ["valid", "unsure"]
@@ -36,7 +38,7 @@ export default function ProjectPage() {
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
   const isWide = useContainerSize() === "wide"
-  const [renameOpen, setRenameOpen] = useState(false)
+  const [settingsOpen, setSettingsOpen] = useState(false)
 
   const hydrated = useSelector((state: RootState) => state.projects.hydrated)
   const project = useSelector((state: RootState) => state.projects.projects.find((p) => p.id === projectId))
@@ -97,11 +99,12 @@ export default function ProjectPage() {
               then <span className="font-bold">Identify solutions</span> once it is marked Valid or Unsure. Every solution you capture is listed below the problem.
             </p>
           </AboutDialog>
+          <MemberAvatarStack members={project.members} />
         </div>
         <div className="flex flex-wrap items-center gap-2 shrink-0">
-          <Button variant="outline" onClick={() => setRenameOpen(true)} className="gap-2 bg-white">
-            <Pencil className="h-4 w-4" />
-            Rename
+          <Button variant="outline" onClick={() => setSettingsOpen(true)} className="gap-2 bg-white">
+            <Settings className="h-4 w-4" />
+            Settings
           </Button>
           <ConfirmDialog
             trigger={
@@ -185,7 +188,7 @@ export default function ProjectPage() {
         />
       )}
 
-      <RenameProjectDialog project={project} open={renameOpen} onOpenChange={setRenameOpen} />
+      <ProjectSettingsDialog project={project} open={settingsOpen} onOpenChange={setSettingsOpen} />
     </div>
   )
 }
