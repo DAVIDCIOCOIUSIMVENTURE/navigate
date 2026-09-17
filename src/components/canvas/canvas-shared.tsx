@@ -6,6 +6,7 @@ import {
   Circle,
   Clock,
   HelpCircle,
+  Pencil,
   XCircle,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -71,6 +72,43 @@ export const CELL_TONE_CLASSES: Record<CellTone, string> = {
   brand: "border border-secondary-brand bg-secondary-brand text-white shadow-sm",
 }
 
+/**
+ * The heading inside a canvas card header. With `onEdit` it becomes a button
+ * that opens the card's edit dialog, showing a pencil on hover so the card
+ * reads as clickable; without it, it is plain text. The heading element stays
+ * an `h3` either way, with the button inside it, so the card keeps its place
+ * in the document outline.
+ */
+export function CellTitle({
+  label,
+  onEdit,
+  className,
+}: {
+  label: string
+  onEdit?: () => void
+  className?: string
+}) {
+  if (!onEdit) {
+    return <h3 className={cn("font-semibold text-base", className)}>{label}</h3>
+  }
+  return (
+    <h3 className={cn("font-semibold text-base", className)}>
+      <button
+        type="button"
+        onClick={onEdit}
+        title={`Edit ${label.toLowerCase()}`}
+        className="group -mx-1 flex items-center gap-1.5 rounded-md px-1 py-0.5 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        <span className="group-hover:underline">{label}</span>
+        <Pencil
+          className="h-3.5 w-3.5 shrink-0 opacity-0 transition-opacity group-hover:opacity-70 group-focus-visible:opacity-70 print:hidden"
+          aria-hidden="true"
+        />
+      </button>
+    </h3>
+  )
+}
+
 export function Cell({
   icon: Icon,
   label,
@@ -80,6 +118,7 @@ export function Cell({
   className,
   children,
   empty,
+  onEdit,
 }: {
   icon: LucideIcon
   label: string
@@ -90,6 +129,8 @@ export function Cell({
   className?: string
   empty?: boolean
   children: React.ReactNode
+  /** Makes the card title a button that opens this card's edit dialog. */
+  onEdit?: () => void
 }) {
   return (
     <div className={cn("flex flex-col rounded-xl overflow-hidden", CELL_TONE_CLASSES[tone], className)}>
@@ -108,7 +149,7 @@ export function Cell({
         >
           <Icon className="h-3.5 w-3.5" />
         </span>
-        <h3 className="flex-1 font-semibold text-base">{label}</h3>
+        <CellTitle label={label} onEdit={onEdit} className="flex-1" />
       </div>
       <div className={cn("px-4 pb-4 flex-1 min-h-0 overflow-y-auto text-base", empty && "italic opacity-60")}>
         {children}

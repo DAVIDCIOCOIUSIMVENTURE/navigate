@@ -1,5 +1,6 @@
 "use client"
 
+import { useState } from "react"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
 import { inspirationSourceLabel, type Solution } from "@/types/solution"
@@ -21,6 +22,8 @@ import {
   Placeholder,
   StatusPill,
 } from "./canvas-shared"
+import { SolutionCardDialog, type SolutionCardId } from "./solution-card-dialog"
+import { useProjectIdForSolution } from "@/hooks/use-projects"
 
 /** The four validation metrics, each read out as "name: level". */
 const METRICS: { label: string; scale: MetricContent["scale"]; read: (s: Solution) => number | null }[] = [
@@ -48,20 +51,29 @@ function metricLevel(score: number | null, scale: MetricContent["scale"]) {
  * `fill` switches on the canvas-page layout: the grid stretches to fill
  * the available height and cards scroll internally. Without it, the grid
  * lays out at natural height (suited to summary cards and dialogs).
+ *
+ * `editable` turns every card title into a button that opens that card's edit
+ * dialog. The canvas page switches it on; the read-only views (the View
+ * Solution dialog, the validation review step, a portfolio) leave it off.
  */
 export function SolutionCanvasCards({
   solution,
   fill = false,
   actions,
+  editable = false,
 }: {
   solution: Solution
   fill?: boolean
   actions?: React.ReactNode
+  editable?: boolean
 }) {
   const status = solution.validationStatus ?? "unvalidated"
   const linkedProblem = useSelector((s: RootState) =>
     s.problems.problems.find((p) => p.id === solution.problemId),
   )
+  const projectId = useProjectIdForSolution(solution.id)
+  const [editing, setEditing] = useState<SolutionCardId | null>(null)
+  const edit = (card: SolutionCardId) => (editable ? () => setEditing(card) : undefined)
 
   return (
     <div className={cn("canvas-print-root flex flex-col gap-3 w-full", fill && "flex-1 min-h-0")}>
@@ -99,6 +111,7 @@ export function SolutionCanvasCards({
           divider={CANVAS_DIVIDER}
           className="sm:col-span-12 lg:col-span-6 lg:row-span-2"
           empty={!solution.description}
+          onEdit={edit("description")}
         >
           {solution.description ? (
             <p className="whitespace-pre-wrap">{solution.description}</p>
@@ -114,6 +127,7 @@ export function SolutionCanvasCards({
           divider={CANVAS_DIVIDER}
           className="sm:col-span-6"
           empty={!linkedProblem}
+          onEdit={edit("linked-problem")}
         >
           {linkedProblem ? (
             <div className="flex flex-col gap-1">
@@ -134,6 +148,7 @@ export function SolutionCanvasCards({
           divider={CANVAS_DIVIDER}
           className="sm:col-span-6"
           empty={!solution.inspirationSource && !solution.inspirationDetail}
+          onEdit={edit("method")}
         >
           <div className="flex flex-col gap-1">
             {solution.inspirationSource && (
@@ -152,6 +167,7 @@ export function SolutionCanvasCards({
           divider={CANVAS_DIVIDER}
           className="sm:col-span-12"
           empty={METRICS.every(({ read }) => read(solution) == null)}
+          onEdit={edit("metrics")}
         >
           <DescriptionList columns={2}>
             {METRICS.map(({ label, scale, read }) => {
@@ -165,6 +181,15 @@ export function SolutionCanvasCards({
           </DescriptionList>
         </Cell>
       </div>
+
+      {editable && (
+        <SolutionCardDialog
+          card={editing}
+          solution={solution}
+          projectId={projectId}
+          onClose={() => setEditing(null)}
+        />
+      )}
     </div>
   )
 }

@@ -16,23 +16,30 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { MemberAvatar } from "@/components/member-avatar"
+import { DELETE_PROJECT_COPY } from "@/components/project-name-dialog"
 import { createProjectMember, hasMemberWithEmail, isEmailLike } from "@/lib/project-team"
 
 /**
- * A project's settings: its name and the people it is shared with. Team
- * membership is mocked for now (there are no accounts yet), so a member is
- * only a name and an email kept on the project itself. Nothing is saved until
- * Save changes, so Cancel leaves the project as it was.
+ * A project's settings: its name, the people it is shared with, and the way to
+ * delete it. Team membership is mocked for now (there are no accounts yet), so
+ * a member is only a name and an email kept on the project itself. Nothing is
+ * saved until Save changes, so Cancel leaves the project as it was; Delete is
+ * the exception and acts once confirmed. `onDeleted` lets a caller move on
+ * afterwards (the project page goes Home).
  */
 export function ProjectSettingsDialog({
   project,
   open,
   onOpenChange,
+  onDeleted,
 }: {
   project: Project | undefined
   open: boolean
   onOpenChange: (open: boolean) => void
+  /** Called once the project has been deleted, after the dialog closes. */
+  onDeleted?: (projectId: number) => void
 }) {
   const dispatch = useDispatch<AppDispatch>()
   const [name, setName] = useState("")
@@ -188,13 +195,32 @@ export function ProjectSettingsDialog({
             </div>
           </div>
 
-          <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={!trimmedName}>
-              Save changes
-            </Button>
+          <DialogFooter className="sm:justify-between sm:space-x-0">
+            <ConfirmDialog
+              trigger={
+                <Button type="button" variant="destructive-outline" className="gap-2">
+                  <Trash2 className="h-4 w-4" />
+                  Delete project
+                </Button>
+              }
+              title={DELETE_PROJECT_COPY.title}
+              description={DELETE_PROJECT_COPY.description}
+              onConfirm={async () => {
+                if (!project) return
+                const deletedId = project.id
+                await dispatch.projects.delete(deletedId)
+                onOpenChange(false)
+                onDeleted?.(deletedId)
+              }}
+            />
+            <div className="flex flex-col-reverse gap-2 sm:flex-row">
+              <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={!trimmedName}>
+                Save changes
+              </Button>
+            </div>
           </DialogFooter>
         </form>
       </DialogContent>

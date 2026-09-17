@@ -151,7 +151,7 @@ export function ProblemCanvas({
 
   return (
     <>
-      <ProblemCanvasCards problem={problem} fill actions={actions} />
+      <ProblemCanvasCards problem={problem} fill editable actions={actions} />
       <ExportBundleDialog
         open={exportOpen}
         onOpenChange={setExportOpen}

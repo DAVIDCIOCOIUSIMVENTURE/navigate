@@ -3,17 +3,15 @@
 import { useState } from "react"
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
-import { useDispatch, useSelector } from "react-redux"
-import type { AppDispatch, RootState } from "@/store"
+import { useSelector } from "react-redux"
+import type { RootState } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
-import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { AboutDialog } from "@/components/about-toggle"
 import { ProblemCanvas } from "@/components/canvas/problem-canvas"
 import { JourneyProgressCard } from "@/components/journey-progress"
 import { MemberAvatarStack } from "@/components/member-avatar"
-import { DELETE_PROJECT_COPY } from "@/components/project-name-dialog"
 import { ProjectSettingsDialog } from "@/components/project-settings-dialog"
 import { SolutionsTable } from "@/components/solutions-table"
 import { useContainerSize } from "@/context/container-size-context"
@@ -22,7 +20,7 @@ import { HOME_HREF, projectDisplayName, projectRoutes } from "@/lib/projects"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { cn } from "@/lib/utils"
 import type { ValidationStatus } from "@/types/validation"
-import { ArrowLeft, FolderKanban, Lightbulb, Plus, Scale, Settings, Target, Trash2 } from "lucide-react"
+import { ArrowLeft, FolderKanban, Lightbulb, Plus, Scale, Settings, Target } from "lucide-react"
 
 /** Solutions are identified only for problems that have come through validation as Valid or Unsure. */
 const SOLUTION_READY_STATUSES: ValidationStatus[] = ["valid", "unsure"]
@@ -36,7 +34,6 @@ export default function ProjectPage() {
   const params = useParams()
   const projectId = Number(params.projectId)
   const router = useRouter()
-  const dispatch = useDispatch<AppDispatch>()
   const isWide = useContainerSize() === "wide"
   const [settingsOpen, setSettingsOpen] = useState(false)
 
@@ -106,20 +103,6 @@ export default function ProjectPage() {
             <Settings className="h-4 w-4" />
             Settings
           </Button>
-          <ConfirmDialog
-            trigger={
-              <Button variant="destructive-outline" className="gap-2">
-                <Trash2 className="h-4 w-4" />
-                Delete
-              </Button>
-            }
-            title={DELETE_PROJECT_COPY.title}
-            description={DELETE_PROJECT_COPY.description}
-            onConfirm={async () => {
-              await dispatch.projects.delete(project.id)
-              router.push(HOME_HREF)
-            }}
-          />
         </div>
       </div>
 
@@ -188,7 +171,12 @@ export default function ProjectPage() {
         />
       )}
 
-      <ProjectSettingsDialog project={project} open={settingsOpen} onOpenChange={setSettingsOpen} />
+      <ProjectSettingsDialog
+        project={project}
+        open={settingsOpen}
+        onOpenChange={setSettingsOpen}
+        onDeleted={() => router.push(HOME_HREF)}
+      />
     </div>
   )
 }

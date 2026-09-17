@@ -579,7 +579,7 @@ function WorthSection({
   )
 }
 
-function MarketSection({
+export function MarketSection({
   howManyPeople,
   howOften,
   reachableShare,
@@ -616,7 +616,7 @@ function MarketSection({
   )
 }
 
-function CompetitionSection({
+export function CompetitionSection({
   costOfSwitching,
   solutionEffectiveness,
   competitorSize,
@@ -792,7 +792,7 @@ function VerdictButtons({
   )
 }
 
-function TamSamSomPanel({
+export function TamSamSomPanel({
   howManyPeople,
   howOften,
   worthToThem,

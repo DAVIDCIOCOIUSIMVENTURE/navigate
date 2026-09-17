@@ -8,7 +8,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { useProblem } from "@/app/(app)/projects/[projectId]/problem/validation/context"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
-import type { ShortcomingItem } from "@/types/validation"
+import type { ExistingSolutionItem, ShortcomingItem } from "@/types/validation"
 import { Plus, X, Lightbulb } from "lucide-react"
 
 const IMPACT_AREAS: { label: string; hint: string }[] = [
@@ -23,8 +23,20 @@ const IMPACT_AREAS: { label: string; hint: string }[] = [
   { label: "Emotional Impact", hint: "Frustration, anxiety, distrust" },
 ]
 
-export function ExistingSolutionsStrategy({ readOnly = false }: { readOnly?: boolean }) {
-  const { existingSolutions, setExistingSolutions } = useProblem()
+/**
+ * The editor itself, over a plain value and setter. Kept free of the problem
+ * context so the canvas card dialog, which opens outside the Explore flow, can
+ * render the same editor.
+ */
+export function ExistingSolutionsEditor({
+  existingSolutions,
+  setExistingSolutions,
+  readOnly = false,
+}: {
+  existingSolutions: ExistingSolutionItem[]
+  setExistingSolutions: (val: ExistingSolutionItem[]) => void
+  readOnly?: boolean
+}) {
   const isNarrow = useContainerSize() === "narrow"
   const [addingSolution, setAddingSolution] = useState(false)
   const [draft, setDraft] = useState("")
@@ -270,5 +282,17 @@ export function ExistingSolutionsStrategy({ readOnly = false }: { readOnly?: boo
         </div>
       )}
     </div>
+  )
+}
+
+/** The editor wired to the problem in the Explore / Validation flows. */
+export function ExistingSolutionsStrategy({ readOnly = false }: { readOnly?: boolean }) {
+  const { existingSolutions, setExistingSolutions } = useProblem()
+  return (
+    <ExistingSolutionsEditor
+      existingSolutions={existingSolutions}
+      setExistingSolutions={setExistingSolutions}
+      readOnly={readOnly}
+    />
   )
 }

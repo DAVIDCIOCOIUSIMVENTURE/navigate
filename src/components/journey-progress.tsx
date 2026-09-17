@@ -36,7 +36,7 @@ export function JourneyProgressCard({
 }) {
   return (
     <Card className={cn("shrink-0", className)}>
-      <CardContent className={orientation === "vertical" ? "p-5" : "p-4"}>
+      <CardContent className={orientation === "vertical" ? "p-5" : "px-4 py-3"}>
         <JourneyProgress activeId={activeId} problemId={problemId} orientation={orientation} />
       </CardContent>
     </Card>
@@ -96,10 +96,10 @@ export function JourneyProgress({
       <nav aria-label={heading} className={cn("w-full", className)}>
         <ol className="flex w-full items-start">
           {steps.map((step, i) => (
-            <li key={step.id} className="flex flex-1 min-w-0 flex-col items-center gap-2">
+            <li key={step.id} className="flex flex-1 min-w-0 flex-col items-center gap-1.5">
               <div className="flex w-full items-center">
                 <Connector visible={i > 0} done={steps[i - 1]?.status === "completed"} orientation="horizontal" />
-                <StepCircle step={step} />
+                <StepCircle step={step} compact />
                 <Connector visible={i < steps.length - 1} done={step.status === "completed"} orientation="horizontal" />
               </div>
               <StepLabel step={step} href={hrefFor(step)} className="text-center" />
@@ -127,20 +127,26 @@ export function JourneyProgress({
   )
 }
 
-/** The milestone circle: solid primary with a soft halo when active, muted primary when done, a grey disc when upcoming. */
-function StepCircle({ step }: { step: JourneyStep }) {
+/**
+ * The milestone circle: solid primary with a soft halo when active, muted
+ * primary when done, a grey disc when upcoming. `compact` is the horizontal
+ * rail, which sits above a page's content rather than beside it and so takes
+ * as little height as it can.
+ */
+function StepCircle({ step, compact = false }: { step: JourneyStep; compact?: boolean }) {
   const Icon = step.icon
   return (
     <span
       className={cn(
-        "flex h-7 w-7 shrink-0 items-center justify-center rounded-full transition-colors",
+        "flex shrink-0 items-center justify-center rounded-full transition-colors",
+        compact ? "h-6 w-6" : "h-7 w-7",
         step.status === "active" && "bg-primary text-primary-foreground ring-4 ring-primary/20",
         step.status === "completed" && "bg-primary/65 text-primary-foreground",
         step.status === "upcoming" && "bg-muted text-foreground/50",
       )}
       aria-hidden="true"
     >
-      <Icon className="h-3.5 w-3.5 [stroke-width:2.5]" />
+      <Icon className={cn("[stroke-width:2.5]", compact ? "h-3 w-3" : "h-3.5 w-3.5")} />
     </span>
   )
 }

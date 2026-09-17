@@ -30,6 +30,7 @@ import {
   CANVAS_DIVIDER,
   CANVAS_ICON_BG,
   Cell,
+  CellTitle,
   CELL_TONE_CLASSES,
   MetricRow,
   Placeholder,
@@ -37,6 +38,7 @@ import {
   STATUS_CONFIG,
   type CellTone,
 } from "./canvas-shared"
+import { ProblemCardDialog, type ProblemCardId } from "./problem-card-dialog"
 
 /**
  * A canvas card that starts collapsed and shows a count in its header.
@@ -52,6 +54,7 @@ function CollapsibleSection({
   onOpenChange,
   tone,
   divider,
+  onEdit,
   children,
 }: {
   icon: LucideIcon
@@ -61,36 +64,56 @@ function CollapsibleSection({
   onOpenChange: (open: boolean) => void
   tone: CellTone
   divider: string
+  /** Makes the section title a button that opens this card's edit dialog. */
+  onEdit?: () => void
   children: React.ReactNode
 }) {
+  const headerClass = cn(
+    "flex items-center gap-3 px-4 py-3 text-left",
+    open && "px-0 mx-4 border-b-2",
+    open && divider,
+  )
+  const iconTile = (
+    <span
+      className={cn(
+        "flex items-center justify-center h-7 w-7 rounded-lg shrink-0 text-white",
+        CANVAS_ICON_BG,
+      )}
+      aria-hidden="true"
+    >
+      <Icon className="h-3.5 w-3.5" />
+    </span>
+  )
+  const countAndChevron = (
+    <>
+      <span className="text-base">{count}</span>
+      <ChevronDown className={cn("h-4 w-4 transition-transform", open && "rotate-180")} />
+    </>
+  )
+
   return (
     <Collapsible
       open={open}
       onOpenChange={onOpenChange}
       className={cn("rounded-xl shrink-0", CELL_TONE_CLASSES[tone])}
     >
-      <CollapsibleTrigger
-        className={cn(
-          "flex items-center gap-3 px-4 py-3 w-full text-left",
-          open && "px-0 mx-4 w-[calc(100%-2rem)] border-b-2",
-          open && divider,
-        )}
-      >
-        <span
-          className={cn(
-            "flex items-center justify-center h-7 w-7 rounded-lg shrink-0 text-white",
-            CANVAS_ICON_BG,
-          )}
-          aria-hidden="true"
-        >
-          <Icon className="h-3.5 w-3.5" />
-        </span>
-        <h3 className="flex-1 font-semibold text-base">{label}</h3>
-        <span className="text-base">{count}</span>
-        <ChevronDown
-          className={cn("h-4 w-4 transition-transform", open && "rotate-180")}
-        />
-      </CollapsibleTrigger>
+      {onEdit ? (
+        // The title opens the edit dialog, so the rest of the row is the
+        // trigger: it stretches so anywhere right of the title still toggles.
+        <div className={cn(headerClass, open && "w-[calc(100%-2rem)]")}>
+          {iconTile}
+          <CellTitle label={label} onEdit={onEdit} />
+          <CollapsibleTrigger className="flex flex-1 items-center justify-end gap-3 self-stretch">
+            {countAndChevron}
+          </CollapsibleTrigger>
+        </div>
+      ) : (
+        <CollapsibleTrigger className={cn(headerClass, "w-full", open && "w-[calc(100%-2rem)]")}>
+          {iconTile}
+          <CellTitle label={label} className="flex-1" />
+          {countAndChevron}
+        </CollapsibleTrigger>
+      )}
       <CollapsibleContent className="px-4 pt-3 pb-4 text-base">
         {count === 0 ? <span className="italic opacity-60">Not yet captured</span> : children}
       </CollapsibleContent>
@@ -125,20 +148,28 @@ function DimensionList({ columnId, ids }: { columnId: string; ids: string[] }) {
  *
  * `tone` picks the card surface: `card` (default cream) or `brand`, which
  * paints every card in the cobalt secondary brand colour with white text.
+ *
+ * `editable` turns every card title into a button that opens that card's edit
+ * dialog. The canvas pages switch it on; the read-only views (the View Problem
+ * dialog, the validation review step, a portfolio) leave it off.
  */
 export function ProblemCanvasCards({
   problem,
   fill = false,
   actions,
   tone = "card",
+  editable = false,
 }: {
   problem: Problem
   fill?: boolean
   actions?: React.ReactNode
   tone?: CellTone
+  editable?: boolean
 }) {
   const router = useRouter()
   const projectId = useProjectIdForProblem(problem.id)
+  const [editing, setEditing] = useState<ProblemCardId | null>(null)
+  const edit = (card: ProblemCardId) => (editable ? () => setEditing(card) : undefined)
   const brand = tone === "brand"
   const divider = brand ? "border-white" : CANVAS_DIVIDER
   const sectionHeading = cn(
@@ -178,8 +209,8 @@ export function ProblemCanvasCards({
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-2.5 flex-1 min-w-0">
           <div className="flex-1 min-w-0 flex items-baseline gap-2">
-            <p className="text-lg font-semibold leading-tight shrink-0">Problem title:</p>
-            <h1 className="text-lg font-semibold leading-tight truncate">
+            <p className="text-lg font-bold leading-tight shrink-0">Problem title:</p>
+            <h1 className="text-lg font-bold leading-tight truncate">
               {problem.title || "Untitled problem"}
             </h1>
           </div>
@@ -209,6 +240,7 @@ export function ProblemCanvasCards({
           tone={tone}
           className="sm:col-span-6 lg:col-span-4"
           empty={problem.customers.length === 0 && !problem.customerDescription && !problem.segmentSize}
+          onEdit={edit("customer")}
         >
           <div className="flex flex-col gap-2">
             <DimensionList columnId="customers" ids={problem.customers} />
@@ -229,6 +261,7 @@ export function ProblemCanvasCards({
           tone={tone}
           className="sm:col-span-6 lg:col-span-4"
           empty={problem.contexts.length === 0 && !problem.contextWhen}
+          onEdit={edit("context")}
         >
           <div className="flex flex-col gap-2">
             <DimensionList columnId="contexts" ids={problem.contexts} />
@@ -246,6 +279,7 @@ export function ProblemCanvasCards({
           tone={tone}
           className="sm:col-span-12 lg:col-span-4"
           empty={problem.problems.length === 0}
+          onEdit={edit("problem-types")}
         >
           <DimensionList columnId="problems" ids={problem.problems} />
         </Cell>
@@ -258,6 +292,7 @@ export function ProblemCanvasCards({
           tone={tone}
           className="sm:col-span-12"
           empty={marketEmpty}
+          onEdit={edit("market")}
         >
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4">
             <div className="flex flex-col gap-1">
@@ -308,6 +343,7 @@ export function ProblemCanvasCards({
         onOpenChange={setExistingOpen}
         tone={tone}
         divider={divider}
+        onEdit={edit("existing-solutions")}
       >
         <ul className="flex flex-col gap-2">
           {problem.existingSolutions.map((s) => (
@@ -333,6 +369,7 @@ export function ProblemCanvasCards({
         onOpenChange={setSolutionsOpen}
         tone={tone}
         divider={divider}
+        onEdit={edit("solutions")}
       >
         <ul className="flex flex-col gap-1.5">
           {linkedSolutions.map((sol) => {
@@ -373,6 +410,16 @@ export function ProblemCanvasCards({
           })}
         </ul>
       </CollapsibleSection>
+
+      {editable && (
+        <ProblemCardDialog
+          card={editing}
+          problem={problem}
+          solutions={linkedSolutions}
+          projectId={projectId}
+          onClose={() => setEditing(null)}
+        />
+      )}
     </div>
   )
 }
