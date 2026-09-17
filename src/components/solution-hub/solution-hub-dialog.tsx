@@ -11,12 +11,12 @@ import { useProjectIdForSolution } from "@/hooks/use-projects"
 import { projectRoutes } from "@/lib/projects"
 
 /**
- * Read-only view of a solution rendered inside a Dialog. Used by the
- * validation sidebar's "View Solution" button and the project page's
- * solutions table "View canvas" buttons. Renders the same canvas cards used
- * by the solution canvas page and validation summary so the surfaces stay in
- * sync. The header offers a link to the full-page canvas and a separate
- * link to the edit hub, both inside the solution's project.
+ * A solution's canvas rendered inside a Dialog. Used by the validation
+ * sidebar's "View Solution" button and the project page's solutions table
+ * "View canvas" buttons. Renders the same canvas cards used by the solution
+ * canvas page and validation summary so the surfaces stay in sync, card title
+ * edit dialogs included. The header offers a link to the full-page canvas and
+ * a separate link to the edit hub, both inside the solution's project.
  */
 export function SolutionHubDialog({
   open,
@@ -61,7 +61,7 @@ export function SolutionHubDialog({
         </DialogHeader>
         {solution && (
           <div className="-mx-6 -mb-6 flex-1 min-h-0 overflow-y-auto px-6 pb-6">
-            <SolutionCanvasCards solution={solution} />
+            <SolutionCanvasCards solution={solution} editable />
           </div>
         )}
       </DialogContent>
