@@ -1,10 +1,8 @@
 "use client"
 
-import { useRouter } from "next/navigation"
 import { useDispatch } from "react-redux"
 import type { AppDispatch } from "@/store"
 import type { Problem } from "@/store/problems-model"
-import type { Solution } from "@/types/solution"
 import type {
   ExistingSolutionItem,
   ValidationAssessment,
@@ -20,9 +18,7 @@ import {
   TamSamSomPanel,
 } from "@/components/problem-strategies/validation-strategy"
 import { projectRoutes } from "@/lib/projects"
-import { cn } from "@/lib/utils"
 import { CanvasCardDialog, CardDialogPanel } from "./canvas-card-dialog"
-import { StatusPill } from "./canvas-shared"
 
 /** The cards on the problem canvas, each with its own edit dialog. */
 export type ProblemCardId =
@@ -31,7 +27,6 @@ export type ProblemCardId =
   | "problem-types"
   | "market"
   | "existing-solutions"
-  | "solutions"
 
 const CARD_COPY: Record<ProblemCardId, { title: string; description: string }> = {
   customer: {
@@ -54,10 +49,6 @@ const CARD_COPY: Record<ProblemCardId, { title: string; description: string }> =
     title: "Existing solutions",
     description: "What customers use today and where each one falls short.",
   },
-  solutions: {
-    title: "Solutions",
-    description: "The solutions identified for this problem. Open one to edit it.",
-  },
 }
 
 /** Where each card's work is done in full, offered as the dialog's section button. */
@@ -72,8 +63,6 @@ function cardSection(card: ProblemCardId, projectId: number | null): { label: st
       return { label: "Open Validation", href: projectRoutes.validation(projectId, "market") }
     case "existing-solutions":
       return { label: "Open Explore", href: projectRoutes.explore(projectId, "existing-solutions") }
-    case "solutions":
-      return { label: "Open Identify solutions", href: projectRoutes.identifySolutions(projectId) }
   }
 }
 
@@ -85,45 +74,6 @@ function FieldLabel({ htmlFor, children }: { htmlFor: string; children: React.Re
   )
 }
 
-function SolutionsList({
-  solutions,
-  projectId,
-  onNavigate,
-}: {
-  solutions: Solution[]
-  projectId: number | null
-  onNavigate: () => void
-}) {
-  const router = useRouter()
-
-  if (solutions.length === 0) {
-    return <p className="text-base italic">No solutions identified for this problem yet.</p>
-  }
-
-  return (
-    <ul className="flex flex-col gap-2">
-      {solutions.map((sol) => (
-        <li key={sol.id}>
-          <button
-            type="button"
-            onClick={() => {
-              onNavigate()
-              router.push(projectRoutes.solutionEdit(projectId, sol.id))
-            }}
-            className={cn(
-              "flex w-full items-center gap-2 rounded-md border px-3 py-2 text-left",
-              "hover:bg-muted/60 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            )}
-          >
-            <StatusPill status={sol.validationStatus ?? "unvalidated"} size="sm" />
-            <span className="truncate text-base">{sol.title || `Solution #${sol.id}`}</span>
-          </button>
-        </li>
-      ))}
-    </ul>
-  )
-}
-
 /**
  * The edit dialog behind a problem canvas card title. Every field writes to the
  * problem as it changes, so there is nothing to save; the footer only offers
@@ -132,14 +82,11 @@ function SolutionsList({
 export function ProblemCardDialog({
   card,
   problem,
-  solutions,
   projectId,
   onClose,
 }: {
   card: ProblemCardId | null
   problem: Problem
-  /** The problem's solutions, listed by the Solutions card. */
-  solutions: Solution[]
   projectId: number | null
   onClose: () => void
 }) {
@@ -266,10 +213,6 @@ export function ProblemCardDialog({
           existingSolutions={problem.existingSolutions}
           setExistingSolutions={setExistingSolutions}
         />
-      )}
-
-      {card === "solutions" && (
-        <SolutionsList solutions={solutions} projectId={projectId} onNavigate={onClose} />
       )}
     </CanvasCardDialog>
   )

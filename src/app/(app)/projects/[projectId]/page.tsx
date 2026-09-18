@@ -7,10 +7,16 @@ import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { AboutDialog } from "@/components/about-toggle"
 import { ProblemCanvas } from "@/components/canvas/problem-canvas"
-import { JourneyProgressCard } from "@/components/journey-progress"
+import { JourneyProgress } from "@/components/journey-progress"
 import { MemberAvatarStack } from "@/components/member-avatar"
 import { ProjectSettingsDialog } from "@/components/project-settings-dialog"
 import { SolutionsTable } from "@/components/solutions-table"
@@ -20,7 +26,7 @@ import { HOME_HREF, projectDisplayName, projectRoutes } from "@/lib/projects"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { cn } from "@/lib/utils"
 import type { ValidationStatus } from "@/types/validation"
-import { ArrowLeft, FolderKanban, Lightbulb, Plus, Presentation, Scale, Settings, Target } from "lucide-react"
+import { ArrowLeft, ChevronDown, FolderKanban, Lightbulb, Plus, Presentation, Scale, Settings, Target } from "lucide-react"
 
 /** Solutions are identified only for problems that have come through validation as Valid or Unsure. */
 const SOLUTION_READY_STATUSES: ValidationStatus[] = ["valid", "unsure"]
@@ -98,30 +104,38 @@ export default function ProjectPage() {
           </AboutDialog>
           <MemberAvatarStack members={project.members} />
         </div>
+        <JourneyProgress
+          activeId={journeyStep}
+          problemId={problem?.id ?? null}
+          orientation="horizontal"
+          className="flex-1 min-w-[22rem]"
+        />
         <div className="flex flex-wrap items-center gap-2 shrink-0">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button asChild variant="secondary-brand" className="gap-2">
+          {/* One menu rather than two buttons. `modal={false}` keeps the page
+              clickable after the settings dialog it opens is closed. */}
+          <DropdownMenu modal={false}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="gap-2 bg-white">
+                <Settings className="h-4 w-4" />
+                Settings
+                <ChevronDown className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
                 <Link href={projectRoutes.preview(project.id)} target="_blank" rel="noreferrer">
-                  <Presentation className="h-4 w-4" />
+                  <Presentation className="h-3.5 w-3.5" />
                   Preview
                 </Link>
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              {project.visibility === "public"
-                ? "Open the page anyone with the link can read"
-                : "See how this project reads to somebody else. Make it public in Settings to share the link."}
-            </TooltipContent>
-          </Tooltip>
-          <Button variant="outline" onClick={() => setSettingsOpen(true)} className="gap-2 bg-white">
-            <Settings className="h-4 w-4" />
-            Settings
-          </Button>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setSettingsOpen(true)}>
+                <Settings className="h-3.5 w-3.5" />
+                Settings
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
-
-      <JourneyProgressCard activeId={journeyStep} problemId={problem?.id ?? null} orientation="horizontal" />
 
       {problem ? (
         <div className={cn("flex flex-col", isWide && "h-[calc(100svh-12rem)] min-h-[560px]")}>

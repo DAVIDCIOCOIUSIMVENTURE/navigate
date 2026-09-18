@@ -62,10 +62,14 @@ export function StatusPill({
  */
 export type CellTone = "card" | "brand"
 
-/** Mustard tile behind every icon on the problem and solution canvas cards. */
-export const CANVAS_ICON_BG = "bg-yellow-600"
-/** Matching mustard rule under each card header on cream cards. Brand cards use white. */
-export const CANVAS_DIVIDER = "border-yellow-600"
+/**
+ * The cobalt tile behind every icon on the problem and solution canvas cards,
+ * and the matching cobalt for the heading beside it. On a brand card, where
+ * cobalt on cobalt would disappear, both go white (`CANVAS_HEADER_BRAND`).
+ */
+export const CANVAS_ICON_TILE = "bg-secondary-brand text-white"
+export const CANVAS_TITLE_COLOUR = "text-secondary-brand"
+const CANVAS_HEADER_BRAND = { tile: "bg-white/20 text-white", title: "text-white" }
 
 export const CELL_TONE_CLASSES: Record<CellTone, string> = {
   card: "border bg-card shadow-sm",
@@ -89,10 +93,10 @@ export function CellTitle({
   className?: string
 }) {
   if (!onEdit) {
-    return <h3 className={cn("font-semibold text-base", className)}>{label}</h3>
+    return <h3 className={cn("font-bold text-base", className)}>{label}</h3>
   }
   return (
-    <h3 className={cn("font-semibold text-base", className)}>
+    <h3 className={cn("font-bold text-base", className)}>
       <button
         type="button"
         onClick={onEdit}
@@ -112,44 +116,43 @@ export function CellTitle({
 export function Cell({
   icon: Icon,
   label,
-  iconBg = "bg-tertiary",
   tone = "card",
-  divider,
   className,
   children,
   empty,
   onEdit,
+  headerRight,
 }: {
   icon: LucideIcon
   label: string
-  iconBg?: string
   tone?: CellTone
-  /** Border colour class for a rule under the header, e.g. `border-yellow-600`. Omit for no rule. */
-  divider?: string
   className?: string
   empty?: boolean
   children: React.ReactNode
   /** Makes the card title a button that opens this card's edit dialog. */
   onEdit?: () => void
+  /** A figure to sit at the right-hand end of the header row, opposite the title. */
+  headerRight?: React.ReactNode
 }) {
+  const brand = tone === "brand"
   return (
     <div className={cn("flex flex-col rounded-xl overflow-hidden", CELL_TONE_CLASSES[tone], className)}>
-      <div
-        className={cn(
-          "flex items-center gap-3 pt-4 pb-3",
-          divider ? cn("mx-4 mb-3 border-b-2", divider) : "px-4",
-        )}
-      >
+      <div className="flex items-center gap-3 px-4 pt-4 pb-3">
         <span
           className={cn(
-            "flex items-center justify-center h-7 w-7 rounded-lg shrink-0 text-white",
-            iconBg,
+            "flex items-center justify-center h-7 w-7 rounded-lg shrink-0",
+            brand ? CANVAS_HEADER_BRAND.tile : CANVAS_ICON_TILE,
           )}
           aria-hidden="true"
         >
           <Icon className="h-3.5 w-3.5" />
         </span>
-        <CellTitle label={label} onEdit={onEdit} className="flex-1" />
+        <CellTitle
+          label={label}
+          onEdit={onEdit}
+          className={cn("flex-1", brand ? CANVAS_HEADER_BRAND.title : CANVAS_TITLE_COLOUR)}
+        />
+        {headerRight && <div className="shrink-0 text-base">{headerRight}</div>}
       </div>
       <div className={cn("px-4 pb-4 flex-1 min-h-0 overflow-y-auto text-base", empty && "italic opacity-60")}>
         {children}

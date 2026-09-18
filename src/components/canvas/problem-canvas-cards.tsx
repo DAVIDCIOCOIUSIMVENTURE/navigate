@@ -1,146 +1,113 @@
-"use client"
+﻿"use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
 import type { Problem } from "@/store/problems-model"
 import { resolveDimensionLabel } from "@/lib/dimension-labels"
 import { useProjectIdForProblem } from "@/hooks/use-projects"
-import { projectRoutes } from "@/lib/projects"
-import type { LucideIcon } from "lucide-react"
 import {
   Users,
   MapPin,
   TriangleAlert,
   TrendingUp,
   GitFork,
-  Lightbulb,
-  ChevronDown,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { computeMarket, formatMoney } from "@/lib/market"
 import { DEFAULT_REACHABLE_SHARE } from "@/types/validation"
 import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import {
-  CANVAS_DIVIDER,
-  CANVAS_ICON_BG,
   Cell,
-  CellTitle,
-  CELL_TONE_CLASSES,
   MetricRow,
   Placeholder,
   StatusPill,
-  STATUS_CONFIG,
   type CellTone,
 } from "./canvas-shared"
 import { ProblemCardDialog, type ProblemCardId } from "./problem-card-dialog"
 
 /**
- * A canvas card that starts collapsed and shows a count in its header.
- * Used for the lists that sit below the main grid (existing solutions,
- * linked solutions). The header rule only shows while open, since a
- * collapsed row is nothing but the header.
+ * The cobalt pill the public project preview uses. Brand cards tint it white
+ * instead, since cobalt on cobalt would disappear.
  */
-function CollapsibleSection({
-  icon: Icon,
-  label,
-  count,
-  open,
-  onOpenChange,
-  tone,
-  divider,
-  onEdit,
-  children,
-}: {
-  icon: LucideIcon
-  label: string
-  count: number
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  tone: CellTone
-  divider: string
-  /** Makes the section title a button that opens this card's edit dialog. */
-  onEdit?: () => void
-  children: React.ReactNode
-}) {
-  const headerClass = cn(
-    "flex items-center gap-3 px-4 py-3 text-left",
-    open && "px-0 mx-4 border-b-2",
-    open && divider,
-  )
-  const iconTile = (
-    <span
-      className={cn(
-        "flex items-center justify-center h-7 w-7 rounded-lg shrink-0 text-white",
-        CANVAS_ICON_BG,
-      )}
-      aria-hidden="true"
-    >
-      <Icon className="h-3.5 w-3.5" />
-    </span>
-  )
-  const countAndChevron = (
-    <>
-      <span className="text-base">{count}</span>
-      <ChevronDown className={cn("h-4 w-4 transition-transform", open && "rotate-180")} />
-    </>
+const pillClass = (brand: boolean) =>
+  cn(
+    "rounded-full px-3 py-1 text-base",
+    brand ? "bg-white/15 text-white" : "bg-secondary-brand/10 text-secondary-brand",
   )
 
+/** The picked items on a card, each as a pill. */
+function PillList({ items, brand }: { items: string[]; brand: boolean }) {
+  if (items.length === 0) return <Placeholder />
   return (
-    <Collapsible
-      open={open}
-      onOpenChange={onOpenChange}
-      className={cn("rounded-xl shrink-0", CELL_TONE_CLASSES[tone])}
-    >
-      {onEdit ? (
-        // The title opens the edit dialog, so the rest of the row is the
-        // trigger: it stretches so anywhere right of the title still toggles.
-        <div className={cn(headerClass, open && "w-[calc(100%-2rem)]")}>
-          {iconTile}
-          <CellTitle label={label} onEdit={onEdit} />
-          <CollapsibleTrigger className="flex flex-1 items-center justify-end gap-3 self-stretch">
-            {countAndChevron}
-          </CollapsibleTrigger>
-        </div>
-      ) : (
-        <CollapsibleTrigger className={cn(headerClass, "w-full", open && "w-[calc(100%-2rem)]")}>
-          {iconTile}
-          <CellTitle label={label} className="flex-1" />
-          {countAndChevron}
-        </CollapsibleTrigger>
-      )}
-      <CollapsibleContent className="px-4 pt-3 pb-4 text-base">
-        {count === 0 ? <span className="italic opacity-60">Not yet captured</span> : children}
-      </CollapsibleContent>
-    </Collapsible>
-  )
-}
-
-function DimensionList({ columnId, ids }: { columnId: string; ids: string[] }) {
-  const customByColumn = useSelector((s: RootState) => s.customDimensionItems.byColumn)
-  const selfDiscoveryItems = useSelector((s: RootState) => s.selfDiscoveryItems.items)
-  if (!ids || ids.length === 0) return <Placeholder />
-  const labels = ids.map((id) => resolveDimensionLabel(columnId, id, customByColumn, selfDiscoveryItems))
-  return (
-    <ul className="flex flex-col gap-1">
-      {labels.map((l, i) => (
-        <li key={i}>{l}</li>
+    <ul className="flex flex-wrap gap-2">
+      {items.map((text, i) => (
+        <li key={`${text}-${i}`} className={pillClass(brand)}>
+          {text}
+        </li>
       ))}
     </ul>
   )
 }
 
 /**
- * Visual card grid for a Problem: header (title + status pill +
- * optional actions slot), card grid, and a collapsible linked-solutions
- * list. Used by the problem canvas page, the problem validation summary,
- * and the "View Problem" dialog so the read-only view is identical
- * everywhere.
+ * The customer segment size, sat at the right-hand end of the card header.
+ * The pill shows the bare number so the header stays short; "Segment size" is
+ * what the tooltip says, and it is in the pill's label too so a screen reader
+ * gets it without hovering.
+ */
+function SegmentSizePill({ value, brand }: { value: number; brand: boolean }) {
+  const formatted = value.toLocaleString()
+  return (
+    <TooltipProvider delayDuration={200}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span
+            tabIndex={0}
+            aria-label={`Segment size: ${formatted}`}
+            className={cn(
+              pillClass(brand),
+              "focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            )}
+          >
+            {formatted}
+          </span>
+        </TooltipTrigger>
+        <TooltipContent>Segment size</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )
+}
+
+function DimensionList({
+  columnId,
+  ids,
+  brand,
+}: {
+  columnId: string
+  ids: string[]
+  brand: boolean
+}) {
+  const customByColumn = useSelector((s: RootState) => s.customDimensionItems.byColumn)
+  const selfDiscoveryItems = useSelector((s: RootState) => s.selfDiscoveryItems.items)
+  const labels = (ids ?? []).map((id) =>
+    resolveDimensionLabel(columnId, id, customByColumn, selfDiscoveryItems),
+  )
+  return <PillList items={labels} brand={brand} />
+}
+
+/**
+ * Visual card grid for a Problem: header (title + status pill + optional
+ * actions slot) over cards for the customer, context, problem types, market
+ * opportunity and existing solutions. Used by the problem canvas page, the
+ * problem validation summary, and the "View Problem" dialog so the read-only
+ * view is identical everywhere. The project's own solutions are listed by the
+ * solutions table on the project page, not here.
  *
  * `fill` switches on the canvas-page layout: the grid stretches to fill
  * the available height and cards scroll internally. Without it, the grid
@@ -166,23 +133,16 @@ export function ProblemCanvasCards({
   tone?: CellTone
   editable?: boolean
 }) {
-  const router = useRouter()
   const projectId = useProjectIdForProblem(problem.id)
   const [editing, setEditing] = useState<ProblemCardId | null>(null)
   const edit = (card: ProblemCardId) => (editable ? () => setEditing(card) : undefined)
   const brand = tone === "brand"
-  const divider = brand ? "border-white" : CANVAS_DIVIDER
   const sectionHeading = cn(
     "text-base font-semibold uppercase tracking-wide pb-1 border-b",
     brand ? "border-white/30" : "border-border/40",
   )
   const status = problem.validationStatus ?? "unvalidated"
   const va = problem.validationAssessment
-  const linkedSolutions = useSelector((s: RootState) =>
-    s.solutions.solutions.filter((sol) => sol.problemId === problem.id),
-  )
-  const [existingOpen, setExistingOpen] = useState(false)
-  const [solutionsOpen, setSolutionsOpen] = useState(false)
 
   const currency = va.worthToThem.unit || "GBP"
   const {
@@ -229,26 +189,26 @@ export function ProblemCanvasCards({
         className={cn(
           "grid grid-cols-1 sm:grid-cols-12 gap-3",
           fill &&
-            "lg:grid-rows-[minmax(0,0.9fr)_minmax(0,1.2fr)] flex-1 lg:min-h-0",
+            "lg:grid-rows-[minmax(0,0.9fr)_minmax(0,1.2fr)_minmax(0,0.7fr)] flex-1 lg:min-h-0",
         )}
       >
         <Cell
           icon={Users}
           label="Customer"
-          iconBg={CANVAS_ICON_BG}
-          divider={divider}
           tone={tone}
           className="sm:col-span-6 lg:col-span-4"
           empty={problem.customers.length === 0 && !problem.customerDescription && !problem.segmentSize}
           onEdit={edit("customer")}
+          headerRight={
+            problem.segmentSize != null && (
+              <SegmentSizePill value={problem.segmentSize} brand={brand} />
+            )
+          }
         >
           <div className="flex flex-col gap-2">
-            <DimensionList columnId="customers" ids={problem.customers} />
+            <DimensionList columnId="customers" ids={problem.customers} brand={brand} />
             {problem.customerDescription && (
               <p className="whitespace-pre-wrap">{problem.customerDescription}</p>
-            )}
-            {problem.segmentSize != null && (
-              <p className="text-base">Segment size: {problem.segmentSize.toLocaleString()}</p>
             )}
           </div>
         </Cell>
@@ -256,15 +216,13 @@ export function ProblemCanvasCards({
         <Cell
           icon={MapPin}
           label="Context"
-          iconBg={CANVAS_ICON_BG}
-          divider={divider}
           tone={tone}
           className="sm:col-span-6 lg:col-span-4"
           empty={problem.contexts.length === 0 && !problem.contextWhen}
           onEdit={edit("context")}
         >
           <div className="flex flex-col gap-2">
-            <DimensionList columnId="contexts" ids={problem.contexts} />
+            <DimensionList columnId="contexts" ids={problem.contexts} brand={brand} />
             {problem.contextWhen && (
               <p className="whitespace-pre-wrap">{problem.contextWhen}</p>
             )}
@@ -274,21 +232,17 @@ export function ProblemCanvasCards({
         <Cell
           icon={TriangleAlert}
           label="Problem types"
-          iconBg={CANVAS_ICON_BG}
-          divider={divider}
           tone={tone}
           className="sm:col-span-12 lg:col-span-4"
           empty={problem.problems.length === 0}
           onEdit={edit("problem-types")}
         >
-          <DimensionList columnId="problems" ids={problem.problems} />
+          <DimensionList columnId="problems" ids={problem.problems} brand={brand} />
         </Cell>
 
         <Cell
           icon={TrendingUp}
           label="Market opportunity"
-          iconBg={CANVAS_ICON_BG}
-          divider={divider}
           tone={tone}
           className="sm:col-span-12"
           empty={marketEmpty}
@@ -333,89 +287,27 @@ export function ProblemCanvasCards({
           </div>
         </Cell>
 
+        <Cell
+          icon={GitFork}
+          label="Existing solutions"
+          tone={tone}
+          className="sm:col-span-12"
+          empty={problem.existingSolutions.length === 0}
+          onEdit={edit("existing-solutions")}
+        >
+          {/* The shortcomings stay in the edit dialog: the canvas only names
+              what customers use today. */}
+          <PillList
+            items={problem.existingSolutions.map((s) => s.text || "Untitled solution")}
+            brand={brand}
+          />
+        </Cell>
       </div>
-
-      <CollapsibleSection
-        icon={GitFork}
-        label="Existing solutions"
-        count={problem.existingSolutions.length}
-        open={existingOpen}
-        onOpenChange={setExistingOpen}
-        tone={tone}
-        divider={divider}
-        onEdit={edit("existing-solutions")}
-      >
-        <ul className="flex flex-col gap-2">
-          {problem.existingSolutions.map((s) => (
-            <li key={s.id}>
-              <p className="font-medium">{s.text || "Untitled solution"}</p>
-              {s.shortcomings.length > 0 && (
-                <ul className="list-disc list-inside">
-                  {s.shortcomings.map((sc) => (
-                    <li key={sc.id}>{sc.text}</li>
-                  ))}
-                </ul>
-              )}
-            </li>
-          ))}
-        </ul>
-      </CollapsibleSection>
-
-      <CollapsibleSection
-        icon={Lightbulb}
-        label="Solutions"
-        count={linkedSolutions.length}
-        open={solutionsOpen}
-        onOpenChange={setSolutionsOpen}
-        tone={tone}
-        divider={divider}
-        onEdit={edit("solutions")}
-      >
-        <ul className="flex flex-col gap-1.5">
-          {linkedSolutions.map((sol) => {
-            const sStatus = sol.validationStatus ?? "unvalidated"
-            const sCfg = STATUS_CONFIG[sStatus]
-            return (
-              <li key={sol.id}>
-                <button
-                  type="button"
-                  onClick={() => router.push(projectRoutes.solutionEdit(projectId, sol.id))}
-                  className={cn(
-                    "flex items-center gap-2 w-full text-left rounded-md px-2 py-1 -mx-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                    brand ? "hover:bg-white/10" : "hover:bg-muted/60",
-                  )}
-                  data-canvas-no-print
-                >
-                  <StatusPill status={sStatus} size="sm" />
-                  <span className="truncate">
-                    {sol.title || `Solution #${sol.id}`}
-                  </span>
-                </button>
-                <span className="hidden print:flex items-center gap-2">
-                  <span
-                    className={cn(
-                      "inline-flex items-center gap-1 text-sm px-2 py-0.5 rounded-full border shrink-0",
-                      sCfg.className,
-                    )}
-                  >
-                    <sCfg.icon className="h-3 w-3" />
-                    {sCfg.label}
-                  </span>
-                  <span className="truncate">
-                    {sol.title || `Solution #${sol.id}`}
-                  </span>
-                </span>
-              </li>
-            )
-          })}
-        </ul>
-      </CollapsibleSection>
 
       {editable && (
         <ProblemCardDialog
           card={editing}
           problem={problem}
-          solutions={linkedSolutions}
           projectId={projectId}
           onClose={() => setEditing(null)}
         />

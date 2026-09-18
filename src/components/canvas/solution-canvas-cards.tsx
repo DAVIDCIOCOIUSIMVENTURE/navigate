@@ -1,4 +1,4 @@
-"use client"
+﻿"use client"
 
 import { useState } from "react"
 import { useSelector } from "react-redux"
@@ -16,8 +16,6 @@ import {
 import type { MetricContent } from "@/components/solution-strategies/metric-strategy"
 import { DescriptionItem, DescriptionList } from "@/components/ui/description-list"
 import {
-  CANVAS_DIVIDER,
-  CANVAS_ICON_BG,
   Cell,
   Placeholder,
   StatusPill,
@@ -107,8 +105,6 @@ export function SolutionCanvasCards({
         <Cell
           icon={FileText}
           label="Description"
-          iconBg={CANVAS_ICON_BG}
-          divider={CANVAS_DIVIDER}
           className="sm:col-span-12 lg:col-span-6 lg:row-span-2"
           empty={!solution.description}
           onEdit={edit("description")}
@@ -123,8 +119,6 @@ export function SolutionCanvasCards({
         <Cell
           icon={Target}
           label="Linked problem"
-          iconBg={CANVAS_ICON_BG}
-          divider={CANVAS_DIVIDER}
           className="sm:col-span-6"
           empty={!linkedProblem}
           onEdit={edit("linked-problem")}
@@ -144,8 +138,6 @@ export function SolutionCanvasCards({
         <Cell
           icon={Lightbulb}
           label="Method used"
-          iconBg={CANVAS_ICON_BG}
-          divider={CANVAS_DIVIDER}
           className="sm:col-span-6"
           empty={!solution.inspirationSource && !solution.inspirationDetail}
           onEdit={edit("method")}
@@ -163,8 +155,6 @@ export function SolutionCanvasCards({
         <Cell
           icon={Gauge}
           label="Metrics"
-          iconBg={CANVAS_ICON_BG}
-          divider={CANVAS_DIVIDER}
           className="sm:col-span-12"
           empty={METRICS.every(({ read }) => read(solution) == null)}
           onEdit={edit("metrics")}
