@@ -24,7 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import {
-  buildProblemBundle,
+  buildProjectBundle,
   buildSolutionBundle,
   downloadProblemBundle,
 } from "@/lib/problem-export"
@@ -33,18 +33,19 @@ import { projectDisplayName } from "@/lib/projects"
 export type ExportPickerDialogProps = {
   open: boolean
   onOpenChange: (open: boolean) => void
-  kind: "problem" | "solution"
+  kind: "project" | "solution"
 }
 
 const COPY = {
-  problem: {
+  project: {
     title: "Export project",
-    description: "Pick a project to export its problem as a JSON file you can re-import later.",
+    description: "Pick a project to download as a JSON file. The file holds the whole project: its problem, every solution found for it, and the work captured along the way.",
     selectLabel: "Project",
     selectPlaceholder: "Pick a project",
-    emptyState: "No projects with a problem to export yet.",
-    relatedLabel: "Include the solutions found in this project",
-    relatedHelper: "When on, every solution in the project is bundled with its problem.",
+    emptyState: "No projects to export yet.",
+    // A project exports whole, so it never asks what to include.
+    relatedLabel: "",
+    relatedHelper: "",
     successPrefix: "Project",
   },
   solution: {
@@ -66,16 +67,16 @@ export function ExportPickerDialog({ open, onOpenChange, kind }: ExportPickerDia
   const solutions = useSelector((s: RootState) => s.solutions.solutions)
   const copy = COPY[kind]
 
-  // A problem bundle is a whole project, so the list shows project names and
-  // exports the problem each one holds. Projects with no problem yet have
-  // nothing to export and are left out.
+  // The project list is keyed by project id, not problem id: a project exports
+  // whole, and one that has not chosen a problem yet still exports (as an
+  // empty project) rather than being left out.
   const items = useMemo(() => {
-    const raw = kind === "problem"
-      ? projects.flatMap((project) => {
-          const problem = project.problemId === null ? undefined : problems.find((p) => p.id === project.problemId)
-          if (!problem) return []
-          return [{ id: problem.id, label: projectDisplayName(project, problem.title), editedAt: problem.editedAt }]
-        })
+    const raw = kind === "project"
+      ? projects.map((project) => ({
+          id: project.id,
+          label: projectDisplayName(project, problems.find((p) => p.id === project.problemId)?.title),
+          editedAt: project.editedAt,
+        }))
       : solutions.map((s) => ({ id: s.id, label: s.title || `Solution #${s.id}`, editedAt: s.editedAt }))
     return [...raw].sort((a, b) => b.editedAt.localeCompare(a.editedAt))
   }, [kind, projects, problems, solutions])
@@ -101,8 +102,8 @@ export function ExportPickerDialog({ open, onOpenChange, kind }: ExportPickerDia
       return
     }
     const state = store.getState()
-    const bundle = kind === "problem"
-      ? buildProblemBundle(state, id, { includeSolutions: includeRelated })
+    const bundle = kind === "project"
+      ? buildProjectBundle(state, id)
       : buildSolutionBundle(state, id, { includeProblem: includeRelated })
     if (!bundle) {
       toast.error(`Could not export this ${noun}.`)
@@ -143,17 +144,20 @@ export function ExportPickerDialog({ open, onOpenChange, kind }: ExportPickerDia
                 </SelectContent>
               </Select>
             </div>
-            <label className="flex items-start gap-3 cursor-pointer rounded-lg border p-4 hover:bg-muted/30">
-              <Checkbox
-                checked={includeRelated}
-                onCheckedChange={(checked) => setIncludeRelated(checked === true)}
-                className="mt-0.5"
-              />
-              <div className="flex flex-col gap-1">
-                <span className="text-base font-medium">{copy.relatedLabel}</span>
-                <span className="text-base opacity-70">{copy.relatedHelper}</span>
-              </div>
-            </label>
+            {/* A project always exports whole, so only a solution export asks what to include. */}
+            {kind === "solution" && (
+              <label className="flex items-start gap-3 cursor-pointer rounded-lg border p-4 hover:bg-muted/30">
+                <Checkbox
+                  checked={includeRelated}
+                  onCheckedChange={(checked) => setIncludeRelated(checked === true)}
+                  className="mt-0.5"
+                />
+                <div className="flex flex-col gap-1">
+                  <span className="text-base font-medium">{copy.relatedLabel}</span>
+                  <span className="text-base opacity-70">{copy.relatedHelper}</span>
+                </div>
+              </label>
+            )}
           </div>
         )}
         <DialogFooter>

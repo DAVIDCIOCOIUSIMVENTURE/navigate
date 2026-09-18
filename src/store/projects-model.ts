@@ -1,5 +1,6 @@
 import { createModel } from "@rematch/core"
 import type { RootModel } from "."
+import { uniqueProjectName } from "@/lib/projects"
 
 const STORAGE_KEY = "navigate-projects"
 
@@ -15,24 +16,33 @@ export type ProjectMember = {
 }
 
 /**
+ * Who may read a project's preview page. `private` is the default and keeps
+ * the preview to the people working on the project; `public` opens it to
+ * anyone holding the link, with no account and no licence needed.
+ */
+export type ProjectVisibility = "private" | "public"
+
+/**
  * A project is the unit of work in Navigate: one problem and the solutions
  * found for it. `problemId` is null while the project has not identified its
  * problem yet (a freshly created project). Solutions are not listed here;
  * they belong to the project through `Solution.problemId`. `members` is the
- * team the project is shared with. Everything else the user does inside a
- * project (drafts, comparison weights) is kept by the feature's own model
- * under the project id.
+ * team the project is shared with, and `visibility` says whether its preview
+ * page is open to anyone. Everything else the user does inside a project
+ * (drafts, comparison weights) is kept by the feature's own model under the
+ * project id.
  */
 export type Project = {
   id: number
   name: string
   problemId: number | null
   members: ProjectMember[]
+  visibility: ProjectVisibility
   createdAt: string
   editedAt: string
 }
 
-export type ProjectPatch = Partial<Pick<Project, "name" | "problemId" | "members">>
+export type ProjectPatch = Partial<Pick<Project, "name" | "problemId" | "members" | "visibility">>
 
 /** What is persisted. */
 interface StoredProjects {
@@ -73,6 +83,11 @@ function parseMembers(value: unknown): ProjectMember[] {
   })
 }
 
+/** A stored visibility is only trusted when it is one of the two we know. */
+function parseVisibility(value: unknown): ProjectVisibility {
+  return value === "public" ? "public" : "private"
+}
+
 function loadFromStorage(): StoredProjects | null {
   if (typeof window === "undefined") return null
   try {
@@ -84,6 +99,7 @@ function loadFromStorage(): StoredProjects | null {
       name: p.name ?? "",
       problemId: typeof p.problemId === "number" ? p.problemId : null,
       members: parseMembers(p.members),
+      visibility: parseVisibility(p.visibility),
     }))
     // Never mint an id a stored project already holds, whatever `nextId` says.
     const afterLast = projects.reduce((max, p) => Math.max(max, p.id), 0) + 1
@@ -144,14 +160,29 @@ export const projects = createModel<RootModel>()({
       }
     },
 
-    create(payload: { name: string; problemId?: number | null; members?: ProjectMember[] }, rootState): Project {
+    create(
+      payload: {
+        name: string
+        problemId?: number | null
+        members?: ProjectMember[]
+        visibility?: ProjectVisibility
+        /** Set when the name may already be in use (an import), to number the copy rather than repeat it. */
+        uniqueName?: boolean
+      },
+      rootState,
+    ): Project {
       const state = rootState.projects
       const now = new Date().toISOString()
+      const wanted = payload.uniqueName
+        ? uniqueProjectName(state.projects.map((p) => p.name), payload.name)
+        : payload.name
       const project: Project = {
         id: state.nextId,
-        name: defaultProjectName(payload.name, state.nextId),
+        name: defaultProjectName(wanted, state.nextId),
         problemId: payload.problemId ?? null,
         members: payload.members ?? [],
+        // A new project is private until its owner decides otherwise.
+        visibility: payload.visibility ?? "private",
         createdAt: now,
         editedAt: now,
       }

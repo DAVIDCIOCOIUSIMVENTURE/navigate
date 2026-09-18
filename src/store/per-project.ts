@@ -42,13 +42,21 @@ export function parsePerProject<T>(value: unknown, parseSlice: (raw: unknown) =>
 }
 
 /**
- * Builds the two reducers every per-project model needs, closed over that
- * model's empty slice and its own persistence. `update` applies a change to
- * one project's slice, `clear` forgets it, and both return the state
- * unchanged when nothing changed so a no-op neither re-renders nor writes.
+ * Builds the reducers every per-project model needs, closed over that model's
+ * empty slice and its own persistence. `update` applies a change to one
+ * project's slice, `clear` forgets it (both return the state unchanged when
+ * nothing changed, so a no-op neither re-renders nor writes), and `restore`
+ * puts a whole slice back under a project id, which is how an imported
+ * bundle's drafts land in the project created for them.
  */
 export function perProjectReducers<T>(empty: T, save: (byProject: PerProject<T>) => void) {
   return {
+    restore<S extends PerProjectState<T>>(state: S, projectId: number, slice: T): S {
+      const byProject = withProject(state.byProject, projectId, slice)
+      save(byProject)
+      return { ...state, byProject }
+    },
+
     update<S extends PerProjectState<T>, P extends { projectId: number }>(
       state: S,
       payload: P,

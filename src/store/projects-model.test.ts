@@ -143,6 +143,18 @@ describe("projects model", () => {
     expect(fresh.getState().projects.projects[0].members).toEqual(members)
   })
 
+  it("is private until it is shared, and remembers being made public", async () => {
+    const project = await store.dispatch.projects.create({ name: "Shared" })
+    expect(project.visibility).toBe("private")
+
+    store.dispatch.projects.update({ id: project.id, patch: { visibility: "public" } })
+    expect(store.getState().projects.projects[0].visibility).toBe("public")
+
+    const fresh = createStore()
+    fresh.dispatch.projects.init()
+    expect(fresh.getState().projects.projects[0].visibility).toBe("public")
+  })
+
   it("drops stored members that are not usable", () => {
     localStorage.setItem(
       "navigate-projects",
@@ -157,7 +169,7 @@ describe("projects model", () => {
             createdAt: "2026-09-16T00:00:00.000Z",
             editedAt: "2026-09-16T00:00:00.000Z",
           },
-          { id: 2, name: "Older still", problemId: null },
+          { id: 2, name: "Older still", problemId: null, visibility: "everyone" },
         ],
       }),
     )
@@ -166,6 +178,10 @@ describe("projects model", () => {
     const [legacy, older] = fresh.getState().projects.projects
     expect(legacy.members).toEqual([{ id: "member-1", name: "Jane", email: "" }])
     expect(older.members).toEqual([])
+    // A project saved before sharing existed, or with a value we do not know,
+    // must never come back public.
+    expect(legacy.visibility).toBe("private")
+    expect(older.visibility).toBe("private")
   })
 })
 

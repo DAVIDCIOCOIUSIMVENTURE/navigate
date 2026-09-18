@@ -35,6 +35,7 @@ import {
   FolderKanban,
   Lightbulb,
   MoreHorizontal,
+  Presentation,
   Search,
   Settings,
   Target,
@@ -243,9 +244,15 @@ export function ProjectsTable({ projects, className }: { projects: Project[]; cl
                               </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={() => window.open(projectRoutes.preview(project.id), "_blank", "noreferrer")}
+                              >
+                                <Presentation className="h-3.5 w-3.5" />
+                                Preview project
+                              </DropdownMenuItem>
                               <DropdownMenuItem onClick={() => setSettingsId(project.id)}>
                                 <Settings className="h-3.5 w-3.5" />
-                                Settings: name and team
+                                Settings: name, team and sharing
                               </DropdownMenuItem>
                               <DropdownMenuItem
                                 className="text-destructive focus:text-destructive"

@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { useSelector, useDispatch, useStore } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
@@ -29,8 +29,7 @@ import {
   downloadTextFile,
   safeFilename,
 } from "@/lib/canvas-export"
-import { buildProblemBundle, downloadProblemBundle } from "@/lib/problem-export"
-import { ExportBundleDialog } from "@/components/export-bundle-dialog"
+import { downloadProjectBundle } from "@/lib/problem-export"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { useProjectIdForProblem } from "@/hooks/use-projects"
 import { projectRoutes } from "@/lib/projects"
@@ -50,7 +49,6 @@ export function ProblemCanvas({
   const dispatch = useDispatch<AppDispatch>()
   const store = useStore<RootState>()
   const fullView = useSelector((s: RootState) => s.settings.fullView)
-  const [exportOpen, setExportOpen] = useState(false)
   const linkedSolutions = useSelector((s: RootState) =>
     s.solutions.solutions.filter((sol) => sol.problemId === problem.id),
   )
@@ -64,14 +62,15 @@ export function ProblemCanvas({
     downloadTextFile(`${name}.txt`, text)
   }
 
-  const handleExportJson = (includeSolutions: boolean) => {
-    const bundle = buildProblemBundle(store.getState(), problem.id, { includeSolutions })
-    if (!bundle) {
-      toast.error("Could not export this problem.")
-      return
+  // Export is always the whole project: the problem, its solutions and
+  // everything captured alongside them, so the file can be imported as a
+  // working project rather than a fragment of one.
+  const handleExportJson = () => {
+    if (projectId !== null && downloadProjectBundle(store.getState(), projectId)) {
+      toast.success("Project exported.")
+    } else {
+      toast.error("Could not export this project.")
     }
-    downloadProblemBundle(bundle)
-    toast.success("Problem exported.")
   }
 
   useEffect(() => {
@@ -141,23 +140,13 @@ export function ProblemCanvas({
           <Download className="h-3.5 w-3.5" />
           Download as text
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setExportOpen(true)}>
+        <DropdownMenuItem onClick={handleExportJson}>
           <FileJson className="h-3.5 w-3.5" />
-          Export
+          Export project
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   )
 
-  return (
-    <>
-      <ProblemCanvasCards problem={problem} fill editable actions={actions} />
-      <ExportBundleDialog
-        open={exportOpen}
-        onOpenChange={setExportOpen}
-        kind="problem"
-        onConfirm={handleExportJson}
-      />
-    </>
-  )
+  return <ProblemCanvasCards problem={problem} fill editable actions={actions} />
 }

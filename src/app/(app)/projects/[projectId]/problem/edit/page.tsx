@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { useSelector, useStore } from "react-redux"
 import type { RootState } from "@/store"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,8 +11,7 @@ import { ProblemHubContent } from "@/components/problem-hub/problem-hub-content"
 import { FocusFlowHeader } from "@/components/focus-flow-header"
 import { FocusPageShell } from "@/components/focus-page-shell"
 import { ProjectProblemGate } from "@/components/project-gates"
-import { buildProblemBundle, downloadProblemBundle } from "@/lib/problem-export"
-import { ExportBundleDialog } from "@/components/export-bundle-dialog"
+import { downloadProjectBundle } from "@/lib/problem-export"
 import { useContainerSize } from "@/context/container-size-context"
 import { useProjectScope } from "@/hooks/use-projects"
 import { problemJourneyStep, summariseProblemJourney } from "@/lib/journey-steps"
@@ -32,7 +30,6 @@ function HubBody({ projectId, problem }: { projectId: number; problem: Problem }
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
   const store = useStore<RootState>()
   const isWide = useContainerSize() === "wide"
-  const [exportOpen, setExportOpen] = useState(false)
 
   const header = (
     <FocusFlowHeader
@@ -45,14 +42,13 @@ function HubBody({ projectId, problem }: { projectId: number; problem: Problem }
 
   const journeyStep = problemJourneyStep(summariseProblemJourney(problem, solutions))
 
-  const handleExport = (includeSolutions: boolean) => {
-    const bundle = buildProblemBundle(store.getState(), problem.id, { includeSolutions })
-    if (!bundle) {
-      toast.error("Could not export this problem.")
-      return
+  // Always the whole project, so the file imports as a working project.
+  const handleExport = () => {
+    if (downloadProjectBundle(store.getState(), projectId)) {
+      toast.success("Project exported.")
+    } else {
+      toast.error("Could not export this project.")
     }
-    downloadProblemBundle(bundle)
-    toast.success("Problem exported.")
   }
 
   return (
@@ -63,9 +59,9 @@ function HubBody({ projectId, problem }: { projectId: number; problem: Problem }
             <CardTitle icon={Target}>
               {problem.title || `Problem #${problem.id}`}
             </CardTitle>
-            <Button variant="outline" onClick={() => setExportOpen(true)} className="shrink-0">
+            <Button variant="outline" onClick={handleExport} className="shrink-0">
               <Download className="h-4 w-4 mr-2" />
-              Export
+              Export project
             </Button>
           </div>
           <p className="text-base">
@@ -76,12 +72,6 @@ function HubBody({ projectId, problem }: { projectId: number; problem: Problem }
           <ProblemHubContent mode="page" />
         </CardContent>
       </Card>
-      <ExportBundleDialog
-        open={exportOpen}
-        onOpenChange={setExportOpen}
-        kind="problem"
-        onConfirm={handleExport}
-      />
     </FocusPageShell>
   )
 }

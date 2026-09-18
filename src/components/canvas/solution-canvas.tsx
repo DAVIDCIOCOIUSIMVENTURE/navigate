@@ -135,8 +135,7 @@ export function SolutionCanvas({
       <SolutionCanvasCards solution={solution} fill editable actions={actions} />
       <ExportBundleDialog
         open={exportOpen}
-        onOpenChange={setExportOpen}
-        kind="solution"
+        onOpenChange={setExportOpen}
         onConfirm={handleExportJson}
       />
     </>

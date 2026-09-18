@@ -96,7 +96,6 @@ function HubBody({ projectId, solutionId }: { projectId: number; solutionId: num
       <ExportBundleDialog
         open={exportOpen}
         onOpenChange={setExportOpen}
-        kind="solution"
         onConfirm={handleExport}
       />
     </FocusPageShell>

@@ -100,7 +100,11 @@ function freshSession(
   return { sessionId, toolId, answers }
 }
 
-const { update: updateProject, clear: clearProjectSlice } = perProjectReducers(EMPTY_RESEARCH_PROJECT, saveToStorage)
+const {
+  update: updateProject,
+  clear: clearProjectSlice,
+  restore: restoreProjectSlice,
+} = perProjectReducers(EMPTY_RESEARCH_PROJECT, saveToStorage)
 
 /** Applies a change to one method's session within the project. */
 function updateSession(
@@ -177,6 +181,11 @@ export const researchSessions = createModel<RootModel>()({
     /** Forgets every draft and the last position of one project. */
     clearProject(state, projectId: number): ResearchSessionsState {
       return clearProjectSlice(state, projectId)
+    },
+
+    /** Puts a whole slice back under a project, for an imported bundle. */
+    restoreProject(state, payload: { projectId: number; slice: ResearchProjectState }): ResearchSessionsState {
+      return restoreProjectSlice(state, payload.projectId, payload.slice)
     },
 
     clearSession(state, payload: { projectId: number; methodId: string }) {

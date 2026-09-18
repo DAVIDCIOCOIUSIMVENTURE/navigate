@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 
-const PUBLIC_PATHS = ["/login", "/api/auth/login"]
+/**
+ * Paths that skip the password gate. `/preview` is the public read-only view
+ * of a project: it is meant to be opened by people who have no account and no
+ * licence, such as a teacher marking the work, so it must never be redirected
+ * to the login page.
+ */
+const PUBLIC_PATHS = ["/login", "/api/auth/login", "/preview"]
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl

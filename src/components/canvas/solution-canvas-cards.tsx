@@ -54,7 +54,7 @@ function metricLevel(score: number | null, scale: MetricContent["scale"]) {
  *
  * `editable` turns every card title into a button that opens that card's edit
  * dialog. The canvas page switches it on; the read-only views (the View
- * Solution dialog, the validation review step, a portfolio) leave it off.
+ * Solution dialog, the validation review step) leave it off.
  */
 export function SolutionCanvasCards({
   solution,

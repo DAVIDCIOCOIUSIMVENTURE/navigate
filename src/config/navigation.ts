@@ -1,4 +1,4 @@
-import { BookOpen, Compass, Heart, Book, Brain, Briefcase, Globe, Home, Search, FlaskConical, Clock, Trophy, Milestone, Hammer, Route, Users, RotateCcw, Plus, FolderKanban, LayoutDashboard, Presentation, type LucideIcon } from "lucide-react"
+import { BookOpen, Compass, Heart, Book, Brain, Briefcase, Globe, Home, Search, FlaskConical, Clock, Trophy, Milestone, Hammer, Route, Users, RotateCcw, Plus, type LucideIcon } from "lucide-react"
 
 export const navigationItems = {
   sidebar: [
@@ -21,11 +21,6 @@ export const navigationItems = {
       title: "Next Steps",
       url: "/next-steps",
       icon: Milestone
-    },
-    {
-      title: "Portfolios",
-      url: "/portfolios",
-      icon: FolderKanban
     },
   ],
 }
@@ -66,14 +61,4 @@ export const nextStepsTopicIcons: Record<string, LucideIcon> = {
 
 export function getNextStepsTopicIcon(iconKey: string): LucideIcon {
   return nextStepsTopicIcons[iconKey] ?? Milestone
-}
-
-export const portfolioActionIcons: Record<string, LucideIcon> = {
-  ...nextStepsTopicIcons,
-  "layout-dashboard": LayoutDashboard,
-  presentation: Presentation,
-}
-
-export function getPortfolioActionIcon(iconKey: string): LucideIcon {
-  return portfolioActionIcons[iconKey] ?? Milestone
 }

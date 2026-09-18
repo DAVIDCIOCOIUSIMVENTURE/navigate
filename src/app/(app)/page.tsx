@@ -45,7 +45,7 @@ export default function DashboardPage() {
             <Plus className="h-4 w-4" />
             New project
           </Button>
-          <BundleMenuButton kind="problem" />
+          <BundleMenuButton kind="project" />
         </div>
       </div>
       {/* Nothing until the projects have loaded, so the empty state never flashes over a list that is about to arrive. */}

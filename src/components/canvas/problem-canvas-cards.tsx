@@ -151,7 +151,7 @@ function DimensionList({ columnId, ids }: { columnId: string; ids: string[] }) {
  *
  * `editable` turns every card title into a button that opens that card's edit
  * dialog. The canvas pages switch it on; the read-only views (the View Problem
- * dialog, the validation review step, a portfolio) leave it off.
+ * dialog, the validation review step) leave it off.
  */
 export function ProblemCanvasCards({
   problem,

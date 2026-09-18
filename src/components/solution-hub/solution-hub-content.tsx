@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter, usePathname } from "next/navigation"
+import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { useDispatch, useSelector } from "react-redux"
-import type { AppDispatch, RootState } from "@/store"
+import { useDispatch } from "react-redux"
+import type { AppDispatch } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { useSolution } from "@/app/(app)/projects/[projectId]/solutions/[solutionId]/validate/context"
@@ -18,8 +18,8 @@ import {
   TIME_CONTENT,
 } from "@/components/solution-strategies/metric-content"
 import {
-  ArrowRight, ChevronDown, CheckCircle2, ExternalLink, FolderKanban, HelpCircle,
-  Lightbulb, Pencil, RotateCcw, Target, XCircle, Copy,
+  ArrowRight, ChevronDown, CheckCircle2, ExternalLink, HelpCircle,
+  Lightbulb, Pencil, Presentation, RotateCcw, Target, XCircle, Copy,
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -125,26 +125,15 @@ function LinkedProblemSection({ projectId, problemId, problemTitle, problemDescr
 
 export function NextStepsSection({ solutionId }: { solutionId: number }) {
   const router = useRouter()
-  const pathname = usePathname()
   const dispatch = useDispatch<AppDispatch>()
   const { projectId, validationStatus, solution } = useSolution()
   const projectHref = projectRoutes.page(projectId)
 
-  // A portfolio is scoped to one solution, so this solution has at most one.
-  const existingPortfolio = useSelector((state: RootState) =>
-    state.portfolios.portfolios.find((p) => p.solutionId === solutionId),
-  )
-
   const goToVerdict = () => router.push(projectRoutes.solutionValidate(projectId, solutionId, "verdict"))
 
-  // Cancelling the new-portfolio form comes back to whichever view this
-  // section was rendered in (the solution hub, or the validation review step).
-  const goToPortfolio = () =>
-    router.push(
-      existingPortfolio
-        ? `/portfolios/${existingPortfolio.id}`
-        : `/portfolios/new?solution=${solutionId}&from=${encodeURIComponent(pathname)}`,
-    )
+  // The preview is a page in its own right rather than a flow, so it opens in
+  // a new tab and leaves the work where it was.
+  const openPreview = () => window.open(projectRoutes.preview(projectId), "_blank", "noreferrer")
 
   const handleDuplicate = () => {
     if (!solution) return
@@ -184,7 +173,7 @@ export function NextStepsSection({ solutionId }: { solutionId: number }) {
             <h3 className="text-lg font-semibold text-foreground">This solution is worth pursuing</h3>
           </div>
           <p className="text-base">
-            You have decided this solution is worth building. From here you can read the guidance on delivering it, or bring it together as a portfolio.
+            You have decided this solution is worth building. From here you can read the guidance on delivering it, or share the whole project as a page somebody else can read.
           </p>
           <div className="flex flex-col gap-3 mt-1">
             <NextStepCard
@@ -196,16 +185,12 @@ export function NextStepsSection({ solutionId }: { solutionId: number }) {
               onAction={() => router.push("/next-steps")}
             />
             <NextStepCard
-              icon={FolderKanban}
-              title={existingPortfolio ? "Your portfolio for this solution" : "Build a portfolio for it"}
-              description={
-                existingPortfolio
-                  ? "This solution already sits in a portfolio, with the problem it answers underneath."
-                  : "Bring this solution and the problem it answers into one place, as the summary you take into the tools where you build and test."
-              }
-              actionLabel={existingPortfolio ? "Open portfolio" : "Create a portfolio"}
-              actionIcon={FolderKanban}
-              onAction={goToPortfolio}
+              icon={Presentation}
+              title="Share the project with somebody else"
+              description="The preview reads the whole project back as a page: the problem, the evidence behind it and every solution you scored. Make the project public in its settings and anyone with the link can read it, with no account needed."
+              actionLabel="Open the preview"
+              actionIcon={Presentation}
+              onAction={openPreview}
             />
           </div>
         </div>

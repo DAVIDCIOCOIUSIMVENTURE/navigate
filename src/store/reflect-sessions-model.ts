@@ -86,7 +86,11 @@ function emptyAnswer(): ReflectAnswer {
   return { text: "", context: {} }
 }
 
-const { update: updateProject, clear: clearProjectSlice } = perProjectReducers(EMPTY_REFLECT_PROJECT, saveToStorage)
+const {
+  update: updateProject,
+  clear: clearProjectSlice,
+  restore: restoreProjectSlice,
+} = perProjectReducers(EMPTY_REFLECT_PROJECT, saveToStorage)
 
 /** Applies a change to one lens's answers within the project. */
 function updateAnswers(
@@ -155,6 +159,11 @@ export const reflectSessions = createModel<RootModel>()({
     /** Forgets every draft and the last position of one project. */
     clearProject(state, projectId: number): ReflectSessionsState {
       return clearProjectSlice(state, projectId)
+    },
+
+    /** Puts a whole slice back under a project, for an imported bundle. */
+    restoreProject(state, payload: { projectId: number; slice: ReflectProjectState }): ReflectSessionsState {
+      return restoreProjectSlice(state, payload.projectId, payload.slice)
     },
 
     clearSession(state, payload: { projectId: number; lensId: string }) {

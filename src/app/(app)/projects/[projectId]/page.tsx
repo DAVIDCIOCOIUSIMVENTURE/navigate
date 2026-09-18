@@ -20,7 +20,7 @@ import { HOME_HREF, projectDisplayName, projectRoutes } from "@/lib/projects"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { cn } from "@/lib/utils"
 import type { ValidationStatus } from "@/types/validation"
-import { ArrowLeft, FolderKanban, Lightbulb, Plus, Scale, Settings, Target } from "lucide-react"
+import { ArrowLeft, FolderKanban, Lightbulb, Plus, Presentation, Scale, Settings, Target } from "lucide-react"
 
 /** Solutions are identified only for problems that have come through validation as Valid or Unsure. */
 const SOLUTION_READY_STATUSES: ValidationStatus[] = ["valid", "unsure"]
@@ -99,6 +99,21 @@ export default function ProjectPage() {
           <MemberAvatarStack members={project.members} />
         </div>
         <div className="flex flex-wrap items-center gap-2 shrink-0">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button asChild variant="secondary-brand" className="gap-2">
+                <Link href={projectRoutes.preview(project.id)} target="_blank" rel="noreferrer">
+                  <Presentation className="h-4 w-4" />
+                  Preview
+                </Link>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {project.visibility === "public"
+                ? "Open the page anyone with the link can read"
+                : "See how this project reads to somebody else. Make it public in Settings to share the link."}
+            </TooltipContent>
+          </Tooltip>
           <Button variant="outline" onClick={() => setSettingsOpen(true)} className="gap-2 bg-white">
             <Settings className="h-4 w-4" />
             Settings

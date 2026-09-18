@@ -114,22 +114,6 @@ function getCrumbs(pathname: string, lookup: CrumbLookup): Crumb[] {
     crumbs.push({ label: "Next Steps" })
     return crumbs
   }
-  if (first === "portfolios") {
-    if (segments.length === 1) {
-      crumbs.push({ label: "Portfolios" })
-      return crumbs
-    }
-    crumbs.push({ label: "Portfolios", href: "/portfolios" })
-    if (second === "new") {
-      crumbs.push({ label: "New" })
-    } else if (third === "edit") {
-      crumbs.push({ label: second, href: `/portfolios/${second}` })
-      crumbs.push({ label: "Edit" })
-    } else {
-      crumbs.push({ label: second })
-    }
-    return crumbs
-  }
   if (first === "admin") {
     if (segments.length === 1) {
       crumbs.push({ label: "Admin" })
@@ -242,7 +226,6 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     dispatch.reflectSessions.init()
     dispatch.researchSessions.init()
     dispatch.canvasDrafts.init()
-    dispatch.portfolios.init()
     dispatch.tour.init()
     dispatch.projects.init()
     // Problems saved before projects existed each get a project of their own.

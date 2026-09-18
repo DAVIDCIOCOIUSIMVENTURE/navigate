@@ -383,8 +383,7 @@ export function SolutionsTable({ solutions, showStatus = true, showScore = true,
     />
     <ExportBundleDialog
       open={exportSolutionId != null}
-      onOpenChange={(open) => { if (!open) setExportSolutionId(null) }}
-      kind="solution"
+      onOpenChange={(open) => { if (!open) setExportSolutionId(null) }}
       onConfirm={(includeProblem) => {
         if (exportSolutionId != null) runSolutionExport(exportSolutionId, includeProblem)
       }}

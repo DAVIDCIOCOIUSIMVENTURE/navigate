@@ -59,7 +59,7 @@ export function JourneyProgressCard({
  * with the labels beneath, for the top of a narrow page. The rail carries no
  * visible heading; `heading` is only its accessible name.
  *
- * The labels sit at `text-sm` on purpose: the rail is a compact wayfinding
+ * The labels sit at `text-xs` on purpose: the rail is a compact wayfinding
  * aid beside the content, not body copy.
  */
 export function JourneyProgress({
@@ -167,7 +167,7 @@ function StepLabel({
       href={href}
       aria-current={step.status === "active" ? "step" : undefined}
       className={cn(
-        "text-sm leading-snug rounded-sm hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "text-xs leading-snug rounded-sm hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         step.status === "active" ? "font-semibold text-primary" : "text-foreground",
         className,
       )}

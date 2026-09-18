@@ -1,21 +1,50 @@
 import type { AppDispatch, RootState } from "@/store"
 import type { Problem } from "@/store/problems-model"
+import type { Project, ProjectMember, ProjectVisibility } from "@/store/projects-model"
 import type { Solution, SolutionWorkspace } from "@/types/solution"
 import type { CustomDimensionItem } from "@/store/custom-dimension-items-model"
 import type { SelfDiscoveryItem } from "@/store/self-discovery-items-model"
 import { generateSelfDiscoveryItemId } from "@/store/self-discovery-items-model"
+import { EMPTY_REFLECT_PROJECT, selectReflectProject, type ReflectProjectState } from "@/store/reflect-sessions-model"
+import { EMPTY_RESEARCH_PROJECT, selectResearchProject, type ResearchProjectState } from "@/store/research-sessions-model"
+import { EMPTY_CANVAS_DRAFT, selectCanvasDraft, type CanvasDraft } from "@/store/canvas-drafts-model"
+import { selectComparisonWeights } from "@/store/solution-comparison-model"
+import { normaliseWeights, type MetricWeights } from "@/lib/solution-comparison"
+import { loadResearchCapture, saveResearchCapture } from "@/lib/research-capture"
+import type { ResearchCapture } from "@/types/research"
 
 export const BUNDLE_FORMAT = "navigate-problem-bundle"
-export const BUNDLE_VERSION = 2
+export const BUNDLE_VERSION = 3
+
+/**
+ * The project itself, as carried by a v3 bundle: what it is called, who is on
+ * it, whether its preview is shared, and the drafts and preferences the
+ * per-project models keep under its id. Ids are deliberately absent: an
+ * imported project is always a new project with new ids.
+ */
+export type ProjectBundle = {
+  name: string
+  members: ProjectMember[]
+  visibility: ProjectVisibility
+  reflect: ReflectProjectState | null
+  research: ResearchProjectState | null
+  canvasDraft: CanvasDraft | null
+  comparisonWeights: MetricWeights | null
+}
 
 export type ProblemExportBundle = {
   format: typeof BUNDLE_FORMAT
   version: number
   exportedAt: string
+  // v3: the whole project the problem belongs to. Absent on v1 and v2 bundles
+  // and on the solution-only export, where the import invents a project.
+  project?: ProjectBundle | null
   // v2: the problem may be null when only solutions are being exported.
   problem: Problem | null
   solutions: Solution[]
   workspace: SolutionWorkspace | null
+  // v3: what the Research tool captured while the problem was identified.
+  researchCapture?: ResearchCapture | null
   customDimensionItems: {
     customers: CustomDimensionItem[]
     contexts: CustomDimensionItem[]
@@ -57,6 +86,78 @@ function emptyCatalogs() {
   }
 }
 
+/**
+ * Everything the per-project models hold for one project. Empty slices are
+ * stored as null rather than as the empty object, so a bundle says plainly
+ * that there was nothing rather than carrying a default that looks like work.
+ */
+function pickProjectState(state: RootState, projectId: number): Omit<ProjectBundle, "name" | "members" | "visibility"> {
+  const reflect = selectReflectProject(state, projectId)
+  const research = selectResearchProject(state, projectId)
+  const canvasDraft = selectCanvasDraft(state, projectId)
+  return {
+    reflect: reflect === EMPTY_REFLECT_PROJECT ? null : reflect,
+    research: research === EMPTY_RESEARCH_PROJECT ? null : research,
+    canvasDraft: canvasDraft === EMPTY_CANVAS_DRAFT ? null : canvasDraft,
+    comparisonWeights: selectComparisonWeights(state, projectId),
+  }
+}
+
+/**
+ * The whole of one project as a bundle: the project, its problem, every
+ * solution found for it, the refinement workspace, the research captured while
+ * identifying it, the drafts and comparison weights kept under the project id,
+ * and the user-created catalogue entries the problem refers to. Importing it
+ * rebuilds all of that as a brand new project. Returns null for a project that
+ * does not exist.
+ */
+export function buildProjectBundle(state: RootState, projectId: number): ProblemExportBundle | null {
+  const project = state.projects.projects.find((p) => p.id === projectId)
+  if (!project) return null
+
+  const base = project.problemId === null
+    ? emptyProblemBundle()
+    : buildProblemBundle(state, project.problemId)
+  // A project whose problem has gone missing still exports, as an empty project.
+  const bundle = base ?? emptyProblemBundle()
+
+  return {
+    ...bundle,
+    project: {
+      name: project.name,
+      members: project.members.map((member) => ({ ...member })),
+      visibility: project.visibility,
+      ...pickProjectState(state, projectId),
+    },
+  }
+}
+
+/**
+ * Build a project bundle and hand it to the browser as a download. The one
+ * call every "Export project" button makes. Returns false when there is no
+ * such project, so the caller can say so.
+ */
+export function downloadProjectBundle(state: RootState, projectId: number): boolean {
+  const bundle = buildProjectBundle(state, projectId)
+  if (!bundle) return false
+  downloadProblemBundle(bundle)
+  return true
+}
+
+/** The shell of a bundle with no problem in it, for an empty project. */
+function emptyProblemBundle(): ProblemExportBundle {
+  return {
+    format: BUNDLE_FORMAT,
+    version: BUNDLE_VERSION,
+    exportedAt: new Date().toISOString(),
+    problem: null,
+    solutions: [],
+    workspace: null,
+    researchCapture: null,
+    ...emptyCatalogs(),
+  }
+}
+
 export type ProblemBundleOptions = { includeSolutions: boolean }
 export type SolutionBundleOptions = { includeProblem: boolean }
 
@@ -80,6 +181,7 @@ export function buildProblemBundle(
     problem,
     solutions,
     workspace,
+    researchCapture: loadResearchCapture(problemId),
     customDimensionItems: {
       customers: pickCustomItems(state, "customers", problem.customers),
       contexts: pickCustomItems(state, "contexts", problem.contexts),
@@ -123,6 +225,7 @@ export function buildSolutionBundle(
     problem,
     solutions: [solution],
     workspace,
+    researchCapture: problem ? loadResearchCapture(problem.id) : null,
     ...catalogs,
   }
 }
@@ -244,7 +347,8 @@ export function downloadProblemBundle(bundle: ProblemExportBundle) {
 }
 
 function suggestBundleSlug(bundle: ProblemExportBundle): string {
-  const source = bundle.problem?.title
+  const source = bundle.project?.name
+    || bundle.problem?.title
     || bundle.solutions[0]?.title
     || (bundle.problem ? `problem-${bundle.problem.id}` : "solution")
   const slug = source
@@ -281,20 +385,42 @@ export function parseProblemBundle(raw: string): ProblemExportBundle {
   const bundle = parsed as ProblemExportBundle
   const hasProblem = Boolean(bundle.problem)
   const hasSolutions = Array.isArray(bundle.solutions) && bundle.solutions.length > 0
-  if (!hasProblem && !hasSolutions) {
-    throw new BundleParseError("Bundle has neither a problem nor any solutions.")
+  // A v3 project bundle is enough on its own: a project exported before it had
+  // a problem still imports, as an empty project ready for one.
+  const hasProject = Boolean(bundle.project)
+  if (!hasProblem && !hasSolutions && !hasProject) {
+    throw new BundleParseError("Bundle has neither a project, a problem nor any solutions.")
   }
   return bundle
 }
 
 export type ImportResult = {
-  problemId: number
+  /** The project the import created. Every import makes a new one. */
+  projectId: number
+  /** Null when the bundle carried a project that had not chosen a problem yet. */
+  problemId: number | null
   solutionCount: number
   // True when the bundle had no problem and we created a placeholder to host
   // the imported solutions.
   placeholderCreated: boolean
 }
 
+/** What to tell the user an import produced. Shared so every entry point says the same thing. */
+export function importSummary(result: ImportResult): string {
+  const solutions = `${result.solutionCount} ${result.solutionCount === 1 ? "solution" : "solutions"}`
+  if (result.placeholderCreated) return `Imported ${solutions} into a new project with a placeholder problem.`
+  if (result.problemId === null) return "Imported the project. It has no problem yet."
+  if (result.solutionCount > 0) return `Imported the project with its problem and ${solutions}.`
+  return "Imported the project with its problem."
+}
+
+/**
+ * Rebuild a bundle as a brand new project. Nothing is reused from the file:
+ * the project, its problem, every solution, the workspace and each
+ * user-created catalogue entry are created fresh, so the imported copy shares
+ * no id with the original and importing the same file twice gives two
+ * independent projects.
+ */
 export async function importProblemBundle(
   bundle: ProblemExportBundle,
   dispatch: AppDispatch
@@ -343,13 +469,59 @@ export async function importProblemBundle(
       .map((id) => (isUserId(id) ? selfDiscoveryMap[id] : id))
       .filter((id): id is string => Boolean(id))
 
-  // 4. Create the problem - either from the bundle, or as a placeholder when
-  //    the bundle was solo-solutions only.
+  // 4. Create the project the rest of the import hangs off. A v3 bundle
+  //    carries its own name and team; older bundles and solution-only exports
+  //    get a project named after whatever they do carry, which is what
+  //    `adoptProblem` would have done for them anyway.
+  const bundledProject = bundle.project ?? null
+  const fallbackName = bundle.problem?.title?.trim() || bundle.solutions?.[0]?.title?.trim() || ""
+  const newProject = (await dispatch.projects.create({
+    name: bundledProject?.name ?? fallbackName,
+    // Importing a project you already have numbers the copy, so the two can be
+    // told apart in the projects list.
+    uniqueName: true,
+    members: bundledProject?.members?.map((member) => ({ ...member })) ?? [],
+    // An imported project starts private whatever the original was: sharing is
+    // the new owner's decision, not the exporter's.
+    visibility: "private",
+  })) as unknown as Project
+  if (!newProject?.id) {
+    throw new Error("Failed to create the imported project.")
+  }
+  const newProjectId = newProject.id
+
+  // 5. Restore the drafts and preferences the per-project models keep under
+  //    the project id, under the new id.
+  if (bundledProject?.reflect) {
+    dispatch.reflectSessions.restoreProject({ projectId: newProjectId, slice: bundledProject.reflect })
+  }
+  if (bundledProject?.research) {
+    dispatch.researchSessions.restoreProject({ projectId: newProjectId, slice: bundledProject.research })
+  }
+  if (bundledProject?.canvasDraft) {
+    dispatch.canvasDrafts.restoreProject({ projectId: newProjectId, slice: bundledProject.canvasDraft })
+  }
+  if (bundledProject?.comparisonWeights) {
+    dispatch.solutionComparison.setWeights({
+      projectId: newProjectId,
+      weights: normaliseWeights(bundledProject.comparisonWeights),
+    })
+  }
+
+  // 6. Create the problem - either from the bundle, or as a placeholder when
+  //    the bundle was solo-solutions only. A project bundle with no problem
+  //    imports as an empty project, ready for one to be identified.
   const p = bundle.problem
+  const hasSolutions = (bundle.solutions ?? []).length > 0
+  if (!p && !hasSolutions) {
+    return { projectId: newProjectId, problemId: null, solutionCount: 0, placeholderCreated: false }
+  }
+
   let newProblem: Problem
   let placeholderCreated = false
   if (p) {
     newProblem = (await dispatch.problems.create({
+      projectId: newProjectId,
       source: p.source,
       title: p.title,
       description: p.description,
@@ -370,6 +542,7 @@ export async function importProblemBundle(
     placeholderCreated = true
     const firstSolutionTitle = bundle.solutions[0]?.title?.trim()
     newProblem = (await dispatch.problems.create({
+      projectId: newProjectId,
       source: "manual",
       title: firstSolutionTitle
         ? `Imported solution: ${firstSolutionTitle}`
@@ -382,7 +555,13 @@ export async function importProblemBundle(
   }
   const newProblemId = newProblem.id
 
-  // 5. Workspace: ensure-for-problem mints a fresh empty one, then update it
+  // 7. The research captured while identifying the problem is keyed by problem
+  //    id outside the store, so it moves across under the new id.
+  if (bundle.researchCapture) {
+    saveResearchCapture(newProblemId, bundle.researchCapture)
+  }
+
+  // 8. Workspace: ensure-for-problem mints a fresh empty one, then update it
   //    with the bundle's refinement state.
   let newWorkspaceId: number | null = null
   if (bundle.workspace) {
@@ -408,7 +587,7 @@ export async function importProblemBundle(
     })
   }
 
-  // 6. Solutions: create assigns a new id and defaults the scoring fields;
+  // 9. Solutions: create assigns a new id and defaults the scoring fields;
   //    follow up with update to restore feasibility/impact/cost/time/status.
   for (const s of bundle.solutions ?? []) {
     const created = (await dispatch.solutions.create({
@@ -441,6 +620,7 @@ export async function importProblemBundle(
   }
 
   return {
+    projectId: newProjectId,
     problemId: newProblemId,
     solutionCount: (bundle.solutions ?? []).length,
     placeholderCreated,

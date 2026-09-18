@@ -25,9 +25,22 @@ export function projectHref(projectId: ProjectRef): string {
   return under(projectId, "")
 }
 
+/**
+ * The public preview of a project. It deliberately sits outside
+ * `/projects/...`: the preview is read-only, needs no login (see
+ * `PUBLIC_PATHS` in `src/middleware.ts`) and is the one page a reader who has
+ * never used Navigate can open.
+ */
+export function previewHref(projectId: ProjectRef): string {
+  return projectId === null || projectId === undefined || !Number.isFinite(projectId)
+    ? HOME_HREF
+    : `/preview/${projectId}`
+}
+
 /** Every route under a project. Flow steps default to their first step. */
 export const projectRoutes = {
   page: (projectId: ProjectRef) => under(projectId, ""),
+  preview: previewHref,
   identify: (projectId: ProjectRef) => under(projectId, "/identify"),
   canvasBuilder: (projectId: ProjectRef) => under(projectId, "/identify/canvas-builder"),
   reflect: (projectId: ProjectRef) => under(projectId, "/identify/reflect"),
@@ -80,6 +93,22 @@ export function projectDisplayName(project: Project, problemTitle?: string | nul
   if (name.length > 0) return name
   const title = problemTitle?.trim() ?? ""
   return title.length > 0 ? title : `Project ${project.id}`
+}
+
+/**
+ * A name that does not clash with one already in use, by adding "(2)", then
+ * "(3)" and so on. Used when importing a project into a library that already
+ * holds one of the same name, so the two can be told apart in a list. A name
+ * nothing else uses is returned untouched, which is the normal case when a
+ * project is imported onto a machine that has never seen it.
+ */
+export function uniqueProjectName(existing: readonly string[], name: string): string {
+  const trimmed = name.trim()
+  const taken = new Set(existing.map((value) => value.trim()))
+  if (trimmed.length === 0 || !taken.has(trimmed)) return trimmed
+  let suffix = 2
+  while (taken.has(`${trimmed} (${suffix})`)) suffix++
+  return `${trimmed} (${suffix})`
 }
 
 /**

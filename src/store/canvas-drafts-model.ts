@@ -81,7 +81,11 @@ function loadFromStorage(): PerProject<CanvasDraft> {
   }
 }
 
-const { update: updateProject, clear: clearProjectSlice } = perProjectReducers(EMPTY_CANVAS_DRAFT, saveToStorage)
+const {
+  update: updateProject,
+  clear: clearProjectSlice,
+  restore: restoreProjectSlice,
+} = perProjectReducers(EMPTY_CANVAS_DRAFT, saveToStorage)
 
 export const canvasDrafts = createModel<RootModel>()({
   state: defaultState,
@@ -99,6 +103,11 @@ export const canvasDrafts = createModel<RootModel>()({
     /** Throws one project's draft away (after saving, or on Reset). */
     clearProject(state, projectId: number): CanvasDraftsState {
       return clearProjectSlice(state, projectId)
+    },
+
+    /** Puts a whole draft back under a project, for an imported bundle. */
+    restoreProject(state, payload: { projectId: number; slice: CanvasDraft }): CanvasDraftsState {
+      return restoreProjectSlice(state, payload.projectId, payload.slice)
     },
   },
 

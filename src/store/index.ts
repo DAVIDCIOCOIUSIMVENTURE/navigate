@@ -11,7 +11,6 @@ import { solutionComparison } from "./solution-comparison-model"
 import { reflectSessions } from "./reflect-sessions-model"
 import { researchSessions } from "./research-sessions-model"
 import { canvasDrafts } from "./canvas-drafts-model"
-import { portfolios } from "./portfolios-model"
 import { tour } from "./tour-model"
 import { projects } from "./projects-model"
 export interface RootModel extends Models<RootModel> {
@@ -27,7 +26,6 @@ export interface RootModel extends Models<RootModel> {
   reflectSessions: typeof reflectSessions
   researchSessions: typeof researchSessions
   canvasDrafts: typeof canvasDrafts
-  portfolios: typeof portfolios
   tour: typeof tour
   projects: typeof projects
 }
@@ -45,7 +43,6 @@ const models: RootModel = {
   reflectSessions,
   researchSessions,
   canvasDrafts,
-  portfolios,
   tour,
   projects,
 }
