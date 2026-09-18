@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { useFocusChrome } from "@/context/focus-chrome-context"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
-import { getIdentifyLens } from "@/data/reflectLenses"
+import { getReflectLens } from "@/data/reflectLenses"
 import { ReflectProvider } from "@/components/reflect/reflect-context"
 import { useProjectScope } from "@/hooks/use-projects"
 import { projectRoutes } from "@/lib/projects"
@@ -46,9 +46,9 @@ export default function LensLayout({ children }: { children: ReactNode }) {
   const hrefs = useMemo(() => lensHrefs(projectId, lensId), [projectId, lensId])
 
   const route = useMemo(() => parseLensPath(pathname), [pathname])
-  const lens = getIdentifyLens(lensId)
+  const lens = getReflectLens(lensId)
 
-  // Non-canonical URLs (a tool that is not offered, a prompt number out of range) get replaced.
+  // Non-canonical URLs (a name that is not a lens, a prompt number out of range) get replaced.
   useEffect(() => {
     if (route.kind === "redirect") router.replace(route.href)
   }, [route, router])
@@ -121,7 +121,7 @@ export default function LensLayout({ children }: { children: ReactNode }) {
     </div>
   )
 
-  // A URL naming a tool the hub does not offer has nothing to render: the
+  // A URL naming something that is not a lens has nothing to render: the
   // effect above is already sending it back to the hub. Every hook has run by
   // here, so bailing out now is safe.
   if (!lens) return null

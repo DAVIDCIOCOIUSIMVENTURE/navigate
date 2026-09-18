@@ -1,29 +1,21 @@
 import {
+  Annoyed,
   Briefcase,
   HeartHandshake,
-  Building2,
-  Shuffle,
-  Users,
   UsersRound,
-  Radar,
   Wrench,
   type LucideIcon,
 } from "lucide-react"
 
 /**
- * Static config for the guided-prompt tools on the Identify a Problem hub.
- * Each lens defines a guided Q&A and is offered as a tool in its own right,
- * beside the Canvas Builder and Research. Adding a lens is appending a `Lens`
- * object here and listing its id in `IDENTIFY_LENS_IDS`, no code changes
- * needed. The lenses not listed there are drafted but not yet offered.
+ * The guided-prompt tools on the Identify a Problem hub. Each lens is a guided
+ * Q&A offered as a tool in its own right, beside the Canvas Builder and
+ * Research, in the order of `REFLECT_LENSES`. Every lens has one `contextOnly`
+ * anchor prompt (the thing the run reflects on, rendered by its own
+ * single-select picker in `src/components/reflect/`, wired up in
+ * `lens-panels.tsx`) followed by the prompts that dig into it. The catalogue
+ * keeps the "Reflect" name because saved problems carry `reflection.lensId`.
  */
-
-export type LensSelfDiscoverySource = {
-  /** Self-discovery category id whose items become starter chips for the matching prompts. */
-  category: "knowledge" | "skills-expertise" | "personal-interests" | "social-impact" | "work-experience"
-  /** Prompt ids that should surface chips from this category. */
-  promptIds: string[]
-}
 
 export type LensPrompt = {
   id: string
@@ -33,75 +25,53 @@ export type LensPrompt = {
   /** True if the user can capture multiple distinct answers to this prompt. */
   multipleAllowed: boolean
   /**
-   * Ids of follow-up fields asked lazily at the review step (only for answers the
-   * user keeps). Each id should map to a field rendered by the review screen.
-   */
-  capturesContext?: string[]
-  /**
-   * If true, this prompt's answer is context for later prompts, not a candidate
-   * itself (e.g. "Name an organisation"). Captured in session state but never
-   * becomes the saved problem.
+   * The anchor: this prompt's answer is what the rest of the run is about
+   * (an experience, a role, an audience, an annoyance) and pre-fills the
+   * problem's title, but is never a candidate answer itself.
    */
   contextOnly?: boolean
   /**
-   * Role in the save-as-problem flow:
-   * - "problems": answers resolve to problem dimension ids; rendered with the
-   *   identify problem picker.
-   * - "customers": answers resolve to customer dimension ids; rendered with the
-   *   identify customer picker.
-   * Untagged prompts (other than the contextOnly anchor) are kept as reflection
-   * context only.
+   * Role in the save-as-problem flow: which of the problem's dimension columns
+   * the answers land in, resolved to dimension ids and rendered with that
+   * column's picker. The anchor may carry a role too (Audience problems anchors
+   * on a customer, Something that annoys you on a problem type). Untagged
+   * prompts (other than the anchor) are kept as the problem's reflection only.
    */
-  role?: "problems" | "customers"
+  role?: LensDimensionRole
 }
+
+/** The problem dimension columns a prompt's answers can be saved into. */
+export type LensDimensionRole = "problems" | "customers" | "contexts"
 
 export type LensId =
-  | "work"
   | "life"
-  | "insider"
-  | "cross"
-  | "people"
-  | "market"
+  | "work"
   | "own-problems"
   | "audience-problems"
-
-export type LensImage = {
-  src: string
-  alt: string
-  /** Tailwind object-position class, e.g. "object-left". Defaults to centre. */
-  position?: string
-}
+  | "annoyance"
 
 export type Lens = {
   id: LensId
   title: string
+  /** One line for the hub row and the guidance panel's tool card. */
   shortDescription: string
+  /** The fuller framing, for anywhere with room for a paragraph. */
   longDescription: string
   icon: LucideIcon
-  /** Optional photo shown beside the description in the method picker. */
-  image?: LensImage
   estimatedMinutes: number
   prompts: LensPrompt[]
-  /** Optional helper text rendered in the guidance panel for this lens. */
-  helperText?: string
+  /** The one-line tip shown beside the tool in the guidance panel. */
+  helperText: string
   /**
    * Who this tool suits, shown behind the "Best for" drop-down on the
    * Identify a Problem hub. Written in the same voice as the other tools there.
    */
-  bestFor?: string
-  /** Self-discovery items to surface as starter chips inside specific prompts. */
-  selfDiscoverySources?: LensSelfDiscoverySource[]
+  bestFor: string
   /**
-   * Some lenses (Market signals) don't follow the standard intro -> prompts ->
-   * review flow. Mark them here so the lens layout can route differently.
+   * Short label for the anchor prompt's answer (e.g. "Life experience",
+   * "Work area"), used in the review heading and the save dialog.
    */
-  flowKind?: "standard" | "single-form"
-  /**
-   * Short label for the contextOnly anchor prompt (e.g. "Life experience",
-   * "Work area"). Used in the review heading and the save dialog. Falls back
-   * to "Anchor" if missing.
-   */
-  anchorLabel?: string
+  anchorLabel: string
 }
 
 export const REFLECT_LENSES: Lens[] = [
@@ -112,10 +82,6 @@ export const REFLECT_LENSES: Lens[] = [
     longDescription:
       "Look back at one significant experience you've navigated and pull out the parts that were harder than they needed to be. You focus on a single experience per run so the prompts stay specific; to explore another, simply run this tool again and pick a different one.",
     icon: HeartHandshake,
-    image: {
-      src: "/images/life-experiences.jpg",
-      alt: "A person standing on the crest of a sand dune with a trail of footprints behind them",
-    },
     estimatedMinutes: 10,
     anchorLabel: "Life experience",
     helperText:
@@ -207,20 +173,12 @@ export const REFLECT_LENSES: Lens[] = [
     longDescription:
       "Pick one job, role, or slice of work you do regularly and answer the prompts about that one place. The friction you've stopped noticing is often the friction worth productising; focusing on a single role per run keeps the prompts specific. To explore another, run this tool again and pick a different one.",
     icon: Briefcase,
-    image: {
-      src: "/images/skipping-cost.jpg",
-      alt: "A hand pointing a pen at charts spread across a desk beside a laptop and calculator",
-    },
     estimatedMinutes: 10,
     anchorLabel: "Work area",
     helperText:
       "Repeated small annoyances at work are easy to dismiss but they point to missing tools. Small, specific, and slightly weird are good signals.",
     bestFor:
       "Best for a job or role you do often enough to have stopped noticing its rough edges. You already know the process, the tools and the people, so the prompts can go straight at what wastes your week.",
-    selfDiscoverySources: [
-      { category: "knowledge", promptIds: ["time-consuming", "workarounds", "should-exist"] },
-      { category: "skills-expertise", promptIds: ["time-consuming", "workarounds", "should-exist"] },
-    ],
     prompts: [
       {
         id: "work-context",
@@ -316,20 +274,12 @@ export const REFLECT_LENSES: Lens[] = [
     longDescription:
       "Pick one thing you've actually done, then describe the problems you ran into and what you did about it. The fixes you built for yourself are often the seed of a product someone else would pay for. To explore another, run this tool again and pick a different one.",
     icon: Wrench,
-    image: {
-      src: "/images/solved-past-problems.jpg",
-      alt: "Two hands turning a partly solved Rubik's cube",
-    },
     estimatedMinutes: 10,
     anchorLabel: "What you've done",
     helperText:
       "Both the problem and your workaround matter. The workaround is the early prototype of the product; the problem is the reason anyone else would want it.",
     bestFor:
       "Best for anything you have run or built yourself, paid or not: a side project, a hobby, a small business. If you have already cobbled a fix together, this tool is the quickest way to turn it into a problem statement.",
-    selfDiscoverySources: [
-      { category: "work-experience", promptIds: ["own-anchor"] },
-      { category: "personal-interests", promptIds: ["own-anchor"] },
-    ],
     prompts: [
       {
         id: "own-anchor",
@@ -391,10 +341,6 @@ export const REFLECT_LENSES: Lens[] = [
     longDescription:
       "Choose one audience (a customer segment or a group from your self-discovery), then explore the friction, workarounds, and wasted spend that shape their day. Sticking to a single audience per run keeps the prompts specific; to explore another, run this tool again and pick a different one.",
     icon: UsersRound,
-    image: {
-      src: "/images/audience-people.jpg",
-      alt: "Four people chatting around a table with a tablet and coffee cups",
-    },
     estimatedMinutes: 10,
     anchorLabel: "Audience",
     helperText:
@@ -456,248 +402,146 @@ export const REFLECT_LENSES: Lens[] = [
     ],
   },
   {
-    id: "insider",
-    title: "Insider angle",
-    shortDescription: "Use what you know about organisations from the inside. Outsiders can't see what you've seen.",
+    /*
+     * The one tool that starts from the Problems dimension. Every other lens
+     * anchors on a situation (an experience, a role, an audience) and asks what
+     * goes wrong in it; this one anchors on the irritation and works backwards
+     * to the situation: one real occasion, the job behind it, who else has it,
+     * when it bites (the contexts column), how people cope and why it is still
+     * there. The order matters: each prompt narrows the one before it, so by
+     * the review the annoyance has a customer, a context and a reason to exist.
+     */
+    id: "annoyance",
+    title: "Something that annoys you",
+    shortDescription: "Start from the irritation itself, then work backwards to who has it, when it bites and why it is still there.",
     longDescription:
-      "Pick one organisation you know intimately and answer the prompts about that one place. The aim is to surface the things only an insider would notice.",
-    icon: Building2,
+      "Pick one thing that annoys you, or that you have watched someone else put up with, and work backwards from it: the last time it happened, what you were trying to get done, who else runs into it and when, how people cope today and why nobody has fixed it. Sticking to one annoyance per run keeps the prompts specific; to explore another, run this tool again and pick a different one.",
+    icon: Annoyed,
     estimatedMinutes: 10,
+    anchorLabel: "Annoyance",
     helperText:
-      "One organisation is enough. If you're worried about specifics, anonymise the language; the prompts work just as well in general terms.",
-    selfDiscoverySources: [
-      { category: "knowledge", promptIds: ["org-name"] },
-    ],
+      "An annoyance only becomes a problem once you can say who has it, when it bites and what they were trying to do at the time. Answer from occasions you remember rather than complaints in general.",
+    bestFor:
+      "Best for when you have the irritation but not the story around it: you know what makes you sigh, but not yet who else feels it or why it is still there. The other tools start from a situation and look for its problems; this one starts from the problem and looks for its situation.",
     prompts: [
       {
-        id: "org-name",
-        question: "Name an organisation you've worked at or know intimately.",
-        helperText: "This answer isn't a candidate. It sets context for the prompts that follow.",
+        id: "annoyance-anchor",
+        question: "What annoys you, or someone you know?",
+        helperText:
+          "Pick the kind of pain from the list, or add your own in your own words. It can be yours or something you have watched someone else put up with. Keep it to one so the next prompts stay specific.",
+        examples: [
+          "Being kept on hold to fix something that should take two minutes",
+          "Fees that only appear at the checkout",
+          "Instructions written for people who already know the answer",
+        ],
         multipleAllowed: false,
         contextOnly: true,
+        role: "problems",
       },
       {
-        id: "broken-process",
-        question: "What internal process there was obviously broken but never got fixed?",
+        id: "last-time",
+        question: "When did it last happen? Describe that moment.",
+        helperText:
+          "One real occasion beats a complaint in general. Where were you, what were you in the middle of, and exactly what went wrong? The details are what turn an annoyance into a problem you can describe to somebody else. Add another occasion if a different one comes to mind.",
         examples: [
-          "A manual handoff between two teams",
-          "A report that everyone re-derives from scratch",
+          "Tuesday lunchtime, trying to cancel a gym membership on my phone, and being told to ring a number that only answers between nine and five",
+          "Booking a plumber for a leak and discovering the call-out charge only once he was standing in the kitchen",
+          "Setting up my mum's new phone and finding every step assumed she already had a working email account",
         ],
         multipleAllowed: true,
-        capturesContext: ["other-orgs"],
       },
       {
-        id: "skipped-opportunity",
-        question: "What opportunity did people discuss inside but the organisation never pursued?",
-        helperText: "Often this is something with the wrong owner, not the wrong idea.",
-        multipleAllowed: true,
-        capturesContext: ["other-orgs"],
-      },
-      {
-        id: "quiet-complaint",
-        question: "What does everyone there quietly complain about?",
-        multipleAllowed: true,
-        capturesContext: ["other-orgs"],
-      },
-      {
-        id: "surprising-knowledge",
-        question: "What knowledge from inside that organisation would surprise an outsider?",
-        helperText: "Surprising knowledge is sellable knowledge.",
-        multipleAllowed: true,
-        capturesContext: ["other-orgs"],
-      },
-    ],
-  },
-  {
-    id: "cross",
-    title: "Cross-context patterns",
-    shortDescription: "Spot something that works in one industry, hobby, or country and is missing in another you know.",
-    longDescription:
-      "A pattern that's normal in one context can be a fresh idea in another. The interesting question is usually why nobody has moved it yet.",
-    icon: Shuffle,
-    estimatedMinutes: 8,
-    helperText:
-      "Always ask \"why hasn't this happened yet?\". A clean answer (regulation, timing, distribution) often gates whether the transplant is a real opportunity.",
-    selfDiscoverySources: [
-      { category: "personal-interests", promptIds: ["hobby-vs-job"] },
-    ],
-    prompts: [
-      {
-        id: "hobby-vs-job",
-        question: "Something normal in your hobby that's missing in your job, or vice versa.",
+        id: "trying-to-do",
+        question: "What were you actually trying to get done when it got in the way?",
+        helperText:
+          "The annoyance is rarely the point; behind it is a job you were trying to finish. Name the job and the problem starts to look like something a product or service could take off your hands.",
         examples: [
-          "Scoring systems",
-          "Tournament brackets",
-          "Community moderation conventions",
+          "Stop paying for something I no longer use, without it turning into an afternoon",
+          "Get the leak fixed today without being taken advantage of",
+          "Get my mum onto video calls so she can see the grandchildren",
         ],
         multipleAllowed: true,
-        capturesContext: ["who-benefits", "why-not-yet"],
       },
       {
-        id: "country-pattern",
-        question: "Something common in another country or culture you know that isn't here.",
+        id: "who-else",
+        question: "Who else runs into this?",
+        helperText:
+          "Think about who is in the same situation when it bites: the same job, life stage or set-up. Pick the groups you have actually seen deal with it rather than everyone who plausibly might.",
         examples: [
-          "A payment method",
-          "A bureaucratic shortcut",
-          "A piece of infrastructure",
+          "Anyone with a subscription they have stopped using",
+          "Homeowners facing an emergency repair for the first time",
+          "Adult children setting up technology for elderly parents",
         ],
         multipleAllowed: true,
-        capturesContext: ["who-benefits", "why-not-yet"],
+        role: "customers",
       },
       {
-        id: "industry-pattern",
-        question: "Something common in one industry you've worked in that another industry would benefit from.",
+        id: "when-it-bites",
+        question: "When and where does it bite hardest?",
+        helperText:
+          "Annoyances cluster around moments: a deadline, a first time, a bad day, a particular place or device. Naming the moment tells you where a solution would have to show up to be any use.",
+        examples: [
+          "In a lunch break, on a phone, with no time to be passed around",
+          "In an emergency, with no time to compare options",
+          "When helping someone else, so you cannot see what they see",
+        ],
         multipleAllowed: true,
-        capturesContext: ["who-benefits", "why-not-yet"],
+        role: "contexts",
       },
       {
-        id: "generational-pattern",
-        question: "A solution that's normal for one age group or generation that no one's adapted for another.",
+        id: "how-cope",
+        question: "How do you, or they, get around it today?",
+        helperText:
+          "Nobody just suffers; they build a workaround or pay for one. What people do instead is the best clue to what a solution has to beat and what it might be worth. If the honest answer is \"nothing, we put up with it\", say so: that is a signal too.",
+        examples: [
+          "A calendar reminder the day before every free trial ends",
+          "Asking the street WhatsApp group who they used and what it cost",
+          "Driving over to do it in person, twice a month",
+        ],
         multipleAllowed: true,
-        capturesContext: ["who-benefits", "why-not-yet"],
-      },
-    ],
-  },
-  {
-    id: "people",
-    title: "People around you",
-    shortDescription: "Observation, not introspection. The people in your daily life are a problem source you can verify by asking them.",
-    longDescription:
-      "Pick one person you observe regularly and answer the prompts with them in mind. Then validate by actually asking them.",
-    icon: Users,
-    estimatedMinutes: 8,
-    helperText:
-      "Treat this as observation, not assumption. Anything you capture here should be confirmed by talking to the person before you commit to it.",
-    prompts: [
-      {
-        id: "person",
-        question: "Pick one person in your life you observe regularly.",
-        helperText: "This answer sets context. It doesn't become a candidate.",
-        multipleAllowed: false,
-        contextOnly: true,
       },
       {
-        id: "repeated-complaint",
-        question: "What do you hear them complain about repeatedly?",
+        id: "why-still-there",
+        question: "Why do you think nobody has fixed it?",
+        helperText:
+          "Sometimes there is a good reason: a rule, a cost, a supplier who does not need to care because you cannot leave. Sometimes nobody has looked properly. Your best guess tells you whether you have found a gap or a wall, and a gap is where a problem worth solving usually sits.",
+        examples: [
+          "The company earns from people forgetting to cancel, so it has no reason to make it easier",
+          "Each trade is too small to build a booking service, and nobody trusts the big directories",
+          "Phones are designed for people setting them up for themselves",
+        ],
         multipleAllowed: true,
-        capturesContext: ["how-many"],
-      },
-      {
-        id: "their-workaround",
-        question: "What workaround have you watched them build for themselves?",
-        multipleAllowed: true,
-        capturesContext: ["how-many"],
-      },
-      {
-        id: "hours-spent",
-        question: "What do they spend hours doing that they wish was faster, cheaper, or easier?",
-        multipleAllowed: true,
-        capturesContext: ["how-many"],
-      },
-      {
-        id: "life-stage",
-        question: "What life stage are they in that has its own friction?",
-        examples: ["New job", "New parent", "Recently retired", "First time renting"],
-        multipleAllowed: true,
-        capturesContext: ["how-many"],
-      },
-    ],
-  },
-  {
-    id: "market",
-    title: "Market signals",
-    shortDescription: "A capture form for problems you spot by looking outward at reviews, trends, public data, and research.",
-    longDescription:
-      "This lens doesn't ask you what to look at. It gives you a place to write down what you find when you scan low-rated tools, trend trackers, open data, and research.",
-    icon: Radar,
-    estimatedMinutes: 5,
-    flowKind: "single-form",
-    helperText:
-      "Useful source categories: low-rated but in-demand products on app stores, trend-tracking sites, scientific or industry research aggregators, public data portals. Capture the insight, not just the URL.",
-    prompts: [
-      {
-        id: "what-found",
-        question: "What did you find?",
-        helperText: "A short title for the signal you spotted.",
-        multipleAllowed: false,
-      },
-      {
-        id: "where-seen",
-        question: "Where did you see it?",
-        helperText: "One line. The source category or the specific tool / dataset / report.",
-        multipleAllowed: false,
-      },
-      {
-        id: "what-problem",
-        question: "What problem does it suggest?",
-        helperText: "This is the candidate. Phrase it as a problem in plain language.",
-        multipleAllowed: false,
-      },
-      {
-        id: "who-affected",
-        question: "Who is affected?",
-        multipleAllowed: false,
       },
     ],
   },
 ]
 
-/**
- * Field labels for the lazy context-capture fields rendered on the review step.
- * Prompt's `capturesContext` is a list of these field ids.
- */
-export const LENS_CONTEXT_FIELDS: Record<string, { label: string; helperText?: string }> = {
-  "who-else": {
-    label: "Who else has this problem?",
-    helperText: "A role, an industry, a team type.",
-  },
-  "other-orgs": {
-    label: "Which other organisations have the same setup?",
-    helperText: "A sector or a size.",
-  },
-  "who-benefits": {
-    label: "Who would benefit from the transplant?",
-  },
-  "why-not-yet": {
-    label: "Why hasn't this happened yet?",
-    helperText: "Regulation, timing, distribution, or something else.",
-  },
-  "how-many": {
-    label: "Roughly how many other people are in the same situation?",
-  },
-}
-
-export const REFLECT_LENS_BY_ID: Record<LensId, Lens> = REFLECT_LENSES.reduce(
-  (acc, lens) => {
-    acc[lens.id] = lens
-    return acc
-  },
-  {} as Record<LensId, Lens>
-)
-
+/** The lens with this id, or undefined for anything else (a stale URL, an old bundle). */
 export function getReflectLens(id: string): Lens | undefined {
-  return REFLECT_LENS_BY_ID[id as LensId]
+  return REFLECT_LENSES.find((lens) => lens.id === id)
+}
+
+/** The lens's anchor prompt: the experience, work area, audience or annoyance the rest of the prompts reflect on. */
+export function getAnchorPrompt(lens: Lens): LensPrompt {
+  const anchor = lens.prompts.find((p) => p.contextOnly)
+  if (!anchor) throw new Error(`Lens ${lens.id} has no anchor prompt`)
+  return anchor
+}
+
+export function getAnchorPromptId(lens: Lens): string {
+  return getAnchorPrompt(lens).id
+}
+
+/** The prompt whose answers are saved into the given dimension column, or null when the lens has none. */
+export function getRolePromptId(lens: Lens, role: LensDimensionRole): string | null {
+  return lens.prompts.find((p) => p.role === role)?.id ?? null
 }
 
 /**
- * The lenses offered as tools on the Identify a Problem hub, in the order they
- * are listed there. The rest of `REFLECT_LENSES` is drafted but not finished,
- * so it stays out of the hub while remaining readable by anything that has to
- * render a problem captured with it (`getReflectLens`).
+ * Whether the lens starts from the problem and works backwards to its
+ * situation (its anchor is a problem type), as opposed to starting from a
+ * situation and looking for its problems.
  */
-export const IDENTIFY_LENS_IDS: readonly LensId[] = ["life", "work", "own-problems", "audience-problems"]
-
-export const IDENTIFY_LENSES: Lens[] = IDENTIFY_LENS_IDS.map((id) => REFLECT_LENS_BY_ID[id])
-
-/** A lens only when it is one of the tools the hub offers; used to validate a lens id in a URL. */
-export function getIdentifyLens(id: string): Lens | undefined {
-  return IDENTIFY_LENS_IDS.includes(id as LensId) ? REFLECT_LENS_BY_ID[id as LensId] : undefined
-}
-
-/**
- * The lens's contextOnly "anchor" prompt (the experience, work area or
- * audience the rest of the prompts reflect on), or null when it has none.
- */
-export function getAnchorPromptId(lens: Lens): string | null {
-  return lens.prompts.find((p) => p.contextOnly)?.id ?? null
+export function startsFromProblem(lens: Lens): boolean {
+  return getAnchorPrompt(lens).role === "problems"
 }

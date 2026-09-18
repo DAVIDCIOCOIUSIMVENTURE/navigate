@@ -33,7 +33,7 @@ import { TourOverlay } from "@/components/tour/tour-overlay"
 import { ProjectsMenu } from "@/components/projects-menu"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { projectForProblem, projectLabel, projectRoutes } from "@/lib/projects"
-import { getIdentifyLens } from "@/data/reflectLenses"
+import { getReflectLens } from "@/data/reflectLenses"
 import type { Project } from "@/store/projects-model"
 import Link from "next/link"
 
@@ -77,7 +77,7 @@ function getCrumbs(pathname: string, lookup: CrumbLookup): Crumb[] {
           ? "Canvas Builder"
           : fourth === "research"
             ? "Research"
-            : getIdentifyLens(fourth ?? "")?.title ?? null
+            : getReflectLens(fourth ?? "")?.title ?? null
       if (tool) {
         crumbs.push({ label: "Identify a problem", href: projectRoutes.identify(projectId) })
         crumbs.push({ label: tool })

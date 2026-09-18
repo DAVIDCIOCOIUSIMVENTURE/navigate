@@ -22,7 +22,7 @@ import {
 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
-import { getReflectLens } from "@/data/reflectLenses"
+import { getReflectLens, type LensDimensionRole } from "@/data/reflectLenses"
 import { MethodTile } from "@/components/method-tile"
 import { projectForProblem, projectRoutes } from "@/lib/projects"
 
@@ -96,8 +96,9 @@ function ReflectionSection({ problemId, readOnly = false }: { problemId: number;
   const lens = getReflectLens(reflection.lensId)
   if (!lens) return null
 
+  // The anchor and the dimension prompts are shown as the problem's own columns, not here.
   const editablePrompts = lens.prompts.filter(
-    (p) => !p.contextOnly && p.role !== "customers"
+    (p) => !p.contextOnly && p.role !== "customers" && p.role !== "contexts"
   )
 
   function getAnswers(promptId: string): string[] {
@@ -154,7 +155,7 @@ function ReflectionPromptCard({
   readOnly,
   onChange,
 }: {
-  prompt: { id: string; question: string; multipleAllowed: boolean; role?: "problems" | "customers" }
+  prompt: { id: string; question: string; multipleAllowed: boolean; role?: LensDimensionRole }
   answers: string[]
   readOnly: boolean
   onChange: (next: string[]) => void

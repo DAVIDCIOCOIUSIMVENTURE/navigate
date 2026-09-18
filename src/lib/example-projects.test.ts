@@ -4,7 +4,7 @@ import { createStore } from "@/store"
 import { importProblemBundle, parseProblemBundle } from "./problem-export"
 import { resolveDimensionLabel } from "@/lib/dimension-labels"
 import { loadResearchCapture } from "@/lib/research-capture"
-import { getIdentifyLens } from "@/data/reflectLenses"
+import { getReflectLens } from "@/data/reflectLenses"
 import { getResearchMethod } from "@/data/researchMethods"
 
 /**
@@ -15,7 +15,7 @@ import { getResearchMethod } from "@/data/researchMethods"
  *
  * Every id in a bundle has to resolve against the catalogue it came from, and
  * all of them fail quietly rather than loudly: a renamed dimension slug
- * renders as "(deleted item)", a lens the hub no longer offers sends the
+ * renders as "(deleted item)", a lens that no longer exists sends the
  * journey rail to the hub instead of the tool, and a capture keyed by prompt
  * ids its method does not have pre-fills as blank when the tool is revisited.
  */
@@ -57,7 +57,7 @@ it.each(files)("imports %s", async (file) => {
   // The lens a guided prompt tool captured, with its answers under that lens's
   // own prompt ids, or the tool cannot pre-fill when the problem is revisited.
   if (problem.reflection) {
-    const lens = getIdentifyLens(problem.reflection.lensId)
+    const lens = getReflectLens(problem.reflection.lensId)
     expect(lens, `unknown lens ${problem.reflection.lensId}`).toBeDefined()
     const promptIds = lens!.prompts.map((p) => p.id)
     for (const entry of problem.reflection.prompts) {

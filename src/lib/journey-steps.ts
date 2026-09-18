@@ -9,7 +9,7 @@ import { Lightbulb, Microscope, ShieldCheck, Target, type LucideIcon } from "luc
 import type { ValidationStatus } from "@/types/validation"
 import type { Solution } from "@/types/solution"
 import type { Problem } from "@/store/problems-model"
-import { getIdentifyLens } from "@/data/reflectLenses"
+import { getReflectLens } from "@/data/reflectLenses"
 import { getResearchMethod } from "@/data/researchMethods"
 import { HOME_HREF, projectRoutes } from "@/lib/projects"
 import { hasVerdict } from "@/lib/tour-steps"
@@ -59,9 +59,9 @@ export type IdentifyOrigin =
  * A lens or method is only an origin while the hub still offers it, because
  * the tool's own parser sends anything else back to the hub: resolving it
  * here means the link lands where it means to rather than bouncing. So a
- * problem captured with a lens that is now drafted, like one restored from an
- * old bundle, leads to the hub, and so does one saved before the guided tools
- * recorded their lens (the legacy `reflect` source).
+ * problem captured with a lens that no longer exists, like one restored from
+ * an old bundle, leads to the hub, and so does one saved before the guided
+ * tools recorded their lens (the legacy `reflect` source).
  */
 export function identifyOriginOf(
   problem: Pick<Problem, "source" | "reflection">,
@@ -69,7 +69,7 @@ export function identifyOriginOf(
 ): IdentifyOrigin {
   if (problem.reflection) {
     const { lensId } = problem.reflection
-    return getIdentifyLens(lensId) ? { tool: "lens", lensId } : { tool: "hub" }
+    return getReflectLens(lensId) ? { tool: "lens", lensId } : { tool: "hub" }
   }
   if (problem.source === "research") {
     const methodId = researchMethodId !== null && getResearchMethod(researchMethodId) ? researchMethodId : null

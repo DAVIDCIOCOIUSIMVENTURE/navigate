@@ -16,7 +16,7 @@ import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { cn } from "@/lib/utils"
 import type { MethodPickerItem } from "@/components/method-picker-board"
 import { MethodTile } from "@/components/method-tile"
-import { IDENTIFY_LENSES } from "@/data/reflectLenses"
+import { REFLECT_LENSES } from "@/data/reflectLenses"
 
 /**
  * The project's Identify a Problem hub. While the project has no problem,
@@ -90,16 +90,15 @@ export default function IdentifyProblemsPage() {
    * wrapper, so it is opened straight from the hub.
    */
   const items: MethodPickerItem[] = [
-    ...IDENTIFY_LENSES.map((lens) => ({
+    ...REFLECT_LENSES.map((lens) => ({
       id: lens.id,
       title: lens.title,
       shortDescription: lens.shortDescription,
       // The row shows one line per tool, so the punchier of the two descriptions
       // is right here; the longer framing lives behind "Best for".
       longDescription: lens.shortDescription,
-      helperText: lens.bestFor ?? lens.helperText,
+      helperText: lens.bestFor,
       icon: lens.icon,
-      image: lens.image,
       estimatedMinutes: lens.estimatedMinutes,
       enabled: true,
     })),
@@ -172,9 +171,17 @@ export default function IdentifyProblemsPage() {
         journeyStep="identify-problems"
         journeyProblemId={existing?.id ?? null}
         intro={
-          <p className="text-base leading-relaxed">
-            Every project&apos;s problem starts here. Each tool is a different doorway to the same goal: a problem that&apos;s real, painful, and worth solving. The first four walk you through short prompts about something you already know, so they suit you if you are not sure where to start: pick the one that matches what you have lived through, the work you do, what you have built, or a group you know well. The <span className="font-semibold">Canvas Builder</span> and <span className="font-semibold">Research</span> cast wider, letting you explore combinations or gather evidence from outside your own experience. If you already know what you want to explore, <span className="font-semibold">Define a Problem Statement</span> captures it straight away. Whichever tool you choose, the problem lands in your project, ready to refine and validate. Once the project has its problem, the tools reopen it so you can change your mind without starting again.
-          </p>
+          <>
+            <p className="text-base leading-relaxed">
+              Every project&apos;s problem starts here, and each tool is a different doorway to the same goal: a problem that is real, painful and worth solving.
+            </p>
+            <p className="text-base leading-relaxed">
+              The first five are <span className="font-semibold">guided prompt tools</span>: short questions about something you already know, so they suit you if you are not sure where to start. Four begin from a situation and look for the problems in it: what you have lived through, the work you do, what you have built, or a group you know well. <span className="font-semibold">Something that annoys you</span> runs the other way, beginning from the irritation itself and working backwards to who has it, when it bites and why it is still there.
+            </p>
+            <p className="text-base leading-relaxed">
+              The <span className="font-semibold">Canvas Builder</span> and <span className="font-semibold">Research</span> cast wider, letting you explore combinations or gather evidence from outside your own experience. If you already know what you want to explore, <span className="font-semibold">Define a Problem Statement</span> captures it straight away. Whichever tool you choose, the problem lands in your project, ready to refine and validate, and once the project has its problem the tools reopen it so you can change your mind without starting again.
+            </p>
+          </>
         }
       >
         <ul className="flex flex-col gap-3" aria-label="Ways to identify a problem" data-tour={TOUR_TARGETS.identifyMethods}>

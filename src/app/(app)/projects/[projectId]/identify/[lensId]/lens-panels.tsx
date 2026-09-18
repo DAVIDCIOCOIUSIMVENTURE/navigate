@@ -5,7 +5,6 @@ import { useDispatch } from "react-redux"
 import type { AppDispatch } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { Input } from "@/components/ui/input"
 import {
   Dialog,
   DialogContent,
@@ -26,9 +25,9 @@ import {
 import { cn } from "@/lib/utils"
 import { useContainerSize } from "@/context/container-size-context"
 import {
-  LENS_CONTEXT_FIELDS,
   getAnchorPromptId,
-  type Lens,
+  getRolePromptId,
+  type LensDimensionRole,
 } from "@/data/reflectLenses"
 import { MethodTile } from "@/components/method-tile"
 import { useReflect } from "@/components/reflect/reflect-context"
@@ -36,8 +35,10 @@ import { LifeExperiencesPicker } from "@/components/reflect/life-experiences-pic
 import { WorkContextPicker } from "@/components/reflect/work-context-picker"
 import { OwnProblemsPicker } from "@/components/reflect/own-problems-picker"
 import { AudiencePicker } from "@/components/reflect/audience-picker"
+import { AnnoyancePicker } from "@/components/reflect/annoyance-picker"
 import { IdentifyDimensionPicker } from "@/components/reflect/identify-dimension-picker"
 import { useResolveOrCreate } from "@/lib/dimension-labels"
+import { DIMENSION_ICONS } from "@/lib/dimension-visuals"
 import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
 import { useProjectScope } from "@/hooks/use-projects"
 import { projectRoutes } from "@/lib/projects"
@@ -51,8 +52,20 @@ import type { ReflectionCapture } from "@/types/reflection"
  * sync live in ./layout.tsx.
  */
 
-function getRolePromptId(lens: Lens, role: "problems" | "customers"): string | null {
-  return lens.prompts.find((p) => p.role === role)?.id ?? null
+/** Placeholder and accessible name for the multi-select picker of each dimension column. */
+const DIMENSION_PICKER_COPY: Record<LensDimensionRole, { placeholder: string; ariaLabel: string }> = {
+  problems: {
+    placeholder: "e.g. School pickup logistics, finding a trusted plumber",
+    ariaLabel: "Pick one or more problem types",
+  },
+  customers: {
+    placeholder: "e.g. First-time freelancers, parents of teenagers",
+    ariaLabel: "Pick one or more customer segments",
+  },
+  contexts: {
+    placeholder: "e.g. During a lunch break, in an emergency",
+    ariaLabel: "Pick one or more contexts",
+  },
 }
 
 /* ─── Step content panels ─── */
@@ -98,18 +111,18 @@ export function PromptsPanel({
     lens.id === "own-problems" && prompt.id === "own-anchor"
   const useAudiencePicker =
     lens.id === "audience-problems" && prompt.id === "audience-anchor"
+  const useAnnoyancePicker =
+    lens.id === "annoyance" && prompt.id === "annoyance-anchor"
   const useAnchorPicker =
     useLifeExperiencesPicker ||
     useWorkContextPicker ||
     useOwnProblemsPicker ||
-    useAudiencePicker
+    useAudiencePicker ||
+    useAnnoyancePicker
 
-  const dimensionPickerColumn: "problems" | "customers" | null =
-    prompt.role === "problems"
-      ? "problems"
-      : prompt.role === "customers"
-        ? "customers"
-        : null
+  // An anchor with a role is rendered by its own single-select picker above,
+  // so this only drives the multi-select picker of the prompts that follow.
+  const dimensionPickerColumn: LensDimensionRole | null = prompt.role ?? null
 
   const selectedDimensionLabels = useMemo(() => {
     if (!dimensionPickerColumn) return [] as string[]
@@ -227,6 +240,15 @@ export function PromptsPanel({
           editDialogOpen={editDialogOpen}
           onEditDialogOpenChange={setEditDialogOpen}
         />
+      ) : useAnnoyancePicker ? (
+        <AnnoyancePicker
+          selectedId={selectedAnchorId}
+          onSelect={handleSelectAnchor}
+          addDialogOpen={addDialogOpen}
+          onAddDialogOpenChange={setAddDialogOpen}
+          editDialogOpen={editDialogOpen}
+          onEditDialogOpenChange={setEditDialogOpen}
+        />
       ) : dimensionPickerColumn ? (
         <IdentifyDimensionPicker
           columnId={dimensionPickerColumn}
@@ -235,15 +257,9 @@ export function PromptsPanel({
           addPlaceholder={
             prompt.examples && prompt.examples.length > 0
               ? `e.g. ${prompt.examples[0]}`
-              : dimensionPickerColumn === "problems"
-                ? "e.g. School pickup logistics, finding a trusted plumber"
-                : "e.g. First-time freelancers, parents of teenagers"
+              : DIMENSION_PICKER_COPY[dimensionPickerColumn].placeholder
           }
-          ariaLabel={
-            dimensionPickerColumn === "problems"
-              ? "Pick one or more problem types"
-              : "Pick one or more customer segments"
-          }
+          ariaLabel={DIMENSION_PICKER_COPY[dimensionPickerColumn].ariaLabel}
           addDialogOpen={addDialogOpen}
           onAddDialogOpenChange={setAddDialogOpen}
           editDialogOpen={editDialogOpen}
@@ -339,7 +355,6 @@ export function ReviewPanel({
     lens,
     answers,
     setAnswerText,
-    setAnswerContext,
     removeAnswerSlot,
     clearSession,
   } = useReflect()
@@ -355,19 +370,17 @@ export function ReviewPanel({
   const anchorPromptId = useMemo(() => getAnchorPromptId(lens), [lens])
   const problemsPromptId = useMemo(() => getRolePromptId(lens, "problems"), [lens])
   const customersPromptId = useMemo(() => getRolePromptId(lens, "customers"), [lens])
+  const contextsPromptId = useMemo(() => getRolePromptId(lens, "contexts"), [lens])
   const candidatePrompts = lens.prompts.filter((p) => !p.contextOnly)
-  const hasAnchorFlow = anchorPromptId !== null
-  const anchorLabel = lens.anchorLabel ?? "Anchor"
+  const anchorLabel = lens.anchorLabel
 
   const filledAnswers = candidatePrompts.reduce((sum, p) => {
     return sum + (answers[p.id] ?? []).filter((a) => a.text.trim().length > 0).length
   }, 0)
 
-  const anchorValue = hasAnchorFlow
-    ? (answers[anchorPromptId!]?.[0]?.text ?? "").trim()
-    : ""
-  const hasCandidate = hasAnchorFlow && anchorValue.length > 0 && filledAnswers > 0
-  const totalKept = hasAnchorFlow ? (hasCandidate ? 1 : 0) : filledAnswers
+  // A problem needs the anchor and at least one answer about it.
+  const anchorValue = (answers[anchorPromptId]?.[0]?.text ?? "").trim()
+  const hasCandidate = anchorValue.length > 0 && filledAnswers > 0
 
   const filledLabels = useMemo(() => {
     function labels(promptId: string | null): string[] {
@@ -377,8 +390,9 @@ export function ReviewPanel({
     return {
       problems: labels(problemsPromptId),
       customers: labels(customersPromptId),
+      contexts: labels(contextsPromptId),
     }
-  }, [answers, problemsPromptId, customersPromptId])
+  }, [answers, problemsPromptId, customersPromptId, contextsPromptId])
 
   function openSaveDialog() {
     setDialogTitle(anchorValue)
@@ -386,7 +400,7 @@ export function ReviewPanel({
   }
 
   async function handleSaveAsProblem() {
-    if (!hasAnchorFlow || !hasCandidate) return
+    if (!hasCandidate) return
     const trimmedTitle = dialogTitle.trim()
     if (trimmedTitle.length === 0) return
     setSaving(true)
@@ -397,6 +411,12 @@ export function ReviewPanel({
       const problemIds = filledLabels.problems
         .map((label) => resolveOrCreate("problems", label))
         .filter((id) => id.length > 0)
+      const contextIds = filledLabels.contexts
+        .map((label) => resolveOrCreate("contexts", label))
+        .filter((id) => id.length > 0)
+      // Only a tool that asks about contexts may change them, so revisiting
+      // with one that does not leaves what the Canvas Builder or edit page set.
+      const contextsPatch = contextsPromptId ? { contexts: contextIds } : {}
 
       const reflection: ReflectionCapture = {
         lensId: lens.id,
@@ -414,7 +434,7 @@ export function ReviewPanel({
       if (existing) {
         dispatch.problems.update({
           id: existing.id,
-          patch: { title: trimmedTitle, customers: customerIds, problems: problemIds, reflection },
+          patch: { title: trimmedTitle, customers: customerIds, problems: problemIds, ...contextsPatch, reflection },
         })
         clearSession()
         setSaveDialogOpen(false)
@@ -427,7 +447,7 @@ export function ReviewPanel({
         projectId,
         title: trimmedTitle,
         customers: customerIds,
-        contexts: [],
+        contexts: contextIds,
         problems: problemIds,
         you: [],
         reflection,
@@ -458,34 +478,38 @@ export function ReviewPanel({
     )
   }
 
-  if (!hasAnchorFlow) {
+  /** The filled answers to one picker prompt as removable pills. */
+  function AnswerPills({ promptId }: { promptId: string }) {
     return (
-      <div className="flex flex-col gap-6 w-full flex-1 min-h-0 overflow-y-auto">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-primary" aria-hidden="true">
-            <ClipboardCheck className="h-5 w-5 text-primary-foreground [stroke-width:2.5]" />
-          </div>
-          <h2 className="text-2xl font-bold leading-none tracking-tight text-primary">Review your answers</h2>
-        </div>
-        <p className="text-base leading-relaxed">
-          Saving as a problem isn&apos;t wired up for this method yet.
-        </p>
-        <div>
-          <Button variant="outline" onClick={onBack} className="gap-2">
-            <ArrowLeft className="h-4 w-4" />
-            Back to prompts
-          </Button>
-        </div>
+      <div className="flex flex-wrap gap-2">
+        {(answers[promptId] ?? []).map((answer, idx) => {
+          const label = answer.text.trim()
+          if (label.length === 0) return null
+          return (
+            <button
+              key={idx}
+              type="button"
+              onClick={() => removeAnswerSlot(promptId, idx)}
+              className="inline-flex items-center gap-1.5 rounded-full bg-amber-400 text-foreground px-3 py-1 text-base hover:bg-amber-500"
+            >
+              <span>{label}</span>
+              <span aria-hidden="true">×</span>
+              <span className="sr-only">Remove {label}</span>
+            </button>
+          )
+        })}
       </div>
     )
   }
 
   const problemsPrompt = candidatePrompts.find((p) => p.id === problemsPromptId)
   const customerPrompt = candidatePrompts.find((p) => p.id === customersPromptId)
+  const contextPrompt = candidatePrompts.find((p) => p.id === contextsPromptId)
   const otherPrompts = candidatePrompts.filter(
-    (p) => p.id !== problemsPromptId && p.id !== customersPromptId
+    (p) => p.id !== problemsPromptId && p.id !== customersPromptId && p.id !== contextsPromptId
   )
   const AnchorIcon = lens.icon
+  const ContextIcon = DIMENSION_ICONS.contexts
 
   return (
     <div className="flex flex-col gap-6 w-full flex-1 min-h-0 overflow-y-auto">
@@ -507,12 +531,12 @@ export function ReviewPanel({
           </>
         ) : (
           <>
-            Add {/aeiou/i.test(anchorLabel.charAt(0)) ? "an" : "a"} {anchorLabel.toLowerCase()} and at least one friction you noticed to save it as a problem.
+            Add {/^[aeiou]/i.test(anchorLabel) ? "an" : "a"} {anchorLabel.toLowerCase()} and answer at least one more prompt to save it as a problem.
           </>
         )}
       </p>
 
-      {anchorPromptId && anchorValue.length > 0 && (
+      {anchorValue.length > 0 && (
         <section className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-3">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-8 h-8 rounded-md shrink-0 bg-yellow-600" aria-hidden="true">
@@ -536,23 +560,7 @@ export function ReviewPanel({
             {filledLabels.problems.length === 1 ? "problem" : "problems"} selected. Remove
             anything that doesn&apos;t belong.
           </p>
-          <div className="flex flex-wrap gap-2">
-            {(answers[problemsPrompt.id] ?? []).map((answer, idx) => {
-              if (answer.text.trim().length === 0) return null
-              return (
-                <button
-                  key={idx}
-                  type="button"
-                  onClick={() => removeAnswerSlot(problemsPrompt.id, idx)}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-amber-400 text-foreground px-3 py-1 text-base hover:bg-amber-500"
-                >
-                  <span>{answer.text.trim()}</span>
-                  <span aria-hidden="true">×</span>
-                  <span className="sr-only">Remove {answer.text.trim()}</span>
-                </button>
-              )
-            })}
-          </div>
+          <AnswerPills promptId={problemsPrompt.id} />
         </section>
       )}
 
@@ -566,25 +574,21 @@ export function ReviewPanel({
               ? `${filledLabels.customers.length} ${filledLabels.customers.length === 1 ? "customer" : "customers"} selected. Remove any segments who probably wouldn't feel this the same way.`
               : "No customers selected yet. Optional, but helps frame the problem."}
           </p>
-          {filledLabels.customers.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {(answers[customerPrompt.id] ?? []).map((answer, idx) => {
-                if (answer.text.trim().length === 0) return null
-                return (
-                  <button
-                    key={idx}
-                    type="button"
-                    onClick={() => removeAnswerSlot(customerPrompt.id, idx)}
-                    className="inline-flex items-center gap-1.5 rounded-full bg-amber-400 text-foreground px-3 py-1 text-base hover:bg-amber-500"
-                  >
-                    <span>{answer.text.trim()}</span>
-                    <span aria-hidden="true">×</span>
-                    <span className="sr-only">Remove {answer.text.trim()}</span>
-                  </button>
-                )
-              })}
-            </div>
-          )}
+          {filledLabels.customers.length > 0 && <AnswerPills promptId={customerPrompt.id} />}
+        </section>
+      )}
+
+      {contextPrompt && (
+        <section className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-3">
+          <TitleButton onClick={() => onJumpToPrompt(contextPrompt.id)}>
+            When and where it bites
+          </TitleButton>
+          <p className="text-base text-white">
+            {filledLabels.contexts.length > 0
+              ? `${filledLabels.contexts.length} ${filledLabels.contexts.length === 1 ? "context" : "contexts"} selected. Remove any moments where the problem is only a mild nuisance.`
+              : "No contexts selected yet. Optional, but helps pin down when a solution would need to show up."}
+          </p>
+          {filledLabels.contexts.length > 0 && <AnswerPills promptId={contextPrompt.id} />}
         </section>
       )}
 
@@ -623,46 +627,12 @@ export function ReviewPanel({
         )
       })}
 
-      {/* Optional context-capture fields surfaced for any prompt that defines them. */}
-      {candidatePrompts.some((p) => (p.capturesContext?.length ?? 0) > 0) && (
-        <section className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-4">
-          {candidatePrompts.flatMap((prompt) => {
-            if (!prompt.capturesContext?.length) return []
-            return (answers[prompt.id] ?? []).map((answer, originalIdx) => {
-              if (answer.text.trim().length === 0) return null
-              return prompt.capturesContext!.map((fieldId) => {
-                const field = LENS_CONTEXT_FIELDS[fieldId]
-                if (!field) return null
-                const inputId = `ctx-${prompt.id}-${originalIdx}-${fieldId}`
-                return (
-                  <div key={inputId} className="flex flex-col gap-1">
-                    <label htmlFor={inputId} className="text-base font-medium text-white">
-                      {field.label}
-                    </label>
-                    {field.helperText && <p className="text-base text-white">{field.helperText}</p>}
-                    <Input
-                      id={inputId}
-                      value={answer.context[fieldId] ?? ""}
-                      onChange={(e) =>
-                        setAnswerContext(prompt.id, originalIdx, fieldId, e.target.value)
-                      }
-                      placeholder="Optional"
-                      className="text-base bg-white border-white text-foreground"
-                    />
-                  </div>
-                )
-              })
-            })
-          })}
-        </section>
-      )}
-
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Button variant="outline" onClick={onBack} className="gap-2">
           <ArrowLeft className="h-4 w-4" />
           Edit prompts
         </Button>
-        <Button onClick={openSaveDialog} disabled={saving || totalKept === 0} className="gap-2">
+        <Button onClick={openSaveDialog} disabled={saving || !hasCandidate} className="gap-2">
           {existing ? "Update problem" : "Save problem"}
           <ArrowRight className="h-4 w-4" />
         </Button>
@@ -712,6 +682,23 @@ export function ReviewPanel({
                       className="inline-flex items-center gap-1.5 rounded-full bg-foreground text-background px-3 py-1 text-base"
                     >
                       <Users className="h-3.5 w-3.5" aria-hidden="true" />
+                      {label}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {filledLabels.contexts.length > 0 && (
+              <div className="flex flex-col gap-1.5">
+                <p className="text-base font-medium">Contexts</p>
+                <div className="flex flex-wrap gap-2">
+                  {filledLabels.contexts.map((label) => (
+                    <span
+                      key={label}
+                      className="inline-flex items-center gap-1.5 rounded-full bg-foreground text-background px-3 py-1 text-base"
+                    >
+                      <ContextIcon className="h-3.5 w-3.5" aria-hidden="true" />
                       {label}
                     </span>
                   ))}

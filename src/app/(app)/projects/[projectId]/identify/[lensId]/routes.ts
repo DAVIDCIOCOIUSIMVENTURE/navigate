@@ -1,4 +1,4 @@
-import { getIdentifyLens, type Lens } from "@/data/reflectLenses"
+import { getReflectLens, type Lens } from "@/data/reflectLenses"
 import type { ReflectStep } from "@/store/reflect-sessions-model"
 import { projectRoutes } from "@/lib/projects"
 
@@ -57,8 +57,8 @@ export function parseLensPath(pathname: string): LensRoute {
   const match = pathname.match(LENS_PATH)
   if (!match) return { kind: "redirect", href: projectRoutes.identify(null) }
   const projectId = Number(match[1])
-  const lens = getIdentifyLens(match[2])
-  // A tool the hub does not offer (or another tool's folder) belongs to the hub, not here.
+  const lens = getReflectLens(match[2])
+  // A name that is not a lens (another tool's folder, a stale link) belongs to the hub, not here.
   if (!lens) return { kind: "redirect", href: projectRoutes.identify(projectId) }
 
   const root = lensRoot(projectId, lens.id)

@@ -15,10 +15,11 @@ import {
   Lightbulb, HelpCircle,
   BookOpen, FlaskConical, Clock, Trophy, Sparkles,
   TrendingUp, Building2, Calculator, Scale, ShieldCheck,
-  Glasses, HeartHandshake, Wrench, UsersRound,
+  Glasses,
   Telescope,
   X,
 } from "lucide-react"
+import { REFLECT_LENSES, startsFromProblem, type Lens } from "@/data/reflectLenses"
 
 // ---------- Shared presentation helpers ----------
 
@@ -72,14 +73,54 @@ function NumberedStep({ n, title, accent = "bg-primary", children }: { n: number
   )
 }
 
-function ConceptCard({ icon: Icon, label, description, tile, border }: { icon: React.ElementType; label: string; description: string; tile: string; border: string }) {
+function ConceptCard({ icon: Icon, label, description, tip, tile, border }: { icon: React.ElementType; label: string; description: string; tip?: string; tile: string; border: string }) {
   return (
     <div className={`rounded-lg border p-3 flex items-start gap-3 ${border}`}>
       <IconTile icon={Icon} className={tile} size="sm" />
       <div className="flex flex-col gap-0.5 min-w-0">
         <span className="font-semibold text-sm text-foreground">{label}</span>
         <span className="text-sm leading-relaxed">{description}</span>
+        {tip && (
+          <span className="text-sm leading-relaxed pt-1">
+            <span className="font-medium text-foreground">Tip: </span>
+            {tip}
+          </span>
+        )}
       </div>
+    </div>
+  )
+}
+
+/**
+ * The tile colours the guided prompt tools' cards cycle through, in catalogue
+ * order, taken from the saturated tile palette so the cards read as one family.
+ */
+const TOOL_TILES: ReadonlyArray<{ tile: string; border: string }> = [
+  { tile: "bg-yellow-600", border: "border-yellow-600/20 bg-yellow-600/5" },
+  { tile: "bg-blue-900", border: "border-blue-900/20 bg-blue-900/5" },
+  { tile: "bg-emerald-800", border: "border-emerald-800/20 bg-emerald-800/5" },
+  { tile: "bg-rose-800", border: "border-rose-800/20 bg-rose-800/5" },
+  { tile: "bg-violet-800", border: "border-violet-800/20 bg-violet-800/5" },
+]
+
+/** One card per guided prompt tool, drawn from the catalogue so the panel can never fall out of step with the hub. */
+function GuidedToolCards({ lenses }: { lenses: Lens[] }) {
+  return (
+    <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
+      {lenses.map((lens) => {
+        const colours = TOOL_TILES[REFLECT_LENSES.indexOf(lens) % TOOL_TILES.length]
+        return (
+          <ConceptCard
+            key={lens.id}
+            icon={lens.icon}
+            label={lens.title}
+            description={lens.shortDescription}
+            tip={lens.helperText}
+            tile={colours.tile}
+            border={colours.border}
+          />
+        )
+      })}
     </div>
   )
 }
@@ -474,10 +515,10 @@ const guidanceItems: GuidanceItem[] = [
           icon={Glasses}
           tone="bg-secondary-brand"
           title="Guided Prompt Tools"
-          subtitle="Four of the tools on the Identify a problem hub surface a problem by asking you short questions about something you already know: what you have lived through, the work you do, what you have built, or a group you know well."
+          subtitle="Five of the tools on the Identify a problem hub find a problem by asking short questions about something you already know. Four start from a situation and look for the problems in it; one starts from the problem and looks for its situation."
         />
         <GuidanceSection icon={Compass} iconBg="bg-secondary-brand" title="When to use one">
-          <p>Each is a tool in its own right, opened straight from your project&apos;s <Keyword>Identify a problem</Keyword> hub.</p>
+          <p>Each is a tool in its own right, opened straight from your project&apos;s <Keyword>Identify a problem</Keyword> hub. Every one anchors on a single thing per run and asks about it until a problem falls out.</p>
           <div className="grid gap-3 pt-1 sm:grid-cols-2">
             <div className="rounded-lg border bg-card p-3">
               <h5 className="text-base font-semibold mb-1">Use a guided tool when</h5>
@@ -497,35 +538,37 @@ const guidanceItems: GuidanceItem[] = [
             </div>
           </div>
         </GuidanceSection>
-        <GuidanceSection icon={LayoutGrid} iconBg="bg-secondary-brand" title="The four tools">
-          <p>Each one is a short Q&A focused on a single source of insight. Your answers become your project&apos;s problem when you save at the end.</p>
-          <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
-            <ConceptCard icon={HeartHandshake} label="Life experiences" description="Productise what you have already lived through. The friction you remember is friction others are about to hit." tile="bg-yellow-600" border="border-yellow-600/20 bg-yellow-600/5" />
-            <ConceptCard icon={Briefcase} label="Work friction" description="Repeated annoyances, expensive habits, and 'this should just exist' thoughts at your job." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
-            <ConceptCard icon={Wrench} label="Problems you've solved yourself" description="One thing you have run or built, the problems it threw up, and the fixes you cobbled together." tile="bg-emerald-800" border="border-emerald-800/20 bg-emerald-800/5" />
-            <ConceptCard icon={UsersRound} label="Audience problems" description="One group you know or want to serve, and the friction, workarounds and wasted spend that shape their day." tile="bg-rose-800" border="border-rose-800/20 bg-rose-800/5" />
-          </div>
+        <GuidanceSection icon={LayoutGrid} iconBg="bg-secondary-brand" title="Two directions, five tools">
+          <h5 className="text-sm font-semibold text-foreground pt-1">Start from a situation</h5>
+          <p>You know the experience, the role, the thing you built or the people. The prompts go looking for what goes wrong in it, then ask who else would feel it.</p>
+          <GuidedToolCards lenses={REFLECT_LENSES.filter((lens) => !startsFromProblem(lens))} />
+          <h5 className="text-sm font-semibold text-foreground pt-2">Start from the problem</h5>
+          <p>You know what makes you sigh but not yet the story around it. The prompts work backwards: the last time it happened, the job behind it, who else runs into it, when it bites, how people cope and why nobody has fixed it. It is the one tool that fills in the problem&apos;s context as well as its customers.</p>
+          <GuidedToolCards lenses={REFLECT_LENSES.filter(startsFromProblem)} />
         </GuidanceSection>
-        <GuidanceSection icon={Sparkles} iconBg="bg-secondary-brand" title="From your self-discovery">
-          <p>Several of these tools surface chips drawn from your saved self-discovery answers. Picking a chip drops the title into the textarea as a starting point so you can edit and expand. The panel only appears if you have items in the matching category and is suggestion-only: nothing is ever auto-filled.</p>
+        <GuidanceSection icon={Sparkles} iconBg="bg-secondary-brand" title="Where the lists come from">
+          <p>The first prompt of every tool is a pick list rather than a blank box. <Keyword>Life experiences</Keyword>, <Keyword>Work friction</Keyword> and <Keyword>Problems you&apos;ve solved yourself</Keyword> draw on your self-discovery answers; <Keyword>Audience problems</Keyword> and <Keyword>Something that annoys you</Keyword> draw on the same customer and problem-type catalogues as the Canvas Builder. Anything you add in your own words is saved back to that source, so it is there next time and in the Canvas Builder too.</p>
         </GuidanceSection>
         <GuidanceSection icon={ArrowRight} iconBg="bg-secondary-brand" title="How one runs">
           <div className="flex flex-col gap-3 pt-1">
             <NumberedStep n={1} title="Pick a tool" accent="bg-secondary-brand">
-              From the hub, pick the one that matches what you know best. Each takes roughly 5 to 10 minutes.
+              From the hub, pick the one that matches what you know best. Each takes about ten minutes.
             </NumberedStep>
             <NumberedStep n={2} title="Answer the prompts" accent="bg-secondary-brand">
               One prompt per screen. Multiple answers allowed where it helps. Skip anything that does not apply.
             </NumberedStep>
             <NumberedStep n={3} title="Review and save" accent="bg-secondary-brand">
-              Edit or remove answers, capture optional context (who else has this, why has nobody done it yet), then save.
+              Remove anything that does not belong, then save. What you anchored on becomes the problem&apos;s title, the customers, contexts and problem types you picked become its dimensions, and the rest of your answers stay attached as its reflection.
+            </NumberedStep>
+            <NumberedStep n={4} title="Come back to it" accent="bg-secondary-brand">
+              Once your project has its problem, the tool reopens it pre-filled and saving updates it, so you can change your mind without starting again.
             </NumberedStep>
           </div>
         </GuidanceSection>
         <TipCallout items={[
           "Small, specific, and slightly weird answers tend to point at the most interesting problems",
           "If you are not sure between two wordings, write both into the description and settle it while you explore",
-          "Each tool anchors on one experience, role, project or audience per run. To explore another, run it again and pick a different one",
+          "Each tool anchors on one experience, role, project, audience or annoyance per run. To explore another, run it again and pick a different one",
         ]} />
       </div>
     ),
