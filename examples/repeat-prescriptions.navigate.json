@@ -1,0 +1,351 @@
+{
+  "format": "navigate-problem-bundle",
+  "version": 3,
+  "exportedAt": "2026-09-18T09:00:00.000Z",
+  "project": {
+    "name": "Repeat prescriptions",
+    "members": [
+      {
+        "id": "member-grace",
+        "name": "Grace Adeyemi",
+        "email": "grace.adeyemi@example.com"
+      },
+      {
+        "id": "member-tomasz",
+        "name": "Tomasz Nowak",
+        "email": "tomasz.nowak@example.com"
+      }
+    ],
+    "visibility": "public",
+    "reflect": null,
+    "research": null,
+    "canvasDraft": null,
+    "comparisonWeights": {
+      "feasibility": 3,
+      "impact": 3,
+      "cost": 1,
+      "timeToImplement": 2
+    }
+  },
+  "problem": {
+    "id": 1,
+    "createdAt": "2026-01-20T08:45:00.000Z",
+    "editedAt": "2026-09-05T13:00:00.000Z",
+    "title": "Getting a repeat prescription takes four phone calls and two trips, every single month",
+    "description": "Somebody managing three long-term conditions orders their repeat from the surgery, waits two working days, then rings the pharmacy to find out whether it arrived, then goes in to be told one item is out of stock and the others are not ready. It takes about a week of low-level chasing every month, and the people doing the chasing are the people least able to do it: older, often unwell, often without transport.",
+    "customers": [
+      "customer-retirees",
+      "customer-caregivers",
+      "customer-healthcare"
+    ],
+    "contexts": [
+      "context-chronic-condition",
+      "context-doctor-visit",
+      "context-user-runningout"
+    ],
+    "problems": [
+      "problem-long-wait-times",
+      "problem-communication-gaps",
+      "problem-handoff-failures"
+    ],
+    "you": [
+      "you-user-pharm1"
+    ],
+    "source": "identify",
+    "existingSolutions": [
+      {
+        "id": 1,
+        "text": "The NHS App repeat ordering",
+        "shortcomings": [
+          {
+            "id": 10,
+            "text": "Orders well, then goes silent about everything that happens next"
+          },
+          {
+            "id": 11,
+            "text": "Says nothing about whether the pharmacy actually has the item"
+          },
+          {
+            "id": 12,
+            "text": "Assumes a smartphone and the confidence to use it"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "text": "Ringing the pharmacy to check",
+        "shortcomings": [
+          {
+            "id": 20,
+            "text": "Engaged at exactly the times somebody is free to ring"
+          },
+          {
+            "id": 21,
+            "text": "The answer is usually ring back tomorrow"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "text": "Repeat dispensing arranged by the surgery",
+        "shortcomings": [
+          {
+            "id": 30,
+            "text": "Excellent when it is set up, and almost nobody is offered it"
+          },
+          {
+            "id": 31,
+            "text": "Falls over the moment a dose changes"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "text": "Just going to the pharmacy and hoping",
+        "shortcomings": [
+          {
+            "id": 40,
+            "text": "Two trips more often than one"
+          },
+          {
+            "id": 41,
+            "text": "Hardest on exactly the people who find trips hardest"
+          }
+        ]
+      }
+    ],
+    "jobsToBeDone": {
+      "functional": [
+        {
+          "id": 1,
+          "text": "Have the tablets in my hand before the current box runs out",
+          "intensity": ""
+        },
+        {
+          "id": 2,
+          "text": "Make one trip rather than three",
+          "intensity": ""
+        },
+        {
+          "id": 3,
+          "text": "Find out about an out-of-stock item before setting off, not at the counter",
+          "intensity": ""
+        }
+      ],
+      "emotional": [
+        {
+          "id": 1,
+          "text": "Stop worrying about running out of a medicine I cannot stop taking",
+          "intensity": "unbearable"
+        },
+        {
+          "id": 2,
+          "text": "Stop feeling like a nuisance for ringing again",
+          "intensity": "strong"
+        }
+      ],
+      "social": [
+        {
+          "id": 1,
+          "text": "Not have to ask my daughter to sort it out again",
+          "intensity": "strong"
+        }
+      ]
+    },
+    "validationAssessment": {
+      "anchorJob": {
+        "kind": "emotional",
+        "id": 1
+      },
+      "howManyPeople": {
+        "value": 1500000,
+        "unit": "patients",
+        "level": ""
+      },
+      "howOften": {
+        "value": 12,
+        "unit": "per year",
+        "level": ""
+      },
+      "worthToThem": {
+        "value": 3,
+        "unit": "GBP",
+        "level": ""
+      },
+      "reachableShare": 15,
+      "obtainableShare": 8,
+      "costOfSwitching": {
+        "value": null,
+        "unit": "",
+        "level": "low"
+      },
+      "solutionEffectiveness": {
+        "value": null,
+        "unit": "",
+        "level": "poor"
+      },
+      "competitorSize": {
+        "value": null,
+        "unit": "",
+        "level": "medium"
+      }
+    },
+    "validationStatus": "valid",
+    "contextWhen": "Every month, starting about a week before the current supply runs out, and urgently once it has.",
+    "segmentSize": 1500000,
+    "customerDescription": "People on three or more repeat medications, mostly over sixty-five, and the family members who do the chasing on their behalf.",
+    "reflection": null
+  },
+  "solutions": [
+    {
+      "id": 1,
+      "problemId": 1,
+      "workspaceId": 1,
+      "createdAt": "2026-01-20T08:45:00.000Z",
+      "editedAt": "2026-09-05T13:00:00.000Z",
+      "title": "Track it like a parcel",
+      "description": "One text per stage: request received by the surgery, prescription signed, sent to the pharmacy, dispensed, ready to collect. Nothing is asked of the patient and no app is needed. It does not make the process faster, it makes it visible, which removes every one of the chasing phone calls.",
+      "inspirationSource": "analogy",
+      "inspirationDetail": "Straight from parcel tracking. The wait is tolerable when you know where the thing is.",
+      "feasibility": 4,
+      "impact": 5,
+      "cost": 2,
+      "timeToImplement": 2,
+      "validationStatus": "valid",
+      "trafficLight": "green",
+      "analogyDomain": "Parcel delivery",
+      "analogyInsight": "Visibility is worth more than speed when the wait is unavoidable."
+    },
+    {
+      "id": 2,
+      "problemId": 1,
+      "workspaceId": 1,
+      "createdAt": "2026-01-20T08:45:00.000Z",
+      "editedAt": "2026-09-05T13:00:00.000Z",
+      "title": "Tell people about out-of-stock items before they set off",
+      "description": "A stock check against the pharmacy's own system at the moment the prescription arrives, so the patient is told the same day that one of four items will be a week late, rather than finding out at the counter.",
+      "inspirationSource": "improve",
+      "inspirationDetail": "Took the existing NHS App flow and asked what the single most useful missing message would be.",
+      "feasibility": 3,
+      "impact": 4,
+      "cost": 2,
+      "timeToImplement": 3,
+      "validationStatus": "valid",
+      "trafficLight": "green",
+      "improveIdeas": {
+        "communication": "Say what is out of stock, on the day"
+      }
+    },
+    {
+      "id": 3,
+      "problemId": 1,
+      "workspaceId": 1,
+      "createdAt": "2026-01-20T08:45:00.000Z",
+      "editedAt": "2026-09-05T13:00:00.000Z",
+      "title": "A monthly delivery subscription",
+      "description": "A pharmacy that posts everything monthly on a fixed date, with no ordering step at all.",
+      "inspirationSource": "scamper",
+      "inspirationDetail": "Eliminate: remove the collection trip entirely.",
+      "feasibility": 3,
+      "impact": 4,
+      "cost": 4,
+      "timeToImplement": 4,
+      "validationStatus": "unsure",
+      "trafficLight": "amber",
+      "scamperIdeas": {
+        "eliminate": "No trip at all"
+      }
+    }
+  ],
+  "workspace": {
+    "id": 1,
+    "problemId": 1,
+    "createdAt": "2026-01-20T08:45:00.000Z",
+    "editedAt": "2026-09-05T13:00:00.000Z",
+    "analysisToolType": "root-causes",
+    "discoveryToolType": "analogy",
+    "rootCauses": [
+      {
+        "id": 1,
+        "description": "Three organisations hold one piece of information between them and none of them owns it"
+      },
+      {
+        "id": 2,
+        "description": "The patient is the only thing connecting the surgery, the pharmacy and the wholesaler"
+      },
+      {
+        "id": 3,
+        "description": "Nothing tells anyone that a step has finished"
+      }
+    ],
+    "fiveWhyChains": [],
+    "affectedGroups": [
+      {
+        "id": 1,
+        "name": "Patients on multiple repeats",
+        "severity": "critical",
+        "description": "Do the chasing monthly, while unwell."
+      },
+      {
+        "id": 2,
+        "name": "Family carers",
+        "severity": "high",
+        "description": "Take on the chasing, usually remotely and during their own working hours."
+      },
+      {
+        "id": 3,
+        "name": "Pharmacy staff",
+        "severity": "high",
+        "description": "Spend a large part of every day answering the same phone call."
+      },
+      {
+        "id": 4,
+        "name": "GP reception",
+        "severity": "medium",
+        "description": "Field the calls that should have gone to the pharmacy."
+      }
+    ],
+    "rootCauseNotes": "Nobody in the chain is doing anything wrong. The patient is simply the only messaging system between three organisations that do not talk to each other.",
+    "reverseIdeation": [],
+    "reverseInversion": [],
+    "analogyDomain": "Parcel delivery",
+    "analogyInsight": "A fourteen pound parcel tells you it has been picked, packed, dispatched and is three stops away. A month of medication tells you nothing at all.",
+    "improvementResponses": {
+      "coreFunctionality": [],
+      "easeOfUse": [],
+      "speedConvenience": [],
+      "priceValue": [],
+      "qualityPerception": [],
+      "customisation": [],
+      "customerSupport": [],
+      "trustTransparency": [],
+      "deliveryFulfilment": [],
+      "availabilityAccess": [],
+      "emotionalExperience": [],
+      "socialEthicalValue": [],
+      "communication": [],
+      "riskReduction": [],
+      "postPurchase": []
+    },
+    "scamperIdeas": {}
+  },
+  "researchCapture": null,
+  "customDimensionItems": {
+    "customers": [],
+    "contexts": [
+      {
+        "id": "context-user-runningout",
+        "label": "The week the tablets run out",
+        "createdAt": "2026-01-20T08:50:00.000Z"
+      }
+    ],
+    "problems": []
+  },
+  "selfDiscoveryItems": [
+    {
+      "id": "you-user-pharm1",
+      "title": "I worked in a community pharmacy for four years and answered this phone call every single day",
+      "questionUrl": "work-experience/what-have-you-done"
+    }
+  ]
+}

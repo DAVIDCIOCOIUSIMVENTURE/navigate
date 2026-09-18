@@ -6,7 +6,7 @@ import { useDispatch, useSelector, useStore } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
-import { ArrowRight, Brain, ChevronDown, Clock, PenLine, Glasses, Microscope, Target } from "lucide-react"
+import { ArrowRight, Brain, ChevronDown, Clock, PenLine, Microscope, Target } from "lucide-react"
 import { EditProblemDialog } from "@/components/edit-problem-dialog"
 import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
 import { IdentifyHubShell } from "@/components/identify-hub-shell"
@@ -16,6 +16,7 @@ import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { cn } from "@/lib/utils"
 import type { MethodPickerItem } from "@/components/method-picker-board"
 import { MethodTile } from "@/components/method-tile"
+import { IDENTIFY_LENSES } from "@/data/reflectLenses"
 
 /**
  * The project's Identify a Problem hub. While the project has no problem,
@@ -82,17 +83,26 @@ export default function IdentifyProblemsPage() {
     setSavedDialogOpen(true)
   }
 
+  /**
+   * Every tool as one flat list: the guided-prompt tools first, since they
+   * suit somebody who does not yet know where to start, then the broader ways
+   * in. Each guided tool is a peer here rather than a choice made inside a
+   * wrapper, so it is opened straight from the hub.
+   */
   const items: MethodPickerItem[] = [
-    {
-      id: "reflect",
-      title: "Reflect",
-      shortDescription: "Turn a lived experience into a problem through guided prompts about your own life and work.",
-      longDescription: "Turn a lived experience into a problem through guided prompts about your own life and work.",
-      helperText: "Best for identifying problems if you're unsure where to start: a guided approach that walks you through prompts about your own life and work.",
-      icon: Glasses,
-      estimatedMinutes: 10,
+    ...IDENTIFY_LENSES.map((lens) => ({
+      id: lens.id,
+      title: lens.title,
+      shortDescription: lens.shortDescription,
+      // The row shows one line per tool, so the punchier of the two descriptions
+      // is right here; the longer framing lives behind "Best for".
+      longDescription: lens.shortDescription,
+      helperText: lens.bestFor ?? lens.helperText,
+      icon: lens.icon,
+      image: lens.image,
+      estimatedMinutes: lens.estimatedMinutes,
       enabled: true,
-    },
+    })),
     {
       id: "canvas-builder",
       title: "Canvas Builder",
@@ -131,15 +141,15 @@ export default function IdentifyProblemsPage() {
       case "canvas-builder":
         router.push(projectRoutes.canvasBuilder(projectId))
         return
-      case "reflect":
-        router.push(projectRoutes.reflect(projectId))
-        return
       case "research":
         router.push(projectRoutes.research(projectId))
         return
       case "define":
         handleDefine()
         return
+      default:
+        // Everything else in the list is a guided-prompt tool, named by its lens id.
+        router.push(projectRoutes.lens(projectId, id))
     }
   }
 
@@ -163,7 +173,7 @@ export default function IdentifyProblemsPage() {
         journeyProblemId={existing?.id ?? null}
         intro={
           <p className="text-base leading-relaxed">
-            Every project&apos;s problem starts here. Each tool is a different doorway to the same goal: a problem that&apos;s real, painful, and worth solving. We suggest starting with <span className="font-semibold">Reflect</span> to ground a problem in your own experience, then returning to the <span className="font-semibold">Canvas Builder</span> or <span className="font-semibold">Research</span> to explore more broadly or gather outside evidence. If you already know what you want to explore, <span className="font-semibold">Define a Problem Statement</span> captures it straight away. Whichever tool you choose, the problem lands in your project, ready to refine and validate. Once the project has its problem, the tools reopen it so you can change your mind without starting again.
+            Every project&apos;s problem starts here. Each tool is a different doorway to the same goal: a problem that&apos;s real, painful, and worth solving. The first four walk you through short prompts about something you already know, so they suit you if you are not sure where to start: pick the one that matches what you have lived through, the work you do, what you have built, or a group you know well. The <span className="font-semibold">Canvas Builder</span> and <span className="font-semibold">Research</span> cast wider, letting you explore combinations or gather evidence from outside your own experience. If you already know what you want to explore, <span className="font-semibold">Define a Problem Statement</span> captures it straight away. Whichever tool you choose, the problem lands in your project, ready to refine and validate. Once the project has its problem, the tools reopen it so you can change your mind without starting again.
           </p>
         }
       >

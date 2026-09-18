@@ -26,13 +26,10 @@ import {
 import { cn } from "@/lib/utils"
 import { useContainerSize } from "@/context/container-size-context"
 import {
-  REFLECT_LENSES,
   LENS_CONTEXT_FIELDS,
   getAnchorPromptId,
   type Lens,
-  type LensId,
 } from "@/data/reflectLenses"
-import { MethodPickerBoard, type MethodPickerItem } from "@/components/method-picker-board"
 import { MethodTile } from "@/components/method-tile"
 import { useReflect } from "@/components/reflect/reflect-context"
 import { LifeExperiencesPicker } from "@/components/reflect/life-experiences-picker"
@@ -49,115 +46,27 @@ import { toast } from "sonner"
 import type { ReflectionCapture } from "@/types/reflection"
 
 /*
- * Step content panels for the Reflect identify flow. Each panel is rendered by
+ * Step content panels for one guided-prompt tool. Each panel is rendered by
  * its own route page (see ./routes.ts); the shared shell, stepper and store
  * sync live in ./layout.tsx.
  */
-
-const ENABLED_LENS_IDS = new Set<LensId>([
-  "life",
-  "work",
-  "own-problems",
-  "audience-problems",
-])
 
 function getRolePromptId(lens: Lens, role: "problems" | "customers"): string | null {
   return lens.prompts.find((p) => p.role === role)?.id ?? null
 }
 
-const PICK_GUIDANCE = {
-  title: "Pick a method",
-  description:
-    "Each method is a different angle on where problems come from. Pick one to run through guided prompts and turn your answers into your project's problem.",
-  tips: [] as string[],
-}
-
-function GuidancePanel({
-  title,
-  description,
-  tips,
-  className,
-  stepNumber,
-}: {
-  title: string
-  description: string
-  tips: string[]
-  className?: string
-  stepNumber?: number
-}) {
-  return (
-    <div className={cn("flex flex-col gap-8 text-base", className)}>
-      <h2 className="flex items-center gap-2.5 text-2xl font-bold leading-none tracking-tight text-primary">
-        {stepNumber !== undefined && (
-          <span
-            className="flex items-center justify-center w-10 h-10 rounded-lg shrink-0 bg-primary text-primary-foreground text-lg font-bold"
-            aria-hidden="true"
-          >
-            {stepNumber}
-          </span>
-        )}
-        <span>{title}</span>
-      </h2>
-      <p className="leading-relaxed">{description}</p>
-      {tips.length > 0 && (
-        <ul className="flex flex-col gap-1.5">
-          {tips.map((tip, i) => (
-            <li key={i} className="flex gap-2 leading-relaxed">
-              <span className="text-tertiary mt-0.5 shrink-0">&#8226;</span>
-              <span>{tip}</span>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  )
-}
-
 /* ─── Step content panels ─── */
-
-export function PickMethodPanel({
-  onPick,
-  selectedLensId,
-}: {
-  onPick: (lensId: LensId) => void
-  selectedLensId: LensId | null
-}) {
-  const items: MethodPickerItem[] = REFLECT_LENSES.map((lens) => ({
-    id: lens.id,
-    title: lens.title,
-    shortDescription: lens.shortDescription,
-    longDescription: lens.longDescription,
-    helperText: lens.helperText,
-    icon: lens.icon,
-    image: lens.image,
-    estimatedMinutes: lens.estimatedMinutes,
-    enabled: ENABLED_LENS_IDS.has(lens.id),
-  }))
-
-  return (
-    <div className="flex flex-col gap-6 flex-1 min-h-0 overflow-y-auto">
-      <GuidancePanel {...PICK_GUIDANCE} stepNumber={1} />
-      <div className="flex flex-col gap-4">
-        <h3 className="text-xl font-bold">Discovery methods</h3>
-        <MethodPickerBoard
-          items={items}
-          selectedId={selectedLensId}
-          onPick={(id) => onPick(id as LensId)}
-        />
-      </div>
-    </div>
-  )
-}
 
 export function PromptsPanel({
   index,
   onIndexChange,
-  onBackToPick,
+  onLeave,
   onReview,
 }: {
   index: number
   onIndexChange: (next: number) => void
-  onBackToPick: () => void
+  /** Back from the first prompt: out of the tool, to the list of tools. */
+  onLeave: () => void
   onReview: () => void
 }) {
   const {
@@ -237,7 +146,7 @@ export function PromptsPanel({
 
   function goPrev() {
     if (index > 0) onIndexChange(index - 1)
-    else onBackToPick()
+    else onLeave()
   }
 
   function goNext() {

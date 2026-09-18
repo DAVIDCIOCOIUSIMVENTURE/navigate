@@ -62,7 +62,7 @@ import {
 
 /**
  * Icon lookup for collapsible catalogue group rows, shared by the self-discovery
- * suggestion tree and the Reflect pickers so the same category shows the same icon
+ * suggestion tree and the guided prompt tools' pickers so the same category shows the same icon
  * wherever it appears. Rules are ordered: the first regex that matches the
  * lower-cased label wins, so the specific dimension / problem-type categories sit
  * ahead of the broader self-discovery themes.

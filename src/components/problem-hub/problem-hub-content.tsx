@@ -126,7 +126,7 @@ function ReflectionSection({ problemId, readOnly = false }: { problemId: number;
 
   const LensIcon = lens.icon
   return (
-    <HubSection icon={MessageSquare} label={`Reflection: ${lens.title}`}>
+    <HubSection icon={MessageSquare} label={`Captured with ${lens.title}`}>
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <MethodTile icon={LensIcon} size="sm" />

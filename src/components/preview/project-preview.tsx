@@ -115,7 +115,6 @@ export function ProjectPreview({ projectId }: { projectId: number }) {
           </Card>
         )}
       </main>
-      <PreviewFooter />
     </div>
   )
 }
@@ -162,19 +161,6 @@ function NotSharedBanner({ projectId }: { projectId: number }) {
   )
 }
 
-function PreviewFooter() {
-  return (
-    <footer className="border-t bg-card">
-      <div className="mx-auto w-full max-w-7xl px-4 py-6 lg:px-8">
-        <p className="text-base opacity-80">
-          Put together in Navigate, which walks a team from a problem worth solving to the solutions worth building.
-          This page is a read-only summary: nothing on it can be changed from here.
-        </p>
-      </div>
-    </footer>
-  )
-}
-
 function PreviewNotice({ title, body }: { title: string; body: string }) {
   return (
     <div className="flex min-h-svh flex-col bg-background">
@@ -190,7 +176,6 @@ function PreviewNotice({ title, body }: { title: string; body: string }) {
           </CardContent>
         </Card>
       </main>
-      <PreviewFooter />
     </div>
   )
 }

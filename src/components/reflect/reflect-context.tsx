@@ -66,7 +66,7 @@ function initialAnswers(lens: Lens): Record<string, ReflectAnswer[]> {
 }
 
 /**
- * The Reflect session for one lens inside one project. Every read and write
+ * The session for one guided prompt tool inside one project. Every read and write
  * goes to the `reflectSessions` model under the project's id, so a draft
  * started in one project never appears in another.
  */

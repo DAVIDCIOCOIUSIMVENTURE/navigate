@@ -344,11 +344,16 @@ export function describeSolutions(solutions: readonly Solution[]): string {
   if (solutions.length === 0) {
     return "No solutions have been captured for this problem yet."
   }
-  const worthPursuing = solutions.filter((solution) => solution.validationStatus === "valid").length
-  const ruledOut = solutions.filter((solution) => solution.validationStatus === "invalid").length
+  const count = (status: ValidationStatus) => solutions.filter((solution) => solution.validationStatus === status).length
+  const worthPursuing = count("valid")
+  const ruledOut = count("invalid")
+  // A candidate left open has been scored, so it belongs in the outcomes
+  // rather than falling through to "none have been scored yet".
+  const openQuestion = count("unsure")
   const lead = `The team came up with ${countWord(solutions.length)} ${pluralise(solutions.length, "candidate", "candidates")}.`
   const outcomes: string[] = []
   if (worthPursuing > 0) outcomes.push(`${countWord(worthPursuing)} judged worth pursuing`)
+  if (openQuestion > 0) outcomes.push(`${countWord(openQuestion)} left open pending more evidence`)
   if (ruledOut > 0) outcomes.push(`${countWord(ruledOut)} ruled out`)
   if (outcomes.length === 0) return `${lead} None of them have been scored yet.`
   return `${lead} Of those, ${formatList(outcomes)}.`

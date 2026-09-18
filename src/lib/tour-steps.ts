@@ -361,7 +361,7 @@ export const TOUR_STEPS: TourStep[] = [
     mode: "act",
     title: "Choose how to identify it",
     body: [
-      "There are four doorways: Reflect on your own experience, combine dimensions on the Canvas Builder, Research problems out in the world, or Define a Problem Statement directly.",
+      "Every tool here is a different doorway: answer guided prompts about your own life or work, combine dimensions on the Canvas Builder, Research problems out in the world, or Define a Problem Statement directly.",
       "For this tour, press Use this tool on the Define a Problem Statement card. It is the quickest way in; you can try the other tools another time.",
     ],
     target: TOUR_TARGETS.identifyDefineUse,

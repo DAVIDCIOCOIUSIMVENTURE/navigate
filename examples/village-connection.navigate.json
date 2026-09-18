@@ -1,0 +1,373 @@
+{
+  "format": "navigate-problem-bundle",
+  "version": 3,
+  "exportedAt": "2026-09-18T09:00:00.000Z",
+  "project": {
+    "name": "Winter in the village",
+    "members": [
+      {
+        "id": "member-eleanor",
+        "name": "Eleanor Whitfield",
+        "email": "eleanor.whitfield@example.com"
+      },
+      {
+        "id": "member-gareth",
+        "name": "Gareth Pryce",
+        "email": "gareth.pryce@example.com"
+      },
+      {
+        "id": "member-sofia",
+        "name": "Sofia Almeida",
+        "email": "sofia.almeida@example.com"
+      },
+      {
+        "id": "member-ruth",
+        "name": "Ruth Kaminski",
+        "email": "ruth.kaminski@example.com"
+      }
+    ],
+    "visibility": "public",
+    "reflect": null,
+    "research": null,
+    "canvasDraft": null,
+    "comparisonWeights": {
+      "feasibility": 3,
+      "impact": 3,
+      "cost": 2,
+      "timeToImplement": 2
+    }
+  },
+  "problem": {
+    "id": 1,
+    "createdAt": "2026-05-30T09:30:00.000Z",
+    "editedAt": "2026-09-10T11:15:00.000Z",
+    "title": "Older people in rural villages go whole weeks in winter without speaking to anyone",
+    "description": "In a village with no shop, one bus a day and no pavement lighting, an eighty-year-old who has stopped driving is effectively housebound from November to March. The clubs that exist meet in the daytime in the next town, which is exactly the journey that is no longer possible. The isolation is not caused by there being nothing on. It is caused by the four miles between the person and the thing that is on.",
+    "customers": [
+      "customer-retirees",
+      "customer-caregivers",
+      "customer-community-orgs"
+    ],
+    "contexts": [
+      "context-rural-areas",
+      "context-evening-winding-down",
+      "context-community-events"
+    ],
+    "problems": [
+      "problem-isolating",
+      "problem-geographic-limits",
+      "problem-limited-availability"
+    ],
+    "you": [
+      "you-user-village1",
+      "you-user-village2"
+    ],
+    "source": "reflect",
+    "existingSolutions": [
+      {
+        "id": 1,
+        "text": "The lunch club in the next town",
+        "shortcomings": [
+          {
+            "id": 10,
+            "text": "Requires the journey that is precisely the thing that stopped being possible"
+          },
+          {
+            "id": 11,
+            "text": "Runs on Tuesdays, so it does nothing for the other six days"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "text": "A weekly phone call from a befriending charity",
+        "shortcomings": [
+          {
+            "id": 20,
+            "text": "Fifteen minutes a week against a hundred and twelve waking hours"
+          },
+          {
+            "id": 21,
+            "text": "Waiting lists run to months in rural counties"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "text": "Family visiting at weekends",
+        "shortcomings": [
+          {
+            "id": 30,
+            "text": "Depends entirely on having family nearby, which is the thing that has changed"
+          },
+          {
+            "id": 31,
+            "text": "Weekends only, and not every weekend"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "text": "Community transport minibuses",
+        "shortcomings": [
+          {
+            "id": 40,
+            "text": "Booked days ahead, so it cannot answer a bad afternoon"
+          },
+          {
+            "id": 41,
+            "text": "Depends on volunteer drivers who are themselves mostly over seventy"
+          }
+        ]
+      }
+    ],
+    "jobsToBeDone": {
+      "functional": [
+        {
+          "id": 1,
+          "text": "Get out of the house at least twice a week between November and March",
+          "intensity": ""
+        },
+        {
+          "id": 2,
+          "text": "Get to the thing without driving and without asking a favour",
+          "intensity": ""
+        }
+      ],
+      "emotional": [
+        {
+          "id": 1,
+          "text": "Have something to look forward to in the week",
+          "intensity": "unbearable"
+        },
+        {
+          "id": 2,
+          "text": "Stop feeling like a burden on the people who would give me a lift",
+          "intensity": "strong"
+        }
+      ],
+      "social": [
+        {
+          "id": 1,
+          "text": "Still be part of the village rather than somebody it happens around",
+          "intensity": "strong"
+        }
+      ]
+    },
+    "validationAssessment": {
+      "anchorJob": {
+        "kind": "emotional",
+        "id": 1
+      },
+      "howManyPeople": {
+        "value": 210000,
+        "unit": "people",
+        "level": ""
+      },
+      "howOften": {
+        "value": 20,
+        "unit": "per year",
+        "level": ""
+      },
+      "worthToThem": {
+        "value": 6,
+        "unit": "GBP",
+        "level": ""
+      },
+      "reachableShare": 8,
+      "obtainableShare": 10,
+      "costOfSwitching": {
+        "value": null,
+        "unit": "",
+        "level": "low"
+      },
+      "solutionEffectiveness": {
+        "value": null,
+        "unit": "",
+        "level": "poor"
+      },
+      "competitorSize": {
+        "value": null,
+        "unit": "",
+        "level": "small"
+      }
+    },
+    "validationStatus": "unsure",
+    "contextWhen": "November to March, and most acutely in the four hours after dark, which in December starts at half past three.",
+    "segmentSize": 210000,
+    "customerDescription": "People over seventy-five living alone in villages under a thousand people, who have given up driving in the last five years and have family more than an hour away.",
+    "reflection": {
+      "lensId": "life",
+      "capturedAt": "2026-05-30T10:00:00.000Z",
+      "prompts": [
+        {
+          "promptId": "significant-experience",
+          "answers": [
+            "Growing up in a village of four hundred people and watching my grandmother stop leaving the house"
+          ]
+        },
+        {
+          "promptId": "harder-than-needed",
+          "answers": [
+            "Once she gave up the car there was nothing she could get to on her own, and everything on offer was four miles away",
+            "The clubs all met in the daytime in the next town, which is exactly the journey she could no longer make",
+            "Winter made it much worse, because it is dark from half past three and there is no lit pavement"
+          ]
+        },
+        {
+          "promptId": "wish-told",
+          "answers": [
+            "That giving up driving is the moment the isolation starts, not the moment her health changed",
+            "That she would never once ring anybody and ask to be collected"
+          ]
+        },
+        {
+          "promptId": "wasted-spend",
+          "answers": [
+            "A tablet bought so she could video call, which stayed in its box"
+          ]
+        },
+        {
+          "promptId": "personal-workaround",
+          "answers": [
+            "A rota between four of us to ring on fixed evenings, which held for a while and then slipped"
+          ]
+        },
+        {
+          "promptId": "customer",
+          "answers": [
+            "Older people living alone in small villages",
+            "The family and neighbours who quietly keep an eye out"
+          ]
+        }
+      ]
+    }
+  },
+  "solutions": [
+    {
+      "id": 1,
+      "problemId": 1,
+      "workspaceId": 1,
+      "createdAt": "2026-05-30T09:30:00.000Z",
+      "editedAt": "2026-09-10T11:15:00.000Z",
+      "title": "A warm room, open every afternoon",
+      "description": "One heated room in the village hall, open from noon to six every weekday from November to March, with a kettle and nothing programmed. No booking, no activity, no sign-up. The cost is heating one room rather than running an event, and the point is that it is always open, so nobody has to plan to go.",
+      "inspirationSource": "reverse",
+      "inspirationDetail": "Came from asking how to make isolation worse: put everything on in the next town, at a fixed time, with a booking form. Inverting each of those gave the answer.",
+      "feasibility": 4,
+      "impact": 4,
+      "cost": 2,
+      "timeToImplement": 2,
+      "validationStatus": "unsure",
+      "trafficLight": "amber",
+      "reverseWorseIdeas": [
+        "Hold everything four miles away",
+        "Make people book a week ahead",
+        "Run it once a week at a fixed time"
+      ],
+      "reverseInversions": [
+        "Hold it in the village",
+        "No booking at all",
+        "Open every day"
+      ]
+    },
+    {
+      "id": 2,
+      "problemId": 1,
+      "workspaceId": 1,
+      "createdAt": "2026-05-30T09:30:00.000Z",
+      "editedAt": "2026-09-10T11:15:00.000Z",
+      "title": "A driver who is going anyway",
+      "description": "A list of villagers who drive into town on known days, matched with people who need a lift, run through the parish newsletter rather than an app. No fares, no insurance complications, no scheduling: only journeys that were already happening.",
+      "inspirationSource": "scamper",
+      "inspirationDetail": "Adapt: use the journeys that already exist rather than creating new ones.",
+      "feasibility": 3,
+      "impact": 3,
+      "cost": 1,
+      "timeToImplement": 2,
+      "validationStatus": "unsure",
+      "trafficLight": "amber",
+      "scamperIdeas": {
+        "adapt": "Use journeys already happening",
+        "eliminate": "No booking system, no fares"
+      }
+    }
+  ],
+  "workspace": {
+    "id": 1,
+    "problemId": 1,
+    "createdAt": "2026-05-30T09:30:00.000Z",
+    "editedAt": "2026-09-10T11:15:00.000Z",
+    "analysisToolType": "affected-groups",
+    "discoveryToolType": "",
+    "rootCauses": [],
+    "fiveWhyChains": [],
+    "affectedGroups": [
+      {
+        "id": 1,
+        "name": "Housebound villagers over seventy-five",
+        "severity": "critical",
+        "description": "Feel it every day for five months of the year."
+      },
+      {
+        "id": 2,
+        "name": "Adult children living far away",
+        "severity": "high",
+        "description": "Carry constant low-level worry and can do very little from two hours away."
+      },
+      {
+        "id": 3,
+        "name": "Village volunteers",
+        "severity": "medium",
+        "description": "Willing, ageing, and already stretched across four other schemes."
+      },
+      {
+        "id": 4,
+        "name": "GP surgeries",
+        "severity": "medium",
+        "description": "See the consequences as appointments that are really about loneliness."
+      }
+    ],
+    "rootCauseNotes": "Every answer we found moves the person to the activity. Nobody has tried moving the activity to the person, because the village hall is cold and nobody wants to book it for four people.",
+    "reverseIdeation": [],
+    "reverseInversion": [],
+    "analogyDomain": "",
+    "analogyInsight": "",
+    "improvementResponses": {
+      "coreFunctionality": [],
+      "easeOfUse": [],
+      "speedConvenience": [],
+      "priceValue": [],
+      "qualityPerception": [],
+      "customisation": [],
+      "customerSupport": [],
+      "trustTransparency": [],
+      "deliveryFulfilment": [],
+      "availabilityAccess": [],
+      "emotionalExperience": [],
+      "socialEthicalValue": [],
+      "communication": [],
+      "riskReduction": [],
+      "postPurchase": []
+    },
+    "scamperIdeas": {}
+  },
+  "researchCapture": null,
+  "customDimensionItems": {
+    "customers": [],
+    "contexts": [],
+    "problems": []
+  },
+  "selfDiscoveryItems": [
+    {
+      "id": "you-user-village1",
+      "title": "I grew up in a village of four hundred people and watched my grandmother stop leaving the house",
+      "questionUrl": "personal-interests/what-shaped-you"
+    },
+    {
+      "id": "you-user-village2",
+      "title": "I have run a community transport scheme and know what volunteers will and will not do",
+      "questionUrl": "work-experience/what-have-you-organised"
+    }
+  ]
+}

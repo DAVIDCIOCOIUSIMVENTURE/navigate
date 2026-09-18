@@ -29,7 +29,7 @@ export function researchCaptureHref(projectId: number, methodId: string, promptI
 }
 
 export function researchReviewHref(projectId: number, methodId: string): string {
-  return `${researchRoot(projectId)}/${methodId}/review`
+  return projectRoutes.researchReview(projectId, methodId)
 }
 
 export function researchStepHref(projectId: number, step: ResearchStep, methodId: string, promptIndex = 0): string {

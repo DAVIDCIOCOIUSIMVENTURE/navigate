@@ -270,6 +270,26 @@ describe("solutions", () => {
 
   it("says when nothing has been scored", () => {
     expect(describeSolutions([solution({ validationStatus: "unvalidated" })])).toContain("None of them have been scored yet.")
+    expect(describeSolutions([solution({ validationStatus: "in_progress" })])).toContain("None of them have been scored yet.")
+  })
+
+  it("counts a candidate left open as scored, not as unscored", () => {
+    const text = describeSolutions([
+      solution({ id: 1, validationStatus: "unsure" }),
+      solution({ id: 2, validationStatus: "unsure" }),
+    ])
+    expect(text).toBe("The team came up with two candidates. Of those, two left open pending more evidence.")
+  })
+
+  it("reads the three outcomes in order", () => {
+    const text = describeSolutions([
+      solution({ id: 1, validationStatus: "valid" }),
+      solution({ id: 2, validationStatus: "unsure" }),
+      solution({ id: 3, validationStatus: "invalid" }),
+    ])
+    expect(text).toBe(
+      "The team came up with three candidates. Of those, one judged worth pursuing, one left open pending more evidence and one ruled out.",
+    )
   })
 
   it("prefers the team's own note over the stock description of a method", () => {

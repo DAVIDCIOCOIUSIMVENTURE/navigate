@@ -1,16 +1,16 @@
 "use client"
 
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react"
+import { useCallback, useEffect, useMemo, type ReactNode } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { usePathname, useRouter } from "next/navigation"
-import { ArrowLeft, Glasses, PanelTop } from "lucide-react"
+import { useParams, usePathname, useRouter } from "next/navigation"
+import { ArrowLeft, PanelTop } from "lucide-react"
 import type { AppDispatch, RootState } from "@/store"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { useFocusChrome } from "@/context/focus-chrome-context"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
-import { getReflectLens } from "@/data/reflectLenses"
+import { getIdentifyLens } from "@/data/reflectLenses"
 import { ReflectProvider } from "@/components/reflect/reflect-context"
 import { useProjectScope } from "@/hooks/use-projects"
 import { projectRoutes } from "@/lib/projects"
@@ -19,22 +19,23 @@ import { JourneyProgressCard } from "@/components/journey-progress"
 import { FOCUS_COLUMN_MAX_HEIGHT_CLASS } from "@/components/problem-flow-shell"
 import { selectReflectProject, type ReflectStep } from "@/store/reflect-sessions-model"
 import { SECTION_TITLE_ICON_CLASS, SECTION_TITLE_TILE_CLASS } from "@/lib/nav-item-styles"
-import { ReflectStepper } from "./reflect-stepper"
-import { parseReflectPath, reflectHrefs, reflectResumeHref } from "./routes"
+import { LensStepper } from "./lens-stepper"
+import { lensHrefs, lensResumeHref, parseLensPath } from "./routes"
 
 /**
- * Shell for the Reflect flow. It stays mounted while the user moves between
- * the step routes underneath it, so it owns the one-off "resume where you left
- * off" redirect, keeps the store's last position in step with the URL, and
- * renders the back button, title and stepper around each step page.
+ * Shell for one guided-prompt tool. The tool is named by the URL rather than
+ * picked inside the flow, so this owns the "resume where you left off" landing
+ * on the bare tool URL, keeps the store's last position in step with the URL,
+ * and renders the back button, title and stepper around each step page.
  */
-export default function ReflectLayout({ children }: { children: ReactNode }) {
+export default function LensLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   const router = useRouter()
   const dispatch = useDispatch<AppDispatch>()
-  // The flow runs inside a project: its drafts and last position are the
-  // project's own. When the project already has its problem, the lens it was
-  // captured with is pre-filled and saving updates that problem.
+  const { lensId } = useParams<{ lensId: string }>()
+  // The tool runs inside a project: its drafts and last position are the
+  // project's own. When the project already has its problem, a run of the tool
+  // it was captured with is pre-filled and saving updates that problem.
   const { projectId, problem: existing } = useProjectScope()
   const hydrated = useSelector((s: RootState) => s.reflectSessions.hydrated)
   const { lastPickedLensId: storedLensId, lastStep: storedStep, lastPromptIndex: storedPromptIndex } = useSelector(
@@ -42,36 +43,29 @@ export default function ReflectLayout({ children }: { children: ReactNode }) {
   )
   const isWide = useContainerSize() === "wide"
   const { revealTopNav } = useFocusChrome()
-  const hrefs = useMemo(() => reflectHrefs(projectId), [projectId])
+  const hrefs = useMemo(() => lensHrefs(projectId, lensId), [projectId, lensId])
 
-  const route = useMemo(() => parseReflectPath(pathname), [pathname])
-  const [restored, setRestored] = useState(false)
-  const resumeHrefRef = useRef<string | null>(null)
+  const route = useMemo(() => parseLensPath(pathname), [pathname])
+  const lens = getIdentifyLens(lensId)
 
-  // Non-canonical URLs (unknown lens, prompt number out of range) get replaced.
+  // Non-canonical URLs (a tool that is not offered, a prompt number out of range) get replaced.
   useEffect(() => {
     if (route.kind === "redirect") router.replace(route.href)
   }, [route, router])
 
-  // Entering at the root with an interrupted session picks up where it stopped.
+  // The bare tool URL is not a step: it lands on wherever this tool was left,
+  // or on its first prompt.
   useEffect(() => {
-    if (restored || !hydrated) return
-    setRestored(true)
-    if (route.kind !== "pick") return
-    const href = reflectResumeHref(projectId, storedLensId, storedStep, storedPromptIndex)
-    if (!href) return
-    resumeHrefRef.current = href
-    router.replace(href)
-  }, [restored, hydrated, route.kind, storedLensId, storedStep, storedPromptIndex, router, projectId])
+    if (route.kind !== "root" || !hydrated) return
+    router.replace(lensResumeHref(projectId, route.lens, storedLensId, storedStep, storedPromptIndex))
+  }, [route, hydrated, projectId, storedLensId, storedStep, storedPromptIndex, router])
 
-  const isResuming = resumeHrefRef.current !== null && pathname !== resumeHrefRef.current
-  if (resumeHrefRef.current !== null && pathname === resumeHrefRef.current) {
-    resumeHrefRef.current = null
-  }
-
-  // Keep the store's last position in step with the URL for prompts and review.
+  // Keep the store's last position in step with the URL, so leaving and
+  // reopening the tool comes back to the same prompt. Nothing may be written
+  // before `init` has read storage, or the write would persist an empty map
+  // over every project's drafts.
   useEffect(() => {
-    if (!restored || isResuming) return
+    if (!hydrated) return
     if (route.kind === "prompts") {
       dispatch.reflectSessions.setLastPosition({
         projectId,
@@ -87,42 +81,21 @@ export default function ReflectLayout({ children }: { children: ReactNode }) {
         promptIndex: 0,
       })
     }
-  }, [restored, isResuming, route, dispatch, projectId])
+  }, [hydrated, route, dispatch, projectId])
 
-  // On the picker the lens is remembered so it still shows as selected and the
-  // later steps stay reachable; only the step itself changes.
-  useEffect(() => {
-    if (!restored || isResuming || route.kind !== "pick") return
-    const lensId = storedLensId && getReflectLens(storedLensId) ? storedLensId : null
-    dispatch.reflectSessions.setLastPosition({
-      projectId,
-      lensId,
-      step: lensId ? "pick" : null,
-      promptIndex: storedPromptIndex,
-    })
-  }, [restored, isResuming, route.kind, storedLensId, storedPromptIndex, dispatch, projectId])
-
-  const routeLens = route.kind === "prompts" || route.kind === "review" ? route.lens : null
-  const storedLens = storedLensId ? getReflectLens(storedLensId) ?? null : null
-  const activeLens = routeLens ?? storedLens
-  const activeStep: ReflectStep = route.kind === "prompts" || route.kind === "review" ? route.kind : "pick"
+  const activeStep: ReflectStep = route.kind === "review" ? "review" : "prompts"
 
   const handleStepClick = useCallback(
     (id: ReflectStep) => {
-      if (id === "pick") {
-        router.push(hrefs.pick())
-        return
-      }
-      if (!activeLens) return
-      router.push(hrefs.step(id, activeLens.id, 0))
+      router.push(hrefs.step(id, 0))
     },
-    [router, activeLens, hrefs],
+    [router, hrefs],
   )
 
   const handleReset = useCallback(() => {
     dispatch.reflectSessions.clearProject(projectId)
-    router.push(hrefs.pick())
-  }, [dispatch, router, hrefs, projectId])
+    router.push(projectRoutes.identify(projectId))
+  }, [dispatch, router, projectId])
 
   const promptsProgress =
     route.kind === "prompts"
@@ -148,12 +121,18 @@ export default function ReflectLayout({ children }: { children: ReactNode }) {
     </div>
   )
 
+  // A URL naming a tool the hub does not offer has nothing to render: the
+  // effect above is already sending it back to the hub. Every hook has run by
+  // here, so bailing out now is safe.
+  if (!lens) return null
+
+  const LensIcon = lens.icon
   const sectionTitle = (
     <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 text-foreground">
       <span className={SECTION_TITLE_TILE_CLASS} aria-hidden="true">
-        <Glasses className={SECTION_TITLE_ICON_CLASS} />
+        <LensIcon className={SECTION_TITLE_ICON_CLASS} />
       </span>
-      <span className="truncate">Reflect</span>
+      <span className="truncate">{lens.title}</span>
     </h1>
   )
 
@@ -163,20 +142,19 @@ export default function ReflectLayout({ children }: { children: ReactNode }) {
     route.kind === "prompts" && route.lens.prompts[route.promptIndex]?.contextOnly === true
 
   const stepper = (
-    <ReflectStepper
+    <LensStepper
       activeId={activeStep}
       onStepClick={handleStepClick}
-      isStepEnabled={(id) => id === "pick" || activeLens !== null}
       promptsProgress={promptsProgress}
       onReset={handleReset}
-      resetDescription="This will return you to the method picker and clear in-progress answers. The problem already saved in this project is not affected."
-      contextCard={routeLens && !isAnchorPrompt ? <ReflectingOnCard /> : undefined}
+      resetDescription="This will return you to the list of tools and clear in-progress answers. The problem already saved in this project is not affected."
+      contextCard={!isAnchorPrompt ? <ReflectingOnCard /> : undefined}
     />
   )
 
   // While a redirect is pending the page underneath may hold an unusable URL
-  // (for example a lens that does not exist), so only the shell is shown.
-  const content = route.kind === "redirect" ? null : children
+  // (for example a prompt number out of range), so only the shell is shown.
+  const content = route.kind === "prompts" || route.kind === "review" ? children : null
 
   const inner = (
     <div className={cn("flex flex-1 min-h-0 w-full", isWide ? "flex-row gap-3" : "flex-col gap-3")}>
@@ -217,11 +195,9 @@ export default function ReflectLayout({ children }: { children: ReactNode }) {
           isWide && "overflow-hidden max-h-[100svh]",
         )}
       >
-        {routeLens ? (
-          <ReflectProvider projectId={projectId} lens={routeLens} seed={existing?.reflection ?? null}>
-            {inner}
-          </ReflectProvider>
-        ) : inner}
+        <ReflectProvider projectId={projectId} lens={lens} seed={existing?.reflection ?? null}>
+          {inner}
+        </ReflectProvider>
       </div>
     </div>
   )

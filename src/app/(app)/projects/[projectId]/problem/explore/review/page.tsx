@@ -16,7 +16,7 @@ import { projectRoutes } from "@/lib/projects"
 import { cn } from "@/lib/utils"
 import type { Job, JobIntensity } from "@/types/validation"
 
-/* Section chrome mirrors the Reflect / Research review panels: a blue panel, a
+/* Section chrome mirrors the identify tools' review panels: a blue panel, a
    yellow icon tile, and a white heading that jumps back to the step. */
 
 function ReviewSection({ children }: { children: ReactNode }) {

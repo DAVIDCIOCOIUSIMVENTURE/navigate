@@ -1,0 +1,360 @@
+{
+  "format": "navigate-problem-bundle",
+  "version": 3,
+  "exportedAt": "2026-09-18T09:00:00.000Z",
+  "project": {
+    "name": "Outgrown school uniform",
+    "members": [
+      {
+        "id": "member-priya",
+        "name": "Priya Sharma",
+        "email": "priya.sharma@example.com"
+      },
+      {
+        "id": "member-denise",
+        "name": "Denise Clarke",
+        "email": "denise.clarke@example.com"
+      },
+      {
+        "id": "member-marcus",
+        "name": "Marcus Bell",
+        "email": "marcus.bell@example.com"
+      }
+    ],
+    "visibility": "public",
+    "reflect": null,
+    "research": null,
+    "canvasDraft": null,
+    "comparisonWeights": {
+      "feasibility": 3,
+      "impact": 3,
+      "cost": 3,
+      "timeToImplement": 1
+    }
+  },
+  "problem": {
+    "id": 1,
+    "createdAt": "2026-04-12T09:00:00.000Z",
+    "editedAt": "2026-09-02T14:20:00.000Z",
+    "title": "School uniform is outgrown long before it is worn out",
+    "description": "A primary school jumper lasts three or four years of wear but fits for about one. Families buy new every September, often branded and only available from one supplier, and the outgrown set goes to landfill or sits in a loft. The families who feel it hardest are the ones who can least afford to buy twice, and the second-hand options that exist depend entirely on one volunteer with a garage.",
+    "customers": [
+      "customer-parents-school-age",
+      "customer-budget-conscious",
+      "customer-user-primaryfam"
+    ],
+    "contexts": [
+      "context-school-dropoff-pickup",
+      "context-dealing-with-schools",
+      "context-shopping-errands"
+    ],
+    "problems": [
+      "problem-high-costs",
+      "problem-waste-overconsumption",
+      "problem-limited-availability"
+    ],
+    "you": [
+      "you-user-uniform1",
+      "you-user-uniform2"
+    ],
+    "source": "reflect",
+    "existingSolutions": [
+      {
+        "id": 1,
+        "text": "The PTA second-hand stall at the summer fair",
+        "shortcomings": [
+          {
+            "id": 10,
+            "text": "Runs twice a year, which is nothing like when families actually need it"
+          },
+          {
+            "id": 11,
+            "text": "Depends on one volunteer storing bags in their garage"
+          },
+          {
+            "id": 12,
+            "text": "Stock is whatever happened to be donated, in whatever sizes"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "text": "Buying new from the school's single approved supplier",
+        "shortcomings": [
+          {
+            "id": 20,
+            "text": "A full set runs to well over sixty pounds per child"
+          },
+          {
+            "id": 21,
+            "text": "Branded items cannot be bought anywhere cheaper"
+          },
+          {
+            "id": 22,
+            "text": "Nothing comes back when the child grows out of it"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "text": "Passing things down between friends",
+        "shortcomings": [
+          {
+            "id": 30,
+            "text": "Only works if you happen to know a family one year ahead with the same size child"
+          },
+          {
+            "id": 31,
+            "text": "Nobody wants to ask, so most do not"
+          }
+        ]
+      }
+    ],
+    "jobsToBeDone": {
+      "functional": [
+        {
+          "id": 1,
+          "text": "Get a uniform that fits before the first day of term",
+          "intensity": ""
+        },
+        {
+          "id": 2,
+          "text": "Spend less than sixty pounds a child in September",
+          "intensity": ""
+        },
+        {
+          "id": 3,
+          "text": "Get the outgrown set out of the house and to somebody who needs it",
+          "intensity": ""
+        }
+      ],
+      "emotional": [
+        {
+          "id": 1,
+          "text": "Stop feeling wasteful about throwing away clothes that are perfectly good",
+          "intensity": "strong"
+        },
+        {
+          "id": 2,
+          "text": "Not have to worry about the September bill landing with everything else",
+          "intensity": "strong"
+        }
+      ],
+      "social": [
+        {
+          "id": 1,
+          "text": "Have my child look the same as everyone else on the first day",
+          "intensity": "unbearable"
+        }
+      ]
+    },
+    "validationAssessment": {
+      "anchorJob": {
+        "kind": "social",
+        "id": 1
+      },
+      "howManyPeople": {
+        "value": 4600000,
+        "unit": "families",
+        "level": ""
+      },
+      "howOften": {
+        "value": 1,
+        "unit": "per year",
+        "level": ""
+      },
+      "worthToThem": {
+        "value": 18,
+        "unit": "GBP",
+        "level": ""
+      },
+      "reachableShare": 12,
+      "obtainableShare": 15,
+      "costOfSwitching": {
+        "value": null,
+        "unit": "",
+        "level": "low"
+      },
+      "solutionEffectiveness": {
+        "value": null,
+        "unit": "",
+        "level": "poor"
+      },
+      "competitorSize": {
+        "value": null,
+        "unit": "",
+        "level": "small"
+      }
+    },
+    "validationStatus": "valid",
+    "contextWhen": "In the last two weeks of August, and again whenever a growth spurt makes a jumper too small in the middle of a term.",
+    "segmentSize": 4600000,
+    "customerDescription": "Parents and carers of children at state primary schools, most with two or more children, who buy a full uniform set every year and replace items mid-year as children grow.",
+    "reflection": {
+      "lensId": "own-problems",
+      "capturedAt": "2026-04-12T09:30:00.000Z",
+      "prompts": [
+        {
+          "promptId": "own-anchor",
+          "answers": [
+            "Running the PTA second-hand uniform stall for three years"
+          ]
+        },
+        {
+          "promptId": "problems-hit",
+          "answers": [
+            "Two bin bags of perfectly good jumpers in my loft and a sixty pound bill in August, both in the same fortnight",
+            "The stall only ran twice a year, which is never when a child actually outgrows something",
+            "Families who needed it most were the least likely to come and pick through a table in public"
+          ]
+        },
+        {
+          "promptId": "what-you-did",
+          "answers": [
+            "Stored the bags in my own garage between fairs because nobody else had room",
+            "Started a class WhatsApp group for swaps, which worked for one year group and died when I left"
+          ]
+        },
+        {
+          "promptId": "customer",
+          "answers": [
+            "Primary school families on tight budgets",
+            "Parents of children at state primary schools"
+          ]
+        }
+      ]
+    }
+  },
+  "solutions": [
+    {
+      "id": 1,
+      "problemId": 1,
+      "workspaceId": 1,
+      "createdAt": "2026-04-12T09:00:00.000Z",
+      "editedAt": "2026-09-02T14:20:00.000Z",
+      "title": "A uniform library run by the school",
+      "description": "A rail in the school entrance holding clean, sorted, sized uniform. Families take what fits and bring back what does not, with no sign-up and no questions. The school runs it as part of the office rota rather than leaning on one volunteer, so it is open every day rather than twice a year.",
+      "inspirationSource": "analogy",
+      "inspirationDetail": "Taken from how a library works: borrow, return, no transaction, no awkwardness.",
+      "feasibility": 4,
+      "impact": 5,
+      "cost": 2,
+      "timeToImplement": 2,
+      "validationStatus": "valid",
+      "trafficLight": "green",
+      "analogyDomain": "Libraries",
+      "analogyInsight": "Borrowing and returning removes the stigma that asking for hand-me-downs carries."
+    },
+    {
+      "id": 2,
+      "problemId": 1,
+      "workspaceId": 1,
+      "createdAt": "2026-04-12T09:00:00.000Z",
+      "editedAt": "2026-09-02T14:20:00.000Z",
+      "title": "A swap app for the school gate",
+      "description": "A phone app where parents list outgrown items by school and size, and get notified when their child's next size appears. Matching happens between families and the school is not involved at all.",
+      "inspirationSource": "scamper",
+      "inspirationDetail": "Substitute: replace the physical stall with a listing, so it runs all year.",
+      "feasibility": 3,
+      "impact": 3,
+      "cost": 3,
+      "timeToImplement": 3,
+      "validationStatus": "unsure",
+      "trafficLight": "amber",
+      "scamperIdeas": {
+        "substitute": "A listing instead of a stall",
+        "eliminate": "Remove the need for storage space"
+      }
+    }
+  ],
+  "workspace": {
+    "id": 1,
+    "problemId": 1,
+    "createdAt": "2026-04-12T09:00:00.000Z",
+    "editedAt": "2026-09-02T14:20:00.000Z",
+    "analysisToolType": "root-causes",
+    "discoveryToolType": "analogy",
+    "rootCauses": [
+      {
+        "id": 1,
+        "description": "Uniform is sized for a body that changes faster than the cloth wears"
+      },
+      {
+        "id": 2,
+        "description": "Exclusive supplier deals remove the second-hand market for branded items"
+      },
+      {
+        "id": 3,
+        "description": "Reuse depends on volunteers rather than on anything the school runs"
+      }
+    ],
+    "fiveWhyChains": [],
+    "affectedGroups": [
+      {
+        "id": 1,
+        "name": "Families with two or more primary-age children",
+        "severity": "high",
+        "description": "Pay the September bill more than once and feel every increase."
+      },
+      {
+        "id": 2,
+        "name": "PTA volunteers",
+        "severity": "medium",
+        "description": "Carry the entire reuse system personally, and burn out."
+      },
+      {
+        "id": 3,
+        "name": "Schools",
+        "severity": "low",
+        "description": "Field the complaints about cost but have no mechanism to answer them."
+      }
+    ],
+    "rootCauseNotes": "Every existing answer treats reuse as a favour somebody does. Nothing treats it as a service the school could simply have.",
+    "reverseIdeation": [],
+    "reverseInversion": [],
+    "analogyDomain": "Libraries",
+    "analogyInsight": "Nobody thinks it is odd to borrow a book and bring it back. The same idea applied to jumpers removes the awkwardness of asking.",
+    "improvementResponses": {
+      "coreFunctionality": [],
+      "easeOfUse": [],
+      "speedConvenience": [],
+      "priceValue": [],
+      "qualityPerception": [],
+      "customisation": [],
+      "customerSupport": [],
+      "trustTransparency": [],
+      "deliveryFulfilment": [],
+      "availabilityAccess": [],
+      "emotionalExperience": [],
+      "socialEthicalValue": [],
+      "communication": [],
+      "riskReduction": [],
+      "postPurchase": []
+    },
+    "scamperIdeas": {}
+  },
+  "researchCapture": null,
+  "customDimensionItems": {
+    "customers": [
+      {
+        "id": "customer-user-primaryfam",
+        "label": "Primary school families on tight budgets",
+        "createdAt": "2026-04-12T09:05:00.000Z"
+      }
+    ],
+    "contexts": [],
+    "problems": []
+  },
+  "selfDiscoveryItems": [
+    {
+      "id": "you-user-uniform1",
+      "title": "I ran the PTA second-hand stall for three years and watched it work",
+      "questionUrl": "work-experience/what-have-you-organised"
+    },
+    {
+      "id": "you-user-uniform2",
+      "title": "I care about waste more than almost anything else",
+      "questionUrl": "social-impact/what-change-matters-to-you"
+    }
+  ]
+}

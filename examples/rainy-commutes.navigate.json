@@ -1,0 +1,374 @@
+{
+  "format": "navigate-problem-bundle",
+  "version": 3,
+  "exportedAt": "2026-09-18T09:00:00.000Z",
+  "project": {
+    "name": "Rainy commutes",
+    "members": [
+      {
+        "id": "member-jane",
+        "name": "Jane Okonkwo",
+        "email": "jane.okonkwo@example.com"
+      },
+      {
+        "id": "member-tom",
+        "name": "Tom Reilly",
+        "email": "tom.reilly@example.com"
+      }
+    ],
+    "visibility": "public",
+    "reflect": null,
+    "research": null,
+    "canvasDraft": null,
+    "comparisonWeights": {
+      "feasibility": 2,
+      "impact": 3,
+      "cost": 2,
+      "timeToImplement": 1
+    }
+  },
+  "problem": {
+    "id": 1,
+    "createdAt": "2026-09-01T09:00:00.000Z",
+    "editedAt": "2026-09-17T16:30:00.000Z",
+    "title": "Cyclists arrive at work soaked and have nowhere to dry off",
+    "description": "People who cycle to work in a British city get rained on two or three mornings a week between October and March. Offices rarely have anywhere to hang wet kit, so cyclists either sit in damp clothes all morning or give up cycling on any day the forecast looks doubtful. The bike is not the problem; the forty minutes after the ride are.",
+    "customers": [
+      "customer-young-professionals",
+      "customer-eco-conscious",
+      "customer-user-bikecomm"
+    ],
+    "contexts": [
+      "context-commuting",
+      "context-morning-routine",
+      "context-urban-areas"
+    ],
+    "problems": [
+      "problem-inconvenient",
+      "problem-poor-ux"
+    ],
+    "you": [
+      "you-user-cyclist1"
+    ],
+    "source": "reflect",
+    "existingSolutions": [
+      {
+        "id": 1,
+        "text": "Waterproof jackets and overtrousers",
+        "shortcomings": [
+          {
+            "id": 10,
+            "text": "You stay dry on the outside and sweat through on the inside"
+          },
+          {
+            "id": 11,
+            "text": "There is still nowhere to put the wet kit once you arrive"
+          },
+          {
+            "id": 12,
+            "text": "Good ones cost well over a hundred pounds"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "text": "Keeping a spare set of clothes at the office",
+        "shortcomings": [
+          {
+            "id": 20,
+            "text": "Needs a locker, which most offices do not have"
+          },
+          {
+            "id": 21,
+            "text": "Does nothing for the kit you cycled in"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "text": "Checking the forecast and taking the bus instead",
+        "shortcomings": [
+          {
+            "id": 30,
+            "text": "The bike then sits at home on exactly the days you needed the exercise"
+          },
+          {
+            "id": 31,
+            "text": "Forecasts are wrong often enough that people stop trusting them"
+          }
+        ]
+      }
+    ],
+    "jobsToBeDone": {
+      "functional": [
+        {
+          "id": 1,
+          "text": "Arrive at my desk in dry clothes",
+          "intensity": ""
+        },
+        {
+          "id": 2,
+          "text": "Have the kit dry again before the ride home",
+          "intensity": ""
+        },
+        {
+          "id": 3,
+          "text": "Keep cycling on days the forecast looks doubtful",
+          "intensity": ""
+        }
+      ],
+      "emotional": [
+        {
+          "id": 1,
+          "text": "Stop dreading the morning forecast",
+          "intensity": "strong"
+        },
+        {
+          "id": 2,
+          "text": "Feel like cycling in is a sensible choice rather than a gamble",
+          "intensity": "mild"
+        }
+      ],
+      "social": [
+        {
+          "id": 1,
+          "text": "Not be the person dripping through the open-plan office",
+          "intensity": "unbearable"
+        }
+      ]
+    },
+    "validationAssessment": {
+      "anchorJob": {
+        "kind": "social",
+        "id": 1
+      },
+      "howManyPeople": {
+        "value": 120000,
+        "unit": "cyclists",
+        "level": ""
+      },
+      "howOften": {
+        "value": 90,
+        "unit": "per year",
+        "level": ""
+      },
+      "worthToThem": {
+        "value": 4,
+        "unit": "GBP",
+        "level": ""
+      },
+      "reachableShare": 25,
+      "obtainableShare": 8,
+      "costOfSwitching": {
+        "value": null,
+        "unit": "",
+        "level": "low"
+      },
+      "solutionEffectiveness": {
+        "value": null,
+        "unit": "",
+        "level": "poor"
+      },
+      "competitorSize": {
+        "value": null,
+        "unit": "",
+        "level": "small"
+      }
+    },
+    "validationStatus": "valid",
+    "contextWhen": "On any weekday morning between October and March when it rains before nine, and again at five if the kit has not dried.",
+    "segmentSize": 120000,
+    "customerDescription": "Commuters who cycle three or more days a week into a city-centre office, mostly twenty-five to forty-five, who own decent kit and would keep cycling year round if arriving were not the hard part.",
+    "reflection": {
+      "lensId": "own-problems",
+      "capturedAt": "2026-09-01T09:20:00.000Z",
+      "prompts": [
+        {
+          "promptId": "own-anchor",
+          "answers": [
+            "Cycling to work year round for the last six years"
+          ]
+        },
+        {
+          "promptId": "problems-hit",
+          "answers": [
+            "I arrive soaked two or three mornings a week from October and there is nowhere to hang any of it",
+            "Whatever I rode in is still damp at five, so the ride home is worse than the ride in"
+          ]
+        },
+        {
+          "promptId": "what-you-did",
+          "answers": [
+            "Hung the jacket over the back of my chair and hoped, which never dried it and annoyed everyone near me",
+            "Kept a spare set of clothes in a drawer, which does nothing for the kit I actually cycled in",
+            "Started reading the forecast the night before and taking the bus on anything doubtful"
+          ]
+        },
+        {
+          "promptId": "customer",
+          "answers": [
+            "Year-round bike commuters",
+            "Anyone cycling into a city-centre office"
+          ]
+        }
+      ]
+    }
+  },
+  "solutions": [
+    {
+      "id": 1,
+      "problemId": 1,
+      "workspaceId": 1,
+      "createdAt": "2026-09-01T09:00:00.000Z",
+      "editedAt": "2026-09-17T16:30:00.000Z",
+      "title": "Heated drying lockers at secure cycle parks",
+      "description": "A bank of ventilated, gently heated lockers at existing secure cycle parking, rented by the month. You hang wet kit on arrival, it dries through the day, and you collect it before the ride home. The lockers sit where the bikes already are, so nobody has to carry wet kit into an office that has no room for it.",
+      "inspirationSource": "analogy",
+      "inspirationDetail": "Borrowed from the drying rooms every ski resort puts at the bottom of the lift. Nobody expects to dry their own kit on holiday, so why do we expect it on a Tuesday?",
+      "feasibility": 3,
+      "impact": 4,
+      "cost": 4,
+      "timeToImplement": 3,
+      "validationStatus": "valid",
+      "trafficLight": "green",
+      "analogyDomain": "Ski resorts",
+      "analogyInsight": "Shared drying infrastructure beats asking every individual to solve drying on their own."
+    },
+    {
+      "id": 2,
+      "problemId": 1,
+      "workspaceId": 1,
+      "createdAt": "2026-09-01T09:00:00.000Z",
+      "editedAt": "2026-09-17T16:30:00.000Z",
+      "title": "A pannier that doubles as a drying bag",
+      "description": "A rigid pannier with a vented liner and a small USB fan, so wet kit dries inside the bag under the desk rather than on the back of a chair. Sold once rather than rented, and it works in any office without asking the building for anything.",
+      "inspirationSource": "scamper",
+      "inspirationDetail": "Combine: the bag you already carry and the drying you cannot do.",
+      "feasibility": 4,
+      "impact": 3,
+      "cost": 2,
+      "timeToImplement": 2,
+      "validationStatus": "unsure",
+      "trafficLight": "amber",
+      "scamperIdeas": {
+        "combine": "Pannier plus dryer",
+        "adapt": "Borrow the vented liner from a laundry bag"
+      }
+    },
+    {
+      "id": 3,
+      "problemId": 1,
+      "workspaceId": 1,
+      "createdAt": "2026-09-01T09:00:00.000Z",
+      "editedAt": "2026-09-17T16:30:00.000Z",
+      "title": "A jacket that wrings itself out",
+      "description": "A cycling jacket with a spin mechanism built into the lining, so you shake it out on arrival and it comes away dry.",
+      "inspirationSource": "reverse",
+      "inspirationDetail": "Came out of asking how to make the problem worse, then inverting it. It survived the ideation and did not survive the scoring.",
+      "feasibility": 1,
+      "impact": 2,
+      "cost": 5,
+      "timeToImplement": 5,
+      "validationStatus": "invalid",
+      "trafficLight": "red",
+      "reverseWorseIdeas": [
+        "Make the jacket hold as much water as possible"
+      ],
+      "reverseInversions": [
+        "Make the jacket shed water on demand"
+      ]
+    }
+  ],
+  "workspace": {
+    "id": 1,
+    "problemId": 1,
+    "createdAt": "2026-09-01T09:00:00.000Z",
+    "editedAt": "2026-09-17T16:30:00.000Z",
+    "analysisToolType": "five-whys",
+    "discoveryToolType": "analogy",
+    "rootCauses": [
+      {
+        "id": 1,
+        "description": "Offices are designed for people who arrive dry"
+      },
+      {
+        "id": 2,
+        "description": "Drying is treated as each cyclist's own problem rather than shared infrastructure"
+      }
+    ],
+    "fiveWhyChains": [
+      {
+        "id": 1,
+        "whys": [
+          "Cyclists sit in damp clothes all morning",
+          "Because there is nowhere to hang wet kit",
+          "Because offices have no drying space",
+          "Because nobody planned for people arriving wet",
+          "Because the building was designed around people who drive or take the bus"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      {
+        "id": 1,
+        "name": "Daily commuting cyclists",
+        "severity": "high",
+        "description": "Feel it two or three mornings a week for five months of the year."
+      },
+      {
+        "id": 2,
+        "name": "Would-be cyclists",
+        "severity": "medium",
+        "description": "Never start, because the arrival problem is obvious before the first ride."
+      },
+      {
+        "id": 3,
+        "name": "Building managers",
+        "severity": "low",
+        "description": "Field the complaints but have no budget line for drying space."
+      }
+    ],
+    "rootCauseNotes": "Every existing answer asks the individual to carry the solution with them. The thing that is actually missing is shared, sitting where the bikes already are.",
+    "reverseIdeation": [],
+    "reverseInversion": [],
+    "analogyDomain": "Ski resorts",
+    "analogyInsight": "Shared drying rooms are ordinary there and unheard of here.",
+    "improvementResponses": {
+      "coreFunctionality": [],
+      "easeOfUse": [],
+      "speedConvenience": [],
+      "priceValue": [],
+      "qualityPerception": [],
+      "customisation": [],
+      "customerSupport": [],
+      "trustTransparency": [],
+      "deliveryFulfilment": [],
+      "availabilityAccess": [],
+      "emotionalExperience": [],
+      "socialEthicalValue": [],
+      "communication": [],
+      "riskReduction": [],
+      "postPurchase": []
+    },
+    "scamperIdeas": {}
+  },
+  "researchCapture": null,
+  "customDimensionItems": {
+    "customers": [
+      {
+        "id": "customer-user-bikecomm",
+        "label": "Year-round bike commuters",
+        "createdAt": "2026-09-01T09:05:00.000Z"
+      }
+    ],
+    "contexts": [],
+    "problems": []
+  },
+  "selfDiscoveryItems": [
+    {
+      "id": "you-user-cyclist1",
+      "title": "I have cycled to work for six years and have solved this badly every winter",
+      "questionUrl": "personal-interests/what-do-you-enjoy"
+    }
+  ]
+}

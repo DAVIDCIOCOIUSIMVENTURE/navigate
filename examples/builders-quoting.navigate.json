@@ -1,0 +1,340 @@
+{
+  "format": "navigate-problem-bundle",
+  "version": 3,
+  "exportedAt": "2026-09-18T09:00:00.000Z",
+  "project": {
+    "name": "Quoting for small builders",
+    "members": [
+      {
+        "id": "member-sean",
+        "name": "Sean Docherty",
+        "email": "sean.docherty@example.com"
+      },
+      {
+        "id": "member-nina",
+        "name": "Nina Patel",
+        "email": "nina.patel@example.com"
+      }
+    ],
+    "visibility": "public",
+    "reflect": null,
+    "research": null,
+    "canvasDraft": null,
+    "comparisonWeights": {
+      "feasibility": 2,
+      "impact": 3,
+      "cost": 1,
+      "timeToImplement": 3
+    }
+  },
+  "problem": {
+    "id": 1,
+    "createdAt": "2026-02-03T10:00:00.000Z",
+    "editedAt": "2026-08-28T17:00:00.000Z",
+    "title": "Small builders write quotes at nine at night and lose money on the ones they win",
+    "description": "A two-person building firm quotes for maybe fifteen jobs to win four. Each quote takes two hours of measuring, pricing and typing, all of it unpaid and almost all of it after the working day has finished. The prices come from memory and last year's invoices, so the margin on the jobs they win is a guess. The firms that price carefully are too slow to respond and lose the work to whoever answered first.",
+    "customers": [
+      "customer-trades-contractors",
+      "customer-solopreneurs",
+      "customer-user-solobuild"
+    ],
+    "contexts": [
+      "context-evening-winding-down",
+      "context-managing-projects",
+      "context-presenting-pitching"
+    ],
+    "problems": [
+      "problem-time-consuming",
+      "problem-manual-repetitive",
+      "problem-user-quoteeve"
+    ],
+    "you": [
+      "you-user-builder1"
+    ],
+    "source": "identify",
+    "existingSolutions": [
+      {
+        "id": 1,
+        "text": "A spreadsheet built up over years",
+        "shortcomings": [
+          {
+            "id": 10,
+            "text": "Prices go stale and nobody notices until a job loses money"
+          },
+          {
+            "id": 11,
+            "text": "Only the owner understands it, so nobody else can quote"
+          },
+          {
+            "id": 12,
+            "text": "Still takes two hours per quote"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "text": "Estimating software aimed at larger contractors",
+        "shortcomings": [
+          {
+            "id": 20,
+            "text": "Priced per seat at a level that only makes sense above twenty staff"
+          },
+          {
+            "id": 21,
+            "text": "Takes a fortnight to set up before it produces a single quote"
+          },
+          {
+            "id": 22,
+            "text": "Assumes an office and a quantity surveyor, neither of which exist here"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "text": "Quoting from memory on the spot",
+        "shortcomings": [
+          {
+            "id": 30,
+            "text": "Fast, and wrong often enough to wipe out the margin on a whole job"
+          },
+          {
+            "id": 31,
+            "text": "No record of how the number was reached when the customer queries it"
+          }
+        ]
+      }
+    ],
+    "jobsToBeDone": {
+      "functional": [
+        {
+          "id": 1,
+          "text": "Get a priced quote to the customer within forty-eight hours of the site visit",
+          "intensity": ""
+        },
+        {
+          "id": 2,
+          "text": "Know the margin on a job before agreeing to it",
+          "intensity": ""
+        },
+        {
+          "id": 3,
+          "text": "Get the evening back",
+          "intensity": ""
+        }
+      ],
+      "emotional": [
+        {
+          "id": 1,
+          "text": "Stop dreading Sunday night",
+          "intensity": "strong"
+        },
+        {
+          "id": 2,
+          "text": "Feel confident the number is right rather than hoping it is",
+          "intensity": "unbearable"
+        }
+      ],
+      "social": [
+        {
+          "id": 1,
+          "text": "Look professional next to the bigger firm quoting for the same job",
+          "intensity": "strong"
+        }
+      ]
+    },
+    "validationAssessment": {
+      "anchorJob": {
+        "kind": "emotional",
+        "id": 2
+      },
+      "howManyPeople": {
+        "value": 180000,
+        "unit": "firms",
+        "level": ""
+      },
+      "howOften": {
+        "value": 15,
+        "unit": "per year",
+        "level": ""
+      },
+      "worthToThem": {
+        "value": 35,
+        "unit": "GBP",
+        "level": ""
+      },
+      "reachableShare": 20,
+      "obtainableShare": 6,
+      "costOfSwitching": {
+        "value": null,
+        "unit": "",
+        "level": "medium"
+      },
+      "solutionEffectiveness": {
+        "value": null,
+        "unit": "",
+        "level": "poor"
+      },
+      "competitorSize": {
+        "value": null,
+        "unit": "",
+        "level": "large"
+      }
+    },
+    "validationStatus": "valid",
+    "contextWhen": "Every evening and most Sunday afternoons, and urgently in the two days after a site visit while the customer is still deciding.",
+    "segmentSize": 180000,
+    "customerDescription": "Building firms of one to five people doing domestic extensions, loft conversions and renovations, turning over between eighty thousand and half a million a year, where the owner is on the tools all day and does the office work at night.",
+    "reflection": null
+  },
+  "solutions": [
+    {
+      "id": 1,
+      "problemId": 1,
+      "workspaceId": 1,
+      "createdAt": "2026-02-03T10:00:00.000Z",
+      "editedAt": "2026-08-28T17:00:00.000Z",
+      "title": "Quote from the site visit on a phone",
+      "description": "Measure rooms with the phone camera on site, pick the job type, and the app prices it from a materials feed and the firm's own labour rates. The customer gets a proper quote before the builder has left the drive. The pricing is the firm's own, built up from the jobs it has already done, so it gets more accurate rather than staler.",
+      "inspirationSource": "improve",
+      "inspirationDetail": "Took the spreadsheet everyone already has and asked what would make it worth opening on site.",
+      "feasibility": 3,
+      "impact": 5,
+      "cost": 3,
+      "timeToImplement": 4,
+      "validationStatus": "valid",
+      "trafficLight": "green",
+      "improveIdeas": {
+        "speedConvenience": "Quote before leaving the drive",
+        "qualityPerception": "Prices that update themselves"
+      }
+    },
+    {
+      "id": 2,
+      "problemId": 1,
+      "workspaceId": 1,
+      "createdAt": "2026-02-03T10:00:00.000Z",
+      "editedAt": "2026-08-28T17:00:00.000Z",
+      "title": "A shared price book for the trade",
+      "description": "A subscription price book of regional labour and materials rates, updated monthly from what member firms actually paid. It does not produce the quote, it just stops the prices going stale.",
+      "inspirationSource": "scamper",
+      "inspirationDetail": "Combine: pool what every firm already knows separately.",
+      "feasibility": 4,
+      "impact": 3,
+      "cost": 2,
+      "timeToImplement": 2,
+      "validationStatus": "unsure",
+      "trafficLight": "amber",
+      "scamperIdeas": {
+        "combine": "Pool pricing across firms"
+      }
+    },
+    {
+      "id": 3,
+      "problemId": 1,
+      "workspaceId": 1,
+      "createdAt": "2026-02-03T10:00:00.000Z",
+      "editedAt": "2026-08-28T17:00:00.000Z",
+      "title": "A quoting service staffed by ex-estimators",
+      "description": "Send photos and measurements to a human estimator who returns a finished quote within a day, charged per quote.",
+      "inspirationSource": "freeform",
+      "inspirationDetail": "",
+      "feasibility": 4,
+      "impact": 4,
+      "cost": 5,
+      "timeToImplement": 3,
+      "validationStatus": "invalid",
+      "trafficLight": "red"
+    }
+  ],
+  "workspace": {
+    "id": 1,
+    "problemId": 1,
+    "createdAt": "2026-02-03T10:00:00.000Z",
+    "editedAt": "2026-08-28T17:00:00.000Z",
+    "analysisToolType": "affected-groups",
+    "discoveryToolType": "improve",
+    "rootCauses": [
+      {
+        "id": 1,
+        "description": "Quoting is unpaid work, so it gets done in unpaid hours"
+      },
+      {
+        "id": 2,
+        "description": "The tools that price properly are built for firms twenty times the size"
+      },
+      {
+        "id": 3,
+        "description": "Speed and accuracy pull in opposite directions, and speed usually wins the job"
+      }
+    ],
+    "fiveWhyChains": [],
+    "affectedGroups": [
+      {
+        "id": 1,
+        "name": "The owner",
+        "severity": "critical",
+        "description": "Does every quote personally, after a full day on site."
+      },
+      {
+        "id": 2,
+        "name": "The owner's family",
+        "severity": "high",
+        "description": "Loses the evenings and most of Sunday."
+      },
+      {
+        "id": 3,
+        "name": "Customers",
+        "severity": "medium",
+        "description": "Wait days for a number and cannot compare quotes that are structured differently."
+      }
+    ],
+    "rootCauseNotes": "The firms that price well are slow, and the firms that are fast price badly. Nothing lets a small firm be both.",
+    "reverseIdeation": [],
+    "reverseInversion": [],
+    "analogyDomain": "",
+    "analogyInsight": "",
+    "improvementResponses": {
+      "coreFunctionality": [],
+      "easeOfUse": [],
+      "speedConvenience": [],
+      "priceValue": [],
+      "qualityPerception": [],
+      "customisation": [],
+      "customerSupport": [],
+      "trustTransparency": [],
+      "deliveryFulfilment": [],
+      "availabilityAccess": [],
+      "emotionalExperience": [],
+      "socialEthicalValue": [],
+      "communication": [],
+      "riskReduction": [],
+      "postPurchase": []
+    },
+    "scamperIdeas": {}
+  },
+  "researchCapture": null,
+  "customDimensionItems": {
+    "customers": [
+      {
+        "id": "customer-user-solobuild",
+        "label": "One-to-five person building firms",
+        "createdAt": "2026-02-03T10:10:00.000Z"
+      }
+    ],
+    "contexts": [],
+    "problems": [
+      {
+        "id": "problem-user-quoteeve",
+        "label": "Work that only happens after hours",
+        "createdAt": "2026-02-03T10:12:00.000Z"
+      }
+    ]
+  },
+  "selfDiscoveryItems": [
+    {
+      "id": "you-user-builder1",
+      "title": "I spent nine years as a site manager and wrote quotes every Sunday night",
+      "questionUrl": "work-experience/what-have-you-done"
+    }
+  ]
+}

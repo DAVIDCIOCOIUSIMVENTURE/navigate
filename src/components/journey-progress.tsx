@@ -1,5 +1,6 @@
 "use client"
 
+import { useMemo } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useSelector } from "react-redux"
@@ -8,13 +9,18 @@ import { Card, CardContent } from "@/components/ui/card"
 import {
   completedJourneySteps,
   computeJourneySteps,
+  identifyOriginOf,
+  journeySolutionId,
   journeyStepHref,
   summariseProblemJourney,
+  NO_JOURNEY_TARGET,
   type JourneyStep,
   type JourneyStepId,
+  type JourneyTarget,
 } from "@/lib/journey-steps"
 import { useProjectIdForProblem } from "@/hooks/use-projects"
 import { projectIdFromPathname } from "@/lib/projects"
+import { loadResearchCapture } from "@/lib/research-capture"
 import { cn } from "@/lib/utils"
 
 /**
@@ -89,7 +95,18 @@ export function JourneyProgress({
   const projectId = problemProjectId ?? projectIdFromPathname(pathname)
   const completed = problem ? completedJourneySteps(summariseProblemJourney(problem, solutions)) : undefined
   const steps = computeJourneySteps(activeId, completed)
-  const hrefFor = (step: JourneyStep) => journeyStepHref(step, projectId, problem !== undefined)
+  // The research method the problem came from is kept beside the problem in
+  // storage rather than on it, so it is read here and handed to the pure
+  // rules. Nothing is read until the store has hydrated a problem, so this
+  // never differs between the server render and the first client one.
+  const target: JourneyTarget = useMemo(() => {
+    if (!problem) return NO_JOURNEY_TARGET
+    return {
+      origin: identifyOriginOf(problem, loadResearchCapture(problem.id)?.methodId ?? null),
+      solutionId: journeySolutionId(problem.id, solutions),
+    }
+  }, [problem, solutions])
+  const hrefFor = (step: JourneyStep) => journeyStepHref(step, projectId, target)
 
   if (orientation === "horizontal") {
     return (

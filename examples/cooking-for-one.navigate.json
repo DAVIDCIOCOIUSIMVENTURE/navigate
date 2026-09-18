@@ -1,0 +1,237 @@
+{
+  "format": "navigate-problem-bundle",
+  "version": 3,
+  "exportedAt": "2026-09-18T09:00:00.000Z",
+  "project": {
+    "name": "Cooking for one",
+    "members": [
+      {
+        "id": "member-callum",
+        "name": "Callum Frazer",
+        "email": "callum.frazer@example.com"
+      }
+    ],
+    "visibility": "public",
+    "reflect": null,
+    "research": null,
+    "canvasDraft": null,
+    "comparisonWeights": {
+      "feasibility": 2,
+      "impact": 2,
+      "cost": 2,
+      "timeToImplement": 2
+    }
+  },
+  "problem": {
+    "id": 1,
+    "createdAt": "2026-06-14T19:00:00.000Z",
+    "editedAt": "2026-07-30T20:30:00.000Z",
+    "title": "People living alone buy ingredients in twos and fours and throw half of it away",
+    "description": "Supermarket packaging is built for a household of four. Somebody cooking for one buys a bag of six peppers, uses one, and bins four. The recipes are written for four as well, so cooking properly means eating the same thing for three days. The waste is obvious and irritating, and it turns out most people have already made peace with it.",
+    "customers": [
+      "customer-young-professionals",
+      "customer-retirees",
+      "customer-budget-conscious"
+    ],
+    "contexts": [
+      "context-cooking-meals",
+      "context-shopping-errands",
+      "context-evening-winding-down"
+    ],
+    "problems": [
+      "problem-waste-overconsumption",
+      "problem-limited-customization",
+      "problem-high-costs"
+    ],
+    "you": [
+      "you-user-cook1"
+    ],
+    "source": "identify",
+    "existingSolutions": [
+      {
+        "id": 1,
+        "text": "Cooking for four and eating leftovers",
+        "shortcomings": [
+          {
+            "id": 10,
+            "text": "Works, and is what almost everybody already does"
+          },
+          {
+            "id": 11,
+            "text": "Gets boring by the third night but not badly enough to change anything"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "text": "Freezing the surplus",
+        "shortcomings": [
+          {
+            "id": 20,
+            "text": "Also works, also what people already do"
+          },
+          {
+            "id": 21,
+            "text": "Needs freezer space and a bit of organisation"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "text": "Recipe box subscriptions",
+        "shortcomings": [
+          {
+            "id": 30,
+            "text": "Portioned correctly, and priced at roughly twice the supermarket"
+          },
+          {
+            "id": 31,
+            "text": "Solves the portioning by removing the choice"
+          }
+        ]
+      }
+    ],
+    "jobsToBeDone": {
+      "functional": [
+        {
+          "id": 1,
+          "text": "Cook one good meal without buying four portions of everything",
+          "intensity": ""
+        },
+        {
+          "id": 2,
+          "text": "Waste less food",
+          "intensity": ""
+        }
+      ],
+      "emotional": [
+        {
+          "id": 1,
+          "text": "Stop feeling wasteful every time the vegetable drawer gets cleared out",
+          "intensity": "mild"
+        }
+      ],
+      "social": []
+    },
+    "validationAssessment": {
+      "anchorJob": {
+        "kind": "emotional",
+        "id": 1
+      },
+      "howManyPeople": {
+        "value": 8300000,
+        "unit": "households",
+        "level": ""
+      },
+      "howOften": {
+        "value": 150,
+        "unit": "per year",
+        "level": ""
+      },
+      "worthToThem": {
+        "value": 1,
+        "unit": "GBP",
+        "level": ""
+      },
+      "reachableShare": 5,
+      "obtainableShare": 3,
+      "costOfSwitching": {
+        "value": null,
+        "unit": "",
+        "level": "high"
+      },
+      "solutionEffectiveness": {
+        "value": null,
+        "unit": "",
+        "level": "good"
+      },
+      "competitorSize": {
+        "value": null,
+        "unit": "",
+        "level": "giant"
+      }
+    },
+    "validationStatus": "invalid",
+    "contextWhen": "Every weekday evening, and at the point of the weekly shop.",
+    "segmentSize": 8300000,
+    "customerDescription": "Single-person households, weighted towards under-thirties in flatshares and over-sixties living alone, who cook from scratch at least three times a week.",
+    "reflection": null
+  },
+  "solutions": [
+    {
+      "id": 1,
+      "problemId": 1,
+      "workspaceId": 1,
+      "createdAt": "2026-06-14T19:00:00.000Z",
+      "editedAt": "2026-07-30T20:30:00.000Z",
+      "title": "Single-portion produce packs",
+      "description": "Loose produce sold in genuine single portions: one pepper, eighty grams of mince, a third of a cabbage, priced per portion rather than per kilo.",
+      "inspirationSource": "freeform",
+      "inspirationDetail": "The obvious answer, which is also the one the supermarkets have already tried and mostly withdrawn.",
+      "feasibility": 2,
+      "impact": 2,
+      "cost": 4,
+      "timeToImplement": 4,
+      "validationStatus": "invalid",
+      "trafficLight": "red"
+    }
+  ],
+  "workspace": {
+    "id": 1,
+    "problemId": 1,
+    "createdAt": "2026-06-14T19:00:00.000Z",
+    "editedAt": "2026-07-30T20:30:00.000Z",
+    "analysisToolType": "five-whys",
+    "discoveryToolType": "",
+    "rootCauses": [],
+    "fiveWhyChains": [
+      {
+        "id": 1,
+        "whys": [
+          "Single people throw away food they bought",
+          "Because it is sold in quantities for four",
+          "Because packaging and pricing are built around the family shop",
+          "Because that is where the volume is",
+          "Because single households, though numerous, buy less per trip and are worth less to the retailer"
+        ]
+      }
+    ],
+    "affectedGroups": [],
+    "rootCauseNotes": "The interviews killed this one. Everybody recognised the problem instantly and nobody had ever done anything about it, which turned out to mean leftovers and the freezer are a perfectly good answer. The pain is real and about two pounds a week wide.",
+    "reverseIdeation": [],
+    "reverseInversion": [],
+    "analogyDomain": "",
+    "analogyInsight": "",
+    "improvementResponses": {
+      "coreFunctionality": [],
+      "easeOfUse": [],
+      "speedConvenience": [],
+      "priceValue": [],
+      "qualityPerception": [],
+      "customisation": [],
+      "customerSupport": [],
+      "trustTransparency": [],
+      "deliveryFulfilment": [],
+      "availabilityAccess": [],
+      "emotionalExperience": [],
+      "socialEthicalValue": [],
+      "communication": [],
+      "riskReduction": [],
+      "postPurchase": []
+    },
+    "scamperIdeas": {}
+  },
+  "researchCapture": null,
+  "customDimensionItems": {
+    "customers": [],
+    "contexts": [],
+    "problems": []
+  },
+  "selfDiscoveryItems": [
+    {
+      "id": "you-user-cook1",
+      "title": "I have lived alone for six years and have thrown away a lot of half-used vegetables",
+      "questionUrl": "personal-interests/what-frustrates-you"
+    }
+  ]
+}

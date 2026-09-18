@@ -11,6 +11,7 @@
     "test": "vitest",
     "test:run": "vitest run",
     "test:ui": "vitest --ui",
+    "examples": "node scripts/make-example-projects.mjs",
     "seed": "prisma db seed --schema=prisma/schema.prisma",
     "db:migrate": "prisma migrate dev",
     "db:migrate:test": "prisma migrate deploy --env-file .env.test",

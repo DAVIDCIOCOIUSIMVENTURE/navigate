@@ -7,8 +7,8 @@ import { useReflect } from "@/components/reflect/reflect-context"
 
 /**
  * Compact amber card naming the experience, work area or audience the current
- * Reflect session is anchored on. Rendered in the Reflect stepper rail above
- * the Reset button; renders nothing until the anchor prompt has an answer.
+ * run of a guided prompt tool is anchored on. Rendered in that tool's stepper
+ * rail above the Reset button; renders nothing until the anchor has an answer.
  * Must sit inside a `ReflectProvider`.
  */
 export function ReflectingOnCard() {

@@ -14,14 +14,16 @@ export type ReflectSession = {
   answers: Record<string, ReflectAnswer[]>
 }
 
-export type ReflectStep = "pick" | "prompts" | "review"
+export type ReflectStep = "prompts" | "review"
 
-const REFLECT_STEPS: readonly ReflectStep[] = ["pick", "prompts", "review"]
+const REFLECT_STEPS: readonly ReflectStep[] = ["prompts", "review"]
 
 /**
- * One project's Reflect drafts: a session per lens the user has opened, plus
- * where they last were so the flow can resume. Drafts belong to the project
- * they were started in and never show in another.
+ * One project's guided-prompt drafts: a session per lens (Life experiences,
+ * Work friction, ...) the user has opened, plus where they last were so the
+ * tool can resume. Drafts belong to the project they were started in and never
+ * show in another. A position stored before the lenses became tools of their
+ * own may name the dropped "pick" step; it reads back as no position at all.
  */
 export type ReflectProjectState = {
   sessions: Record<string, ReflectSession>
@@ -44,7 +46,7 @@ const defaultState: ReflectSessionsState = {
   hydrated: false,
 }
 
-/** The Reflect drafts of one project, empty when it has none. */
+/** The guided-prompt drafts of one project, empty when it has none. */
 export function selectReflectProject(state: { reflectSessions: ReflectSessionsState }, projectId: number): ReflectProjectState {
   return state.reflectSessions.byProject[projectId] ?? EMPTY_REFLECT_PROJECT
 }

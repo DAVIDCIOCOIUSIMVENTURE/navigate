@@ -1,0 +1,283 @@
+{
+  "format": "navigate-problem-bundle",
+  "version": 3,
+  "exportedAt": "2026-09-18T09:00:00.000Z",
+  "project": {
+    "name": "The August allotment glut",
+    "members": [
+      {
+        "id": "member-aisha",
+        "name": "Aisha Rahman",
+        "email": "aisha.rahman@example.com"
+      }
+    ],
+    "visibility": "public",
+    "reflect": null,
+    "research": null,
+    "canvasDraft": null,
+    "comparisonWeights": {
+      "feasibility": 2,
+      "impact": 2,
+      "cost": 2,
+      "timeToImplement": 2
+    }
+  },
+  "problem": {
+    "id": 1,
+    "createdAt": "2026-08-20T08:00:00.000Z",
+    "editedAt": "2026-09-14T18:45:00.000Z",
+    "title": "Allotment holders grow far more than they can eat, and most of the surplus rots",
+    "description": "For six weeks every August a single allotment plot produces more courgettes, beans and tomatoes than one household can possibly get through. Growers give what they can to neighbours, then watch the rest go soft on the plot. Meanwhile the food bank two streets away is buying tinned vegetables. Nobody has a way of connecting the glut to the need in the few days the food is good for.",
+    "customers": [
+      "customer-hobbyists",
+      "customer-retirees",
+      "customer-community-orgs"
+    ],
+    "contexts": [
+      "context-outdoors-nature",
+      "context-volunteering",
+      "context-community-events"
+    ],
+    "problems": [
+      "problem-waste-overconsumption",
+      "problem-coordination",
+      "problem-tight-windows"
+    ],
+    "you": [
+      "you-user-allot1"
+    ],
+    "source": "research",
+    "existingSolutions": [
+      {
+        "id": 1,
+        "text": "Leaving a box of surplus at the allotment gate",
+        "shortcomings": [
+          {
+            "id": 10,
+            "text": "Only reaches other allotment holders, who have exactly the same glut"
+          },
+          {
+            "id": 11,
+            "text": "Whatever is left goes off in the box"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "text": "Dropping surplus at the food bank",
+        "shortcomings": [
+          {
+            "id": 20,
+            "text": "Most will only take tinned and packaged food, not fresh"
+          },
+          {
+            "id": 21,
+            "text": "Opening hours rarely match when somebody has just picked a crate of beans"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "text": "Freezing or preserving it",
+        "shortcomings": [
+          {
+            "id": 30,
+            "text": "Takes an evening per batch and a freezer most people do not have space in"
+          },
+          {
+            "id": 31,
+            "text": "Does not help anyone else"
+          }
+        ]
+      }
+    ],
+    "jobsToBeDone": {
+      "functional": [
+        {
+          "id": 1,
+          "text": "Get a crate of ripe veg to somebody who will eat it within two days",
+          "intensity": ""
+        },
+        {
+          "id": 2,
+          "text": "Avoid a trip across town for a box of courgettes",
+          "intensity": ""
+        }
+      ],
+      "emotional": [
+        {
+          "id": 1,
+          "text": "Stop feeling guilty about the waste at the end of every August",
+          "intensity": "strong"
+        }
+      ],
+      "social": [
+        {
+          "id": 1,
+          "text": "Be the neighbour who feeds people rather than the one with a compost heap of tomatoes",
+          "intensity": "mild"
+        }
+      ]
+    },
+    "validationAssessment": {
+      "anchorJob": {
+        "kind": "emotional",
+        "id": 1
+      },
+      "howManyPeople": {
+        "value": 0,
+        "unit": "",
+        "level": ""
+      },
+      "howOften": {
+        "value": 0,
+        "unit": "",
+        "level": ""
+      },
+      "worthToThem": {
+        "value": 0,
+        "unit": "",
+        "level": ""
+      },
+      "reachableShare": 30,
+      "obtainableShare": 10,
+      "costOfSwitching": {
+        "value": null,
+        "unit": "",
+        "level": "medium"
+      },
+      "solutionEffectiveness": {
+        "value": null,
+        "unit": "",
+        "level": "average"
+      },
+      "competitorSize": {
+        "value": null,
+        "unit": "",
+        "level": "medium"
+      }
+    },
+    "validationStatus": "in_progress",
+    "contextWhen": "Late July through September, when everything ripens at once and a glut lasts days rather than weeks.",
+    "segmentSize": 330000,
+    "customerDescription": "People with an allotment plot or a productive garden, skewing older and retired, who grow far more than they eat and hate throwing it away.",
+    "reflection": null
+  },
+  "solutions": [],
+  "workspace": {
+    "id": 1,
+    "problemId": 1,
+    "createdAt": "2026-08-20T08:00:00.000Z",
+    "editedAt": "2026-09-14T18:45:00.000Z",
+    "analysisToolType": "five-whys",
+    "discoveryToolType": "",
+    "rootCauses": [],
+    "fiveWhyChains": [
+      {
+        "id": 1,
+        "whys": [
+          "Surplus vegetables rot on the plot",
+          "Because the grower cannot find anyone to take them in time",
+          "Because the people who would want them do not know the surplus exists",
+          "Because there is no route between a plot and a kitchen that needs food",
+          "Because giving food away has been left to chance and neighbourliness"
+        ]
+      }
+    ],
+    "affectedGroups": [
+      {
+        "id": 1,
+        "name": "Allotment holders",
+        "severity": "medium",
+        "description": "Feel the waste personally every year."
+      },
+      {
+        "id": 2,
+        "name": "Food banks and community kitchens",
+        "severity": "high",
+        "description": "Buy in vegetables while fresh ones rot nearby."
+      }
+    ],
+    "rootCauseNotes": "The food, the need and the willingness all exist within a mile of each other. The only thing missing is knowing, on the day.",
+    "reverseIdeation": [],
+    "reverseInversion": [],
+    "analogyDomain": "",
+    "analogyInsight": "",
+    "improvementResponses": {
+      "coreFunctionality": [],
+      "easeOfUse": [],
+      "speedConvenience": [],
+      "priceValue": [],
+      "qualityPerception": [],
+      "customisation": [],
+      "customerSupport": [],
+      "trustTransparency": [],
+      "deliveryFulfilment": [],
+      "availabilityAccess": [],
+      "emotionalExperience": [],
+      "socialEthicalValue": [],
+      "communication": [],
+      "riskReduction": [],
+      "postPurchase": []
+    },
+    "scamperIdeas": {}
+  },
+  "researchCapture": {
+    "methodId": "abandoned-products",
+    "toolId": "product-hunt-discontinued",
+    "capturedAt": "2026-09-06T11:00:00.000Z",
+    "prompts": [
+      {
+        "promptId": "product-name",
+        "answers": [
+          "Harvest Share, a local surplus-produce noticeboard, listed as no longer maintained in 2018"
+        ]
+      },
+      {
+        "promptId": "what-it-did",
+        "answers": [
+          "A map and a noticeboard where growers posted what they had spare that week and anyone nearby could claim it. Used mostly by allotment associations and a few community kitchens, in the low thousands."
+        ]
+      },
+      {
+        "promptId": "why-abandoned",
+        "answers": [
+          "Founder burnout, by the look of the last few posts. One person was moderating listings by hand, and the whole thing was seasonal, so it went quiet for eight months of the year and never built a habit."
+        ]
+      },
+      {
+        "promptId": "unmet-need",
+        "answers": [
+          "Growers with more ripe produce than they can eat cannot find anyone to take it in the two or three days it stays good",
+          "Community kitchens buy in vegetables while fresh ones rot a street away, because nobody tells them the surplus exists"
+        ]
+      },
+      {
+        "promptId": "what-changed",
+        "answers": [
+          "Every allotment site now has a WhatsApp group, so the listing no longer has to be the thing that carries the audience",
+          "Food banks and community kitchens have far more coordination between them than they did in 2018"
+        ]
+      },
+      {
+        "promptId": "audience",
+        "answers": [
+          "Allotment holders",
+          "Community kitchens and food banks"
+        ]
+      }
+    ]
+  },
+  "customDimensionItems": {
+    "customers": [],
+    "contexts": [],
+    "problems": []
+  },
+  "selfDiscoveryItems": [
+    {
+      "id": "you-user-allot1",
+      "title": "I have had an allotment for eleven years and give away half of what I grow",
+      "questionUrl": "personal-interests/what-do-you-enjoy"
+    }
+  ]
+}

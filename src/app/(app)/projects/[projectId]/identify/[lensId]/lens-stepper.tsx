@@ -19,16 +19,14 @@ import {
   navStepBadgeClass,
 } from "@/lib/nav-item-styles"
 
-export const REFLECT_STEPS: { id: ReflectStep; label: string }[] = [
-  { id: "pick", label: "Pick a method" },
+export const LENS_STEPS: { id: ReflectStep; label: string }[] = [
   { id: "prompts", label: "Prompts" },
   { id: "review", label: "Review" },
 ]
 
-export function ReflectStepper({
+export function LensStepper({
   activeId,
   onStepClick,
-  isStepEnabled,
   promptsProgress,
   onReset,
   resetDescription,
@@ -36,14 +34,13 @@ export function ReflectStepper({
 }: {
   activeId: ReflectStep
   onStepClick: (id: ReflectStep) => void
-  isStepEnabled: (id: ReflectStep) => boolean
   promptsProgress?: { current: number; total: number } | null
   onReset: () => void
   resetDescription: string
-  /** Reminder of what the session is anchored on, shown above the Reset button. */
+  /** Reminder of what the run is anchored on, shown above the Reset button. */
   contextCard?: ReactNode
 }) {
-  const steps = REFLECT_STEPS
+  const steps = LENS_STEPS
   const isWide = useContainerSize() === "wide"
   const [open, setOpen] = useState(false)
   const activeIdx = steps.findIndex((s) => s.id === activeId)
@@ -76,15 +73,12 @@ export function ReflectStepper({
       {steps.map((s, i) => {
         const isActive = s.id === activeId
         const isCompleted = i < activeIdx
-        const enabled = isStepEnabled(s.id)
         return (
           <Button
             key={s.id}
             type="button"
             variant="ghost"
-            disabled={!enabled}
             onClick={() => {
-              if (!enabled) return
               setOpen(false)
               onStepClick(s.id)
             }}
@@ -95,7 +89,7 @@ export function ReflectStepper({
               isActive && NAV_ITEM_ACTIVE_CLASS,
             )}
           >
-            <span className={navStepBadgeClass(isActive ? "active" : isCompleted ? "completed" : enabled ? "default" : "locked")}>
+            <span className={navStepBadgeClass(isActive ? "active" : isCompleted ? "completed" : "default")}>
               {isCompleted ? <Check className="h-3.5 w-3.5" /> : i + 1}
             </span>
             <span className="flex-1 text-left">{stepLabel(s.id, s.label)}</span>
@@ -120,7 +114,7 @@ export function ReflectStepper({
   }
 
   return (
-    <nav aria-label="Reflect steps" className="w-full shrink-0">
+    <nav aria-label="Tool steps" className="w-full shrink-0">
       <Collapsible open={open} onOpenChange={setOpen}>
         <Card>
           <CardContent className="p-2 flex flex-col gap-2">

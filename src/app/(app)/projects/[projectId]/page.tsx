@@ -136,7 +136,7 @@ export default function ProjectPage() {
             <div className="flex flex-col gap-2 max-w-md">
               <h2 className="text-lg font-semibold">No problem yet</h2>
               <p className="text-base">
-                Every project starts with a problem worth solving. Identify one with Reflect, the Canvas Builder, Research, or by writing a problem statement directly.
+                Every project starts with a problem worth solving. Identify one with a guided set of prompts, the Canvas Builder, Research, or by writing a problem statement directly.
               </p>
             </div>
             <Button size="lg" className="gap-2" onClick={() => router.push(projectRoutes.identify(project.id))} data-tour={TOUR_TARGETS.projectIdentifyProblem}>

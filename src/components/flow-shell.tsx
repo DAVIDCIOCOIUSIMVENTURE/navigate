@@ -53,7 +53,7 @@ export const FOCUS_COLUMN_MAX_HEIGHT_CLASS = "max-h-[calc(100svh-2rem)] lg:max-h
 /**
  * Shell for a stepped focus flow about one problem or solution (the problem
  * Explore and Validation flows, solution validation). Focus flows render with
- * no header or sidebar, so like Reflect this supplies the Back button, the
+ * no header or sidebar, so like the identify tools this supplies the Back button, the
  * top-bar toggle and the section title, then the step nav and the journey
  * progress rail. On wide containers those sit in a scrolling left column
  * beside the step content; on narrow the nav collapses into a dropdown above

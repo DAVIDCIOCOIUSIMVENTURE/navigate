@@ -43,8 +43,13 @@ export const projectRoutes = {
   preview: previewHref,
   identify: (projectId: ProjectRef) => under(projectId, "/identify"),
   canvasBuilder: (projectId: ProjectRef) => under(projectId, "/identify/canvas-builder"),
-  reflect: (projectId: ProjectRef) => under(projectId, "/identify/reflect"),
+  /** A guided-prompt tool (Life experiences, Work friction, ...), a peer of the Canvas Builder. */
+  lens: (projectId: ProjectRef, lensId: string) => under(projectId, `/identify/${lensId}`),
+  /** The last step of a guided-prompt tool, where its answers are reviewed and saved. */
+  lensReview: (projectId: ProjectRef, lensId: string) => under(projectId, `/identify/${lensId}/review`),
   research: (projectId: ProjectRef) => under(projectId, "/identify/research"),
+  /** The last step of one research method, where its capture is reviewed and saved. */
+  researchReview: (projectId: ProjectRef, methodId: string) => under(projectId, `/identify/research/${methodId}/review`),
   problemEdit: (projectId: ProjectRef) => under(projectId, "/problem/edit"),
   exploreBase: (projectId: ProjectRef) => under(projectId, "/problem/explore"),
   explore: (projectId: ProjectRef, step = "introduction") => under(projectId, `/problem/explore/${step}`),

@@ -11,8 +11,11 @@ import {
 } from "lucide-react"
 
 /**
- * Static config for the Reflect feature. Each lens defines a guided Q&A. Adding
- * a seventh lens is just appending a `Lens` object here, no code changes needed.
+ * Static config for the guided-prompt tools on the Identify a Problem hub.
+ * Each lens defines a guided Q&A and is offered as a tool in its own right,
+ * beside the Canvas Builder and Research. Adding a lens is appending a `Lens`
+ * object here and listing its id in `IDENTIFY_LENS_IDS`, no code changes
+ * needed. The lenses not listed there are drafted but not yet offered.
  */
 
 export type LensSelfDiscoverySource = {
@@ -81,6 +84,11 @@ export type Lens = {
   prompts: LensPrompt[]
   /** Optional helper text rendered in the guidance panel for this lens. */
   helperText?: string
+  /**
+   * Who this tool suits, shown behind the "Best for" drop-down on the
+   * Identify a Problem hub. Written in the same voice as the other tools there.
+   */
+  bestFor?: string
   /** Self-discovery items to surface as starter chips inside specific prompts. */
   selfDiscoverySources?: LensSelfDiscoverySource[]
   /**
@@ -112,6 +120,8 @@ export const REFLECT_LENSES: Lens[] = [
     anchorLabel: "Life experience",
     helperText:
       "Retrospective beats current pain here. The specific things you only learned by doing are the things others are looking for.",
+    bestFor:
+      "Best for something significant you have already been through: a move, a diagnosis, a new baby, a career change. You answer from memory rather than research, and the friction you still remember is usually the friction worth solving.",
     prompts: [
       {
         id: "significant-experience",
@@ -205,6 +215,8 @@ export const REFLECT_LENSES: Lens[] = [
     anchorLabel: "Work area",
     helperText:
       "Repeated small annoyances at work are easy to dismiss but they point to missing tools. Small, specific, and slightly weird are good signals.",
+    bestFor:
+      "Best for a job or role you do often enough to have stopped noticing its rough edges. You already know the process, the tools and the people, so the prompts can go straight at what wastes your week.",
     selfDiscoverySources: [
       { category: "knowledge", promptIds: ["time-consuming", "workarounds", "should-exist"] },
       { category: "skills-expertise", promptIds: ["time-consuming", "workarounds", "should-exist"] },
@@ -312,6 +324,8 @@ export const REFLECT_LENSES: Lens[] = [
     anchorLabel: "What you've done",
     helperText:
       "Both the problem and your workaround matter. The workaround is the early prototype of the product; the problem is the reason anyone else would want it.",
+    bestFor:
+      "Best for anything you have run or built yourself, paid or not: a side project, a hobby, a small business. If you have already cobbled a fix together, this tool is the quickest way to turn it into a problem statement.",
     selfDiscoverySources: [
       { category: "work-experience", promptIds: ["own-anchor"] },
       { category: "personal-interests", promptIds: ["own-anchor"] },
@@ -385,6 +399,8 @@ export const REFLECT_LENSES: Lens[] = [
     anchorLabel: "Audience",
     helperText:
       "You're looking outward at one specific group. Anything you list should be something you've actually seen them deal with, not what you assume they deal with.",
+    bestFor:
+      "Best for when you already have a group of people in mind and want to start from them rather than from yourself. You need to have watched them closely enough to describe what they actually do, not what you assume they do.",
     prompts: [
       {
         id: "audience-anchor",
@@ -661,6 +677,21 @@ export const REFLECT_LENS_BY_ID: Record<LensId, Lens> = REFLECT_LENSES.reduce(
 
 export function getReflectLens(id: string): Lens | undefined {
   return REFLECT_LENS_BY_ID[id as LensId]
+}
+
+/**
+ * The lenses offered as tools on the Identify a Problem hub, in the order they
+ * are listed there. The rest of `REFLECT_LENSES` is drafted but not finished,
+ * so it stays out of the hub while remaining readable by anything that has to
+ * render a problem captured with it (`getReflectLens`).
+ */
+export const IDENTIFY_LENS_IDS: readonly LensId[] = ["life", "work", "own-problems", "audience-problems"]
+
+export const IDENTIFY_LENSES: Lens[] = IDENTIFY_LENS_IDS.map((id) => REFLECT_LENS_BY_ID[id])
+
+/** A lens only when it is one of the tools the hub offers; used to validate a lens id in a URL. */
+export function getIdentifyLens(id: string): Lens | undefined {
+  return IDENTIFY_LENS_IDS.includes(id as LensId) ? REFLECT_LENS_BY_ID[id as LensId] : undefined
 }
 
 /**

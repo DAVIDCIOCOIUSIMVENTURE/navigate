@@ -15,7 +15,7 @@ import {
   Lightbulb, HelpCircle,
   BookOpen, FlaskConical, Clock, Trophy, Sparkles,
   TrendingUp, Building2, Calculator, Scale, ShieldCheck,
-  Glasses, HeartHandshake, Shuffle, Radar,
+  Glasses, HeartHandshake, Wrench, UsersRound,
   Telescope,
   X,
 } from "lucide-react"
@@ -464,8 +464,8 @@ const guidanceItems: GuidanceItem[] = [
     ),
   },
   {
-    id: "reflect-hub",
-    title: "Reflect on Problems",
+    id: "guided-prompt-tools",
+    title: "Guided Prompt Tools",
     icon: Glasses,
     iconBg: "bg-secondary-brand",
     content: (
@@ -473,15 +473,15 @@ const guidanceItems: GuidanceItem[] = [
         <GuidanceHero
           icon={Glasses}
           tone="bg-secondary-brand"
-          title="Reflect on Problems"
-          subtitle="A guided way to surface problems worth solving by answering short prompts about your work, life, the organisations you know, the people around you, and what you spot in the wider world."
+          title="Guided Prompt Tools"
+          subtitle="Four of the tools on the Identify a problem hub surface a problem by asking you short questions about something you already know: what you have lived through, the work you do, what you have built, or a group you know well."
         />
-        <GuidanceSection icon={Compass} iconBg="bg-secondary-brand" title="When to use Reflect">
-          <p>Reflect is its own tool, opened from your project&apos;s <Keyword>Identify a problem</Keyword> hub.</p>
+        <GuidanceSection icon={Compass} iconBg="bg-secondary-brand" title="When to use one">
+          <p>Each is a tool in its own right, opened straight from your project&apos;s <Keyword>Identify a problem</Keyword> hub.</p>
           <div className="grid gap-3 pt-1 sm:grid-cols-2">
             <div className="rounded-lg border bg-card p-3">
-              <h5 className="text-base font-semibold mb-1">Use Reflect when</h5>
-              <ul className="text-sm leading-relaxed list-disc pl-5 space-y-1">
+              <h5 className="text-base font-semibold mb-1">Use a guided tool when</h5>
+              <ul className="text-base leading-relaxed list-disc pl-5 space-y-1">
                 <li>You want a prompt to react to, not a blank canvas.</li>
                 <li>You&apos;d rather mine experience you already have than research the market.</li>
                 <li>You&apos;re not sure where to start.</li>
@@ -489,7 +489,7 @@ const guidanceItems: GuidanceItem[] = [
             </div>
             <div className="rounded-lg border bg-card p-3">
               <h5 className="text-base font-semibold mb-1">Use the Canvas Builder instead when</h5>
-              <ul className="text-sm leading-relaxed list-disc pl-5 space-y-1">
+              <ul className="text-base leading-relaxed list-disc pl-5 space-y-1">
                 <li>You already have specific customers, contexts, or pain points in mind.</li>
                 <li>You want to compose problems by combining columns on a canvas.</li>
                 <li>You&apos;re iterating on an existing problem area.</li>
@@ -497,25 +497,22 @@ const guidanceItems: GuidanceItem[] = [
             </div>
           </div>
         </GuidanceSection>
-        <GuidanceSection icon={LayoutGrid} iconBg="bg-secondary-brand" title="The six lenses">
-          <p>Each lens is a short Q&A focused on one source of insight. Your answers become your project&apos;s problem when you save at the end.</p>
+        <GuidanceSection icon={LayoutGrid} iconBg="bg-secondary-brand" title="The four tools">
+          <p>Each one is a short Q&A focused on a single source of insight. Your answers become your project&apos;s problem when you save at the end.</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
-            <ConceptCard icon={Briefcase} label="Work friction" description="Repeated annoyances, expensive habits, and 'this should just exist' thoughts at your job." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
             <ConceptCard icon={HeartHandshake} label="Life experiences" description="Productise what you have already lived through. The friction you remember is friction others are about to hit." tile="bg-yellow-600" border="border-yellow-600/20 bg-yellow-600/5" />
-            <ConceptCard icon={Building2} label="Insider angle" description="Use what you know about organisations from the inside. Outsiders cannot see what you have seen." tile="bg-emerald-800" border="border-emerald-800/20 bg-emerald-800/5" />
-            <ConceptCard icon={Shuffle} label="Cross-context patterns" description="Spot something that works in one industry, hobby, or country and is missing in another you know." tile="bg-violet-800" border="border-violet-800/20 bg-violet-800/5" />
-            <ConceptCard icon={Users} label="People around you" description="Observation, not introspection. Validate by asking the person." tile="bg-rose-800" border="border-rose-800/20 bg-rose-800/5" />
-            <ConceptCard icon={Radar} label="Market signals" description="A capture form for problems you spot by looking outward: reviews, trends, public data, research." tile="bg-orange-700" border="border-orange-700/20 bg-orange-700/5" />
+            <ConceptCard icon={Briefcase} label="Work friction" description="Repeated annoyances, expensive habits, and 'this should just exist' thoughts at your job." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
+            <ConceptCard icon={Wrench} label="Problems you've solved yourself" description="One thing you have run or built, the problems it threw up, and the fixes you cobbled together." tile="bg-emerald-800" border="border-emerald-800/20 bg-emerald-800/5" />
+            <ConceptCard icon={UsersRound} label="Audience problems" description="One group you know or want to serve, and the friction, workarounds and wasted spend that shape their day." tile="bg-rose-800" border="border-rose-800/20 bg-rose-800/5" />
           </div>
         </GuidanceSection>
         <GuidanceSection icon={Sparkles} iconBg="bg-secondary-brand" title="From your self-discovery">
-          <p>Several lenses surface chips drawn from your saved self-discovery answers. Picking a chip drops the title into the textarea as a starting point so you can edit and expand. The panel only appears if you have items in the matching category and is suggestion-only: nothing is ever auto-filled.</p>
-          <p>The hub also marks a few lenses as <Keyword>Recommended</Keyword> based on what you already answered in self-discovery. It is a nudge, not a gate.</p>
+          <p>Several of these tools surface chips drawn from your saved self-discovery answers. Picking a chip drops the title into the textarea as a starting point so you can edit and expand. The panel only appears if you have items in the matching category and is suggestion-only: nothing is ever auto-filled.</p>
         </GuidanceSection>
-        <GuidanceSection icon={ArrowRight} iconBg="bg-secondary-brand" title="How a lens runs">
+        <GuidanceSection icon={ArrowRight} iconBg="bg-secondary-brand" title="How one runs">
           <div className="flex flex-col gap-3 pt-1">
-            <NumberedStep n={1} title="Pick a lens" accent="bg-secondary-brand">
-              From the hub, pick a lens and read the short introduction. Lenses take roughly 5 to 10 minutes.
+            <NumberedStep n={1} title="Pick a tool" accent="bg-secondary-brand">
+              From the hub, pick the one that matches what you know best. Each takes roughly 5 to 10 minutes.
             </NumberedStep>
             <NumberedStep n={2} title="Answer the prompts" accent="bg-secondary-brand">
               One prompt per screen. Multiple answers allowed where it helps. Skip anything that does not apply.
@@ -528,7 +525,7 @@ const guidanceItems: GuidanceItem[] = [
         <TipCallout items={[
           "Small, specific, and slightly weird answers tend to point at the most interesting problems",
           "If you are not sure between two wordings, write both into the description and settle it while you explore",
-          "The Market signals lens is for capturing what you find when you look outward. The prompts do not tell you what to look at",
+          "Each tool anchors on one experience, role, project or audience per run. To explore another, run it again and pick a different one",
         ]} />
       </div>
     ),

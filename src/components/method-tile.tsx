@@ -15,7 +15,7 @@ type MethodTileProps = React.HTMLAttributes<HTMLSpanElement> & {
 }
 
 /**
- * Icon tile for an identify / discovery method (Reflect lenses, Research
+ * Icon tile for an identify / discovery method (guided prompt tools, Research
  * methods, the identify hubs and the discovery / refinement tool pickers).
  * Light glyph on a solid cobalt secondary-brand tile, the method counterpart
  * of the primary `CardTitle` tile. Decorative by default; pass an

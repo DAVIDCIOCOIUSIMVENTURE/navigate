@@ -56,8 +56,8 @@ const STORAGE_GROUPS: StorageGroup[] = [
   },
   {
     id: "reflect-sessions",
-    label: "Reflect drafts",
-    description: "In-progress answers captured while reflecting through a lens in the Reflect tool, kept per project.",
+    label: "Guided prompt drafts",
+    description: "In-progress answers captured in the guided prompt tools on the Identify a problem hub, kept per project.",
     // navigate-problem-candidates is a legacy key: its model is gone, but clearing it tidies browsers that still hold the data.
     keys: ["navigate-reflect-sessions", "navigate-problem-candidates"],
   },
