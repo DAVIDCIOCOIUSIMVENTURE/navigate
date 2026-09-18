@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react"
 import { useDispatch, useStore } from "react-redux"
-import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { ArrowDownToLine, ArrowUpFromLine, Check, Copy, Globe, Plus, Trash2, Users } from "lucide-react"
 import type { AppDispatch, RootState } from "@/store"
@@ -55,7 +54,6 @@ export function ProjectSettingsDialog({
 }) {
   const dispatch = useDispatch<AppDispatch>()
   const store = useStore<RootState>()
-  const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [importing, setImporting] = useState(false)
   const [name, setName] = useState("")
@@ -125,7 +123,8 @@ export function ProjectSettingsDialog({
     }
   }
 
-  // Importing never touches this project: the file always arrives as a new one.
+  // Importing never touches this project: the file always arrives as a new one,
+  // and the page stays where it is rather than opening it.
   const handleImportFile = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     event.target.value = ""
@@ -135,7 +134,6 @@ export function ProjectSettingsDialog({
       const result = await importProblemBundle(parseProblemBundle(await file.text()), dispatch)
       toast.success(importSummary(result))
       onOpenChange(false)
-      router.push(projectRoutes.page(result.projectId))
     } catch (err) {
       const message =
         err instanceof BundleParseError ? err.message :

@@ -2,7 +2,6 @@
 
 import { useRef, useState } from "react"
 import { useDispatch } from "react-redux"
-import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { MoreHorizontal, Upload, Download } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -19,17 +18,16 @@ import {
   importSummary,
   parseProblemBundle,
 } from "@/lib/problem-export"
-import { projectRoutes } from "@/lib/projects"
 import { ExportPickerDialog } from "@/components/export-picker-dialog"
 
 /**
  * Page-level actions menu for the home page. The 3-dot trigger holds
  * "Import <kind>" (a file picker) and "Export <kind>" (a dialog with a record
- * picker). Importing always creates a new project, which the page then opens.
+ * picker). Importing always creates a new project, which appears in the list
+ * below; the page stays where it is rather than opening it.
  */
 export function BundleMenuButton({ kind }: { kind: "project" | "solution" }) {
   const dispatch = useDispatch<AppDispatch>()
-  const router = useRouter()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [importing, setImporting] = useState(false)
   const [exportOpen, setExportOpen] = useState(false)
@@ -45,7 +43,6 @@ export function BundleMenuButton({ kind }: { kind: "project" | "solution" }) {
       const bundle = parseProblemBundle(text)
       const result = await importProblemBundle(bundle, dispatch)
       toast.success(importSummary(result))
-      router.push(projectRoutes.page(result.projectId))
     } catch (err) {
       const message =
         err instanceof BundleParseError ? err.message :
