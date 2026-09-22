@@ -142,17 +142,17 @@ function getCrumbs(pathname: string, lookup: CrumbLookup): Crumb[] {
   return crumbs
 }
 
-/** Everything under a project page: the identify hub and tools, the problem's pages and flows, the solution pages and flows. */
-const PROJECT_FLOW_PATH = /^\/projects\/\d+\/.+/
+/** A project: its own page and everything under it (the identify hub and tools, the problem's pages and flows, the solution pages and flows). */
+const PROJECT_FLOW_PATH = /^\/projects\/\d+(\/.+)?$/
 
 /**
- * Routes that render without the header and sidebar and supply their own Back
- * button and title: every page inside a project other than the project page
- * itself (the Identify problems hub and its tools, the problem edit page and
- * its Explore and Validation flows, the solution canvas, its edit page and
- * its validation flow, Identify Solutions, Compare solutions) and Self
- * Discovery. The project page is not one of them: it is the hub the user
- * works from.
+ * Routes that render without the header and sidebar and supply their own
+ * chrome buttons and title: every page inside a project, the project page
+ * included (its canvas and solutions, the Identify problems hub and its tools,
+ * the problem edit page and its Explore and Validation flows, the solution
+ * canvas, its edit page and its validation flow, Identify Solutions, Compare
+ * solutions) and Self Discovery. Opening a project is entering its work, so
+ * the app chrome gives way to the project's own left column.
  */
 function isFocusFlowPath(pathname: string): boolean {
   return PROJECT_FLOW_PATH.test(pathname) || pathname.startsWith("/self-discovery/discover")

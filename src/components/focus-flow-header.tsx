@@ -27,7 +27,8 @@ export function FocusFlowHeader({
   return (
     <div className={cn("flex items-center gap-3 shrink-0", className)}>
       <FocusChromeButtons />
-      <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 text-foreground">
+      {/* The title shrinks and truncates: a project's name can be longer than the narrow column it sits in. */}
+      <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 text-foreground">
         <span className={SECTION_TITLE_TILE_CLASS} aria-hidden="true">
           <Icon className={SECTION_TITLE_ICON_CLASS} />
         </span>
