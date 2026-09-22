@@ -131,6 +131,7 @@ function CurrencyInput({
     <div className="mt-2 flex gap-2">
       <Input
         type="number"
+        step="0.01"
         placeholder="e.g. 1500"
         className="h-8 text-base w-28 bg-white border-white text-foreground read-only:cursor-default"
         value={readOnly ? (metric.value ?? "") : localValue}
@@ -565,16 +566,45 @@ function WorthSection({
         </div>
       )}
 
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          <PoundSterling className="h-3.5 w-3.5 text-white shrink-0" />
-          <span className="text-base font-semibold text-white">What they would pay each time the problem occurs</span>
-        </div>
-        {!readOnly && (
-          <p className="text-base text-white">Picture the customer being asked: &quot;If a service made this problem go away cleanly, what would you happily pay?&quot; Use the anchor goal you chose above to guide the number, not the cost of building a feature. This is a hypothesis to test in real conversations, not a fact yet. If you cannot picture a customer signing off on the figure, round it down.</p>
-        )}
-        <CurrencyInput metric={worthToThem} onChange={setWorthToThem} readOnly={readOnly} />
+      <PriceSection worthToThem={worthToThem} setWorthToThem={setWorthToThem} readOnly={readOnly} />
+    </div>
+  )
+}
+
+/**
+ * The price on its own, without the goal to anchor it on. The worth step shows
+ * it under that pick; the market opportunity card's dialog shows it above the
+ * other estimates, since it is one of the three figures the market sizes are
+ * built from.
+ */
+export function PriceSection({
+  worthToThem,
+  setWorthToThem,
+  readOnly,
+  anchorHint = true,
+}: {
+  worthToThem: ValidationMetric
+  setWorthToThem: (patch: Partial<ValidationMetric>) => void
+  readOnly?: boolean
+  /** Off where there is no goal picker above to point at. */
+  anchorHint?: boolean
+}) {
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex items-center gap-2">
+        <PoundSterling className="h-3.5 w-3.5 text-white shrink-0" />
+        <span className="text-base font-semibold text-white">What they would pay each time the problem occurs</span>
       </div>
+      {!readOnly && (
+        <p className="text-base text-white">
+          Picture the customer being asked: &quot;If a service made this problem go away cleanly, what would you happily pay?&quot;{" "}
+          {anchorHint
+            ? "Use the anchor goal you chose above to guide the number, not the cost of building a feature."
+            : "Anchor the number on the goal that drives the purchase, not on the cost of building a feature."}{" "}
+          This is a hypothesis to test in real conversations, not a fact yet. If you cannot picture a customer signing off on the figure, round it down.
+        </p>
+      )}
+      <CurrencyInput metric={worthToThem} onChange={setWorthToThem} readOnly={readOnly} />
     </div>
   )
 }

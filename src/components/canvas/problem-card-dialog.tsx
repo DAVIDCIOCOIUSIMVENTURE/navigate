@@ -15,6 +15,7 @@ import { ExistingSolutionsEditor } from "@/components/problem-strategies/existin
 import {
   CompetitionSection,
   MarketSection,
+  PriceSection,
   TamSamSomPanel,
 } from "@/components/problem-strategies/validation-strategy"
 import { projectRoutes } from "@/lib/projects"
@@ -43,7 +44,7 @@ const CARD_COPY: Record<ProblemCardId, { title: string; description: string }> =
   },
   market: {
     title: "Market opportunity",
-    description: "Your estimates, the competition, and the market sizes they produce.",
+    description: "What they would pay, your estimates, the competition, and the market sizes they produce.",
   },
   "existing-solutions": {
     title: "Existing solutions",
@@ -179,6 +180,11 @@ export function ProblemCardDialog({
 
       {card === "market" && (
         <CardDialogPanel>
+          <PriceSection
+            worthToThem={va.worthToThem}
+            setWorthToThem={setMetric("worthToThem")}
+            anchorHint={false}
+          />
           <MarketSection
             howManyPeople={va.howManyPeople}
             howOften={va.howOften}

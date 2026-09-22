@@ -52,26 +52,50 @@ export function computeMarket({
   }
 }
 
+// How many decimal places a money figure keeps. Market sizes are shown as
+// whole units, since pennies add nothing at that scale, but a price can
+// genuinely be a fraction of a unit (5p each time the problem occurs), and
+// rounding that to zero makes the whole calculation look broken. So a
+// non-integer figure keeps enough places to stay visible: two for anything
+// down to a penny, more for the very small ones.
+export function moneyFractionDigits(value: number): number {
+  if (!Number.isFinite(value) || Number.isInteger(value)) return 0
+  const abs = Math.abs(value)
+  if (abs >= 100) return 0
+  return Math.min(8, Math.max(2, -Math.floor(Math.log10(abs))))
+}
+
 // Format a money figure. With a currency, uses the locale currency style and
 // falls back to a "CODE 1,234" string if the code is not recognised. Without a
-// currency, returns a plain grouped integer. `compact` switches to short
+// currency, returns a plain grouped number. `compact` switches to short
 // notation (1.2M) for values at or above a million.
 export function formatMoney(
   value: number,
   { currency, compact = false }: { currency?: string; compact?: boolean } = {},
 ): string {
   if (!Number.isFinite(value)) return "0"
+  // Short notation keeps one decimal place, so 2.4 million does not read as 2
+  // million; everywhere else the figure decides for itself.
+  const short = compact && Math.abs(value) >= 1_000_000
+  const digits = short ? 0 : moneyFractionDigits(value)
   if (currency) {
     try {
       return new Intl.NumberFormat(undefined, {
         style: "currency",
         currency,
-        maximumFractionDigits: 0,
-        notation: compact && Math.abs(value) >= 1_000_000 ? "compact" : "standard",
+        minimumFractionDigits: digits,
+        maximumFractionDigits: short ? 1 : digits,
+        notation: short ? "compact" : "standard",
       }).format(value)
     } catch {
-      return `${currency} ${Math.round(value).toLocaleString()}`
+      return `${currency} ${value.toLocaleString(undefined, {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits,
+      })}`
     }
   }
-  return Math.round(value).toLocaleString()
+  return value.toLocaleString(undefined, {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits,
+  })
 }
