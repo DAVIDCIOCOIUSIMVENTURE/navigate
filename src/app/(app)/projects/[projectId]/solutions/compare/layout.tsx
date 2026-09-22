@@ -15,9 +15,9 @@ const NAV_ICONS: Record<string, LucideIcon> = {
 
 /**
  * Compare solutions is a focus flow rendered through the generic `FlowShell`:
- * Back returns to the project page and the step nav lists Introduction, Rate
- * solutions and Review. It is about every solution in the project rather
- * than one, so there is no context card under the steps and no journey rail.
+ * the step nav lists Introduction, Rate solutions and Review. It is about
+ * every solution in the project rather than one, so there is no context card
+ * under the steps and no journey rail.
  */
 export default function CompareSolutionsLayout({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false)
@@ -32,7 +32,6 @@ export default function CompareSolutionsLayout({ children }: { children: React.R
       title="Compare solutions"
       icon={Scale}
       navLabel="Compare solutions steps"
-      backHref={projectRoutes.page(projectId)}
       base={projectRoutes.compareBase(projectId)}
       navItems={NAV_ITEMS}
       navIcons={NAV_ICONS}

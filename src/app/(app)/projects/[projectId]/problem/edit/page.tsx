@@ -15,14 +15,13 @@ import { downloadProjectBundle } from "@/lib/problem-export"
 import { useContainerSize } from "@/context/container-size-context"
 import { useProjectScope } from "@/hooks/use-projects"
 import { problemJourneyStep, summariseProblemJourney } from "@/lib/journey-steps"
-import { projectRoutes } from "@/lib/projects"
 import type { Problem } from "@/store/problems-model"
 import { cn } from "@/lib/utils"
 
 /**
  * The project's problem edit page. A focus page like the Identify hub: no
- * header or sidebar, so the left column carries Back (to the project), the
- * top-bar toggle, the title and the journey rail, with the edit card beside
+ * header or sidebar, so the left column carries Home, the Open menu
+ * toggle, the title and the journey rail, with the edit card beside
  * it. On wide containers the card is fitted to the viewport and only its
  * content scrolls.
  */
@@ -35,7 +34,6 @@ function HubBody({ projectId, problem }: { projectId: number; problem: Problem }
     <FocusFlowHeader
       title="Edit problem"
       icon={Target}
-      backHref={projectRoutes.page(projectId)}
       className={cn(isWide && "flex-wrap")}
     />
   )

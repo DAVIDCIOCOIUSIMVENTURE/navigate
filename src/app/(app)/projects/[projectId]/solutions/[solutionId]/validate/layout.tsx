@@ -26,9 +26,8 @@ const NAV_ICONS: Record<string, LucideIcon> = {
 
 /**
  * Solution validation is a focus flow like problem validation: the generic
- * `FlowShell` with Back set to the project page and, under the step list,
- * reminders of both the solution and its linked problem with a View button
- * for each.
+ * `FlowShell` with, under the step list, reminders of both the solution and
+ * its linked problem with a View button for each.
  */
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const { projectId, solutionId, solution, problem } = useSolution()
@@ -46,7 +45,6 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         title="Validate the solution"
         icon={ClipboardCheck}
         navLabel="Solution validation steps"
-        backHref={projectRoutes.page(projectId)}
         base={projectRoutes.solutionValidateBase(projectId, solutionId)}
         navItems={NAV_ITEMS}
         navIcons={NAV_ICONS}

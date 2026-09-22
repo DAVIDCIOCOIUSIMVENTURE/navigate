@@ -26,7 +26,6 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       title="Explore the problem"
       icon={Compass}
       navLabel="Explore the problem steps"
-      projectId={projectId}
       problemRef={problemRef}
       problem={problem}
       base={projectRoutes.exploreBase(projectId)}

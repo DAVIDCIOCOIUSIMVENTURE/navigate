@@ -21,8 +21,8 @@ import { cn } from "@/lib/utils"
 
 /**
  * The per-solution edit page. A focus page like the problem edit page: no
- * header or sidebar, so the left column carries Back (to the project page),
- * the top-bar toggle, the title and the journey rail, with the edit card
+ * header or sidebar, so the left column carries Home, the Open menu toggle,
+ * the title and the journey rail, with the edit card
  * beside it. A solution being edited has been identified and is on its way to
  * validation, so the rail sits on "Validate solutions".
  */
@@ -38,7 +38,6 @@ function HubBody({ projectId, solutionId }: { projectId: number; solutionId: num
     <FocusFlowHeader
       title="Edit solution"
       icon={Lightbulb}
-      backHref={projectRoutes.page(projectId)}
       className={cn(isWide && "flex-wrap")}
     />
   )
@@ -46,7 +45,7 @@ function HubBody({ projectId, solutionId }: { projectId: number; solutionId: num
   if (!solution) {
     return (
       <div className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-3 px-4 py-4 sm:px-6 lg:px-8 lg:py-6">
-        <FocusFlowHeader title="Edit solution" icon={Lightbulb} backHref={projectRoutes.page(projectId)} />
+        <FocusFlowHeader title="Edit solution" icon={Lightbulb} />
         <Card className="w-full">
           <CardContent className="p-10 flex flex-col items-center gap-4 text-center">
             <p className="text-base">Solution not found.</p>

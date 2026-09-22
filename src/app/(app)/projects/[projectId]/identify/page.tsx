@@ -157,7 +157,6 @@ export default function IdentifyProblemsPage() {
       <IdentifyHubShell
         title={existing ? "Revisit the Problem" : "Identify a Problem"}
         icon={Target}
-        backHref={projectRoutes.page(projectId)}
         aboutTitle="About identifying a problem"
         description={
           existing ? (

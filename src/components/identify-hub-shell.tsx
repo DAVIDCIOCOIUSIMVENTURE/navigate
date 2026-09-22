@@ -13,21 +13,20 @@ import { cn } from "@/lib/utils"
 /**
  * Shell for the Identify problems hub. It renders as a focus flow, like the
  * tools it lists, so the header and sidebar are hidden and this shell
- * supplies what they would otherwise provide: a Back button, the top-bar
+ * supplies what they would otherwise provide: a Home button, the Open menu
  * toggle and the section title. The introductory copy opens in a dialog from
  * the About button beside the title; a one-line `description` sits at the top
  * of the card to say what to do. On wide containers the card is fitted to the
  * viewport and only its content scrolls; on narrow the page scrolls naturally.
  *
  * When `journeyStep` is given, wide containers get a left column holding the
- * header (Back, top-bar toggle, title, About) stacked above the journey
+ * header (Home, Open menu, title, About) stacked above the journey
  * progress rail, with the content card beside it. Narrow containers keep the
  * header on top and show the rail as a compact row above the card.
  */
 export function IdentifyHubShell({
   title,
   icon,
-  backHref,
   intro,
   aboutTitle,
   description,
@@ -37,8 +36,6 @@ export function IdentifyHubShell({
 }: {
   title: string
   icon: LucideIcon
-  /** Where the Back button returns to (the project the user came from, or home). */
-  backHref: string
   /** Introductory copy shown in the About dialog. */
   intro: ReactNode
   /** Heading of the About dialog. Defaults to "About <title>". */
@@ -55,7 +52,7 @@ export function IdentifyHubShell({
   const sideColumn = journeyStep !== undefined && isWide
 
   const header = (
-    <FocusFlowHeader title={title} icon={icon} backHref={backHref} className={cn(sideColumn && "flex-wrap")}>
+    <FocusFlowHeader title={title} icon={icon} className={cn(sideColumn && "flex-wrap")}>
       <AboutDialog subject={title} title={aboutTitle}>
         {intro}
       </AboutDialog>

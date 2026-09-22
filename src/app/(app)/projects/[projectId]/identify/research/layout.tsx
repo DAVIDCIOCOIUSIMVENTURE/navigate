@@ -3,17 +3,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { usePathname, useRouter } from "next/navigation"
-import { ArrowLeft, Microscope, PanelTop } from "lucide-react"
+import { Microscope } from "lucide-react"
 import type { AppDispatch, RootState } from "@/store"
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { useFocusChrome } from "@/context/focus-chrome-context"
+import { FocusChromeButtons } from "@/components/focus-chrome-buttons"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 import { getResearchMethod } from "@/data/researchMethods"
 import { ResearchProvider } from "@/components/research/research-context"
 import { useProjectScope } from "@/hooks/use-projects"
-import { projectRoutes } from "@/lib/projects"
 import { loadResearchCapture } from "@/lib/research-capture"
 import { ResearchingWithCard } from "@/components/research/researching-with-card"
 import { JourneyProgressCard } from "@/components/journey-progress"
@@ -27,7 +25,7 @@ import { parseResearchPath, researchHrefs, researchResumeHref } from "./routes"
  * Shell for the Research flow. It stays mounted while the user moves between
  * the step routes underneath it, so it owns the one-off "resume where you left
  * off" redirect, keeps the store's last position in step with the URL, and
- * renders the back button, title and stepper around each step page.
+ * renders the chrome buttons, title and stepper around each step page.
  */
 export default function ResearchLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
@@ -41,7 +39,6 @@ export default function ResearchLayout({ children }: { children: ReactNode }) {
   const projectResearch = useSelector((s: RootState) => selectResearchProject(s, projectId))
   const { lastPickedMethodId: storedMethodId, lastStep: storedStep, lastPromptIndex: storedPromptIndex } = projectResearch
   const isWide = useContainerSize() === "wide"
-  const { revealTopNav } = useFocusChrome()
   const hrefs = useMemo(() => researchHrefs(projectId), [projectId])
   const seed = useMemo(() => (existing ? loadResearchCapture(existing.id) : null), [existing])
 
@@ -134,25 +131,6 @@ export default function ResearchLayout({ children }: { children: ReactNode }) {
       ? { current: route.promptIndex + 1, total: route.method.prompts.length }
       : null
 
-  const backAndPanel = (
-    <div className="flex items-center gap-2 shrink-0">
-      <Button variant="tertiary-outline" onClick={() => router.push(projectRoutes.page(projectId))} className="gap-2">
-        <ArrowLeft className="h-4 w-4" />
-        Back
-      </Button>
-      <Button
-        variant="outline"
-        size="icon"
-        className="bg-white"
-        onClick={revealTopNav}
-        aria-label="Show top bar"
-        title="Top bar"
-      >
-        <PanelTop className="h-4 w-4" />
-      </Button>
-    </div>
-  )
-
   const sectionTitle = (
     <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 text-foreground">
       <span className={SECTION_TITLE_TILE_CLASS} aria-hidden="true">
@@ -184,7 +162,7 @@ export default function ResearchLayout({ children }: { children: ReactNode }) {
     <div className={cn("flex flex-1 min-h-0 w-full", isWide ? "flex-row gap-3" : "flex-col gap-3")}>
       {isWide ? (
         <div className={cn("w-72 shrink-0 flex flex-col gap-4 min-h-0", FOCUS_COLUMN_MAX_HEIGHT_CLASS)}>
-          {backAndPanel}
+          <FocusChromeButtons />
           {sectionTitle}
           {/* The stepper keeps its natural height; the column scrolls when it and the rail outgrow the viewport. */}
           <div className="flex flex-1 min-h-0 flex-col gap-4 overflow-y-auto">
@@ -195,7 +173,7 @@ export default function ResearchLayout({ children }: { children: ReactNode }) {
       ) : (
         <>
           <div className="flex items-center gap-3 shrink-0">
-            {backAndPanel}
+            <FocusChromeButtons />
             {sectionTitle}
           </div>
           {stepper}

@@ -2,7 +2,7 @@
 
 import { useState, type ReactNode } from "react"
 import { usePathname, useRouter } from "next/navigation"
-import { ArrowLeft, ChevronDown, FileText, PanelTop, type LucideIcon } from "lucide-react"
+import { ChevronDown, FileText, type LucideIcon } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import {
@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { JourneyProgressCard } from "@/components/journey-progress"
-import { useFocusChrome } from "@/context/focus-chrome-context"
+import { FocusChromeButtons } from "@/components/focus-chrome-buttons"
 import { useContainerSize } from "@/context/container-size-context"
 import type { JourneyStepId } from "@/lib/journey-steps"
 import { cn } from "@/lib/utils"
@@ -53,9 +53,9 @@ export const FOCUS_COLUMN_MAX_HEIGHT_CLASS = "max-h-[calc(100svh-2rem)] lg:max-h
 /**
  * Shell for a stepped focus flow about one problem or solution (the problem
  * Explore and Validation flows, solution validation). Focus flows render with
- * no header or sidebar, so like the identify tools this supplies the Back button, the
- * top-bar toggle and the section title, then the step nav and the journey
- * progress rail. On wide containers those sit in a scrolling left column
+ * no header or sidebar, so like the identify tools this supplies the Home
+ * button, the Open menu toggle and the section title, then the step nav and the
+ * journey progress rail. On wide containers those sit in a scrolling left column
  * beside the step content; on narrow the nav collapses into a dropdown above
  * the content and the rail becomes a horizontal row.
  *
@@ -68,7 +68,6 @@ export function FlowShell({
   title,
   icon: Icon,
   navLabel,
-  backHref,
   base,
   navItems,
   navIcons,
@@ -82,8 +81,6 @@ export function FlowShell({
   icon: LucideIcon
   /** Accessible name for the step nav. */
   navLabel: string
-  /** Where the Back button returns to. */
-  backHref: string
   /** Route prefix the step paths are appended to. */
   base: string
   navItems: readonly FlowNavItem[]
@@ -98,7 +95,6 @@ export function FlowShell({
 }) {
   const router = useRouter()
   const pathname = usePathname()
-  const { revealTopNav } = useFocusChrome()
   const isWide = useContainerSize() === "wide"
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
 
@@ -109,25 +105,6 @@ export function FlowShell({
     setMobileNavOpen(false)
     router.push(href)
   }
-
-  const backAndPanel = (
-    <div className="flex items-center gap-2 shrink-0">
-      <Button variant="tertiary-outline" onClick={() => router.push(backHref)} className="gap-2">
-        <ArrowLeft className="h-4 w-4" />
-        Back
-      </Button>
-      <Button
-        variant="outline"
-        size="icon"
-        className="bg-white"
-        onClick={revealTopNav}
-        aria-label="Show top bar"
-        title="Top bar"
-      >
-        <PanelTop className="h-4 w-4" />
-      </Button>
-    </div>
-  )
 
   const sectionTitle = (
     <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 text-foreground">
@@ -246,7 +223,7 @@ export function FlowShell({
       >
         {isWide ? (
           <div className={cn("w-72 shrink-0 flex flex-col gap-4 min-h-0", FOCUS_COLUMN_MAX_HEIGHT_CLASS)}>
-            {backAndPanel}
+            <FocusChromeButtons />
             {sectionTitle}
             {/* The step nav keeps its natural height; the column scrolls when it and the rail outgrow the viewport. */}
             <div className="flex flex-1 min-h-0 flex-col gap-4 overflow-y-auto">
@@ -264,7 +241,7 @@ export function FlowShell({
         ) : (
           <>
             <div className="flex items-center gap-3 shrink-0">
-              {backAndPanel}
+              <FocusChromeButtons />
               {sectionTitle}
             </div>
             {mobileNav}

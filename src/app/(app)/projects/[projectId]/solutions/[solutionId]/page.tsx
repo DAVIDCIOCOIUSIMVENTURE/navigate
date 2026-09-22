@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils"
 
 /**
  * The per-solution canvas. A focus page: no header or sidebar, so the left
- * column carries Back (to the project), the top-bar toggle, the title and
+ * column carries Home, the Open menu toggle, the title and
  * the journey rail, with the canvas beside it. A solution on its canvas has
  * been identified and is on its way to validation, so the rail sits on
  * "Validate solutions".
@@ -29,10 +29,10 @@ export default function SolutionCanvasPage() {
   const solution = useSelector((state: RootState) =>
     state.solutions.solutions.find((s) => s.id === solutionId),
   )
-  const backHref = projectRoutes.page(projectId)
+  const projectHref = projectRoutes.page(projectId)
 
   const header = (
-    <FocusFlowHeader title="Solution canvas" icon={Lightbulb} backHref={backHref} className={cn(isWide && "flex-wrap")} />
+    <FocusFlowHeader title="Solution canvas" icon={Lightbulb} className={cn(isWide && "flex-wrap")} />
   )
 
   if (!solution) {
@@ -43,7 +43,7 @@ export default function SolutionCanvasPage() {
           <CardContent className="p-10 flex flex-col items-center gap-4 text-center">
             <p className="text-base">Solution not found.</p>
             <Button asChild variant="outline">
-              <Link href={backHref}>
+              <Link href={projectHref}>
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to the project
               </Link>

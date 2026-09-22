@@ -13,9 +13,9 @@ import {
 import { IdentifySolutionsProvider, useIdentifySolutions, NAV_ITEMS, STEPS_REQUIRING_PROBLEM } from "./context"
 import { SolutionsDrawer } from "./solutions-drawer"
 import { ProblemContextCard } from "@/components/context-card"
-import { Lightbulb, Lock, Check, ChevronDown, RotateCcw, ArrowLeft, PanelTop } from "lucide-react"
+import { Lightbulb, Lock, Check, ChevronDown, RotateCcw } from "lucide-react"
 import { useContainerSize } from "@/context/container-size-context"
-import { useFocusChrome } from "@/context/focus-chrome-context"
+import { FocusChromeButtons } from "@/components/focus-chrome-buttons"
 import { projectRoutes } from "@/lib/projects"
 import { cn } from "@/lib/utils"
 import {
@@ -202,40 +202,15 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   const router = useRouter()
   const pathname = usePathname()
   const { projectId, problemId, problem, candidates, resetWorkspace } = useIdentifySolutions()
-  const { revealTopNav } = useFocusChrome()
   const [mounted, setMounted] = useState(false)
   const [solutionsDrawerOpen, setSolutionsDrawerOpen] = useState(false)
   const problemSelected = problemId != null
   const isWide = useContainerSize() === "wide"
-  const backHref = projectRoutes.page(projectId)
   const base = projectRoutes.identifySolutionsBase(projectId)
 
   useEffect(() => {
     setMounted(true)
   }, [])
-
-  const backAndPanel = (
-    <div className="flex items-center gap-2 shrink-0">
-      <Button
-        variant="tertiary-outline"
-        onClick={() => router.push(backHref)}
-        className="gap-2"
-      >
-        <ArrowLeft className="h-4 w-4" />
-        Back
-      </Button>
-      <Button
-        variant="outline"
-        size="icon"
-        className="bg-white"
-        onClick={revealTopNav}
-        aria-label="Show top bar"
-        title="Top bar"
-      >
-        <PanelTop className="h-4 w-4" />
-      </Button>
-    </div>
-  )
 
   const sectionTitle = (
     <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 text-foreground">
@@ -299,7 +274,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     >
       {isWide ? (
         <div className={cn("w-72 shrink-0 flex flex-col gap-4 min-h-0", FOCUS_COLUMN_MAX_HEIGHT_CLASS)}>
-          {backAndPanel}
+          <FocusChromeButtons />
           {sectionTitle}
           {/* The stepper keeps its natural height; the column scrolls when it and the rail outgrow the viewport. */}
           <div className="flex flex-1 min-h-0 flex-col gap-4 overflow-y-auto">
@@ -310,7 +285,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       ) : (
         <>
           <div className="flex items-center gap-3 shrink-0">
-            {backAndPanel}
+            <FocusChromeButtons />
             {sectionTitle}
           </div>
           <MobileStepper

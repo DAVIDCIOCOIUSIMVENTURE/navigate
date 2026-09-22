@@ -3,11 +3,9 @@
 import { useCallback, useEffect, useMemo, type ReactNode } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useParams, usePathname, useRouter } from "next/navigation"
-import { ArrowLeft, PanelTop } from "lucide-react"
 import type { AppDispatch, RootState } from "@/store"
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { useFocusChrome } from "@/context/focus-chrome-context"
+import { FocusChromeButtons } from "@/components/focus-chrome-buttons"
 import { useContainerSize } from "@/context/container-size-context"
 import { cn } from "@/lib/utils"
 import { getReflectLens } from "@/data/reflectLenses"
@@ -26,7 +24,7 @@ import { lensHrefs, lensResumeHref, parseLensPath } from "./routes"
  * Shell for one guided-prompt tool. The tool is named by the URL rather than
  * picked inside the flow, so this owns the "resume where you left off" landing
  * on the bare tool URL, keeps the store's last position in step with the URL,
- * and renders the back button, title and stepper around each step page.
+ * and renders the chrome buttons, title and stepper around each step page.
  */
 export default function LensLayout({ children }: { children: ReactNode }) {
   const pathname = usePathname()
@@ -42,7 +40,6 @@ export default function LensLayout({ children }: { children: ReactNode }) {
     (s: RootState) => selectReflectProject(s, projectId),
   )
   const isWide = useContainerSize() === "wide"
-  const { revealTopNav } = useFocusChrome()
   const hrefs = useMemo(() => lensHrefs(projectId, lensId), [projectId, lensId])
 
   const route = useMemo(() => parseLensPath(pathname), [pathname])
@@ -102,25 +99,6 @@ export default function LensLayout({ children }: { children: ReactNode }) {
       ? { current: route.promptIndex + 1, total: route.lens.prompts.length }
       : null
 
-  const backAndPanel = (
-    <div className="flex items-center gap-2 shrink-0">
-      <Button variant="tertiary-outline" onClick={() => router.push(projectRoutes.page(projectId))} className="gap-2">
-        <ArrowLeft className="h-4 w-4" />
-        Back
-      </Button>
-      <Button
-        variant="outline"
-        size="icon"
-        className="bg-white"
-        onClick={revealTopNav}
-        aria-label="Show top bar"
-        title="Top bar"
-      >
-        <PanelTop className="h-4 w-4" />
-      </Button>
-    </div>
-  )
-
   // A URL naming something that is not a lens has nothing to render: the
   // effect above is already sending it back to the hub. Every hook has run by
   // here, so bailing out now is safe.
@@ -160,7 +138,7 @@ export default function LensLayout({ children }: { children: ReactNode }) {
     <div className={cn("flex flex-1 min-h-0 w-full", isWide ? "flex-row gap-3" : "flex-col gap-3")}>
       {isWide ? (
         <div className={cn("w-72 shrink-0 flex flex-col gap-4 min-h-0", FOCUS_COLUMN_MAX_HEIGHT_CLASS)}>
-          {backAndPanel}
+          <FocusChromeButtons />
           {sectionTitle}
           {/* The stepper keeps its natural height; the column scrolls when it and the rail outgrow the viewport. */}
           <div className="flex flex-1 min-h-0 flex-col gap-4 overflow-y-auto">
@@ -171,7 +149,7 @@ export default function LensLayout({ children }: { children: ReactNode }) {
       ) : (
         <>
           <div className="flex items-center gap-3 shrink-0">
-            {backAndPanel}
+            <FocusChromeButtons />
             {sectionTitle}
           </div>
           {stepper}

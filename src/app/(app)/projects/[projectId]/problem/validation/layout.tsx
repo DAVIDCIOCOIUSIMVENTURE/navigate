@@ -25,7 +25,6 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       title="Validate the problem"
       icon={ClipboardCheck}
       navLabel="Problem validation steps"
-      projectId={projectId}
       problemRef={problemRef}
       problem={problem}
       base={projectRoutes.validationBase(projectId)}

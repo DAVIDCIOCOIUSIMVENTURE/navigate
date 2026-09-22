@@ -10,8 +10,8 @@ import { cn } from "@/lib/utils"
 /**
  * Layout for a focus page about one problem or solution (its canvas or its
  * edit page). Like the Identify hubs, the header and sidebar are hidden, so
- * the page supplies its own `header` (a `FocusFlowHeader` with Back, the
- * top-bar toggle and the title). On wide containers that header sits in a
+ * the page supplies its own `header` (a `FocusFlowHeader` with Home, the
+ * Open menu toggle and the title). On wide containers that header sits in a
  * `w-72` left column above the journey progress rail, with the content beside
  * it fitted to the viewport; on narrow ones the header stays on top, the rail
  * becomes a horizontal row and the page scrolls naturally.

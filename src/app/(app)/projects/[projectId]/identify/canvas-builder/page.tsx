@@ -1260,7 +1260,7 @@ export default function IdentifyPage() {
         containerSize === "wide" && "overflow-hidden max-h-[100svh]",
       )}
     >
-      <FocusFlowHeader title="Canvas Builder" icon={Brain} backHref={projectRoutes.page(projectId)} />
+      <FocusFlowHeader title="Canvas Builder" icon={Brain} />
       {existing && (
         <p className="shrink-0 rounded-lg border border-secondary-brand/40 bg-secondary-brand/5 px-4 py-3 text-base leading-relaxed">
           You are revisiting <span className="font-semibold">{existing.title || "this project's problem"}</span>. The canvas shows what it captures; saving updates the problem rather than adding another.

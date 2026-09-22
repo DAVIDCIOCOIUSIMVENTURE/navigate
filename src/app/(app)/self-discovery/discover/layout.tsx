@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react"
 import { useSelector } from "react-redux"
 import { Button } from "@/components/ui/button"
 import { useRouter, usePathname } from "next/navigation"
-import { ArrowLeft, ChevronDown, Compass, PanelTop, type LucideIcon } from "lucide-react"
+import { ChevronDown, Compass, type LucideIcon } from "lucide-react"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { ProgressRing, type ProgressRingLabelPosition } from "@/components/ui/progress-ring"
@@ -21,7 +21,7 @@ import {
 } from "@/lib/nav-item-styles"
 import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
 import { useContainerSize } from "@/context/container-size-context"
-import { useFocusChrome } from "@/context/focus-chrome-context"
+import { FocusChromeButtons } from "@/components/focus-chrome-buttons"
 import type { RootState } from "@/store"
 import { getSelfDiscoveryProgress } from "@/lib/self-discovery-progress"
 
@@ -209,7 +209,6 @@ export default function SelfDiscoveryFlowLayout({
     const router = useRouter()
     const pathname = usePathname()
     const [mobileNavOpen, setMobileNavOpen] = useState(false)
-    const { revealTopNav } = useFocusChrome()
 
     const size = useContainerSize()
     const isWide = size === "wide"
@@ -219,34 +218,11 @@ export default function SelfDiscoveryFlowLayout({
         router.push(path)
     }
 
-    const handleExit = () => {
-        router.push("/self-discovery")
-    }
-
     const { label: activeLabel, Icon: ActiveIcon } = getActiveInfo(pathname)
-
-    const chromeTriggers = (
-        <div className="flex items-center gap-1 shrink-0">
-            <Button
-                variant="outline"
-                size="icon"
-                className="bg-white"
-                onClick={revealTopNav}
-                aria-label="Show top bar"
-                title="Top bar"
-            >
-                <PanelTop className="h-4 w-4" />
-            </Button>
-        </div>
-    )
 
     const inlineHeaderRow = (
         <div className="flex items-center gap-3 shrink-0">
-            <Button variant="tertiary-outline" onClick={handleExit} className="gap-2">
-                <ArrowLeft className="h-4 w-4" />
-                Back
-            </Button>
-            {chromeTriggers}
+            <FocusChromeButtons />
             <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 text-foreground">
                 <span className={SECTION_TITLE_TILE_CLASS} aria-hidden="true">
                     <Compass className={SECTION_TITLE_ICON_CLASS} />
@@ -311,13 +287,7 @@ export default function SelfDiscoveryFlowLayout({
 
                 {isWide && (
                     <div className="w-72 shrink-0 h-full flex flex-col gap-4 min-h-0">
-                        <div className="flex items-center gap-2 shrink-0">
-                            <Button variant="tertiary-outline" onClick={handleExit} className="gap-2">
-                                <ArrowLeft className="h-4 w-4" />
-                                Back
-                            </Button>
-                            {chromeTriggers}
-                        </div>
+                        <FocusChromeButtons />
                         <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 text-foreground">
                             <span className={SECTION_TITLE_TILE_CLASS} aria-hidden="true">
                                 <Compass className={SECTION_TITLE_ICON_CLASS} />
