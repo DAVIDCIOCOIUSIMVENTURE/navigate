@@ -7,15 +7,9 @@ import { useSelector } from "react-redux"
 import type { RootState } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { AboutDialog } from "@/components/about-toggle"
 import { ProblemCanvas } from "@/components/canvas/problem-canvas"
+import { IdentifySolutionsButton, SolutionsGuardDialog } from "@/components/solutions-guard"
 import { JourneyProgress } from "@/components/journey-progress"
 import { MemberAvatarStack } from "@/components/member-avatar"
 import { ProjectSettingsDialog } from "@/components/project-settings-dialog"
@@ -25,11 +19,7 @@ import { problemJourneyStep, summariseProblemJourney } from "@/lib/journey-steps
 import { HOME_HREF, projectDisplayName, projectRoutes } from "@/lib/projects"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { cn } from "@/lib/utils"
-import type { ValidationStatus } from "@/types/validation"
-import { ArrowLeft, ChevronDown, FolderKanban, Lightbulb, Plus, Presentation, Scale, Settings, Target } from "lucide-react"
-
-/** Solutions are identified only for problems that have come through validation as Valid or Unsure. */
-const SOLUTION_READY_STATUSES: ValidationStatus[] = ["valid", "unsure"]
+import { ArrowLeft, FolderKanban, Lightbulb, Plus, Scale, Settings, Target } from "lucide-react"
 
 /**
  * A project's page: its problem on the canvas (with Explore, Validate and
@@ -42,6 +32,7 @@ export default function ProjectPage() {
   const router = useRouter()
   const isWide = useContainerSize() === "wide"
   const [settingsOpen, setSettingsOpen] = useState(false)
+  const [nothingToCompare, setNothingToCompare] = useState(false)
 
   const hydrated = useSelector((state: RootState) => state.projects.hydrated)
   const project = useSelector((state: RootState) => state.projects.projects.find((p) => p.id === projectId))
@@ -74,19 +65,6 @@ export default function ProjectPage() {
 
   const name = projectDisplayName(project, problem?.title)
   const journeyStep = problem ? problemJourneyStep(summariseProblemJourney(problem, solutions)) : "identify-problems"
-  const solutionsReady = problem !== undefined && SOLUTION_READY_STATUSES.includes(problem.validationStatus)
-
-  const identifySolutionsButton = (
-    <Button
-      onClick={() => router.push(projectRoutes.identifySolutions(project.id))}
-      disabled={!solutionsReady}
-      className="gap-2"
-      data-tour={TOUR_TARGETS.projectIdentifySolutions}
-    >
-      <Plus className="h-4 w-4" />
-      Identify solutions
-    </Button>
-  )
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -99,7 +77,7 @@ export default function ProjectPage() {
             <p>
               A <span className="font-bold">project</span> is one problem and the solutions you find for it.
               Use <span className="font-bold">Explore</span> to dig into the problem, <span className="font-bold">Validate</span> to decide whether it is worth solving,
-              then <span className="font-bold">Identify solutions</span> once it is marked Valid or Unsure. Every solution you capture is listed below the problem.
+              then <span className="font-bold">Identify solutions</span>, ideally once the problem is marked Valid or Unsure. Every solution you capture is listed below the problem.
             </p>
           </AboutDialog>
           <MemberAvatarStack members={project.members} />
@@ -111,29 +89,12 @@ export default function ProjectPage() {
           className="flex-1 min-w-[22rem]"
         />
         <div className="flex flex-wrap items-center gap-2 shrink-0">
-          {/* One menu rather than two buttons. `modal={false}` keeps the page
-              clickable after the settings dialog it opens is closed. */}
-          <DropdownMenu modal={false}>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="gap-2 bg-white">
-                <Settings className="h-4 w-4" />
-                Settings
-                <ChevronDown className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem asChild>
-                <Link href={projectRoutes.preview(project.id)} target="_blank" rel="noreferrer">
-                  <Presentation className="h-3.5 w-3.5" />
-                  Preview
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSettingsOpen(true)}>
-                <Settings className="h-3.5 w-3.5" />
-                Settings
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          {/* One button: the portfolio and the way to delete the project both
+              live inside the dialog it opens. */}
+          <Button variant="outline" className="gap-2 bg-white" onClick={() => setSettingsOpen(true)}>
+            <Settings className="h-4 w-4" />
+            Settings
+          </Button>
         </div>
       </div>
 
@@ -176,27 +137,39 @@ export default function ProjectPage() {
           }
           headerExtra={
             <>
-              {solutionsReady ? (
-                identifySolutionsButton
-              ) : (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <span tabIndex={0} className="inline-flex">{identifySolutionsButton}</span>
-                  </TooltipTrigger>
-                  <TooltipContent>Validate the problem as Valid or Unsure first.</TooltipContent>
-                </Tooltip>
-              )}
+              <IdentifySolutionsButton
+                projectId={project.id}
+                status={problem.validationStatus}
+                className="gap-2"
+                data-tour={TOUR_TARGETS.projectIdentifySolutions}
+              >
+                <Plus className="h-4 w-4" />
+                Identify solutions
+              </IdentifySolutionsButton>
               <Button
                 variant="secondary-brand"
-                onClick={() => router.push(projectRoutes.compare(project.id))}
+                onClick={() =>
+                  linkedSolutions.length === 0
+                    ? setNothingToCompare(true)
+                    : router.push(projectRoutes.compare(project.id))
+                }
                 className="gap-2"
-                disabled={linkedSolutions.length === 0}
               >
                 <Scale className="h-4 w-4" />
                 Compare solutions
               </Button>
             </>
           }
+        />
+      )}
+
+      {problem && (
+        <SolutionsGuardDialog
+          projectId={project.id}
+          status={problem.validationStatus}
+          reason="nothing-to-compare"
+          open={nothingToCompare}
+          onOpenChange={setNothingToCompare}
         />
       )}
 

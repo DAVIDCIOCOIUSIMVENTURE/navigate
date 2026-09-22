@@ -15,6 +15,7 @@ import { RefinementStrategy } from "@/components/problem-strategies/refinement-s
 import { SHOW_REFINEMENT_STEPS } from "@/lib/feature-flags"
 import { ExistingSolutionsStrategy } from "@/components/problem-strategies/existing-solutions-strategy"
 import { ValidationStrategy } from "@/components/problem-strategies/validation-strategy"
+import { IdentifySolutionsButton } from "@/components/solutions-guard"
 import {
   AlertCircle, ArrowRight, CheckCircle2, Compass, Copy, ExternalLink,
   GitFork, HelpCircle, Lightbulb, MessageSquare, RotateCcw, Search, ShieldCheck,
@@ -240,6 +241,7 @@ function ReflectionPromptCard({
 
 function SolutionsSection({ projectId, problemId }: { projectId: number; problemId: number }) {
   const router = useRouter()
+  const { status } = useProblem()
   const solutions = useSelector((state: RootState) =>
     state.solutions.solutions.filter((s) => s.problemId === problemId)
   )
@@ -253,13 +255,10 @@ function SolutionsSection({ projectId, problemId }: { projectId: number; problem
       {solutions.length === 0 ? (
         <div className="flex flex-col items-center gap-3 py-6 text-center">
           <p className="text-sm">No solutions yet for this problem.</p>
-          <Button
-            size="sm"
-            onClick={() => router.push(projectRoutes.identifySolutions(projectId))}
-          >
+          <IdentifySolutionsButton projectId={projectId} status={status} size="sm">
             <Lightbulb className="h-3.5 w-3.5 mr-1" />
             Identify solutions
-          </Button>
+          </IdentifySolutionsButton>
         </div>
       ) : (
         <ul className="flex flex-col gap-1.5">

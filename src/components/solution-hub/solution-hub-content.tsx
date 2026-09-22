@@ -131,9 +131,9 @@ export function NextStepsSection({ solutionId }: { solutionId: number }) {
 
   const goToVerdict = () => router.push(projectRoutes.solutionValidate(projectId, solutionId, "verdict"))
 
-  // The preview is a page in its own right rather than a flow, so it opens in
+  // The portfolio is a page in its own right rather than a flow, so it opens in
   // a new tab and leaves the work where it was.
-  const openPreview = () => window.open(projectRoutes.preview(projectId), "_blank", "noreferrer")
+  const openPortfolio = () => window.open(projectRoutes.preview(projectId), "_blank", "noreferrer")
 
   const handleDuplicate = () => {
     if (!solution) return
@@ -187,10 +187,10 @@ export function NextStepsSection({ solutionId }: { solutionId: number }) {
             <NextStepCard
               icon={Presentation}
               title="Share the project with somebody else"
-              description="The preview reads the whole project back as a page: the problem, the evidence behind it and every solution you scored. Make the project public in its settings and anyone with the link can read it, with no account needed."
-              actionLabel="Open the preview"
+              description="The portfolio reads the whole project back as a page: the problem, the evidence behind it and every solution you scored. Make the project public in its settings and anyone with the link can read it, with no account needed."
+              actionLabel="Open portfolio"
               actionIcon={Presentation}
-              onAction={openPreview}
+              onAction={openPortfolio}
             />
           </div>
         </div>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
+import { useMemo, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useSelector } from "react-redux"
@@ -18,6 +18,11 @@ import {
   type JourneyStepId,
   type JourneyTarget,
 } from "@/lib/journey-steps"
+import {
+  isReadyForSolutions,
+  SolutionsGuardDialog,
+  type SolutionsGuardReason,
+} from "@/components/solutions-guard"
 import { useProjectIdForProblem } from "@/hooks/use-projects"
 import { projectIdFromPathname } from "@/lib/projects"
 import { loadResearchCapture } from "@/lib/research-capture"
@@ -108,8 +113,24 @@ export function JourneyProgress({
   }, [problem, solutions])
   const hrefFor = (step: JourneyStep) => journeyStepHref(step, projectId, target)
 
-  if (orientation === "horizontal") {
-    return (
+  // The two solution milestones are never blocked, but a step that has nothing
+  // behind it yet says so first: the same dialog the project page's buttons
+  // raise. Without a problem in view there is nothing to say, so the link
+  // stands (it leads to the project page).
+  const [guard, setGuard] = useState<SolutionsGuardReason | null>(null)
+  const linkedSolutions = problem ? solutions.filter((s) => s.problemId === problem.id) : []
+  const guardFor = (step: JourneyStep): SolutionsGuardReason | null => {
+    if (!problem || projectId === null) return null
+    if (step.id === "identify-solutions" && !isReadyForSolutions(problem.validationStatus)) return "unvalidated"
+    if (step.id === "validate-solutions" && linkedSolutions.length === 0) return "nothing-to-validate"
+    return null
+  }
+  const labelFor = (step: JourneyStep, labelClassName?: string) => (
+    <StepLabel step={step} href={hrefFor(step)} onGuard={guardFor(step)} onOpenGuard={setGuard} className={labelClassName} />
+  )
+
+  const rail =
+    orientation === "horizontal" ? (
       <nav aria-label={heading} className={cn("w-full", className)}>
         <ol className="flex w-full items-start">
           {steps.map((step, i) => (
@@ -119,28 +140,40 @@ export function JourneyProgress({
                 <StepCircle step={step} compact />
                 <Connector visible={i < steps.length - 1} done={step.status === "completed"} orientation="horizontal" />
               </div>
-              <StepLabel step={step} href={hrefFor(step)} className="text-center" />
+              {labelFor(step, "text-center")}
+            </li>
+          ))}
+        </ol>
+      </nav>
+    ) : (
+      <nav aria-label={heading} className={cn("flex flex-col", className)}>
+        <ol className="flex flex-col">
+          {steps.map((step, i) => (
+            <li key={step.id} className="flex items-stretch gap-2.5">
+              <div className="flex flex-col items-center">
+                <StepCircle step={step} />
+                {i < steps.length - 1 && <Connector visible done={step.status === "completed"} orientation="vertical" />}
+              </div>
+              {labelFor(step, cn("pt-1", i < steps.length - 1 && "pb-5"))}
             </li>
           ))}
         </ol>
       </nav>
     )
-  }
+
+  if (!problem || projectId === null) return rail
 
   return (
-    <nav aria-label={heading} className={cn("flex flex-col", className)}>
-      <ol className="flex flex-col">
-        {steps.map((step, i) => (
-          <li key={step.id} className="flex items-stretch gap-2.5">
-            <div className="flex flex-col items-center">
-              <StepCircle step={step} />
-              {i < steps.length - 1 && <Connector visible done={step.status === "completed"} orientation="vertical" />}
-            </div>
-            <StepLabel step={step} href={hrefFor(step)} className={cn("pt-1", i < steps.length - 1 && "pb-5")} />
-          </li>
-        ))}
-      </ol>
-    </nav>
+    <>
+      {rail}
+      <SolutionsGuardDialog
+        projectId={projectId}
+        status={problem.validationStatus}
+        reason={guard ?? "unvalidated"}
+        open={guard !== null}
+        onOpenChange={(open) => { if (!open) setGuard(null) }}
+      />
+    </>
   )
 }
 
@@ -171,10 +204,15 @@ function StepCircle({ step, compact = false }: { step: JourneyStep; compact?: bo
 function StepLabel({
   step,
   href,
+  onGuard,
+  onOpenGuard,
   className,
 }: {
   step: JourneyStep
   href: string
+  /** Set when this step has nothing behind it yet, so the click opens a dialog instead. */
+  onGuard?: SolutionsGuardReason | null
+  onOpenGuard?: (reason: SolutionsGuardReason) => void
   className?: string
 }) {
   const status =
@@ -182,6 +220,11 @@ function StepLabel({
   return (
     <Link
       href={href}
+      onClick={(e) => {
+        if (!onGuard || !onOpenGuard) return
+        e.preventDefault()
+        onOpenGuard(onGuard)
+      }}
       aria-current={step.status === "active" ? "step" : undefined}
       className={cn(
         "text-xs leading-snug rounded-sm hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",

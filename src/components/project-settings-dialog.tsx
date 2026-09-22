@@ -3,7 +3,17 @@
 import { useEffect, useRef, useState, type FormEvent } from "react"
 import { useDispatch, useStore } from "react-redux"
 import { toast } from "sonner"
-import { ArrowDownToLine, ArrowUpFromLine, Check, Copy, Globe, Plus, Trash2, Users } from "lucide-react"
+import {
+  ArrowDownToLine,
+  ArrowUpFromLine,
+  Check,
+  Copy,
+  Globe,
+  Plus,
+  Presentation,
+  Trash2,
+  Users,
+} from "lucide-react"
 import type { AppDispatch, RootState } from "@/store"
 import type { Project, ProjectMember, ProjectVisibility } from "@/store/projects-model"
 import { Button } from "@/components/ui/button"
@@ -33,7 +43,9 @@ import {
 
 /**
  * A project's settings: its name, the people it is shared with, whether its
- * preview page is public, and the way to delete it. Team membership is mocked
+ * portfolio page is public, and the way to delete it. This is also where the
+ * portfolio is opened from, since the home page rows carry no buttons of their
+ * own and the project page has only this dialog. Team membership is mocked
  * for now (there are no accounts yet), so a member is only a name and an email
  * kept on the project itself. Nothing is saved until Save changes, so Cancel
  * leaves the project as it was; Delete is the exception and acts once
@@ -96,15 +108,22 @@ export function ProjectSettingsDialog({
     setError(null)
   }
 
-  const previewUrl =
+  const portfolioUrl =
     project && typeof window !== "undefined"
       ? `${window.location.origin}${projectRoutes.preview(project.id)}`
       : ""
 
-  const copyPreviewLink = async () => {
-    if (!previewUrl) return
+  // The portfolio is a page in its own right rather than a step of this
+  // dialog, so it opens in a new tab and leaves the settings as they are.
+  const openPortfolio = () => {
+    if (!project) return
+    window.open(projectRoutes.preview(project.id), "_blank", "noreferrer")
+  }
+
+  const copyPortfolioLink = async () => {
+    if (!portfolioUrl) return
     try {
-      await navigator.clipboard.writeText(previewUrl)
+      await navigator.clipboard.writeText(portfolioUrl)
       setCopied(true)
     } catch {
       // Clipboard access can be refused; the link is on screen to copy by hand.
@@ -278,10 +297,10 @@ export function ProjectSettingsDialog({
             <div className="flex items-start justify-between gap-6">
               <div className="flex flex-col gap-1">
                 <Label htmlFor="project-visibility" className="text-base">
-                  Share a public preview
+                  Share a public portfolio
                 </Label>
                 <p className="text-base">
-                  Anyone holding the link can read the preview page: the problem, the evidence behind it and the
+                  Anyone holding the link can read the portfolio: the problem, the evidence behind it and the
                   solutions. They need no account and no licence. The project itself stays yours to edit.
                 </p>
               </div>
@@ -291,10 +310,20 @@ export function ProjectSettingsDialog({
                 onCheckedChange={(checked) => setVisibility(checked ? "public" : "private")}
               />
             </div>
-            {visibility === "public" && previewUrl && (
+            <Button
+              type="button"
+              variant="secondary-brand"
+              className="gap-2 self-start"
+              onClick={openPortfolio}
+              disabled={!project}
+            >
+              <Presentation className="h-4 w-4" />
+              Open portfolio
+            </Button>
+            {visibility === "public" && portfolioUrl && (
               <div className="flex items-center gap-2 rounded-lg border bg-muted/30 p-3">
-                <span className="min-w-0 flex-1 truncate text-base">{previewUrl}</span>
-                <Button type="button" variant="outline" className="shrink-0 gap-2" onClick={copyPreviewLink}>
+                <span className="min-w-0 flex-1 truncate text-base">{portfolioUrl}</span>
+                <Button type="button" variant="outline" className="shrink-0 gap-2" onClick={copyPortfolioLink}>
                   {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                   {copied ? "Copied" : "Copy link"}
                 </Button>

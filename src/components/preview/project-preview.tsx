@@ -89,7 +89,7 @@ export function ProjectPreview({ projectId }: { projectId: number }) {
 
   if (!hydrated) return null
 
-  if (!project) return <PreviewNotice title="This preview is not available" body={NOT_FOUND_BODY} />
+  if (!project) return <PreviewNotice title="This portfolio is not available" body={NOT_FOUND_BODY} />
 
   return (
     <div className="flex min-h-svh flex-col bg-background">
@@ -131,7 +131,7 @@ function PreviewTopBar() {
     <header className="sticky top-0 z-20 border-b bg-quaternary">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 lg:px-8">
         <span className="text-lg font-bold text-quaternary-foreground">Navigate</span>
-        <span className="text-base text-quaternary-foreground/80">Project preview, read only</span>
+        <span className="text-base text-quaternary-foreground/80">Project portfolio, read only</span>
       </div>
     </header>
   )
@@ -148,7 +148,7 @@ function NotSharedBanner({ projectId }: { projectId: number }) {
         <EyeOff className="h-4 w-4 shrink-0 text-yellow-700" />
         <p className="text-base">
           This project is private, so nobody else can open this page yet. Turn on{" "}
-          <span className="font-semibold">Share a public preview</span> in the project settings to give out the link.
+          <span className="font-semibold">Share a public portfolio</span> in the project settings to give out the link.
         </p>
         <Link
           href={projectRoutes.page(projectId)}

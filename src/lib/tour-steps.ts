@@ -451,7 +451,7 @@ export const TOUR_STEPS: TourStep[] = [
     id: "next-steps",
     title: "What comes next",
     body: [
-      "With a validated problem and solution in hand, Next Steps guides you through building, testing, planning, finding people and iterating. The Preview button on your project turns the whole journey into a page you can share with a teacher or anyone else.",
+      "With a validated problem and solution in hand, Next Steps guides you through building, testing, planning, finding people and iterating. Open portfolio, in your project's settings, turns the whole journey into a page you can share with a teacher or anyone else.",
     ],
     route: "/next-steps",
   },
