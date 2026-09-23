@@ -24,6 +24,8 @@ import {
 import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { getReflectLens, type LensDimensionRole } from "@/data/reflectLenses"
+import { GUIDED_TOOL, type GuidedPromptNode } from "@/data/guidedDiscovery"
+import { answersFromGuidedCapture, isGuidedCapture, resolveGuidedPath } from "@/lib/guided-discovery"
 import { MethodTile } from "@/components/method-tile"
 import { projectForProblem, projectRoutes } from "@/lib/projects"
 
@@ -86,6 +88,35 @@ function HubSection({
   )
 }
 
+type ReflectionPrompt = { id: string; question: string; multipleAllowed: boolean; role?: LensDimensionRole }
+
+/**
+ * The tool a reflection was captured with and the prompts of it worth showing
+ * here. The anchor and the prompts saved into a dimension column are shown as
+ * the problem's own columns, not repeated. A Guided discovery run keeps only
+ * the free-text prompts on the branch it took; its choices are the route, not
+ * answers, so they are left out too.
+ */
+function reflectionTool(reflection: ReflectionCapture): { title: string; icon: LucideIcon; editablePrompts: ReflectionPrompt[] } | null {
+  if (isGuidedCapture(reflection)) {
+    const path = resolveGuidedPath(answersFromGuidedCapture(reflection))
+    return {
+      title: GUIDED_TOOL.title,
+      icon: GUIDED_TOOL.icon,
+      editablePrompts: path.nodes
+        .filter((node): node is GuidedPromptNode => node.kind === "prompt" && !node.anchor && node.role === undefined)
+        .map(({ id, question, multipleAllowed }) => ({ id, question, multipleAllowed })),
+    }
+  }
+  const lens = getReflectLens(reflection.lensId)
+  if (!lens) return null
+  return {
+    title: lens.title,
+    icon: lens.icon,
+    editablePrompts: lens.prompts.filter((p) => !p.contextOnly && p.role !== "customers" && p.role !== "contexts"),
+  }
+}
+
 function ReflectionSection({ problemId, readOnly = false }: { problemId: number; readOnly?: boolean }) {
   const dispatch = useDispatch<AppDispatch>()
   const store = useStore<RootState>()
@@ -94,13 +125,9 @@ function ReflectionSection({ problemId, readOnly = false }: { problemId: number;
   )
 
   if (!reflection) return null
-  const lens = getReflectLens(reflection.lensId)
-  if (!lens) return null
-
-  // The anchor and the dimension prompts are shown as the problem's own columns, not here.
-  const editablePrompts = lens.prompts.filter(
-    (p) => !p.contextOnly && p.role !== "customers" && p.role !== "contexts"
-  )
+  const tool = reflectionTool(reflection)
+  if (!tool) return null
+  const { title, icon: LensIcon, editablePrompts } = tool
 
   function getAnswers(promptId: string): string[] {
     const captured = reflection!.prompts.find((p) => p.promptId === promptId)
@@ -126,13 +153,12 @@ function ReflectionSection({ problemId, readOnly = false }: { problemId: number;
     })
   }
 
-  const LensIcon = lens.icon
   return (
-    <HubSection icon={MessageSquare} label={`Captured with ${lens.title}`}>
+    <HubSection icon={MessageSquare} label={`Captured with ${title}`}>
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-3">
           <MethodTile icon={LensIcon} size="sm" />
-          <p className="text-base font-medium flex-1 text-secondary-brand">{lens.title}</p>
+          <p className="text-base font-medium flex-1 text-secondary-brand">{title}</p>
         </div>
         <div className="flex flex-col gap-4">
           {editablePrompts.map((prompt) => (
@@ -156,7 +182,7 @@ function ReflectionPromptCard({
   readOnly,
   onChange,
 }: {
-  prompt: { id: string; question: string; multipleAllowed: boolean; role?: LensDimensionRole }
+  prompt: ReflectionPrompt
   answers: string[]
   readOnly: boolean
   onChange: (next: string[]) => void

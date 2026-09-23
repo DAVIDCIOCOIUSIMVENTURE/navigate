@@ -46,6 +46,12 @@ describe("identifyOriginOf", () => {
     ).toEqual({ tool: "lens", lensId: "life" })
   })
 
+  it("names Guided discovery for a run saved with it, which is not a lens", () => {
+    expect(
+      identifyOriginOf(stored({ source: "identify", reflection: { lensId: "guided", capturedAt: "", prompts: [] } }), null),
+    ).toEqual({ tool: "guided" })
+  })
+
   it("leads to the hub for a lens the hub no longer offers, rather than a URL that bounces", () => {
     expect(
       identifyOriginOf(stored({ source: "identify", reflection: { lensId: "market", capturedAt: "", prompts: [] } }), null),

@@ -47,6 +47,10 @@ export const projectRoutes = {
   lens: (projectId: ProjectRef, lensId: string) => under(projectId, `/identify/${lensId}`),
   /** The last step of a guided-prompt tool, where its answers are reviewed and saved. */
   lensReview: (projectId: ProjectRef, lensId: string) => under(projectId, `/identify/${lensId}/review`),
+  /** Guided discovery: the one guided tool that branches on where the user starts from. */
+  guided: (projectId: ProjectRef) => under(projectId, "/identify/guided"),
+  /** The last step of Guided discovery, where its answers are reviewed and saved. */
+  guidedReview: (projectId: ProjectRef) => under(projectId, "/identify/guided/review"),
   research: (projectId: ProjectRef) => under(projectId, "/identify/research"),
   /** The last step of one research method, where its capture is reviewed and saved. */
   researchReview: (projectId: ProjectRef, methodId: string) => under(projectId, `/identify/research/${methodId}/review`),

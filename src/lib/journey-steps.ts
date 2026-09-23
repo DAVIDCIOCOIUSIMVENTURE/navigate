@@ -11,6 +11,7 @@ import type { Solution } from "@/types/solution"
 import type { Problem } from "@/store/problems-model"
 import { getReflectLens } from "@/data/reflectLenses"
 import { getResearchMethod } from "@/data/researchMethods"
+import { isGuidedCapture } from "@/lib/guided-discovery"
 import { HOME_HREF, projectRoutes } from "@/lib/projects"
 import { hasVerdict } from "@/lib/tour-steps"
 
@@ -46,6 +47,7 @@ export const JOURNEY_STEPS: JourneyStepDefinition[] = [
 export type IdentifyOrigin =
   | { tool: "canvas-builder" }
   | { tool: "lens"; lensId: string }
+  | { tool: "guided" }
   | { tool: "research"; methodId: string | null }
   | { tool: "hub" }
 
@@ -69,6 +71,7 @@ export function identifyOriginOf(
 ): IdentifyOrigin {
   if (problem.reflection) {
     const { lensId } = problem.reflection
+    if (isGuidedCapture(problem.reflection)) return { tool: "guided" }
     return getReflectLens(lensId) ? { tool: "lens", lensId } : { tool: "hub" }
   }
   if (problem.source === "research") {
@@ -84,6 +87,8 @@ export function identifyStepHref(projectId: number, origin: IdentifyOrigin): str
   switch (origin.tool) {
     case "lens":
       return projectRoutes.lensReview(projectId, origin.lensId)
+    case "guided":
+      return projectRoutes.guidedReview(projectId)
     case "research":
       return origin.methodId === null
         ? projectRoutes.research(projectId)

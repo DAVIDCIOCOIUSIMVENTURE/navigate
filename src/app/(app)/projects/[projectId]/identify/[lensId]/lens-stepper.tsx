@@ -26,30 +26,35 @@ export const LENS_STEPS: { id: ReflectStep; label: string }[] = [
 
 export function LensStepper({
   activeId,
+  steps = LENS_STEPS,
   onStepClick,
   promptsProgress,
+  progressLabel,
   onReset,
   resetDescription,
   contextCard,
 }: {
   activeId: ReflectStep
+  /** The two steps and their labels; Guided discovery calls its first step "Questions". */
+  steps?: { id: ReflectStep; label: string }[]
   onStepClick: (id: ReflectStep) => void
   promptsProgress?: { current: number; total: number } | null
+  /** Replaces the first step's label while it is active, for a flow whose length is not fixed ("Question 3"). */
+  progressLabel?: string | null
   onReset: () => void
   resetDescription: string
   /** Reminder of what the run is anchored on, shown above the Reset button. */
   contextCard?: ReactNode
 }) {
-  const steps = LENS_STEPS
   const isWide = useContainerSize() === "wide"
   const [open, setOpen] = useState(false)
   const activeIdx = steps.findIndex((s) => s.id === activeId)
   const active = steps[activeIdx] ?? steps[0]
 
   const stepLabel = (id: ReflectStep, baseLabel: string) => {
-    if (id === "prompts" && activeId === "prompts" && promptsProgress) {
-      return `Prompt ${promptsProgress.current} of ${promptsProgress.total}`
-    }
+    if (id !== "prompts" || activeId !== "prompts") return baseLabel
+    if (progressLabel) return progressLabel
+    if (promptsProgress) return `Prompt ${promptsProgress.current} of ${promptsProgress.total}`
     return baseLabel
   }
 

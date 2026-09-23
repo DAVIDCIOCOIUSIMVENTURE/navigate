@@ -18,6 +18,7 @@ import type { MethodPickerItem } from "@/components/method-picker-board"
 import { MethodTile } from "@/components/method-tile"
 import { DimensionPills } from "@/components/dimension-pill"
 import { REFLECT_LENSES, startingDimension } from "@/data/reflectLenses"
+import { GUIDED_TOOL } from "@/data/guidedDiscovery"
 
 /**
  * The project's Identify a Problem hub. While the project has no problem,
@@ -91,6 +92,19 @@ export default function IdentifyProblemsPage() {
    * wrapper, so it is opened straight from the hub.
    */
   const items: MethodPickerItem[] = [
+    {
+      // The prototype of one guided tool that branches on where the user starts
+      // from, meant to cover the ground of the five lenses below it.
+      id: GUIDED_TOOL.id,
+      title: GUIDED_TOOL.title,
+      shortDescription: GUIDED_TOOL.shortDescription,
+      longDescription: GUIDED_TOOL.shortDescription,
+      helperText: GUIDED_TOOL.bestFor,
+      icon: GUIDED_TOOL.icon,
+      estimatedMinutes: GUIDED_TOOL.estimatedMinutes,
+      enabled: true,
+      startsFrom: ["customers", "contexts", "problems", "you"],
+    },
     ...REFLECT_LENSES.map((lens) => ({
       id: lens.id,
       title: lens.title,
@@ -141,6 +155,9 @@ export default function IdentifyProblemsPage() {
 
   function handlePick(id: string) {
     switch (id) {
+      case GUIDED_TOOL.id:
+        router.push(projectRoutes.guided(projectId))
+        return
       case "canvas-builder":
         router.push(projectRoutes.canvasBuilder(projectId))
         return
@@ -179,7 +196,10 @@ export default function IdentifyProblemsPage() {
               Every project&apos;s problem starts here, and each tool is a different doorway to the same goal: a problem that is real, painful and worth solving.
             </p>
             <p className="text-base leading-relaxed">
-              The first five are <span className="font-semibold">guided prompt tools</span>: short questions about something you already know, so they suit you if you are not sure where to start. Four begin from a situation and look for the problems in it: what you have lived through, the work you do, what you have built, or a group you know well. <span className="font-semibold">Something that annoys you</span> runs the other way, beginning from the irritation itself and working backwards to who has it, when it bites and why it is still there.
+              <span className="font-semibold">Guided discovery</span> is a prototype of one tool for all of them: it first asks what you are starting from (your own experience, a group of people, an annoyance or a moment when things go wrong), then asks the same short set of questions, worded for your answer.
+            </p>
+            <p className="text-base leading-relaxed">
+              The next five are <span className="font-semibold">guided prompt tools</span>: short questions about something you already know, so they suit you if you are not sure where to start. Four begin from a situation and look for the problems in it: what you have lived through, the work you do, what you have built, or a group you know well. <span className="font-semibold">Something that annoys you</span> runs the other way, beginning from the irritation itself and working backwards to who has it, when it bites and why it is still there.
             </p>
             <p className="text-base leading-relaxed">
               The <span className="font-semibold">Canvas Builder</span> and <span className="font-semibold">Research</span> cast wider, letting you explore combinations or gather evidence from outside your own experience. If you already know what you want to explore, <span className="font-semibold">Define a Problem Statement</span> captures it straight away. Whichever tool you choose, the problem lands in your project, ready to refine and validate, and once the project has its problem the tools reopen it so you can change your mind without starting again.
