@@ -29,6 +29,17 @@ export type DimensionColor = {
   pillBorder: string
 }
 
+/** The four dimensions a problem is built from. */
+export type DimensionKey = "customers" | "contexts" | "problems" | "you"
+
+/** How each dimension is named on a pill or column heading. */
+export const DIMENSION_LABELS: Record<DimensionKey, string> = {
+  customers: "Customer",
+  contexts: "Context",
+  problems: "Problem",
+  you: "You",
+}
+
 export const DIMENSION_ICONS: Record<string, LucideIcon> = {
   customers: Users,
   contexts: MapPin,

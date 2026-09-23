@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/accordion"
 import { useContainerSize } from "@/context/container-size-context"
 import { MethodTile } from "@/components/method-tile"
+import type { DimensionKey } from "@/lib/dimension-visuals"
 import { cn } from "@/lib/utils"
 
 export type MethodPickerItem = {
@@ -26,6 +27,8 @@ export type MethodPickerItem = {
   enabled: boolean
   /** Optional guided-tour anchor placed on this item's call-to-action button. */
   tourTarget?: string
+  /** The dimensions this tool starts from, shown as pills beside its title. */
+  startsFrom?: DimensionKey[]
 }
 
 export function MethodPickerBoard({

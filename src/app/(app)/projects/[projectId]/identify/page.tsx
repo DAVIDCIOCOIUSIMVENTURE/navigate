@@ -16,7 +16,8 @@ import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { cn } from "@/lib/utils"
 import type { MethodPickerItem } from "@/components/method-picker-board"
 import { MethodTile } from "@/components/method-tile"
-import { REFLECT_LENSES } from "@/data/reflectLenses"
+import { DimensionPills } from "@/components/dimension-pill"
+import { REFLECT_LENSES, startingDimension } from "@/data/reflectLenses"
 
 /**
  * The project's Identify a Problem hub. While the project has no problem,
@@ -101,6 +102,7 @@ export default function IdentifyProblemsPage() {
       icon: lens.icon,
       estimatedMinutes: lens.estimatedMinutes,
       enabled: true,
+      startsFrom: [startingDimension(lens)],
     })),
     {
       id: "canvas-builder",
@@ -111,6 +113,8 @@ export default function IdentifyProblemsPage() {
       icon: Brain,
       estimatedMinutes: 15,
       enabled: true,
+      // The canvas mixes every column, so it starts from any of them.
+      startsFrom: ["customers", "contexts", "problems", "you"],
     },
     {
       id: "research",
@@ -223,7 +227,10 @@ function IdentifyToolCard({ item, onPick, editing }: { item: MethodPickerItem; o
           <div className="flex flex-1 min-w-0 items-start gap-3">
             <MethodTile icon={item.icon} size="lg" />
             <div className="flex flex-1 min-w-0 flex-col gap-1.5">
-              <h2 className="text-xl font-bold leading-tight tracking-tight text-secondary-brand">{item.title}</h2>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                <h2 className="text-xl font-bold leading-tight tracking-tight text-secondary-brand">{item.title}</h2>
+                {item.startsFrom && <DimensionPills dimensions={item.startsFrom} />}
+              </div>
               <p className="text-base leading-relaxed">{item.longDescription}</p>
               <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-base">
                 {item.helperText && (

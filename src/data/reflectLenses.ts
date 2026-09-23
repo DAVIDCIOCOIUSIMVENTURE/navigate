@@ -6,6 +6,7 @@ import {
   Wrench,
   type LucideIcon,
 } from "lucide-react"
+import type { DimensionKey } from "@/lib/dimension-visuals"
 
 /**
  * The guided-prompt tools on the Identify a Problem hub. Each lens is a guided
@@ -544,4 +545,14 @@ export function getRolePromptId(lens: Lens, role: LensDimensionRole): string | n
  */
 export function startsFromProblem(lens: Lens): boolean {
   return getAnchorPrompt(lens).role === "problems"
+}
+
+/**
+ * The dimension a lens starts from, shown as a pill beside its title on the
+ * hub. An anchor saved into a dimension column starts there (an audience is a
+ * customer, an annoyance a problem type); an anchor kept only as reflection (a
+ * life experience, a work area, something you have done) starts from You.
+ */
+export function startingDimension(lens: Lens): DimensionKey {
+  return getAnchorPrompt(lens).role ?? "you"
 }

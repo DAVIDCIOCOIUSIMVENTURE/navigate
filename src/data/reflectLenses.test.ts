@@ -5,6 +5,7 @@ import {
   getAnchorPromptId,
   getReflectLens,
   getRolePromptId,
+  startingDimension,
   startsFromProblem,
 } from "./reflectLenses"
 
@@ -35,6 +36,17 @@ describe("REFLECT_LENSES schema", () => {
     for (const lens of REFLECT_LENSES) {
       expect(getRolePromptId(lens, "problems")).not.toBeNull()
     }
+  })
+
+  it("starts from the anchor's dimension, or from You when the anchor is only reflection", () => {
+    const byLens = Object.fromEntries(REFLECT_LENSES.map((l) => [l.id, startingDimension(l)]))
+    expect(byLens).toEqual({
+      life: "you",
+      work: "you",
+      "own-problems": "you",
+      "audience-problems": "customers",
+      annoyance: "problems",
+    })
   })
 
   it("uses each dimension role at most once per lens, since the save reads one prompt per column", () => {
