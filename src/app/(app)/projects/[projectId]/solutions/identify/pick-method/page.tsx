@@ -14,9 +14,9 @@ const TOOL_ITEMS: MethodPickerItem[] = [
   {
     id: "scamper",
     title: "SCAMPER",
-    shortDescription: "Look at a problem from seven creative angles to spark ideas you wouldn't reach by conventional ideation.",
-    longDescription: "SCAMPER prompts you to look at a problem from seven angles: Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate, and Reverse. Each prompt sparks ideas you wouldn't reach through conventional ideation.",
-    helperText: "Best when you want a structured set of prompts to push past the first obvious idea.",
+    shortDescription: "Take an existing solution and transform it in seven ways to generate new solution ideas.",
+    longDescription: "SCAMPER starts from a solution that already exists, whether one people use today or your own first idea, and asks seven questions of it: what could you Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate or Reverse? Each transformation is a candidate solution you would not reach by conventional brainstorming.",
+    helperText: "Best when a solution already exists, or you have a first idea, and want structured ways to turn it into something new.",
     icon: Lightbulb,
     estimatedMinutes: 20,
     enabled: true,

@@ -83,7 +83,7 @@ type ScamperPrompt = {
 const SCAMPER_PROMPTS: ScamperPrompt[] = [
   {
     key: "substitute", letter: "S", title: "Substitute",
-    prompt: "What components, materials, or processes could you swap out? What if you replaced part of the problem?",
+    prompt: "What part of the existing solution could you swap out? Replace a material, a step, a channel, or who provides it.",
     color: SCAMPER_LETTER_COLORS.S,
     sparkQuestions: [
       "What materials, components, or rules could you swap out?",
@@ -102,7 +102,7 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
   },
   {
     key: "combine", letter: "C", title: "Combine",
-    prompt: "Can you combine this problem with another? What if you merged two existing solutions?",
+    prompt: "What could you merge the existing solution with? Two products, two services, or two steps customers currently do separately.",
     color: SCAMPER_LETTER_COLORS.C,
     sparkQuestions: [
       "Which two features, products, or workflows could be merged?",
@@ -112,7 +112,7 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
     inputPlaceholder: "e.g. Bundle onboarding with the first invoice...",
     technique: {
       name: "Attribute matrix",
-      description: "Choose 2 or 3 attributes of the problem (channel, audience, format). Jot 3 variations under each, then pick unlikely pairs across the columns and see what mashups appear.",
+      description: "Choose 2 or 3 attributes of the solution (channel, audience, format). Jot 3 variations under each, then pick unlikely pairs across the columns and see what mashups appear.",
     },
     example: {
       company: "IKEA",
@@ -121,7 +121,7 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
   },
   {
     key: "adapt", letter: "A", title: "Adapt",
-    prompt: "What else is like this? What ideas from other industries or domains could you adapt?",
+    prompt: "What else is like this solution? What has another industry or domain done with something similar that you could borrow?",
     color: SCAMPER_LETTER_COLORS.A,
     sparkQuestions: [
       "What other industry has solved a similar problem?",
@@ -131,7 +131,7 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
     inputPlaceholder: "e.g. Apply Spotify-style playlists to lesson plans...",
     technique: {
       name: "Borrow an expert's lens",
-      description: "Picture someone from an unrelated craft (a chef, a choreographer, a firefighter) approaching this problem. What would their first instinct be? Apply that move here.",
+      description: "Picture someone from an unrelated craft (a chef, a choreographer, a firefighter) looking at this solution. What would they change first? Apply that move here.",
     },
     example: {
       company: "Netflix",
@@ -140,7 +140,7 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
   },
   {
     key: "modify", letter: "M", title: "Modify",
-    prompt: "What if you enlarged, shrunk, or changed the shape of the problem? What can be modified?",
+    prompt: "What if you made the solution bigger, smaller, faster, or changed its shape, format, or feel?",
     color: SCAMPER_LETTER_COLORS.M,
     sparkQuestions: [
       "What if you made it 10x bigger or 10x smaller?",
@@ -159,7 +159,7 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
   },
   {
     key: "putToOtherUse", letter: "P", title: "Put to Other Use",
-    prompt: "Can this problem (or its elements) be used for something else? What new purposes could emerge?",
+    prompt: "Could the solution, or part of it, serve a different customer or purpose than it does today?",
     color: SCAMPER_LETTER_COLORS.P,
     sparkQuestions: [
       "Who outside the current audience might value this?",
@@ -178,7 +178,7 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
   },
   {
     key: "eliminate", letter: "E", title: "Eliminate",
-    prompt: "What can you remove or simplify? What would happen if you eliminated a step entirely?",
+    prompt: "What could you strip out of the solution? What happens if a step, a feature, or a cost disappears entirely?",
     color: SCAMPER_LETTER_COLORS.E,
     sparkQuestions: [
       "Which steps, fields, or features add no real value?",
@@ -193,7 +193,7 @@ const SCAMPER_PROMPTS: ScamperPrompt[] = [
   },
   {
     key: "reverse", letter: "R", title: "Reverse",
-    prompt: "What if you reversed the process? What if you did the opposite of what's expected?",
+    prompt: "What if the solution worked the other way round? Reverse the order of steps, or do the opposite of what it does today.",
     color: SCAMPER_LETTER_COLORS.R,
     sparkQuestions: [
       "What is the opposite of how this works today?",
@@ -312,7 +312,7 @@ function ScamperForm() {
       <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
         <div className="flex flex-col gap-1 min-w-0 flex-1">
           <h4 className="text-sm font-semibold text-white">SCAMPER Prompts</h4>
-          <p className="text-sm text-white">Switch between accordion and tab layouts to explore the prompts the way you prefer.</p>
+          <p className="text-sm text-white">Apply each transformation to the solution you started from. Switch between accordion and tab layouts to explore the prompts the way you prefer.</p>
         </div>
         <ToggleGroup
           type="single"
@@ -800,7 +800,7 @@ function ScamperCaseStudies() {
   return (
     <div className="rounded-xl border bg-muted p-8 flex flex-col gap-8">
       <p className="text-base text-foreground">
-        See how successful companies used SCAMPER thinking to reimagine existing products and create breakthrough solutions by looking at problems from multiple creative angles.
+        See how successful companies used SCAMPER thinking to transform an existing product or service into a breakthrough solution, one transformation at a time.
       </p>
       {SCAMPER_CASE_STUDIES.map((cs) => {
         const meta = CASE_STUDY_ICONS[cs.company]
@@ -1449,12 +1449,12 @@ type ToolHint = { icon: LucideIcon; title: string; subtitle: string; bg: string 
 const TOOL_INFO: Record<string, { title: string; description: string; whatYouDo: string; hints: ToolHint[] }> = {
   scamper: {
     title: "SCAMPER Method",
-    description: "SCAMPER is a creative thinking technique that prompts you to look at a problem from seven angles: Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate, and Reverse. Each prompt sparks ideas you wouldn't reach through conventional ideation.",
-    whatYouDo: "Work through each of the <strong>7 SCAMPER prompts</strong> below. You don't need to fill in every one, but try at least 3-4. When you find a promising idea, click <strong>Add as Candidate</strong> to save it.",
+    description: "SCAMPER is a creative thinking technique for generating new solutions out of an existing one. Start from a solution that already exists, whether one your customers use today or your own first idea, and transform it in seven ways: Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate, and Reverse. Each transformation is a candidate solution you would not reach through conventional brainstorming.",
+    whatYouDo: "Pick a <strong>starting solution</strong>: one of the existing solutions you recorded while exploring the problem, or the first idea you have for solving it. Then work through the <strong>7 SCAMPER prompts</strong> below, applying each transformation to that solution. You don't need to fill in every one, but try at least 3-4. When a transformation produces a promising solution, click <strong>Add as Candidate</strong> to save it.",
     hints: [
-      { icon: Shuffle, title: "7 creative angles", subtitle: "Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate, Reverse", bg: "bg-blue-900" },
-      { icon: Plus, title: "Save the best ideas", subtitle: "Click \"Add as Candidate\" to promote ideas to your Solutions", bg: "bg-yellow-600" },
-      { icon: Shuffle, title: "Quantity over quality", subtitle: "Generate lots of ideas first. You'll refine them later", bg: "bg-green-800" },
+      { icon: Shuffle, title: "Start from a solution", subtitle: "An existing solution your customers use today, or your own first idea", bg: "bg-blue-900" },
+      { icon: Shuffle, title: "7 ways to transform it", subtitle: "Substitute, Combine, Adapt, Modify, Put to Other Use, Eliminate, Reverse", bg: "bg-yellow-600" },
+      { icon: Plus, title: "Save the best solutions", subtitle: "Click \"Add as Candidate\" to promote a transformation to your Solutions", bg: "bg-green-800" },
     ],
   },
   reverse: {
@@ -1523,7 +1523,7 @@ export default function DiscoverPage() {
             {discoveryToolType === "scamper" && (
               <>
                 <h3 className="mt-4 text-xl font-bold text-foreground">The 7 SCAMPER Prompts</h3>
-                <p>Each letter invites you to look at your problem from a different creative angle. Work through each prompt to surface ideas you would not reach through ordinary ideation.</p>
+                <p>Each letter is a different way to transform your starting solution. Work through each prompt to surface new solutions you would not reach through ordinary brainstorming.</p>
                 <div className={cn("grid gap-3 mt-1 mb-4", isNarrow ? "grid-cols-1" : "grid-cols-2")}>
                   {SCAMPER_PROMPTS.map(({ key, letter, title, prompt, color }, i) => {
                     const isLastOdd = i === SCAMPER_PROMPTS.length - 1 && SCAMPER_PROMPTS.length % 2 === 1
@@ -1595,7 +1595,7 @@ export default function DiscoverPage() {
             <div className="flex flex-col gap-2 items-center text-center">
               <h3 className="text-xl font-bold"><span className="text-primary">Your Turn:</span> Work through the SCAMPER prompts</h3>
               <p className="text-base max-w-xl">
-                Run your problem through each of the seven angles. You don&apos;t need to answer every prompt: jot ideas where they spark, then click <strong>Save Solution</strong> when you have one worth keeping.
+                Take an existing solution and run it through each of the seven transformations. You don&apos;t need to answer every prompt: jot down the new solutions where they spark, then click <strong>Save Solution</strong> when you have one worth keeping.
               </p>
             </div>
             <Tabs defaultValue="strategy" className="flex flex-col gap-4">

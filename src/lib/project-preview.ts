@@ -364,7 +364,7 @@ export function describeMethod(solution: Pick<Solution, "inspirationSource" | "i
   const detail = solution.inspirationDetail.trim()
   switch (solution.inspirationSource) {
     case "scamper":
-      return detail || "Found by running the problem through SCAMPER, a checklist of ways to twist an existing answer."
+      return detail || "Found by running an existing solution through SCAMPER, a checklist of ways to transform it into a new one."
     case "reverse":
       return detail || "Found by asking how to make the problem worse, then turning each answer on its head."
     case "analogy":
