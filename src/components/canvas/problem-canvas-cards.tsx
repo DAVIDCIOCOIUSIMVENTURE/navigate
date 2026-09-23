@@ -15,6 +15,7 @@ import {
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { computeMarket, formatMoney } from "@/lib/market"
+import { describeCompetitionSignals, describeMarketEstimates } from "@/lib/market-summary"
 import { DEFAULT_REACHABLE_SHARE } from "@/types/validation"
 import {
   Tooltip,
@@ -24,7 +25,6 @@ import {
 } from "@/components/ui/tooltip"
 import {
   Cell,
-  MetricRow,
   Placeholder,
   StatusPill,
   type CellTone,
@@ -52,6 +52,55 @@ function PillList({ items, brand }: { items: string[]; brand: boolean }) {
         </li>
       ))}
     </ul>
+  )
+}
+
+/**
+ * A figure with its label in one pill (the market sizes), so a card can carry
+ * its few headline numbers in the same treatment as its picks.
+ */
+function FigurePillList({
+  items,
+  brand,
+}: {
+  items: { label: string; value: string }[]
+  brand: boolean
+}) {
+  return (
+    <ul className="flex flex-wrap gap-2">
+      {items.map(({ label, value }) => (
+        <li key={label} className={cn(pillClass(brand), "flex items-baseline gap-2")}>
+          <span>{label}</span>
+          <span className="font-semibold">{value}</span>
+        </li>
+      ))}
+    </ul>
+  )
+}
+
+/**
+ * A free-text field on a card (the customer description, when the problem
+ * happens) as a labelled pill under the catalogue picks. The text is a
+ * sentence or two rather than a catalogue item, so the pill is rounded rather
+ * than fully round and keeps the user's line breaks.
+ */
+function NotePill({
+  label,
+  text,
+  brand,
+}: {
+  label: string
+  text: string
+  brand: boolean
+}) {
+  if (!text.trim()) return null
+  return (
+    <div className="flex flex-col gap-1">
+      <p className={cn("text-base font-semibold", brand ? "text-white/80" : "text-secondary-brand")}>
+        {label}
+      </p>
+      <p className={cn(pillClass(brand), "rounded-2xl whitespace-pre-wrap")}>{text}</p>
+    </div>
   )
 }
 
@@ -137,17 +186,12 @@ export function ProblemCanvasCards({
   const [editing, setEditing] = useState<ProblemCardId | null>(null)
   const edit = (card: ProblemCardId) => (editable ? () => setEditing(card) : undefined)
   const brand = tone === "brand"
-  const sectionHeading = cn(
-    "text-base font-semibold uppercase tracking-wide pb-1 border-b",
-    brand ? "border-white/30" : "border-border/40",
-  )
   const status = problem.validationStatus ?? "unvalidated"
   const va = problem.validationAssessment
 
   const currency = va.worthToThem.unit || "GBP"
   const {
-    totalMarket, reachableMarket, realisticShare: realisticShareValue,
-    reachPct, obtainPct, ready: marketReady,
+    totalMarket, reachableMarket, realisticShare: realisticShareValue, ready: marketReady,
   } = computeMarket({
     customers: va.howManyPeople.value ?? 0,
     frequency: va.howOften.value ?? 0,
@@ -155,14 +199,9 @@ export function ProblemCanvasCards({
     reachableShare: va.reachableShare ?? DEFAULT_REACHABLE_SHARE,
     obtainableShare: va.obtainableShare,
   })
-
-  const marketEmpty =
-    !va.howManyPeople.level && va.howManyPeople.value == null &&
-    !va.howOften.level && va.howOften.value == null &&
-    !va.worthToThem.level && va.worthToThem.value == null &&
-    !va.competitorSize.level && va.competitorSize.value == null &&
-    !va.costOfSwitching.level && va.costOfSwitching.value == null &&
-    !va.solutionEffectiveness.level && va.solutionEffectiveness.value == null
+  const marketSentences = [describeMarketEstimates(va), describeCompetitionSignals(va)].filter(
+    (text): text is string => text !== null,
+  )
 
   return (
     <div className={cn("canvas-print-root flex flex-col gap-3 w-full", fill && "flex-1 min-h-0")}>
@@ -189,7 +228,9 @@ export function ProblemCanvasCards({
         className={cn(
           "grid grid-cols-1 sm:grid-cols-12 gap-3",
           fill &&
-            "lg:grid-rows-[minmax(0,0.9fr)_minmax(0,1.2fr)_minmax(0,0.7fr)] flex-1 lg:min-h-0",
+            // The market and existing solutions rows take their content height
+            // (the latter capped on its cell below) and the top row gets the rest.
+            "lg:grid-rows-[minmax(0,1fr)_auto_auto] flex-1 lg:min-h-0",
         )}
       >
         <Cell
@@ -207,9 +248,7 @@ export function ProblemCanvasCards({
         >
           <div className="flex flex-col gap-2">
             <DimensionList columnId="customers" ids={problem.customers} brand={brand} />
-            {problem.customerDescription && (
-              <p className="whitespace-pre-wrap">{problem.customerDescription}</p>
-            )}
+            <NotePill label="Description" text={problem.customerDescription} brand={brand} />
           </div>
         </Cell>
 
@@ -223,9 +262,7 @@ export function ProblemCanvasCards({
         >
           <div className="flex flex-col gap-2">
             <DimensionList columnId="contexts" ids={problem.contexts} brand={brand} />
-            {problem.contextWhen && (
-              <p className="whitespace-pre-wrap">{problem.contextWhen}</p>
-            )}
+            <NotePill label="When it happens" text={problem.contextWhen} brand={brand} />
           </div>
         </Cell>
 
@@ -245,45 +282,26 @@ export function ProblemCanvasCards({
           label="Market opportunity"
           tone={tone}
           className="sm:col-span-12"
-          empty={marketEmpty}
+          empty={!marketReady && marketSentences.length === 0}
           onEdit={edit("market")}
         >
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-x-8 gap-y-4">
-            <div className="flex flex-col gap-1">
-              <p className={sectionHeading}>Your estimates</p>
-              <MetricRow label="People affected" metric={va.howManyPeople} />
-              <MetricRow label="How often" metric={va.howOften} />
-              <MetricRow label="Price per occurrence" metric={va.worthToThem} />
-              <div className="flex justify-between gap-2">
-                <span>Reachable share</span>
-                <span className="font-medium">{reachPct}%</span>
-              </div>
-              <div className="flex justify-between gap-2">
-                <span>Realistic share</span>
-                <span className="font-medium">{obtainPct}%</span>
-              </div>
-            </div>
-            <div className="flex flex-col gap-1">
-              <p className={sectionHeading}>Competition</p>
-              <MetricRow label="Competitor size" metric={va.competitorSize} />
-              <MetricRow label="Cost of switching" metric={va.costOfSwitching} />
-              <MetricRow label="Effectiveness" metric={va.solutionEffectiveness} />
-            </div>
-            <div className="flex flex-col gap-1">
-              <p className={sectionHeading}>Market size</p>
-              <div className="flex justify-between gap-2">
-                <span>Total market</span>
-                <span className="font-medium">{marketReady ? formatMoney(totalMarket, { currency, compact: true }) : "Not captured"}</span>
-              </div>
-              <div className="flex justify-between gap-2">
-                <span>Reachable market</span>
-                <span className="font-medium">{marketReady ? formatMoney(reachableMarket, { currency, compact: true }) : "Not captured"}</span>
-              </div>
-              <div className="flex justify-between gap-2">
-                <span>Realistic share of the market</span>
-                <span className="font-medium">{marketReady ? formatMoney(realisticShareValue, { currency, compact: true }) : "Not captured"}</span>
-              </div>
-            </div>
+          {/* Three things at most: the estimates as a sentence, the competition
+              as a sentence, and the three market sizes as pills. The fields
+              themselves stay in the edit dialog. */}
+          <div className="flex flex-col gap-3">
+            {marketSentences.length > 0 && <p>{marketSentences.join(" ")}</p>}
+            {marketReady ? (
+              <FigurePillList
+                items={[
+                  { label: "Total market", value: formatMoney(totalMarket, { currency, compact: true }) },
+                  { label: "Reachable market", value: formatMoney(reachableMarket, { currency, compact: true }) },
+                  { label: "Realistic share of the market", value: formatMoney(realisticShareValue, { currency, compact: true }) },
+                ]}
+                brand={brand}
+              />
+            ) : (
+              <span className="italic opacity-60">Market size not yet captured</span>
+            )}
           </div>
         </Cell>
 
@@ -291,7 +309,7 @@ export function ProblemCanvasCards({
           icon={GitFork}
           label="Existing solutions"
           tone={tone}
-          className="sm:col-span-12"
+          className={cn("sm:col-span-12", fill && "lg:max-h-48")}
           empty={problem.existingSolutions.length === 0}
           onEdit={edit("existing-solutions")}
         >
