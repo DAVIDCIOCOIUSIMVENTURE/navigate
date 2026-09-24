@@ -87,16 +87,16 @@ export default function NextStepsPage() {
                 const label = problem.title || getProblemLabel(problem, customByColumn, selfDiscoveryItems) || `Problem #${problem.id}`
                 return (
                   <div key={problem.id} className="rounded-lg border overflow-hidden">
-                    <div className="flex items-center gap-2 px-4 py-2.5 bg-muted/40 border-b">
-                      <Target className="h-4 w-4 text-tertiary shrink-0" />
+                    <div className="flex items-center gap-2 px-4 py-2.5 bg-secondary-brand text-white">
+                      <Target className="h-4 w-4 shrink-0" aria-hidden="true" />
                       <Link
                         href={projectRoutes.problemEdit(projectId)}
-                        className="flex-1 min-w-0 text-sm font-medium truncate hover:underline"
+                        className="flex-1 min-w-0 text-base font-semibold truncate hover:underline"
                       >
                         {label}
                       </Link>
-                      <StatusPill status={problem.validationStatus.replace("_", " ")} />
-                      <span className="text-sm shrink-0">
+                      <StatusPill status={problem.validationStatus.replace("_", " ")} onBrand />
+                      <span className="text-base shrink-0">
                         {linked.length} solution{linked.length === 1 ? "" : "s"}
                       </span>
                     </div>
@@ -145,19 +145,19 @@ function TopicCard({ topic, onClick }: { topic: NextStepsTopic; onClick: () => v
     <button
       type="button"
       onClick={onClick}
-      className="text-left flex items-start gap-3 p-4 rounded-lg border hover:border-primary hover:bg-accent/40 transition-colors h-full"
+      className="text-left flex items-start gap-3 p-4 rounded-lg bg-secondary-brand text-white hover:bg-secondary-brand/90 transition-colors h-full"
     >
-      <span className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0 bg-secondary-brand">
-        <Icon className="h-5 w-5 text-secondary-brand-foreground" aria-hidden="true" />
+      <span className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0 bg-white">
+        <Icon className="h-5 w-5 text-secondary-brand" aria-hidden="true" />
       </span>
       <div className="flex-1 min-w-0">
-        <p className="font-semibold text-secondary-brand">{topic.title}</p>
-        <p className="text-sm italic mt-0.5 flex items-start gap-1.5">
-          <Sparkles className="h-3 w-3 shrink-0 mt-1" aria-hidden="true" />
+        <p className="font-semibold">{topic.title}</p>
+        <p className="text-base italic mt-0.5 flex items-start gap-1.5">
+          <Sparkles className="h-3 w-3 shrink-0 mt-1.5" aria-hidden="true" />
           <span>{topic.tagline}</span>
         </p>
       </div>
-      <ChevronRight className="h-4 w-4 text-muted-foreground shrink-0 mt-1" aria-hidden="true" />
+      <ChevronRight className="h-4 w-4 shrink-0 mt-1" aria-hidden="true" />
     </button>
   )
 }
@@ -174,8 +174,23 @@ const statusColors: Record<string, string> = {
   abandon: "bg-destructive/15 text-destructive",
 }
 
-function StatusPill({ status }: { status: string }) {
-  const colors = statusColors[status] ?? "bg-gray-100 text-gray-700"
+/** Pill colours for a status shown on a solid cobalt row, where the tinted backgrounds above would go muddy. */
+const onBrandStatusColors: Record<string, string> = {
+  unvalidated: "bg-white text-secondary-brand",
+  "in progress": "bg-white text-primary",
+  valid: "bg-white text-success",
+  invalid: "bg-white text-destructive",
+  unsure: "bg-white text-tertiary",
+  "not started": "bg-white text-secondary-brand",
+  pursue: "bg-white text-success",
+  revisit: "bg-white text-primary",
+  abandon: "bg-white text-destructive",
+}
+
+function StatusPill({ status, onBrand = false }: { status: string; onBrand?: boolean }) {
+  const colors = onBrand
+    ? (onBrandStatusColors[status] ?? "bg-white text-secondary-brand")
+    : (statusColors[status] ?? "bg-gray-100 text-gray-700")
   return (
     <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-medium capitalize shrink-0 ${colors}`}>
       {status}
