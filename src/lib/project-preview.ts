@@ -306,11 +306,11 @@ export function describeCompetition(assessment: ValidationAssessment): Competiti
 
 export const PROBLEM_VERDICT_COPY: Record<ValidationStatus, { label: string; reading: string }> = {
   unvalidated: {
-    label: "Not validated yet",
+    label: "Not tested yet",
     reading: "The team has not yet decided whether this problem is worth solving.",
   },
   in_progress: {
-    label: "Being validated",
+    label: "Being tested",
     reading: "The team is still working through the evidence on this problem.",
   },
   valid: {
@@ -328,7 +328,7 @@ export const PROBLEM_VERDICT_COPY: Record<ValidationStatus, { label: string; rea
 }
 
 export const SOLUTION_VERDICT_COPY: Record<ValidationStatus, { label: string; reading: string }> = {
-  unvalidated: { label: "Not scored yet", reading: "This candidate has not been through validation." },
+  unvalidated: { label: "Not scored yet", reading: "This candidate has not been tested yet." },
   in_progress: { label: "Being scored", reading: "The team is part way through scoring this candidate." },
   valid: { label: "Worth pursuing", reading: "The team decided this one is worth building." },
   invalid: { label: "Ruled out", reading: "The team ruled this one out." },

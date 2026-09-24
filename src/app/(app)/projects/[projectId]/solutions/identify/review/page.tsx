@@ -84,7 +84,7 @@ export default function ReviewPage() {
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <p className="text-base leading-relaxed">
           Every candidate below has been saved to your <span className="font-semibold">solutions</span>.
-          Click <span className="font-semibold">Validate</span> on a candidate to start validating it.
+          Click <span className="font-semibold">Test</span> on a candidate to start testing it.
         </p>
 
         <ReviewSection>
@@ -165,7 +165,7 @@ export default function ReviewPage() {
                       className="shrink-0"
                       onClick={() => router.push(projectRoutes.solutionValidate(projectId, c.id))}
                     >
-                      Validate<ArrowRight className="h-4 w-4 ml-1" />
+                      Test<ArrowRight className="h-4 w-4 ml-1" />
                     </Button>
                   </div>
                 ))}

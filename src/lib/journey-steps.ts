@@ -31,9 +31,9 @@ export type JourneyStepDefinition = {
 export const JOURNEY_STEPS: JourneyStepDefinition[] = [
   { id: "identify-problems", label: "Identify problem", icon: Target },
   { id: "explore-problems", label: "Explore problem", icon: Microscope },
-  { id: "validate-problems", label: "Validate problem", icon: ShieldCheck },
+  { id: "validate-problems", label: "Test problem", icon: ShieldCheck },
   { id: "identify-solutions", label: "Identify solutions", icon: Lightbulb },
-  { id: "validate-solutions", label: "Validate solutions", icon: ShieldCheck },
+  { id: "validate-solutions", label: "Test solutions", icon: ShieldCheck },
 ]
 
 /**
@@ -101,7 +101,7 @@ export function identifyStepHref(projectId: number, origin: IdentifyOrigin): str
 }
 
 /**
- * The solution the "Validate solutions" milestone opens: the first of the
+ * The solution the "Test solutions" milestone opens: the first of the
  * problem's solutions still without a verdict, so the rail leads to the work
  * that is left, and otherwise the first one, so the step still lands in a
  * validation flow once every solution has been judged. A problem with no

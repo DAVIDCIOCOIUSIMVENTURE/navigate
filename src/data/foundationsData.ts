@@ -72,16 +72,16 @@ export const FOUNDATIONS_SECTIONS: FoundationsSection[] = [
   },
   {
     url: "why-validate-the-problem",
-    title: "Why validate the problem first",
-    shortTitle: "Validate the problem",
+    title: "Why test the problem first",
+    shortTitle: "Test the problem",
     tagline: "If the problem isn't real, nothing you build on top will matter.",
     iconKey: "search",
     intro:
-      "Skipping problem validation is the most common way startups fail. Founders hear a few friends say 'that would be great' and treat it as proof. Real validation means finding people who feel the problem strongly enough to pay, switch, or change their behaviour to solve it.",
+      "Skipping the problem test is the most common way startups fail. Founders hear a few friends say 'that would be great' and treat it as proof. Really testing the problem means finding people who feel it strongly enough to pay, switch, or change their behaviour to solve it.",
     keyPoints: [
-      "Polite enthusiasm is not validation. People say they'd use things they never actually use.",
+      "Polite enthusiasm is not evidence. People say they'd use things they never actually use.",
       "A real problem shows up in behaviour: workarounds, hacks, spreadsheet fixes, money already being spent.",
-      "Validating the problem is cheap. Building the wrong product is expensive.",
+      "Testing the problem is cheap. Building the wrong product is expensive.",
       "The goal is to disprove your assumption, not confirm it.",
     ],
     videos: [
@@ -101,7 +101,7 @@ export const FOUNDATIONS_SECTIONS: FoundationsSection[] = [
         id: "webvan",
         title: "Webvan",
         summary:
-          "Online grocery delivery built out £1B of warehouse infrastructure before validating that customers would change shopping habits at scale. Collapsed in 2001. The problem (grocery inconvenience) was real but not urgent enough to justify the logistics.",
+          "Online grocery delivery built out £1B of warehouse infrastructure before checking that customers would change shopping habits at scale. Collapsed in 2001. The problem (grocery inconvenience) was real but not urgent enough to justify the logistics.",
         outcome: "went-wrong",
       },
       {
@@ -115,12 +115,12 @@ export const FOUNDATIONS_SECTIONS: FoundationsSection[] = [
   },
   {
     url: "why-validate-the-solution",
-    title: "Why validate the solution",
-    shortTitle: "Validate the solution",
+    title: "Why test the solution",
+    shortTitle: "Test the solution",
     tagline: "A real problem doesn't mean your solution is the one people want.",
     iconKey: "flask",
     intro:
-      "Even when the problem is genuine, the leap to 'therefore people will use what I'm about to build' is a big one. Solution validation is about testing, with the smallest possible artefact, whether your specific approach is the one customers will actually adopt.",
+      "Even when the problem is genuine, the leap to 'therefore people will use what I'm about to build' is a big one. Testing the solution means checking, with the smallest possible artefact, whether your specific approach is the one customers will actually adopt.",
     keyPoints: [
       "Customers rarely want what they say they want; they want what solves their problem with the least effort.",
       "A landing page, mockup, or concierge test beats a six-month build every time.",
@@ -136,7 +136,7 @@ export const FOUNDATIONS_SECTIONS: FoundationsSection[] = [
       {
         id: "concierge-tests",
         title: "Concierge and Wizard-of-Oz tests",
-        description: "How founders validate solutions without writing code.",
+        description: "How founders test solutions without writing code.",
       },
     ],
     caseStudies: [
@@ -151,7 +151,7 @@ export const FOUNDATIONS_SECTIONS: FoundationsSection[] = [
         id: "new-coca-cola",
         title: "New Coca Cola",
         summary:
-          "Coca-Cola validated in blind taste tests that people preferred the new formula. They did not validate that customers wanted Coca-Cola to change. Withdrawn within 79 days.",
+          "Coca-Cola proved in blind taste tests that people preferred the new formula. They never checked that customers wanted Coca-Cola to change. Withdrawn within 79 days.",
         outcome: "went-wrong",
       },
     ],
@@ -163,7 +163,7 @@ export const FOUNDATIONS_SECTIONS: FoundationsSection[] = [
     tagline: "Time, money, and morale: what it actually costs to build the wrong thing.",
     iconKey: "clock",
     intro:
-      "It's tempting to skip ahead because building feels like progress. But every month spent on an unvalidated idea is a month of runway, focus, and team energy you cannot get back. The cost is not just financial; founders who ship the wrong thing often lose the confidence to try again.",
+      "It's tempting to skip ahead because building feels like progress. But every month spent on an untested idea is a month of runway, focus, and team energy you cannot get back. The cost is not just financial; founders who ship the wrong thing often lose the confidence to try again.",
     keyPoints: [
       "Runway burned on the wrong problem rarely gets replenished.",
       "Teams lose trust in leadership that keeps pivoting after each failed launch.",
@@ -174,7 +174,7 @@ export const FOUNDATIONS_SECTIONS: FoundationsSection[] = [
       {
         id: "cost-of-skipping",
         title: "What building the wrong thing really costs",
-        description: "A breakdown of the time, money, and emotional cost of unvalidated launches.",
+        description: "A breakdown of the time, money, and emotional cost of untested launches.",
       },
     ],
     caseStudies: [
@@ -182,21 +182,21 @@ export const FOUNDATIONS_SECTIONS: FoundationsSection[] = [
         id: "google-plus",
         title: "Google+",
         summary:
-          "Years of engineering investment and an entire product integration strategy built on the assumption that users wanted another social network. Shut down after repeated relaunches. The problem was assumed rather than validated against Facebook's entrenched behaviour.",
+          "Years of engineering investment and an entire product integration strategy built on the assumption that users wanted another social network. Shut down after repeated relaunches. The problem was assumed rather than tested against Facebook's entrenched behaviour.",
         outcome: "went-wrong",
       },
       {
         id: "theranos",
         title: "Theranos",
         summary:
-          "An extreme example: the technology was never validated, and product demos were staged. Everything downstream (funding, partnerships, regulatory risk) compounded on an unvalidated base, ending in criminal charges.",
+          "An extreme example: the technology was never tested, and product demos were staged. Everything downstream (funding, partnerships, regulatory risk) compounded on an untested base, ending in criminal charges.",
         outcome: "went-wrong",
       },
       {
         id: "wework",
         title: "WeWork",
         summary:
-          "Scaled to a £47B valuation on the framing of a 'tech company' without validating the underlying unit economics of long-term real-estate leases funded by short-term member contracts. The 2019 IPO attempt exposed the numbers; the valuation collapsed by around £39B within weeks, and the CEO was removed.",
+          "Scaled to a £47B valuation on the framing of a 'tech company' without testing the underlying unit economics of long-term real-estate leases funded by short-term member contracts. The 2019 IPO attempt exposed the numbers; the valuation collapsed by around £39B within weeks, and the CEO was removed.",
         outcome: "went-wrong",
       },
     ],
@@ -208,7 +208,7 @@ export const FOUNDATIONS_SECTIONS: FoundationsSection[] = [
     tagline: "Founders who did the work, and what they learned along the way.",
     iconKey: "trophy",
     intro:
-      "The stories here are not about lucky breaks. They're about founders who spent weeks or months in problem and solution validation before committing capital. The patterns are consistent: talk to users, start small, kill your own ideas quickly, and only scale once the signal is unmistakable.",
+      "The stories here are not about lucky breaks. They're about founders who spent weeks or months testing the problem and the solution before committing capital. The patterns are consistent: talk to users, start small, kill your own ideas quickly, and only scale once the signal is unmistakable.",
     keyPoints: [
       "Talk to more people than feels reasonable. Ten conversations is not enough.",
       "Ship the smallest thing that can fail fast.",
@@ -218,13 +218,13 @@ export const FOUNDATIONS_SECTIONS: FoundationsSection[] = [
     videos: [
       {
         id: "airbnb-validation",
-        title: "Airbnb's early validation",
+        title: "Airbnb's early tests",
         description: "How the founders manually tested the idea with cereal boxes and photography before writing code.",
       },
       {
         id: "dropbox-video",
         title: "The Dropbox explainer video",
-        description: "A three-minute video validated the solution before a line of product code shipped.",
+        description: "A three-minute video proved the solution before a line of product code shipped.",
       },
     ],
     caseStudies: [
@@ -232,14 +232,14 @@ export const FOUNDATIONS_SECTIONS: FoundationsSection[] = [
         id: "airbnb",
         title: "Airbnb",
         summary:
-          "Before building, the founders rented out their own flat, photographed listings by hand, and manually confirmed that travellers would pay strangers for a spare room. The slow, unglamorous validation work is what separated them from earlier home-sharing attempts.",
+          "Before building, the founders rented out their own flat, photographed listings by hand, and manually confirmed that travellers would pay strangers for a spare room. The slow, unglamorous testing is what separated them from earlier home-sharing attempts.",
         outcome: "went-right",
       },
       {
         id: "dropbox",
         title: "Dropbox",
         summary:
-          "Drew Houston posted a short explainer video demonstrating the intended product. The waitlist jumped from 5,000 to 75,000 overnight, validating both the problem (file syncing pain) and the solution approach before significant engineering.",
+          "Drew Houston posted a short explainer video demonstrating the intended product. The waitlist jumped from 5,000 to 75,000 overnight, confirming both the problem (file syncing pain) and the solution approach before significant engineering.",
         outcome: "went-right",
       },
       {

@@ -42,7 +42,8 @@ import { DimensionPicker } from "@/components/dimension-picker"
 import { AddCustomItemDialog } from "@/components/add-custom-item-dialog"
 import { ManageCustomItemsDialog } from "@/components/manage-custom-items-dialog"
 import { EditableLeafItem } from "@/components/editable-leaf-item"
-import { ConfirmDialog } from "@/components/ui/confirm-dialog"
+import { ConfirmDialog, SELECTION_REMOVE_DESCRIPTION } from "@/components/ui/confirm-dialog"
+import { RemovablePill } from "@/components/ui/removable-pill"
 import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
 import { useProjectScope } from "@/hooks/use-projects"
 import { projectRoutes } from "@/lib/projects"
@@ -289,8 +290,8 @@ const STEP_GUIDANCE: Record<string, { title: string; description: string; tips: 
     description: "Look over what you've assembled. Add a short description to capture the essence of the problem in your own words, then save it.",
     tips: [
       "A good description answers: \"What's the core frustration or unmet need?\"",
-      "Keep it to one or two sentences. You'll flesh it out during validation.",
-      "Saving gives your project its problem, ready to explore and validate.",
+      "Keep it to one or two sentences. You'll flesh it out while exploring and testing it.",
+      "Saving gives your project its problem, ready to explore and test.",
     ],
   },
 }
@@ -899,22 +900,19 @@ function ProblemBuilder({
               const colors = COLUMN_COLORS[col.id]
               const Icon = COLUMN_ICONS[col.id]
               return ids.map((id) => {
-                const label = findLabel(col.items, id)
+                const label = findLabel(col.items, id) ?? id
                 return (
-                  <span
+                  <RemovablePill
                     key={id}
-                    className={cn("inline-flex items-center gap-1 text-sm font-semibold rounded-full px-2 py-0.5", colors?.pill || "bg-primary/10 text-primary")}
+                    label={label}
+                    noun="selection"
+                    description={SELECTION_REMOVE_DESCRIPTION}
+                    className={cn("gap-1 text-sm font-semibold px-2 py-0.5", colors?.pill || "bg-primary/10 text-primary")}
+                    onRemove={() => toggleItem(col.id, id)}
                   >
                     {Icon && <Icon className={cn("h-3 w-3 shrink-0", colors?.icon)} />}
                     {label}
-                    <button
-                      onClick={() => toggleItem(col.id, id)}
-                      className="hover:opacity-70 transition-opacity"
-                      aria-label={`Remove ${label}`}
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </span>
+                  </RemovablePill>
                 )
               })
             })}
@@ -1410,20 +1408,17 @@ export default function IdentifyPage() {
                 const colors = COLUMN_COLORS[column.id]
                 const Icon = COLUMN_ICONS[column.id]
                 return columnSelected.map(({ id, label }) => (
-                  <span
+                  <RemovablePill
                     key={id}
-                    className={cn("inline-flex items-center gap-1 text-sm font-semibold rounded-full px-2 py-0.5", colors?.pill || "bg-primary/10 text-primary")}
+                    label={label}
+                    noun="selection"
+                    description={SELECTION_REMOVE_DESCRIPTION}
+                    className={cn("gap-1 text-sm font-semibold px-2 py-0.5", colors?.pill || "bg-primary/10 text-primary")}
+                    onRemove={() => toggleItem(id)}
                   >
                     {Icon && <Icon className={cn("h-3 w-3 shrink-0", colors?.icon)} />}
                     {label}
-                    <button
-                      onClick={() => toggleItem(id)}
-                      className="hover:opacity-70 transition-opacity"
-                      aria-label={`Remove ${label}`}
-                    >
-                      <X className="h-3 w-3" />
-                    </button>
-                  </span>
+                  </RemovablePill>
                 ))
               })}
             </div>

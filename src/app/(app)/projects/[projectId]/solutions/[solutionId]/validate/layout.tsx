@@ -42,9 +42,9 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   return (
     <>
       <FlowShell
-        title="Validate the solution"
+        title="Test the solution"
         icon={ClipboardCheck}
-        navLabel="Solution validation steps"
+        navLabel="Solution test steps"
         base={projectRoutes.solutionValidateBase(projectId, solutionId)}
         navItems={NAV_ITEMS}
         navIcons={NAV_ICONS}

@@ -5,7 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import type { ValidationStatus } from "@/types/validation"
 
 const STATUS_OPTIONS: { value: ValidationStatus; label: string; icon: React.ElementType; iconClass: string }[] = [
-  { value: "unvalidated", label: "Not validated", icon: Clock,        iconClass: "text-muted-foreground" },
+  { value: "unvalidated", label: "Not tested", icon: Clock,        iconClass: "text-muted-foreground" },
   { value: "valid",       label: "Valid",         icon: CheckCircle2, iconClass: "text-success" },
   { value: "unsure",      label: "Unsure",        icon: HelpCircle,   iconClass: "text-tertiary" },
   { value: "invalid",     label: "Invalid",       icon: XCircle,      iconClass: "text-destructive" },
@@ -17,7 +17,7 @@ export function StatusSelect({ status, setStatus }: { status: ValidationStatus; 
   return (
     <div className="flex flex-col gap-2">
       <label className="text-sm font-medium" htmlFor="validation-status">
-        Validation Status
+        Test status
       </label>
       <Select value={status} onValueChange={(v) => setStatus(v as ValidationStatus)}>
         <SelectTrigger id="validation-status" className="bg-[#fcfbf8]">

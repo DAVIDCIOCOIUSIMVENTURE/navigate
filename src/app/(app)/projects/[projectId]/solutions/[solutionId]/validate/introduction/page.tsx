@@ -29,7 +29,7 @@ export default function IntroductionPage() {
           <div className="flex flex-col gap-6 @[800px]:flex-row @[800px]:items-center">
             <div className="flex flex-col gap-4 flex-1 min-w-0">
               <p className="text-base leading-relaxed">
-                Validation helps you decide whether this solution is worth pursuing. You&apos;ll work through four metrics one at a time, each with guidance and case studies to help you reason about it. At the end, you&apos;ll mark the solution as valid, invalid, or unsure.
+                Testing helps you decide whether this solution is worth pursuing. You&apos;ll work through four metrics one at a time, each with guidance and case studies to help you reason about it. At the end, you&apos;ll mark the solution as valid, invalid, or unsure.
               </p>
               <p className="text-base leading-relaxed">
                 The aim is not to fall in love with the solution; it is to stress-test it against feasibility, impact, cost, and time so you can commit to building it (or walk away) with your eyes open.

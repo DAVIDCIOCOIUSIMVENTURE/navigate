@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { Pencil, Plus, Search, X, ChevronRight, ChevronDown } from "lucide-react"
+import { Pencil, Plus, Search, ChevronRight, ChevronDown } from "lucide-react"
 import { toast } from "sonner"
 import type { AppDispatch, RootState } from "@/store"
 import { Button } from "@/components/ui/button"
@@ -17,6 +17,8 @@ import { resolveDimensionLabel } from "@/lib/dimension-labels"
 import { DIMENSION_COLORS, DIMENSION_ICONS } from "@/lib/dimension-visuals"
 import { getGroupIcon } from "@/lib/group-icons"
 import { EditableLeafItem } from "@/components/editable-leaf-item"
+import { SELECTION_REMOVE_DESCRIPTION } from "@/components/ui/confirm-dialog"
+import { RemovablePill } from "@/components/ui/removable-pill"
 import { cn } from "@/lib/utils"
 
 function findInTree(items: DimensionItem[], id: string): DimensionItem | null {
@@ -205,26 +207,29 @@ export function DimensionPicker({
         ) : null}
         {ids.map((id) => {
           const text = resolveDimensionLabel(columnId, id, customByColumn, triggers)
+          const pillClass = cn(
+            "inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-sm font-medium",
+            dimensionColor ? `${dimensionColor.pill} ${dimensionColor.pillBorder}` : "bg-background border-border"
+          )
+          if (readOnly) {
+            return (
+              <span key={id} className={pillClass}>
+                {text}
+              </span>
+            )
+          }
           return (
-            <span
+            <RemovablePill
               key={id}
-              className={cn(
-                "inline-flex items-center gap-1 rounded-md border px-2 py-0.5 text-sm font-medium",
-                dimensionColor ? `${dimensionColor.pill} ${dimensionColor.pillBorder}` : "bg-background border-border"
-              )}
+              label={text}
+              noun="selection"
+              description={SELECTION_REMOVE_DESCRIPTION}
+              className={pillClass}
+              buttonClassName="opacity-60"
+              onRemove={() => removeOne(id)}
             >
               {text}
-              {!readOnly && (
-                <button
-                  type="button"
-                  onClick={() => removeOne(id)}
-                  className="opacity-60 hover:opacity-100"
-                  aria-label={`Remove ${text}`}
-                >
-                  <X className="h-3 w-3" />
-                </button>
-              )}
-            </span>
+            </RemovablePill>
           )
         })}
         {!readOnly && (

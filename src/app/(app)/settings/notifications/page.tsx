@@ -59,9 +59,9 @@ export default function NotificationsSettingsPage() {
 
           <div className="flex items-center justify-between">
             <div className="flex flex-col gap-1">
-              <Label htmlFor="notifyOnValidationVerdict">Validation Verdict</Label>
+              <Label htmlFor="notifyOnValidationVerdict">Test verdict</Label>
               <p className="text-sm">
-                Notify when a problem validation verdict is reached.
+                Notify when a problem test reaches a verdict.
               </p>
             </div>
             <Switch

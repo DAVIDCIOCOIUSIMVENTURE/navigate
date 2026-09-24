@@ -88,7 +88,7 @@ function getCrumbs(pathname: string, lookup: CrumbLookup): Crumb[] {
         crumbs.push({ label: "Identify a problem" })
       }
     } else if (area === "problem") {
-      crumbs.push({ label: fourth === "explore" ? "Explore" : fourth === "validation" ? "Validation" : "Edit problem" })
+      crumbs.push({ label: fourth === "explore" ? "Explore" : fourth === "validation" ? "Test" : "Edit problem" })
     } else if (area === "solutions") {
       if (fourth === "identify") {
         crumbs.push({ label: "Identify solutions" })
@@ -96,7 +96,7 @@ function getCrumbs(pathname: string, lookup: CrumbLookup): Crumb[] {
         crumbs.push({ label: "Compare solutions" })
       } else if (fifth === "validate") {
         crumbs.push({ label: "Solution", href: projectRoutes.solution(projectId, Number(fourth)) })
-        crumbs.push({ label: "Validation" })
+        crumbs.push({ label: "Test" })
       } else if (fifth === "edit") {
         crumbs.push({ label: "Solution", href: projectRoutes.solution(projectId, Number(fourth)) })
         crumbs.push({ label: "Edit solution" })
@@ -145,20 +145,33 @@ function getCrumbs(pathname: string, lookup: CrumbLookup): Crumb[] {
   return crumbs
 }
 
-/** A project: its own page and everything under it (the identify hub and tools, the problem's pages and flows, the solution pages and flows). */
-const PROJECT_FLOW_PATH = /^\/projects\/\d+(\/.+)?$/
+/** The work inside a project: everything under its page (the identify hub and tools, the problem's pages and flows, the solution pages and flows), but not the project page itself. */
+const PROJECT_FLOW_PATH = /^\/projects\/\d+\/.+$/
 
 /**
  * Routes that render without the header and sidebar and supply their own
- * chrome buttons and title: every page inside a project, the project page
- * included (its canvas and solutions, the Identify problems hub and its tools,
- * the problem edit page and its Explore and Validation flows, the solution
- * canvas, its edit page and its validation flow, Identify Solutions, Compare
- * solutions) and Self Discovery. Opening a project is entering its work, so
- * the app chrome gives way to the project's own left column.
+ * chrome buttons and title: every page under a project (the Identify problems
+ * hub and its tools, the problem edit page and its Explore and Validation
+ * flows, the solution canvas, its edit page and its validation flow, Identify
+ * Solutions, Compare solutions) and Self Discovery. The project page itself
+ * keeps the header and sidebar: it is where the user lands when opening a
+ * project, so the top menu always shows there.
  */
-function isFocusFlowPath(pathname: string): boolean {
+export function isFocusFlowPath(pathname: string): boolean {
   return PROJECT_FLOW_PATH.test(pathname) || pathname.startsWith("/self-discovery/discover")
+}
+
+/** The project page itself (`/projects/<id>`), and nothing under it. */
+const PROJECT_PAGE_PATH = /^\/projects\/\d+\/?$/
+
+/**
+ * Routes that keep the top header but drop the left sidebar and its trigger:
+ * the project page. Opening a project shows the top menu, and the project's
+ * own left column (title, team, Settings, journey rail) takes the sidebar's
+ * place, so the two never sit side by side.
+ */
+export function hidesSidebarPath(pathname: string): boolean {
+  return PROJECT_PAGE_PATH.test(pathname)
 }
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
@@ -186,6 +199,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   })
 
   const isFocusFlow = isFocusFlowPath(pathname)
+  const hideSidebar = hidesSidebarPath(pathname)
   const [topNavOpen, setTopNavOpen] = useState(false)
 
   useEffect(() => {
@@ -375,10 +389,13 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         <header className="sticky top-0 z-50 flex h-16 shrink-0 items-center gap-2 border-b border-quaternary/30 bg-quaternary px-4 justify-between">
           <div className="flex items-center gap-2 min-w-0">
             {brandLogo}
-            <SidebarTrigger
-              className="shrink-0 text-quaternary-foreground hover:bg-white/10 hover:text-quaternary-foreground"
-              data-tour={TOUR_TARGETS.headerSidebarTrigger}
-            />
+            {/* No trigger where there is no sidebar to open (the project page). */}
+            {!hideSidebar && (
+              <SidebarTrigger
+                className="shrink-0 text-quaternary-foreground hover:bg-white/10 hover:text-quaternary-foreground"
+                data-tour={TOUR_TARGETS.headerSidebarTrigger}
+              />
+            )}
             <Separator orientation="vertical" className="h-4 bg-quaternary-foreground/30" />
             {headerTitle}
           </div>
@@ -410,7 +427,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         </header>
         )}
         <div className="flex w-full min-h-0 flex-1">
-        {!fullView && !isFocusFlow && <AppSidebar />}
+        {!fullView && !isFocusFlow && !hideSidebar && <AppSidebar />}
         <div className="relative flex w-full min-w-0 min-h-0 flex-1 flex-col bg-background">
         <FocusChromeContext.Provider value={{ revealTopNav: () => setTopNavOpen(true) }}>
         <GuidanceProvider onOpen={openGuidance}>

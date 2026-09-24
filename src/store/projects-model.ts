@@ -223,7 +223,7 @@ export const projects = createModel<RootModel>()({
       if (owner) dispatch.projects.update({ id: owner.id, patch: { problemId: null } })
     },
 
-    /** Delete a project together with its problem, every solution found for it and its drafts. */
+    /** Delete a project together with its problem, every solution found for it and its drafts. Journal notes linked to it are kept, unlinked. */
     delete(id: number, rootState) {
       const project = rootState.projects.projects.find((p) => p.id === id)
       if (!project) return
@@ -233,6 +233,8 @@ export const projects = createModel<RootModel>()({
       dispatch.researchSessions.clearProject(id)
       dispatch.canvasDrafts.clearProject(id)
       dispatch.solutionComparison.clearProject(id)
+      // Journal notes are the user's own record: they stay, and only lose their link to the project.
+      dispatch.notes.unlinkProject(id)
       dispatch.projects.removeProject(id)
       saveToStorage({
         projects: rootState.projects.projects.filter((p) => p.id !== id),

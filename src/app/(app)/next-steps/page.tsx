@@ -70,7 +70,7 @@ export default function NextStepsPage() {
               <div className="flex flex-col gap-1">
                 <p className="text-sm font-medium text-foreground">No solutions to summarise yet</p>
                 <p className="text-sm">
-                  Once you&apos;ve generated and validated a few solutions, they&apos;ll appear here grouped by the problem they solve.
+                  Once you&apos;ve generated and tested a few solutions, they&apos;ll appear here grouped by the problem they solve.
                 </p>
               </div>
               <Button asChild variant="outline" size="sm">

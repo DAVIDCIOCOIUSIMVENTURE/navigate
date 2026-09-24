@@ -196,7 +196,7 @@ export const TOUR_STEPS: TourStep[] = [
     title: "Welcome to Navigate",
     body: [
       "Navigate is a platform for identifying problems worth solving and discovering solutions worth pursuing. Your work is organised into projects: each one holds a problem and the solutions you find for it. This guided tour walks you through the application so you know where everything lives and what each part is for.",
-      "It starts with a look around the menu and the top bar. Then it becomes hands-on: you will start your first project, identify its problem, explore and validate it, and find and validate a solution for it, with the tour guiding each step.",
+      "It starts with a look around the menu and the top bar. Then it becomes hands-on: you will start your first project, identify its problem, explore and test it, and find and test a solution for it, with the tour guiding each step.",
       "You can close the tour at any point and it will pick up where you left off. You can also skip it and start it again later from Settings.",
     ],
   },
@@ -239,7 +239,7 @@ export const TOUR_STEPS: TourStep[] = [
     id: "sidebar-next-steps",
     title: "Next Steps",
     body: [
-      "Guidance on what to do once you have a validated problem and solution: building, testing, planning, finding people and iterating.",
+      "Guidance on what to do once you have a tested problem and solution: building, testing, planning, finding people and iterating.",
     ],
     target: TOUR_TARGETS.sidebarItem("/next-steps"),
     placement: "right",
@@ -328,7 +328,7 @@ export const TOUR_STEPS: TourStep[] = [
     id: "journey-intro",
     title: "Now let's do it for real",
     body: [
-      "The rest of the tour is hands-on. You will start a project, identify its problem, explore and validate it, then find a solution for it and validate that too. Each card tells you what to do and waits until you have done it.",
+      "The rest of the tour is hands-on. You will start a project, identify its problem, explore and test it, then find a solution for it and test that too. Each card tells you what to do and waits until you have done it.",
       "Take as long as you like. Close the tour at any point and it will pick up from the same step next time.",
     ],
     route: "/",
@@ -388,7 +388,7 @@ export const TOUR_STEPS: TourStep[] = [
     title: "Explore your problem",
     body: [
       "Explore is a deep dive into the problem: who the customer is, refining it with tools such as 5 Whys, mapping the solutions that already exist and capturing what the customer is trying to achieve.",
-      "Work through the steps in the left-hand nav; each one saves as you go. When you reach Review, press Continue to Problem Validation.",
+      "Work through the steps in the left-hand nav; each one saves as you go. When you reach Review, press Continue to Test the Problem.",
     ],
     route: problemRoute((id) => projectRoutes.explore(id)),
     within: withinProblemFlow(projectRoutes.exploreBase),
@@ -398,9 +398,9 @@ export const TOUR_STEPS: TourStep[] = [
   {
     id: "act-validate",
     mode: "act",
-    title: "Validate your problem",
+    title: "Test your problem",
     body: [
-      "Validation asks what solving the problem is worth to the customer, how big the market is and how strong the competition is.",
+      "The test asks what solving the problem is worth to the customer, how big the market is and how strong the competition is.",
       "Work through Worth, Market and Competition, then on Verdict choose Valid, Unsure or Invalid. Only problems marked Valid or Unsure can move on to solutions.",
     ],
     route: problemRoute((id) => projectRoutes.validation(id)),
@@ -412,7 +412,7 @@ export const TOUR_STEPS: TourStep[] = [
     mode: "act",
     title: "Identify a solution",
     body: [
-      "Now find a solution for your problem. Back on the project page, click Identify solutions to open the Identify Solutions flow, which walks you from a validated problem to concrete candidates using creative techniques.",
+      "Now find a solution for your problem. Back on the project page, click Identify solutions to open the Identify Solutions flow, which walks you from a tested problem to concrete candidates using creative techniques.",
     ],
     target: TOUR_TARGETS.projectIdentifySolutions,
     placement: "bottom",
@@ -439,7 +439,7 @@ export const TOUR_STEPS: TourStep[] = [
   {
     id: "act-validate-solution",
     mode: "act",
-    title: "Validate your solution",
+    title: "Test your solution",
     body: [
       "Score the candidate from one to five on feasibility, impact, cost and time to implement, then record a verdict. The verdict tells you whether this is the solution worth pursuing.",
     ],
@@ -451,7 +451,7 @@ export const TOUR_STEPS: TourStep[] = [
     id: "next-steps",
     title: "What comes next",
     body: [
-      "With a validated problem and solution in hand, Next Steps guides you through building, testing, planning, finding people and iterating. Open portfolio, in your project's settings, turns the whole journey into a page you can share with a teacher or anyone else.",
+      "With a tested problem and solution in hand, Next Steps guides you through building, testing, planning, finding people and iterating. Open portfolio, in your project's settings, turns the whole journey into a page you can share with a teacher or anyone else.",
     ],
     route: "/next-steps",
   },

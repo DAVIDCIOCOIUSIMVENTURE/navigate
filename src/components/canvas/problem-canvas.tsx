@@ -123,7 +123,7 @@ export function ProblemCanvas({
           data-tour={TOUR_TARGETS.canvasValidate}
         >
           <ClipboardCheck className="h-3.5 w-3.5" />
-          Validate
+          Test
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => router.push(editHref)}>
           <Pencil className="h-3.5 w-3.5" />

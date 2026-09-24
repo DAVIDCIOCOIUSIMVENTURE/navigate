@@ -112,7 +112,7 @@ export default function RateSolutionsPage() {
               </div>
               <div className="text-center flex flex-col gap-2 max-w-sm">
                 <h2 className="text-lg font-semibold">No solutions to compare yet</h2>
-                <p className="text-base">Identify and validate a few solutions for this project first, then come back here to weigh them against each other.</p>
+                <p className="text-base">Identify and test a few solutions for this project first, then come back here to weigh them against each other.</p>
               </div>
               <Button onClick={() => router.push(projectRoutes.identifySolutions(projectId))} size="lg" className="gap-2">
                 <Plus className="h-4 w-4" />

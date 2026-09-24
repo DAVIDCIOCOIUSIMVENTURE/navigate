@@ -26,10 +26,12 @@ import { ArrowLeft, FolderKanban, Lightbulb, Plus, Scale, Settings, Target } fro
  * Edit) and the solutions found for it. A project with no problem yet shows
  * the way into the project's Identify problems hub instead.
  *
- * A focus page like the flows it leads into: no header or sidebar, so the
- * left column carries Home, the Open menu toggle, the project's name, its
- * team, Settings and the journey rail, with the canvas and the solutions
- * beside it.
+ * Unlike the flows it leads into, the page keeps the app header: opening a
+ * project should always show the top menu. The left sidebar stays hidden
+ * (see `hidesSidebarPath` in root-layout-client.tsx), and the project's own
+ * left column takes its place: the project's name, its team, Settings and the
+ * journey rail, with the canvas and the solutions beside it. Home and the
+ * menu are in the header, so the column draws no chrome buttons of its own.
  */
 export default function ProjectPage() {
   const params = useParams()
@@ -51,8 +53,8 @@ export default function ProjectPage() {
 
   if (!project) {
     return (
-      <div className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-3 px-4 py-4 sm:px-6 lg:px-8 lg:py-6">
-        <FocusFlowHeader title="Project" icon={FolderKanban} className="flex-wrap" />
+      <div className="flex w-full flex-1 flex-col gap-3">
+        <FocusFlowHeader title="Project" icon={FolderKanban} className="flex-wrap" chromeButtons={false} />
         <Card className="w-full">
           <CardContent className="p-10 flex flex-col items-center gap-4 text-center">
             <p className="text-base">Project not found.</p>
@@ -72,7 +74,7 @@ export default function ProjectPage() {
   const journeyStep = problem ? problemJourneyStep(summariseProblemJourney(problem, solutions)) : "identify-problems"
 
   const header = (
-    <FocusFlowHeader title={name} icon={FolderKanban} className="flex-wrap">
+    <FocusFlowHeader title={name} icon={FolderKanban} className="flex-wrap" chromeButtons={false}>
       <MemberAvatarStack members={project.members} />
       {/* One button: the portfolio and the way to delete the project both
           live inside the dialog it opens. */}
@@ -84,11 +86,12 @@ export default function ProjectPage() {
   )
 
   return (
-    <FocusPageShell header={header} journeyStep={journeyStep} journeyProblemId={problem?.id ?? null}>
+    <FocusPageShell header={header} journeyStep={journeyStep} journeyProblemId={problem?.id ?? null} chrome="app">
       {/* The canvas and the solutions scroll together beside the fixed left column. */}
       <div className={cn("flex w-full min-w-0 flex-col gap-4", isWide && "flex-1 min-h-0 overflow-y-auto")}>
         {problem ? (
-          <div className={cn("flex shrink-0 flex-col", isWide && "h-[calc(100svh-10rem)] min-h-[560px]")}>
+          /* The canvas fills the viewport under the app header, leaving the solutions table peeking below. */
+          <div className={cn("flex shrink-0 flex-col", isWide && "h-[calc(100svh-14rem)] min-h-[560px]")}>
             <ProblemCanvas problem={problem} editHref={projectRoutes.problemEdit(project.id)} />
           </div>
         ) : (

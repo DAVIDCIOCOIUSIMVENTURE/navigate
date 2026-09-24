@@ -165,7 +165,7 @@ const guidanceItems: GuidanceItem[] = [
           icon={Rocket}
           tone="bg-primary"
           title="Welcome to Navigate"
-          subtitle="Navigate is your guide through the innovation journey, from surfacing areas of personal interest to validating problems worth solving."
+          subtitle="Navigate is your guide through the innovation journey, from surfacing areas of personal interest to testing problems worth solving."
         />
         <GuidanceSection icon={Compass} iconBg="bg-primary" title="The journey">
           <p>Navigate breaks the process into a sequence of connected stages. Work through them in order; later stages build on earlier ones. An optional <Keyword>Why It Matters</Keyword> section sits before everything else for those who want the grounding before they start.</p>
@@ -182,11 +182,11 @@ const guidanceItems: GuidanceItem[] = [
             <NumberedStep n={3} title="Explore the Problem" accent="bg-tertiary">
               Take your project&apos;s problem for a deeper dive: define the customer, refine the problem, map existing solutions, and capture what the customer is trying to achieve.
             </NumberedStep>
-            <NumberedStep n={4} title="Problem Validation" accent="bg-green-800">
+            <NumberedStep n={4} title="Test the Problem" accent="bg-green-800">
               Stress-test the explored problem against price, market size, and competition to decide if it is worth pursuing.
             </NumberedStep>
             <NumberedStep n={5} title="Solutions" accent="bg-blue-900">
-              Once a problem is validated, generate and evaluate potential solutions.
+              Once a problem has passed its test, generate and evaluate potential solutions.
             </NumberedStep>
           </div>
         </GuidanceSection>
@@ -209,7 +209,7 @@ const guidanceItems: GuidanceItem[] = [
           icon={BookOpen}
           tone="bg-violet-800"
           title="Why It Matters"
-          subtitle="An optional preamble to the rest of the app. Short pages, videos, and case studies on why finding the right idea, validating the problem, and validating the solution all matter, and what happens when founders skip these stages."
+          subtitle="An optional preamble to the rest of the app. Short pages, videos, and case studies on why finding the right idea, testing the problem, and testing the solution all matter, and what happens when founders skip these stages."
         />
         <GuidanceSection icon={Sparkles} iconBg="bg-violet-800" title="When to read this">
           <p>You don&apos;t have to go through this section. The rest of the app works fine without it. But if you&apos;re new to the problem-first approach, or you&apos;ve been tempted to skip straight to building, the reading here is designed to change that instinct before it costs you time.</p>
@@ -219,10 +219,10 @@ const guidanceItems: GuidanceItem[] = [
           <p>Five short sections, each with a tagline, key points, videos, and real case studies:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={Compass} label="Why the right idea matters" description="Survivorship bias, passion as a false filter, and what actually separates ideas that work." tile="bg-yellow-600" border="border-yellow-600/20 bg-yellow-600/5" />
-            <ConceptCard icon={Search} label="Why validate the problem" description="Polite enthusiasm is not validation. What a real problem looks like in user behaviour." tile="bg-teal-700" border="border-teal-700/20 bg-teal-700/5" />
-            <ConceptCard icon={FlaskConical} label="Why validate the solution" description="A real problem doesn't mean your solution is the one people want. Landing pages, concierge tests, willingness to pay." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
+            <ConceptCard icon={Search} label="Why test the problem" description="Polite enthusiasm is not evidence. What a real problem looks like in user behaviour." tile="bg-teal-700" border="border-teal-700/20 bg-teal-700/5" />
+            <ConceptCard icon={FlaskConical} label="Why test the solution" description="A real problem doesn't mean your solution is the one people want. Landing pages, concierge tests, willingness to pay." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
             <ConceptCard icon={Clock} label="The cost of skipping" description="Runway, team morale, sunk-cost bias, and opportunity cost: what it actually costs to build the wrong thing." tile="bg-red-800" border="border-red-800/20 bg-red-800/5" />
-            <ConceptCard icon={Trophy} label="When it goes right" description="Airbnb, Dropbox, Buffer: founders who did the slow, unglamorous validation work before scaling." tile="bg-green-800" border="border-green-800/20 bg-green-800/5" />
+            <ConceptCard icon={Trophy} label="When it goes right" description="Airbnb, Dropbox, Buffer: founders who did the slow, unglamorous testing before scaling." tile="bg-green-800" border="border-green-800/20 bg-green-800/5" />
           </div>
         </GuidanceSection>
         <GuidanceSection icon={ArrowRight} iconBg="bg-violet-800" title="What comes next">
@@ -257,7 +257,7 @@ const guidanceItems: GuidanceItem[] = [
           <p>Some questions include suggestion exercises to help you generate ideas if you are unsure where to start. Use them as prompts, not constraints.</p>
         </GuidanceSection>
         <GuidanceSection icon={Package} iconBg="bg-indigo-800" title="The output">
-          <p>At the end of Self Discovery you will have a collection of problem triggers saved to your self-discovery library. These are not problems yet; they are areas of interest. You carry them into Identify Problems, where dedicated tools sharpen them into concrete, well-framed problems worth exploring and validating.</p>
+          <p>At the end of Self Discovery you will have a collection of problem triggers saved to your self-discovery library. These are not problems yet; they are areas of interest. You carry them into Identify Problems, where dedicated tools sharpen them into concrete, well-framed problems worth exploring and testing.</p>
         </GuidanceSection>
         <TipCallout items={[
           <>Be specific: <Keyword>&ldquo;healthcare admin is slow&rdquo;</Keyword> is more useful than <Keyword>&ldquo;healthcare&rdquo;</Keyword></>,
@@ -318,7 +318,7 @@ const guidanceItems: GuidanceItem[] = [
           <p>If you already have a clear problem in mind, skip the exploration tools and write it directly. Useful when you have prior knowledge of a domain or have already spoken to potential customers.</p>
         </GuidanceSection>
         <GuidanceSection icon={ArrowRight} iconBg="bg-orange-700" title="What comes next">
-          <p>Once your project has its problem, take it into <Keyword>Explore the Problem</Keyword>: a deeper dive that defines the customer, {SHOW_REFINEMENT_STEPS && <>refines the problem (root causes, 5 whys, affected groups), </>}maps existing solutions and their shortcomings, and captures what the customer is trying to achieve. That work then feeds Problem Validation, where you size the market and decide whether the problem is worth pursuing.</p>
+          <p>Once your project has its problem, take it into <Keyword>Explore the Problem</Keyword>: a deeper dive that defines the customer, {SHOW_REFINEMENT_STEPS && <>refines the problem (root causes, 5 whys, affected groups), </>}maps existing solutions and their shortcomings, and captures what the customer is trying to achieve. That work then feeds Test the Problem, where you size the market and decide whether the problem is worth pursuing.</p>
         </GuidanceSection>
       </div>
     ),
@@ -334,7 +334,7 @@ const guidanceItems: GuidanceItem[] = [
           icon={Telescope}
           tone="bg-tertiary"
           title="Explore the Problem"
-          subtitle="A deeper dive into your project&apos;s problem before you size any markets. Understand exactly who has the problem, why it really happens, how people cope today, and what they are trying to get done. Everything you capture here carries forward into Problem Validation."
+          subtitle="A deeper dive into your project&apos;s problem before you size any markets. Understand exactly who has the problem, why it really happens, how people cope today, and what they are trying to get done. Everything you capture here carries forward into Test the Problem."
         />
         <GuidanceSection icon={Play} iconBg="bg-tertiary" title="How it works">
           <p>Open <Keyword>Explore</Keyword> from your project. You work through a sequence of steps: define the customer, {SHOW_REFINEMENT_STEPS && <>refine the problem, </>}map existing solutions, and capture what the customer is trying to achieve. Work through them in order; each builds on the last, but you can return and update any step as your thinking develops.</p>
@@ -373,7 +373,7 @@ const guidanceItems: GuidanceItem[] = [
           <p className="pt-1">On the price step you pick one of these goals to anchor the price on: usually the strongest emotional or social pull, but a functional goal can be the <Keyword>anchor</Keyword> when it is what drives the purchase.</p>
         </GuidanceSection>
         <GuidanceSection icon={FileText} iconBg="bg-tertiary" title="Review">
-          <p>A read-only overview of everything Explore captured: the customer definition, {SHOW_REFINEMENT_STEPS && <>refinement work, </>}existing solutions and their shortcomings, and the three lists of customer goals. Review it, then continue to Problem Validation when you are ready.</p>
+          <p>A read-only overview of everything Explore captured: the customer definition, {SHOW_REFINEMENT_STEPS && <>refinement work, </>}existing solutions and their shortcomings, and the three lists of customer goals. Review it, then continue to Test the Problem when you are ready.</p>
         </GuidanceSection>
         <TipCallout items={[
           "A sharp customer definition unlocks every later step; resist 'everyone'",
@@ -385,7 +385,7 @@ const guidanceItems: GuidanceItem[] = [
   },
   {
     id: "problem-validation",
-    title: "Problem Validation",
+    title: "Test the Problem",
     icon: ClipboardCheck,
     iconBg: "bg-green-800",
     content: (
@@ -393,11 +393,11 @@ const guidanceItems: GuidanceItem[] = [
         <GuidanceHero
           icon={ClipboardCheck}
           tone="bg-green-800"
-          title="Problem Validation"
+          title="Test the Problem"
           subtitle="Stress-test an explored problem before investing in a solution. Building on the customer, their goals, and the existing solutions captured in Explore, you set a price, size the market, weigh up the competition, and reach a verdict. The goal is not to prove the problem is valid; it is to gather enough evidence to make an honest, informed decision."
         />
         <GuidanceSection icon={Play} iconBg="bg-green-800" title="How it works">
-          <p>Validation picks up where Explore left off. You work through a short sequence of steps: price, market size, competition, and verdict. Work through them in order; each builds on the last, but you can return and update any step as your thinking develops.</p>
+          <p>Testing picks up where Explore left off. You work through a short sequence of steps: price, market size, competition, and verdict. Work through them in order; each builds on the last, but you can return and update any step as your thinking develops.</p>
         </GuidanceSection>
         <GuidanceSection icon={PoundSterling} iconBg="bg-teal-700" title="What they would pay to solve it">
           <p>A customer buys a solution for one primary goal: the one that tips them into buying. The other goals are secondary, they nudge what someone will pay rather than each adding their own price. So you set one price, anchored on that one dominant goal. Pick whichever goal drives the purchase, functional, emotional, or social, not the cost of building a feature, then cross-check the number against three angles:</p>
@@ -439,11 +439,11 @@ const guidanceItems: GuidanceItem[] = [
           <p>A read-only overview of everything you have captured: the customer definition, refinement work, existing solutions and their shortcomings, the customer goals, the price, the market figures, the competitive picture, and your verdict with notes. Use <Keyword>Open Problem to edit</Keyword> to jump back to the editable problem page if anything needs revising before you move on to identifying solutions.</p>
         </GuidanceSection>
         <TipCallout items={[
-          "Be honest about the evidence: weak validation data is a signal, not a failure",
+          "Be honest about the evidence: a weak result is a signal, not a failure",
           "Anchor the price on the one goal that drives the purchase, not on the cost of building a feature",
           "If you cannot justify the reachable share or realistic share to a sceptical friend, slide them down",
           "A large total market is not the same as proven willingness to pay; read the underlying signals",
-          "You can validate multiple problems and compare verdicts before committing to one",
+          "You can test multiple problems and compare verdicts before committing to one",
         ]} />
       </div>
     ),
@@ -459,32 +459,32 @@ const guidanceItems: GuidanceItem[] = [
           icon={Lightbulb}
           tone="bg-blue-900"
           title="Solutions"
-          subtitle="Each project collects candidate solutions for its validated problem. Identify new solutions through a guided flow, then validate each one against feasibility, impact, cost, and time."
+          subtitle="Each project collects candidate solutions for its tested problem. Identify new solutions through a guided flow, then test each one against feasibility, impact, cost, and time."
         />
         <GuidanceSection icon={Play} iconBg="bg-blue-900" title="How it works">
-          <p>The Solutions workspace has two connected flows: an Identify Solutions flow that generates candidates, and a validation flow that evaluates each candidate on its own.</p>
+          <p>The Solutions workspace has two connected flows: an Identify Solutions flow that generates candidates, and a test flow that evaluates each candidate on its own.</p>
           <div className="flex flex-col gap-3 pt-1">
             <NumberedStep n={1} title="Identify" accent="bg-blue-900">
-              From a project whose problem is validated, use a creative technique to generate candidate solutions. Each candidate lands in the project. Refinement work (root causes, 5 whys, affected groups) now happens earlier inside Problem Validation; the output flows through automatically.
+              From a project whose problem has been tested, use a creative technique to generate candidate solutions. Each candidate lands in the project. Refinement work (root causes, 5 whys, affected groups) now happens earlier inside Test the Problem; the output flows through automatically.
             </NumberedStep>
-            <NumberedStep n={2} title="Validate" accent="bg-green-800">
-              For each candidate in the project, work through the four validation metrics and reach a verdict: valid, unsure, or invalid.
+            <NumberedStep n={2} title="Test" accent="bg-green-800">
+              For each candidate in the project, work through the four test metrics and reach a verdict: valid, unsure, or invalid.
             </NumberedStep>
           </div>
         </GuidanceSection>
 
         <GuidanceSection icon={Lightbulb} iconBg="bg-blue-900" title="Identify solutions">
-          <p>Pick a creative method to generate solution ideas. Each candidate you capture is added to the project so you can validate it later:</p>
+          <p>Pick a creative method to generate solution ideas. Each candidate you capture is added to the project so you can test it later:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={Blocks} label="SCAMPER" description="Substitute, Combine, Adapt, Modify, Put to other use, Eliminate, Reverse. Generate ideas by transforming existing concepts." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
             <ConceptCard icon={Repeat} label="Reverse Ideation" description="Instead of asking how to solve it, ask how to make it worse, then invert the answers." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
             <ConceptCard icon={Compass} label="Analogy Thinking" description="Look at how other fields have solved similar problems and adapt their approach." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
-            <ConceptCard icon={ArrowRight} label="Improve Existing Solutions" description="Start from what already exists and sharpen it, removing shortcomings surfaced during validation." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
+            <ConceptCard icon={ArrowRight} label="Improve Existing Solutions" description="Start from what already exists and sharpen it, removing shortcomings surfaced while testing the problem." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
           </div>
-          <p className="pt-1">Each technique includes <Keyword>case studies</Keyword> to spark ideas. Use them as prompts, not templates. Capture as many candidates as you can think of; pruning comes later during validation.</p>
+          <p className="pt-1">Each technique includes <Keyword>case studies</Keyword> to spark ideas. Use them as prompts, not templates. Capture as many candidates as you can think of; pruning comes later when you test them.</p>
         </GuidanceSection>
 
-        <GuidanceSection icon={BarChart2} iconBg="bg-green-800" title="Validate">
+        <GuidanceSection icon={BarChart2} iconBg="bg-green-800" title="Test">
           <p>Open any solution from its project page and work through four one-at-a-time metric pages. Each page has guidance and case studies to help you score 1 to 5. At the end, you mark the solution valid, unsure, or invalid:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={Target} label="Feasibility" description="Can you actually build it with the resources and skills available?" tile="bg-green-800" border="border-green-800/20 bg-green-800/5" />
@@ -492,12 +492,12 @@ const guidanceItems: GuidanceItem[] = [
             <ConceptCard icon={PoundSterling} label="Cost" description="What will it take to build, run, and maintain?" tile="bg-green-800" border="border-green-800/20 bg-green-800/5" />
             <ConceptCard icon={Repeat} label="Time to Implement" description="How long from decision to delivery, including dependencies?" tile="bg-green-800" border="border-green-800/20 bg-green-800/5" />
           </div>
-          <p className="pt-1">Validation runs per solution. You can mark some candidates valid and others invalid, or come back later as you learn more.</p>
+          <p className="pt-1">Each solution is tested on its own. You can mark some candidates valid and others invalid, or come back later as you learn more.</p>
         </GuidanceSection>
 
         <TipCallout items={[
-          "Refinement now lives inside Problem Validation; the work you do there shapes everything in this section",
-          "Quantity beats quality when identifying solutions; validation prunes later",
+          "Refinement now lives inside Test the Problem; the work you do there shapes everything in this section",
+          "Quantity beats quality when identifying solutions; testing prunes later",
           "A weak candidate is still useful as a comparison baseline",
           "You can come back and add more candidates at any time",
         ]} />

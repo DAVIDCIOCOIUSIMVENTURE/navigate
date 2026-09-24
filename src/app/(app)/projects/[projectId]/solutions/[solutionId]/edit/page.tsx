@@ -24,7 +24,7 @@ import { cn } from "@/lib/utils"
  * header or sidebar, so the left column carries Home, the Open menu toggle,
  * the title and the journey rail, with the edit card
  * beside it. A solution being edited has been identified and is on its way to
- * validation, so the rail sits on "Validate solutions".
+ * validation, so the rail sits on "Test solutions".
  */
 function HubBody({ projectId, solutionId }: { projectId: number; solutionId: number }) {
   const solution = useSelector((state: RootState) =>

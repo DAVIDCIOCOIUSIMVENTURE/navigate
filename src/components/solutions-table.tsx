@@ -343,7 +343,7 @@ export function SolutionsTable({ solutions, showStatus = true, showScore = true,
                             )}
                             <DropdownMenuItem onClick={() => router.push(projectRoutes.solutionValidate(projectId, solution.id))}>
                               <ClipboardCheck className="h-3.5 w-3.5" />
-                              Open solution validation
+                              Test this solution
                             </DropdownMenuItem>
                             {solution.problemId != null && (
                               <DropdownMenuItem onClick={() => router.push(projectRoutes.problemEdit(projectId))}>
@@ -383,7 +383,7 @@ export function SolutionsTable({ solutions, showStatus = true, showScore = true,
     />
     <ExportBundleDialog
       open={exportSolutionId != null}
-      onOpenChange={(open) => { if (!open) setExportSolutionId(null) }}
+      onOpenChange={(open) => { if (!open) setExportSolutionId(null) }}
       onConfirm={(includeProblem) => {
         if (exportSolutionId != null) runSolutionExport(exportSolutionId, includeProblem)
       }}
@@ -391,7 +391,7 @@ export function SolutionsTable({ solutions, showStatus = true, showScore = true,
     <ConfirmDialog
       open={deleteSolutionId != null}
       onOpenChange={(open) => { if (!open) setDeleteSolutionId(null) }}
-      description="This will permanently delete this solution and any associated validation data."
+      description="This will permanently delete this solution and any test results it carries."
       onConfirm={() => {
         if (deleteSolutionId != null) dispatch.solutions.delete(deleteSolutionId)
         setDeleteSolutionId(null)

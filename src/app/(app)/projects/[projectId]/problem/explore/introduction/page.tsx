@@ -15,7 +15,7 @@ const ALL_STEPS = [
   { icon: Search, title: "Refine your problem", description: "Dig into why this problem exists and who it affects using the method you chose.", refinement: true },
   { icon: GitFork, title: "Explore existing solutions & shortcomings", description: "Identify how customers currently deal with this problem and capture where each solution falls short." },
   { icon: Sparkles, title: "What your customer is trying to achieve", description: "List the tangible tasks they need to complete, how they want to feel, and how they want to be seen." },
-  { icon: LayoutTemplate, title: "Review", description: "Look back over what you have uncovered, then continue to Problem Validation when you are ready." },
+  { icon: LayoutTemplate, title: "Review", description: "Look back over what you have uncovered, then continue to Test the Problem when you are ready." },
 ]
 
 // Mirror NAV_ITEMS: the refinement pair is hidden while the switch is off.
@@ -39,7 +39,7 @@ export default function ExploreIntroductionPage() {
             You have identified a problem worth a closer look. Before you start sizing markets and weighing up the competition, take time to understand it properly. Who exactly has this problem, why does it really happen, how do people cope today, and what are they actually trying to get done?
           </p>
           <p className="text-base leading-relaxed">
-            This is the exploring and defining stage. The clearer the picture you build here, the sharper and more honest your validation will be afterwards. Everything you capture carries forward into Problem Validation.
+            This is the exploring and defining stage. The clearer the picture you build here, the sharper and more honest your test will be afterwards. Everything you capture carries forward into Test the Problem.
           </p>
         </div>
 

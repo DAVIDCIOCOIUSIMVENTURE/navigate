@@ -26,7 +26,7 @@ export const STATUS_CONFIG: Record<
   invalid: { label: "Invalid", className: "bg-destructive text-white border-destructive", icon: XCircle },
   unsure: { label: "Unsure", className: "bg-primary text-primary-foreground border-primary", icon: HelpCircle },
   in_progress: { label: "In progress", className: "bg-secondary-brand text-white border-secondary-brand", icon: Clock },
-  unvalidated: { label: "Unvalidated", className: "bg-muted-foreground text-white border-muted-foreground", icon: Circle },
+  unvalidated: { label: "Not tested", className: "bg-muted-foreground text-white border-muted-foreground", icon: Circle },
 }
 
 export function StatusPill({

@@ -14,7 +14,7 @@ type SectionImage = { src: string; alt: string; position: string }
 
 const VALIDATION_BOARD: SectionImage = {
   src: "/images/validation-board.jpg",
-  alt: "A validation board covered in handwritten sticky notes listing customer problems",
+  alt: "A board covered in handwritten sticky notes listing customer problems",
   position: "object-left",
 }
 

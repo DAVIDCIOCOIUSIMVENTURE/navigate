@@ -224,16 +224,23 @@ export function ProjectSettingsDialog({
                       <span className="truncate text-base font-medium">{member.name}</span>
                       <span className="truncate text-base opacity-70">{member.email}</span>
                     </div>
-                    <Button
-                      type="button"
-                      variant="destructive-ghost"
-                      size="icon"
-                      className="h-8 w-8 shrink-0"
-                      onClick={() => removeMember(member.id)}
-                      aria-label={`Remove ${member.name || member.email}`}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <ConfirmDialog
+                      trigger={
+                        <Button
+                          type="button"
+                          variant="destructive-ghost"
+                          size="icon"
+                          className="h-8 w-8 shrink-0"
+                          aria-label={`Remove ${member.name || member.email}`}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      }
+                      title="Remove this person from the team?"
+                      description="They lose their place on the project once you save. Cancel the dialog to keep them."
+                      confirmLabel="Remove"
+                      onConfirm={() => removeMember(member.id)}
+                    />
                   </div>
                 ))
               )}

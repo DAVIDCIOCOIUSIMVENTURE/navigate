@@ -428,7 +428,7 @@ export function SolutionHubContent({
           <Button variant="outline" asChild>
             <Link href={`${validationBase}/introduction`}>
               <Pencil className="h-4 w-4 mr-2" />
-              Walk through validation steps
+              Walk through the test steps
             </Link>
           </Button>
         </div>

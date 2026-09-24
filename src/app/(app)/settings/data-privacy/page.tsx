@@ -39,7 +39,7 @@ const STORAGE_GROUPS: StorageGroup[] = [
   {
     id: "problems",
     label: "Problems",
-    description: "Problems you've added, including descriptions, dimensions, and validation work.",
+    description: "Problems you've added, including descriptions, dimensions, and test results.",
     keys: ["navigate-problems"],
   },
   {
@@ -83,13 +83,13 @@ const STORAGE_GROUPS: StorageGroup[] = [
   {
     id: "solutions",
     label: "Solutions",
-    description: "Solution candidates and their validation results.",
+    description: "Solution candidates and their test results.",
     keys: ["navigate-solutions"],
   },
   {
     id: "solution-workspaces",
     label: "Solution refinement workspaces",
-    description: "Per-problem refinement notes (root causes, 5 whys, affected groups) shared between problem validation and identifying solutions.",
+    description: "Per-problem refinement notes (root causes, 5 whys, affected groups) shared between testing the problem and identifying solutions.",
     // navigate-active-discovery-problem is a legacy key: there is no active problem any more, but old browsers may still hold one.
     keys: ["navigate-solution-workspaces", "navigate-active-discovery-problem"],
   },

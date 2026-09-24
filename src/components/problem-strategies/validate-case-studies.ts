@@ -81,7 +81,7 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
     },
     verdict: "Valid: Worth Solving",
     reasoning:
-      "Huge underserved audience with a frequent, recurring need and a strong emotional pull to stop looking amateur. The opportunity was not in high per-customer revenue but in the sheer volume of businesses that had zero solution. Mailchimp validated this by offering a free tier and watching organic growth explode.",
+      "Huge underserved audience with a frequent, recurring need and a strong emotional pull to stop looking amateur. The opportunity was not in high per-customer revenue but in the sheer volume of businesses that had zero solution. Mailchimp proved this by offering a free tier and watching organic growth explode.",
   },
   {
     company: "Notion (early adopter phase)",
@@ -137,7 +137,7 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
     },
     verdict: "Valid: Worth Solving",
     reasoning:
-      "The combination of a massive audience, extremely high frequency, and an unbearable emotional goal made this a strong opportunity. Notion validated it by seeing power users organically convert their entire teams, the problem was painful enough that individuals championed the switch without top-down mandates.",
+      "The combination of a massive audience, extremely high frequency, and an unbearable emotional goal made this a strong opportunity. Notion proved it by seeing power users organically convert their entire teams, the problem was painful enough that individuals championed the switch without top-down mandates.",
   },
   {
     company: "Warby Parker (launch)",
@@ -193,7 +193,7 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
     },
     verdict: "Valid: Worth Solving",
     reasoning:
-      "A rare case where a huge market and very high price per purchase offset low frequency. The pain was not a broken product, it was being overcharged for a necessity by a near-monopoly. Warby Parker validated it by going direct, charging a flat £95, and using free home try-ons to remove the only real reason not to buy glasses online.",
+      "A rare case where a huge market and very high price per purchase offset low frequency. The pain was not a broken product, it was being overcharged for a necessity by a near-monopoly. Warby Parker proved it by going direct, charging a flat £95, and using free home try-ons to remove the only real reason not to buy glasses online.",
   },
   {
     company: "Uber (launch)",
@@ -249,6 +249,6 @@ export const VALIDATE_CASE_STUDIES: ValidateCaseStudy[] = [
     },
     verdict: "Valid: Worth Solving",
     reasoning:
-      "A frequent, recurring need that incumbents served badly, paired with a strong emotional goal: not being stranded. Uber validated it by launching a premium black-car service in one city, proving people would happily pay more for a reliable, tracked, cashless ride before expanding down-market to UberX.",
+      "A frequent, recurring need that incumbents served badly, paired with a strong emotional goal: not being stranded. Uber proved it by launching a premium black-car service in one city, proving people would happily pay more for a reliable, tracked, cashless ride before expanding down-market to UberX.",
   },
 ]

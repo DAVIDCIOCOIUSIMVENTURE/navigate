@@ -13,7 +13,7 @@ const STEPS = [
   { icon: TrendingUp, title: "Size the market", description: "Estimate how many customers have the problem and the share you can realistically reach in your launch. The page combines those with the price to produce a total and a reachable market figure." },
   { icon: Building2, title: "Assess the competition", description: "Read the cost of switching, how good existing solutions are, and how big the incumbents are. Then set the realistic share you could win out of the reachable market." },
   { icon: ShieldCheck, title: "Record your verdict", description: "Weigh the factors together against a colour-coded summary and lean indicator, then commit to Valid, Unsure, or Invalid with reasoning in the notes." },
-  { icon: LayoutTemplate, title: "Review", description: "Look back over the problem statement assembled from your exploration and validation work." },
+  { icon: LayoutTemplate, title: "Review", description: "Look back over the problem statement assembled from your exploration and testing." },
 ]
 
 export default function IntroductionPage() {
@@ -33,7 +33,7 @@ export default function IntroductionPage() {
           <div className="flex flex-col gap-6 @[800px]:flex-row @[800px]:items-center">
             <div className="flex flex-col gap-4 flex-1 min-w-0">
               <p className="text-base leading-relaxed">
-                You have explored and defined this problem. Now it&apos;s time to validate whether it is truly worth solving. Building on the customer, their goals, and the alternatives you captured while exploring, you&apos;ll put a price on the problem, size the market, and read the competitive landscape, then commit to a verdict you can defend with the evidence in front of you.
+                You have explored and defined this problem. Now it&apos;s time to test whether it is truly worth solving. Building on the customer, their goals, and the alternatives you captured while exploring, you&apos;ll put a price on the problem, size the market, and read the competitive landscape, then commit to a verdict you can defend with the evidence in front of you.
               </p>
               <p className="text-base leading-relaxed">
                 The goal is not to prove yourself right; it is to gather enough to make an honest call before you invest in a solution.

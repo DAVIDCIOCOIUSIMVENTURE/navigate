@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { ConfirmDialog, removeCopy } from "@/components/ui/confirm-dialog"
 import { useProblem } from "@/app/(app)/projects/[projectId]/problem/validation/context"
 import type { AffectedGroup, AnalysisToolType } from "@/types/solution"
 import { cn } from "@/lib/utils"
@@ -70,14 +71,20 @@ function RootCausesForm({ readOnly = false }: { readOnly?: boolean }) {
               className="flex-1 text-base bg-white border-white text-foreground read-only:cursor-default"
             />
             {!readOnly && (
-              <Button
-                size="icon"
-                variant="ghost"
-                className="shrink-0 h-8 w-8 text-white/50 hover:text-white hover:bg-white/10"
-                onClick={() => removeCause(cause.id)}
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-              </Button>
+              <ConfirmDialog
+                trigger={
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="shrink-0 h-8 w-8 text-white/50 hover:text-white hover:bg-white/10"
+                    aria-label="Remove this root cause"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
+                }
+                {...removeCopy("root cause")}
+                onConfirm={() => removeCause(cause.id)}
+              />
             )}
           </div>
         ))}
@@ -165,14 +172,20 @@ function FiveWhysForm({ readOnly = false }: { readOnly?: boolean }) {
               <div className="flex items-center justify-between">
                 <p className="text-sm font-semibold text-white">Chain {chainIndex + 1}</p>
                 {!readOnly && (
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
-                    onClick={() => removeChain(chain.id)}
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </Button>
+                  <ConfirmDialog
+                    trigger={
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
+                        aria-label="Remove this chain"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    }
+                    {...removeCopy("chain", "Every why in it goes with it. This cannot be undone.")}
+                    onConfirm={() => removeChain(chain.id)}
+                  />
                 )}
               </div>
               <div className="flex flex-col">
@@ -262,14 +275,20 @@ function AffectedGroupsForm({ readOnly = false }: { readOnly?: boolean }) {
               <div className="flex items-center justify-between gap-2">
                 <p className="text-sm font-semibold text-white">Group {i + 1}</p>
                 {!readOnly && (
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="shrink-0 h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
-                    onClick={() => removeGroup(group.id)}
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </Button>
+                  <ConfirmDialog
+                    trigger={
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="shrink-0 h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
+                        aria-label="Remove this group"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </Button>
+                    }
+                    {...removeCopy("group", "Its name, severity and description go with it. This cannot be undone.")}
+                    onConfirm={() => removeGroup(group.id)}
+                  />
                 )}
               </div>
               <div className="flex flex-col gap-2">

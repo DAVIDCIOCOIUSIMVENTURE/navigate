@@ -29,6 +29,8 @@ import {
   getRolePromptId,
   type LensDimensionRole,
 } from "@/data/reflectLenses"
+import { ANSWER_REMOVE_DESCRIPTION, ConfirmDialog, removeCopy } from "@/components/ui/confirm-dialog"
+import { RemovablePill } from "@/components/ui/removable-pill"
 import { MethodTile } from "@/components/method-tile"
 import { useReflect } from "@/components/reflect/reflect-context"
 import { LifeExperiencesPicker } from "@/components/reflect/life-experiences-picker"
@@ -282,16 +284,21 @@ export function PromptsPanel({
                 )}
               />
               {prompt.multipleAllowed && promptAnswers.length > 1 && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  type="button"
-                  onClick={() => removeAnswerSlot(prompt.id, i)}
-                  aria-label="Remove this answer"
-                  className="text-white hover:bg-white/10 hover:text-white"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
+                <ConfirmDialog
+                  trigger={
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      type="button"
+                      aria-label="Remove this answer"
+                      className="text-white hover:bg-white/10 hover:text-white"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  }
+                  {...removeCopy("answer", ANSWER_REMOVE_DESCRIPTION)}
+                  onConfirm={() => removeAnswerSlot(prompt.id, i)}
+                />
               )}
             </div>
           ))}
@@ -486,16 +493,13 @@ export function ReviewPanel({
           const label = answer.text.trim()
           if (label.length === 0) return null
           return (
-            <button
+            <RemovablePill
               key={idx}
-              type="button"
-              onClick={() => removeAnswerSlot(promptId, idx)}
-              className="inline-flex items-center gap-1.5 rounded-full bg-amber-400 text-foreground px-3 py-1 text-base hover:bg-amber-500"
-            >
-              <span>{label}</span>
-              <span aria-hidden="true">×</span>
-              <span className="sr-only">Remove {label}</span>
-            </button>
+              label={label}
+              noun="answer"
+              description={ANSWER_REMOVE_DESCRIPTION}
+              onRemove={() => removeAnswerSlot(promptId, idx)}
+            />
           )
         })}
       </div>
@@ -609,16 +613,21 @@ export function ReviewPanel({
                       onChange={(e) => setAnswerText(prompt.id, originalIdx, e.target.value)}
                       className="flex-1 text-base min-h-[4rem] bg-white border-white text-foreground"
                     />
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      type="button"
-                      onClick={() => removeAnswerSlot(prompt.id, originalIdx)}
-                      aria-label="Remove this answer"
-                      className="text-white hover:bg-white/10 hover:text-white"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
+                    <ConfirmDialog
+                      trigger={
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          type="button"
+                          aria-label="Remove this answer"
+                          className="text-white hover:bg-white/10 hover:text-white"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      }
+                      {...removeCopy("answer", ANSWER_REMOVE_DESCRIPTION)}
+                      onConfirm={() => removeAnswerSlot(prompt.id, originalIdx)}
+                    />
                   </div>
                 )
               })}

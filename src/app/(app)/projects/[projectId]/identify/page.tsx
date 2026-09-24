@@ -145,7 +145,7 @@ export default function IdentifyProblemsPage() {
       title: "Define a Problem Statement",
       shortDescription: "Already know what you want to explore? Write it directly without working through a tool.",
       longDescription: "Already know what you want to explore? Write it directly without working through a tool.",
-      helperText: "Best for capturing a problem you have in mind right now so you can come back and validate it later.",
+      helperText: "Best for capturing a problem you have in mind right now so you can come back and test it later.",
       icon: PenLine,
       estimatedMinutes: 5,
       enabled: true,
@@ -182,10 +182,10 @@ export default function IdentifyProblemsPage() {
         description={
           existing ? (
             <>
-              This project&apos;s problem is <span className="font-semibold">{existing.title || "untitled"}</span>. A project holds one problem, so each tool below reopens it with what you captured and saving updates it rather than adding another.
+              This project&apos;s problem is <span className="font-bold">{existing.title || "untitled"}</span>. A project holds one problem, so each tool below reopens it with what you captured and saving updates it rather than adding another.
             </>
           ) : (
-            "Pick the tool that suits how you want to find a problem. Whichever you choose, the problem lands in your project, ready to explore and validate."
+            "Pick one of the tools to start identifying a problem."
           )
         }
         journeyStep="identify-problems"
@@ -202,7 +202,7 @@ export default function IdentifyProblemsPage() {
               The next five are <span className="font-semibold">guided prompt tools</span>: short questions about something you already know, so they suit you if you are not sure where to start. Four begin from a situation and look for the problems in it: what you have lived through, the work you do, what you have built, or a group you know well. <span className="font-semibold">Something that annoys you</span> runs the other way, beginning from the irritation itself and working backwards to who has it, when it bites and why it is still there.
             </p>
             <p className="text-base leading-relaxed">
-              The <span className="font-semibold">Canvas Builder</span> and <span className="font-semibold">Research</span> cast wider, letting you explore combinations or gather evidence from outside your own experience. If you already know what you want to explore, <span className="font-semibold">Define a Problem Statement</span> captures it straight away. Whichever tool you choose, the problem lands in your project, ready to refine and validate, and once the project has its problem the tools reopen it so you can change your mind without starting again.
+              The <span className="font-semibold">Canvas Builder</span> and <span className="font-semibold">Research</span> cast wider, letting you explore combinations or gather evidence from outside your own experience. If you already know what you want to explore, <span className="font-semibold">Define a Problem Statement</span> captures it straight away. Whichever tool you choose, the problem lands in your project, ready to explore and test, and once the project has its problem the tools reopen it so you can change your mind without starting again.
             </p>
           </>
         }

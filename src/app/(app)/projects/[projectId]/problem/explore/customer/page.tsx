@@ -26,7 +26,7 @@ export default function CustomerSegmentPage() {
             <div className="flex flex-col gap-4 flex-1 min-w-0">
               <p className="text-base text-foreground leading-relaxed">
                 Who exactly experiences this problem? The more precisely you define your customer, the
-                easier it becomes to validate the problem, estimate the market, and eventually craft a
+                easier it becomes to test the problem, estimate the market, and eventually craft a
                 solution that resonates.
               </p>
               <p className="text-base text-foreground leading-relaxed">

@@ -74,7 +74,7 @@ export const NEXT_STEPS_TOPICS: NextStepsTopic[] = [
     tagline: "Design one experiment with a clear yes-or-no signal.",
     iconKey: "flask",
     intro:
-      "Validation isn't a vibe; it's an experiment. A focused customer test asks one specific question and gives you a clean answer. The trap most founders fall into is asking vague questions ('would you use this?') and treating polite responses as evidence. Real tests put a clear, observable behaviour on the line.",
+      "Testing an idea isn't a vibe; it's an experiment. A focused customer test asks one specific question and gives you a clean answer. The trap most founders fall into is asking vague questions ('would you use this?') and treating polite responses as evidence. Real tests put a clear, observable behaviour on the line.",
     keyPoints: [
       "Identify the single assumption that, if wrong, kills the idea. Test that one first.",
       "Define what success looks like before you run the test (e.g. 'I'll continue if at least 3 of 10 people pre-order').",
@@ -164,10 +164,10 @@ export const NEXT_STEPS_TOPICS: NextStepsTopic[] = [
     url: "decide-on-commitment",
     title: "Decide on commitment",
     shortTitle: "Decide on commitment",
-    tagline: "Validation tells you the idea is real. Commitment is a separate question.",
+    tagline: "Testing tells you the idea is real. Commitment is a separate question.",
     iconKey: "users",
     intro:
-      "Validating an idea and committing to it are different decisions. Validation tells you the idea is real; commitment is about whether it deserves your time, your savings, your relationships, and your career risk. Plenty of validated ideas should not become full-time companies, and plenty of part-time projects compound into something serious. Be deliberate about which one this is for you.",
+      "Testing an idea and committing to it are different decisions. Testing tells you the idea is real; commitment is about whether it deserves your time, your savings, your relationships, and your career risk. Plenty of ideas that pass their tests should not become full-time companies, and plenty of part-time projects compound into something serious. Be deliberate about which one this is for you.",
     keyPoints: [
       "Separate the two questions: is the idea real? and do I want to bet my next few years on it?",
       "Be honest about what you can afford to give up: time, income, certainty, family bandwidth.",
@@ -203,7 +203,7 @@ export const NEXT_STEPS_TOPICS: NextStepsTopic[] = [
       },
     ],
     pitfalls: [
-      "Going full-time on a partially-validated idea because the validation looked exciting.",
+      "Going full-time on a half-tested idea because the early results looked exciting.",
       "Staying part-time forever because every step up feels uncomfortable.",
       "Picking a co-founder for proximity (a friend, an ex-colleague) rather than fit.",
       "Forgetting that fundraising is itself a full-time job, often for months.",

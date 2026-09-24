@@ -34,12 +34,12 @@ export type SolutionsGuardReason =
 
 const NOTHING_YET: Record<"nothing-to-validate" | "nothing-to-compare", { title: string; body: string }> = {
   "nothing-to-validate": {
-    title: "No solutions to validate yet",
-    body: "Validating a solution means scoring it on feasibility, impact, cost and time to implement, so there has to be one to score. Identify a solution for this problem first and it will be waiting here when you come back.",
+    title: "No solutions to test yet",
+    body: "Testing a solution means scoring it on feasibility, impact, cost and time to implement, so there has to be one to score. Identify a solution for this problem first and it will be waiting here when you come back.",
   },
   "nothing-to-compare": {
     title: "No solutions to compare yet",
-    body: "Comparing ranks the solutions you have found against each other by how much each validation metric matters to you, so there is nothing to rank until this project has some. Identify a solution or two first and the ranking will have something to work with.",
+    body: "Comparing ranks the solutions you have found against each other by how much each test metric matters to you, so there is nothing to rank until this project has some. Identify a solution or two first and the ranking will have something to work with.",
   },
 }
 
@@ -92,10 +92,10 @@ export function SolutionsGuardDialog({
   const copy =
     shown === "unvalidated"
       ? {
-          title: ruledOut ? "You ruled this problem out" : "Validate the problem first?",
+          title: ruledOut ? "You ruled this problem out" : "Test the problem first?",
           body: ruledOut
-            ? "Validation ended with a verdict of Invalid, so this problem is not worth solving as it stands. Revisit the validation if the verdict no longer reflects what you know, otherwise any solution you find here is aimed at a problem you have already set aside."
-            : "This problem has not been validated yet. Validation tells you whether the problem is real, painful and worth solving, so the solutions you find are aimed at something that matters. You can carry on without it, but you risk spending your time on a problem that does not hold up.",
+            ? "The test ended with a verdict of Invalid, so this problem is not worth solving as it stands. Revisit the test if the verdict no longer reflects what you know, otherwise any solution you find here is aimed at a problem you have already set aside."
+            : "This problem has not been tested yet. Testing it tells you whether the problem is real, painful and worth solving, so the solutions you find are aimed at something that matters. You can carry on without it, but you risk spending your time on a problem that does not hold up.",
         }
       : NOTHING_YET[shown]
 
@@ -117,7 +117,7 @@ export function SolutionsGuardDialog({
                 Identify solutions anyway
               </Button>
               <Button onClick={() => leave(projectRoutes.validation(projectId))}>
-                {ruledOut ? "Revisit the validation" : "Validate the problem"}
+                {ruledOut ? "Revisit the test" : "Test the problem"}
               </Button>
             </>
           ) : (

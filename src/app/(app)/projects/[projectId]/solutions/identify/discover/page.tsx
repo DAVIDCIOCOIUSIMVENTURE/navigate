@@ -11,6 +11,7 @@ import {
   Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { ConfirmDialog, removeCopy } from "@/components/ui/confirm-dialog"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { useIdentifySolutions, getAdjacentSteps } from "../context"
 import { SCAMPER_CASE_STUDIES } from "./case-studies"
@@ -472,14 +473,20 @@ function ReverseItemList({
             onChange={(e) => updateItem(item.id, e.target.value)}
             className="flex-1 text-sm bg-white border-white text-foreground"
           />
-          <Button
-            size="icon"
-            variant="ghost"
-            className="shrink-0 h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
-            onClick={() => removeItem(item.id)}
-          >
-            <Trash2 className="h-3.5 w-3.5" />
-          </Button>
+          <ConfirmDialog
+            trigger={
+              <Button
+                size="icon"
+                variant="ghost"
+                className="shrink-0 h-8 w-8 text-white/60 hover:text-white hover:bg-white/10"
+                aria-label="Remove this item"
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </Button>
+            }
+            {...removeCopy("item")}
+            onConfirm={() => removeItem(item.id)}
+          />
         </div>
       ))}
 
@@ -1102,15 +1109,20 @@ function ListField({
                 placeholder={placeholder}
                 className="flex-1 text-sm"
               />
-              <Button
-                size="icon"
-                variant="ghost"
-                className="shrink-0 h-8 w-8 text-muted-foreground hover:text-destructive"
-                onClick={() => remove(i)}
-                aria-label="Remove item"
-              >
-                <Trash2 className="h-3.5 w-3.5" />
-              </Button>
+              <ConfirmDialog
+                trigger={
+                  <Button
+                    size="icon"
+                    variant="ghost"
+                    className="shrink-0 h-8 w-8 text-muted-foreground hover:text-destructive"
+                    aria-label="Remove item"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" />
+                  </Button>
+                }
+                {...removeCopy("item")}
+                onConfirm={() => remove(i)}
+              />
             </div>
           ))}
         </div>
@@ -1304,7 +1316,7 @@ function SolutionSavedDialog({
         <div className="flex flex-col gap-3 pt-4">
           <Button onClick={onContinue} className="gap-2">
             <ArrowRight className="h-4 w-4" />
-            Continue to Solution Validation
+            Continue to Test the Solution
           </Button>
           <Button variant="outline" onClick={onKeepExploring}>
             Keep Exploring

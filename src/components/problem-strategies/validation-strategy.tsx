@@ -7,6 +7,7 @@ import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Slider } from "@/components/ui/slider"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { ConfirmDialog, removeCopy } from "@/components/ui/confirm-dialog"
 import { useProblem } from "@/app/(app)/projects/[projectId]/problem/validation/context"
 import type { Job, JobAnchor, JobIntensity, JobKind, JobsToBeDone, ValidationMetric } from "@/types/validation"
 import {
@@ -263,16 +264,21 @@ function JobRow({
           className="flex-1 h-8 text-base bg-white border-white text-foreground read-only:cursor-default"
         />
         {!readOnly && (
-          <Button
-            type="button"
-            size="icon"
-            variant="ghost"
-            onClick={onRemove}
-            className="h-8 w-8 text-white hover:bg-white/15 shrink-0"
-            aria-label="Remove goal"
-          >
-            <Trash2 className="h-4 w-4" />
-          </Button>
+          <ConfirmDialog
+            trigger={
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                className="h-8 w-8 text-white hover:bg-white/15 shrink-0"
+                aria-label="Remove goal"
+              >
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            }
+            {...removeCopy("job", "If the price is anchored on it, the anchor moves to the strongest job left.")}
+            onConfirm={onRemove}
+          />
         )}
       </div>
       {withIntensity && (
@@ -1228,7 +1234,7 @@ export function ValidationStrategy({ readOnly = false }: { readOnly?: boolean })
   if (readOnly && !hasAnyMetric && !hasVerdict) {
     return (
       <div className="bg-secondary-brand rounded-xl p-8">
-        <p className="text-base text-white italic">No validation assessment captured.</p>
+        <p className="text-base text-white italic">No test assessment captured.</p>
       </div>
     )
   }

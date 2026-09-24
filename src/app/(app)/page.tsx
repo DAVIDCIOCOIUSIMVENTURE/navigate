@@ -36,7 +36,7 @@ export default function DashboardPage() {
             <p>
               This is your <span className="font-bold">home</span>, the list of your projects.
               A <span className="font-bold">project</span> holds one problem and the solutions you find for it.
-              Press <span className="font-bold">New project</span> to start one, then open it to identify its problem, explore and validate it, and identify solutions.
+              Press <span className="font-bold">New project</span> to start one, then open it to identify its problem, explore and test it, and identify solutions.
             </p>
           </AboutDialog>
         </div>

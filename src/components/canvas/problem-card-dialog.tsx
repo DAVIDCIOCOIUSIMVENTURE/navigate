@@ -61,7 +61,7 @@ function cardSection(card: ProblemCardId, projectId: number | null): { label: st
     case "problem-types":
       return { label: "Open Canvas Builder", href: projectRoutes.canvasBuilder(projectId) }
     case "market":
-      return { label: "Open Validation", href: projectRoutes.validation(projectId, "market") }
+      return { label: "Open the test", href: projectRoutes.validation(projectId, "market") }
     case "existing-solutions":
       return { label: "Open Explore", href: projectRoutes.explore(projectId, "existing-solutions") }
   }

@@ -10,7 +10,7 @@ const STATUS_LABEL: Record<ValidationStatus, string> = {
   invalid: "Invalid",
   unsure: "Unsure",
   in_progress: "In progress",
-  unvalidated: "Unvalidated",
+  unvalidated: "Not tested",
 }
 
 function formatMetric(metric: ValidationMetric): string {
@@ -85,7 +85,7 @@ export function buildProblemExportText(
   ].join("\n")))
   lines.push("")
 
-  lines.push(section("Validation metrics", [
+  lines.push(section("Test metrics", [
     `How many customers: ${formatMetric(va.howManyPeople)}`,
     `Frequency (how often): ${formatMetric(va.howOften)}`,
     `Price they'd pay: ${formatMetric(va.worthToThem)}`,

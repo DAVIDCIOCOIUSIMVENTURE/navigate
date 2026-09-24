@@ -73,7 +73,7 @@ function cardSection(
       return { label: "Open Identify solutions", href: projectRoutes.identifySolutions(projectId) }
     case "metrics":
       return {
-        label: "Open Validation",
+        label: "Open the test",
         href: projectRoutes.solutionValidate(projectId, solutionId, "feasibility"),
       }
   }

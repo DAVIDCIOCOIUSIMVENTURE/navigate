@@ -8,6 +8,7 @@ import Link from "next/link"
 import { useDispatch, useSelector, useStore } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
 import { Button } from "@/components/ui/button"
+import { ANSWER_REMOVE_DESCRIPTION, ConfirmDialog, removeCopy } from "@/components/ui/confirm-dialog"
 import { useProblem } from "@/app/(app)/projects/[projectId]/problem/validation/context"
 import { CoreProblemStrategy } from "@/components/problem-strategies/core-problem-strategy"
 import { CustomerStrategy } from "@/components/problem-strategies/customer-strategy"
@@ -247,16 +248,21 @@ function ReflectionPromptCard({
               className="flex-1 text-base bg-white border-white text-foreground placeholder:text-muted-foreground min-h-[4rem]"
             />
             {prompt.multipleAllowed && slots.length > 1 && (
-              <Button
-                variant="ghost"
-                size="icon"
-                type="button"
-                onClick={() => removeSlot(i)}
-                aria-label="Remove this answer"
-                className="text-white hover:bg-white/10 hover:text-white"
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
+              <ConfirmDialog
+                trigger={
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    type="button"
+                    aria-label="Remove this answer"
+                    className="text-white hover:bg-white/10 hover:text-white"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                }
+                {...removeCopy("answer", ANSWER_REMOVE_DESCRIPTION)}
+                onConfirm={() => removeSlot(i)}
+              />
             )}
           </div>
         ))}
@@ -352,7 +358,7 @@ export function NextStepsSection({ projectId, problemId }: { projectId: number; 
         Next Steps
       </h2>
       <p className="text-base mb-4">
-        Based on your validation verdict, here is what you can do next.
+        Based on your test verdict, here is what you can do next.
       </p>
 
       {status === "valid" && (
@@ -392,16 +398,16 @@ export function NextStepsSection({ projectId, problemId }: { projectId: number; 
             <NextStepCard
               icon={Copy}
               title="Duplicate and start again"
-              description="Create a fresh copy of your problem with the description and customer intact, but the validation cleared so you can approach it from a new angle."
+              description="Create a fresh copy of your problem with the description and customer intact, but the test results cleared so you can approach it from a new angle."
               actionLabel="Duplicate &amp; Start Again"
               actionIcon={Copy}
               onAction={handleDuplicate}
             />
             <NextStepCard
               icon={RotateCcw}
-              title="Revisit your validation"
-              description="Go back to the validation step and review your scores. Adjusting even one factor can shift the overall picture."
-              actionLabel="Revisit Validation"
+              title="Revisit your test"
+              description="Go back to the test steps and review your scores. Adjusting even one factor can shift the overall picture."
+              actionLabel="Revisit the test"
               actionIcon={RotateCcw}
               onAction={goToValidation}
             />
@@ -416,29 +422,29 @@ export function NextStepsSection({ projectId, problemId }: { projectId: number; 
             <h3 className="text-lg font-semibold text-foreground">This problem is not valid</h3>
           </div>
           <p className="text-base">
-            Your validation suggests this problem is not worth solving in its current form. That does not mean the underlying idea is bad. Often, a problem becomes valid when you look at it through a different lens.
+            Your test suggests this problem is not worth solving in its current form. That does not mean the underlying idea is bad. Often, a problem becomes valid when you look at it through a different lens.
           </p>
           <div className="flex flex-col gap-3 mt-1">
             <NextStepCard
               icon={Copy}
               title="Duplicate and try a different angle"
-              description="Create a fresh copy of your problem with the description and customer intact, validation cleared."
+              description="Create a fresh copy of your problem with the description and customer intact, test results cleared."
               actionLabel="Duplicate &amp; Start Again"
               actionIcon={Copy}
               onAction={handleDuplicate}
             />
             <NextStepCard
               icon={RotateCcw}
-              title="Revisit your validation"
-              description="If new evidence has come in, or you want to reconsider any of your scores, go back to validation and update your verdict."
-              actionLabel="Revisit Validation"
+              title="Revisit your test"
+              description="If new evidence has come in, or you want to reconsider any of your scores, go back to the test and update your verdict."
+              actionLabel="Revisit the test"
               actionIcon={RotateCcw}
               onAction={goToValidation}
             />
             <NextStepCard
               icon={RotateCcw}
               title="Move on to a different problem"
-              description="Go back to your projects and start another one, or pick a different problem to validate. Ruling out a problem is still progress."
+              description="Go back to your projects and start another one, or pick a different problem to test. Ruling out a problem is still progress."
               actionLabel="Back to Home"
               actionIcon={ArrowRight}
               onAction={() => router.push("/")}
@@ -454,7 +460,7 @@ export function NextStepsSection({ projectId, problemId }: { projectId: number; 
             <h3 className="text-lg font-semibold text-foreground">No verdict yet</h3>
           </div>
           <p className="text-base">
-            Take a deeper look at the problem, then validate whether it is worth solving.
+            Take a deeper look at the problem, then test whether it is worth solving.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button className="self-start" onClick={goToExplore}>
@@ -463,7 +469,7 @@ export function NextStepsSection({ projectId, problemId }: { projectId: number; 
             </Button>
             <Button variant="outline" className="self-start" onClick={goToValidation}>
               <RotateCcw className="h-4 w-4 mr-2" />
-              Go to Validation
+              Go to Test the Problem
             </Button>
           </div>
         </div>
@@ -564,7 +570,7 @@ export function ProblemHubContent({
 
       <HubSection
         icon={ShieldCheck}
-        label="Validation Assessment"
+        label="Test assessment"
         openInStep={validationHref("market")}
       >
         <ValidationStrategy readOnly={readOnly} />
@@ -585,7 +591,7 @@ export function ProblemHubContent({
           <Button variant="outline" asChild>
             <Link href={`${validationBase}/introduction`}>
               <Pencil className="h-4 w-4 mr-2" />
-              Walk through validation steps
+              Walk through the test steps
             </Link>
           </Button>
         </div>

@@ -50,7 +50,7 @@ interface ProblemSummaryDialogProps {
 /* ------------------------------------------------------------------ */
 
 const STATUS_CONFIG: Record<ValidationStatus, { label: string; icon: React.ElementType; className: string }> = {
-  unvalidated: { label: "Not validated", icon: Clock,          className: "bg-muted text-muted-foreground" },
+  unvalidated: { label: "Not tested", icon: Clock,          className: "bg-muted text-muted-foreground" },
   in_progress: { label: "In progress",  icon: Clock,          className: "bg-primary/15 text-primary" },
   valid:       { label: "Valid",         icon: CheckCircle2,   className: "bg-success/15 text-success" },
   invalid:     { label: "Invalid",       icon: XCircle,        className: "bg-destructive/15 text-destructive" },
@@ -129,7 +129,7 @@ function AssessmentSection({ assessment }: { assessment: ValidationAssessment })
   return (
     <>
       <Separator />
-      <Section title="Validation Assessment">
+      <Section title="Test assessment">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {entries.map((entry) => (
             <div key={entry.label} className="text-base">
@@ -174,7 +174,7 @@ export function ProblemSummaryDialog({ open, onOpenChange, data }: ProblemSummar
       <DialogContent className="max-h-[85vh] overflow-y-auto sm:max-w-2xl">
         <DialogHeader>
           <DialogTitle>Problem Summary</DialogTitle>
-          <DialogDescription className="sr-only">Overview of the problem and its validation status</DialogDescription>
+          <DialogDescription className="sr-only">Overview of the problem and its test status</DialogDescription>
         </DialogHeader>
 
         <div className="flex flex-col gap-4">
@@ -194,7 +194,7 @@ export function ProblemSummaryDialog({ open, onOpenChange, data }: ProblemSummar
               <Section title="Problem Description">
                 <p className="text-sm leading-relaxed">{data.text}</p>
               </Section>
-              <Section title="Validation Status">
+              <Section title="Test status">
                 <StatusBadge status={data.validationStatus} />
               </Section>
             </div>

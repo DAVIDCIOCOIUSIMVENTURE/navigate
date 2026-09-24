@@ -11,7 +11,7 @@ const STEPS = [
   {
     icon: SlidersHorizontal,
     title: "Say what matters to you",
-    description: "Mark each of the four validation metrics (feasibility, impact, cost and time to implement) as essential, important, nice to have, or something to ignore.",
+    description: "Mark each of the four test metrics (feasibility, impact, cost and time to implement) as essential, important, nice to have, or something to ignore.",
   },
   {
     icon: ListOrdered,
@@ -41,7 +41,7 @@ export default function CompareIntroductionPage() {
           <div className="flex flex-col gap-6 @[800px]:flex-row @[800px]:items-center">
             <div className="flex flex-col gap-4 flex-1 min-w-0">
               <p className="text-base leading-relaxed">
-                Validating a solution tells you whether it stands up on its own. Comparing solutions tells you which one to pursue first. This section lines up every solution you have scored, weighs those scores by what matters most to you, and lets you record a verdict on each.
+                Testing a solution tells you whether it stands up on its own. Comparing solutions tells you which one to pursue first. This section lines up every solution you have scored, weighs those scores by what matters most to you, and lets you record a verdict on each.
               </p>
               <p className="text-base leading-relaxed">
                 Two solutions with the same scores can deserve different verdicts: a bootstrapped team should favour cheap, quick wins, while a funded one can afford to chase impact. Setting the weights first makes that trade-off explicit, so the ranking reflects your situation rather than a generic average.

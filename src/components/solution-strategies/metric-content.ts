@@ -92,7 +92,7 @@ export const FEASIBILITY_CONTENT: MetricContent = {
       context: "Two founders with design backgrounds wanted to let strangers book air mattresses in their flat during a design conference when hotels sold out.",
       score: 5,
       reasoning: "A weekend of work on a basic website was enough to test it. No new technology, no regulatory approvals, no staff; just a page, three air mattresses, and an email inbox.",
-      outcome: "Launched in a weekend, validated the concept with three guests, and used the learnings to raise funding. When feasibility is very high, you test quickly and iterate.",
+      outcome: "Launched in a weekend, proved the concept with three guests, and used the learnings to raise funding. When feasibility is very high, you test quickly and iterate.",
     },
   ],
 }

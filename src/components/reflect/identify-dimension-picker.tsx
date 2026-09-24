@@ -25,6 +25,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import { ManageCustomItemsDialog } from "@/components/manage-custom-items-dialog"
+import { SELECTION_REMOVE_DESCRIPTION } from "@/components/ui/confirm-dialog"
+import { RemovablePill } from "@/components/ui/removable-pill"
 
 type Props = {
   columnId: CustomDimensionColumnId
@@ -248,16 +250,13 @@ export function IdentifyDimensionPicker({
           </p>
           <div className="flex flex-wrap gap-2">
             {selectedLabels.map((label) => (
-              <button
+              <RemovablePill
                 key={label}
-                type="button"
-                onClick={() => toggle(label)}
-                className="inline-flex items-center gap-1.5 rounded-full bg-amber-400 text-foreground px-3 py-1 text-base hover:bg-amber-500"
-              >
-                <span>{label}</span>
-                <span aria-hidden="true">×</span>
-                <span className="sr-only">Remove {label}</span>
-              </button>
+                label={label}
+                noun="selection"
+                description={SELECTION_REMOVE_DESCRIPTION}
+                onRemove={() => toggle(label)}
+              />
             ))}
           </div>
         </div>

@@ -146,7 +146,7 @@ export default function ExploreReviewPage() {
       <CardHeader className="px-10 pt-10 pb-0 space-y-6">
         <CardTitle icon={LayoutTemplate}>Review</CardTitle>
         <p className="text-base leading-relaxed">
-          A read-only overview of everything you uncovered while exploring this problem. Click any heading below to jump back to that step. When you are happy with the picture, continue to Problem Validation to size the market and weigh up the competition. Everything below carries forward.
+          A read-only overview of everything you uncovered while exploring this problem. Click any heading below to jump back to that step. When you are happy with the picture, continue to Test the Problem to size the market and weigh up the competition. Everything below carries forward.
         </p>
       </CardHeader>
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
@@ -259,7 +259,7 @@ export default function ExploreReviewPage() {
               Open Problem to edit
             </Button>
             <Button onClick={() => router.push(projectRoutes.validation(projectId))}>
-              Continue to Problem Validation
+              Continue to Test the Problem
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           </div>

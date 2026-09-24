@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils"
  * column carries Home, the Open menu toggle, the title and
  * the journey rail, with the canvas beside it. A solution on its canvas has
  * been identified and is on its way to validation, so the rail sits on
- * "Validate solutions".
+ * "Test solutions".
  */
 export default function SolutionCanvasPage() {
   const params = useParams<{ projectId: string; solutionId: string }>()

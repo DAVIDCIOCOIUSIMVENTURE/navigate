@@ -62,7 +62,7 @@ export function IdentifyHubShell({
   const content = (
     <Card className={cn("flex w-full min-w-0 flex-col", isWide ? "flex-1 min-h-0 overflow-hidden" : "min-h-[320px]")}>
       <CardContent className={cn("flex flex-col gap-3 pt-6", isWide && "flex-1 min-h-0 overflow-y-auto")}>
-        {description && <p className="text-base leading-relaxed">{description}</p>}
+        {description && <p className="text-[17px] font-bold leading-relaxed">{description}</p>}
         {children}
       </CardContent>
     </Card>
