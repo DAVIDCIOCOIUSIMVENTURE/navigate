@@ -16,7 +16,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Button } from "@/components/ui/button"
 import { MemberAvatarStack } from "@/components/member-avatar"
+import { ProjectSettingsDialog } from "@/components/project-settings-dialog"
 import {
   ArrowDown,
   ArrowUp,
@@ -24,29 +26,33 @@ import {
   FolderKanban,
   Lightbulb,
   Search,
+  Settings,
   Target,
 } from "lucide-react"
 import { problemOfProject, projectDisplayName, projectRoutes } from "@/lib/projects"
 import { TABLE_STATUS_META, STATUS_ORDER } from "@/lib/status-table"
 import { cn } from "@/lib/utils"
 
-type SortKey = "index" | "name" | "status" | "solutions"
+type SortKey = "created" | "name" | "status" | "solutions"
 type SortDirection = "asc" | "desc"
 
 /**
  * The home page list: one row per project with its problem, the problem's
  * validation status and how many solutions it has.
- * The whole row opens the project; there are no per-row buttons, because
- * everything else about a project (its portfolio, its settings and the way to
- * delete it) lives in the settings dialog inside the project itself.
+ * The whole row opens the project. Its one button, at the end of the row,
+ * opens the project's settings dialog, which is where everything else about a
+ * project (its portfolio, its team and the way to delete it) lives.
+ * Newest project first by default, so the one just created is at the top.
  */
 export function ProjectsTable({ projects, className }: { projects: Project[]; className?: string }) {
   const router = useRouter()
   const problems = useSelector((state: RootState) => state.problems.problems)
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
   const [search, setSearch] = useState("")
-  const [sortKey, setSortKey] = useState<SortKey>("index")
-  const [sortDirection, setSortDirection] = useState<SortDirection>("asc")
+  const [settingsId, setSettingsId] = useState<number | null>(null)
+  // Newest project first by default, so the one just created is at the top.
+  const [sortKey, setSortKey] = useState<SortKey>("created")
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
 
   const rows = useMemo(
     () =>
@@ -66,6 +72,8 @@ export function ProjectsTable({ projects, className }: { projects: Project[]; cl
     )
   }, [rows, search])
 
+  const editing = settingsId === null ? undefined : projects.find((p) => p.id === settingsId)
+
   const sorted = useMemo(() => {
     const list = [...filtered]
     const dir = sortDirection === "asc" ? 1 : -1
@@ -80,8 +88,12 @@ export function ProjectsTable({ projects, className }: { projects: Project[]; cl
         }
         case "solutions":
           return (a.solutionCount - b.solutionCount) * dir
-        default:
-          return (a.index - b.index) * dir
+        default: {
+          // ISO timestamps compare as strings; store position breaks ties for
+          // projects created in the same instant (an import, say).
+          const byCreated = a.project.createdAt.localeCompare(b.project.createdAt)
+          return (byCreated || a.index - b.index) * dir
+        }
       }
     })
     return list
@@ -141,12 +153,15 @@ export function ProjectsTable({ projects, className }: { projects: Project[]; cl
               <TableHead className="w-36">{sortButton("status", "Problem status")}</TableHead>
               <TableHead className="w-28">{sortButton("solutions", "Solutions")}</TableHead>
               <TableHead className="w-28">Team</TableHead>
+              <TableHead className="w-12">
+                <span className="sr-only">Settings</span>
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {sorted.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={4} className="text-center text-sm py-8">
+                <TableCell colSpan={5} className="text-center text-sm py-8">
                   No projects match the current filters.
                 </TableCell>
               </TableRow>
@@ -210,6 +225,23 @@ export function ProjectsTable({ projects, className }: { projects: Project[]; cl
                         <span className="text-sm opacity-70">-</span>
                       )}
                     </TableCell>
+                    <TableCell>
+                      {/* Stopping the click here also covers Enter and Space, which
+                          fire a click on the button, so the row underneath never
+                          opens the project when the settings button is used. */}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-7 w-7"
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          setSettingsId(project.id)
+                        }}
+                        aria-label={`Settings for ${name}`}
+                      >
+                        <Settings className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 )
               })
@@ -217,6 +249,11 @@ export function ProjectsTable({ projects, className }: { projects: Project[]; cl
           </TableBody>
         </Table>
       </CardContent>
+      <ProjectSettingsDialog
+        project={editing}
+        open={editing !== undefined}
+        onOpenChange={(open) => { if (!open) setSettingsId(null) }}
+      />
     </Card>
   )
 }
