@@ -21,7 +21,7 @@ import type { Job, JobIntensity } from "@/types/validation"
 
 function ReviewSection({ children }: { children: ReactNode }) {
   return (
-    <section className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-3">
+    <section className="rounded-xl bg-secondary-brand p-6 shadow-lg flex flex-col gap-3">
       {children}
     </section>
   )

@@ -70,7 +70,7 @@ export default function RateSolutionsPage() {
       <CardContent className="p-10 pt-6 flex flex-col gap-6">
         <section
           aria-label="How important is each metric to you?"
-          className="rounded-xl bg-secondary-brand p-4 text-white"
+          className="rounded-xl bg-secondary-brand p-4 shadow-lg text-white"
         >
           <div className="grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 xl:grid-cols-4">
             {SOLUTION_METRICS.map((metric) => {

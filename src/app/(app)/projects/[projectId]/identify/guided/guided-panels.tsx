@@ -69,7 +69,8 @@ const ANCHOR_NOUN: Record<DimensionKey, string> = {
   contexts: "moment",
 }
 
-const PANEL_CLASS = "rounded-xl bg-secondary-brand p-6 flex flex-col gap-4 min-h-0 max-h-full w-full"
+const PANEL_CLASS = "rounded-xl bg-secondary-brand p-6 shadow-lg flex flex-col gap-4 min-h-0 max-h-full w-full"
+const REVIEW_SECTION_CLASS = "rounded-xl bg-secondary-brand p-6 shadow-lg flex flex-col gap-3"
 const OUTLINE_ON_BRAND = "bg-transparent border-white/40 text-white hover:bg-white/10 hover:text-white hover:border-white/60"
 
 /* ─── Header shared by the panels ─── */
@@ -491,7 +492,7 @@ export function ReviewPanel({
     const count = filledAnswers(answers, node.id).length
     const noun = column === "problems" ? "problem" : column === "customers" ? "customer" : "context"
     return (
-      <section className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-3">
+      <section className={REVIEW_SECTION_CLASS}>
         <TitleButton onClick={() => onJumpToQuestion(node.id)}>{heading}</TitleButton>
         <p className="text-base text-white">
           {count > 0 ? `${count} ${count === 1 ? noun : `${noun}s`} selected. ${pruneText}` : emptyText}
@@ -531,7 +532,7 @@ export function ReviewPanel({
       </p>
 
       {choices.length > 0 && (
-        <section className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-3">
+        <section className={REVIEW_SECTION_CLASS}>
           <p className="text-base font-semibold text-white">Your route</p>
           <ul className="flex flex-col gap-2">
             {choices.map((choice) => {
@@ -549,7 +550,7 @@ export function ReviewPanel({
       )}
 
       {anchor && anchorValue.length > 0 && (
-        <section className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-3">
+        <section className={REVIEW_SECTION_CLASS}>
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-8 h-8 rounded-md shrink-0 bg-yellow-600" aria-hidden="true">
               <AnchorIcon className="h-4 w-4 text-white" />
@@ -585,7 +586,7 @@ export function ReviewPanel({
       />
 
       {freePrompts.map((node) => (
-        <section key={node.id} className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-3">
+        <section key={node.id} className={REVIEW_SECTION_CLASS}>
           <TitleButton onClick={() => onJumpToQuestion(node.id)}>{node.question}</TitleButton>
           <div className="flex flex-col gap-3">
             {(answers[node.id] ?? []).map((answer, originalIdx) => {

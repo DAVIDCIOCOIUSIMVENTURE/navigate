@@ -377,7 +377,7 @@ export function CapturePanel({
   )
 
   const rightColumn = (
-    <div className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-4 min-h-0 max-h-full w-full">
+    <div className="rounded-xl bg-secondary-brand p-6 shadow-lg flex flex-col gap-4 min-h-0 max-h-full w-full">
       <div className="flex items-start justify-between gap-3 shrink-0">
         <p className="text-xl font-bold leading-snug text-white">{prompt.question}</p>
         {dimensionColumn ? (
@@ -649,7 +649,7 @@ export function ReviewPanel({
       </p>
 
       {selectedTool && (
-        <section className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-2">
+        <section className="rounded-xl bg-secondary-brand p-6 shadow-lg flex flex-col gap-2">
           <p className="text-base font-semibold text-white">Source</p>
           <a
             href={selectedTool.url}
@@ -664,7 +664,7 @@ export function ReviewPanel({
       )}
 
       {titlePromptId && productName.length > 0 && (
-        <section className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-3">
+        <section className="rounded-xl bg-secondary-brand p-6 shadow-lg flex flex-col gap-3">
           <div className="flex items-center gap-3">
             <div className="flex items-center justify-center w-8 h-8 rounded-md shrink-0 bg-yellow-600" aria-hidden="true">
               <Icon className="h-4 w-4 text-white" />
@@ -678,7 +678,7 @@ export function ReviewPanel({
       )}
 
       {problemsPromptId && filledLabels.problems.length > 0 && (
-        <section className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-3">
+        <section className="rounded-xl bg-secondary-brand p-6 shadow-lg flex flex-col gap-3">
           <TitleButton onClick={() => onJumpToPrompt(problemsPromptId)}>
             Unmet needs (saved as problems)
           </TitleButton>
@@ -705,7 +705,7 @@ export function ReviewPanel({
       )}
 
       {customersPromptId && (
-        <section className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-3">
+        <section className="rounded-xl bg-secondary-brand p-6 shadow-lg flex flex-col gap-3">
           <TitleButton onClick={() => onJumpToPrompt(customersPromptId)}>
             Who is this for?
           </TitleButton>
@@ -738,7 +738,7 @@ export function ReviewPanel({
         const hasAny = list.some((a) => a.text.trim().length > 0)
         if (!hasAny) return null
         return (
-          <section key={prompt.id} className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-3">
+          <section key={prompt.id} className="rounded-xl bg-secondary-brand p-6 shadow-lg flex flex-col gap-3">
             <TitleButton onClick={() => onJumpToPrompt(prompt.id)}>{prompt.question}</TitleButton>
             <div className="flex flex-col gap-3">
               {list.map((answer, originalIdx) => {

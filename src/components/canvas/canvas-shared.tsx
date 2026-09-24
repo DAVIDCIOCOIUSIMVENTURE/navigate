@@ -72,8 +72,8 @@ export const CANVAS_TITLE_COLOUR = "text-secondary-brand"
 const CANVAS_HEADER_BRAND = { tile: "bg-white/20 text-white", title: "text-white" }
 
 export const CELL_TONE_CLASSES: Record<CellTone, string> = {
-  card: "border bg-card shadow-sm",
-  brand: "border border-secondary-brand bg-secondary-brand text-white shadow-sm",
+  card: "border bg-card shadow-lg",
+  brand: "border border-secondary-brand bg-secondary-brand text-white shadow-lg",
 }
 
 /**

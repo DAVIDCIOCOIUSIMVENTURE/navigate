@@ -208,7 +208,7 @@ function ReflectionPromptCard({
   if (readOnly) {
     if (answers.length === 0) return null
     return (
-      <div className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-3 text-white">
+      <div className="rounded-xl bg-secondary-brand p-6 shadow-lg flex flex-col gap-3 text-white">
         <p className="text-base font-semibold">{prompt.question}</p>
         <ul className="list-disc pl-5 space-y-1">
           {answers.map((answer, i) => (
@@ -222,7 +222,7 @@ function ReflectionPromptCard({
   }
 
   return (
-    <div className="rounded-xl bg-secondary-brand p-6 flex flex-col gap-3">
+    <div className="rounded-xl bg-secondary-brand p-6 shadow-lg flex flex-col gap-3">
       <div className="flex items-center justify-between gap-2">
         <p className="text-base font-semibold text-white">{prompt.question}</p>
         {prompt.multipleAllowed && (
