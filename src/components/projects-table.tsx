@@ -161,24 +161,28 @@ export function ProjectsTable({ projects, className }: { projects: Project[]; cl
                   >
                     <TableCell className="text-sm">
                       <div className="flex items-start gap-2">
-                        <FolderKanban className="h-3.5 w-3.5 mt-1 text-quaternary shrink-0" />
+                        <span className="grid h-6 w-6 shrink-0 place-content-center rounded-full bg-primary text-white">
+                          <FolderKanban className="h-3.5 w-3.5" strokeWidth={2.5} />
+                        </span>
                         <div className="flex flex-col min-w-0">
                           {/* The row is the click target; this link is what keyboard
                               users tab to, so it must not navigate twice. */}
                           <Link
                             href={projectRoutes.page(project.id)}
                             onClick={(event) => event.stopPropagation()}
-                            className="line-clamp-1 font-medium hover:underline focus-visible:outline-none focus-visible:underline"
+                            className="line-clamp-1 text-base font-bold hover:underline focus-visible:outline-none focus-visible:underline"
                           >
                             {name}
                           </Link>
                           {problem ? (
-                            <span className="flex items-center gap-1.5 opacity-70">
-                              <Target className="h-3 w-3 shrink-0 text-tertiary" />
-                              <span className="line-clamp-1">{problem.title || "Untitled problem"}</span>
+                            <span className="flex items-center gap-1.5">
+                              <span className="grid h-5 w-5 shrink-0 place-content-center rounded-full bg-secondary-brand text-white">
+                                <Target className="h-3 w-3" strokeWidth={2.5} />
+                              </span>
+                              <span className="line-clamp-1 text-base opacity-70">{problem.title || "Untitled problem"}</span>
                             </span>
                           ) : (
-                            <span className="italic opacity-70">No problem identified yet</span>
+                            <span className="text-base italic opacity-70">No problem identified yet</span>
                           )}
                         </div>
                       </div>
