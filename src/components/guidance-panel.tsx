@@ -17,9 +17,11 @@ import {
   TrendingUp, Building2, Calculator, Scale, ShieldCheck,
   Glasses,
   Telescope,
+  FolderOpen, Settings, Presentation, Route, Microscope, PenLine,
   X,
 } from "lucide-react"
 import { REFLECT_LENSES, startsFromProblem, type Lens } from "@/data/reflectLenses"
+import { GUIDED_TOOL } from "@/data/guidedDiscovery"
 
 // ---------- Shared presentation helpers ----------
 
@@ -39,7 +41,7 @@ function GuidanceHero({ icon, tone, title, subtitle }: { icon: React.ElementType
       <IconTile icon={icon} className={tone} size="lg" />
       <div className="flex flex-col gap-1 min-w-0">
         <h3 className="text-xl font-bold leading-tight">{title}</h3>
-        <p className="text-sm leading-relaxed">{subtitle}</p>
+        <p className="text-base leading-relaxed">{subtitle}</p>
       </div>
     </header>
   )
@@ -52,7 +54,7 @@ function GuidanceSection({ icon, iconBg, title, children }: { icon: React.Elemen
         <IconTile icon={icon} className={iconBg} size="sm" />
         {title}
       </h4>
-      <div className="text-sm leading-relaxed flex flex-col gap-2 pl-[38px]">
+      <div className="text-base leading-relaxed flex flex-col gap-2 pl-[38px]">
         {children}
       </div>
     </section>
@@ -62,12 +64,12 @@ function GuidanceSection({ icon, iconBg, title, children }: { icon: React.Elemen
 function NumberedStep({ n, title, accent = "bg-primary", children }: { n: number; title: string; accent?: string; children: React.ReactNode }) {
   return (
     <div className="flex gap-3">
-      <span className={`flex items-center justify-center h-7 w-7 rounded-full shrink-0 ${accent} text-white text-sm font-semibold`} aria-hidden="true">
+      <span className={`flex items-center justify-center h-7 w-7 rounded-full shrink-0 ${accent} text-white text-base font-semibold`} aria-hidden="true">
         {n}
       </span>
       <div className="flex flex-col gap-1 min-w-0">
-        <h5 className="font-semibold text-foreground text-sm">{title}</h5>
-        <div className="text-sm leading-relaxed">{children}</div>
+        <h5 className="font-semibold text-foreground text-base">{title}</h5>
+        <div className="text-base leading-relaxed">{children}</div>
       </div>
     </div>
   )
@@ -78,10 +80,10 @@ function ConceptCard({ icon: Icon, label, description, tip, tile, border }: { ic
     <div className={`rounded-lg border p-3 flex items-start gap-3 ${border}`}>
       <IconTile icon={Icon} className={tile} size="sm" />
       <div className="flex flex-col gap-0.5 min-w-0">
-        <span className="font-semibold text-sm text-foreground">{label}</span>
-        <span className="text-sm leading-relaxed">{description}</span>
+        <span className="font-semibold text-base text-foreground">{label}</span>
+        <span className="text-base leading-relaxed">{description}</span>
         {tip && (
-          <span className="text-sm leading-relaxed pt-1">
+          <span className="text-base leading-relaxed pt-1">
             <span className="font-medium text-foreground">Tip: </span>
             {tip}
           </span>
@@ -130,8 +132,8 @@ function TipCallout({ items }: { items: React.ReactNode[] }) {
     <aside className="rounded-lg border border-yellow-600/20 bg-yellow-600/5 p-4 flex gap-3">
       <IconTile icon={Lightbulb} className="bg-yellow-600" size="sm" />
       <div className="flex flex-col gap-1.5 min-w-0">
-        <h5 className="font-semibold text-sm">Tips</h5>
-        <ul className="flex flex-col gap-1 text-sm leading-relaxed list-disc pl-4">
+        <h5 className="font-semibold text-base">Tips</h5>
+        <ul className="flex flex-col gap-1 text-base leading-relaxed list-disc pl-4">
           {items.map((item, i) => <li key={i}>{item}</li>)}
         </ul>
       </div>
@@ -168,7 +170,7 @@ const guidanceItems: GuidanceItem[] = [
           subtitle="Navigate is your guide through the innovation journey, from surfacing areas of personal interest to testing problems worth solving."
         />
         <GuidanceSection icon={Compass} iconBg="bg-primary" title="The journey">
-          <p>Navigate breaks the process into a sequence of connected stages. Work through them in order; later stages build on earlier ones. An optional <Keyword>Why It Matters</Keyword> section sits before everything else for those who want the grounding before they start.</p>
+          <p>Navigate breaks the process into a sequence of connected stages. Work through them in order; later stages build on earlier ones. An optional <Keyword>Why It Matters</Keyword> section sits before everything else for those who want the grounding before they start. Everything from stage 2 onwards happens inside a <Keyword>project</Keyword>: one problem and the solutions found for it.</p>
           <div className="flex flex-col gap-3 pt-1">
             <NumberedStep n={0} title="Why It Matters (optional)" accent="bg-violet-800">
               Short pages, videos, and case studies on why each stage exists and what happens when founders skip them.
@@ -177,23 +179,67 @@ const guidanceItems: GuidanceItem[] = [
               Explore your background, interests, and frustrations to surface <Keyword>problem triggers</Keyword>: seeds worth investigating.
             </NumberedStep>
             <NumberedStep n={2} title="Identify a problem" accent="bg-orange-700">
-              Start a project and turn those triggers into one concrete, well-framed problem using guided or freeform tools.
+              Start a project from Home, then turn those triggers into one concrete, well-framed problem with one of the identify tools. The problem becomes the project&apos;s problem.
             </NumberedStep>
             <NumberedStep n={3} title="Explore the Problem" accent="bg-tertiary">
-              Take your project&apos;s problem for a deeper dive: define the customer, refine the problem, map existing solutions, and capture what the customer is trying to achieve.
+              Take your project&apos;s problem for a deeper dive: define the customer, map existing solutions, and capture what the customer is trying to achieve.
             </NumberedStep>
             <NumberedStep n={4} title="Test the Problem" accent="bg-green-800">
               Stress-test the explored problem against price, market size, and competition to decide if it is worth pursuing.
             </NumberedStep>
             <NumberedStep n={5} title="Solutions" accent="bg-blue-900">
-              Once a problem has passed its test, generate and evaluate potential solutions.
+              Once the problem has passed its test, identify candidate solutions, test each one on feasibility, impact, cost and time, then compare them and pick which to pursue.
+            </NumberedStep>
+            <NumberedStep n={6} title="Share the portfolio" accent="bg-teal-700">
+              When a solution is worth pursuing, share the whole project as a read-only portfolio page that somebody with no account can read.
             </NumberedStep>
           </div>
         </GuidanceSection>
         <TipCallout items={[
-          "You can move between stages freely; earlier work is never locked",
+          "You can move between stages freely; earlier work is never locked. Where the usual order matters, Navigate warns you and lets you carry on",
           "Everything auto-saves as you go; there is nothing to submit",
+          "The journey rail down the left of every project page shows where you are; each milestone links into that work",
+          "New to Navigate? Take the guided tour from the account menu in the header",
           "Open this guidance at any time from the Guidance button in the header",
+        ]} />
+      </div>
+    ),
+  },
+  {
+    id: "projects",
+    title: "Projects",
+    icon: FolderOpen,
+    iconBg: "bg-teal-700",
+    content: (
+      <div className="flex flex-col gap-5">
+        <GuidanceHero
+          icon={FolderOpen}
+          tone="bg-teal-700"
+          title="Projects"
+          subtitle="A project is the unit of work in Navigate: one problem and the solutions found for it. Home lists your projects, and everything about a project lives on its page."
+        />
+        <GuidanceSection icon={LayoutGrid} iconBg="bg-teal-700" title="Home">
+          <p>Home lists your projects, newest first, with each project&apos;s problem and its status, how many solutions it has and its team. Click a row to open the project, or its settings button at the end of the row to change the project without opening it. <Keyword>New project</Keyword> starts one (it also sits at the top of the projects menu in the header), and <Keyword>Import project</Keyword> brings in a project somebody exported as a file.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={FolderOpen} iconBg="bg-teal-700" title="The project page">
+          <p>The left column carries the project&apos;s name, its team, a <Keyword>Settings</Keyword> button and the journey rail. Beside it sits the problem canvas: its cards summarise the problem, every card title opens an edit dialog for that card, and the gear button beside the status pill holds the actions (<Keyword>Explore</Keyword>, <Keyword>Test</Keyword>, <Keyword>Edit</Keyword>, <Keyword>Full view</Keyword>, <Keyword>Download as text</Keyword> and <Keyword>Export project</Keyword>). Under the canvas, the solutions table lists what you have found, with <Keyword>Identify solutions</Keyword> and <Keyword>Compare solutions</Keyword> beside it.</p>
+          <p>A project with no problem yet shows an <Keyword>Identify a problem</Keyword> button instead, which opens the project&apos;s hub of identify tools.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={Settings} iconBg="bg-teal-700" title="Project settings">
+          <p>One dialog holds everything about the project itself. Rename it, add or remove the people on its team (names and email addresses for now, since there are no accounts yet), switch on <Keyword>Share a public portfolio</Keyword>, open the portfolio, export the project as a file or import one, and delete the project. Deleting a project takes its problem and solutions with it; the notes in your journal that were linked to it are kept and simply unlinked.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={Presentation} iconBg="bg-teal-700" title="The portfolio">
+          <p>The portfolio is the project written out for somebody who has never used Navigate: the problem, who has it, what those people are trying to get done, how they cope today, what solving it could be worth, the competition, the verdict, and every solution with how it was found and how it scored. It is read only and needs no account or password.</p>
+          <p>A project is private until you share it. <Keyword>Open portfolio</Keyword> works before then, so you can read it yourself and decide whether it is ready; a banner says nobody else can open it yet. Until projects are stored on a server, the link only opens on the device the project was made on.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={Route} iconBg="bg-teal-700" title="Finding your way">
+          <p>Every flow inside a project is a focus page: the header and sidebar step aside, and two buttons take their place. <Keyword>Home</Keyword> returns to the project list from anywhere, however deep you are, and <Keyword>Menu</Keyword> reveals the top bar with the projects menu, journal and this guidance.</p>
+          <p>The journey rail shows the five milestones: Identify problem, Explore problem, Test problem, Identify solutions and Test solutions. The page&apos;s own step is highlighted, the steps this problem has reached are filled in, and each label leads into that work for this project, so <Keyword>Identify problem</Keyword> reopens the tool the problem came from and <Keyword>Test solutions</Keyword> opens the next solution waiting for a verdict.</p>
+        </GuidanceSection>
+        <TipCallout items={[
+          "Each project holds exactly one problem. To work on a second problem, start a second project",
+          "Export a project before trying something drastic; importing the file back gives you a fresh copy",
+          "Notes in the journal can be linked to a project, and the panel can filter to just this project's notes",
         ]} />
       </div>
     ),
@@ -226,7 +272,7 @@ const guidanceItems: GuidanceItem[] = [
           </div>
         </GuidanceSection>
         <GuidanceSection icon={ArrowRight} iconBg="bg-violet-800" title="What comes next">
-          <p>Once you&apos;ve read as much as you want (or skipped straight past), move on to Self Discovery to start surfacing your own problem triggers.</p>
+          <p>Once you&apos;ve read as much as you want (or skipped straight past), move on to Self Discovery to start surfacing your own problem triggers, or go straight to Home and start a project.</p>
         </GuidanceSection>
         <TipCallout items={[
           "Pick the sections that match what you're unsure about; you don't have to read all five",
@@ -257,7 +303,7 @@ const guidanceItems: GuidanceItem[] = [
           <p>Some questions include suggestion exercises to help you generate ideas if you are unsure where to start. Use them as prompts, not constraints.</p>
         </GuidanceSection>
         <GuidanceSection icon={Package} iconBg="bg-indigo-800" title="The output">
-          <p>At the end of Self Discovery you will have a collection of problem triggers saved to your self-discovery library. These are not problems yet; they are areas of interest. You carry them into Identify Problems, where dedicated tools sharpen them into concrete, well-framed problems worth exploring and testing.</p>
+          <p>At the end of Self Discovery you will have a collection of problem triggers. These are not problems yet; they are areas of interest. They resurface when you identify a problem for a project: in the <Keyword>You</Keyword> column of the Canvas Builder and in the pick lists of the guided prompt tools, where dedicated tools sharpen them into a concrete, well-framed problem worth exploring and testing.</p>
         </GuidanceSection>
         <TipCallout items={[
           <>Be specific: <Keyword>&ldquo;healthcare admin is slow&rdquo;</Keyword> is more useful than <Keyword>&ldquo;healthcare&rdquo;</Keyword></>,
@@ -269,7 +315,7 @@ const guidanceItems: GuidanceItem[] = [
   },
   {
     id: "problem-discovery",
-    title: "Problem Discovery",
+    title: "Identify a Problem",
     icon: Search,
     iconBg: "bg-orange-700",
     content: (
@@ -277,14 +323,24 @@ const guidanceItems: GuidanceItem[] = [
         <GuidanceHero
           icon={Search}
           tone="bg-orange-700"
-          title="Problem Discovery"
+          title="Identify a Problem"
           subtitle="Turn the rough areas identified in Self Discovery into a concrete, well-framed problem worth investigating. Each project holds one problem, so the tools here give your project its problem."
         />
         <GuidanceSection icon={Play} iconBg="bg-orange-700" title="How it works">
-          <p>Click <Keyword>Identify problems</Keyword> to open the tool selector. Use one of the discovery tools to surface a problem, or define one directly if you already know what you want to explore.</p>
+          <p>On a project with no problem yet, click <Keyword>Identify a problem</Keyword> to open the hub. It lists every tool, each with a pill showing which dimension it starts from (You, Customer, Context or Problem), a one-line description, a <Keyword>Best for</Keyword> note to help you choose and a rough time. Whichever you pick, the problem lands in your project and a dialog offers to take you straight into Explore.</p>
+          <p>Once the project has its problem the hub becomes <Keyword>Revisit the Problem</Keyword>: the same tools reopen it with what you captured, and saving updates the problem rather than adding another.</p>
         </GuidanceSection>
-        <GuidanceSection icon={ToggleRight} iconBg="bg-orange-700" title="Two modes">
-          <p>The Canvas Builder offers two ways to work, switchable from the toggle in the top-right corner. Choose whichever suits your thinking style; you can switch at any time and your progress is preserved.</p>
+        <GuidanceSection icon={LayoutGrid} iconBg="bg-orange-700" title="The tools">
+          <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
+            <ConceptCard icon={GUIDED_TOOL.icon} label={GUIDED_TOOL.title} description="A prototype of one tool for all of them. It first asks what you are starting from (your own experience, a group of people, an annoyance or a moment when things go wrong), then asks the same short set of questions worded for your answer." tile="bg-orange-700" border="border-orange-700/20 bg-orange-700/5" />
+            <ConceptCard icon={Glasses} label="Guided prompt tools" description="Five tools that ask short questions about something you already know: what you have lived through, the work you do, what you have built, a group you know well, or something that annoys you. See the Guided Prompt Tools topic below." tile="bg-orange-700" border="border-orange-700/20 bg-orange-700/5" />
+            <ConceptCard icon={Blocks} label="Canvas Builder" description="Combine customer segments, contexts and types of pain from a curated catalogue on a single canvas. Best when you already know how to ask the right questions or want to explore a wide space quickly." tile="bg-orange-700" border="border-orange-700/20 bg-orange-700/5" />
+            <ConceptCard icon={Microscope} label="Research" description="Hunt for problems out in the world. Pick a research method, use its curated tools (review sites, forums, communities, conversations with strangers) and capture what you find in a guided form." tile="bg-orange-700" border="border-orange-700/20 bg-orange-700/5" />
+            <ConceptCard icon={PenLine} label="Define a Problem Statement" description="Already know what you want to explore? Write it directly, with its customers, contexts and problem types, without working through a tool." tile="bg-orange-700" border="border-orange-700/20 bg-orange-700/5" />
+          </div>
+        </GuidanceSection>
+        <GuidanceSection icon={ToggleRight} iconBg="bg-orange-700" title="The Canvas Builder's two modes">
+          <p>The Canvas Builder offers two ways to work, switchable from the <Keyword>Canvas</Keyword> / <Keyword>Builder</Keyword> toggle in its toolbar. Choose whichever suits your thinking style; both work on the same selection, so you can switch at any time and your progress is preserved.</p>
         </GuidanceSection>
         <GuidanceSection icon={Blocks} iconBg="bg-orange-700" title="Problem Builder (guided mode)">
           <p>The builder walks you through four steps to construct a problem systematically:</p>
@@ -302,7 +358,7 @@ const guidanceItems: GuidanceItem[] = [
               See all selections at a glance, add an optional description, and save the problem.
             </NumberedStep>
           </div>
-          <p className="pt-1">Your selections appear as coloured pills at the top of every step. Remove any selection with its <Keyword>×</Keyword> button. You do not need to fill in all three dimensions; a partial combination is still useful.</p>
+          <p className="pt-1">Your selections appear as coloured pills at the top of every step. Remove any selection with its <Keyword>×</Keyword> button (you are asked to confirm first). You do not need to fill in every dimension; a partial combination is still useful.</p>
         </GuidanceSection>
         <GuidanceSection icon={LayoutGrid} iconBg="bg-orange-700" title="Canvas (freeform mode)">
           <p>The canvas presents a multi-column framework for thinking systematically about who experiences a problem, in what situation, and what friction they face.</p>
@@ -312,14 +368,15 @@ const guidanceItems: GuidanceItem[] = [
             <ConceptCard icon={MapPin} label="Context" description="The situation or environment where the problem occurs (e.g. daily commute, remote team)" tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
             <ConceptCard icon={AlertTriangle} label="Problem" description="The category of friction (e.g. information gaps, coordination overhead)" tile="bg-red-800" border="border-red-800/20 bg-red-800/5" />
           </div>
-          <p className="pt-1">Browse each column, tick items that resonate, and click <Keyword>Save Problem</Keyword> to record the combination as your project&apos;s problem. Coming back to the canvas later reopens it so you can change your mind.</p>
-        </GuidanceSection>
-        <GuidanceSection icon={FileText} iconBg="bg-orange-700" title="Define a Problem Statement">
-          <p>If you already have a clear problem in mind, skip the exploration tools and write it directly. Useful when you have prior knowledge of a domain or have already spoken to potential customers.</p>
+          <p className="pt-1">Browse each column, tick items that resonate, and click <Keyword>Save Problem</Keyword> to record the combination as your project&apos;s problem. Anything you add in your own words joins the catalogue for next time. Coming back to the canvas later reopens the problem&apos;s selections, and the button reads <Keyword>Update Problem</Keyword>.</p>
         </GuidanceSection>
         <GuidanceSection icon={ArrowRight} iconBg="bg-orange-700" title="What comes next">
           <p>Once your project has its problem, take it into <Keyword>Explore the Problem</Keyword>: a deeper dive that defines the customer, {SHOW_REFINEMENT_STEPS && <>refines the problem (root causes, 5 whys, affected groups), </>}maps existing solutions and their shortcomings, and captures what the customer is trying to achieve. That work then feeds Test the Problem, where you size the market and decide whether the problem is worth pursuing.</p>
         </GuidanceSection>
+        <TipCallout items={[
+          "Not sure which tool to pick? Open Best for under each one, or start with Guided discovery, which asks that question for you",
+          "Identifying is done once the problem is saved. Change your mind by revisiting the tool or by editing the canvas cards on the project page, not by starting again",
+        ]} />
       </div>
     ),
   },
@@ -337,7 +394,7 @@ const guidanceItems: GuidanceItem[] = [
           subtitle="A deeper dive into your project&apos;s problem before you size any markets. Understand exactly who has the problem, why it really happens, how people cope today, and what they are trying to get done. Everything you capture here carries forward into Test the Problem."
         />
         <GuidanceSection icon={Play} iconBg="bg-tertiary" title="How it works">
-          <p>Open <Keyword>Explore</Keyword> from your project. You work through a sequence of steps: define the customer, {SHOW_REFINEMENT_STEPS && <>refine the problem, </>}map existing solutions, and capture what the customer is trying to achieve. Work through them in order; each builds on the last, but you can return and update any step as your thinking develops.</p>
+          <p>Open <Keyword>Explore</Keyword> from the actions menu on your project page (the gear button beside the problem&apos;s status), or from the <Keyword>Explore problem</Keyword> milestone on the journey rail. You work through a sequence of steps: define the customer, {SHOW_REFINEMENT_STEPS && <>refine the problem, </>}map existing solutions, and capture what the customer is trying to achieve. Work through them in order; each builds on the last, but you can return and update any step as your thinking develops.</p>
         </GuidanceSection>
         <GuidanceSection icon={Users} iconBg="bg-indigo-800" title="Define your customer">
           <p>Pin down exactly who experiences the problem. Vague labels like <Keyword>&ldquo;everyone&rdquo;</Keyword> or <Keyword>&ldquo;businesses&rdquo;</Keyword> lead to vague problems and vague solutions; a sharp customer definition unlocks every later step. Narrow down by:</p>
@@ -397,7 +454,7 @@ const guidanceItems: GuidanceItem[] = [
           subtitle="Stress-test an explored problem before investing in a solution. Building on the customer, their goals, and the existing solutions captured in Explore, you set a price, size the market, weigh up the competition, and reach a verdict. The goal is not to prove the problem is valid; it is to gather enough evidence to make an honest, informed decision."
         />
         <GuidanceSection icon={Play} iconBg="bg-green-800" title="How it works">
-          <p>Testing picks up where Explore left off. You work through a short sequence of steps: price, market size, competition, and verdict. Work through them in order; each builds on the last, but you can return and update any step as your thinking develops.</p>
+          <p>Open <Keyword>Test</Keyword> from the actions menu on your project page, or from the <Keyword>Test problem</Keyword> milestone on the journey rail. Testing picks up where Explore left off. You work through a short sequence of steps: price, market size, competition, and verdict. Work through them in order; each builds on the last, but you can return and update any step as your thinking develops.</p>
         </GuidanceSection>
         <GuidanceSection icon={PoundSterling} iconBg="bg-teal-700" title="What they would pay to solve it">
           <p>A customer buys a solution for one primary goal: the one that tips them into buying. The other goals are secondary, they nudge what someone will pay rather than each adding their own price. So you set one price, anchored on that one dominant goal. Pick whichever goal drives the purchase, functional, emotional, or social, not the cost of building a feature, then cross-check the number against three angles:</p>
@@ -409,41 +466,42 @@ const guidanceItems: GuidanceItem[] = [
           <p className="pt-1">A single currency-and-amount input on the step captures the price. It feeds directly into the market sizing calculation that follows.</p>
         </GuidanceSection>
         <GuidanceSection icon={TrendingUp} iconBg="bg-emerald-800" title="Size the market">
-          <p>Layer the population on top of the price. The step produces two figures: the <Keyword>total addressable market (TAM)</Keyword> for the whole pie, and the <Keyword>serviceable addressable market (SAM)</Keyword> for the slice you can actually serve in your launch.</p>
+          <p>Layer the population on top of the price. The step produces two figures: the <Keyword>total market</Keyword> for the whole pie (the total addressable market, or TAM, in the textbooks), and the <Keyword>reachable market</Keyword> for the slice you can actually serve in your launch (the serviceable addressable market, or SAM).</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(180px,1fr))]">
             <ConceptCard icon={Users} label="How many customers" description="The total population that has the problem. Round generously; order of magnitude matters more than precision." tile="bg-emerald-800" border="border-emerald-800/20 bg-emerald-800/5" />
             <ConceptCard icon={Repeat} label="How often" description="How often each customer hits the problem. A one-off problem (like moving house) uses 1 per year; recurring problems use the natural cadence." tile="bg-emerald-800" border="border-emerald-800/20 bg-emerald-800/5" />
             <ConceptCard icon={PieChart} label="Reachable share" description="Of the global population, what share can you serve in your launch? Filter on geography, language, business size, distribution channel: not yet on competition. A focused launch usually reaches 10 to 40 percent." tile="bg-emerald-800" border="border-emerald-800/20 bg-emerald-800/5" />
           </div>
-          <p className="pt-1">TAM is <Keyword>customers × frequency × price</Keyword>. SAM is <Keyword>TAM × reachable share</Keyword>. The third figure, the serviceable obtainable market (SOM), comes from the competition step that follows. Treat all of these as sense checks, not forecasts.</p>
+          <p className="pt-1">The total market is <Keyword>customers × frequency × price</Keyword>. The reachable market is <Keyword>total market × reachable share</Keyword>. The third figure, your realistic share of the market (the serviceable obtainable market, or SOM), comes from the competition step that follows. Treat all of these as sense checks, not forecasts.</p>
         </GuidanceSection>
         <GuidanceSection icon={Building2} iconBg="bg-yellow-600" title="Assess the competition">
-          <p>A big market alone is not enough. The final question is what share of SAM you can realistically win. Three signals together tell you how hard the path will be, and they feed the realistic-share slider that produces the SOM:</p>
+          <p>A big market alone is not enough. The final question is what share of the reachable market you can realistically win. Three signals together tell you how hard the path will be, and they feed the realistic-share slider that produces the last figure:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(180px,1fr))]">
             <ConceptCard icon={ArrowRightLeft} label="Cost of switching" description="The time, money, and habit-change a customer must give up to leave their current setup." tile="bg-yellow-600" border="border-yellow-600/20 bg-yellow-600/5" />
             <ConceptCard icon={Target} label="Existing solution effectiveness" description="How well current options actually work, from terrible through excellent." tile="bg-yellow-600" border="border-yellow-600/20 bg-yellow-600/5" />
             <ConceptCard icon={Building2} label="Competitor size" description="How well-funded the incumbents are, from micro players up to giants." tile="bg-yellow-600" border="border-yellow-600/20 bg-yellow-600/5" />
-            <ConceptCard icon={PieChart} label="Realistic share" description="Out of SAM, what share you could plausibly win in the first one to three years. Most early ventures land between 5 and 15 percent." tile="bg-yellow-600" border="border-yellow-600/20 bg-yellow-600/5" />
+            <ConceptCard icon={PieChart} label="Realistic share" description="Out of the reachable market, what share you could plausibly win in the first one to three years. Most early ventures land between 5 and 15 percent." tile="bg-yellow-600" border="border-yellow-600/20 bg-yellow-600/5" />
           </div>
-          <p className="pt-1">Strong opportunities combine low or moderate switching costs, average-or-worse alternatives, and competitors that are small or distracted. <Keyword>SOM = SAM × realistic share</Keyword>.</p>
+          <p className="pt-1">Strong opportunities combine low or moderate switching costs, average-or-worse alternatives, and competitors that are small or distracted. <Keyword>Realistic share of the market = reachable market × realistic share</Keyword>.</p>
         </GuidanceSection>
         <GuidanceSection icon={ShieldCheck} iconBg="bg-destructive" title="Record your verdict">
-          <p>The verdict step pulls everything together. The summary card shows each captured factor (three market signals, the anchor goal, and three competition signals) with a colour-coded dot (green favourable, amber neutral, red unfavourable) and a stack of the three market headlines (TAM, SAM, SOM) from the earlier steps:</p>
+          <p>The verdict step pulls everything together. The summary shows each captured factor (how many customers, how often, what they would pay, the anchor goal, the two shares and the three competition signals) and the three market figures from the earlier steps: the total market, the reachable market and your realistic share of it. A callout lists the common pitfalls to check yourself against before you commit:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(220px,1fr))]">
-            <ConceptCard icon={Scale} label="Lean indicator" description="Once at least five of the seven signals are captured, a banner shows whether the evidence leans toward Valid, Unsure, or Invalid." tile="bg-destructive" border="border-destructive/20 bg-destructive/5" />
-            <ConceptCard icon={Calculator} label="Market headlines are sanity checks" description="A large TAM is not the same as proven willingness to pay. Read the underlying signals before trusting the headline." tile="bg-destructive" border="border-destructive/20 bg-destructive/5" />
+            <ConceptCard icon={Calculator} label="Market figures are sanity checks" description="A large total market is not the same as proven willingness to pay. Treat the price you captured as a hypothesis to test in real conversations." tile="bg-destructive" border="border-destructive/20 bg-destructive/5" />
+            <ConceptCard icon={Users} label="Name a real customer" description="If you cannot name a specific customer who hit this problem in the last week, it is probably not as universal as it feels." tile="bg-destructive" border="border-destructive/20 bg-destructive/5" />
+            <ConceptCard icon={Scale} label="Expect worse than your gut says" description="Switching costs and incumbent reactions are usually one level worse than your first estimate." tile="bg-destructive" border="border-destructive/20 bg-destructive/5" />
           </div>
-          <p className="pt-1">Then commit to one of three verdicts: <Keyword>Valid</Keyword>, <Keyword>Unsure</Keyword>, or <Keyword>Invalid</Keyword>. The dot colours and lean banner are heuristics, not rules; if you disagree with how a signal is being read, override it in the notes and explain why. Use the notes to record the two or three signals that drove the call plus the strongest counter-argument you considered.</p>
+          <p className="pt-1">Then commit to one of three verdicts: <Keyword>Valid: Worth Solving</Keyword>, <Keyword>Unsure: May Be Worth Solving</Keyword>, or <Keyword>Invalid: Not Worth Solving</Keyword>. Clicking the chosen verdict again clears it. The verdict sets the problem&apos;s status on the project page and decides what happens on the way into solutions: a problem with no verdict, or ruled out as Invalid, gets a warning before you identify solutions for it, though you can always carry on.</p>
         </GuidanceSection>
         <GuidanceSection icon={FileText} iconBg="bg-green-800" title="Review &amp; next steps">
-          <p>A read-only overview of everything you have captured: the customer definition, refinement work, existing solutions and their shortcomings, the customer goals, the price, the market figures, the competitive picture, and your verdict with notes. Use <Keyword>Open Problem to edit</Keyword> to jump back to the editable problem page if anything needs revising before you move on to identifying solutions.</p>
+          <p>A read-only overview of everything you have captured, laid out as the same cards as the problem canvas: the customer definition, existing solutions, the customer goals, the price, the market figures, the competitive picture, and your verdict. Below it, a next-steps section suggests what to do given the verdict. Use <Keyword>Open Problem to edit</Keyword> to jump back to the editable problem page if anything needs revising before you move on to identifying solutions.</p>
         </GuidanceSection>
         <TipCallout items={[
           "Be honest about the evidence: a weak result is a signal, not a failure",
           "Anchor the price on the one goal that drives the purchase, not on the cost of building a feature",
           "If you cannot justify the reachable share or realistic share to a sceptical friend, slide them down",
           "A large total market is not the same as proven willingness to pay; read the underlying signals",
-          "You can test multiple problems and compare verdicts before committing to one",
+          "Each project holds one problem, so start another project to test a second problem and compare the verdicts on Home",
         ]} />
       </div>
     ),
@@ -459,24 +517,28 @@ const guidanceItems: GuidanceItem[] = [
           icon={Lightbulb}
           tone="bg-blue-900"
           title="Solutions"
-          subtitle="Each project collects candidate solutions for its tested problem. Identify new solutions through a guided flow, then test each one against feasibility, impact, cost, and time."
+          subtitle="Each project collects candidate solutions for its tested problem. Identify new solutions through a guided flow, test each one against feasibility, impact, cost, and time, then compare them to decide which to pursue."
         />
         <GuidanceSection icon={Play} iconBg="bg-blue-900" title="How it works">
-          <p>The Solutions workspace has two connected flows: an Identify Solutions flow that generates candidates, and a test flow that evaluates each candidate on its own.</p>
+          <p>Solutions live on the project page, under the problem canvas. Three connected flows work on them: Identify Solutions generates candidates, the test flow scores each candidate on its own, and Compare solutions ranks them against each other.</p>
           <div className="flex flex-col gap-3 pt-1">
             <NumberedStep n={1} title="Identify" accent="bg-blue-900">
-              From a project whose problem has been tested, use a creative technique to generate candidate solutions. Each candidate lands in the project. Refinement work (root causes, 5 whys, affected groups) now happens earlier inside Test the Problem; the output flows through automatically.
+              From the project page, click <Keyword>Identify solutions</Keyword> and use a creative technique to generate candidate solutions. Each candidate lands in the project&apos;s solutions table.
             </NumberedStep>
             <NumberedStep n={2} title="Test" accent="bg-green-800">
               For each candidate in the project, work through the four test metrics and reach a verdict: valid, unsure, or invalid.
             </NumberedStep>
+            <NumberedStep n={3} title="Compare" accent="bg-teal-700">
+              Say how much each metric matters to you, read the ranking that produces, and give every solution a traffic light.
+            </NumberedStep>
           </div>
+          <p className="pt-1">None of these doors is ever locked. If the problem has no verdict yet, or the project has no solutions to test or compare, a dialog says why the usual order is the safer one and lets you carry on anyway.</p>
         </GuidanceSection>
 
         <GuidanceSection icon={Lightbulb} iconBg="bg-blue-900" title="Identify solutions">
-          <p>Pick a creative method to generate solution ideas. Each candidate you capture is added to the project so you can test it later:</p>
+          <p>Pick a method, generate solution ideas with it, then review what you captured. Each candidate is added to the project so you can test it later:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
-            <ConceptCard icon={Blocks} label="SCAMPER" description="Substitute, Combine, Adapt, Modify, Put to other use, Eliminate, Reverse. Generate ideas by transforming existing concepts." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
+            <ConceptCard icon={Blocks} label="SCAMPER" description="Substitute, Combine, Adapt, Modify, Put to other use, Eliminate, Reverse. Start from a solution people use today, or a first idea, and transform it seven ways." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
             <ConceptCard icon={Repeat} label="Reverse Ideation" description="Instead of asking how to solve it, ask how to make it worse, then invert the answers." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
             <ConceptCard icon={Compass} label="Analogy Thinking" description="Look at how other fields have solved similar problems and adapt their approach." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
             <ConceptCard icon={ArrowRight} label="Improve Existing Solutions" description="Start from what already exists and sharpen it, removing shortcomings surfaced while testing the problem." tile="bg-blue-900" border="border-blue-900/20 bg-blue-900/5" />
@@ -485,20 +547,25 @@ const guidanceItems: GuidanceItem[] = [
         </GuidanceSection>
 
         <GuidanceSection icon={BarChart2} iconBg="bg-green-800" title="Test">
-          <p>Open any solution from its project page and work through four one-at-a-time metric pages. Each page has guidance and case studies to help you score 1 to 5. At the end, you mark the solution valid, unsure, or invalid:</p>
+          <p>Open any solution from the project&apos;s solutions table (or the <Keyword>Test solutions</Keyword> milestone on the journey rail, which opens the next solution waiting for a verdict) and work through four one-at-a-time metric pages. Each page has guidance and case studies to help you score 1 to 5. At the end, you mark the solution valid, unsure, or invalid:</p>
           <div className="grid gap-2 pt-1 grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
             <ConceptCard icon={Target} label="Feasibility" description="Can you actually build it with the resources and skills available?" tile="bg-green-800" border="border-green-800/20 bg-green-800/5" />
             <ConceptCard icon={Heart} label="Impact" description="How much value does it deliver, to the customer and the business?" tile="bg-green-800" border="border-green-800/20 bg-green-800/5" />
             <ConceptCard icon={PoundSterling} label="Cost" description="What will it take to build, run, and maintain?" tile="bg-green-800" border="border-green-800/20 bg-green-800/5" />
             <ConceptCard icon={Repeat} label="Time to Implement" description="How long from decision to delivery, including dependencies?" tile="bg-green-800" border="border-green-800/20 bg-green-800/5" />
           </div>
-          <p className="pt-1">Each solution is tested on its own. You can mark some candidates valid and others invalid, or come back later as you learn more.</p>
+          <p className="pt-1">Each solution is tested on its own. You can mark some candidates valid and others invalid, or come back later as you learn more. Once a solution is <Keyword>Valid: Worth Pursuing</Keyword>, its page offers the next steps: the guidance on delivering it, and the project&apos;s portfolio to share with somebody else.</p>
+        </GuidanceSection>
+
+        <GuidanceSection icon={Scale} iconBg="bg-teal-700" title="Compare solutions">
+          <p>Once a few solutions are scored, <Keyword>Compare solutions</Keyword> on the project page ranks them against each other. A short strip asks how much each of the four metrics matters to you (<Keyword>Ignore</Keyword>, <Keyword>Nice to have</Keyword>, <Keyword>Important</Keyword> or <Keyword>Essential</Keyword>) and the table underneath re-orders live by the weighted score those choices produce. Cost and time to implement are turned round before weighting, so a higher score is always better.</p>
+          <p>Against each solution you then pick a traffic light: <Keyword>Green</Keyword> to pursue it, <Keyword>Amber</Keyword> for worth considering with reservations, <Keyword>Red</Keyword> to park it for now. The review step lists the solutions grouped by light, and the lights show in the solutions table&apos;s Score column and beside each solution&apos;s status on its page.</p>
         </GuidanceSection>
 
         <TipCallout items={[
-          "Refinement now lives inside Test the Problem; the work you do there shapes everything in this section",
           "Quantity beats quality when identifying solutions; testing prunes later",
           "A weak candidate is still useful as a comparison baseline",
+          "Weights are a matter of judgement. If a cheap idea ranks above the one you believe in, ask which weight is wrong before overruling the table",
           "You can come back and add more candidates at any time",
         ]} />
       </div>
@@ -539,10 +606,10 @@ const guidanceItems: GuidanceItem[] = [
           </div>
         </GuidanceSection>
         <GuidanceSection icon={LayoutGrid} iconBg="bg-secondary-brand" title="Two directions, five tools">
-          <h5 className="text-sm font-semibold text-foreground pt-1">Start from a situation</h5>
+          <h5 className="text-base font-semibold text-foreground pt-1">Start from a situation</h5>
           <p>You know the experience, the role, the thing you built or the people. The prompts go looking for what goes wrong in it, then ask who else would feel it.</p>
           <GuidedToolCards lenses={REFLECT_LENSES.filter((lens) => !startsFromProblem(lens))} />
-          <h5 className="text-sm font-semibold text-foreground pt-2">Start from the problem</h5>
+          <h5 className="text-base font-semibold text-foreground pt-2">Start from the problem</h5>
           <p>You know what makes you sigh but not yet the story around it. The prompts work backwards: the last time it happened, the job behind it, who else runs into it, when it bites, how people cope and why nobody has fixed it. It is the one tool that fills in the problem&apos;s context as well as its customers.</p>
           <GuidedToolCards lenses={REFLECT_LENSES.filter(startsFromProblem)} />
         </GuidanceSection>
@@ -597,7 +664,7 @@ export function GuidancePanel({
           <div className="flex items-center justify-center w-8 h-8 rounded-md bg-primary/10 shrink-0">
             <HelpCircle className="h-4 w-4 text-primary" />
           </div>
-          <h2 className="text-sm font-semibold truncate">Guidance</h2>
+          <h2 className="text-base font-semibold truncate">Guidance</h2>
         </div>
         <Button
           variant="ghost"
@@ -629,7 +696,7 @@ export function GuidancePanel({
                   <AccordionTrigger className="gap-3 hover:no-underline">
                     <span className="flex items-center gap-3 min-w-0">
                       <IconTile icon={item.icon} className={item.iconBg} size="sm" />
-                      <span className="font-semibold text-sm truncate">{item.title}</span>
+                      <span className="font-semibold text-base truncate">{item.title}</span>
                     </span>
                   </AccordionTrigger>
                   <AccordionContent className="pt-2 pb-6">
