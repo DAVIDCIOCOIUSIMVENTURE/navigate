@@ -408,22 +408,24 @@ export const REFLECT_LENSES: Lens[] = [
      * anchors on a situation (an experience, a role, an audience) and asks what
      * goes wrong in it; this one anchors on the irritation and works backwards
      * to the situation: one real occasion, the job behind it, who else has it,
-     * when it bites (the contexts column), how people cope and why it is still
-     * there. The order matters: each prompt narrows the one before it, so by
-     * the review the annoyance has a customer, a context and a reason to exist.
+     * when it bites (the contexts column) and how people cope. The order
+     * matters: each prompt narrows the one before it, so by the review the
+     * annoyance has a customer, a context and a workaround to beat. Why the
+     * problem is still there is deliberately not asked: the competition step
+     * of Test the problem captures that as structured signals.
      */
     id: "annoyance",
     title: "Something that annoys you",
-    shortDescription: "Start from the irritation itself, then work backwards to who has it, when it bites and why it is still there.",
+    shortDescription: "Start from the irritation itself, then work backwards to who has it, when it bites and how people cope today.",
     longDescription:
-      "Pick one thing that annoys you, or that you have watched someone else put up with, and work backwards from it: the last time it happened, what you were trying to get done, who else runs into it and when, how people cope today and why nobody has fixed it. Sticking to one annoyance per run keeps the prompts specific; to explore another, run this tool again and pick a different one.",
+      "Pick one thing that annoys you, or that you have watched someone else put up with, and work backwards from it: the last time it happened, what you were trying to get done, who else runs into it and when, and how people cope today. Sticking to one annoyance per run keeps the prompts specific; to explore another, run this tool again and pick a different one.",
     icon: Annoyed,
     estimatedMinutes: 10,
     anchorLabel: "Annoyance",
     helperText:
       "An annoyance only becomes a problem once you can say who has it, when it bites and what they were trying to do at the time. Answer from occasions you remember rather than complaints in general.",
     bestFor:
-      "Best for when you have the irritation but not the story around it: you know what makes you sigh, but not yet who else feels it or why it is still there. The other tools start from a situation and look for its problems; this one starts from the problem and looks for its situation.",
+      "Best for when you have the irritation but not the story around it: you know what makes you sigh, but not yet who else feels it or when it bites. The other tools start from a situation and look for its problems; this one starts from the problem and looks for its situation.",
     prompts: [
       {
         id: "annoyance-anchor",
@@ -498,18 +500,6 @@ export const REFLECT_LENSES: Lens[] = [
           "A calendar reminder the day before every free trial ends",
           "Asking the street WhatsApp group who they used and what it cost",
           "Driving over to do it in person, twice a month",
-        ],
-        multipleAllowed: true,
-      },
-      {
-        id: "why-still-there",
-        question: "Why do you think nobody has fixed it?",
-        helperText:
-          "Sometimes there is a good reason: a rule, a cost, a supplier who does not need to care because you cannot leave. Sometimes nobody has looked properly. Your best guess tells you whether you have found a gap or a wall, and a gap is where a problem worth solving usually sits.",
-        examples: [
-          "The company earns from people forgetting to cancel, so it has no reason to make it easier",
-          "Each trade is too small to build a booking service, and nobody trusts the big directories",
-          "Phones are designed for people setting them up for themselves",
         ],
         multipleAllowed: true,
       },

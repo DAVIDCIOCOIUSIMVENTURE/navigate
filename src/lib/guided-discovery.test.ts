@@ -99,6 +99,45 @@ describe("guided content schema", () => {
     expect(route.anchor.copy.selfDiscoveryQuestionUrl).toBeTruthy()
   })
 
+  it("only a picker question carries inspiration, and every picker question on every run has some", () => {
+    for (const slot of GUIDED_SLOTS) {
+      if (!slot.role) {
+        expect(slot.copy.inspirations, slot.id).toBeUndefined()
+        for (const variant of Object.values(slot.variants ?? {})) expect(variant.inspirations, slot.id).toBeUndefined()
+      }
+    }
+    for (const { dimension, voiceId, answers } of everyRun()) {
+      for (const node of resolveGuidedPath(answers).nodes) {
+        if (node.kind !== "prompt") continue
+        const label = `${dimension} / ${voiceId} / ${node.id}`
+        const inspirations = node.inspirations ?? []
+        if (!node.role) {
+          expect(inspirations, label).toEqual([])
+          continue
+        }
+        expect(inspirations.length, label).toBeGreaterThanOrEqual(2)
+        expect(new Set(inspirations.map((i) => i.theme)).size, label).toBe(inspirations.length)
+        for (const item of inspirations) {
+          expect(item.theme.trim().length, label).toBeGreaterThan(0)
+          expect(item.lookFor.trim().length, label).toBeGreaterThan(0)
+          expect(item.example.trim().length, label).toBeGreaterThan(0)
+        }
+      }
+    }
+  })
+
+  it("words the inspiration for the route and the voice, like the question", () => {
+    const themesOf = (answers: GuidedAnswers, role: DimensionKey) =>
+      (guidedRoleNode(resolveGuidedPath(answers), role)?.inspirations ?? []).map((i) => i.theme)
+    expect(themesOf({ ...start("problems"), ...voice("problems", "problems-mine") }, "problems")).toContain("Work friction")
+    expect(themesOf({ ...start("contexts"), ...voice("contexts", "contexts-many") }, "problems")).toContain("Handovers")
+    expect(themesOf({ ...start("contexts"), ...voice("contexts", "contexts-other") }, "problems")).not.toContain("Handovers")
+    const once = guidedAnchor(resolveGuidedPath({ ...start("you"), ...voice("you", "you-once") }))!
+    expect(once.inspirations?.map((i) => i.example)).toContain("Becoming a parent")
+    const recurring = guidedAnchor(resolveGuidedPath({ ...start("you"), ...voice("you", "you-recurring") }))!
+    expect(recurring.inspirations?.map((i) => i.example)).toContain("Coaching a junior football team")
+  })
+
   it("no prose carries an em dash", () => {
     expect(JSON.stringify({ GUIDED_SLOTS, GUIDED_ROUTES })).not.toContain("—")
   })
@@ -163,7 +202,7 @@ describe("resolveGuidedPath", () => {
     const contexts = resolveGuidedPath({ ...start("contexts"), ...voice("contexts", "contexts-other") })
     const question = (id: string) => contexts.nodes.find((n) => n.id === id)?.question
     expect(question("problems")).toBe("What goes wrong in that moment?")
-    expect(question("why")).toBe("Why do you think it is still like this?")
+    expect(question("cope")).toBe("How do they get through it today?")
     expect(question("spend")).toBe("What do people spend money, time or attention on that doesn't really help?")
   })
 

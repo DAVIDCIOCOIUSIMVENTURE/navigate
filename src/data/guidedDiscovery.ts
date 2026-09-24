@@ -53,11 +53,22 @@ export const GUIDED_START_ID = "start"
 export const guidedVoiceId = (dimension: DimensionKey) => `voice-${dimension}`
 export const guidedAnchorId = (dimension: DimensionKey) => `anchor-${dimension}`
 
+/** One tab of inspiration beside a picker: a theme to think along, what in it counts, and an example. */
+export type GuidedInspiration = { theme: string; lookFor: string; example: string }
+
 /** What a question says. A variant overrides any part of it. */
 export type GuidedCopy = {
   question: string
   helperText?: string
+  /** Free-text examples, used as the placeholder of a typed answer or of the picker's Add dialog. */
   examples?: string[]
+  /**
+   * For a question answered with a picker: a few themes to think along
+   * ("Work friction", "Money"), each with one concrete example, shown as
+   * read-only inspiration above the picker. Nothing in it is picked by a
+   * click; the picker and "Add your own" remain the ways to answer.
+   */
+  inspirations?: GuidedInspiration[]
   /** For a You anchor: the self-discovery question a new entry is saved under. */
   selfDiscoveryQuestionUrl?: string
 }
@@ -142,8 +153,6 @@ const HOW_THEY_COPE =
   "Nobody just suffers; they build a workaround or pay for one. What people do instead is the best clue to what a solution has to beat and what it might be worth. If the honest answer is \"nothing, we put up with it\", say so: that is a signal too."
 const WORKAROUND_YOU =
   "The hack you built once and never stopped using is usually a product hiding in plain sight. Spreadsheets, group chats, phone notes and homemade tools all count."
-const WHY_STILL_THERE =
-  "Sometimes there is a good reason: a rule, a cost, a supplier who does not need to care because you cannot leave. Sometimes nobody has looked properly. Your best guess tells you whether you have found a gap or a wall."
 const MISALLOCATED_SPEND =
   "Misallocated spend often signals a missing or misleading product. The thing paid for promises one outcome and delivers another."
 
@@ -160,6 +169,23 @@ export const GUIDED_SLOTS: GuidedSlot[] = [
         "Coordinating the same form across three providers who each wanted their own copy",
         "Tracking invoices across three clients who each want a different format",
       ],
+      inspirations: [
+        {
+          theme: "Work friction",
+          lookFor: "Steps at work that get redone, re-entered or chased because the process or the tools do not join up.",
+          example: "Tracking invoices across three clients who each want a different format",
+        },
+        {
+          theme: "Paperwork",
+          lookFor: "The same information asked for again by each organisation, in its own format.",
+          example: "Coordinating the same form across three providers who each wanted their own copy",
+        },
+        {
+          theme: "Timing",
+          lookFor: "Things that always land at the worst possible moment, or only once it is too late to act.",
+          example: "Finding out the deadline had passed from the reminder that arrived the day after",
+        },
+      ],
     },
     variants: {
       "you-once": {
@@ -171,6 +197,28 @@ export const GUIDED_SLOTS: GuidedSlot[] = [
           "Proving identity without a local credit history",
           "Finding which specialists actually had availability without a referral",
         ],
+        inspirations: [
+          {
+            theme: "Paperwork",
+            lookFor: "Forms and proofs that each organisation wanted in its own way, and the running about that caused.",
+            example: "Coordinating the same form across three providers who each wanted their own copy",
+          },
+          {
+            theme: "Proving yourself",
+            lookFor: "Showing who you are or what you are entitled to, when the usual evidence did not apply to you.",
+            example: "Proving identity without a local credit history",
+          },
+          {
+            theme: "Finding help",
+            lookFor: "Working out who could actually help and whether they had room for you.",
+            example: "Finding which specialists actually had availability without a referral",
+          },
+          {
+            theme: "Money",
+            lookFor: "Costs nobody mentioned until they were due, or that dwarfed the one you had budgeted for.",
+            example: "Translations and certifications costing more than the visa fee itself",
+          },
+        ],
       },
       "you-recurring": {
         question: "What about it has frustrated you recently?",
@@ -181,44 +229,180 @@ export const GUIDED_SLOTS: GuidedSlot[] = [
           "Tracking which kids had paid for the tournament and which had not",
           "A weekly meeting that always overruns and never decides anything",
         ],
+        inspirations: [
+          {
+            theme: "Work friction",
+            lookFor: "Approvals, hand-offs and tools that make a routine task slower every single time.",
+            example: "Chasing approvals across three departments for a routine purchase",
+          },
+          {
+            theme: "Keeping track",
+            lookFor: "Lists you keep by hand because nothing keeps them for you: who has paid, who is coming, what is due.",
+            example: "Tracking which kids had paid for the tournament and which had not",
+          },
+          {
+            theme: "Meetings and admin",
+            lookFor: "Regular fixtures that take time and rarely move anything on.",
+            example: "A weekly meeting that always overruns and never decides anything",
+          },
+        ],
       },
       "customers-member": {
         question: "What do you and people like you struggle with that you shouldn't have to?",
         helperText:
           "Answer for the group, not just yourself: the friction you share is the friction worth solving. Steps you all redo, information none of you can find, things you have all learned to live with.",
+        inspirations: [
+          {
+            theme: "Work friction",
+            lookFor: "What all of you redo or chase because the tools and the process do not fit the way you work.",
+            example: "Redoing the same report for everyone who asks for it in a different format",
+          },
+          {
+            theme: "Money",
+            lookFor: "What people like you pay for without getting what was promised, or cannot compare before paying.",
+            example: "Paying for a tool because the free one lacks the single feature you all need",
+          },
+          {
+            theme: "Getting help",
+            lookFor: "Where you all end up on hold, in a queue or asking each other because nobody official answers.",
+            example: "A helpline that only answers during the hours you are at work",
+          },
+        ],
       },
       "customers-serve": {
         question: "What do they bring to you, or complain about, again and again?",
         helperText:
           "The requests that keep coming back are the clearest signal. Stick to what they actually say and ask for rather than what you think they need.",
         examples: ["The same question about which form to fill in, every week", "Being asked to redo work because the brief changed halfway"],
+        inspirations: [
+          {
+            theme: "Repeat questions",
+            lookFor: "What they ask you again and again, which tells you what nothing else explains.",
+            example: "The same question about which form to fill in, every week",
+          },
+          {
+            theme: "Changing briefs",
+            lookFor: "Work that has to be redone because what they wanted was never pinned down.",
+            example: "Being asked to redo work because the brief changed halfway",
+          },
+          {
+            theme: "Waiting",
+            lookFor: "What they complain about taking too long, however simple it is.",
+            example: "Complaints about how long a straightforward answer takes to come back",
+          },
+        ],
       },
       "customers-observe": {
         question: "What have you seen them struggle with?",
         helperText:
           "Only what you have actually watched them deal with, not what you assume they deal with. If you have not seen it, leave it out and go and look.",
         examples: ["Keeping in-store stock counts in sync with the online shop", "Working out which of five similar tools they are supposed to use"],
+        inspirations: [
+          {
+            theme: "Tools that do not join up",
+            lookFor: "Information they keep in two places and have to reconcile by hand.",
+            example: "Keeping in-store stock counts in sync with the online shop",
+          },
+          {
+            theme: "Too many options",
+            lookFor: "Watching them work out which of several similar things they are meant to use.",
+            example: "Working out which of five similar tools they are supposed to use",
+          },
+          {
+            theme: "Repetition",
+            lookFor: "The same thing typed, checked or carried more than once for one job.",
+            example: "Retyping a delivery address into three systems for one order",
+          },
+        ],
       },
       contexts: {
         question: "What goes wrong in that moment?",
         helperText: "Describe the friction as it actually happens: what people are trying to do, and what stops them.",
         examples: ["Finding somewhere to leave the pram on a packed train", "Working out what to cook with what is actually in the fridge"],
+        inspirations: [
+          {
+            theme: "Getting about",
+            lookFor: "What the journey, the crowd or the place itself makes awkward.",
+            example: "Finding somewhere to leave the pram on a packed train",
+          },
+          {
+            theme: "At home",
+            lookFor: "The small daily decisions that eat time because the information is not to hand.",
+            example: "Working out what to cook with what is actually in the fridge",
+          },
+          {
+            theme: "Paying and booking",
+            lookFor: "The moment of paying or booking, where the tool assumes a situation you are not in.",
+            example: "Paying for parking with an app that needs a signal the car park does not have",
+          },
+        ],
       },
       "contexts-time": {
         question: "What goes wrong when there is no time to do it properly?",
         helperText: "Under pressure people skip steps, guess and pay for it later. Which corners get cut, and what does that cost?",
         examples: ["Booking the first tradesperson who answers, whatever they charge", "Signing the form without reading the fees"],
+        inspirations: [
+          {
+            theme: "Money",
+            lookFor: "What gets paid because there was no time to compare, and whether it was worth it.",
+            example: "Booking the first tradesperson who answers, whatever they charge",
+          },
+          {
+            theme: "Paperwork",
+            lookFor: "What gets signed or submitted unread because the clock was running.",
+            example: "Signing the form without reading the fees",
+          },
+          {
+            theme: "Getting help",
+            lookFor: "Nobody to ask at the moment it matters, so people guess.",
+            example: "Guessing the dose because the surgery closed an hour ago",
+          },
+        ],
       },
       "contexts-first": {
         question: "What do people get wrong or miss the first time round?",
         helperText: "The first time through, nobody knows which step matters or which cost is coming. What only becomes obvious afterwards?",
         examples: ["Not knowing the deposit is due before the contract is signed", "Finding out the referral was needed after the appointment"],
+        inspirations: [
+          {
+            theme: "Money",
+            lookFor: "The cost or deposit nobody mentioned until it was due.",
+            example: "Not knowing the deposit is due before the contract is signed",
+          },
+          {
+            theme: "Order of steps",
+            lookFor: "Steps done in the wrong order, because nothing said which comes first.",
+            example: "Finding out the referral was needed after the appointment",
+          },
+          {
+            theme: "Jargon",
+            lookFor: "Words on every form that assume you already know them.",
+            example: "Giving the wrong answer because the form's terms meant something else",
+          },
+        ],
       },
       "contexts-many": {
         question: "Where does it break down between the people or the steps?",
         helperText:
           "Handovers are where things fall through: the form that goes to three places, the message nobody owns, the decision that waits on someone else.",
         examples: ["Each department wants its own copy of the same form", "Nobody knows who is supposed to confirm the booking"],
+        inspirations: [
+          {
+            theme: "Paperwork",
+            lookFor: "The same information asked for by each party, in its own copy.",
+            example: "Each department wants its own copy of the same form",
+          },
+          {
+            theme: "Ownership",
+            lookFor: "The step nobody owns, so it waits for someone who thinks it is someone else's.",
+            example: "Nobody knows who is supposed to confirm the booking",
+          },
+          {
+            theme: "Handovers",
+            lookFor: "What gets lost or changed each time the job passes from one person to the next.",
+            example: "The message that reaches the third person is not the one the first one sent",
+          },
+        ],
       },
     },
   },
@@ -281,6 +465,23 @@ export const GUIDED_SLOTS: GuidedSlot[] = [
       helperText:
         "Think about who is in the same situation when it bites: the same job, life stage or set-up. Pick the groups you have actually seen deal with it rather than everyone who plausibly might.",
       examples: ["Anyone with a subscription they have stopped using", "Homeowners facing an emergency repair for the first time"],
+      inspirations: [
+        {
+          theme: "Subscribers",
+          lookFor: "Anyone paying regularly for something they have stopped using or cannot easily stop.",
+          example: "Anyone with a subscription they have stopped using",
+        },
+        {
+          theme: "Homeowners",
+          lookFor: "People facing a repair, a bill or a decision about the house for the first time.",
+          example: "Homeowners facing an emergency repair for the first time",
+        },
+        {
+          theme: "Carers",
+          lookFor: "People sorting things out on behalf of someone else, without seeing what they see.",
+          example: "Adult children setting up technology for elderly parents",
+        },
+      ],
     },
     variants: {
       you: {
@@ -288,6 +489,23 @@ export const GUIDED_SLOTS: GuidedSlot[] = [
         helperText:
           "Other people in the same situation, role or life stage who would likely feel the same friction. Optional, but a customer makes the problem much easier to refine later.",
         examples: ["First-time parents in the first six months", "Operations leads at companies of a similar size", "Volunteer coaches handling their own admin"],
+        inspirations: [
+          {
+            theme: "The same life stage",
+            lookFor: "People at the stage you were at, hitting the same wall in the same months.",
+            example: "First-time parents in the first six months",
+          },
+          {
+            theme: "The same role elsewhere",
+            lookFor: "People doing your job at other organisations of a similar size.",
+            example: "Operations leads at companies of a similar size",
+          },
+          {
+            theme: "Volunteers",
+            lookFor: "People doing the admin of a role unpaid, with no support behind them.",
+            example: "Volunteer coaches handling their own admin",
+          },
+        ],
       },
       problems: {
         question: "Who else runs into this?",
@@ -301,6 +519,23 @@ export const GUIDED_SLOTS: GuidedSlot[] = [
         question: "Who tends to be in that situation?",
         helperText: "The people for whom this moment comes round most often, or matters most when it does.",
         examples: ["Commuters with young children", "People renting for the first time", "Anyone starting a new job remotely"],
+        inspirations: [
+          {
+            theme: "Commuters",
+            lookFor: "The people who are in that moment most often, and with the least room to manoeuvre.",
+            example: "Commuters with young children",
+          },
+          {
+            theme: "Renters",
+            lookFor: "People going through it for the first time, with no one to ask.",
+            example: "People renting for the first time",
+          },
+          {
+            theme: "New starters",
+            lookFor: "People arriving into the moment from outside, remotely or newly.",
+            example: "Anyone starting a new job remotely",
+          },
+        ],
       },
     },
   },
@@ -317,11 +552,45 @@ export const GUIDED_SLOTS: GuidedSlot[] = [
         "In an emergency, with no time to compare options",
         "When helping someone else, so you cannot see what they see",
       ],
+      inspirations: [
+        {
+          theme: "No time",
+          lookFor: "The moments where there is no time to be passed around, read the small print or compare.",
+          example: "In a lunch break, on a phone, with no time to be passed around",
+        },
+        {
+          theme: "Emergencies",
+          lookFor: "When something has gone wrong and the decision cannot wait.",
+          example: "In an emergency, with no time to compare options",
+        },
+        {
+          theme: "Helping someone else",
+          lookFor: "When you are doing it for somebody else and cannot see what they see.",
+          example: "When helping someone else, so you cannot see what they see",
+        },
+      ],
     },
     variants: {
       you: {
         question: "When does it bite hardest?",
         examples: ["In the first three months", "At month end", "When helping someone else, so you cannot see what they see"],
+        inspirations: [
+          {
+            theme: "Early days",
+            lookFor: "The first weeks or months, when nothing is familiar yet.",
+            example: "In the first three months",
+          },
+          {
+            theme: "Month end",
+            lookFor: "The point in the cycle where everything is due at once.",
+            example: "At month end",
+          },
+          {
+            theme: "Helping someone else",
+            lookFor: "When you are doing it for somebody else and cannot see what they see.",
+            example: "When helping someone else, so you cannot see what they see",
+          },
+        ],
       },
     },
   },
@@ -394,24 +663,6 @@ export const GUIDED_SLOTS: GuidedSlot[] = [
       customers: { question: "What do they spend money, time or attention on that doesn't really help?" },
     },
   },
-  {
-    id: "why",
-    multipleAllowed: true,
-    copy: {
-      question: "Why do you think nobody has fixed it?",
-      helperText: WHY_STILL_THERE,
-      examples: [
-        "The company earns from people forgetting to cancel, so it has no reason to make it easier",
-        "Each trade is too small to build a booking service, and nobody trusts the big directories",
-      ],
-    },
-    variants: {
-      contexts: {
-        question: "Why do you think it is still like this?",
-        examples: ["Nobody owns the moment: it falls between two services", "It only happens to each person once, so nobody complains twice"],
-      },
-    },
-  },
 ]
 
 export const GUIDED_ROUTES: GuidedRoute[] = [
@@ -453,6 +704,23 @@ export const GUIDED_ROUTES: GuidedRoute[] = [
         "you-once": {
           question: "Which experience do you want to look back on?",
           examples: ["Becoming a parent", "Moving country", "Caring for an ageing relative"],
+          inspirations: [
+            {
+              theme: "Family",
+              lookFor: "A change at home that reorganised everything else.",
+              example: "Becoming a parent",
+            },
+            {
+              theme: "Big moves",
+              lookFor: "Starting again somewhere with different rules and no local history.",
+              example: "Moving country",
+            },
+            {
+              theme: "Caring",
+              lookFor: "Taking on responsibility for somebody else's needs alongside your own.",
+              example: "Caring for an ageing relative",
+            },
+          ],
           selfDiscoveryQuestionUrl: "life-experiences",
         },
         "you-recurring": {
@@ -460,11 +728,28 @@ export const GUIDED_ROUTES: GuidedRoute[] = [
           helperText:
             "Pick one from your self-discovery or add a new one. It can be paid or unpaid, a job or a hobby: what matters is that you do it often enough to know its rough edges.",
           examples: ["Running the operations team at a logistics company", "Coaching a junior football team", "Managing the household budget"],
+          inspirations: [
+            {
+              theme: "Work",
+              lookFor: "A job or role you have done long enough to stop noticing its rough edges.",
+              example: "Running the operations team at a logistics company",
+            },
+            {
+              theme: "Volunteering",
+              lookFor: "Something you give time to unpaid, with its own admin.",
+              example: "Coaching a junior football team",
+            },
+            {
+              theme: "Home",
+              lookFor: "A responsibility at home that comes round every week or month.",
+              example: "Managing the household budget",
+            },
+          ],
           selfDiscoveryQuestionUrl: "work-done",
         },
       },
     },
-    steps: ["voice", "anchor", "problems", { slot: "wish", voices: ["you-once"] }, "spend", "cope", "customers", "contexts", "why"],
+    steps: ["voice", "anchor", "problems", { slot: "wish", voices: ["you-once"] }, "spend", "cope", "customers", "contexts"],
   },
   {
     dimension: "customers",
@@ -479,6 +764,23 @@ export const GUIDED_ROUTES: GuidedRoute[] = [
         helperText:
           "Pick one from your self-discovery, your existing customers or the built-in list. One group at a time keeps the next questions specific.",
         examples: ["First-time freelancers", "Parents of school-age children", "Small local retailers"],
+        inspirations: [
+          {
+            theme: "Freelancers",
+            lookFor: "People working for themselves, who do their own admin and have no one to hand it to.",
+            example: "First-time freelancers",
+          },
+          {
+            theme: "Parents",
+            lookFor: "People whose days are organised around someone else's timetable.",
+            example: "Parents of school-age children",
+          },
+          {
+            theme: "Local shops",
+            lookFor: "Small businesses run by the owner, who is also the buyer, the accountant and the shop floor.",
+            example: "Small local retailers",
+          },
+        ],
       },
     },
     voice: {
@@ -492,7 +794,7 @@ export const GUIDED_ROUTES: GuidedRoute[] = [
         { id: "customers-observe", label: "I have watched them from the outside" },
       ],
     },
-    steps: ["anchor", "voice", "problems", "contexts", "cope", "spend", "why"],
+    steps: ["anchor", "voice", "problems", "contexts", "cope", "spend"],
   },
   {
     dimension: "problems",
@@ -511,6 +813,28 @@ export const GUIDED_ROUTES: GuidedRoute[] = [
           "Fees that only appear at the checkout",
           "Instructions written for people who already know the answer",
         ],
+        inspirations: [
+          {
+            theme: "Work friction",
+            lookFor: "Anything at work that the process makes slower than it needs to be: approvals, forms, tools that do not talk to each other.",
+            example: "Chasing approvals across three departments for a routine purchase",
+          },
+          {
+            theme: "Money",
+            lookFor: "Costs that arrive late or unexplained, and the effort of finding out what something will really cost.",
+            example: "Fees that only appear at the checkout",
+          },
+          {
+            theme: "Getting help",
+            lookFor: "Trying to reach someone who can actually fix the thing, and what stands in the way.",
+            example: "Being kept on hold to fix something that should take two minutes",
+          },
+          {
+            theme: "Instructions",
+            lookFor: "Guidance that assumes you already know the answer, or leaves out the one step that matters.",
+            example: "Instructions written for people who already know the answer",
+          },
+        ],
       },
     },
     voice: {
@@ -524,7 +848,7 @@ export const GUIDED_ROUTES: GuidedRoute[] = [
         { id: "problems-general", label: "Something I keep noticing in general" },
       ],
     },
-    steps: ["anchor", "voice", "occasion", "customers", "contexts", "cope", "spend", "why"],
+    steps: ["anchor", "voice", "occasion", "customers", "contexts", "cope", "spend"],
   },
   {
     dimension: "contexts",
@@ -539,6 +863,23 @@ export const GUIDED_ROUTES: GuidedRoute[] = [
         helperText:
           "Pick one from the list or add your own. A moment is a time, a place or a state people find themselves in: a commute, a first day, an emergency, a lunch break.",
         examples: ["Commuting", "Moving house", "The first week in a new job"],
+        inspirations: [
+          {
+            theme: "Getting about",
+            lookFor: "A journey you or others make often enough to know its rough edges.",
+            example: "Commuting",
+          },
+          {
+            theme: "Big changes",
+            lookFor: "A one-off upheaval with a lot of steps and no rehearsal.",
+            example: "Moving house",
+          },
+          {
+            theme: "Work",
+            lookFor: "A stretch at work with its own rhythm and pressures.",
+            example: "The first week in a new job",
+          },
+        ],
       },
     },
     voice: {
@@ -553,7 +894,7 @@ export const GUIDED_ROUTES: GuidedRoute[] = [
         { id: "contexts-other", label: "Something else" },
       ],
     },
-    steps: ["anchor", "voice", "problems", "customers", "cope", "spend", "why"],
+    steps: ["anchor", "voice", "problems", "customers", "cope", "spend"],
   },
 ]
 

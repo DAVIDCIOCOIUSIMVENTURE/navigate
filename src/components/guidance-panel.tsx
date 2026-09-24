@@ -610,7 +610,7 @@ const guidanceItems: GuidanceItem[] = [
           <p>You know the experience, the role, the thing you built or the people. The prompts go looking for what goes wrong in it, then ask who else would feel it.</p>
           <GuidedToolCards lenses={REFLECT_LENSES.filter((lens) => !startsFromProblem(lens))} />
           <h5 className="text-base font-semibold text-foreground pt-2">Start from the problem</h5>
-          <p>You know what makes you sigh but not yet the story around it. The prompts work backwards: the last time it happened, the job behind it, who else runs into it, when it bites, how people cope and why nobody has fixed it. It is the one tool that fills in the problem&apos;s context as well as its customers.</p>
+          <p>You know what makes you sigh but not yet the story around it. The prompts work backwards: the last time it happened, the job behind it, who else runs into it, when it bites and how people cope. It is the one tool that fills in the problem&apos;s context as well as its customers.</p>
           <GuidedToolCards lenses={REFLECT_LENSES.filter(startsFromProblem)} />
         </GuidanceSection>
         <GuidanceSection icon={Sparkles} iconBg="bg-secondary-brand" title="Where the lists come from">
