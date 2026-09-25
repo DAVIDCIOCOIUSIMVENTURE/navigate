@@ -18,7 +18,6 @@ import { projectRoutes } from "@/lib/projects"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { cn } from "@/lib/utils"
 
-const SELF_DISCOVERY_HREF = "/self-discovery"
 const SELF_DISCOVERY_FLOW_HREF = "/self-discovery/discover"
 
 /**
@@ -65,9 +64,14 @@ export default function HomePage() {
       {/* Self Discovery beside the two reading sections; the projects take the rest of the page. */}
       <div className="@container shrink-0">
         <div className="grid grid-cols-1 gap-3 @[640px]:grid-cols-2 @[1000px]:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)]">
-          <Card className="@[640px]:col-span-2 @[1000px]:col-span-1">
-            {/* One row, no taller than the section cards beside it: the ring, the title and the chevron. */}
-            <CardContent className="p-3 flex items-center gap-4">
+          {/* Like the section cards beside it, the whole card is the link: it leads into the questionnaire, picking up where the user left off. */}
+          <Card className="@[640px]:col-span-2 @[1000px]:col-span-1 transition-colors hover:bg-muted">
+            <Link
+              href={SELF_DISCOVERY_FLOW_HREF}
+              aria-label={selfDiscoveryStarted ? "Continue Self Discovery" : "Start Self Discovery"}
+              title={selfDiscoveryStarted ? "Continue Self Discovery" : "Start Self Discovery"}
+              className="p-3 flex items-center gap-4 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
               <ProgressRing
                 label="Self Discovery progress"
                 labelPosition="none"
@@ -76,19 +80,9 @@ export default function HomePage() {
                 size={44}
                 strokeWidth={4}
               />
-              <CardTitle size="md" icon={Compass} className="flex-1 min-w-0 text-foreground">
-                <Link href={SELF_DISCOVERY_HREF} className="hover:underline">Self Discovery</Link>
-              </CardTitle>
-              {/* The same chevron the section cards carry: it leads into the questionnaire, picking up where the user left off. */}
-              <Link
-                href={SELF_DISCOVERY_FLOW_HREF}
-                aria-label={selfDiscoveryStarted ? "Continue Self Discovery" : "Start Self Discovery"}
-                title={selfDiscoveryStarted ? "Continue Self Discovery" : "Start Self Discovery"}
-                className="flex items-center justify-center h-9 w-9 rounded-lg shrink-0 hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-              >
-                <ChevronRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-            </CardContent>
+              <CardTitle size="md" icon={Compass} className="flex-1 min-w-0 text-foreground">Self Discovery</CardTitle>
+              <ChevronRight className="h-4 w-4 shrink-0" aria-hidden="true" />
+            </Link>
           </Card>
           <SectionLink href="/foundations" icon={BookOpen} title="Why It Matters" />
           <SectionLink href="/next-steps" icon={Milestone} title="Next Steps" />
