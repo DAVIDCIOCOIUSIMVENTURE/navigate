@@ -44,6 +44,9 @@ export function ProgressRing({
   const offset = circumference * (1 - percent / 100)
 
   const showLabel = labelPosition !== "none"
+  // The percentage has to fit inside the ring, so it scales with the diameter (a 44px ring
+  // gets 12px, a 56px one the usual 16px) rather than staying at one size and crowding small rings.
+  const valueFontSize = Math.min(16, Math.round(size * 0.28))
 
   const ring = (
     <div
@@ -81,7 +84,10 @@ export function ProgressRing({
           )}
         />
       </svg>
-      <span className="absolute inset-0 flex items-center justify-center text-base font-semibold tabular-nums">
+      <span
+        className="absolute inset-0 flex items-center justify-center font-semibold tabular-nums"
+        style={{ fontSize: valueFontSize }}
+      >
         {percent}%
       </span>
     </div>

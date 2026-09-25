@@ -129,10 +129,11 @@ function SectionLink({ href, icon: Icon, title }: { href: string; icon: LucideIc
       href={href}
       className="flex items-center gap-3 p-4 rounded-lg bg-secondary-brand text-white hover:bg-secondary-brand/90 transition-colors shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
-      <span className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0 bg-white">
-        <Icon className="h-5 w-5 text-secondary-brand" aria-hidden="true" />
+      {/* The same tile the Self Discovery card's md CardTitle draws, inverted on white. */}
+      <span className="flex items-center justify-center w-8 h-8 rounded-md shrink-0 bg-white">
+        <Icon className="h-4 w-4 text-secondary-brand [stroke-width:2.5]" aria-hidden="true" />
       </span>
-      <p className="flex-1 min-w-0 font-semibold">{title}</p>
+      <p className="flex-1 min-w-0 text-lg font-semibold">{title}</p>
       <ChevronRight className="h-4 w-4 shrink-0" aria-hidden="true" />
     </Link>
   )
