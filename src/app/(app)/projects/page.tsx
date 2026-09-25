@@ -13,13 +13,14 @@ import { ProjectsEmptyState } from "@/components/projects-empty-state"
 import { ProjectsTable } from "@/components/projects-table"
 import { useContainerSize } from "@/context/container-size-context"
 import { PAGE_TITLE_CLASS } from "@/lib/nav-item-styles"
+import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { cn } from "@/lib/utils"
 
 /**
  * The projects list. Each project is one problem and the solutions found
  * for it; opening a project shows the problem with its explore, test and
- * identify-solutions actions. Home shows the same list as part of its
- * overview; this page is about the projects alone. The page title, the New
+ * identify-solutions actions. Home only summarises the projects in a row of
+ * figures; this page is the list itself. The page title, the New
  * project button and the import and export menu all sit in the card's
  * header, so the card is the whole page.
  */
@@ -47,7 +48,8 @@ export default function ProjectsPage() {
   )
   const actions = (
     <>
-      <Button onClick={() => setNewOpen(true)} className="gap-2">
+      {/* The guided tour's "Start a project" step points here, on the list and on the empty state alike. */}
+      <Button onClick={() => setNewOpen(true)} className="gap-2" data-tour={TOUR_TARGETS.projectsNewProject}>
         <Plus className="h-4 w-4" />
         New project
       </Button>

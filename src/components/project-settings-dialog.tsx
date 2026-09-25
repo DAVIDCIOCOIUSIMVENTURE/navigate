@@ -44,7 +44,7 @@ import {
 /**
  * A project's settings: its name, the people it is shared with, whether its
  * portfolio page is public, and the way to delete it. This is also where the
- * portfolio is opened from, since the home page rows carry no buttons of their
+ * portfolio is opened from, since the projects table rows carry no buttons of their
  * own and the project page has only this dialog. Team membership is mocked
  * for now (there are no accounts yet), so a member is only a name and an email
  * kept on the project itself. Nothing is saved until Save changes, so Cancel

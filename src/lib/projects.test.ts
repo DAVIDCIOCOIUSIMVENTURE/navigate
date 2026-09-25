@@ -1,4 +1,28 @@
-import { previewHref, projectRoutes, uniqueProjectName } from "./projects"
+import { previewHref, projectRoutes, summariseProjects, uniqueProjectName } from "./projects"
+import type { Project } from "@/store/projects-model"
+
+function project(id: number, problemId: number | null): Project {
+  return { id, name: `Project ${id}`, problemId, members: [], visibility: "private", createdAt: "2026-09-01T00:00:00.000Z", editedAt: "2026-09-01T00:00:00.000Z" }
+}
+
+describe("summariseProjects", () => {
+  it("counts the projects, the problems with a verdict and the solutions found", () => {
+    const projects = [project(1, 10), project(2, 11), project(3, 12), project(4, null)]
+    const problems = [
+      { id: 10, validationStatus: "valid" },
+      { id: 11, validationStatus: "unsure" },
+      { id: 12, validationStatus: "in_progress" },
+      { id: 13, validationStatus: "invalid" }, // held by no project, so left out
+    ]
+    const solutions = [{ problemId: 10 }, { problemId: 10 }, { problemId: 12 }, { problemId: 13 }]
+    expect(summariseProjects(projects, problems, solutions)).toEqual({ projects: 4, problemsTested: 2, solutions: 3 })
+  })
+
+  it("treats a problem with no status as not tested and an empty library as zeros", () => {
+    expect(summariseProjects([project(1, 10)], [{ id: 10 }], [])).toEqual({ projects: 1, problemsTested: 0, solutions: 0 })
+    expect(summariseProjects([], [], [])).toEqual({ projects: 0, problemsTested: 0, solutions: 0 })
+  })
+})
 
 describe("uniqueProjectName", () => {
   it("leaves a name nothing else uses alone", () => {

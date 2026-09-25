@@ -179,7 +179,7 @@ const guidanceItems: GuidanceItem[] = [
               Explore your background, interests, and frustrations to surface <Keyword>problem triggers</Keyword>: seeds worth investigating.
             </NumberedStep>
             <NumberedStep n={2} title="Identify a problem" accent="bg-orange-700">
-              Start a project from Home or the Projects page, then turn those triggers into one concrete, well-framed problem with one of the identify tools. The problem becomes the project&apos;s problem.
+              Start a project from the Projects page, then turn those triggers into one concrete, well-framed problem with one of the identify tools. The problem becomes the project&apos;s problem.
             </NumberedStep>
             <NumberedStep n={3} title="Explore the Problem" accent="bg-tertiary">
               Take your project&apos;s problem for a deeper dive: define the customer, map existing solutions, and capture what the customer is trying to achieve.
@@ -238,7 +238,7 @@ const guidanceItems: GuidanceItem[] = [
         <TipCallout items={[
           "Pick the sections that match what you're unsure about; you don't have to read all five",
           "Case studies are grouped as 'what went wrong' or 'what went right'; both are worth reading",
-          "You can return at any time from Why It Matters in the left menu, or its quick link on Home",
+          "You can return at any time from Why It Matters in the left menu, or its row on Home",
         ]} />
       </div>
     ),
@@ -286,7 +286,7 @@ const guidanceItems: GuidanceItem[] = [
           icon={FolderOpen}
           tone="bg-teal-700"
           title="Projects"
-          subtitle="A project is the unit of work in Navigate: one problem and the solutions found for it. Everything from identifying a problem onwards happens inside one. The Projects page lists them, Home shows them beside your Self Discovery, and everything about a project lives on its page."
+          subtitle="A project is the unit of work in Navigate: one problem and the solutions found for it. Everything from identifying a problem onwards happens inside one. The Projects page lists them, Home sums them up beside your Self Discovery, and everything about a project lives on its page."
         />
         <GuidanceSection icon={LayoutGrid} iconBg="bg-teal-700" title="Home and the Projects page">
           <p>Home is your overview: how far your Self Discovery has got, your projects, and quick links into Why It Matters and Next Steps. <Keyword>Projects</Keyword> in the left menu holds the same list on its own. Both list your projects newest first, with each project&apos;s problem and its status, how many solutions it has and its team. Click a row to open the project, or its settings button at the end of the row to change the project without opening it. <Keyword>New project</Keyword> starts one from either page (it also sits at the top of the projects menu in the header), and the menu beside it on the Projects page exports a project as a file or imports one somebody has sent you.</p>

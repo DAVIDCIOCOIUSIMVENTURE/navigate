@@ -170,7 +170,8 @@ describe("hands-on steps", () => {
 
   it("act-new-project completes when a project appears and captures its id", () => {
     const create = find("act-new-project")
-    expect(resolveTourStep(create, ctxWith()).targets).toEqual([TOUR_TARGETS.dashboardNewProject])
+    expect(resolveTourStep(create, ctxWith()).targets).toEqual([TOUR_TARGETS.projectsNewProject])
+    expect(resolveTourStep(create, ctxWith()).route).toBe("/projects")
     const entry = ctxWith({ projects: [{ id: 1, problemId: 5 }] })
     expect(isStepDone(create, entry, entry)).toBe(false)
     const after = ctxWith({ projects: [{ id: 1, problemId: 5 }, { id: 2, problemId: null }] })
@@ -231,7 +232,8 @@ describe("hands-on steps", () => {
 
   it("isWithinStep is true on the route itself for steps without a flow", () => {
     const create = find("act-new-project")
-    expect(isWithinStep(create, ctxWith({ pathname: "/" }))).toBe(true)
+    expect(isWithinStep(create, ctxWith({ pathname: "/projects" }))).toBe(true)
+    expect(isWithinStep(create, ctxWith({ pathname: "/" }))).toBe(false)
     expect(isWithinStep(create, ctxWith({ pathname: "/projects/1" }))).toBe(false)
   })
 

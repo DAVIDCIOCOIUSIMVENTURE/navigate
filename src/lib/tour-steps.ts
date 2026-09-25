@@ -107,8 +107,8 @@ export const TOUR_TARGETS = {
   headerProjects: "header-projects",
   /** The "New project" item at the top of that dropdown. */
   headerNewProject: "header-new-project",
-  /** The "New project" button on the home page. */
-  dashboardNewProject: "dashboard-new-project",
+  /** The "New project" button on the Projects page (Home only summarises the projects). */
+  projectsNewProject: "projects-new-project",
   /** The "Identify a problem" button on a project page that has no problem yet. */
   projectIdentifyProblem: "project-identify-problem",
   identifyMethods: "identify-methods",
@@ -205,7 +205,7 @@ export const TOUR_STEPS: TourStep[] = [
     id: "sidebar-home",
     title: "Home",
     body: [
-      "Your home page is an overview: how far your Self Discovery has got, your projects, and quick links into the reading sections. Each project is one problem and the solutions you find for it; open one to carry on where you left off. Come back here whenever you want to see your progress.",
+      "Your home page is an overview: one row for each of the four sections, in order, with how far your Self Discovery has got and what your projects add up to. Each project is one problem and the solutions you find for it; open Projects to see them and carry on where you left off. Come back here whenever you want to see your progress.",
     ],
     target: TOUR_TARGETS.sidebarItem("/"),
     placement: "right",
@@ -341,9 +341,9 @@ export const TOUR_STEPS: TourStep[] = [
     mode: "act",
     title: "Start a project",
     body: ["Everything happens inside a project. Click New project, give it a name and create it."],
-    target: TOUR_TARGETS.dashboardNewProject,
+    target: TOUR_TARGETS.projectsNewProject,
     placement: "bottom",
-    route: "/",
+    route: projectRoutes.list(),
     done: (ctx, entry) => ctx.projects.length > entry.projects.length,
     capture: (ctx) => ({ projectId: latest(ctx.projects)?.id ?? null }),
     advance: "auto",

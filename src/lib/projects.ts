@@ -115,6 +115,40 @@ export function problemOfProject<T extends { id: number }>(
   return problems.find((p) => p.id === project.problemId)
 }
 
+/** The figures Home shows against the Projects row. */
+export type ProjectsSummary = {
+  /** How many projects there are. */
+  projects: number
+  /** How many of their problems carry a verdict (Valid, Invalid or Unsure). */
+  problemsTested: number
+  /** How many solutions have been found across every project. */
+  solutions: number
+}
+
+/**
+ * The figures shown against the Projects row on Home. A problem counts as
+ * tested once it carries any verdict, and only the problems held by a project
+ * count, so a stray problem with no project (never the case after hydration
+ * gives every problem one) is left out. Solutions are counted through those
+ * problems for the same reason.
+ */
+export function summariseProjects(
+  projects: readonly Project[],
+  problems: readonly { id: number; validationStatus?: string | null }[],
+  solutions: readonly { problemId: number }[],
+): ProjectsSummary {
+  let problemsTested = 0
+  let solutionCount = 0
+  for (const project of projects) {
+    const problem = problemOfProject(project, problems)
+    if (!problem) continue
+    const status = problem.validationStatus ?? "unvalidated"
+    if (status === "valid" || status === "invalid" || status === "unsure") problemsTested++
+    solutionCount += solutions.filter((solution) => solution.problemId === problem.id).length
+  }
+  return { projects: projects.length, problemsTested, solutions: solutionCount }
+}
+
 /** What to call a project in the UI: its own name, then its problem's title, then a numbered fallback. */
 export function projectDisplayName(project: Project, problemTitle?: string | null): string {
   const name = project.name.trim()
