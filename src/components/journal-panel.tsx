@@ -5,12 +5,25 @@ import { usePathname } from "next/navigation"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import type { Note } from "@/store/notes-model"
-import type { Project } from "@/store/projects-model"
-import { projectIdFromPathname, projectLabel } from "@/lib/projects"
+import { projectLabel } from "@/lib/projects"
+import {
+  NO_PROJECT_KEY,
+  SELF_DISCOVERY_LABEL,
+  defaultNoteLink,
+  describeNoteLink,
+  isNoteInScope,
+  isNoteLinkAvailable,
+  journalScopeFromPathname,
+  noteLinkFromParts,
+  noteLinkParts,
+  sectionOptions,
+  type NoteLinkProject,
+} from "@/lib/note-links"
+import { plainTextFromMarkdown } from "@/lib/markdown-text"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
+import { MarkdownEditor } from "@/components/ui/markdown-editor"
 import { Label } from "@/components/ui/label"
 import {
   Select,
@@ -20,34 +33,33 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
-import { ArrowLeft, FolderKanban, NotebookText, Plus, Trash2, X } from "lucide-react"
+import { ArrowLeft, Link2, NotebookText, Plus, Trash2, X } from "lucide-react"
 
-/** The Select needs a non-empty string for "no project"; this is it. */
-const NO_PROJECT = "none"
+type NoteFilter = "all" | "here"
 
-type NoteFilter = "all" | "project"
-
-function formatEditedAt(iso: string) {
-  try {
-    return new Date(iso).toLocaleDateString(undefined, {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-    })
-  } catch {
-    return ""
-  }
+/** A date and time as the journal shows them: "25 Sept 2026, 14:03". */
+export function formatTimestamp(iso: string) {
+  if (!iso) return ""
+  const date = new Date(iso)
+  if (Number.isNaN(date.getTime())) return ""
+  return date.toLocaleString("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  })
 }
 
 function notePreview(note: Note) {
   const title = note.title.trim()
   if (title) return title
-  const snippet = note.text.trim().split("\n")[0]?.slice(0, 40)
+  const snippet = plainTextFromMarkdown(note.text).split("\n")[0]?.slice(0, 40)
   return snippet || "Untitled note"
 }
 
-/** The cobalt pill naming the project a note is linked to. */
-function ProjectPill({ label, className }: { label: string; className?: string }) {
+/** The cobalt pill naming what a note is linked to. */
+function LinkPill({ label, className }: { label: string; className?: string }) {
   return (
     <span
       className={cn(
@@ -55,40 +67,60 @@ function ProjectPill({ label, className }: { label: string; className?: string }
         className,
       )}
     >
-      <FolderKanban className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+      <Link2 className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
       <span className="truncate">{label}</span>
     </span>
   )
 }
 
+/** When the note was written and last changed, on one line. */
+function Timestamps({ note, className }: { note: Note; className?: string }) {
+  return (
+    <p className={cn("text-base", className)}>
+      Created {formatTimestamp(note.createdAt)}
+      <span aria-hidden="true"> · </span>
+      Updated {formatTimestamp(note.editedAt)}
+    </p>
+  )
+}
+
 function NoteRow({
   note,
-  projectName,
+  linkLabel,
   onSelect,
   onDelete,
 }: {
   note: Note
-  /** The linked project's name, or null when the note is general. */
-  projectName: string | null
+  /** What the note is linked to, or null when it is general. */
+  linkLabel: string | null
   onSelect: () => void
   onDelete: () => void
 }) {
   return (
     <div
-      className="group flex items-start gap-2 rounded-md border bg-card p-3 cursor-pointer transition-colors hover:bg-accent/50"
+      role="button"
+      tabIndex={0}
+      className="group flex items-start gap-2 rounded-md border bg-card p-3 cursor-pointer transition-colors hover:bg-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       onClick={onSelect}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault()
+          onSelect()
+        }
+      }}
     >
       <div className="flex-1 min-w-0 flex flex-col gap-1">
         <p className="text-base font-medium truncate">{notePreview(note)}</p>
-        <p className="text-base">{formatEditedAt(note.editedAt)}</p>
-        {projectName !== null && <ProjectPill label={projectName} className="self-start" />}
+        <Timestamps note={note} />
+        {linkLabel !== null && <LinkPill label={linkLabel} className="self-start" />}
       </div>
       <ConfirmDialog
         trigger={
           <Button
             variant="ghost"
             size="icon"
-            className="h-7 w-7 shrink-0 opacity-0 group-hover:opacity-100"
+            className="h-7 w-7 shrink-0 opacity-0 group-hover:opacity-100 focus-visible:opacity-100"
+            aria-label="Delete this note"
             onClick={(e) => e.stopPropagation()}
           >
             <Trash2 className="h-3.5 w-3.5" />
@@ -104,11 +136,11 @@ function NoteRow({
 
 function NoteEditor({
   note,
-  projectOptions,
+  linkProjects,
 }: {
   note: Note
-  /** Every project the note may be linked to, with the name to show for it. */
-  projectOptions: { id: number; label: string }[]
+  /** Every project the note may be linked to, with its solutions. */
+  linkProjects: NoteLinkProject[]
 }) {
   const dispatch = useDispatch<AppDispatch>()
   const [title, setTitle] = useState(note.title)
@@ -131,15 +163,17 @@ function NoteEditor({
     }
   }, [title, text, note.id, note.title, note.text, dispatch.notes])
 
-  // A link to a project that no longer exists reads as no link.
-  const linkedValue =
-    note.projectId !== null && projectOptions.some((p) => p.id === note.projectId)
-      ? String(note.projectId)
-      : NO_PROJECT
+  // A link to a project or solution that no longer exists reads as general.
+  const parts = noteLinkParts(isNoteLinkAvailable(note.link, linkProjects) ? note.link : { kind: "none" })
+  const sections = sectionOptions(parts.project, linkProjects)
 
-  const handleLinkChange = (value: string) => {
-    const projectId = value === NO_PROJECT ? null : Number(value)
-    dispatch.notes.update({ id: note.id, patch: { projectId } })
+  const handleProjectChange = (project: string) => {
+    // Moving to another project lands on its problem; leaving projects lands on General.
+    dispatch.notes.update({ id: note.id, patch: { link: noteLinkFromParts({ project, section: "" }) } })
+  }
+
+  const handleSectionChange = (section: string) => {
+    dispatch.notes.update({ id: note.id, patch: { link: noteLinkFromParts({ project: parts.project, section }) } })
   }
 
   return (
@@ -148,43 +182,67 @@ function NoteEditor({
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Note title"
+        aria-label="Note title"
         className="text-base font-medium"
       />
-      <div className="flex items-center gap-2">
-        <Label htmlFor="journal-note-project" className="shrink-0 text-base">
-          Linked to
-        </Label>
-        <Select value={linkedValue} onValueChange={handleLinkChange}>
-          <SelectTrigger id="journal-note-project" className="h-9 min-w-0 flex-1 text-base">
-            <SelectValue placeholder="No project" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value={NO_PROJECT}>No project</SelectItem>
-            {projectOptions.map((p) => (
-              <SelectItem key={p.id} value={String(p.id)}>
-                {p.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+      <div className="grid grid-cols-1 gap-2 @[360px]:grid-cols-2 @container">
+        <div className="flex flex-col gap-1 min-w-0">
+          <Label htmlFor="journal-note-project" className="text-base">
+            Project
+          </Label>
+          <Select value={parts.project} onValueChange={handleProjectChange}>
+            <SelectTrigger id="journal-note-project" className="h-9 min-w-0 text-base">
+              <SelectValue placeholder="No project" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={NO_PROJECT_KEY}>No project</SelectItem>
+              {linkProjects.map((project) => (
+                <SelectItem key={project.id} value={String(project.id)}>
+                  {project.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex flex-col gap-1 min-w-0">
+          <Label htmlFor="journal-note-section" className="text-base">
+            Section
+          </Label>
+          <Select value={parts.section} onValueChange={handleSectionChange}>
+            <SelectTrigger id="journal-note-section" className="h-9 min-w-0 text-base">
+              <SelectValue placeholder="General" />
+            </SelectTrigger>
+            <SelectContent>
+              {sections.map((section) => (
+                <SelectItem key={section.value} value={section.value}>
+                  {section.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
-      <Textarea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
+      <Timestamps note={note} />
+      <MarkdownEditor
+        value={note.text}
+        onChange={setText}
         placeholder="Write your thoughts here..."
-        className="flex-1 min-h-0 resize-none"
+        aria-label="Note text"
+        className="flex-1"
       />
     </div>
   )
 }
 
-/** The two ways to read the journal while inside a project: everything, or only what is linked to it. */
+/** The two ways to read the journal while inside an area: everything, or only what was written about it. */
 function FilterChips({
   value,
+  hereLabel,
   counts,
   onChange,
 }: {
   value: NoteFilter
+  hereLabel: string
   counts: Record<NoteFilter, number>
   onChange: (value: NoteFilter) => void
 }) {
@@ -210,9 +268,14 @@ function FilterChips({
   return (
     <div role="radiogroup" aria-label="Which notes to show" className="flex flex-wrap gap-1 border-b px-3 py-2">
       {chip("all", "All notes")}
-      {chip("project", "This project")}
+      {chip("here", hereLabel)}
     </div>
   )
+}
+
+/** Newest first. */
+function sortNotes(notes: readonly Note[]): Note[] {
+  return [...notes].sort((a, b) => b.editedAt.localeCompare(a.editedAt))
 }
 
 export function JournalPanel({ onClose }: { onClose: () => void }) {
@@ -220,39 +283,37 @@ export function JournalPanel({ onClose }: { onClose: () => void }) {
   const allNotes = useSelector((state: RootState) => state.notes.notes)
   const projects = useSelector((state: RootState) => state.projects.projects)
   const problems = useSelector((state: RootState) => state.problems.problems)
+  const solutions = useSelector((state: RootState) => state.solutions.solutions)
   const dispatch = useDispatch<AppDispatch>()
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [filter, setFilter] = useState<NoteFilter>("all")
 
-  // The project the user is inside, if any. Outside a project every note shows and new notes are general.
-  const routeProjectId = projectIdFromPathname(pathname ?? "")
-  const currentProject: Project | undefined = projects.find((p) => p.id === routeProjectId)
-  const currentProjectId = currentProject?.id ?? null
-  const activeFilter: NoteFilter = currentProjectId === null ? "all" : filter
+  // The area the user is in, if any. Outside one every note shows and new notes are general.
+  const scope = journalScopeFromPathname(pathname ?? "")
+  const activeFilter: NoteFilter = scope === null ? "all" : filter
+  const hereLabel = scope?.kind === "self-discovery" ? SELF_DISCOVERY_LABEL : "This project"
 
-  const projectOptions = useMemo(
-    () => projects.map((p) => ({ id: p.id, label: projectLabel(p, problems) })),
-    [projects, problems],
-  )
-  const projectNameById = useMemo(
-    () => new Map(projectOptions.map((p) => [p.id, p.label] as const)),
-    [projectOptions],
+  const linkProjects = useMemo<NoteLinkProject[]>(
+    () =>
+      projects.map((p) => ({
+        id: p.id,
+        label: projectLabel(p, problems),
+        solutions:
+          p.problemId === null
+            ? []
+            : solutions.filter((s) => s.problemId === p.problemId).map((s) => ({ id: s.id, title: s.title })),
+      })),
+    [projects, problems, solutions],
   )
 
-  const sortedNotes = useMemo(
-    () => [...allNotes].sort((a, b) => b.editedAt.localeCompare(a.editedAt)),
-    [allNotes]
-  )
-  const projectNotes = useMemo(
-    () => (currentProjectId === null ? [] : sortedNotes.filter((n) => n.projectId === currentProjectId)),
-    [sortedNotes, currentProjectId],
-  )
-  const visibleNotes = activeFilter === "project" ? projectNotes : sortedNotes
+  const sortedNotes = useMemo(() => sortNotes(allNotes), [allNotes])
+  const hereNotes = useMemo(() => sortedNotes.filter((n) => isNoteInScope(n.link, scope)), [sortedNotes, scope])
+  const visibleNotes = activeFilter === "here" ? hereNotes : sortedNotes
 
   const selectedNote = sortedNotes.find((n) => n.id === selectedId) ?? null
 
   const handleCreate = () => {
-    const newNote = dispatch.notes.create({ projectId: currentProjectId })
+    const newNote = dispatch.notes.create({ link: defaultNoteLink(scope, linkProjects) })
     setSelectedId(newNote.id)
   }
 
@@ -262,10 +323,10 @@ export function JournalPanel({ onClose }: { onClose: () => void }) {
   }
 
   const emptyCopy =
-    activeFilter === "project"
+    activeFilter === "here"
       ? {
-          title: "No notes for this project yet",
-          body: "Notes you write here are linked to the project, so you can find them again from any page.",
+          title: scope?.kind === "self-discovery" ? "No notes about Self Discovery yet" : "No notes for this project yet",
+          body: "Notes you write here are linked to where you are, so you can find them again from any page.",
           action: "New note",
         }
       : {
@@ -316,10 +377,11 @@ export function JournalPanel({ onClose }: { onClose: () => void }) {
         </div>
       </div>
 
-      {!selectedNote && currentProjectId !== null && (
+      {!selectedNote && scope !== null && (
         <FilterChips
           value={activeFilter}
-          counts={{ all: sortedNotes.length, project: projectNotes.length }}
+          hereLabel={hereLabel}
+          counts={{ all: sortedNotes.length, here: hereNotes.length }}
           onChange={setFilter}
         />
       )}
@@ -327,7 +389,7 @@ export function JournalPanel({ onClose }: { onClose: () => void }) {
       <div className="flex-1 min-h-0 overflow-hidden">
         {selectedNote ? (
           <div className="h-full p-4">
-            <NoteEditor key={selectedNote.id} note={selectedNote} projectOptions={projectOptions} />
+            <NoteEditor key={selectedNote.id} note={selectedNote} linkProjects={linkProjects} />
           </div>
         ) : visibleNotes.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-4 h-full px-6 text-center">
@@ -349,7 +411,7 @@ export function JournalPanel({ onClose }: { onClose: () => void }) {
               <NoteRow
                 key={note.id}
                 note={note}
-                projectName={note.projectId === null ? null : (projectNameById.get(note.projectId) ?? null)}
+                linkLabel={describeNoteLink(note.link, linkProjects)}
                 onSelect={() => setSelectedId(note.id)}
                 onDelete={() => handleDelete(note.id)}
               />

@@ -309,7 +309,7 @@ const guidanceItems: GuidanceItem[] = [
         <TipCallout items={[
           "Each project holds exactly one problem. To work on a second problem, start a second project",
           "Export a project before trying something drastic; importing the file back gives you a fresh copy",
-          "Notes in the journal can be linked to a project, and the panel can filter to just this project's notes",
+          "Notes in the journal are linked to Self Discovery, a project's problem or one of its solutions, and the panel can filter to just this project's notes",
         ]} />
       </div>
     ),

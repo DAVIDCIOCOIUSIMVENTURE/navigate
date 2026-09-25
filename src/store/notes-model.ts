@@ -4,21 +4,35 @@ import type { RootModel } from "."
 const STORAGE_KEY = "navigate-notes"
 
 /**
+ * What a journal note is about. Every note is scoped to one area of the app:
+ * Self Discovery, a project's problem, or one of a project's solutions. A note
+ * about nothing in particular is a general note, which is also where a note
+ * lands when the project it was about is deleted.
+ */
+export type NoteLink =
+  | { kind: "none" }
+  | { kind: "self-discovery" }
+  | { kind: "problem"; projectId: number }
+  | { kind: "solution"; projectId: number; solutionId: number }
+
+export const GENERAL_LINK: NoteLink = { kind: "none" }
+export const SELF_DISCOVERY_LINK: NoteLink = { kind: "self-discovery" }
+
+/**
  * A journal note. The journal is one list across the whole app, so every note
- * is always visible; `projectId` optionally links a note to a project (and so
- * to its problem) so the journal can be narrowed to what was written about it.
- * A note linked to nothing is a general note.
+ * is always visible; `link` says which area it was written about so the
+ * journal can be narrowed to it.
  */
 export type Note = {
   id: number
   title: string
   text: string
-  projectId: number | null
+  link: NoteLink
   createdAt: string
   editedAt: string
 }
 
-export type NotePatch = Partial<Pick<Note, "title" | "text" | "projectId">>
+export type NotePatch = Partial<Pick<Note, "title" | "text" | "link">>
 
 interface NotesState {
   notes: Note[]
@@ -39,23 +53,42 @@ function saveToStorage(state: NotesState) {
   }
 }
 
+function isId(value: unknown): value is number {
+  return typeof value === "number" && Number.isFinite(value)
+}
+
+/** A stored link, or null when the value is not one we recognise. */
+export function parseNoteLink(value: unknown): NoteLink | null {
+  if (typeof value !== "object" || value === null) return null
+  const { kind, projectId, solutionId } = value as { kind?: unknown; projectId?: unknown; solutionId?: unknown }
+  if (kind === "none") return GENERAL_LINK
+  if (kind === "self-discovery") return SELF_DISCOVERY_LINK
+  if (kind === "problem" && isId(projectId)) return { kind, projectId }
+  if (kind === "solution" && isId(projectId) && isId(solutionId)) return { kind, projectId, solutionId }
+  return null
+}
+
 /**
  * Read what is stored without trusting it: a note saved before links existed
- * has no `projectId` and comes back unlinked, and anything that is not a note
- * is dropped rather than rendered.
+ * comes back general, one saved when a link was just a project id comes back
+ * linked to that project's problem, and anything that is not a note is
+ * dropped rather than rendered.
  */
 export function parseStoredNotes(value: unknown): NotesState | null {
   if (typeof value !== "object" || value === null) return null
   const parsed = value as Partial<NotesState>
   const notes = (Array.isArray(parsed.notes) ? parsed.notes : []).flatMap((entry) => {
     if (typeof entry !== "object" || entry === null) return []
-    const { id, title, text, projectId, createdAt, editedAt } = entry as Partial<Note>
-    if (typeof id !== "number" || !Number.isFinite(id)) return []
+    const { id, title, text, link, projectId, createdAt, editedAt } = entry as Partial<Note> & {
+      projectId?: unknown
+    }
+    if (!isId(id)) return []
+    const legacyLink: NoteLink = isId(projectId) ? { kind: "problem", projectId } : GENERAL_LINK
     const note: Note = {
       id,
       title: typeof title === "string" ? title : "",
       text: typeof text === "string" ? text : "",
-      projectId: typeof projectId === "number" && Number.isFinite(projectId) ? projectId : null,
+      link: parseNoteLink(link) ?? legacyLink,
       createdAt: typeof createdAt === "string" ? createdAt : "",
       editedAt: typeof editedAt === "string" ? editedAt : "",
     }
@@ -63,7 +96,7 @@ export function parseStoredNotes(value: unknown): NotesState | null {
   })
   // Never mint an id a stored note already holds, whatever `nextId` says.
   const afterLast = notes.reduce((max, n) => Math.max(max, n.id), 0) + 1
-  const nextId = typeof parsed.nextId === "number" && Number.isFinite(parsed.nextId) ? parsed.nextId : 1
+  const nextId = isId(parsed.nextId) ? parsed.nextId : 1
   return { notes, nextId: Math.max(nextId, afterLast) }
 }
 
@@ -78,14 +111,28 @@ function loadFromStorage(): NotesState | null {
   }
 }
 
-/** The notes linked to one project, in the order they are stored. */
-export function notesForProject(notes: readonly Note[], projectId: number): Note[] {
-  return notes.filter((n) => n.projectId === projectId)
+/** Whether a note was written about `projectId`: its problem or any of its solutions. */
+export function isNoteInProject(note: Note, projectId: number): boolean {
+  return (note.link.kind === "problem" || note.link.kind === "solution") && note.link.projectId === projectId
 }
 
-/** Every note with its link to `projectId` removed; the notes themselves stay. */
+/** The notes about one project (its problem or its solutions), in the order they are stored. */
+export function notesForProject(notes: readonly Note[], projectId: number): Note[] {
+  return notes.filter((n) => isNoteInProject(n, projectId))
+}
+
+/** Every note about `projectId` made general; the notes themselves stay. */
 function unlinkedFrom(notes: readonly Note[], projectId: number): Note[] {
-  return notes.map((n) => (n.projectId === projectId ? { ...n, projectId: null } : n))
+  return notes.map((n) => (isNoteInProject(n, projectId) ? { ...n, link: GENERAL_LINK } : n))
+}
+
+/** Every note about `solutionId` moved to its project's problem; the notes themselves stay. */
+function unlinkedFromSolution(notes: readonly Note[], solutionId: number): Note[] {
+  return notes.map((n) =>
+    n.link.kind === "solution" && n.link.solutionId === solutionId
+      ? { ...n, link: { kind: "problem", projectId: n.link.projectId } }
+      : n,
+  )
 }
 
 export const notes = createModel<RootModel>()({
@@ -111,6 +158,10 @@ export const notes = createModel<RootModel>()({
       return { ...state, notes: unlinkedFrom(state.notes, projectId) }
     },
 
+    unlinkNotesFromSolution(state, solutionId: number) {
+      return { ...state, notes: unlinkedFromSolution(state.notes, solutionId) }
+    },
+
     setAll(_, loaded: NotesState) {
       return loaded
     },
@@ -124,15 +175,15 @@ export const notes = createModel<RootModel>()({
       }
     },
 
-    /** A blank note, linked to `projectId` when written from inside a project. */
-    create(payload: { projectId: number | null }, rootState): Note {
+    /** A blank note about `link`: the area the user is in when they write it, or general. */
+    create(payload: { link: NoteLink }, rootState): Note {
       const state = rootState.notes
       const now = new Date().toISOString()
       const newNote: Note = {
         id: state.nextId,
         title: "",
         text: "",
-        projectId: payload.projectId,
+        link: payload.link,
         createdAt: now,
         editedAt: now,
       }
@@ -167,6 +218,12 @@ export const notes = createModel<RootModel>()({
     unlinkProject(projectId: number, rootState) {
       dispatch.notes.unlinkNotesFromProject(projectId)
       saveToStorage({ notes: unlinkedFrom(rootState.notes.notes, projectId), nextId: rootState.notes.nextId })
+    },
+
+    /** Called when a solution is deleted: its notes move up to the project's problem. */
+    unlinkSolution(solutionId: number, rootState) {
+      dispatch.notes.unlinkNotesFromSolution(solutionId)
+      saveToStorage({ notes: unlinkedFromSolution(rootState.notes.notes, solutionId), nextId: rootState.notes.nextId })
     },
   }),
 })

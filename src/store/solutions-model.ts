@@ -156,8 +156,10 @@ export const solutions = createModel<RootModel>()({
       return newSolution
     },
 
+    /** Delete a solution. Journal notes about it are kept and move up to the project's problem. */
     delete(id: number, rootState) {
       dispatch.solutions.removeSolution(id)
+      dispatch.notes.unlinkSolution(id)
       const remaining = rootState.solutions.solutions.filter((s) => s.id !== id)
       saveToStorage({ solutions: remaining, nextId: rootState.solutions.nextId })
     },
