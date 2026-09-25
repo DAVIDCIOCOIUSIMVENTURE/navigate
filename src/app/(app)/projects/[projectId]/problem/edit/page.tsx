@@ -8,7 +8,6 @@ import { Target, Download } from "lucide-react"
 import { toast } from "sonner"
 import { ProblemProvider } from "../validation/context"
 import { ProblemHubContent } from "@/components/problem-hub/problem-hub-content"
-import { FocusFlowHeader } from "@/components/focus-flow-header"
 import { FocusPageShell } from "@/components/focus-page-shell"
 import { ProjectProblemGate } from "@/components/project-gates"
 import { downloadProjectBundle } from "@/lib/problem-export"
@@ -21,22 +20,14 @@ import { cn } from "@/lib/utils"
 /**
  * The project's problem edit page. A focus page like the Identify hub: no
  * header or sidebar, so the left column carries Home, the Open menu
- * toggle, the title and the journey rail, with the edit card beside
- * it. On wide containers the card is fitted to the viewport and only its
+ * toggle and the journey rail card headed by the title, with the edit card
+ * beside it. On wide containers the card is fitted to the viewport and only its
  * content scrolls.
  */
 function HubBody({ projectId, problem }: { projectId: number; problem: Problem }) {
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
   const store = useStore<RootState>()
   const isWide = useContainerSize() === "wide"
-
-  const header = (
-    <FocusFlowHeader
-      title="Edit problem"
-      icon={Target}
-      className={cn(isWide && "flex-wrap")}
-    />
-  )
 
   const journeyStep = problemJourneyStep(summariseProblemJourney(problem, solutions))
 
@@ -50,7 +41,7 @@ function HubBody({ projectId, problem }: { projectId: number; problem: Problem }
   }
 
   return (
-    <FocusPageShell header={header} journeyStep={journeyStep} journeyProblemId={problem.id}>
+    <FocusPageShell title="Edit problem" icon={Target} journeyStep={journeyStep} journeyProblemId={problem.id}>
       <Card className={cn("flex w-full min-w-0 flex-col", isWide && "flex-1 min-h-0 overflow-hidden")}>
         <CardHeader className="px-10 pt-10 pb-0 space-y-6">
           <div className="flex items-start justify-between gap-4">

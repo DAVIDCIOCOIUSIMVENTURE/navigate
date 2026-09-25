@@ -11,7 +11,6 @@ import { ProblemCanvas } from "@/components/canvas/problem-canvas"
 import { IdentifySolutionsButton, SolutionsGuardDialog } from "@/components/solutions-guard"
 import { FocusFlowHeader } from "@/components/focus-flow-header"
 import { FocusPageShell } from "@/components/focus-page-shell"
-import { MemberAvatarStack } from "@/components/member-avatar"
 import { ProjectSettingsDialog } from "@/components/project-settings-dialog"
 import { SolutionsTable } from "@/components/solutions-table"
 import { useContainerSize } from "@/context/container-size-context"
@@ -29,9 +28,10 @@ import { ArrowLeft, FolderKanban, Lightbulb, Plus, Scale, Settings, Target } fro
  * Unlike the flows it leads into, the page keeps the app header: opening a
  * project should always show the top menu. The left sidebar stays hidden
  * (see `hidesSidebarPath` in root-layout-client.tsx), and the project's own
- * left column takes its place: the project's name, its team, Settings and the
- * journey rail, with the canvas and the solutions beside it. Home and the
- * menu are in the header, so the column draws no chrome buttons of its own.
+ * left column takes its place: one card with the project's name, Settings and
+ * the journey rail, with the canvas and the solutions beside it. Home and the
+ * menu are in the header, so the column draws no chrome buttons of its own,
+ * and the team is shown in the settings dialog rather than beside the name.
  */
 export default function ProjectPage() {
   const params = useParams()
@@ -73,20 +73,31 @@ export default function ProjectPage() {
   const name = projectDisplayName(project, problem?.title)
   const journeyStep = problem ? problemJourneyStep(summariseProblemJourney(problem, solutions)) : "identify-problems"
 
-  const header = (
-    <FocusFlowHeader title={name} icon={FolderKanban} className="flex-wrap" chromeButtons={false}>
-      <MemberAvatarStack members={project.members} />
-      {/* One button: the portfolio and the way to delete the project both
-          live inside the dialog it opens. */}
-      <Button variant="outline" className="gap-2 bg-white" onClick={() => setSettingsOpen(true)}>
-        <Settings className="h-4 w-4" />
-        Settings
-      </Button>
-    </FocusFlowHeader>
+  // One icon button at the right of the title: the team, the portfolio and the
+  // way to delete the project all live inside the dialog it opens, so the
+  // column shows no avatars of its own.
+  const settingsButton = (
+    <Button
+      variant="outline"
+      size="icon"
+      className="bg-white shrink-0"
+      aria-label="Project settings"
+      title="Project settings"
+      onClick={() => setSettingsOpen(true)}
+    >
+      <Settings className="h-4 w-4" aria-hidden="true" />
+    </Button>
   )
 
   return (
-    <FocusPageShell header={header} journeyStep={journeyStep} journeyProblemId={problem?.id ?? null} chrome="app">
+    <FocusPageShell
+      title={name}
+      icon={FolderKanban}
+      actions={settingsButton}
+      journeyStep={journeyStep}
+      journeyProblemId={problem?.id ?? null}
+      chrome="app"
+    >
       {/* The canvas and the solutions scroll together beside the fixed left column. */}
       <div className={cn("flex w-full min-w-0 flex-col gap-4", isWide && "flex-1 min-h-0 overflow-y-auto")}>
         {problem ? (

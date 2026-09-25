@@ -10,14 +10,12 @@ import { ArrowLeft, Lightbulb } from "lucide-react"
 import { SolutionCanvas } from "@/components/canvas/solution-canvas"
 import { FocusFlowHeader } from "@/components/focus-flow-header"
 import { FocusPageShell } from "@/components/focus-page-shell"
-import { useContainerSize } from "@/context/container-size-context"
 import { projectRoutes } from "@/lib/projects"
-import { cn } from "@/lib/utils"
 
 /**
  * The per-solution canvas. A focus page: no header or sidebar, so the left
- * column carries Home, the Open menu toggle, the title and
- * the journey rail, with the canvas beside it. A solution on its canvas has
+ * column carries Home, the Open menu toggle and the journey rail card headed
+ * by the title, with the canvas beside it. A solution on its canvas has
  * been identified and is on its way to validation, so the rail sits on
  * "Test solutions".
  */
@@ -25,20 +23,15 @@ export default function SolutionCanvasPage() {
   const params = useParams<{ projectId: string; solutionId: string }>()
   const projectId = Number(params.projectId)
   const solutionId = Number(params.solutionId)
-  const isWide = useContainerSize() === "wide"
   const solution = useSelector((state: RootState) =>
     state.solutions.solutions.find((s) => s.id === solutionId),
   )
   const projectHref = projectRoutes.page(projectId)
 
-  const header = (
-    <FocusFlowHeader title="Solution canvas" icon={Lightbulb} className={cn(isWide && "flex-wrap")} />
-  )
-
   if (!solution) {
     return (
       <div className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col gap-3 px-4 py-4 sm:px-6 lg:px-8 lg:py-6">
-        {header}
+        <FocusFlowHeader title="Solution canvas" icon={Lightbulb} />
         <Card className="w-full">
           <CardContent className="p-10 flex flex-col items-center gap-4 text-center">
             <p className="text-base">Solution not found.</p>
@@ -55,7 +48,7 @@ export default function SolutionCanvasPage() {
   }
 
   return (
-    <FocusPageShell header={header} journeyStep="validate-solutions" journeyProblemId={solution.problemId}>
+    <FocusPageShell title="Solution canvas" icon={Lightbulb} journeyStep="validate-solutions" journeyProblemId={solution.problemId}>
       <SolutionCanvas solution={solution} editHref={projectRoutes.solutionEdit(projectId, solutionId)} showFullView={false} />
     </FocusPageShell>
   )

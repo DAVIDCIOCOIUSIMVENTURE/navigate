@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo, useState, type ReactNode } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useSelector } from "react-redux"
@@ -31,23 +31,29 @@ import { cn } from "@/lib/utils"
 /**
  * The rail inside its own card: the arrangement every page uses, so the
  * padding stays the same everywhere. Vertical rails sit in a side column
- * (under a stepper or a header), horizontal ones span the top of a narrow page.
+ * (under a stepper, or first in the column), horizontal ones span the top of
+ * a narrow page. A page with no stepper card puts its section title at the
+ * head of this card instead, as `header` (a `CardSectionTitle`).
  */
 export function JourneyProgressCard({
   activeId,
   problemId,
   orientation = "vertical",
+  header,
   className,
 }: {
   activeId: JourneyStepId | null
   /** The problem the page is about, when there is one; drives which steps show as done. */
   problemId?: number | null
   orientation?: "vertical" | "horizontal"
+  /** Drawn above the rail, inside the card: the page's title when it has no stepper card to carry it. */
+  header?: ReactNode
   className?: string
 }) {
   return (
     <Card className={cn("shrink-0", className)}>
-      <CardContent className={orientation === "vertical" ? "p-5" : "px-4 py-3"}>
+      <CardContent className={cn("flex flex-col gap-4", orientation === "vertical" ? "p-5" : "px-4 py-3")}>
+        {header}
         <JourneyProgress activeId={activeId} problemId={problemId} orientation={orientation} />
       </CardContent>
     </Card>

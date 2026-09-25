@@ -8,7 +8,7 @@ import { ProblemContextCard } from "@/components/context-card"
 import { FlowShell, type FlowNavItem } from "@/components/flow-shell"
 import type { JourneyStepId } from "@/lib/journey-steps"
 
-export { FOCUS_COLUMN_MAX_HEIGHT_CLASS } from "@/components/flow-shell"
+export { FOCUS_COLUMN_MAX_HEIGHT_CLASS, FOCUS_COLUMN_WIDTH_CLASS } from "@/components/flow-shell"
 
 export type ProblemFlowNavItem = FlowNavItem
 

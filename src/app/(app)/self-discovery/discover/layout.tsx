@@ -14,14 +14,14 @@ import { cn } from "@/lib/utils"
 import {
     NAV_ITEM_ACTIVE_CLASS,
     NAV_ITEM_HOVER_CLASS,
-    SECTION_TITLE_ICON_CLASS,
-    SECTION_TITLE_TILE_CLASS,
     navIconClass,
     navIconTileClass,
 } from "@/lib/nav-item-styles"
 import { SELF_DISCOVERY_CATEGORIES } from "@/data/selfDiscoveryData"
 import { useContainerSize } from "@/context/container-size-context"
 import { FocusChromeButtons } from "@/components/focus-chrome-buttons"
+import { CardSectionTitle, SectionTitle } from "@/components/section-title"
+import { FOCUS_COLUMN_WIDTH_CLASS } from "@/components/flow-shell"
 import type { RootState } from "@/store"
 import { getSelfDiscoveryProgress } from "@/lib/self-discovery-progress"
 
@@ -223,12 +223,7 @@ export default function SelfDiscoveryFlowLayout({
     const inlineHeaderRow = (
         <div className="flex items-center gap-3 shrink-0">
             <FocusChromeButtons />
-            <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 text-foreground">
-                <span className={SECTION_TITLE_TILE_CLASS} aria-hidden="true">
-                    <Compass className={SECTION_TITLE_ICON_CLASS} />
-                </span>
-                <span className="truncate">Self Discovery</span>
-            </h1>
+            <SectionTitle title="Self Discovery" icon={Compass} />
         </div>
     )
 
@@ -286,16 +281,11 @@ export default function SelfDiscoveryFlowLayout({
                 )}
 
                 {isWide && (
-                    <div className="w-72 shrink-0 h-full flex flex-col gap-4 min-h-0">
+                    <div className={cn("shrink-0 h-full flex flex-col gap-4 min-h-0", FOCUS_COLUMN_WIDTH_CLASS)}>
                         <FocusChromeButtons />
-                        <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 text-foreground">
-                            <span className={SECTION_TITLE_TILE_CLASS} aria-hidden="true">
-                                <Compass className={SECTION_TITLE_ICON_CLASS} />
-                            </span>
-                            <span className="truncate">Self Discovery</span>
-                        </h1>
                         <Card className="flex-1 min-h-0 flex flex-col overflow-hidden">
                             <CardContent className="p-3 flex flex-col gap-3 flex-1 min-h-0">
+                                <CardSectionTitle title="Self Discovery" icon={Compass} className="px-3 pt-1.5" />
                                 <div className="flex-1 min-h-0 overflow-y-auto">
                                     <NavContent pathname={pathname} onNavigate={handleNavigate} />
                                 </div>

@@ -1,8 +1,13 @@
 "use client"
 
 import type { ReactNode } from "react"
+import type { LucideIcon } from "lucide-react"
+import { Card, CardContent } from "@/components/ui/card"
+import { FocusChromeButtons } from "@/components/focus-chrome-buttons"
+import { FocusFlowHeader } from "@/components/focus-flow-header"
 import { JourneyProgressCard } from "@/components/journey-progress"
-import { FOCUS_COLUMN_MAX_HEIGHT_CLASS } from "@/components/problem-flow-shell"
+import { CardSectionTitle } from "@/components/section-title"
+import { FOCUS_COLUMN_MAX_HEIGHT_CLASS, FOCUS_COLUMN_WIDTH_CLASS } from "@/components/problem-flow-shell"
 import { useContainerSize } from "@/context/container-size-context"
 import type { JourneyStepId } from "@/lib/journey-steps"
 import { cn } from "@/lib/utils"
@@ -15,31 +20,39 @@ import { cn } from "@/lib/utils"
 const APP_CHROME_MAX_HEIGHT_CLASS = "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]"
 
 /**
- * Layout for a page about one problem or solution (its canvas or its edit
- * page) with a `w-72` left column: the `header` (a `FocusFlowHeader` with the
- * title) above the journey progress rail, with the content beside it fitted
- * to the viewport on wide containers; on narrow ones the header stays on top,
- * the rail becomes a horizontal row and the page scrolls naturally.
+ * Layout for a page about one project, problem or solution (the project page,
+ * a canvas or an edit page) with the left column every focus flow shares
+ * (`FOCUS_COLUMN_WIDTH_CLASS`). These pages have no
+ * stepper, so on wide containers the title (with any `actions` at the right
+ * of its row, such as the project page's Settings button) sits at the head of
+ * the journey rail card,
+ * with the content beside it fitted to the viewport; on narrow ones the title
+ * stays in a header row on top, the rail becomes a horizontal row and the
+ * page scrolls naturally.
  *
  * With the default `chrome="focus"` the header and sidebar are hidden, so the
- * page supplies its own Home and Open menu buttons in the header and the
- * shell adds the page padding the layout would otherwise give it. The project
- * page passes `chrome="app"`: it keeps the header (the sidebar is hidden
- * there), so the layout already pads it and the viewport cap allows for the
- * header.
+ * column starts with the page's own Home and Open menu buttons and the shell
+ * adds the page padding the layout would otherwise give it. The project page
+ * passes `chrome="app"`: it keeps the header (the sidebar is hidden there),
+ * so the column starts straight with the card, the layout already pads it and
+ * the viewport cap allows for the header.
  *
- * Pass `flex-wrap` to the header so it stacks inside the narrow column.
- * Pages that are not about one problem or solution (Compare solutions) omit
- * `journeyStep` and get the same layout without the rail.
+ * Pages that are not about one problem or solution omit `journeyStep` and get
+ * the title in a card of its own with no rail.
  */
 export function FocusPageShell({
-  header,
+  title,
+  icon,
+  actions,
   journeyStep,
   journeyProblemId,
   chrome = "focus",
   children,
 }: {
-  header: ReactNode
+  title: string
+  icon: LucideIcon
+  /** Icon buttons that belong to the page's title, drawn at the right of its row (the project page's Settings button). */
+  actions?: ReactNode
   /** The journey milestone the page belongs to; omit to render no rail. */
   journeyStep?: JourneyStepId
   /** The problem the page is about (a solution's linked problem on solution pages); the rail shows its real progress. */
@@ -52,6 +65,12 @@ export function FocusPageShell({
   const inApp = chrome === "app"
   const columnMaxHeight = inApp ? APP_CHROME_MAX_HEIGHT_CLASS : FOCUS_COLUMN_MAX_HEIGHT_CLASS
 
+  const cardTitle = (
+    <CardSectionTitle title={title} icon={icon}>
+      {actions}
+    </CardSectionTitle>
+  )
+
   return (
     <div className="flex flex-1 min-h-0 w-full flex-col">
       <div
@@ -63,13 +82,25 @@ export function FocusPageShell({
         )}
       >
         {isWide ? (
-          <div className={cn("flex w-72 shrink-0 flex-col gap-3 min-h-0 overflow-y-auto", columnMaxHeight)}>
-            {header}
-            {journeyStep && <JourneyProgressCard activeId={journeyStep} problemId={journeyProblemId} />}
+          <div className={cn("flex shrink-0 flex-col gap-3 min-h-0 overflow-y-auto", FOCUS_COLUMN_WIDTH_CLASS, columnMaxHeight)}>
+            {!inApp && <FocusChromeButtons />}
+            {journeyStep ? (
+              <JourneyProgressCard activeId={journeyStep} problemId={journeyProblemId} header={cardTitle} />
+            ) : (
+              <Card className="shrink-0">
+                <CardContent className="p-5">
+                  <CardSectionTitle title={title} icon={icon} className="border-b-0 pb-0">
+                    {actions}
+                  </CardSectionTitle>
+                </CardContent>
+              </Card>
+            )}
           </div>
         ) : (
           <>
-            {header}
+            <FocusFlowHeader title={title} icon={icon} className="flex-wrap" chromeButtons={!inApp}>
+              {actions}
+            </FocusFlowHeader>
             {journeyStep && (
               <JourneyProgressCard activeId={journeyStep} problemId={journeyProblemId} orientation="horizontal" />
             )}

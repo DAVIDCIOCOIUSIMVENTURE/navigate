@@ -22,13 +22,12 @@ import {
   NAV_ITEM_ACTIVE_CLASS,
   NAV_ITEM_ACTIVE_FOCUS_CLASS,
   NAV_ITEM_HOVER_CLASS,
-  SECTION_TITLE_ICON_CLASS,
-  SECTION_TITLE_TILE_CLASS,
   navStepBadgeClass,
 } from "@/lib/nav-item-styles"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { JourneyProgressCard } from "@/components/journey-progress"
-import { FOCUS_COLUMN_MAX_HEIGHT_CLASS } from "@/components/flow-shell"
+import { CardSectionTitle, SectionTitle } from "@/components/section-title"
+import { FOCUS_COLUMN_MAX_HEIGHT_CLASS, FOCUS_COLUMN_WIDTH_CLASS } from "@/components/flow-shell"
 
 function StepBadge({
   index,
@@ -212,15 +211,6 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     setMounted(true)
   }, [])
 
-  const sectionTitle = (
-    <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 text-foreground">
-      <span className={SECTION_TITLE_TILE_CLASS} aria-hidden="true">
-        <Lightbulb className={SECTION_TITLE_ICON_CLASS} />
-      </span>
-      <span className="truncate">Identify Solutions</span>
-    </h1>
-  )
-
   const railActions = problemSelected && (
     <div className="shrink-0 flex flex-col gap-2">
       <ProblemContextCard problem={problem} compact />
@@ -252,6 +242,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
     <nav aria-label="Identify solutions steps" className="flex shrink-0 flex-col">
       <Card>
         <CardContent className="p-3 flex flex-col gap-3">
+          <CardSectionTitle title="Identify Solutions" icon={Lightbulb} className="px-3 pt-1.5" />
           <StepList
             pathname={pathname}
             base={base}
@@ -273,9 +264,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
       )}
     >
       {isWide ? (
-        <div className={cn("w-72 shrink-0 flex flex-col gap-4 min-h-0", FOCUS_COLUMN_MAX_HEIGHT_CLASS)}>
+        <div className={cn("shrink-0 flex flex-col gap-4 min-h-0", FOCUS_COLUMN_WIDTH_CLASS, FOCUS_COLUMN_MAX_HEIGHT_CLASS)}>
           <FocusChromeButtons />
-          {sectionTitle}
           {/* The stepper keeps its natural height; the column scrolls when it and the rail outgrow the viewport. */}
           <div className="flex flex-1 min-h-0 flex-col gap-4 overflow-y-auto">
             {wideStepper}
@@ -286,7 +276,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         <>
           <div className="flex items-center gap-3 shrink-0">
             <FocusChromeButtons />
-            {sectionTitle}
+            <SectionTitle title="Identify Solutions" icon={Lightbulb} />
           </div>
           <MobileStepper
             pathname={pathname}

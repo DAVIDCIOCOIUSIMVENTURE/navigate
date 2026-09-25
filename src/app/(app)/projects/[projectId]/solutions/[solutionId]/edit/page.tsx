@@ -21,8 +21,8 @@ import { cn } from "@/lib/utils"
 
 /**
  * The per-solution edit page. A focus page like the problem edit page: no
- * header or sidebar, so the left column carries Home, the Open menu toggle,
- * the title and the journey rail, with the edit card
+ * header or sidebar, so the left column carries Home, the Open menu toggle
+ * and the journey rail card headed by the title, with the edit card
  * beside it. A solution being edited has been identified and is on its way to
  * validation, so the rail sits on "Test solutions".
  */
@@ -33,14 +33,6 @@ function HubBody({ projectId, solutionId }: { projectId: number; solutionId: num
   const store = useStore<RootState>()
   const isWide = useContainerSize() === "wide"
   const [exportOpen, setExportOpen] = useState(false)
-
-  const header = (
-    <FocusFlowHeader
-      title="Edit solution"
-      icon={Lightbulb}
-      className={cn(isWide && "flex-wrap")}
-    />
-  )
 
   if (!solution) {
     return (
@@ -72,7 +64,7 @@ function HubBody({ projectId, solutionId }: { projectId: number; solutionId: num
   }
 
   return (
-    <FocusPageShell header={header} journeyStep="validate-solutions" journeyProblemId={solution.problemId}>
+    <FocusPageShell title="Edit solution" icon={Lightbulb} journeyStep="validate-solutions" journeyProblemId={solution.problemId}>
       <Card className={cn("flex w-full min-w-0 flex-col", isWide && "flex-1 min-h-0 overflow-hidden")}>
         <CardHeader className="px-10 pt-10 pb-0 space-y-6">
           <div className="flex items-start justify-between gap-4">

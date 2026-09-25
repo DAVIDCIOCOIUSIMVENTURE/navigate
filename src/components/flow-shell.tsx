@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { JourneyProgressCard } from "@/components/journey-progress"
 import { FocusChromeButtons } from "@/components/focus-chrome-buttons"
+import { CardSectionTitle, SectionTitle } from "@/components/section-title"
 import { useContainerSize } from "@/context/container-size-context"
 import type { JourneyStepId } from "@/lib/journey-steps"
 import { cn } from "@/lib/utils"
@@ -23,8 +24,6 @@ import {
   NAV_ITEM_HOVER_CLASS,
   navIconClass,
   navIconTileClass,
-  SECTION_TITLE_ICON_CLASS,
-  SECTION_TITLE_TILE_CLASS,
 } from "@/lib/nav-item-styles"
 
 export type FlowNavItem = {
@@ -51,13 +50,22 @@ export type FlowMenuAction = {
 export const FOCUS_COLUMN_MAX_HEIGHT_CLASS = "max-h-[calc(100svh-2rem)] lg:max-h-[calc(100svh-3rem)]"
 
 /**
+ * Width of the left column of every focus flow on wide containers. The
+ * column's first card carries the section title, so it is wide enough for a
+ * title such as "Explore the problem" to sit on one line beside its tile
+ * inside a `p-3` card; a longer one wraps to a second line.
+ */
+export const FOCUS_COLUMN_WIDTH_CLASS = "w-80"
+
+/**
  * Shell for a stepped focus flow about one problem or solution (the problem
  * Explore and Validation flows, solution validation). Focus flows render with
  * no header or sidebar, so like the identify tools this supplies the Home
  * button, the Open menu toggle and the section title, then the step nav and the
  * journey progress rail. On wide containers those sit in a scrolling left column
- * beside the step content; on narrow the nav collapses into a dropdown above
- * the content and the rail becomes a horizontal row.
+ * beside the step content, with the title at the head of the step nav card; on
+ * narrow the title stays in the row with the chrome buttons, the nav collapses
+ * into a dropdown above the content and the rail becomes a horizontal row.
  *
  * `context` is whatever reminder the flow wants under the step list (context
  * cards and View buttons); it renders inside the nav card on wide and below
@@ -105,15 +113,6 @@ export function FlowShell({
     setMobileNavOpen(false)
     router.push(href)
   }
-
-  const sectionTitle = (
-    <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 text-foreground">
-      <span className={SECTION_TITLE_TILE_CLASS} aria-hidden="true">
-        <Icon className={SECTION_TITLE_ICON_CLASS} />
-      </span>
-      <span className="truncate">{title}</span>
-    </h1>
-  )
 
   const stepList = (
     <ul className="flex flex-col gap-1 list-none m-0 p-0" role="list">
@@ -222,14 +221,14 @@ export function FlowShell({
         )}
       >
         {isWide ? (
-          <div className={cn("w-72 shrink-0 flex flex-col gap-4 min-h-0", FOCUS_COLUMN_MAX_HEIGHT_CLASS)}>
+          <div className={cn("shrink-0 flex flex-col gap-4 min-h-0", FOCUS_COLUMN_WIDTH_CLASS, FOCUS_COLUMN_MAX_HEIGHT_CLASS)}>
             <FocusChromeButtons />
-            {sectionTitle}
             {/* The step nav keeps its natural height; the column scrolls when it and the rail outgrow the viewport. */}
             <div className="flex flex-1 min-h-0 flex-col gap-4 overflow-y-auto">
               <nav aria-label={navLabel} className="flex shrink-0 flex-col">
                 <Card>
                   <CardContent className="p-3 flex flex-col gap-2">
+                    <CardSectionTitle title={title} icon={Icon} className="px-3 pt-1.5" />
                     {stepList}
                     {context}
                   </CardContent>
@@ -242,7 +241,7 @@ export function FlowShell({
           <>
             <div className="flex items-center gap-3 shrink-0">
               <FocusChromeButtons />
-              {sectionTitle}
+              <SectionTitle title={title} icon={Icon} />
             </div>
             {mobileNav}
             {journeyStep && (

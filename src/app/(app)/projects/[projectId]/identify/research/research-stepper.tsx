@@ -27,6 +27,7 @@ export const RESEARCH_STEPS: { id: ResearchStep; label: string }[] = [
 ]
 
 export function ResearchStepper({
+  header,
   activeId,
   onStepClick,
   isStepEnabled,
@@ -35,6 +36,8 @@ export function ResearchStepper({
   resetDescription,
   contextCard,
 }: {
+  /** The flow's title, drawn at the head of the card on wide containers (a `CardSectionTitle`). */
+  header?: ReactNode
   activeId: ResearchStep
   onStepClick: (id: ResearchStep) => void
   isStepEnabled: (id: ResearchStep) => boolean
@@ -110,6 +113,7 @@ export function ResearchStepper({
     return (
       <Card className="flex-1 min-h-0 flex flex-col overflow-hidden">
         <CardContent className="p-3 flex flex-col gap-3 flex-1 min-h-0">
+          {header}
           <div className="flex-1 min-h-0 overflow-y-auto">{navList}</div>
           <div className="shrink-0 flex flex-col gap-2">
             {contextCard}

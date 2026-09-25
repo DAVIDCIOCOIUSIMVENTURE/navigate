@@ -4,8 +4,11 @@ import type { ReactNode } from "react"
 import type { LucideIcon } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { AboutDialog } from "@/components/about-toggle"
+import { FocusChromeButtons } from "@/components/focus-chrome-buttons"
 import { FocusFlowHeader } from "@/components/focus-flow-header"
 import { JourneyProgressCard } from "@/components/journey-progress"
+import { CardSectionTitle } from "@/components/section-title"
+import { FOCUS_COLUMN_WIDTH_CLASS } from "@/components/flow-shell"
 import { useContainerSize } from "@/context/container-size-context"
 import type { JourneyStepId } from "@/lib/journey-steps"
 import { cn } from "@/lib/utils"
@@ -19,10 +22,12 @@ import { cn } from "@/lib/utils"
  * of the card to say what to do. On wide containers the card is fitted to the
  * viewport and only its content scrolls; on narrow the page scrolls naturally.
  *
- * When `journeyStep` is given, wide containers get a left column holding the
- * header (Home, Open menu, title, About) stacked above the journey
- * progress rail, with the content card beside it. Narrow containers keep the
- * header on top and show the rail as a compact row above the card.
+ * When `journeyStep` is given, wide containers get a left column (the width
+ * every focus flow's column shares) holding the
+ * chrome buttons (Home, Open menu) above the journey progress rail card, which
+ * is headed by the title and its About button, with the content card beside
+ * it. Narrow containers keep the header on top and show the rail as a compact
+ * row above the card.
  */
 export function IdentifyHubShell({
   title,
@@ -51,11 +56,14 @@ export function IdentifyHubShell({
   const isWide = useContainerSize() === "wide"
   const sideColumn = journeyStep !== undefined && isWide
 
+  const about = (
+    <AboutDialog subject={title} title={aboutTitle}>
+      {intro}
+    </AboutDialog>
+  )
   const header = (
-    <FocusFlowHeader title={title} icon={icon} className={cn(sideColumn && "flex-wrap")}>
-      <AboutDialog subject={title} title={aboutTitle}>
-        {intro}
-      </AboutDialog>
+    <FocusFlowHeader title={title} icon={icon}>
+      {about}
     </FocusFlowHeader>
   )
 
@@ -79,9 +87,17 @@ export function IdentifyHubShell({
         )}
       >
         {sideColumn ? (
-          <div className="flex w-72 shrink-0 flex-col gap-3 min-h-0 overflow-y-auto">
-            {header}
-            <JourneyProgressCard activeId={journeyStep} problemId={journeyProblemId} />
+          <div className={cn("flex shrink-0 flex-col gap-3 min-h-0 overflow-y-auto", FOCUS_COLUMN_WIDTH_CLASS)}>
+            <FocusChromeButtons />
+            <JourneyProgressCard
+              activeId={journeyStep}
+              problemId={journeyProblemId}
+              header={
+                <CardSectionTitle title={title} icon={icon}>
+                  {about}
+                </CardSectionTitle>
+              }
+            />
           </div>
         ) : (
           <>

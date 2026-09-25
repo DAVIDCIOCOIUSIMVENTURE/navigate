@@ -14,9 +14,9 @@ import { useProjectScope } from "@/hooks/use-projects"
 import { projectRoutes } from "@/lib/projects"
 import { ReflectingOnCard } from "@/components/reflect/reflecting-on-card"
 import { JourneyProgressCard } from "@/components/journey-progress"
-import { FOCUS_COLUMN_MAX_HEIGHT_CLASS } from "@/components/problem-flow-shell"
+import { FOCUS_COLUMN_MAX_HEIGHT_CLASS, FOCUS_COLUMN_WIDTH_CLASS } from "@/components/problem-flow-shell"
 import { selectReflectProject, type ReflectStep } from "@/store/reflect-sessions-model"
-import { SECTION_TITLE_ICON_CLASS, SECTION_TITLE_TILE_CLASS } from "@/lib/nav-item-styles"
+import { CardSectionTitle, SectionTitle } from "@/components/section-title"
 import { LensStepper } from "./lens-stepper"
 import { lensHrefs, lensResumeHref, parseLensPath } from "./routes"
 
@@ -104,16 +104,6 @@ export default function LensLayout({ children }: { children: ReactNode }) {
   // here, so bailing out now is safe.
   if (!lens) return null
 
-  const LensIcon = lens.icon
-  const sectionTitle = (
-    <h1 className="flex items-center gap-2 text-xl font-bold min-w-0 shrink-0 text-foreground">
-      <span className={SECTION_TITLE_TILE_CLASS} aria-hidden="true">
-        <LensIcon className={SECTION_TITLE_ICON_CLASS} />
-      </span>
-      <span className="truncate">{lens.title}</span>
-    </h1>
-  )
-
   // The anchor prompt is where the user picks what to reflect on, so the
   // reminder card only appears on the steps that follow it.
   const isAnchorPrompt =
@@ -121,6 +111,7 @@ export default function LensLayout({ children }: { children: ReactNode }) {
 
   const stepper = (
     <LensStepper
+      header={<CardSectionTitle title={lens.title} icon={lens.icon} className="px-3 pt-1.5" />}
       activeId={activeStep}
       onStepClick={handleStepClick}
       promptsProgress={promptsProgress}
@@ -137,9 +128,8 @@ export default function LensLayout({ children }: { children: ReactNode }) {
   const inner = (
     <div className={cn("flex flex-1 min-h-0 w-full", isWide ? "flex-row gap-3" : "flex-col gap-3")}>
       {isWide ? (
-        <div className={cn("w-72 shrink-0 flex flex-col gap-4 min-h-0", FOCUS_COLUMN_MAX_HEIGHT_CLASS)}>
+        <div className={cn("shrink-0 flex flex-col gap-4 min-h-0", FOCUS_COLUMN_WIDTH_CLASS, FOCUS_COLUMN_MAX_HEIGHT_CLASS)}>
           <FocusChromeButtons />
-          {sectionTitle}
           {/* The stepper keeps its natural height; the column scrolls when it and the rail outgrow the viewport. */}
           <div className="flex flex-1 min-h-0 flex-col gap-4 overflow-y-auto">
             <div className="flex shrink-0 flex-col">{stepper}</div>
@@ -150,7 +140,7 @@ export default function LensLayout({ children }: { children: ReactNode }) {
         <>
           <div className="flex items-center gap-3 shrink-0">
             <FocusChromeButtons />
-            {sectionTitle}
+            <SectionTitle title={lens.title} icon={lens.icon} />
           </div>
           {stepper}
           <JourneyProgressCard activeId="identify-problems" problemId={existing?.id ?? null} orientation="horizontal" />
