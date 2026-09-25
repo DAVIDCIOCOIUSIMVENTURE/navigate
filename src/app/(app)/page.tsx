@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useMemo, useState, type ReactNode } from "react"
 import Link from "next/link"
 import { useSelector } from "react-redux"
 import { BookOpen, ChevronRight, Compass, FolderKanban, Home, Milestone, Plus, type LucideIcon } from "lucide-react"
@@ -64,28 +64,27 @@ export default function HomePage() {
       {/* Self Discovery beside the two reading sections; the projects take the rest of the page. */}
       <div className="@container shrink-0">
         <div className="grid grid-cols-1 gap-3 @[640px]:grid-cols-2 @[1000px]:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)]">
-          {/* Like the section cards beside it, the whole card is the link: it leads into the questionnaire, picking up where the user left off. */}
-          <Card className="@[640px]:col-span-2 @[1000px]:col-span-1 transition-colors hover:bg-muted">
-            <Link
-              href={SELF_DISCOVERY_FLOW_HREF}
-              aria-label={selfDiscoveryStarted ? "Continue Self Discovery" : "Start Self Discovery"}
-              title={selfDiscoveryStarted ? "Continue Self Discovery" : "Start Self Discovery"}
-              className="p-3 flex items-center gap-4 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
+          {/* Leads into the questionnaire, picking up where the user left off. */}
+          <HomeCard
+            href={SELF_DISCOVERY_FLOW_HREF}
+            icon={Compass}
+            title="Self Discovery"
+            tone="card"
+            label={selfDiscoveryStarted ? "Continue Self Discovery" : "Start Self Discovery"}
+            className="@[640px]:col-span-2 @[1000px]:col-span-1"
+            leading={
               <ProgressRing
                 label="Self Discovery progress"
                 labelPosition="none"
                 completed={mounted ? progress.completed : 0}
                 total={progress.total}
-                size={44}
+                size={40}
                 strokeWidth={4}
               />
-              <CardTitle size="md" icon={Compass} className="flex-1 min-w-0 text-foreground">Self Discovery</CardTitle>
-              <ChevronRight className="h-4 w-4 shrink-0" aria-hidden="true" />
-            </Link>
-          </Card>
-          <SectionLink href="/foundations" icon={BookOpen} title="Why It Matters" />
-          <SectionLink href="/next-steps" icon={Milestone} title="Next Steps" />
+            }
+          />
+          <HomeCard href="/foundations" icon={BookOpen} title="Why It Matters" tone="brand" />
+          <HomeCard href="/next-steps" icon={Milestone} title="Next Steps" tone="brand" />
         </div>
       </div>
 
@@ -116,18 +115,62 @@ export default function HomePage() {
   )
 }
 
-/** A quick link into a reading section, drawn like the section cards on Why It Matters and Next Steps, without their tagline. */
-function SectionLink({ href, icon: Icon, title }: { href: string; icon: LucideIcon; title: string }) {
+const HOME_CARD_TONES = {
+  /** A white card, as the app's cards are, with the primary title tile. */
+  card: {
+    root: "border-border bg-card text-foreground hover:bg-muted",
+    tile: "bg-primary text-primary-foreground",
+  },
+  /** A cobalt section card, like the ones on Why It Matters and Next Steps, with the tile inverted on white. */
+  brand: {
+    root: "border-secondary-brand bg-secondary-brand text-white hover:bg-secondary-brand/90",
+    tile: "bg-white text-secondary-brand",
+  },
+} as const
+
+/**
+ * One of the three cards at the top of Home. The whole card is the link, and every card
+ * shares the same shape, padding, title (the md CardTitle sizes) and chevron, so only the
+ * tone and what leads the row (the Self Discovery progress ring) differ.
+ */
+function HomeCard({
+  href,
+  icon: Icon,
+  title,
+  tone,
+  label,
+  leading,
+  className,
+}: {
+  href: string
+  icon: LucideIcon
+  title: string
+  tone: keyof typeof HOME_CARD_TONES
+  /** Accessible name and tooltip when the title alone does not say what the click does. */
+  label?: string
+  /** Drawn before the title, such as a progress ring. */
+  leading?: ReactNode
+  className?: string
+}) {
+  const tones = HOME_CARD_TONES[tone]
   return (
     <Link
       href={href}
-      className="flex items-center gap-3 p-4 rounded-lg bg-secondary-brand text-white hover:bg-secondary-brand/90 transition-colors shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      aria-label={label}
+      title={label}
+      className={cn(
+        "flex items-center gap-3 min-h-16 px-4 py-3 rounded-xl border shadow-lg transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        tones.root,
+        className,
+      )}
     >
-      {/* The same tile the Self Discovery card's md CardTitle draws, inverted on white. */}
-      <span className="flex items-center justify-center w-8 h-8 rounded-md shrink-0 bg-white">
-        <Icon className="h-4 w-4 text-secondary-brand [stroke-width:2.5]" aria-hidden="true" />
-      </span>
-      <p className="flex-1 min-w-0 text-lg font-semibold">{title}</p>
+      {leading}
+      <h2 className="flex flex-1 min-w-0 items-center gap-2 text-lg font-bold leading-none tracking-tight">
+        <span className={cn("flex items-center justify-center w-8 h-8 rounded-md shrink-0", tones.tile)}>
+          <Icon className="h-4 w-4 [stroke-width:2.5]" aria-hidden="true" />
+        </span>
+        {title}
+      </h2>
       <ChevronRight className="h-4 w-4 shrink-0" aria-hidden="true" />
     </Link>
   )
