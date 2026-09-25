@@ -1,4 +1,4 @@
-import { BookOpen, Compass, Heart, Book, Brain, Briefcase, Globe, Home, Search, FlaskConical, Clock, Trophy, Milestone, Hammer, Route, Users, RotateCcw, Plus, type LucideIcon } from "lucide-react"
+import { BookOpen, Compass, FolderKanban, Heart, Book, Brain, Briefcase, Globe, Home, Search, FlaskConical, Clock, Trophy, Milestone, Hammer, Route, Users, RotateCcw, Plus, type LucideIcon } from "lucide-react"
 
 export const navigationItems = {
   sidebar: [
@@ -16,6 +16,11 @@ export const navigationItems = {
       title: "Self Discovery",
       url: "/self-discovery",
       icon: Compass
+    },
+    {
+      title: "Projects",
+      url: "/projects",
+      icon: FolderKanban
     },
     {
       title: "Next Steps",

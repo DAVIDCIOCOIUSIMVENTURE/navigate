@@ -9,6 +9,14 @@ import type { Project } from "@/store/projects-model"
 
 export const HOME_HREF = "/"
 
+/**
+ * The projects list. Home gives an overview (Self Discovery, the projects
+ * and quick links to the reading sections); this is the page about the
+ * projects alone, and where a page about a project that no longer exists
+ * sends the user.
+ */
+export const PROJECTS_HREF = "/projects"
+
 /** A project id, or nothing yet (a page still hydrating). Builders fall back to home for nothing. */
 export type ProjectRef = number | null | undefined
 
@@ -39,6 +47,8 @@ export function previewHref(projectId: ProjectRef): string {
 
 /** Every route under a project. Flow steps default to their first step. */
 export const projectRoutes = {
+  /** The list of every project, at `/projects`. */
+  list: () => PROJECTS_HREF,
   page: (projectId: ProjectRef) => under(projectId, ""),
   preview: previewHref,
   identify: (projectId: ProjectRef) => under(projectId, "/identify"),

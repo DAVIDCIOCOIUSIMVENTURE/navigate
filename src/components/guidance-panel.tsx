@@ -170,7 +170,7 @@ const guidanceItems: GuidanceItem[] = [
           subtitle="Navigate is your guide through the innovation journey, from surfacing areas of personal interest to testing problems worth solving."
         />
         <GuidanceSection icon={Compass} iconBg="bg-primary" title="The journey">
-          <p>Navigate breaks the process into a sequence of connected stages. Work through them in order; later stages build on earlier ones. An optional <Keyword>Why It Matters</Keyword> section sits before everything else for those who want the grounding before they start. Everything from stage 2 onwards happens inside a <Keyword>project</Keyword>: one problem and the solutions found for it.</p>
+          <p>Navigate breaks the process into a sequence of connected stages. Work through them in order; later stages build on earlier ones. An optional <Keyword>Why It Matters</Keyword> section sits before everything else for those who want the grounding before they start. Everything from stage 2 onwards happens inside a <Keyword>project</Keyword>: one problem and the solutions found for it. <Keyword>Home</Keyword> keeps the whole journey in view: how far your Self Discovery has got, your projects, and quick links into the reading sections.</p>
           <div className="flex flex-col gap-3 pt-1">
             <NumberedStep n={0} title="Why It Matters (optional)" accent="bg-violet-800">
               Short pages, videos, and case studies on why each stage exists and what happens when founders skip them.
@@ -179,7 +179,7 @@ const guidanceItems: GuidanceItem[] = [
               Explore your background, interests, and frustrations to surface <Keyword>problem triggers</Keyword>: seeds worth investigating.
             </NumberedStep>
             <NumberedStep n={2} title="Identify a problem" accent="bg-orange-700">
-              Start a project from Home, then turn those triggers into one concrete, well-framed problem with one of the identify tools. The problem becomes the project&apos;s problem.
+              Start a project from Home or the Projects page, then turn those triggers into one concrete, well-framed problem with one of the identify tools. The problem becomes the project&apos;s problem.
             </NumberedStep>
             <NumberedStep n={3} title="Explore the Problem" accent="bg-tertiary">
               Take your project&apos;s problem for a deeper dive: define the customer, map existing solutions, and capture what the customer is trying to achieve.
@@ -201,45 +201,6 @@ const guidanceItems: GuidanceItem[] = [
           "The journey rail down the left of every project page shows where you are; each milestone links into that work",
           "New to Navigate? Take the guided tour from the account menu in the header",
           "Open this guidance at any time from the Guidance button in the header",
-        ]} />
-      </div>
-    ),
-  },
-  {
-    id: "projects",
-    title: "Projects",
-    icon: FolderOpen,
-    iconBg: "bg-teal-700",
-    content: (
-      <div className="flex flex-col gap-5">
-        <GuidanceHero
-          icon={FolderOpen}
-          tone="bg-teal-700"
-          title="Projects"
-          subtitle="A project is the unit of work in Navigate: one problem and the solutions found for it. Home lists your projects, and everything about a project lives on its page."
-        />
-        <GuidanceSection icon={LayoutGrid} iconBg="bg-teal-700" title="Home">
-          <p>Home lists your projects, newest first, with each project&apos;s problem and its status, how many solutions it has and its team. Click a row to open the project, or its settings button at the end of the row to change the project without opening it. <Keyword>New project</Keyword> starts one (it also sits at the top of the projects menu in the header), and <Keyword>Import project</Keyword> brings in a project somebody exported as a file.</p>
-        </GuidanceSection>
-        <GuidanceSection icon={FolderOpen} iconBg="bg-teal-700" title="The project page">
-          <p>The left column carries the project&apos;s name, its team, a <Keyword>Settings</Keyword> button and the journey rail. Beside it sits the problem canvas: its cards summarise the problem, every card title opens an edit dialog for that card, and the gear button beside the status pill holds the actions (<Keyword>Explore</Keyword>, <Keyword>Test</Keyword>, <Keyword>Edit</Keyword>, <Keyword>Full view</Keyword>, <Keyword>Download as text</Keyword> and <Keyword>Export project</Keyword>). Under the canvas, the solutions table lists what you have found, with <Keyword>Identify solutions</Keyword> and <Keyword>Compare solutions</Keyword> beside it.</p>
-          <p>A project with no problem yet shows an <Keyword>Identify a problem</Keyword> button instead, which opens the project&apos;s hub of identify tools.</p>
-        </GuidanceSection>
-        <GuidanceSection icon={Settings} iconBg="bg-teal-700" title="Project settings">
-          <p>One dialog holds everything about the project itself. Rename it, add or remove the people on its team (names and email addresses for now, since there are no accounts yet), switch on <Keyword>Share a public portfolio</Keyword>, open the portfolio, export the project as a file or import one, and delete the project. Deleting a project takes its problem and solutions with it; the notes in your journal that were linked to it are kept and simply unlinked.</p>
-        </GuidanceSection>
-        <GuidanceSection icon={Presentation} iconBg="bg-teal-700" title="The portfolio">
-          <p>The portfolio is the project written out for somebody who has never used Navigate: the problem, who has it, what those people are trying to get done, how they cope today, what solving it could be worth, the competition, the verdict, and every solution with how it was found and how it scored. It is read only and needs no account or password.</p>
-          <p>A project is private until you share it. <Keyword>Open portfolio</Keyword> works before then, so you can read it yourself and decide whether it is ready; a banner says nobody else can open it yet. Until projects are stored on a server, the link only opens on the device the project was made on.</p>
-        </GuidanceSection>
-        <GuidanceSection icon={Route} iconBg="bg-teal-700" title="Finding your way">
-          <p>Every flow inside a project is a focus page: the header and sidebar step aside, and two buttons take their place. <Keyword>Home</Keyword> returns to the project list from anywhere, however deep you are, and <Keyword>Menu</Keyword> reveals the top bar with the projects menu, journal and this guidance.</p>
-          <p>The journey rail shows the five milestones: Identify problem, Explore problem, Test problem, Identify solutions and Test solutions. The page&apos;s own step is highlighted, the steps this problem has reached are filled in, and each label leads into that work for this project, so <Keyword>Identify problem</Keyword> reopens the tool the problem came from and <Keyword>Test solutions</Keyword> opens the next solution waiting for a verdict.</p>
-        </GuidanceSection>
-        <TipCallout items={[
-          "Each project holds exactly one problem. To work on a second problem, start a second project",
-          "Export a project before trying something drastic; importing the file back gives you a fresh copy",
-          "Notes in the journal can be linked to a project, and the panel can filter to just this project's notes",
         ]} />
       </div>
     ),
@@ -272,12 +233,12 @@ const guidanceItems: GuidanceItem[] = [
           </div>
         </GuidanceSection>
         <GuidanceSection icon={ArrowRight} iconBg="bg-violet-800" title="What comes next">
-          <p>Once you&apos;ve read as much as you want (or skipped straight past), move on to Self Discovery to start surfacing your own problem triggers, or go straight to Home and start a project.</p>
+          <p>Once you&apos;ve read as much as you want (or skipped straight past), move on to Self Discovery to start surfacing your own problem triggers, or go straight to Projects and start one.</p>
         </GuidanceSection>
         <TipCallout items={[
           "Pick the sections that match what you're unsure about; you don't have to read all five",
           "Case studies are grouped as 'what went wrong' or 'what went right'; both are worth reading",
-          "You can return at any time from the Why It Matters button in the header",
+          "You can return at any time from Why It Matters in the left menu, or its quick link on Home",
         ]} />
       </div>
     ),
@@ -309,6 +270,46 @@ const guidanceItems: GuidanceItem[] = [
           <>Be specific: <Keyword>&ldquo;healthcare admin is slow&rdquo;</Keyword> is more useful than <Keyword>&ldquo;healthcare&rdquo;</Keyword></>,
           "Quantity matters at this stage; capture everything, filter later",
           "Return and update your answers as you learn more through the process",
+          "Home shows how far you have got, with a button that picks up where you left off",
+        ]} />
+      </div>
+    ),
+  },
+  {
+    id: "projects",
+    title: "Projects",
+    icon: FolderOpen,
+    iconBg: "bg-teal-700",
+    content: (
+      <div className="flex flex-col gap-5">
+        <GuidanceHero
+          icon={FolderOpen}
+          tone="bg-teal-700"
+          title="Projects"
+          subtitle="A project is the unit of work in Navigate: one problem and the solutions found for it. Everything from identifying a problem onwards happens inside one. The Projects page lists them, Home shows them beside your Self Discovery, and everything about a project lives on its page."
+        />
+        <GuidanceSection icon={LayoutGrid} iconBg="bg-teal-700" title="Home and the Projects page">
+          <p>Home is your overview: how far your Self Discovery has got, your projects, and quick links into Why It Matters and Next Steps. <Keyword>Projects</Keyword> in the left menu holds the same list on its own. Both list your projects newest first, with each project&apos;s problem and its status, how many solutions it has and its team. Click a row to open the project, or its settings button at the end of the row to change the project without opening it. <Keyword>New project</Keyword> starts one from either page (it also sits at the top of the projects menu in the header), and the menu beside it on the Projects page exports a project as a file or imports one somebody has sent you.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={FolderOpen} iconBg="bg-teal-700" title="The project page">
+          <p>The left column carries the project&apos;s name, its team, a <Keyword>Settings</Keyword> button and the journey rail. Beside it sits the problem canvas: its cards summarise the problem, every card title opens an edit dialog for that card, and the gear button beside the status pill holds the actions (<Keyword>Explore</Keyword>, <Keyword>Test</Keyword>, <Keyword>Edit</Keyword>, <Keyword>Full view</Keyword>, <Keyword>Download as text</Keyword> and <Keyword>Export project</Keyword>). Under the canvas, the solutions table lists what you have found, with <Keyword>Identify solutions</Keyword> and <Keyword>Compare solutions</Keyword> beside it.</p>
+          <p>A project with no problem yet shows an <Keyword>Identify a problem</Keyword> button instead, which opens the project&apos;s hub of identify tools.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={Settings} iconBg="bg-teal-700" title="Project settings">
+          <p>One dialog holds everything about the project itself. Rename it, add or remove the people on its team (names and email addresses for now, since there are no accounts yet), switch on <Keyword>Share a public portfolio</Keyword>, open the portfolio, export the project as a file or import one, and delete the project. Deleting a project takes its problem and solutions with it and returns you to the Projects page; the notes in your journal that were linked to it are kept and simply unlinked.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={Presentation} iconBg="bg-teal-700" title="The portfolio">
+          <p>The portfolio is the project written out for somebody who has never used Navigate: the problem, who has it, what those people are trying to get done, how they cope today, what solving it could be worth, the competition, the verdict, and every solution with how it was found and how it scored. It is read only and needs no account or password.</p>
+          <p>A project is private until you share it. <Keyword>Open portfolio</Keyword> works before then, so you can read it yourself and decide whether it is ready; a banner says nobody else can open it yet. Until projects are stored on a server, the link only opens on the device the project was made on.</p>
+        </GuidanceSection>
+        <GuidanceSection icon={Route} iconBg="bg-teal-700" title="Finding your way">
+          <p>Every flow inside a project is a focus page: the header and sidebar step aside, and two buttons take their place. <Keyword>Home</Keyword> returns to the home page from anywhere, however deep you are, and <Keyword>Menu</Keyword> reveals the top bar with the projects menu, journal and this guidance. The breadcrumb in the header reads Home, then Projects, then the project, so any part of it climbs back up a level.</p>
+          <p>The journey rail shows the five milestones: Identify problem, Explore problem, Test problem, Identify solutions and Test solutions. The page&apos;s own step is highlighted, the steps this problem has reached are filled in, and each label leads into that work for this project, so <Keyword>Identify problem</Keyword> reopens the tool the problem came from and <Keyword>Test solutions</Keyword> opens the next solution waiting for a verdict.</p>
+        </GuidanceSection>
+        <TipCallout items={[
+          "Each project holds exactly one problem. To work on a second problem, start a second project",
+          "Export a project before trying something drastic; importing the file back gives you a fresh copy",
+          "Notes in the journal can be linked to a project, and the panel can filter to just this project's notes",
         ]} />
       </div>
     ),
@@ -501,7 +502,7 @@ const guidanceItems: GuidanceItem[] = [
           "Anchor the price on the one goal that drives the purchase, not on the cost of building a feature",
           "If you cannot justify the reachable share or realistic share to a sceptical friend, slide them down",
           "A large total market is not the same as proven willingness to pay; read the underlying signals",
-          "Each project holds one problem, so start another project to test a second problem and compare the verdicts on Home",
+          "Each project holds one problem, so start another project to test a second problem and compare the verdicts on the Projects page",
         ]} />
       </div>
     ),

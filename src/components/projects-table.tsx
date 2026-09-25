@@ -37,14 +37,24 @@ type SortKey = "created" | "name" | "status" | "solutions"
 type SortDirection = "asc" | "desc"
 
 /**
- * The home page list: one row per project with its problem, the problem's
- * validation status and how many solutions it has.
+ * The projects list, on the Projects page and in the Home overview: one row
+ * per project with its problem, the problem's validation status and how
+ * many solutions it has.
  * The whole row opens the project. Its one button, at the end of the row,
  * opens the project's settings dialog, which is where everything else about a
  * project (its portfolio, its team and the way to delete it) lives.
  * Newest project first by default, so the one just created is at the top.
  */
-export function ProjectsTable({ projects, className }: { projects: Project[]; className?: string }) {
+export function ProjectsTable({
+  projects,
+  className,
+  headerExtra,
+}: {
+  projects: Project[]
+  className?: string
+  /** Anything to place after the search box in the card header (Home puts its link to the Projects page there). */
+  headerExtra?: React.ReactNode
+}) {
   const router = useRouter()
   const problems = useSelector((state: RootState) => state.problems.problems)
   const solutions = useSelector((state: RootState) => state.solutions.solutions)
@@ -142,6 +152,7 @@ export function ProjectsTable({ projects, className }: { projects: Project[]; cl
                 className="h-8 pl-8 w-56 text-sm"
               />
             </div>
+            {headerExtra}
           </div>
         </div>
       </CardHeader>

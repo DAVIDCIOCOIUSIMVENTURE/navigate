@@ -74,7 +74,7 @@ export default function NextStepsPage() {
                 </p>
               </div>
               <Button asChild variant="outline" size="sm">
-                <Link href="/">
+                <Link href={projectRoutes.list()}>
                   Go to your projects
                   <ChevronRight className="ml-1 h-4 w-4" />
                 </Link>

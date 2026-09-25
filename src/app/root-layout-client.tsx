@@ -32,7 +32,7 @@ import { TeamAvatars } from "@/components/team-avatars"
 import { TourOverlay } from "@/components/tour/tour-overlay"
 import { ProjectsMenu } from "@/components/projects-menu"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
-import { projectForProblem, projectLabel, projectRoutes } from "@/lib/projects"
+import { HOME_HREF, PROJECTS_HREF, projectForProblem, projectLabel, projectRoutes } from "@/lib/projects"
 import { getReflectLens } from "@/data/reflectLenses"
 import { GUIDED_TOOL } from "@/data/guidedDiscovery"
 import type { Project } from "@/store/projects-model"
@@ -49,21 +49,27 @@ function ContentArea({ children }: { children: React.ReactNode }) {
     </div>
   )
 }
-type Crumb = { label: string; href?: string }
+export type Crumb = { label: string; href?: string }
 
 /** What the breadcrumb needs from the store: the project a page belongs to. */
-type CrumbLookup = {
+export type CrumbLookup = {
   projectById: (projectId: number) => Crumb | null
   projectForProblem: (problemId: number) => Crumb | null
 }
 
-function getCrumbs(pathname: string, lookup: CrumbLookup): Crumb[] {
+export function getCrumbs(pathname: string, lookup: CrumbLookup): Crumb[] {
   if (pathname === "/") return [{ label: "Home" }]
-  const crumbs: Crumb[] = [{ label: "Home", href: "/" }]
+  const crumbs: Crumb[] = [{ label: "Home", href: HOME_HREF }]
   const segments = pathname.split("/").filter(Boolean)
   const [first, second, third] = segments
 
   if (first === "projects") {
+    if (segments.length === 1) {
+      crumbs.push({ label: "Projects" })
+      return crumbs
+    }
+    // Every project sits under the projects list, so the crumb can climb back to it.
+    crumbs.push({ label: "Projects", href: PROJECTS_HREF })
     const project = lookup.projectById(Number(second))
     if (segments.length === 2) {
       crumbs.push(project ? { label: project.label } : { label: "Project" })

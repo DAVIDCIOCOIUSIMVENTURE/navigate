@@ -206,7 +206,7 @@ export const TOUR_STEPS: TourStep[] = [
     id: "sidebar-home",
     title: "Home",
     body: [
-      "Your home page lists your projects. Each project is one problem and the solutions you find for it; open one to carry on where you left off. Come back here whenever you want an overview of your progress.",
+      "Your home page is an overview: how far your Self Discovery has got, your projects, and quick links into the reading sections. Each project is one problem and the solutions you find for it; open one to carry on where you left off. Come back here whenever you want to see your progress.",
     ],
     target: TOUR_TARGETS.sidebarItem("/"),
     placement: "right",
@@ -228,9 +228,20 @@ export const TOUR_STEPS: TourStep[] = [
     id: "sidebar-self-discovery",
     title: "Self Discovery",
     body: [
-      "A questionnaire about your interests, knowledge, skills, experience and the people you know. Your answers feed the You column when you identify problems, so every problem stays grounded in what you can actually do.",
+      "A questionnaire about your interests, knowledge, skills, experience and the people you know. Your answers feed the You column when you identify problems, so every problem stays grounded in what you can actually do. Home shows how far you have got and picks up where you left off.",
     ],
     target: TOUR_TARGETS.sidebarItem("/self-discovery"),
+    placement: "right",
+    route: "/",
+    needsSidebar: true,
+  },
+  {
+    id: "sidebar-projects",
+    title: "Projects",
+    body: [
+      "Every project you start, in one list: its problem and how far it has been tested, how many solutions it has and who is on the team. Open a project to carry on with it, or use the menu here to export a project as a file or import one somebody has sent you.",
+    ],
+    target: TOUR_TARGETS.sidebarItem("/projects"),
     placement: "right",
     route: "/",
     needsSidebar: true,

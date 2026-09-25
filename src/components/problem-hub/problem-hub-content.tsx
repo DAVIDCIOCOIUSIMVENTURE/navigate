@@ -445,9 +445,9 @@ export function NextStepsSection({ projectId, problemId }: { projectId: number; 
               icon={RotateCcw}
               title="Move on to a different problem"
               description="Go back to your projects and start another one, or pick a different problem to test. Ruling out a problem is still progress."
-              actionLabel="Back to Home"
+              actionLabel="Back to your projects"
               actionIcon={ArrowRight}
-              onAction={() => router.push("/")}
+              onAction={() => router.push(projectRoutes.list())}
             />
           </div>
         </div>

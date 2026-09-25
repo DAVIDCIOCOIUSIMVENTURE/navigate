@@ -4,7 +4,7 @@ import { useEffect, type ReactNode } from "react"
 import { useRouter } from "next/navigation"
 import type { Problem } from "@/store/problems-model"
 import type { ProjectScope } from "@/hooks/use-projects"
-import { HOME_HREF, projectRoutes } from "@/lib/projects"
+import { PROJECTS_HREF, projectRoutes } from "@/lib/projects"
 
 /**
  * Guards a page that is about a project but not about a problem it may not
@@ -18,7 +18,7 @@ export function ProjectGate({ scope, children }: { scope: ProjectScope; children
   const { hydrated, project } = scope
 
   useEffect(() => {
-    if (hydrated && !project) router.replace(HOME_HREF)
+    if (hydrated && !project) router.replace(PROJECTS_HREF)
   }, [hydrated, project, router])
 
   if (!hydrated || !project) return null
@@ -28,7 +28,7 @@ export function ProjectGate({ scope, children }: { scope: ProjectScope; children
 /**
  * Guards a page that is about a project's problem (its edit page, Explore,
  * Validation). While the store is loading nothing is rendered; once it has
- * loaded, a project that does not exist sends the user home and a project
+ * loaded, a project that does not exist sends the user to the projects list and a project
  * with no problem yet sends them to the project page to identify one. With
  * a problem in hand the page renders through `children`.
  */
@@ -44,7 +44,7 @@ export function ProjectProblemGate({
 
   useEffect(() => {
     if (!hydrated) return
-    if (!project) router.replace(HOME_HREF)
+    if (!project) router.replace(PROJECTS_HREF)
     else if (!problem) router.replace(projectRoutes.page(projectId))
   }, [hydrated, project, problem, projectId, router])
 

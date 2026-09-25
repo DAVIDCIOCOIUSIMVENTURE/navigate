@@ -16,7 +16,7 @@ import { ProjectSettingsDialog } from "@/components/project-settings-dialog"
 import { SolutionsTable } from "@/components/solutions-table"
 import { useContainerSize } from "@/context/container-size-context"
 import { problemJourneyStep, summariseProblemJourney } from "@/lib/journey-steps"
-import { HOME_HREF, projectDisplayName, projectRoutes } from "@/lib/projects"
+import { PROJECTS_HREF, projectDisplayName, projectRoutes } from "@/lib/projects"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { cn } from "@/lib/utils"
 import { ArrowLeft, FolderKanban, Lightbulb, Plus, Scale, Settings, Target } from "lucide-react"
@@ -59,9 +59,9 @@ export default function ProjectPage() {
           <CardContent className="p-10 flex flex-col items-center gap-4 text-center">
             <p className="text-base">Project not found.</p>
             <Button asChild variant="outline">
-              <Link href={HOME_HREF}>
+              <Link href={PROJECTS_HREF}>
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Home
+                Back to your projects
               </Link>
             </Button>
           </CardContent>
@@ -170,7 +170,7 @@ export default function ProjectPage() {
         project={project}
         open={settingsOpen}
         onOpenChange={setSettingsOpen}
-        onDeleted={() => router.push(HOME_HREF)}
+        onDeleted={() => router.push(PROJECTS_HREF)}
       />
     </FocusPageShell>
   )
