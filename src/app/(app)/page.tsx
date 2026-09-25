@@ -2,9 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
 import { useSelector } from "react-redux"
-import { ArrowRight, BookOpen, ChevronRight, Compass, FolderKanban, Home, Milestone, Plus, Sparkles, type LucideIcon } from "lucide-react"
+import { BookOpen, ChevronRight, Compass, FolderKanban, Home, Milestone, Plus, type LucideIcon } from "lucide-react"
 import type { RootState } from "@/store"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardTitle } from "@/components/ui/card"
@@ -29,7 +28,6 @@ const SELF_DISCOVERY_FLOW_HREF = "/self-discovery/discover"
  * import and export menu; Self Discovery has its own page for the answers.
  */
 export default function HomePage() {
-  const router = useRouter()
   const projects = useSelector((state: RootState) => state.projects.projects)
   const hydrated = useSelector((state: RootState) => state.projects.hydrated)
   const selfDiscoveryAnswers = useSelector((state: RootState) => state.selfDiscoveryItems.items)
@@ -68,53 +66,32 @@ export default function HomePage() {
       <div className="@container shrink-0">
         <div className="grid grid-cols-1 gap-3 @[640px]:grid-cols-2 @[1000px]:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)]">
           <Card className="@[640px]:col-span-2 @[1000px]:col-span-1">
-            <CardContent className="p-5 flex flex-wrap items-center gap-5">
+            {/* One row, no taller than the section cards beside it: the ring, the title and the chevron. */}
+            <CardContent className="p-3 flex items-center gap-4">
               <ProgressRing
                 label="Self Discovery progress"
                 labelPosition="none"
                 completed={mounted ? progress.completed : 0}
                 total={progress.total}
-                size={64}
-                strokeWidth={6}
+                size={44}
+                strokeWidth={4}
               />
-              <div className="flex-1 min-w-[12rem] flex flex-col gap-1.5">
-                <CardTitle size="md" icon={Compass} className="text-foreground">
-                  <Link href={SELF_DISCOVERY_HREF} className="hover:underline">Self Discovery</Link>
-                </CardTitle>
-                <p className="text-base">
-                  Capture what you bring to a venture: your strengths, interests and lived experiences. They feed the You column when you identify a problem.
-                </p>
-                <p className="text-base font-medium">
-                  {selfDiscoveryStarted
-                    ? `${progress.completed} of ${progress.total} questions answered`
-                    : "Not started yet"}
-                </p>
-              </div>
-              <div className="flex flex-wrap items-center gap-2">
-                {selfDiscoveryStarted && (
-                  <Button asChild variant="secondary-brand-outline">
-                    <Link href={SELF_DISCOVERY_HREF}>Your answers</Link>
-                  </Button>
-                )}
-                <Button onClick={() => router.push(SELF_DISCOVERY_FLOW_HREF)} className="gap-2">
-                  <ArrowRight className="h-4 w-4" />
-                  {selfDiscoveryStarted ? "Continue Self Discovery" : "Start Self Discovery"}
-                </Button>
-              </div>
+              <CardTitle size="md" icon={Compass} className="flex-1 min-w-0 text-foreground">
+                <Link href={SELF_DISCOVERY_HREF} className="hover:underline">Self Discovery</Link>
+              </CardTitle>
+              {/* The same chevron the section cards carry: it leads into the questionnaire, picking up where the user left off. */}
+              <Link
+                href={SELF_DISCOVERY_FLOW_HREF}
+                aria-label={selfDiscoveryStarted ? "Continue Self Discovery" : "Start Self Discovery"}
+                title={selfDiscoveryStarted ? "Continue Self Discovery" : "Start Self Discovery"}
+                className="flex items-center justify-center h-9 w-9 rounded-lg shrink-0 hover:bg-muted transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <ChevronRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
             </CardContent>
           </Card>
-          <SectionLink
-            href="/foundations"
-            icon={BookOpen}
-            title="Why It Matters"
-            tagline="Why finding the right problem matters, and what happens to founders who skip the work."
-          />
-          <SectionLink
-            href="/next-steps"
-            icon={Milestone}
-            title="Next Steps"
-            tagline="Where to go once you have a tested problem and a solution worth pursuing."
-          />
+          <SectionLink href="/foundations" icon={BookOpen} title="Why It Matters" />
+          <SectionLink href="/next-steps" icon={Milestone} title="Next Steps" />
         </div>
       </div>
 
@@ -145,24 +122,18 @@ export default function HomePage() {
   )
 }
 
-/** A quick link into a reading section, drawn like the section cards on Why It Matters and Next Steps. */
-function SectionLink({ href, icon: Icon, title, tagline }: { href: string; icon: LucideIcon; title: string; tagline: string }) {
+/** A quick link into a reading section, drawn like the section cards on Why It Matters and Next Steps, without their tagline. */
+function SectionLink({ href, icon: Icon, title }: { href: string; icon: LucideIcon; title: string }) {
   return (
     <Link
       href={href}
-      className="flex items-start gap-3 p-4 rounded-lg bg-secondary-brand text-white hover:bg-secondary-brand/90 transition-colors shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      className="flex items-center gap-3 p-4 rounded-lg bg-secondary-brand text-white hover:bg-secondary-brand/90 transition-colors shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
     >
       <span className="flex items-center justify-center w-9 h-9 rounded-lg shrink-0 bg-white">
         <Icon className="h-5 w-5 text-secondary-brand" aria-hidden="true" />
       </span>
-      <div className="flex-1 min-w-0">
-        <p className="font-semibold">{title}</p>
-        <p className="text-base italic mt-0.5 flex items-start gap-1.5">
-          <Sparkles className="h-3 w-3 shrink-0 mt-1.5" aria-hidden="true" />
-          <span>{tagline}</span>
-        </p>
-      </div>
-      <ChevronRight className="h-4 w-4 shrink-0 mt-1" aria-hidden="true" />
+      <p className="flex-1 min-w-0 font-semibold">{title}</p>
+      <ChevronRight className="h-4 w-4 shrink-0" aria-hidden="true" />
     </Link>
   )
 }
