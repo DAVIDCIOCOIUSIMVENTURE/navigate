@@ -58,9 +58,10 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Self Discovery beside the two reading sections; the projects take the rest of the page. */}
+      {/* Why It Matters, then Self Discovery (the widest card), then Next Steps; the projects take the rest of the page. */}
       <div className="@container shrink-0">
-        <div className="grid grid-cols-1 gap-3 @[640px]:grid-cols-2 @[1000px]:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)]">
+        <div className="grid grid-cols-1 gap-3 @[640px]:grid-cols-2 @[1000px]:grid-cols-[minmax(0,1fr)_minmax(0,2fr)_minmax(0,1fr)]">
+          <HomeCard href="/foundations" icon={BookOpen} title="Why It Matters" tone="brand" />
           {/* Leads into the questionnaire, picking up where the user left off. */}
           <HomeCard
             href={SELF_DISCOVERY_FLOW_HREF}
@@ -68,7 +69,6 @@ export default function HomePage() {
             title="Self Discovery"
             tone="card"
             label={selfDiscoveryStarted ? "Continue Self Discovery" : "Start Self Discovery"}
-            className="@[640px]:col-span-2 @[1000px]:col-span-1"
             leading={
               <ProgressRing
                 label="Self Discovery progress"
@@ -80,8 +80,14 @@ export default function HomePage() {
               />
             }
           />
-          <HomeCard href="/foundations" icon={BookOpen} title="Why It Matters" tone="brand" />
-          <HomeCard href="/next-steps" icon={Milestone} title="Next Steps" tone="brand" />
+          {/* On two columns the first two share a row and this one takes the row below. */}
+          <HomeCard
+            href="/next-steps"
+            icon={Milestone}
+            title="Next Steps"
+            tone="brand"
+            className="@[640px]:col-span-2 @[1000px]:col-span-1"
+          />
         </div>
       </div>
 
