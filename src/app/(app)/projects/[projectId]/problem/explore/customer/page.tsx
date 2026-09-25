@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { CASE_STUDY_PANEL_CLASS, StrategyTabs } from "@/components/strategy-tabs"
 import { useProblem, getAdjacentSteps } from "../context"
 import { CUSTOMER_CASE_STUDIES } from "./case-studies"
 import { CustomerStrategy } from "@/components/problem-strategies/customer-strategy"
@@ -125,18 +126,8 @@ export default function CustomerSegmentPage() {
           </p>
         </div>
 
-        <Tabs defaultValue="strategy" className="flex flex-col gap-4">
-          <TabsList className="self-center">
-            <TabsTrigger value="strategy">Your Strategy</TabsTrigger>
-            <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="strategy">
-            <CustomerStrategy />
-          </TabsContent>
-
-          <TabsContent value="case-studies">
-            <div className="rounded-xl border bg-muted p-8 flex flex-col gap-4">
+        <StrategyTabs strategy={<CustomerStrategy />}>
+            <div className={`${CASE_STUDY_PANEL_CLASS} gap-4`}>
               <p className="text-base text-foreground">
                 See how successful companies defined their early customer. Notice how specific they were; they didn&apos;t try to serve everyone. Use these examples as inspiration when writing your own strategy.
               </p>
@@ -183,8 +174,7 @@ export default function CustomerSegmentPage() {
                 })}
               </Tabs>
             </div>
-          </TabsContent>
-        </Tabs>
+        </StrategyTabs>
 
         <div className="flex justify-between mt-2">
           {prevPath ? (

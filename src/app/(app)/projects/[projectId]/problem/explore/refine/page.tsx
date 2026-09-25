@@ -7,6 +7,7 @@ import { projectRoutes } from "@/lib/projects"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { CASE_STUDY_PANEL_CLASS, StrategyTabs } from "@/components/strategy-tabs"
 import { cn } from "@/lib/utils"
 import { useProblem, getAdjacentSteps } from "../context"
 import { ROOT_CAUSES_CASE_STUDIES } from "./root-causes-case-studies"
@@ -28,7 +29,7 @@ const ROOT_CAUSES_CASE_STUDY_ICONS: Record<string, { icon: LucideIcon; bg: strin
 
 function RootCausesCaseStudies() {
   return (
-    <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
+    <div className={`${CASE_STUDY_PANEL_CLASS} gap-5`}>
       <p className="text-base text-foreground">
         See how successful organisations dug past surface-level symptoms to identify the underlying causes that, once fixed, prevented entire categories of failure.
       </p>
@@ -106,7 +107,7 @@ const FIVE_WHYS_CASE_STUDY_ICONS: Record<string, { icon: LucideIcon; bg: string 
 
 function FiveWhysCaseStudies() {
   return (
-    <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
+    <div className={`${CASE_STUDY_PANEL_CLASS} gap-5`}>
       <p className="text-base text-foreground">
         See how teams used the 5 Whys to push past the first plausible answer and reach a fundamental cause that, once addressed, prevented the problem from recurring.
       </p>
@@ -206,7 +207,7 @@ const SEVERITY_BADGE: Record<"low" | "medium" | "high" | "critical", string> = {
 
 function AffectedGroupsCaseStudies() {
   return (
-    <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
+    <div className={`${CASE_STUDY_PANEL_CLASS} gap-5`}>
       <p className="text-base text-foreground">
         See how successful companies mapped who was affected by the problem and how severely, then prioritised the most acute groups to design a focused first version.
       </p>
@@ -385,18 +386,9 @@ export default function RefinePage() {
         )}
 
         {analysisToolType && CaseStudies && (
-          <Tabs defaultValue="strategy" className="flex flex-col gap-4">
-            <TabsList className="self-center">
-              <TabsTrigger value="strategy">Your Strategy</TabsTrigger>
-              <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
-            </TabsList>
-            <TabsContent value="strategy">
-              <RefinementStrategy />
-            </TabsContent>
-            <TabsContent value="case-studies">
-              <CaseStudies />
-            </TabsContent>
-          </Tabs>
+          <StrategyTabs strategy={<RefinementStrategy />}>
+            <CaseStudies />
+          </StrategyTabs>
         )}
 
         {!analysisToolType && (

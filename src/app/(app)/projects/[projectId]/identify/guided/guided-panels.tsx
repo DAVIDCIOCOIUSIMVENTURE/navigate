@@ -39,7 +39,7 @@ import { IdentifyDimensionPicker } from "@/components/reflect/identify-dimension
 import { DimensionAnchorPicker } from "@/components/guided/dimension-anchor-picker"
 import { SelfDiscoveryAnchorPicker } from "@/components/guided/self-discovery-anchor-picker"
 import { GuidedInspirationPanel } from "@/components/guided/guided-inspiration"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { StrategyTabs } from "@/components/strategy-tabs"
 import { useResolveOrCreate } from "@/lib/dimension-labels"
 import { ProblemSavedDialog } from "@/components/problem-saved-dialog"
 import { useProjectScope } from "@/hooks/use-projects"
@@ -352,26 +352,19 @@ function PromptQuestion({ node }: { node: GuidedPromptNode }) {
   if (!hasPicker || inspirations.length === 0) return panel
 
   // A picker question carries inspiration beside the answer, arranged as the
-  // Explore steps arrange their case studies: the tab pair above the card,
-  // the cobalt card as the first tab and the muted case-study panel as the second.
+  // Explore steps arrange their case studies: the tab pair attached to the
+  // top of the card, the cobalt card as the first tab and the muted
+  // case-study panel as the second.
   return (
-    <Tabs defaultValue="answer" className="flex-1 min-h-0 flex flex-col gap-4">
-      <TabsList className="self-center shrink-0">
-        <TabsTrigger value="answer" className="text-base">
-          Your answer
-        </TabsTrigger>
-        <TabsTrigger value="inspiration" className="text-base">
-          Inspiration
-        </TabsTrigger>
-      </TabsList>
-      {/* No display class on a TabsContent: it would override the `hidden` attribute Radix gives the inactive panel. */}
-      <TabsContent value="answer" className="mt-0 flex-1 min-h-0">
-        {panel}
-      </TabsContent>
-      <TabsContent value="inspiration" className="mt-0 flex-1 min-h-0 overflow-y-auto">
-        <GuidedInspirationPanel inspirations={inspirations} />
-      </TabsContent>
-    </Tabs>
+    <StrategyTabs
+      strategy={panel}
+      strategyLabel="Your answer"
+      caseStudiesLabel="Inspiration"
+      className="flex-1 min-h-0"
+      contentClassName="flex-1 min-h-0 overflow-y-auto"
+    >
+      <GuidedInspirationPanel inspirations={inspirations} />
+    </StrategyTabs>
   )
 }
 

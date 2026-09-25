@@ -11,6 +11,7 @@ import {
   Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { CASE_STUDY_PANEL_CLASS, StrategyTabs } from "@/components/strategy-tabs"
 import { ConfirmDialog, removeCopy } from "@/components/ui/confirm-dialog"
 import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion"
 import { useIdentifySolutions, getAdjacentSteps } from "../context"
@@ -805,7 +806,7 @@ function ScamperCaseStudies() {
   const containerSize = useContainerSize()
   const isNarrow = containerSize === "narrow"
   return (
-    <div className="rounded-xl border bg-muted p-8 flex flex-col gap-8">
+    <div className={`${CASE_STUDY_PANEL_CLASS} gap-8`}>
       <p className="text-base text-foreground">
         See how successful companies used SCAMPER thinking to transform an existing product or service into a breakthrough solution, one transformation at a time.
       </p>
@@ -869,7 +870,7 @@ const IMPROVE_CASE_STUDY_ICONS: Record<string, { icon: LucideIcon; bg: string }>
 
 function ImproveCaseStudies() {
   return (
-    <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
+    <div className={`${CASE_STUDY_PANEL_CLASS} gap-5`}>
       <p className="text-base text-foreground">
         See how successful companies improved existing solutions along multiple dimensions at once, turning ordinary products into category-defining experiences.
       </p>
@@ -930,7 +931,7 @@ const REVERSE_CASE_STUDY_ICONS: Record<string, { icon: LucideIcon; bg: string }>
 function ReverseCaseStudies() {
   const isNarrow = useContainerSize() === "narrow"
   return (
-    <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
+    <div className={`${CASE_STUDY_PANEL_CLASS} gap-5`}>
       <p className="text-base text-foreground">
         See how successful companies flipped every way they were making customers unhappy into a feature that won them loyalty, trust, and market share.
       </p>
@@ -1002,7 +1003,7 @@ const ANALOGY_CASE_STUDY_ICONS: Record<string, { icon: LucideIcon; bg: string }>
 
 function AnalogyCaseStudies() {
   return (
-    <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
+    <div className={`${CASE_STUDY_PANEL_CLASS} gap-5`}>
       <p className="text-base text-foreground">
         See how breakthrough innovators borrowed ideas from unrelated fields: factories, racing, even nature. A good analogy reframes the problem and unlocks solutions you would never reach by thinking inside your own industry.
       </p>
@@ -1610,20 +1611,9 @@ export default function DiscoverPage() {
                 Take an existing solution and run it through each of the seven transformations. You don&apos;t need to answer every prompt: jot down the new solutions where they spark, then click <strong>Save Solution</strong> when you have one worth keeping.
               </p>
             </div>
-            <Tabs defaultValue="strategy" className="flex flex-col gap-4">
-              <TabsList className="self-center">
-                <TabsTrigger value="strategy">Your Strategy</TabsTrigger>
-                <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
-              </TabsList>
-              <TabsContent value="strategy">
-                <div className="flex flex-col gap-6">
-                  <ScamperForm />
-                </div>
-              </TabsContent>
-              <TabsContent value="case-studies">
-                <ScamperCaseStudies />
-              </TabsContent>
-            </Tabs>
+            <StrategyTabs strategy={<ScamperForm />}>
+              <ScamperCaseStudies />
+            </StrategyTabs>
             <SaveSolutionPanel toolType="scamper" />
           </>
         )}
@@ -1631,60 +1621,27 @@ export default function DiscoverPage() {
         {discoveryToolType === "reverse" && (
           <>
             <hr className="border-border/40" />
-            <Tabs defaultValue="strategy" className="flex flex-col gap-4">
-              <TabsList className="self-center">
-                <TabsTrigger value="strategy">Your Strategy</TabsTrigger>
-                <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
-              </TabsList>
-              <TabsContent value="strategy">
-                <div className="flex flex-col gap-6">
-                  <ReverseIdeationForm />
-                </div>
-              </TabsContent>
-              <TabsContent value="case-studies">
-                <ReverseCaseStudies />
-              </TabsContent>
-            </Tabs>
+            <StrategyTabs strategy={<ReverseIdeationForm />}>
+              <ReverseCaseStudies />
+            </StrategyTabs>
             <SaveSolutionPanel toolType="reverse" />
           </>
         )}
         {discoveryToolType === "analogy" && (
           <>
             <hr className="border-border/40" />
-            <Tabs defaultValue="strategy" className="flex flex-col gap-4">
-              <TabsList className="self-center">
-                <TabsTrigger value="strategy">Your Strategy</TabsTrigger>
-                <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
-              </TabsList>
-              <TabsContent value="strategy">
-                <div className="flex flex-col gap-6">
-                  <AnalogyForm />
-                </div>
-              </TabsContent>
-              <TabsContent value="case-studies">
-                <AnalogyCaseStudies />
-              </TabsContent>
-            </Tabs>
+            <StrategyTabs strategy={<AnalogyForm />}>
+              <AnalogyCaseStudies />
+            </StrategyTabs>
             <SaveSolutionPanel toolType="analogy" />
           </>
         )}
         {discoveryToolType === "improve" && (
           <>
             <hr className="border-border/40" />
-            <Tabs defaultValue="strategy" className="flex flex-col gap-4">
-              <TabsList className="self-center">
-                <TabsTrigger value="strategy">Your Strategy</TabsTrigger>
-                <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
-              </TabsList>
-              <TabsContent value="strategy">
-                <div className="flex flex-col gap-6">
-                  <ImprovementForm />
-                </div>
-              </TabsContent>
-              <TabsContent value="case-studies">
-                <ImproveCaseStudies />
-              </TabsContent>
-            </Tabs>
+            <StrategyTabs strategy={<ImprovementForm />}>
+              <ImproveCaseStudies />
+            </StrategyTabs>
             <SaveSolutionPanel toolType="improve" />
           </>
         )}

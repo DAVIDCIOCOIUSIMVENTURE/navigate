@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { CASE_STUDY_PANEL_CLASS, StrategyTabs } from "@/components/strategy-tabs"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { projectRoutes } from "@/lib/projects"
@@ -68,13 +69,8 @@ export function MetricStep({ content, value, onChange }: MetricStepProps) {
           <p className="text-base max-w-xl">{yourTurnBody}</p>
         </div>
 
-        <Tabs defaultValue="strategy" className="flex flex-col gap-4">
-          <TabsList className="self-center">
-            <TabsTrigger value="strategy">Your Strategy</TabsTrigger>
-            <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="strategy">
+        <StrategyTabs
+          strategy={
             <MetricStrategy
               icon={Icon}
               strategyTitle={strategyTitle}
@@ -85,12 +81,10 @@ export function MetricStep({ content, value, onChange }: MetricStepProps) {
               onChange={onChange}
               accent={accent}
             />
-          </TabsContent>
-
-          <TabsContent value="case-studies">
-            <CaseStudies caseStudies={caseStudies} scale={scale} />
-          </TabsContent>
-        </Tabs>
+          }
+        >
+          <CaseStudies caseStudies={caseStudies} scale={scale} />
+        </StrategyTabs>
 
         <div className="flex justify-between mt-2">
           {prevPath ? (
@@ -122,7 +116,7 @@ function CaseStudies({
     return null
   }
   return (
-    <div className="rounded-xl border bg-muted p-8 flex flex-col gap-4">
+    <div className={`${CASE_STUDY_PANEL_CLASS} gap-4`}>
       <p className="text-base text-foreground">
         See how companies have thought about this metric. Each example shows the score they would have given, the reasoning behind it, and what happened next.
       </p>

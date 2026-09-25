@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { CASE_STUDY_PANEL_CLASS, StrategyTabs } from "@/components/strategy-tabs"
 import { useProblem, getAdjacentSteps } from "../context"
 import { VALIDATE_CASE_STUDIES } from "@/components/problem-strategies/validate-case-studies"
 import { VerdictStrategy } from "@/components/problem-strategies/validation-strategy"
@@ -117,18 +118,8 @@ export default function VerdictPage() {
 
         <h3 className="mb-2 text-xl font-bold text-center"><span className="text-primary">Your Turn:</span> Record your verdict</h3>
 
-        <Tabs defaultValue="strategy" className="flex flex-col gap-4">
-          <TabsList className="self-center">
-            <TabsTrigger value="strategy">Your Strategy</TabsTrigger>
-            <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="strategy">
-            <VerdictStrategy />
-          </TabsContent>
-
-          <TabsContent value="case-studies">
-            <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
+        <StrategyTabs strategy={<VerdictStrategy />}>
+            <div className={`${CASE_STUDY_PANEL_CLASS} gap-5`}>
               <p className="text-base text-foreground">
                 See how successful companies weighed all of the signals together to reach a verdict on whether the problem was worth pursuing.
               </p>
@@ -193,8 +184,7 @@ export default function VerdictPage() {
                 })}
               </Tabs>
             </div>
-          </TabsContent>
-        </Tabs>
+        </StrategyTabs>
 
         <div className="flex justify-between mt-2">
           {prevPath ? (

@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { CASE_STUDY_PANEL_CLASS, StrategyTabs } from "@/components/strategy-tabs"
 import {
   ArrowLeft, ArrowRight, CheckCircle2, Gauge, Target, Coins, Clock,
   Rocket, Glasses, Film,
@@ -112,18 +113,8 @@ export default function VerdictPage() {
           </div>
         </div>
 
-        <Tabs defaultValue="guidance" className="flex flex-col gap-4">
-          <TabsList className="self-center">
-            <TabsTrigger value="guidance">Your Strategy</TabsTrigger>
-            <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="guidance">
-            <VerdictStrategy />
-          </TabsContent>
-
-          <TabsContent value="case-studies">
-            <div className="rounded-xl border bg-muted p-8 flex flex-col gap-4">
+        <StrategyTabs strategy={<VerdictStrategy />}>
+            <div className={`${CASE_STUDY_PANEL_CLASS} gap-4`}>
               <p className="text-base text-foreground">
                 See how teams have weighed their metrics into a verdict. Each example shows the call they made, the reasoning behind it, and what happened next.
               </p>
@@ -183,8 +174,7 @@ export default function VerdictPage() {
                 })}
               </Tabs>
             </div>
-          </TabsContent>
-        </Tabs>
+        </StrategyTabs>
 
         <div className="flex justify-between mt-2">
           {prevPath ? (

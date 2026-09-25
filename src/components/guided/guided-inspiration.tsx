@@ -1,6 +1,7 @@
 "use client"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { CASE_STUDY_PANEL_CLASS } from "@/components/strategy-tabs"
 import type { GuidedInspiration } from "@/data/guidedDiscovery"
 
 /**
@@ -13,7 +14,7 @@ import type { GuidedInspiration } from "@/data/guidedDiscovery"
 export function GuidedInspirationPanel({ inspirations }: { inspirations: GuidedInspiration[] }) {
   if (inspirations.length === 0) return null
   return (
-    <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
+    <div className={`${CASE_STUDY_PANEL_CLASS} gap-5`}>
       <p className="text-base text-foreground">
         A few themes to think along. Open each for what to look for and an example, then answer under &ldquo;Your answer&rdquo;.
       </p>

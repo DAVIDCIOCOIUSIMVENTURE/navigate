@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs"
+import { CASE_STUDY_PANEL_CLASS, StrategyTabs } from "@/components/strategy-tabs"
 import { useProblem, getAdjacentSteps } from "../context"
 import { EXISTING_SOLUTIONS_CASE_STUDIES } from "./case-studies"
 import { ExistingSolutionsStrategy } from "@/components/problem-strategies/existing-solutions-strategy"
@@ -82,18 +83,8 @@ export default function ExistingSolutionsPage() {
           </p>
         </div>
 
-        <Tabs defaultValue="strategy" className="flex flex-col gap-4">
-          <TabsList className="self-center">
-            <TabsTrigger value="strategy">Your Strategy</TabsTrigger>
-            <TabsTrigger value="case-studies">Case Studies</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="strategy">
-            <ExistingSolutionsStrategy />
-          </TabsContent>
-
-          <TabsContent value="case-studies">
-            <div className="rounded-xl border bg-muted p-8 flex flex-col gap-5">
+        <StrategyTabs strategy={<ExistingSolutionsStrategy />}>
+            <div className={`${CASE_STUDY_PANEL_CLASS} gap-5`}>
               <p className="text-base text-foreground">
                 See how successful companies mapped out the existing solutions their customers were already using, and identified the shortcomings that created the opportunity.
               </p>
@@ -151,8 +142,7 @@ export default function ExistingSolutionsPage() {
                 })}
               </Tabs>
             </div>
-          </TabsContent>
-        </Tabs>
+        </StrategyTabs>
 
         <div className="flex justify-between mt-2">
           {prevPath ? (
