@@ -23,6 +23,7 @@ import type {
 import { DEFAULT_REACHABLE_SHARE } from "@/types/validation"
 import { clampPercent, computeMarket, formatMoney } from "@/lib/market"
 import { listAllJobs, resolveAnchorJob } from "@/lib/jobs"
+import { plainTextFromMarkdown } from "@/lib/markdown-text"
 import type { JourneyStepId } from "@/lib/journey-steps"
 import {
   COST_CONTENT,
@@ -423,4 +424,50 @@ export function formatPreviewDate(iso: string | undefined | null): string | null
   const date = new Date(iso)
   if (Number.isNaN(date.getTime())) return null
   return date.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
+}
+
+/* ------------------------------------------------------------------ */
+/*  Journal notes (the admin's view of a portfolio)                    */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The notes sit in a margin down the right of the portfolio, like comments in
+ * a word processor: the project's own notes beside the problem, each
+ * solution's beside that solution. Every note starts collapsed to its heading.
+ */
+export const PROJECT_NOTES_COPY = {
+  marginLabel: "Journal notes",
+  projectHeading: "Notes on the project",
+  solutionHeading: "Notes on this solution",
+  projectEmpty: "No notes about the project as a whole.",
+  expandAll: "Expand all",
+  collapseAll: "Collapse all",
+  untitled: "Untitled note",
+} as const
+
+/** How many characters of a note's first line a collapsed comment shows. */
+const NOTE_HEADING_LENGTH = 60
+
+/**
+ * What a collapsed note is called: its title, or the first line of its text
+ * with the Markdown stripped, cut to a readable length, or "Untitled note".
+ */
+export function noteHeading(title: string, text: string): string {
+  const trimmed = title.trim()
+  if (trimmed.length > 0) return trimmed
+  const firstLine = plainTextFromMarkdown(text).split("\n")[0] ?? ""
+  if (firstLine.length === 0) return PROJECT_NOTES_COPY.untitled
+  return firstLine.length > NOTE_HEADING_LENGTH ? `${firstLine.slice(0, NOTE_HEADING_LENGTH).trimEnd()}…` : firstLine
+}
+
+/**
+ * When a note was written and, if it was changed on a later day, when it was
+ * last changed: "Written 9 March 2026" or "Written 9 March 2026, last changed
+ * 12 March 2026". Null when neither date can be read.
+ */
+export function describeNoteDates(createdAt: string, editedAt: string): string | null {
+  const written = formatPreviewDate(createdAt)
+  const changed = formatPreviewDate(editedAt)
+  if (!written) return changed ? `Last changed ${changed}` : null
+  return changed && changed !== written ? `Written ${written}, last changed ${changed}` : `Written ${written}`
 }

@@ -292,7 +292,7 @@ export const TOUR_STEPS: TourStep[] = [
   {
     id: "header-admin",
     title: "Admin panel",
-    body: ["Manage establishments, classes and users from the admin panel."],
+    body: ["Manage establishments, classes and users from the admin panel, and read any project's portfolio with the team's notes beside it."],
     target: TOUR_TARGETS.headerAdmin,
     placement: "bottom",
     route: "/",

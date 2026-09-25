@@ -4,10 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
-import { BarChart3, Building2, GraduationCap, ShieldCheck, Users, UserCog } from "lucide-react"
+import { BarChart3, Building2, FolderKanban, GraduationCap, ShieldCheck, Users, UserCog } from "lucide-react"
 import Link from "next/link"
 import { adminUsers, classes, establishments, getClassName, getEstablishmentName, getLicenseName } from "@/data/adminMockData"
 import { useCurrentAdminUser } from "@/data/useCurrentAdminUser"
+import { AdminProjectsTable } from "@/components/admin-projects-table"
 
 function LicenseUsageBar({ consumed, seats }: { consumed: number; seats: number }) {
   const pct = seats === 0 ? 0 : Math.min(100, Math.round((consumed / seats) * 100))
@@ -98,6 +99,10 @@ export default function AdminPage() {
               <TabsTrigger value="users" className="gap-2">
                 <Users className="h-4 w-4" />
                 Users
+              </TabsTrigger>
+              <TabsTrigger value="projects" className="gap-2">
+                <FolderKanban className="h-4 w-4" />
+                Projects
               </TabsTrigger>
             </TabsList>
 
@@ -210,6 +215,10 @@ export default function AdminPage() {
                 </Table>
               </TabsContent>
             ))}
+
+            <TabsContent value="projects" className="mt-4">
+              <AdminProjectsTable />
+            </TabsContent>
           </Tabs>
         </CardContent>
       </Card>

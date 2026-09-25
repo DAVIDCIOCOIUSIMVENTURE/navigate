@@ -6,11 +6,12 @@ import {
   journalScopeFromPathname,
   noteLinkFromParts,
   noteLinkParts,
+  projectNotesBySection,
   sectionOptions,
   solutionIdFromPathname,
   type NoteLinkProject,
 } from "./note-links"
-import type { NoteLink } from "@/store/notes-model"
+import type { Note, NoteLink } from "@/store/notes-model"
 
 const projects: NoteLinkProject[] = [
   { id: 7, label: "Rainy commutes", solutions: [{ id: 3, title: "Bus shelters" }, { id: 4, title: "  " }] },
@@ -145,5 +146,43 @@ describe("isNoteInScope", () => {
     expect(isNoteInScope({ kind: "self-discovery" }, { kind: "self-discovery" })).toBe(true)
     expect(isNoteInScope({ kind: "problem", projectId: 7 }, { kind: "self-discovery" })).toBe(false)
     expect(isNoteInScope({ kind: "none" }, null)).toBe(true)
+  })
+})
+
+describe("projectNotesBySection", () => {
+  const note = (id: number, link: NoteLink, editedAt: string): Note => ({
+    id,
+    title: "",
+    text: "",
+    link,
+    createdAt: editedAt,
+    editedAt,
+  })
+  const notes: Note[] = [
+    note(1, { kind: "problem", projectId: 7 }, "2026-03-01T10:00:00.000Z"),
+    note(2, { kind: "solution", projectId: 7, solutionId: 3 }, "2026-03-04T10:00:00.000Z"),
+    note(3, { kind: "problem", projectId: 7 }, "2026-03-05T10:00:00.000Z"),
+    note(4, { kind: "solution", projectId: 7, solutionId: 99 }, "2026-03-02T10:00:00.000Z"),
+    note(5, { kind: "solution", projectId: 7, solutionId: 3 }, "2026-03-06T10:00:00.000Z"),
+    note(6, { kind: "problem", projectId: 8 }, "2026-03-07T10:00:00.000Z"),
+    note(7, { kind: "none" }, "2026-03-08T10:00:00.000Z"),
+    note(8, { kind: "self-discovery" }, "2026-03-09T10:00:00.000Z"),
+  ]
+
+  it("puts each solution's notes beside it and the problem's under the project, newest first", () => {
+    const grouped = projectNotesBySection(notes, 7, [3, 4])
+    expect(grouped.bySolution[3]?.map((n) => n.id)).toEqual([5, 2])
+    expect(grouped.bySolution[4]).toBeUndefined()
+    expect(grouped.project.map((n) => n.id)).toEqual([3, 4, 1])
+  })
+
+  it("leaves out notes about other projects, general notes and Self Discovery notes", () => {
+    const grouped = projectNotesBySection(notes, 8, [])
+    expect(grouped.project.map((n) => n.id)).toEqual([6])
+    expect(grouped.bySolution).toEqual({})
+  })
+
+  it("is empty for a project with no notes", () => {
+    expect(projectNotesBySection(notes, 9, [])).toEqual({ project: [], bySolution: {} })
   })
 })

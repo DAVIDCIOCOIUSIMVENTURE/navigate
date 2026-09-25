@@ -45,6 +45,15 @@ export function previewHref(projectId: ProjectRef): string {
     : `/preview/${projectId}`
 }
 
+/** The admin panel, and its read-only view of one project: the portfolio with the team's journal notes beside each section. */
+export const ADMIN_HREF = "/admin"
+
+export function adminProjectHref(projectId: ProjectRef): string {
+  return projectId === null || projectId === undefined || !Number.isFinite(projectId)
+    ? ADMIN_HREF
+    : `${ADMIN_HREF}/projects/${projectId}`
+}
+
 /** Every route under a project. Flow steps default to their first step. */
 export const projectRoutes = {
   /** The list of every project, at `/projects`. */

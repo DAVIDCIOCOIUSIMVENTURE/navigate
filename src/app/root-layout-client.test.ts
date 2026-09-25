@@ -76,4 +76,20 @@ describe("getCrumbs", () => {
       { label: "Project" },
     ])
   })
+
+  it("puts the admin's view of a project under the panel's Projects tab", () => {
+    expect(getCrumbs("/admin", lookup)).toEqual([{ label: "Home", href: "/" }, { label: "Admin" }])
+    expect(getCrumbs("/admin/projects/12", lookup)).toEqual([
+      { label: "Home", href: "/" },
+      { label: "Admin", href: "/admin" },
+      { label: "Projects" },
+      { label: "Rainy commutes" },
+    ])
+    expect(getCrumbs("/admin/projects/99", lookup)).toEqual([
+      { label: "Home", href: "/" },
+      { label: "Admin", href: "/admin" },
+      { label: "Projects" },
+      { label: "Project" },
+    ])
+  })
 })

@@ -1,23 +1,27 @@
 "use client"
 
-import { useEffect, useMemo } from "react"
+import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
+import type { Note } from "@/store/notes-model"
 import type { Problem } from "@/store/problems-model"
 import type { Project } from "@/store/projects-model"
 import type { Solution } from "@/types/solution"
 import type { Job, JobKind } from "@/types/validation"
 import { Card, CardContent } from "@/components/ui/card"
+import { MarkdownView } from "@/components/ui/markdown-view"
 import { MemberAvatarStack } from "@/components/member-avatar"
 import { TrafficLightLabel } from "@/components/traffic-light"
 import { useDimensionLabels } from "@/lib/dimension-labels"
 import { completedJourneySteps, summariseProblemJourney } from "@/lib/journey-steps"
+import type { ProjectNotes } from "@/lib/note-links"
 import { memberDisplayName } from "@/lib/project-team"
 import { projectDisplayName, projectRoutes } from "@/lib/projects"
 import {
   JOB_KIND_COPY,
   PROBLEM_VERDICT_COPY,
+  PROJECT_NOTES_COPY,
   SOLUTION_VERDICT_COPY,
   countWord,
   describeAnchorJob,
@@ -27,6 +31,7 @@ import {
   describeJobs,
   describeMarket,
   describeMethod,
+  describeNoteDates,
   describeProgress,
   describeSegmentSize,
   describeSolutionScores,
@@ -34,15 +39,18 @@ import {
   formatList,
   formatPreviewDate,
   jobIntensityPhrase,
+  noteHeading,
   pluralise,
 } from "@/lib/project-preview"
 import { cn } from "@/lib/utils"
 import {
+  ChevronDown,
   Compass,
   EyeOff,
   Gavel,
   Lightbulb,
   LifeBuoy,
+  NotebookText,
   PoundSterling,
   Swords,
   Target,
@@ -96,24 +104,7 @@ export function ProjectPreview({ projectId }: { projectId: number }) {
       <PreviewTopBar />
       {project.visibility === "private" && <NotSharedBanner projectId={project.id} />}
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 lg:px-8 lg:py-12">
-        <ProjectHeading project={project} problem={problem} solutions={solutions} />
-        {problem ? (
-          <div className="mt-10 flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-12">
-            <Contents />
-            <div className="flex min-w-0 flex-1 flex-col gap-10">
-              <ProblemSections problem={problem} />
-              <SolutionsSection solutions={solutions} />
-            </div>
-          </div>
-        ) : (
-          <Card className="mt-10">
-            <CardContent className="p-10 text-center">
-              <p className="text-base">
-                This team has not chosen a problem to work on yet, so there is nothing to read here.
-              </p>
-            </CardContent>
-          </Card>
-        )}
+        <ProjectPreviewBody project={project} problem={problem} solutions={solutions} />
       </main>
     </div>
   )
@@ -121,6 +112,63 @@ export function ProjectPreview({ projectId }: { projectId: number }) {
 
 const NOT_FOUND_BODY =
   "The link may be wrong, or the project it pointed at may have been deleted by the people who made it."
+
+/**
+ * The portfolio itself, without the public page's chrome: the heading, the
+ * contents rail and every section. The public page renders it as is; the
+ * admin panel renders it inside the app with `notes`, the team's journal
+ * notes about the project, drawn in a margin down the right like the
+ * comments in a word processor: the project's own notes beside the problem,
+ * each solution's beside that solution, every one collapsed to its heading
+ * until it is opened. The public page never passes `notes`: the journal is
+ * the team's own.
+ */
+export function ProjectPreviewBody({
+  project,
+  problem,
+  solutions,
+  notes,
+}: {
+  project: Project
+  problem: Problem | undefined
+  solutions: Solution[]
+  notes?: ProjectNotes
+}) {
+  const margin = useNotesMargin(notes)
+  const noProblem = (
+    <Card className={cn(margin ? undefined : "mt-10")}>
+      <CardContent className="p-10 text-center">
+        <p className="text-base">This team has not chosen a problem to work on yet, so there is nothing to read here.</p>
+      </CardContent>
+    </Card>
+  )
+
+  return (
+    <>
+      <ProjectHeading project={project} problem={problem} solutions={solutions} />
+      {problem ? (
+        <div className="mt-10 flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-12">
+          <Contents />
+          <div className="flex min-w-0 flex-1 flex-col gap-10">
+            <NotesMargin margin={margin} notes={margin?.notes.project} heading={PROJECT_NOTES_COPY.projectHeading} controls>
+              <ProblemSections problem={problem} />
+            </NotesMargin>
+            <SolutionsSection solutions={solutions} margin={margin} />
+          </div>
+        </div>
+      ) : margin ? (
+        // A project with no problem still carries the notes written about it.
+        <div className="mt-10">
+          <NotesMargin margin={margin} notes={margin.notes.project} heading={PROJECT_NOTES_COPY.projectHeading} controls>
+            {noProblem}
+          </NotesMargin>
+        </div>
+      ) : (
+        noProblem
+      )}
+    </>
+  )
+}
 
 /* ------------------------------------------------------------------ */
 /*  Chrome                                                             */
@@ -523,10 +571,148 @@ function JobList({ kind, jobs }: { kind: JobKind; jobs: Job[] }) {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Journal notes in the margin (only when the admin panel passes them) */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The margin's shared state: which notes are open. It is kept here rather
+ * than in each comment so "Expand all" and "Collapse all" can reach every
+ * note on the page. Null when the page shows no notes.
+ */
+type NotesMarginState = {
+  notes: ProjectNotes
+  isOpen: (noteId: number) => boolean
+  toggle: (noteId: number) => void
+  allOpen: boolean
+  setAll: (open: boolean) => void
+}
+
+function useNotesMargin(notes: ProjectNotes | undefined): NotesMarginState | null {
+  const [open, setOpen] = useState<ReadonlySet<number>>(() => new Set())
+  const allIds = useMemo(
+    () => (notes ? [...notes.project, ...Object.values(notes.bySolution).flat()].map((n) => n.id) : []),
+    [notes],
+  )
+  if (!notes) return null
+  return {
+    notes,
+    isOpen: (noteId) => open.has(noteId),
+    toggle: (noteId) =>
+      setOpen((current) => {
+        const next = new Set(current)
+        if (next.has(noteId)) next.delete(noteId)
+        else next.add(noteId)
+        return next
+      }),
+    allOpen: allIds.length > 0 && allIds.every((id) => open.has(id)),
+    setAll: (value) => setOpen(value ? new Set(allIds) : new Set()),
+  }
+}
+
+/**
+ * The content with its notes in a margin to its right on wide containers,
+ * below it on narrow ones. Without a margin state (the public page) it is
+ * the content alone. Every row reserves the same margin width, so the
+ * content column keeps one width down the page whether or not a row has
+ * notes, and the margin sticks while its content scrolls so a long section
+ * keeps its notes in view.
+ */
+function NotesMargin({
+  margin,
+  notes = [],
+  heading,
+  controls = false,
+  children,
+}: {
+  margin: NotesMarginState | null
+  notes?: Note[]
+  heading: string
+  /** Whether this margin carries the page's Expand all / Collapse all button (the first one does). */
+  controls?: boolean
+  children: React.ReactNode
+}) {
+  if (!margin) return <>{children}</>
+  return (
+    <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:gap-8">
+      <div className="flex min-w-0 flex-1 flex-col gap-10">{children}</div>
+      <aside
+        aria-label={heading}
+        className="flex flex-col gap-3 lg:sticky lg:top-24 lg:w-72 lg:shrink-0 lg:border-l-2 lg:border-dashed lg:border-secondary-brand/30 lg:pl-4"
+      >
+        <div className="flex items-center justify-between gap-2">
+          <p className="flex items-center gap-1.5 text-base font-semibold text-secondary-brand">
+            <NotebookText className="h-4 w-4 shrink-0" aria-hidden="true" />
+            {heading}
+            {notes.length > 0 && <span className="font-normal">({notes.length})</span>}
+          </p>
+          {controls && (
+            <button
+              type="button"
+              onClick={() => margin.setAll(!margin.allOpen)}
+              className="text-base text-secondary-brand underline-offset-4 hover:underline"
+            >
+              {margin.allOpen ? PROJECT_NOTES_COPY.collapseAll : PROJECT_NOTES_COPY.expandAll}
+            </button>
+          )}
+        </div>
+        {notes.length === 0 ? (
+          controls && <p className="text-base italic opacity-70">{PROJECT_NOTES_COPY.projectEmpty}</p>
+        ) : (
+          <ul className="flex flex-col gap-2">
+            {notes.map((note) => (
+              <li key={note.id}>
+                <NoteComment note={note} open={margin.isOpen(note.id)} onToggle={() => margin.toggle(note.id)} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </aside>
+    </div>
+  )
+}
+
+/**
+ * One journal note as a comment in the margin: collapsed to its heading and
+ * date, opened to the full note as the team wrote it. The Markdown view is
+ * only mounted while open, so a page of notes costs nothing until one is read.
+ */
+function NoteComment({ note, open, onToggle }: { note: Note; open: boolean; onToggle: () => void }) {
+  const heading = noteHeading(note.title, note.text)
+  const dates = describeNoteDates(note.createdAt, note.editedAt)
+  const bodyId = `note-${note.id}-body`
+  return (
+    <div className={cn("rounded-lg border border-l-4 border-l-secondary-brand bg-card shadow-sm", open && "border-secondary-brand/40")}>
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls={bodyId}
+        onClick={onToggle}
+        className="flex w-full items-start gap-2 rounded-lg p-3 text-left hover:bg-secondary-brand/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+          <span className={cn("text-base font-semibold leading-snug", !open && "line-clamp-2")}>{heading}</span>
+          {dates && <span className="text-base leading-snug opacity-80">{dates}</span>}
+        </span>
+        <ChevronDown
+          className={cn("mt-1 h-4 w-4 shrink-0 text-secondary-brand transition-transform", open && "rotate-180")}
+          aria-hidden="true"
+        />
+      </button>
+      {open && (
+        <div id={bodyId} className="border-t px-3 py-3">
+          {/* Keyed so a note edited in the journal is redrawn: the view does not follow later changes to its Markdown. */}
+          <MarkdownView key={`${note.id}-${note.editedAt}`} markdown={note.text} />
+        </div>
+      )}
+    </div>
+  )
+}
+
+/* ------------------------------------------------------------------ */
 /*  The solutions                                                      */
 /* ------------------------------------------------------------------ */
 
-function SolutionsSection({ solutions }: { solutions: Solution[] }) {
+function SolutionsSection({ solutions, margin }: { solutions: Solution[]; margin: NotesMarginState | null }) {
   if (solutions.length === 0) {
     return (
       <Section
@@ -545,7 +731,14 @@ function SolutionsSection({ solutions }: { solutions: Solution[] }) {
       lead={`${describeSolutions(solutions)} Each one is set out below with how it was arrived at and how it scored.`}
     >
       {solutions.map((solution, index) => (
-        <SolutionArticle key={solution.id} solution={solution} position={index + 1} />
+        <NotesMargin
+          key={solution.id}
+          margin={margin}
+          notes={margin?.notes.bySolution[solution.id]}
+          heading={PROJECT_NOTES_COPY.solutionHeading}
+        >
+          <SolutionArticle solution={solution} position={index + 1} />
+        </NotesMargin>
       ))}
     </Section>
   )

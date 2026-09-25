@@ -3,7 +3,7 @@
  * written as a Select value and read back, what to call it, and which link a
  * note written on the current page should start with.
  */
-import { GENERAL_LINK, SELF_DISCOVERY_LINK, type NoteLink } from "@/store/notes-model"
+import { GENERAL_LINK, SELF_DISCOVERY_LINK, isNoteInProject, type Note, type NoteLink } from "@/store/notes-model"
 import { projectIdFromPathname } from "@/lib/projects"
 
 export const SELF_DISCOVERY_HREF = "/self-discovery"
@@ -146,4 +146,38 @@ export function isNoteInScope(link: NoteLink, scope: JournalScope): boolean {
   if (scope === null) return true
   if (scope.kind === "self-discovery") return link.kind === "self-discovery"
   return (link.kind === "problem" || link.kind === "solution") && link.projectId === scope.projectId
+}
+
+/**
+ * A project's notes split by the section they were written about: the ones
+ * about one of its solutions, keyed by solution id, and the rest, which were
+ * written about the problem or the project as a whole. The admin's view of a
+ * portfolio places each solution's notes beside that solution and the rest in
+ * its "Project notes" section.
+ */
+export type ProjectNotes = { project: Note[]; bySolution: Record<number, Note[]> }
+
+export const EMPTY_PROJECT_NOTES: ProjectNotes = { project: [], bySolution: {} }
+
+/**
+ * Newest first, like the journal. A note about a solution that `solutionIds`
+ * does not list (one that no longer exists) reads as a note about the
+ * project, so it is still shown rather than dropped.
+ */
+export function projectNotesBySection(
+  notes: readonly Note[],
+  projectId: number,
+  solutionIds: readonly number[],
+): ProjectNotes {
+  const known = new Set(solutionIds)
+  const sorted = notes.filter((n) => isNoteInProject(n, projectId)).sort((a, b) => b.editedAt.localeCompare(a.editedAt))
+  const result: ProjectNotes = { project: [], bySolution: {} }
+  for (const note of sorted) {
+    if (note.link.kind === "solution" && known.has(note.link.solutionId)) {
+      ;(result.bySolution[note.link.solutionId] ??= []).push(note)
+    } else {
+      result.project.push(note)
+    }
+  }
+  return result
 }

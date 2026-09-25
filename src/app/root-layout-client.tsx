@@ -32,7 +32,7 @@ import { TeamAvatars } from "@/components/team-avatars"
 import { TourOverlay } from "@/components/tour/tour-overlay"
 import { ProjectsMenu } from "@/components/projects-menu"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
-import { HOME_HREF, PROJECTS_HREF, projectForProblem, projectLabel, projectRoutes } from "@/lib/projects"
+import { ADMIN_HREF, HOME_HREF, PROJECTS_HREF, projectForProblem, projectLabel, projectRoutes } from "@/lib/projects"
 import { getReflectLens } from "@/data/reflectLenses"
 import { GUIDED_TOOL } from "@/data/guidedDiscovery"
 import type { Project } from "@/store/projects-model"
@@ -134,9 +134,14 @@ export function getCrumbs(pathname: string, lookup: CrumbLookup): Crumb[] {
       crumbs.push({ label: "Admin" })
       return crumbs
     }
-    crumbs.push({ label: "Admin", href: "/admin" })
+    crumbs.push({ label: "Admin", href: ADMIN_HREF })
     if (second === "users" && third) {
       crumbs.push({ label: "User" })
+    } else if (second === "projects" && third) {
+      // The admin's read-only view of a project, under the panel's Projects tab.
+      crumbs.push({ label: "Projects" })
+      const project = lookup.projectById(Number(third))
+      crumbs.push({ label: project?.label ?? "Project" })
     } else if (second) {
       crumbs.push({ label: second })
     }

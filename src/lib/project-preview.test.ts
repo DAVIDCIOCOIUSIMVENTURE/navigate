@@ -8,6 +8,7 @@ import {
   describeJobs,
   describeMarket,
   describeMethod,
+  describeNoteDates,
   describeProgress,
   describeSegmentSize,
   describeSolutionScores,
@@ -18,6 +19,7 @@ import {
   jobIntensityPhrase,
   levelWord,
   metricText,
+  noteHeading,
   pluralise,
   solutionScoreWord,
 } from "./project-preview"
@@ -91,6 +93,22 @@ describe("language helpers", () => {
     expect(formatPreviewDate("2026-03-09T10:00:00.000Z")).toBe("9 March 2026")
     expect(formatPreviewDate("not a date")).toBeNull()
     expect(formatPreviewDate(null)).toBeNull()
+  })
+
+  it("says when a note was written and only adds the change when it fell on a later day", () => {
+    expect(describeNoteDates("2026-03-09T10:00:00.000Z", "2026-03-09T16:00:00.000Z")).toBe("Written 9 March 2026")
+    expect(describeNoteDates("2026-03-09T10:00:00.000Z", "2026-03-12T10:00:00.000Z")).toBe(
+      "Written 9 March 2026, last changed 12 March 2026",
+    )
+    expect(describeNoteDates("", "2026-03-12T10:00:00.000Z")).toBe("Last changed 12 March 2026")
+    expect(describeNoteDates("", "")).toBeNull()
+  })
+
+  it("heads a collapsed note with its title, else its first line without the Markdown, else Untitled note", () => {
+    expect(noteHeading("  Interview round one ", "# ignored")).toBe("Interview round one")
+    expect(noteHeading("", "# What we **heard**\n\nMore below")).toBe("What we heard")
+    expect(noteHeading("", "- " + "a long first line ".repeat(6))).toBe(`${"a long first line ".repeat(6).slice(0, 60).trimEnd()}…`)
+    expect(noteHeading("", "")).toBe("Untitled note")
   })
 })
 
