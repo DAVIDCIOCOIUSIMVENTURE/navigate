@@ -28,7 +28,6 @@ import { AppStoreProvider } from "@/store/provider"
 import { useSelector, useDispatch } from "react-redux"
 import type { RootState, AppDispatch } from "@/store"
 import { Toaster } from "@/components/ui/sonner"
-import { TeamAvatars } from "@/components/team-avatars"
 import { TourOverlay } from "@/components/tour/tour-overlay"
 import { ProjectsMenu } from "@/components/projects-menu"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
@@ -185,6 +184,17 @@ export function hidesSidebarPath(pathname: string): boolean {
   return PROJECT_PAGE_PATH.test(pathname)
 }
 
+/**
+ * The admin panel and everything under it (`/admin`, a user, a project's
+ * admin view). It is a separate space from the innovation journey: the header
+ * stays, with its breadcrumb, admin link and account menu, but the left
+ * sidebar, the projects menu and the journal and guidance panels all belong
+ * to the user's own work and are not drawn there.
+ */
+export function isAdminPath(pathname: string): boolean {
+  return pathname === "/admin" || pathname.startsWith("/admin/")
+}
+
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const [guidanceOpen, setGuidanceOpen] = useState(false)
@@ -210,7 +220,9 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
   })
 
   const isFocusFlow = isFocusFlowPath(pathname)
-  const hideSidebar = hidesSidebarPath(pathname)
+  const isAdmin = isAdminPath(pathname)
+  // The admin panel has no sidebar either: it is a space of its own, not a page of the journey.
+  const hideSidebar = hidesSidebarPath(pathname) || isAdmin
   const [topNavOpen, setTopNavOpen] = useState(false)
 
   useEffect(() => {
@@ -245,7 +257,8 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
   const closeJournal = () => dispatch.settings.setJournalOpen(false)
 
-  const sidePanelOpen = !isMobile && (guidanceOpen || journalOpen)
+  // A journal left open elsewhere stays open in the store, but never shows in the admin space.
+  const sidePanelOpen = !isMobile && !isAdmin && (guidanceOpen || journalOpen)
 
   useEffect(() => {
     dispatch.settings.init()
@@ -411,7 +424,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
             {headerTitle}
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <ProjectsMenu />
+            {!isAdmin && <ProjectsMenu />}
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -428,11 +441,12 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
               </TooltipTrigger>
               <TooltipContent>Admin panel</TooltipContent>
             </Tooltip>
-            <div className="hidden md:block" data-tour={TOUR_TARGETS.headerTeam}>
-              <TeamAvatars />
-            </div>
-            {panelToggles}
-            <Separator orientation="vertical" className="h-4 bg-quaternary-foreground/30" />
+            {!isAdmin && (
+              <>
+                {panelToggles}
+                <Separator orientation="vertical" className="h-4 bg-quaternary-foreground/30" />
+              </>
+            )}
             {headerActions}
           </div>
         </header>
@@ -499,7 +513,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         </FocusChromeContext.Provider>
         </div>
       </div>
-      {isMobile && (
+      {isMobile && !isAdmin && (
         <Sheet open={guidanceOpen} onOpenChange={setGuidanceOpen}>
           <SheetContent side="right" className="w-full sm:max-w-xl p-0" hideClose>
             <VisuallyHidden>
@@ -509,7 +523,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
           </SheetContent>
         </Sheet>
       )}
-      {isMobile && (
+      {isMobile && !isAdmin && (
         <Sheet open={journalOpen} onOpenChange={(o) => dispatch.settings.setJournalOpen(o)}>
           <SheetContent side="right" className="w-full sm:max-w-md p-0" hideClose>
             <VisuallyHidden>
@@ -549,9 +563,6 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
                   </TooltipTrigger>
                   <TooltipContent>Admin panel</TooltipContent>
                 </Tooltip>
-                <div className="hidden md:block">
-                  <TeamAvatars />
-                </div>
                 {panelToggles}
                 <Separator orientation="vertical" className="h-4 bg-quaternary-foreground/30" />
                 {headerActions}

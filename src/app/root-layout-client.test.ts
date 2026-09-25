@@ -1,4 +1,18 @@
-import { getCrumbs, hidesSidebarPath, isFocusFlowPath, type CrumbLookup } from "./root-layout-client"
+import { getCrumbs, hidesSidebarPath, isAdminPath, isFocusFlowPath, type CrumbLookup } from "./root-layout-client"
+
+describe("isAdminPath", () => {
+  it("covers the admin panel and everything under it", () => {
+    expect(isAdminPath("/admin")).toBe(true)
+    expect(isAdminPath("/admin/users/u1")).toBe(true)
+    expect(isAdminPath("/admin/projects/12")).toBe(true)
+  })
+
+  it("leaves the rest of the app alone", () => {
+    expect(isAdminPath("/")).toBe(false)
+    expect(isAdminPath("/projects/12")).toBe(false)
+    expect(isAdminPath("/administration")).toBe(false)
+  })
+})
 
 describe("hidesSidebarPath", () => {
   it("drops the sidebar on the project page itself", () => {
