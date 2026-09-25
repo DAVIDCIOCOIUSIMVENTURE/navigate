@@ -71,7 +71,7 @@ export function AboutDialog({
       </DialogTrigger>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">{title ?? `About ${subject}`}</DialogTitle>
+          <DialogTitle>{title ?? `About ${subject}`}</DialogTitle>
         </DialogHeader>
         {/*
           The classes go on DialogDescription rather than the div so tw-merge

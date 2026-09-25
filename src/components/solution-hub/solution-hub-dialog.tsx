@@ -37,7 +37,7 @@ export function SolutionHubDialog({
       <DialogContent className="flex max-h-[90vh] flex-col sm:max-w-5xl">
         <DialogHeader className="shrink-0">
           <div className="flex items-center gap-4 pr-8">
-            <DialogTitle className="text-xl font-bold">Solution canvas</DialogTitle>
+            <DialogTitle>Solution canvas</DialogTitle>
             {solutionId != null && (
               <div className="ml-auto flex items-center gap-2">
                 <Button variant="outline" asChild>
