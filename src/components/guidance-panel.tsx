@@ -301,6 +301,7 @@ const guidanceItems: GuidanceItem[] = [
         <GuidanceSection icon={Presentation} iconBg="bg-teal-700" title="The portfolio">
           <p>The portfolio is the project written out for somebody who has never used Navigate: the problem, who has it, what those people are trying to get done, how they cope today, what solving it could be worth, the competition, the verdict, and every solution with how it was found and how it scored. It is read only and needs no account or password.</p>
           <p>A project is private until you share it. <Keyword>Open portfolio</Keyword> works before then, so you can read it yourself and decide whether it is ready; a banner says nobody else can open it yet. Until projects are stored on a server, the link only opens on the device the project was made on.</p>
+          <p>An admin reviewing your work sees the same portfolio from the <Keyword>Projects</Keyword> tab of the admin panel, with one addition: the notes in your journal that are linked to the project sit in a margin down the right, like comments on a document, each beside the part it is about. Notes linked to a solution sit beside that solution and notes linked to the problem sit beside the problem. They never appear on the public portfolio.</p>
         </GuidanceSection>
         <GuidanceSection icon={Route} iconBg="bg-teal-700" title="Finding your way">
           <p>Every flow inside a project is a focus page: the header and sidebar step aside, and two buttons take their place. <Keyword>Home</Keyword> returns to the home page from anywhere, however deep you are, and <Keyword>Menu</Keyword> reveals the top bar with the projects menu, journal and this guidance. The breadcrumb in the header reads Home, then Projects, then the project, so any part of it climbs back up a level.</p>
@@ -309,7 +310,7 @@ const guidanceItems: GuidanceItem[] = [
         <TipCallout items={[
           "Each project holds exactly one problem. To work on a second problem, start a second project",
           "Export a project before trying something drastic; importing the file back gives you a fresh copy",
-          "Notes in the journal are linked to Self Discovery, a project's problem or one of its solutions, and the panel can filter to just this project's notes",
+          "Notes in the journal are linked to Self Discovery, a project's problem or one of its solutions, and the panel can filter to just this project's notes. An admin reviewing the project can read the notes linked to it, so link a note to a solution when it is about that solution",
         ]} />
       </div>
     ),

@@ -310,6 +310,7 @@ export const TOUR_STEPS: TourStep[] = [
     title: "Journal",
     body: [
       "Open the journal to jot down notes as you go. It sits beside the page so you can write while you work.",
+      "Each note is linked to where you wrote it: a project's problem or one of its solutions. An admin reviewing your project can read those notes beside the part they are about.",
     ],
     target: TOUR_TARGETS.headerJournal,
     placement: "bottom",
