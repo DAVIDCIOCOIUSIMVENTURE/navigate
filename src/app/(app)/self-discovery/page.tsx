@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { AboutDialog } from "@/components/about-toggle"
 import {
   ArrowRight,
@@ -23,6 +23,7 @@ import type { CustomDimensionItem } from "@/store/custom-dimension-items-model"
 import { useContainerSize } from "@/context/container-size-context"
 import { ProgressRing } from "@/components/ui/progress-ring"
 import { getSelfDiscoveryProgress } from "@/lib/self-discovery-progress"
+import { PAGE_TITLE_CLASS } from "@/lib/nav-item-styles"
 import { cn } from "@/lib/utils"
 
 const FLOW_BASE = "/self-discovery/discover"
@@ -121,13 +122,13 @@ export default function SelfDiscoveryPage() {
     setPendingDelete(null)
   }
 
-  return (
-    <div
-      className={cn("flex flex-col gap-3 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}
-    >
+  // The page title, its About button, the progress ring and the way into the
+  // questionnaire head the card, so the card is the whole page.
+  const header = (
+    <CardHeader className="shrink-0 pb-3">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-3">
-          <CardTitle size="md" icon={Compass} className="text-xl text-foreground">Self Discovery</CardTitle>
+          <CardTitle size="md" icon={Compass} className={PAGE_TITLE_CLASS}>Self Discovery</CardTitle>
           <AboutDialog subject="Self Discovery">
             <p>
               This is your <span className="font-bold">self discovery library</span>, a place to capture what you bring to a venture: your strengths, interests, and lived experiences. Use the journey to add insights, then bring them into the Problems section as triggers.
@@ -150,25 +151,36 @@ export default function SelfDiscoveryPage() {
           </Button>
         </div>
       </div>
+    </CardHeader>
+  )
+
+  return (
+    <div
+      className={cn("flex flex-col gap-3 w-full flex-1 min-h-0", isWide && "max-h-[calc(100svh-7rem)] lg:max-h-[calc(100svh-8rem)]")}
+    >
       {!mounted || totalItems === 0 ? (
-        <div className="flex-1 flex flex-col items-center justify-center gap-6 py-24">
-          <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-secondary-brand">
-            <Compass className="h-8 w-8 text-secondary-brand-foreground" />
-          </div>
-          <div className="text-center flex flex-col gap-2 max-w-sm">
-            <h2 className="text-lg font-semibold">No items yet</h2>
-            <p className="text-sm">
-              Start the self discovery journey to add insights about your strengths, interests, and experiences.
-            </p>
-          </div>
-          <Button size="lg" className="gap-2" onClick={() => router.push(FLOW_BASE)}>
-            <ArrowRight className="h-4 w-4" />
-            Start Self Discovery
-          </Button>
-        </div>
+        <Card className={cn("flex flex-col", isWide && "flex-1 min-h-0 overflow-hidden")}>
+          {header}
+          <CardContent className="pt-0 flex-1 flex flex-col items-center justify-center gap-6 py-24 overflow-y-auto">
+            <div className="flex items-center justify-center w-16 h-16 rounded-2xl bg-secondary-brand">
+              <Compass className="h-8 w-8 text-secondary-brand-foreground" />
+            </div>
+            <div className="text-center flex flex-col gap-2 max-w-sm">
+              <h2 className="text-lg font-semibold">No items yet</h2>
+              <p className="text-base">
+                Start the self discovery journey to add insights about your strengths, interests, and experiences.
+              </p>
+            </div>
+            <Button size="lg" className="gap-2" onClick={() => router.push(FLOW_BASE)}>
+              <ArrowRight className="h-4 w-4" />
+              Start Self Discovery
+            </Button>
+          </CardContent>
+        </Card>
       ) : (
-        <Card className={cn("flex flex-col", isWide ? "flex-1 min-h-0" : "min-h-[320px] max-h-[640px]")}>
-          <CardContent className="p-6 flex flex-col gap-4 flex-1 min-h-0 overflow-y-auto">
+        <Card className={cn("flex flex-col overflow-hidden", isWide ? "flex-1 min-h-0" : "min-h-[320px] max-h-[640px]")}>
+          {header}
+          <CardContent className="p-6 pt-0 flex flex-col gap-4 flex-1 min-h-0 overflow-y-auto">
             {SELF_DISCOVERY_CATEGORIES.map((category) => {
               const Icon = getSelfDiscoveryCategoryIcon(category.url) ?? Compass
               const itemsForCategory = category.questions.flatMap((q) =>

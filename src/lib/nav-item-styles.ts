@@ -46,6 +46,14 @@ export function navStepBadgeClass(state: NavStepState) {
   )
 }
 
+/**
+ * The page title on the top-level pages (Home, Why It Matters, Self Discovery,
+ * Projects, Next Steps): passed to a `size="md"` CardTitle so every one of them
+ * has the same size, in the title's own bold weight but the default foreground
+ * rather than primary, so the page heading reads as text and only its tile is violet.
+ */
+export const PAGE_TITLE_CLASS = "text-xl text-foreground"
+
 /** Compact section title tile (the h-7 tile beside a focus flow's h1). */
 export const SECTION_TITLE_TILE_CLASS =
   "flex h-7 w-7 items-center justify-center rounded-md bg-primary shrink-0"

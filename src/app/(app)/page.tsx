@@ -14,6 +14,7 @@ import { ProjectsEmptyState } from "@/components/projects-empty-state"
 import { ProjectsTable } from "@/components/projects-table"
 import { useContainerSize } from "@/context/container-size-context"
 import { getSelfDiscoveryProgress } from "@/lib/self-discovery-progress"
+import { PAGE_TITLE_CLASS } from "@/lib/nav-item-styles"
 import { projectRoutes } from "@/lib/projects"
 import { TOUR_TARGETS } from "@/lib/tour-steps"
 import { cn } from "@/lib/utils"
@@ -46,7 +47,7 @@ export default function HomePage() {
     >
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div className="flex flex-wrap items-center gap-3">
-          <CardTitle size="md" icon={Home} className="text-xl text-foreground">Home</CardTitle>
+          <CardTitle size="md" icon={Home} className={PAGE_TITLE_CLASS}>Home</CardTitle>
           <AboutDialog subject="the home page">
             <p>
               This is your <span className="font-bold">home</span>: an overview of your <span className="font-bold">Self Discovery</span> and your <span className="font-bold">projects</span>, with quick links to the reading sections.
@@ -55,10 +56,6 @@ export default function HomePage() {
             </p>
           </AboutDialog>
         </div>
-        <Button onClick={() => setNewOpen(true)} className="gap-2 shrink-0" data-tour={TOUR_TARGETS.dashboardNewProject}>
-          <Plus className="h-4 w-4" />
-          New project
-        </Button>
       </div>
 
       {/* Self Discovery beside the two reading sections; the projects take the rest of the page. */}
@@ -92,7 +89,7 @@ export default function HomePage() {
       {!hydrated ? null : projects.length === 0 ? (
         <Card className={cn("flex flex-col", isWide && "flex-1 min-h-0 overflow-y-auto")}>
           <CardContent className="p-6 flex flex-col flex-1">
-            <ProjectsEmptyState onNew={() => setNewOpen(true)} compact />
+            <ProjectsEmptyState onNew={() => setNewOpen(true)} compact tourTarget={TOUR_TARGETS.dashboardNewProject} />
           </CardContent>
         </Card>
       ) : (
@@ -100,13 +97,19 @@ export default function HomePage() {
           projects={projects}
           className={cn(isWide ? "flex-1 min-h-0" : "min-h-[320px] max-h-[640px]")}
           headerExtra={
-            <Button asChild variant="secondary-brand-outline" className="gap-1.5">
-              <Link href={projectRoutes.list()}>
-                <FolderKanban className="h-4 w-4" />
-                All projects
-                <ChevronRight className="h-4 w-4" />
-              </Link>
-            </Button>
+            <>
+              <Button onClick={() => setNewOpen(true)} className="gap-2" data-tour={TOUR_TARGETS.dashboardNewProject}>
+                <Plus className="h-4 w-4" />
+                New project
+              </Button>
+              <Button asChild variant="secondary-brand-outline" className="gap-1.5">
+                <Link href={projectRoutes.list()}>
+                  <FolderKanban className="h-4 w-4" />
+                  All projects
+                  <ChevronRight className="h-4 w-4" />
+                </Link>
+              </Button>
+            </>
           }
         />
       )}

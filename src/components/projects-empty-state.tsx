@@ -13,10 +13,13 @@ export function ProjectsEmptyState({
   onNew,
   compact = false,
   className,
+  tourTarget,
 }: {
   onNew: () => void
   compact?: boolean
   className?: string
+  /** The guided tour id for the New project button, when this is the only one on the page (Home). */
+  tourTarget?: string
 }) {
   return (
     <div className={cn("flex-1 flex flex-col items-center justify-center gap-6", compact ? "py-10" : "py-24", className)}>
@@ -29,7 +32,7 @@ export function ProjectsEmptyState({
           Start a project, then identify the problem it is about and work towards a solution.
         </p>
       </div>
-      <Button onClick={onNew} size={compact ? "default" : "lg"} className="gap-2">
+      <Button onClick={onNew} size={compact ? "default" : "lg"} className="gap-2" data-tour={tourTarget}>
         <Plus className="h-4 w-4" />
         New project
       </Button>

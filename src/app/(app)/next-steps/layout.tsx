@@ -1,6 +1,6 @@
 "use client"
 
-import { Card, CardContent, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { getNextStepsTopicIcon } from "@/config/navigation"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -8,7 +8,7 @@ import { useRouter, usePathname } from "next/navigation"
 import { ChevronDown, Milestone, type LucideIcon } from "lucide-react"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
-import { NAV_ITEM_ACTIVE_CLASS, NAV_ITEM_HOVER_CLASS, navIconClass, navIconTileClass } from "@/lib/nav-item-styles"
+import { NAV_ITEM_ACTIVE_CLASS, NAV_ITEM_HOVER_CLASS, PAGE_TITLE_CLASS, navIconClass, navIconTileClass } from "@/lib/nav-item-styles"
 import { NEXT_STEPS_TOPICS } from "@/data/nextStepsData"
 import { useContainerSize } from "@/context/container-size-context"
 
@@ -94,14 +94,13 @@ export default function NextStepsLayout({
       )}
     >
       {!isWide && (
-        <CardTitle size="md" icon={Milestone} className="text-xl text-foreground">Next Steps</CardTitle>
-      )}
-
-      {!isWide && (
         <nav aria-label="Next Steps topics" className="w-full shrink-0">
           <Collapsible open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
             <Card>
-              <CardContent className="p-2">
+              <CardHeader>
+                <CardTitle size="md" icon={Milestone} className={PAGE_TITLE_CLASS}>Next Steps</CardTitle>
+              </CardHeader>
+              <CardContent className="p-2 pt-0">
                 <CollapsibleTrigger asChild>
                   <Button
                     variant="ghost"
@@ -132,9 +131,12 @@ export default function NextStepsLayout({
 
       {isWide && (
         <div className="flex w-72 shrink-0 flex-col gap-3 min-h-0">
-          <CardTitle size="md" icon={Milestone} className="text-xl text-foreground">Next Steps</CardTitle>
-          <Card className="flex-1 min-h-0 overflow-y-auto">
-            <CardContent className="p-3">
+          {/* The page title heads the nav card rather than sitting above it, so the card is the whole column. */}
+          <Card className="flex flex-1 min-h-0 flex-col overflow-hidden">
+            <CardHeader className="shrink-0">
+              <CardTitle size="md" icon={Milestone} className={PAGE_TITLE_CLASS}>Next Steps</CardTitle>
+            </CardHeader>
+            <CardContent className="flex-1 min-h-0 overflow-y-auto px-3 pb-3 pt-0">
               <div className="flex flex-col gap-1">
                 <NavContent pathname={pathname} onNavigate={handleNavigate} />
               </div>

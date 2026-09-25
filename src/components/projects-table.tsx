@@ -48,11 +48,14 @@ type SortDirection = "asc" | "desc"
 export function ProjectsTable({
   projects,
   className,
+  title,
   headerExtra,
 }: {
   projects: Project[]
   className?: string
-  /** Anything to place after the search box in the card header (Home puts its link to the Projects page there). */
+  /** What heads the card. Defaults to "Projects" with the count; the Projects page passes its page title so the card is the page. */
+  title?: React.ReactNode
+  /** Anything to place after the search box in the card header (Home puts its link to the Projects page there, the Projects page its New project and import buttons). */
   headerExtra?: React.ReactNode
 }) {
   const router = useRouter()
@@ -138,10 +141,12 @@ export function ProjectsTable({
     <Card className={cn("flex flex-col overflow-hidden", className)}>
       <CardHeader className="shrink-0 pb-3 gap-3">
         <div className="flex items-center justify-between gap-3 flex-wrap">
-          <CardTitle size="md" className="text-foreground">
-            Projects ({sorted.length}
-            {sorted.length !== projects.length ? ` of ${projects.length}` : ""})
-          </CardTitle>
+          {title ?? (
+            <CardTitle size="md" className="text-foreground">
+              Projects ({sorted.length}
+              {sorted.length !== projects.length ? ` of ${projects.length}` : ""})
+            </CardTitle>
+          )}
           <div className="flex items-center gap-2 flex-wrap">
             <div className="relative">
               <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
